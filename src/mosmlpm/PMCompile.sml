@@ -92,8 +92,13 @@ struct
 	       orelse exists uo andalso isNewer pmfile uo
 	    then (true,  allfiles)
 	    else (false, if sigExist andalso isNewer smlfile uo 	       
-			 then [smlfile]
-			 else [])
+			 then ( chat ["Reusing: ", ui]
+                              ; [smlfile]
+                              )
+			 else ( chat ["Reusing:\n   ", ui,
+                                      "\n   ", uo]
+                              ; []
+                              ))
 	end
 
 
