@@ -557,11 +557,13 @@ and isExpansiveModExp (_, (modexp',_)) =
     case modexp' of
       DECmodexp _ => true
     | LONGmodexp _ => false
+    | LETmodexp _ => true
     | PARmodexp modexp => isExpansiveModExp modexp
     | CONmodexp (modexp,_) => isExpansiveModExp modexp
     | ABSmodexp  (modexp,_) => isExpansiveModExp modexp
     | FUNCTORmodexp _ => false
     | APPmodexp _ => true
+    | RECmodexp (_,_,_, modexp) => isExpansiveModExp modexp
 ;   
 
 
@@ -882,7 +884,7 @@ fun lookup_VE (ME:ModEnv) (VE : VarEnv) (ii : IdInfo) =
 
 
 fun lookup_UE (UE : UEnv) loc (ii : IdInfo) =
-  let val [id] = #id(#qualid ii) in
+  let val id = hd(#id(#qualid ii)) in
     lookup id UE
     handle Subscript => errorMsg loc ("Unbound type variable: " ^ id)
   end;
@@ -1397,12 +1399,15 @@ local (* to implement the derived form for structure sharing,
     fun build T0 Ts : TyName list = 
 	  case Ts of 
 	      [] => []
-	    | (T::Ts) => let val T as (tn::T') = (* cvr: re-order T as T0 *)
+	    | (T::Ts) => let val T (* as (tn::T') *) = (* cvr: re-order T as T0 *)
 		                   foldR (fn tn => fn acc =>
 					  (((choose (isEqTN tn) T)::acc)
 					   handle Subscript => acc))
 				   [] 
 				   T0 
+                             val (tn,T') = case T of 
+				             [] => fatalError "build" 
+					   | tn::T' => (tn,T')
 			     val equ = foldR (fn tn => fn equ => 
 					      if (#tnEqu (!(#info tn))) <> FALSEequ 
 						  then TRUEequ (* cvr: TODO should we worry about REFequ? *)
@@ -1665,15 +1670,17 @@ fun initialDatBindTE (dbs : DatBind list)=
 
 fun absTE (TE : TyEnv) = 
   mapEnv
-    (fn id => fn (APPtyfun (NAMEtyapp tyname),ConEnv CE) =>
-       let val {info, ...} = tyname in
-         case !(#tnConEnv(!info)) of
-             SOME (ConEnv CE) =>
-               (setTnEqu info FALSEequ;
-                #tnConEnv(!info):= NONE;
-                (APPtyfun (NAMEtyapp tyname),ConEnv []))
-           | _ => fatalError "absTE"
-       end)
+    (fn id => 
+      (fn (APPtyfun (NAMEtyapp tyname),ConEnv CE) =>
+         let val {info, ...} = tyname in
+	     case !(#tnConEnv(!info)) of
+		 SOME (ConEnv CE) =>
+		     (setTnEqu info FALSEequ;
+		      #tnConEnv(!info):= NONE;
+		      (APPtyfun (NAMEtyapp tyname),ConEnv []))
+	       | _ => fatalError "absTE:1"
+	 end
+       | _ => fatalError "absTE:2"))
     TE
 ;
 
@@ -1817,7 +1824,7 @@ fun maximizeEquality (TE : TyEnv) =
                           then
                             (setTnEqu info FALSEequ; equAttrReset := true)
                           else ()
-                      | REFequ  => fatalError "maximizeEquality:1"
+                      | _ => fatalError "maximizeEquality:1"
                end
          | _ => fatalError "maximizeEquality:2")
         )
@@ -1886,7 +1893,10 @@ fun elabDatBind (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE:Ty
       val vs = map (fn tv => newExplicitTypeVar tv) pars
       val us = map TypeOfTypeVar vs
       val UE' = (zip2 pars us) @ UE
-      val (tyfun as (APPtyfun(NAMEtyapp tyname)),_) = lookupEnv TE tycon
+      val (tyfun (* as (APPtyfun(NAMEtyapp tyname)) *),_) = lookupEnv TE tycon
+      val tyname = case tyfun of 
+	              APPtyfun(NAMEtyapp tyname) => tyname
+		   | _ => fatalError "elabDatBind"
       val t = type_con us tyname
       val CE = ConEnv (foldR_map cons (elabConBind ME FE GE UE' VE TE vs t) [] conbind_list)
   in
@@ -3017,8 +3027,8 @@ and elabSigExp (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE:TyE
 	      val T2T' = map (fn tn as {info = ref {tnSort = 
 						    REAts (APPtyfun tyapp),
 						    ...},
-					...} =>
-			      (tn,tyapp))
+					...} => (tn,tyapp)
+			      | _ => fatalError "elabRecSigExp")
 		              T
 	  in
             (decrBindingLevel();
@@ -3195,7 +3205,7 @@ and elabSpec  (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (TE 
 				      ((choose (fn (loc,tn') => isEqTN tn tn') LocT)::acc)
 				       handle Subscript => acc)
 	                       [] T
-	  val LocT' as ((loc,tn)::LocT'') =
+	  val LocT' (* as ((loc,tn)::LocT'') *) =
 	      orderAsT 
                  (map (fn (loc,tyfun) =>
 			   ((loc,choose (equalsTyFunTyName tyfun) T)
@@ -3204,6 +3214,9 @@ and elabSpec  (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (TE 
 				\this type constructor does not denote \
                                 \an opaque type of the specification"))
 			 LocTyFuns)
+          val ((loc,tn),LocT'') = case LocT' of 
+		                     (loctn::LocT'') => (loctn,LocT'')
+				  | _ => fatalError "elabSpec"
           val kind = kindTyName tn
           val _ = app (fn (loc,tn'') =>
 		       if kindTyName tn'' = kind

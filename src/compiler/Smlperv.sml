@@ -27,7 +27,8 @@ val () =
 
 (* --- Initial constructor basis --- *)
 
-val deConEnv = fn (ConEnv CE) => CE
+val deConEnv = fn (ConEnv CE) => CE | _ => fatalError "deConEnv"
+
 val infoFalse = hd(deConEnv initial_bool_CE)
 and infoTrue  = hd(tl (deConEnv initial_bool_CE))
 and infoNil   = hd(deConEnv initial_list_CE)
@@ -79,12 +80,13 @@ val sc_OVL2NNBo = sc_bogus;
 val sc_OVL2NNNo = sc_bogus;
 
 fun VEofCE (ConEnv CE) =
-  map (fn ci => 
-          let val coninfo =  #info(ci) 
-          in
-          (hd (#id(#qualid ci)), ((#conType(! coninfo)),CONname coninfo))
-          end)
-      CE;
+    map (fn ci => 
+	 let val coninfo =  #info(ci) 
+	 in
+	     (hd (#id(#qualid ci)), ((#conType(! coninfo)),CONname coninfo))
+	 end)
+    CE
+  | VEofCE _ = fatalError "VEofCE";
 
 (* cvr: added *)
 val initial_eq_VE =

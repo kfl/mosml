@@ -39,12 +39,14 @@ fun removeGEofRecStr RS =
 ;
 
 fun VEofCE (ConEnv CE : ConEnv) =
-  foldL (fn cs => fn env =>
+    foldL (fn cs => fn env =>
            let val {qualid, info} = cs
            in bindInEnv env (hd(#id qualid)) 
                    {qualid = qualid, 
                     info = (#conType (!info),CONname info)} end)
-       NILenv CE
+           NILenv 
+	   CE
+  | VEofCE _ = fatalError "VEofCE"
 ;
 
 
@@ -64,7 +66,6 @@ datatype ScopeViolation =
 datatype reason = 
     UnifyCircular | UnifyEquality | UnifyExplicit
   | UnifyTup | UnifyRec of Lab | UnifyOther
-  | UnifyImperative (* cvr *)
   | UnifyMod of matchReason option * matchReason option
   | UnifyScope of TypeVar * ScopeViolation
 and matchReason = 
@@ -445,7 +446,7 @@ fun copyTyNameSet tnSort bns bvs T =
       val bns'' = bns'@bns
       fun copyConEnvs bns bvs [] = (bns,bvs,[])
 	| copyConEnvs bns bvs ((tn,NAMEtyapp tn')::bns') =
-	    case !(#tnConEnv (!(#info tn))) of
+	   (case !(#tnConEnv (!(#info tn))) of
 		NONE => 
 		    let 
 			val (bns,bvs,T') = copyConEnvs bns bvs bns'
@@ -461,16 +462,17 @@ fun copyTyNameSet tnSort bns bvs T =
 		        then setTnConEnv (#info tn') (#tnConEnv(!(#info tn)))
 			else setTnConEnv (#info tn') (ref (SOME cconenv));
 			(bns,bvs,tn'::T')
-		    end
+		    end)
+         | copyConEnvs _ _ _ = fatalError "copyConEnvs"
        val (bns,bvs,T') = copyConEnvs bns'' bvs bns'
    in
         (restrictBns bns bns',bvs,T',bns')
    end
 and copyTyName tnSort bns bvs tn =  
-    let val (bns,bvs,[tn'],[tn2tn']) = copyTyNameSet tnSort bns bvs [tn]
-    in
+    case copyTyNameSet tnSort bns bvs [tn] of
+      (bns,bvs,[tn'],[tn2tn']) =>
 	(bns,bvs,tn',tn2tn')
-    end
+    | _ => fatalError "copyTyName"
 and copyType bns bvs tau = 
     case tau of
 	VARt var =>
@@ -1454,7 +1456,8 @@ fun typeViolatesEquality tau =
         (case EqualityOfTyApp tyapp of
              FALSEequ => true
            | TRUEequ  => exists typeViolatesEquality ts
-           | REFequ   => false)
+           | REFequ   => false
+	   | _ => fatalError "typeViolatesEquality")
     | RECt (ref{fields, ...}) =>
         exists_field typeViolatesEquality fields
     | PACKt _ => true
@@ -1739,6 +1742,7 @@ and unifyTyFun tyfun tyfun' =
               unify (CONt(tys,tyapp)) (copyType [] UE ty);
               decrBindingLevel()
           end
+    | (_,_) => fatalError "unifyTyFun" 
 (*
 and linkVarToType var tau =
 (
@@ -2371,21 +2375,22 @@ fun isTypeFcnEqu vs' tau' vs tau =
 fun matchDatatype path (id : string) (infTyStr as (_,ConEnv infCE : ConEnv)) 
                                      (specTyStr as (_,ConEnv specCE : ConEnv)) =
     (*cvr: changed ^^^^^^^^^^^^, ^^^^^^           and  ^^^^^^ *)
-  let val domCE  = map (fn gci => hd(#id(#qualid gci))) ( infCE)
-      val domCE' = map (fn gci => hd(#id(#qualid gci))) ( specCE)
-
-  in
-    (* domCE' is non-empty, because `abstype' is not allowed *)
-    (* in signatures, and "primitive" types are represented  *)
-    (* as NILts. *)
-    if domCE <> domCE' 
-	then raise MatchError (ConEnvMismatch (path, id, infTyStr, specTyStr))
-    else ()
-    (* We don't have to compare the types of constructors here, *)
-    (* because they will be compared as values. Note that all *)
-    (* constructors are visible, for redefining values in signatures *)
-    (* is not allowed. *)
-  end;
+    let val domCE  = map (fn gci => hd(#id(#qualid gci))) ( infCE)
+	val domCE' = map (fn gci => hd(#id(#qualid gci))) ( specCE)
+    in
+	(* domCE' is non-empty, because `abstype' is not allowed *)
+	(* in signatures, and "primitive" types are represented  *)
+	(* as NILts. *)
+	if domCE <> domCE' 
+	    then raise MatchError (ConEnvMismatch (path, id, infTyStr, specTyStr))
+	else ()
+        (* We don't have to compare the types of constructors here, *)
+        (* because they will be compared as values. Note that all *)
+        (* constructors are visible, for redefining values in signatures *)
+        (* is not allowed. *)
+    end
+  | matchDatatype _ _ _ _  = fatalError "matchDatatype"
+;
 
 fun refreshHardTypeVar (var : TypeVar) =
   let val {tvEqu, tvImp, ...} = !var
@@ -2479,25 +2484,8 @@ fun realizeTyStr path id (infTyStr : TyFun * ConEnv) (specTyStr : TyFun * ConEnv
 	      raise MatchError (EqualityMismatch (path,id,infTyStr,specTyStr))
           else ()
       | FALSEequ =>
-          ());
-    (* cvr:
-    case #tnStr specInfo of
-        NILts => setTnStr (#info specTyName) (REAts infTyName)
-      | TYPEts _ => ()
-      | DATATYPEts _ => ()
-      | REAts _ => fatalError "realizeTyName"
-    *)
-    (* cvr: *)
-(*
-    (case normTyFun (specTyFun) of
-        APPtyfun (NAMEtyapp specTyName) =>
-          (case #tnSort (!(#info specTyName)) of
-            (* cvr: TODO revise once type names are bound *)
-             VARIABLEts => setTnSort (#info specTyName) (REAts (infTyFun))
-           | PARAMETERts => ()
-           | REAts _ => fatalError "realizeTyStr:2")
-    |  _ => ()) 
-*)
+          ()
+      | _ => fatalError "realizeTyStr:2");
     ((case patternOfTyFun specTyFun of
 	   (tn,tns) =>
 	       let val tnLevel = #tnLevel(!(#info tn))
@@ -2505,13 +2493,13 @@ fun realizeTyStr path id (infTyStr : TyFun * ConEnv) (specTyStr : TyFun * ConEnv
 		   val _ = (* occur check *)
 		       app (fn tn' => 
 			    if tn = tn' 
-				then
-				    raise MatchError (CircularMismatch(path,
-								       id,
-								       infTyStr,
-								       specTyStr,
-								       tn'))
-			    else ()) fns
+			    then raise MatchError (CircularMismatch(path,
+								    id,
+								    infTyStr,
+								    specTyStr,
+								    tn'))
+			    else ()) 
+		            fns
                    val _ = (prune_level (tnLevel) (fns,fvs,frvs))
                            handle ScopeViolation sv => 
 			       raise MatchError (PatternMismatch (path,
@@ -2705,8 +2693,10 @@ fun matchCSig (inferredSig:CSig) (specSig:CSig) =
     NONE => fatalError "matchSignature"
   | SOME RS => 
      (* NB: the infix bases and sigenv's will be empty in STRmode *)
-     let val LAMBDAsig(T,STRmod RS) = 
-	 copySig [] [] (LAMBDAsig(!(tyNameSetOfSig specSig),STRmod RS))
+     let val (T,RS) = 
+	   case copySig [] [] (LAMBDAsig(!(tyNameSetOfSig specSig),STRmod RS)) of 
+	       LAMBDAsig(T,STRmod RS) => (T,RS)
+	     | _  => fatalError "matchCSig"
 	 val RS' = NONrec (STRstr (mk1TopEnv (#uModEnv inferredSig),
 				   mk1TopEnv (#uFunEnv inferredSig),
 				   mk1TopEnv (#uSigEnv inferredSig),
@@ -2728,7 +2718,8 @@ local
     | pathOfLongStrId [] = NILpath
 in
 fun realizeLongTyCon (qualid as {qual,id = tycon::longstrid}) = 
-    realizeTyStr (pathOfLongStrId longstrid) tycon
+      realizeTyStr (pathOfLongStrId longstrid) tycon
+  | realizeLongTyCon _ = fatalError "realizeLongTyCon"
 end;
    
    
@@ -3220,6 +3211,7 @@ and prTyInfo id (tyfun,conenv) =
 		 prConEnv conenv;
 		 msgString ")";
 		 msgEBlock())
+	 | (_,_) => fatalError "prTyInfo"
     end
 and prConEnv CE = 
 	    (msgString "{";
@@ -4039,6 +4031,7 @@ local
        	         msgEOL();
 		 msgEBlock())
 	  | (ConEnv _, ConEnv _) => ()
+	  | (_,_) => fatalError "checkTyInfo"
 
   fun checkVarInfo path id 
     (infInfo as {info = (_,infStatus),qualid = infQualid})

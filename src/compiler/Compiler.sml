@@ -216,7 +216,8 @@ fun reportEquOfType equ =
     (case equ of
          FALSEequ => ""
        | TRUEequ => "eq"
-       | REFequ => "prim_EQ")
+       | REFequ => "prim_EQ"
+       | _ => fatalError "reportEquOfType")
 ;
 
 fun reportLhsOfTypeResult (tyname : TyName) =

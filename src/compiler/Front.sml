@@ -429,16 +429,19 @@ and coerceModEnv S ME' tr_FE_VE =
 	tr_FE_VE 
 	ME'
     end
-and coerceStr lam S (STRstr(ME',FE',GE',TE',VE')) =
-      let val tr_VE = coerceVarEnv S VE' 
-          val tr_FE_VE = coerceFunEnv S FE' tr_VE
-          val tr_ME_FE_VE = coerceModEnv S ME' tr_FE_VE 
-      in
-	  if isIdentityCoercion S 0 tr_ME_FE_VE 
-	      then lam 
-	  else 
-	      Llet([lam],Lstruct tr_ME_FE_VE)
-      end
+and coerceStr lam S S' =
+    case S' of 
+     STRstr(ME',FE',GE',TE',VE') =>
+	 let val tr_VE = coerceVarEnv S VE' 
+	     val tr_FE_VE = coerceFunEnv S FE' tr_VE
+	     val tr_ME_FE_VE = coerceModEnv S ME' tr_FE_VE 
+	 in
+	     if isIdentityCoercion S 0 tr_ME_FE_VE 
+		 then lam 
+	     else 
+		 Llet([lam],Lstruct tr_ME_FE_VE)
+	 end
+  | _ => fatalError "coerceStr"
 and isIdentityCoercion S pos (Lprim(Pfield field, [Lvar 0])::lams) = 
       (pos = field) andalso isIdentityCoercion S (pos+1) lams
   | isIdentityCoercion S pos (_::lams) = false
@@ -448,6 +451,7 @@ and coerceRecStr lam (NONrec S) (NONrec S') = coerceStr lam S S'
   | coerceRecStr lam (RECrec (_,RS)) RS' = coerceRecStr lam RS RS'    
 and coerceMod lam (STRmod RS) (STRmod RS') = coerceRecStr lam RS RS' 
   | coerceMod lam (FUNmod F) (FUNmod F') = coerceFun lam F F'
+  | coerceMod _ _ _ = fatalError "coerceMod"
 and coerceFun lam (_,M1,EXISTSexmod(_,M1')) (_,M2,EXISTSexmod(_,M2')) =
     let val domCoercion = coerceMod (Lvar 0) (normMod M2) (normMod M1)
 	val rngCoercion = coerceMod (Lvar 0) (normMod M1') (normMod M2')
@@ -550,8 +554,14 @@ and coerceDec env (STRstr(ME,FE,TE,VE)) (STRstr(ME',FE',TE',VE')) =
       end;
 *)
 and coerceDec env RS RS' =
-      let val (STRstr(ME,FE,GE,TE,VE)) = SofRecStr RS
-	  val (STRstr(ME',FE',GE',TE',VE')) = SofRecStr RS'
+      let val (ME,FE,_,_,VE) = 
+	       case SofRecStr RS of
+		 STRstr ES => ES
+	       | _ => fatalError "coerceDec:1"
+	  val (ME',FE',_,_,VE') = 
+	      case SofRecStr RS' of
+		  STRstr ES' => ES'
+	      | _ => fatalError "coerceDec:2"
           val tr_VE = coerceDecVarEnv env VE VE' 
           val tr_FE_VE = coerceDecFunEnv env FE FE' tr_VE
           val tr_ME_FE_VE = coerceDecModEnv env ME ME' tr_FE_VE 
@@ -565,9 +575,9 @@ fun trExp (env as (rho, depth)) (exp as (loc, exp')) =
       Lconst (ATOMsc scon)
   | VIDPATHexp (ref (RESvidpath ii))=> 
       trVar env ii 
-  | VIDPATHexp (ref (OVLvidpath _)) => fatalError "trExp"
+  | VIDPATHexp (ref (OVLvidpath _)) => fatalError "trExp:1"
   | FNexp [] =>
-      fatalError "trExp: empty fun"
+      fatalError "trExp:2"
   | FNexp(mrules as MRule(ref pats ,_)::_) =>
       foldR (fn pat => fn lam => Lfn lam)
             (trMatch loc env (partial_fun loc) mrules)
@@ -597,7 +607,7 @@ fun trExp (env as (rho, depth)) (exp as (loc, exp')) =
       let val ((rho', depth'), envelope) = trDec env dec
           val env'' = (plusEnv rho rho', depth')
       in envelope(trExp env'' exp) end
-  | INFIXexp (ref (UNRESinfixexp es)) => fatalError "trExp"
+  | INFIXexp (ref (UNRESinfixexp es)) => fatalError "trExp:3"
   | INFIXexp (ref (RESinfixexp e)) => trExp env e
   | TYPEDexp(e,ty) => trExp env e
   | ANDALSOexp(e1,e2) =>
@@ -614,10 +624,14 @@ fun trExp (env as (rho, depth)) (exp as (loc, exp')) =
       Lwhile(trExp env e1, trExp env e2)
   | SEQexp(e1,e2) =>
       Lseq(trExp env e1, trExp env e2)
-  | (STRUCTUREexp (modexp,sigexp, ref (SOME (EXISTSexmod(_,M'))))) =>
+  | STRUCTUREexp(modexp,sigexp, ref (SOME (EXISTSexmod(_,M')))) =>
         trConstrainedModExp env modexp M'
-  | (FUNCTORexp (modexp,sigexp, ref (SOME (EXISTSexmod(_,M'))))) =>
+  | STRUCTUREexp(modexp,sigexp,_) =>
+        fatalError "trExp:4"
+  | FUNCTORexp(modexp,sigexp, ref (SOME (EXISTSexmod(_,M')))) =>
         trConstrainedModExp env modexp M'
+  | FUNCTORexp (modexp,sigexp, _) =>
+        fatalError "trExp:5"      
 and trVarApp env (ii : IdInfo) args =
   let val {info={idKind, ...},...} = ii in 
     case #info(!idKind) of
@@ -676,6 +690,8 @@ and trVarApp env (ii : IdInfo) args =
 		  val tr_arg = trExp env (hd args)
 	      in mkDynexn1 en tr_arg end
           end
+      | STRik => fatalError "trVarApp: STRik"
+      | FUNik => fatalError "trVarApp: FUNik"
   end
 
 and trPrimApp env prim args =
@@ -938,9 +954,13 @@ and trFunBindList (env as (rho, depth)) fbs =
                        NILenv id_path_list
   in ((rho', depth+len), fn lam => Llet(args, lam)) end
 and trModExp (env as (rho,depth)) (_, (modexp,r)) = 
+  (* cvr: consider setting r to NONE to free up space *)
   case (modexp,!r) of
     (DECmodexp dec, SOME (EXISTSexmod (_, STRmod RS))) =>
-      let val STRstr(ME,FE,GE,TE,VE) = SofRecStr RS
+      let val (ME,FE,_,_,VE) = 
+	       case SofRecStr RS of
+		   STRstr ES => ES
+	       | _ => fatalError "trModExp:1"
 	  val (env as (rho', depth'), envelope') = trDec env dec
           val tr_VE = 
 	      foldEnv  (fn id => fn {qualid,info = (_,cs)} => fn tr_VE => 
@@ -993,7 +1013,7 @@ and trModExp (env as (rho,depth)) (_, (modexp,r)) =
              (_,(_,ref (SOME (EXISTSexmod(_,FUNmod(T,M,X)))))) =>
 		     Lapply(trModExp env funmodexp,                                           
 			    [trConstrainedModExp env modexp (normMod M)])
-        | _ => fatalError "trModExp:APPmodexp")
+        | _ => fatalError "trModExp:2")
   | (PARmodexp modexp,SOME _) => trModExp env modexp
 (* cvr: unsafe version that works but doesn't check for definedness
   | (RECmodexp((_,strid),ref (SOME RS'),sigexp,modexp),
@@ -1014,16 +1034,16 @@ and trModExp (env as (rho,depth)) (_, (modexp,r)) =
 			    (Lprim(Pmakeblock(CONtag(1, 2)),
 				   [coerceRecStr (Lvar 0) RS RS']))]),
 		     Lvar 0)))
-   
+  | (_,_) => fatalError "trModExp:3"
 and trConstrainedModExp env (modexp as (_, (modexp',ref (SOME (EXISTSexmod ((_,M))))))) M' = 
-    case (modexp',M,M') of
+    (case (modexp',M,M') of
 	(DECmodexp dec,STRmod RS,STRmod RS') => 
 	    let val (env', envelope') = trDec env dec
 	    in
 		envelope' (coerceDec env' RS RS')
 	    end
-      | _ =>  coerceMod (trModExp env modexp) M M'
-   
+      | _ =>  coerceMod (trModExp env modexp) M M')
+  | trConstrainedModExp _ _ _ = fatalError "trConstrainedModExp"
 and tr1ValBind onTop (env as (rho, depth)) (ValBind(ref pat, arg)) =
   let val (env', add_lets) = mkEnvOfPats depth [pat]
       val tr_arg = trExp env arg
@@ -1186,7 +1206,10 @@ fun trToplevelDec rho (dec as (_, dec')) =
     | VALdec (_, (pvbs, rvbs)) =>
         let val ((rho', depth'), envelope) =
                trValDec true (rho, 0) pvbs rvbs
-            val vars = foldEnv (fn (ValId id) => fn _ => fn vars => id :: vars) [] rho'
+            val vars = foldEnv (fn (ValId id) => (fn _ => fn vars => id :: vars)
+				|  _ => fatalError "trTopLevelDec:1") 
+		               [] 
+			       rho'
 	    val n = length vars
 	    val rho'' = mkHashEnv n rho'
             val renEnv = map (renameId o mangle o ValId) vars
@@ -1202,7 +1225,7 @@ fun trToplevelDec rho (dec as (_, dec')) =
                                (revWithoutDuplicates vars []))))
         end
     | PRIM_VALdec _ => (NILenv, NILtlam)
-    | FUNdec (ref (UNRESfundec _)) => fatalError "trToplevelDec"
+    | FUNdec (ref (UNRESfundec _)) => fatalError "trToplevelDec:2"
     | FUNdec (ref (RESfundec dec)) => trToplevelDec rho dec
     | TYPEdec _ => (NILenv, NILtlam)
     | PRIM_TYPEdec _ => (NILenv, NILtlam)
@@ -1212,7 +1235,10 @@ fun trToplevelDec rho (dec as (_, dec')) =
         trToplevelDec rho dec2
     | EXCEPTIONdec mbs => 
         let val ((rho',depth'), envelope) = trExBindList (rho,0) mbs 
-            val vars = foldEnv (fn (ValId id) => fn _ => fn vars => id :: vars) [] rho'
+            val vars = foldEnv (fn (ValId id) => (fn _ => fn vars => id :: vars)
+				| _ => fatalError "trToplevelDec:3") 
+		               [] 
+			       rho'
 	    val n = length vars
 	    val rho'' = mkHashEnv n rho'
             val renEnv = map (renameId o mangle o ValId) vars
@@ -1259,7 +1285,8 @@ fun trToplevelDec rho (dec as (_, dec')) =
     | FIXITYdec  _ =>  (NILenv, NILtlam)
     | STRUCTUREdec mbs => 
         let val ((rho',depth'), envelope) = trModBindList (rho,0) mbs 
-            val vars = foldEnv (fn (ModId id) => fn _ => fn vars => id :: vars) [] rho'
+            val vars = foldEnv (fn (ModId id) => (fn _ => fn vars => id :: vars)
+				| _ => fatalError "trToplevelDec:4") [] rho'
 	    val n = length vars
 	    val rho'' = mkHashEnv n rho'
             val renEnv = map (renameId o mangle o ModId) vars
@@ -1278,7 +1305,8 @@ fun trToplevelDec rho (dec as (_, dec')) =
         end
     | FUNCTORdec fbs => 
         let val ((rho',depth'), envelope) = trFunBindList (rho,0) fbs 
-            val vars = foldEnv (fn (FunId id) => fn _ => fn vars => id :: vars) [] rho'
+            val vars = foldEnv (fn (FunId id) => (fn _ => fn vars => id :: vars)
+				| _ => fatalError "trToplevelDec:5") [] rho'
 	    val n = length vars
 	    val rho'' = mkHashEnv n rho'
             val renEnv = map (renameId o mangle o FunId) vars

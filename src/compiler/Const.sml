@@ -73,7 +73,8 @@ fun printSeq printEl sep =
   in loop end
 ;
 
-local fun show_id [i] =  i
+local fun show_id [] = ""
+        | show_id [i] =  i
         | show_id (modid::modids) = 
              (show_id modids) ^ "." ^ modid
 in
@@ -81,7 +82,8 @@ fun showQualId {qual="", id=id} = show_id id
   | showQualId {qual=qual,  id=id} = qual ^ "." ^ show_id id
 end;
 
-local fun print_id [i] = msgString i
+local fun print_id [] = ()
+        | print_id [i] = msgString i
         | print_id (i::id) = 
             (print_id id;  msgString "." ; msgString i)
 in

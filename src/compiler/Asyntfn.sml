@@ -437,7 +437,8 @@ and printDec (_, dec') =
          (case eq of
               FALSEequ => ""
             | TRUEequ  => "eq"
-            | REFequ   => "EQ");
+            | REFequ   => "EQ"
+	    | _ => fatalError "printDec");
        msgString "type "; printSeq printPrimTypBind " and " tbs)
   | DATATYPEdec(dbs, tbs_opt) =>
       (msgString "datatype "; printSeq printDatBind " and " dbs;

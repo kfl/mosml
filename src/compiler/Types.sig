@@ -24,7 +24,6 @@ type matchReason;
 datatype reason = 
     UnifyCircular | UnifyEquality | UnifyExplicit
   | UnifyTup | UnifyRec of Lab | UnifyOther
-  | UnifyImperative
   | UnifyMod of matchReason option * matchReason option
   | UnifyScope of TypeVar * ScopeViolation
 ;

@@ -155,6 +155,16 @@ depend: Filename.sml Config.sml Opcodes.sml Parser.sml Parser.sig Lexer.sml \
 	$(MOSMLCUT) < Makefile.bak > Makefile
 	$(MOSMLDEP) >> Makefile
 
+regress:
+	echo "building current lib"
+	cd ../mosmllib; make -s current
+	echo "testing current lib"
+	cd ../mosmllib/test; make -s current  || echo "results differ"
+	echo "testing current test"
+	cd ../test; make -s current || echo "results differ"
+	echo "testing current compiler test"
+	cd test; make -s current || echo "results differ"
+
 ### DO NOT DELETE THIS LINE
 Predef.uo: Const.uo 
 Lexer.uo: Lexer.ui Parser.ui Const.uo Fnlib.ui Config.uo Stack.ui \
