@@ -552,7 +552,7 @@ infixed value construction\\
 
 \subsubsection*{Syntactic restrictions}
 
-\begin{enumerate}
+\begin{itemize}
 \item No pattern may bind the same {\it var\/} twice.  No expression
   row, pattern row or type row may bind the same {\it lab\/} twice.
 
@@ -578,7 +578,7 @@ infixed value construction\\
     datbind} or {\it exbind} may bind {\tt it}.
 
 
-\end{enumerate}
+\end{itemize}
 
 
 \section{Interactive sessions}
@@ -616,8 +616,7 @@ The Moscow ML Modules language is a superset of the full Standard ML Modules lan
 {\it appmodexp\/} & ::= & {\it atmodexp\/}\\
 & & {\tt {\it appmodexp\/} {\it atmodexp\/}} & functor application&\x[\ref{atmodexp}] \\[2ex]
 
-{\it atmodexp\/} & ::= & {\it appexp\/}\\
-& & {\tt struct {\it dec\/} end}& basic\\
+{\it atmodexp\/} & ::= & {\tt struct {\it dec\/} end} & basic\\
 & & {\tt \opop\ {\it longmodid\/}}& module identifier\\
 & & {\tt let {\it dec\/} in {\it modexp\/} end} & local declaration\\
 & & {\tt ( {\it dec \/} )} & abbreviated structure & \x \\
@@ -634,7 +633,7 @@ The Moscow ML Modules language is a superset of the full Standard ML Modules lan
 
 %{\it funbind\/} & ::= & {\tt {\it funid\/} = {\it modexp} \la\ and {\it funbind} \ra} 
 {\it funbind\/} & ::= & {\tt {\it funid\/} {\it arg}\et\ $\cdots$\ {\it arg}\n\ \la\ {\it con\/} \ra\ = {\it modexp}} & \\
-                &     & \quad {\tt \la\ and {\it funbind} \ra} & functor binding, $n \geq 1$ & \x[\ref{funbind}]\\
+                &     & \quad {\tt \la\ and {\it funbind} \ra} & functor binding, $n \geq 0$ & \x[\ref{funbind}]\\
                 & &  {\tt {\it funid\/} ( {\it spec} ) \la\ {\it con\/} \ra\ = {\it modexp}} & \\
                 &  & \quad {\tt \la\ and {\it funbind} \ra} & abbreviated generative binding\\
 
@@ -675,9 +674,9 @@ The Moscow ML Modules language is a superset of the full Standard ML Modules lan
 & & {\tt type} {\it typdesc}                    & abstract type \\
 & & {\tt type} {\it typbind}            & type abbreviation \\
 & & {\tt eqtype} {\it typdesc}          & abstract equality type\\
-& & {\tt datatype} {\it datdesc}        & datatype\\
-& & {\tt datatype} {\it datdesc} {\tt withtype} {\it typbind\/} &
-                                         datatype with typbind\\
+%& & {\tt datatype} {\it datdesc}        & datatype\\
+& & {\tt datatype} {\it datdesc} \la\ {\tt withtype} {\it typbind\/} \ra\ &
+                                          datatype with typbind & \x[\ref{datatypespec}]\\
 & & {\tt datatype {\it tycon\/} = datatype {\it tyconpath\/}}
 & datatype replication\\
 & & {\tt exception} {\it exdesc}        & exception\\
@@ -735,8 +734,7 @@ The Moscow ML Modules language is a superset of the full Standard ML Modules lan
 
 \begin{itemize}
 
- \item 
- Although structure and functor identifiers reside in separate name-spaces,
+ \item  Although structure and functor identifiers reside in separate name-spaces,
  the syntax of structure and functor identifiers is identical.
  In the grammar, a module identifier {\it longmodid} may stand for either a 
  structure identifier {\it longstrid} or a functor identifier {\it longfunid}.
@@ -768,12 +766,24 @@ The Moscow ML Modules language is a superset of the full Standard ML Modules lan
  (This method of disambiguation relies on type information and is performed during
  type checking.)
 
+ \item In a functor or functor signature's formal argument, 
+{\tt ( {\it modid\/} :\ {\it sigexp} )} or 
+{\tt {\it modid\/} :\ {\it sigexp} }, 
+if {\it sigexp}
+specifies a structure then {\tt modid} binds the equivalent
+structure identifier {\it strid/};
+if  {\it sigexp} specifies a functor, then {\tt modid}
+binds the equivalent functor identifier {\it funid}.
+
+
+
 \item In a structure expression {\tt struct {\it dec\/} end}, any
 signature declared in {\it dec\/} is local to {\it dec\/}: it does not
 define a component of the structure {\tt struct {\it dec\/} end}, nor
 is it visible in the type of {\tt struct {\it dec\/} end}.
 (Note that the syntax for signature identifiers is not long, in
 the sense of Section \ref{sec-identifiers}.)
+
 \item In a signature expression {\tt sig {\it spec\/} end}, any
 signature declared in {\it spec\/} is local to {\it spec\/}: in particular,
 such a declaration does \emph{not}
@@ -783,7 +793,7 @@ also declare that signature.
 
 \subsubsection*{Syntactic restrictions}
 
-\begin{enumerate}
+\begin{itemize}
 \item No binding {\it strbind\/}, {\it funbind\/}, or {\it sigbind \/} may bind
       the same identifier twice.
 
@@ -820,7 +830,7 @@ This restriction also applies to the bodies of functors declared in a {\it funbi
 
 
 
-\end{enumerate}
+\end{itemize}
 
 \newpage
 
@@ -939,9 +949,8 @@ is roughly equivalent to
 & & {\tt type} {\it typdesc}                    & abstract type \\
 & & {\tt type} {\it typbind}            & type abbreviation \\
 & & {\tt eqtype} {\it typdesc}          & abstract equality type\\
-& & {\tt datatype} {\it datdesc}        & datatype\\
-& & {\tt datatype} {\it datdesc} {\tt withtype} {\it typbind\/} &
-                                         datatype with typbind\\
+& & {\tt datatype} {\it datdesc} \la\ {\tt withtype} {\it typbind\/} \ra\ &
+                                          datatype with typbind & \x[\ref{datatypespec}]\\
 & & {\tt datatype {\it tycon\/} = datatype {\it tyconpath\/}}
 & datatype replication\\
 & & {\tt exception} {\it exdesc}        & exception\\
@@ -958,7 +967,7 @@ is roughly equivalent to
 
 \subsubsection*{Syntactic restrictions}
 
-\begin{enumerate}
+\begin{itemize}
 \item In Moscow ML, the {\it unitid}, if specified in the unit interface
   or unit implementation, must agree with the filename ({\tt {\it unitid}.sig} or
   {\tt {\it unitid}.sml}). 
@@ -991,7 +1000,7 @@ thus any fixity directives in {\it cspec} are local to the signature expression
 {\tt sig {\it cspec\/} end} 
 and are not exported in the interface.
 
-\end{enumerate}
+\end{itemize}
 
 \subsection{Syntax and Semantics for Units Compiled in \emph{Toplevel} Mode}
 
@@ -1080,11 +1089,11 @@ are required to ensure compliance with Standard ML.
   identifier to a single argument of the form:
 
   \begin{tabular}{lr}
-  {\tt {\it funid\/} ( {\it atmodexp\/} )} &  or\\
+  {\tt {\it funid\/} ( {\it modexp\/} )} &  or\\
   {\tt {\it funid\/} ( {\it dec\/} )}
   \end{tabular}
 
-  The parenthesised structure expressions {\tt ( {\it atmodexp\/} )} and
+  The parenthesised structure expressions {\tt ( {\it modexp\/} )} and
   {\tt( {\it dec\/} )}, although otherwise illegal, are legal 
   when occurring as a functor argument.
 
@@ -1102,7 +1111,16 @@ are required to ensure compliance with Standard ML.
   {\it tyvarseq\/} must be empty, so that the specification is of the form:
 
   \begin{tabular}{l}
-	{\tt val} {\it valdesc}
+   {\tt val} {\it valdesc\/}
+  \end{tabular}
+
+  \item\label{datatypespec} 
+  In a datatype specification 
+  {\tt datatype}  {\it datdesc} \la\ {\tt withtype} {\it typbind\/} \ra\
+  the option must be absent, so that the specification is of the form:
+
+  \begin{tabular}{l}
+  {\tt datatype}  {\it datdesc}
   \end{tabular}
 \end{enumerate}
 \end{itemize}
