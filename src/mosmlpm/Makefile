@@ -12,14 +12,14 @@ TOPFILES= PMBasic.sml PMCompile.sml \
 	  mosmlpm.sml
 
 OBJS= \
-        Parsercomb.uo PMBasic.uo PMCompile.uo \
-	ArgParse.uo mosmlpm.uo
+        Parsercomb.uo ArgParse.uo PMBasic.uo PMCompile.uo \
+	mosmlpm.uo
 
 
 all: mosmlpm
 
 mosmlpm: $(FILES)
-	$(MOSMLC) $(COMPFLAGS) -structure $(FILES) -toplevel $(TOPFILES)
+	$(MOSMLC) $(COMPFLAGS) -structure $(STRFILES) -toplevel $(TOPFILES)
 	$(MOSMLL) $(LINKFLAGS) -noheader $(OBJS) -o mosmlpm 
 
 clean:
@@ -27,8 +27,8 @@ clean:
 	rm -f *.uo
 	rm -f test/*.ui
 	rm -f test/*.uo
-#	rm -f mosmlpm
-#	rm -f Makefile.bak
+	rm -f mosmlpm
+	rm -f Makefile.bak
 #	cd test; make clean
 
 install:
