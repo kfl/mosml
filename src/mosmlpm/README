@@ -23,6 +23,12 @@ Future plans:
 * Make a library so as project can be managed in a mosml session.
 
 
+How to bootstrap:
+-----------------
+1. make
+2. camlrunm mosmlpm mosmlpm.pm
+
+
 Known Bugs:
 -----------
 * Poor (non-existent) error messages
