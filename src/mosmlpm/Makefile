@@ -8,17 +8,18 @@ include ../Makefile.inc
 
 STRFILES= Parsercomb.sig Parsercomb.sml ArgParse.sig ArgParse.sml
 
-TOPFILES= PMBasic.sml PMCompile.sml \
+TOPFILES= Compilerinterface.sml Systemcompile.sml PMBasic.sml PMCompile.sml \
 	  mosmlpm.sml
 
 OBJS= \
-        Parsercomb.uo ArgParse.uo PMBasic.uo PMCompile.uo \
+        Parsercomb.uo ArgParse.uo Compilerinterface.uo Systemcompile.uo \
+	PMBasic.uo PMCompile.uo \
 	mosmlpm.uo
 
 
 all: mosmlpm
 
-mosmlpm: $(FILES)
+mosmlpm: $(STRFILES) $(TOPFILES)
 	$(MOSMLC) $(COMPFLAGS) -structure $(STRFILES) -toplevel $(TOPFILES)
 	$(MOSMLL) $(LINKFLAGS) -noheader $(OBJS) -o mosmlpm 
 
