@@ -1084,3 +1084,35 @@ Notes:
 Now the crypt, interface, munix, mregex, msocket, mgdbm examples work.
 The remaining examples mgd mpq intinf mmysql require extra software.
 Callbacks work as well.
+
+* 2002-05-11: From slind@cs.utah.edu Sat May 11 03:59:14 2002
+
+  This is a rushed note about some things I have on my MoscowML wish
+list. Just thought I'd scribble them down before I forgot:
+
+  1. A type of SML abstract syntax trees, with a parser that produces
+     them.
+
+  2. An evaluator for such ASTs (something like NJSML's eval_string, or
+     whatever it's called). Something like
+
+      evalAST : AST -> unit
+
+     that wouldn't return values, but would evaluate the argument (in
+     the current environment) and update the current environment.
+
+  3. The left margin on the prettyprinter sometimes gets way too far
+     over on the page. I remember fixing the NJSML prettyprinter to
+     automatically reset the left margin once it got past 2/3 of the
+     width of the page.
+
+For 1,2 the motivation is that HOL is a collection of libraries sitting
+on top of ML. One of those libraries lets me define (total) logical
+functions that look like ML programs (with pattern matching, etc). I'd
+like to be able to generate ML code for these within a session. I have a
+hack using references and writing to files and calling "use", but that
+of course only works interatively. Hmm, I've got to go now, but will try
+to write more coherently tomorrow.
+
+2002-07-25: The Postgres interface now works with PostgreSQL 7.2
+provided databases are created with LATIN1 or another 8-bit encoding.

@@ -9,8 +9,8 @@
 
 PGSQLLIBDIR=/usr/lib
 PGSQLINCDIR=/usr/include/postgresql
-PGSQLLIBDIR=/usr/lib
-PGSQLINCDIR=/usr/include/pgsql
+#PGSQLLIBDIR=/usr/lib
+#PGSQLINCDIR=/usr/include/pgsql
 #PGSQLLIBDIR=/usr/local/pgsql/lib
 #PGSQLINCDIR=/usr/local/pgsql/include
 #PGSQLLIBDIR=/usr/lib/pgsql/lib
