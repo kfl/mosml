@@ -1,0 +1,8 @@
+printf "checking in all Makefile.w32 files as binary Makefile.bin\n"
+
+for file in $(find -name Makefile.w32 -print)
+do
+  printf '%s\n' $file
+  cp $file ${file%.w32}.bin
+  cvs add -kb ${file%.w32}.bin 
+done
