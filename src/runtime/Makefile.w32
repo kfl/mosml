@@ -14,7 +14,7 @@ BASEOBJS=interp.obj misc.obj stacks.obj fix_code.obj main.obj fail.obj signals.o
   compare.obj ints.obj floats.obj str.obj io.obj \
   extern.obj externcp.obj intern.obj interncp.obj \
   hash.obj sys.obj meta.obj parsing.obj lexing.obj gc_ctrl.obj mosml.obj unix.obj \
-  runtime.obj md5sum.obj callback.c
+  runtime.obj md5sum.obj callback.obj
 
 UNIXPRIMS=compare.c extern.c externcp.c floats.c gc_ctrl.c hash.c \
   intern.c interncp.c interp.c ints.c io.c lexing.c meta.c parsing.c \

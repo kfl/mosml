@@ -12,15 +12,15 @@
 
 typedef value valueptr;		/* An 'a option ref */
 
-extern valueptr get_valueptr(char* nam);
-extern value get_value(valueptr mvp);
-extern value callbackptr(valueptr closureptr, value arg1);
-extern value callbackptr2(valueptr closureptr, value arg1, value arg2);
-extern value callbackptr3(valueptr closureptr, value arg1, value arg2, 
+EXTERN valueptr get_valueptr(char* nam);
+EXTERN value get_value(valueptr mvp);
+EXTERN value callbackptr(valueptr closureptr, value arg1);
+EXTERN value callbackptr2(valueptr closureptr, value arg1, value arg2);
+EXTERN value callbackptr3(valueptr closureptr, value arg1, value arg2, 
 			  value arg3);
-extern void registervalue(char* nam, value mlval);
-extern void unregistervalue(char* nam);
+EXTERN void registervalue(char* nam, value mlval);
+EXTERN void unregistervalue(char* nam);
 
-extern void registercptr(char* nam, void* cptr);
+EXTERN void registercptr(char* nam, void* cptr);
 
 #endif /* _callback_ */
