@@ -1,3 +1,24 @@
+-------------------------
+The well-formedness check in where type constriants isn't sufficient for
+soundness with recursive modules: below, S is an inconsitent signature.
+In SML, we couldn't implement S, but in Moscow, we can, via recursive modules.
+The fix is to check that the datatype is realised not only by a type name (the wff check of SML), but by
+an equivalent datatype (ie check the conenvs match).
+
+-datatype t = C of int;
+
+signature S = sig datatype u = C of bool end where type u = t;
+
+structure X = rec(X:S)struct datatype u = datatype X.u end;
+
+val X.C b = C 0;
+> New type names: =t
+  datatype t = (t,{con C : int -> t})
+  con C = fn : int -> t
+- > signature S = {datatype u = (t,{con C : bool -> t}), con C : bool -> t}
+- > structure X : {datatype u = (t,{con C : bool -> t}), con C : bool -> t}
+- Segmentation fault (core dumped)
+[cvr@localhost compiler]$ 
 ----------------------------
 mosml doesn't allow derived form
 functor F()...()= ()
