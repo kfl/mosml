@@ -4,7 +4,8 @@ File mosml/examples/README
 The subdirectories contain various example programs in Standard ML.
 
 Each example can be compiled by going to the subdirectory and
-executing `make' from the command line.
+executing `make' from the command line, or by following
+the instructions in the README file.
 
 
 calc            An calculator for simple arithmetic expressions.
@@ -23,9 +24,20 @@ lexyacc         Lexer and parser for a small functional language.
 manual          The small batch compiler example from the manual.
                 Illustrates the use of Makefiles.
 
+modules         Various toy examples illustrating Moscow ML's Modules language,
+                an extension of Standard ML's Modules language.
+		These are small examples without Makefiles.
+               
 mls             A simple utility for producing a sorted directory listing
                 (like `ls' in Unix and `dir' in DOS).
                 Illustrates the use of the FileSys library.
+
+paulson         Sample Standard ML programs (both Core and Modules) 
+                from the book:
+                Lawrence C. Paulson, ML for the Working Programmer,
+                Second edition.  Cambridge University Press 1996, ISBN
+                0-521-56543-X.  
+		These are large examples without a Makefile.
 
 pretty          Prettyprinting of simple arithmetic expressions.
                 Illustrates the use of installable prettyprinters.
@@ -33,3 +45,4 @@ pretty          Prettyprinting of simple arithmetic expressions.
 small           Various smaller examples without Makefiles.
 
 weak            An example application of weak pointers.
+
