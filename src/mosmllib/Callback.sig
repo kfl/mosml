@@ -43,8 +43,8 @@ val app5    : cptr -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
    be registered as a GC root in the C code.
 
    Operation (2) is very fast.  If the garbage collector is invoked
-   between step the call of get_value() and the use of the ML value,
-   then the value must be registered as a GC root.  However, the idiom
+   between the call of get_value() and the use of the ML value, then 
+   the value must be registered as a GC root.  However, the idiom
         callback(get_value(mvp), arg1);
    is safe provided the evaluation of arg1 does not provoke a garbage
    collection (e.g. if arg1 is a variable).
