@@ -43,7 +43,7 @@
 
   prim_val exnMessage : exn -> string = 1 "sml_exnmessage";
 
-* Add documentation to General.fke
++ Add documentation to General.fke
 
 + Implement sharing of literals (strings, reals, etc) as globals cf
   the hol98 and cholera problems: Updated Patch and Reloc and Code_dec
@@ -55,4 +55,22 @@
 
 + Fix mosmllib/test/Makefile to create sym- and hardlinks as needed
 
-* Fix errormessage in compiler/Back
++ Fix errormessage in compiler/Emitcode
+
++ Fix printing of overloaded ops to distinguish num, numtxt etc
+
+* Fix exn tag access under lambda in Match.sml
+
+* In general, compile better code for accessing subvalues in matches.
+  However, should never evaluate accesses that aren't needed (safe but
+  unnecessarily slow). The matching function may return an `envelope'
+  of let-bindings?
+
+* If we change constructor ordering, change also dynslib/interface/cside.c 
+
+* Include runtime system *.h files in distribution (for the sake of
+  user-written C code and dynlibs)
+
+* Perhaps fix mgdbm to use new GDBM?
+
+* Inexhaustive and redundant excon matches -- why not reported correctly?
