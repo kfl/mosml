@@ -23,6 +23,8 @@ fun manglefilename s =
 
 open BasicIO List
 
+open CommandLine (* cvr *)
+
 (* Lexer of stream *)
 
 fun createLexerStream (is : instream) =
@@ -71,12 +73,36 @@ in
 	    then res := addExt target "ui" :: !res else ()
 	end;
 
+
     fun endentry () =
 	if length(!res) > 1 then
 	    (col := 0; 
 	     app outstring (rev (!res));
 	     print "\n")
 	else ();	 
+
+    fun begincommand objext target =
+	let val targetname = addExt target objext
+	in 
+	    res := [targetname ^ ":"];
+	    if objext = "ui" andalso FileSys.access(addExt target "sig", [])
+	    then res := addExt target "sig" :: !res else ();
+	    if objext = "uo" 
+	    then res := addExt target "sml" :: !res else ();
+	    if objext = "uo" andalso FileSys.access(addExt target "sig", [])
+	    then res := addExt target "ui" :: !res else ()
+	end;
+
+    fun addcommand mode context unit srcext =
+	 (col := 0; 
+	  app outstring (rev (!res));
+	  print "\n";
+	  print "\t$(MOSMLC) ";
+	  print mode;
+	  print " ";
+	  app (fn prec_unit => outstring (addExt prec_unit "ui")) context; 
+	  outstring (addExt unit srcext);
+	  print "\n")
 end;
 
 fun read srcext objext filename =
@@ -108,8 +134,56 @@ fun processfile filename =
 	  | _          => ()
     end
 
+val mode = ref "-structure";
+
+val context = ref ([]:string list)
+
+fun process_sig unit =
+    if FileSys.access (addExt unit "sig", []) 
+    then
+	(begincommand "ui" unit;
+	 List.app (fn prec_unit => outname prec_unit)
+                  (!context);
+	 addcommand (!mode) (!context) unit "sig")
+    else ();
+
+fun process_sml unit = 
+    if FileSys.access (addExt unit "sml", []) 
+    then
+	(begincommand "uo" unit;
+	 List.app (fn prec_unit => outname prec_unit)
+                  (!context);
+	 addcommand (!mode) (!context) unit "sml")
+    else ();
+
+fun add_unit unit = 
+    if FileSys.access (addExt unit "sig", [])  orelse 
+       FileSys.access (addExt unit "sml", []) 
+    then context := (!context) @ [unit] (* cvr: improve *)
+    else output(std_err, "mosmldep warning: unit "^unit^" has no .sig or .sml source files (ignored)!\n")
+;
+
+fun processarg arg =
+    case arg of 
+       "-structure" => mode := arg
+    |  "-toplevel" => mode := arg
+    |  unitname => 
+	let val unit = manglefilename unitname
+ 	in  process_sig unit;
+	    process_sml unit;
+            add_unit unit
+	end;
+
+(*
 fun main () =
     (List.app processfile (Mosml.listDir "."))
     handle OS.SysErr (str, _) => output(std_err, str ^ "\n\n")
+*)
 
+fun main () =
+  (case CommandLine.arguments() of
+     [] => List.app processfile (Mosml.listDir ".") (* revert to old behaviour, infer dependencies *)
+   | args => List.app processarg args  (* build linear dependencies *)
+  )
+  handle OS.SysErr (str, _) => output(std_err, str ^ "\n\n")
 val _ = main ();
