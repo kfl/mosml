@@ -270,8 +270,6 @@ val smltop_con_basis =
              { qualid={qual="Meta", id=["printDepth"]},info=VARname REGULARo}),
   ("printLength",
              { qualid={qual="Meta", id=["printLength"]}, info=VARname REGULARo}),
-  ("system", { qualid={qual="Meta", id=["system"]},
-               info=PRIMname (mkPrimInfo 1 (MLPccall(1, "sml_system"))) }),
   ("quit",   { qualid={qual="Meta", id=["quit"]},    info=VARname REGULARo}),
   ("orthodox",   { qualid={qual="Meta", id=["orthodox"]},    info=VARname REGULARo}),
   ("conservative",   { qualid={qual="Meta", id=["conservative"]},    info=VARname REGULARo}),
@@ -302,12 +300,11 @@ val smltop_VE =
    ("printVal",    sc_bogus),  
    ("printDepth",  trivial_scheme(type_ref type_int)),
    ("printLength", trivial_scheme(type_ref type_int)),
-   ("system",      trivial_scheme(type_arrow type_string type_int)),
    ("quit",        trivial_scheme(type_arrow type_unit type_unit)),
    ("orthodox",    trivial_scheme(type_arrow type_unit type_unit)),
    ("conservative",trivial_scheme(type_arrow type_unit type_unit)),
    ("liberal",     trivial_scheme(type_arrow type_unit type_unit)),
-   ("installPP",    sc_bogus)  
+   ("installPP",   sc_bogus)  
 ];
 
 val unit_smltop = newSig "Meta" "Meta" STRmode;

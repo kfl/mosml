@@ -20,7 +20,6 @@ prim_val available_primitives : unit -> string Vector.vector
 (* The following primitives are not implemented by *)
 (* the `standard' Caml Light system. *)
 
-prim_val system : string -> int = 1 "sml_system";
 prim_val sml_int_of_string : string -> int = 1 "sml_int_of_string";
 prim_val sml_hex_of_string : string -> int = 1 "sml_int_of_hex";
 prim_val sml_float_of_string : string -> real = 1 "sml_float_of_string";

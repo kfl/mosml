@@ -5,7 +5,6 @@
 prim_val command_line : string Vector.vector = 0 "command_line";
 prim_val interactive: bool = 0 "interactive";
 prim_val getenv : string -> string = 1 "sys_getenv";
-prim_val system : string -> int = 1 "sml_system";
 
 prim_val catch_interrupt : bool -> unit = 1 "sys_catch_break"
 

@@ -32,12 +32,6 @@ prim_val catch_interrupt : bool -> unit = 1 "sys_catch_break"
            and [catch_interrupt false] to let the system terminate
            the program on user interrupt. *)
 
-prim_val system : string -> int = 1 "sml_system";
-        (* [system] executes a command of the underlying operating
-           system. If the argument is an empty string, this may
-           produce strange results under MS DOS. *)
-
-
 val remove : string -> unit
 
 val rename : {old: string, new: string} -> unit

@@ -250,7 +250,9 @@ value input_nonblocking(value channel, value buff, value start, value length) /*
 
   Others?
 
-* Meta.fke; documentation; remove Meta.system
++ Meta.fke;  Meta.system
+
+* Meta.fke; documentation
 
 + Lexing.sig
 

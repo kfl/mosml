@@ -71,6 +71,22 @@ val quit             : unit -> 'a
    evaluate calls to use.  For best results, use `use' only at top
    level, or at top level within a use'd file.
 
+   [liberal ()] sets liberal mode for the compilation functions:
+   accept (without warnings) all extensions to the SML Modules
+   language.  The extensions are: higher-order modules (functors
+   defined within structures and functors), and first-order modules
+   (structures can be packed as values, and values unpacked as
+   structures).  The liberal, conservative, and orthodox modes affect
+   the functions compile, compileStructure, and compileToplevel.
+
+   [conservative ()] sets conservative mode for the compilation
+   functions: accept all extensions to the Modules language, but issue
+   a warning for each use.
+
+   [orthodox ()] sets orthodox mode for the compilation functions:
+   reject all uses of the extensions to the modules language.  That
+   is, accept only SML97 Modules.
+
    [compile "U.sig"] will compile and elaborate the unit signature in
    file U.sig, producing a compiled signature file U.ui.  During
    compilation, the compiled signatures of other units will be
