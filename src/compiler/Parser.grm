@@ -125,13 +125,15 @@ end
 
 /* cvr: in Mosml144, COLON was nonassociative but this conflicts 
    with the modexp COLON SigExp production */
-/* %nonassoc COLON  */
+
+/* %left COLON COLONGT */
+
+/* %left     WHERE */
 
 %right    ARROW
+
 %nonassoc ID EQUALS
 %right    STAR
-
-
 
 %start ToplevelPhrase
 %type <Asynt.Dec * bool> ToplevelPhrase

@@ -16,14 +16,15 @@ val eqclasses : ('a * 'a -> order) -> 'a list -> 'a list list
 
    [merge ordr (xs, ys)] returns a sorted list of the elements of the
    sorted lists xs and ys, preserving duplicates.  Both xs and ys must
-   be sorted by ordr, that is, must satisfy
+   be already sorted by ordr, that is, must satisfy
       sorted ordr xs andalso sorted ordr ys
    Then the result satisfies 
       sorted ordr (merge ordr (xs, ys))
 
    [mergeUniq ordr (xs, ys)] returns a sorted list of the elements of
-   the sorted lists xs and ys, without duplicates.  Both xs and ys must
-   be sorted by ordr.
+   the sorted lists xs and ys, without duplicates: no elements in the
+   result are EQUAL by ordr.  Both xs and ys must be already sorted by
+   ordr.
 
    [eqclasses ordr xs] returns a list [xs1, xs2, ..., xsn] of
    non-empty equivalence classes of xs, obtained by sorting the list 

@@ -1443,3 +1443,79 @@ to integers afterwards.  Not very pretty:
 
 The good news is that under Moscow ML 2.00 as well as CVS mosml,
 Date.toString(Date.fromTimeUniv(Time.now())) works correctly.
+
+* 2004-03-08: Norman Ramsey
+
+Subject: parsing bug in Moscow ML 2.00?
+Date: Thu, 26 Feb 2004 14:36:13 -0500 (EST)
+From: nr@eecs.harvard.edu (Norman Ramsey)
+
+Peter,
+
+I'm not sure if this is a known bug.  Moscow ML rejects a signature
+that is modified with a second `where type' clause.  I believe multiple
+`where type' clauses are permitted for the nonterminal `sigexp' in the
+Definition, and the file is accepted by SML of New Jersey and by MLton.
+I'd welcome a patch.
+
+
+Norman
+
+: nr@labrador 654 ; mosml                 
+Moscow ML version 2.00 (June 2000)
+Enter `quit();' to quit.
+- 
+: nr@labrador 655 ; mosmlc -toplevel -c /tmp/bad.sml
+File "/tmp/bad.sml", line 6, characters 41-45:
+! functor F(S : S where type t = int where type u = bool) = struct
+!                                          ^^^^
+! Syntax error.
+: nr@labrador 656 ; cat /tmp/bad.sml
+signature S = sig
+  type t
+  type u
+end
+
+functor F(S : S where type t = int where type u = bool) = struct
+  fun f (x:S.u) = if x then 3 else (4:S.t)
+end
+: nr@labrador 657 ;
+
+--- 
+
+Indeed your example should compile according to the definition.  It
+does not in Moscow ML 2.00 and 2.01 because of a Moscow ML language
+extension that permits longtycons to have a where clause.  This causes
+a shift/reduce conflict in the parser that is resolved in the wrong
+way.  I thought I could fix it with associativity and precedence
+declarations, but it's a little harder than expected.
+
+But here's a (non-pretty) fix: put parentheses around your longtycons,
+as in
+
+  functor F(S : S where type t = (int) where type u = (bool)) = struct end
+
+This is legal SML syntax and so should be acceptable to SML/NJ and
+MLton, and it prevents mosml 2.00 from thinking that the `where type
+u' belongs to `int'.
+
+---
+
+517: shift/reduce conflict (shift 478, reduce 324) on WHERE
+state 517
+	ModExp : ModExp COLONGT SigExp .  (324)
+	SigExp : SigExp . WHERE WhereType  (342)
+
+	WHERE  shift 478
+	ABSTYPE  reduce 324
+	AND  reduce 324
+
+Here we would like it to reduce rather than shift on WHERE.  Thus it
+might be possible to fix this by making WHERE left-associative and
+give it a sufficiently high precedence.  However, that might
+jeopardize WHERE in connection with functor signatures.
+
+Tried this but failed:
+
+/* %left COLON COLONGT */
+/* %left     WHERE */

@@ -1,0 +1,199 @@
+Compiling CVS mosml on swallow 2002-04-07
+-----------------------------------------
+
+Makefile.inc:
+
+gcc -> cc
+
+remove dynlib.c:
+
+#ADDPRIMS=dynlib.c
+#ADDOBJS=dynlib.o
+#ADDRUNLIBS=-ldl
+#ADDRUNCFLAGS=
+#ADDDYNLIBCFLAGS=
+
+
+Preprocessor complains, then automatically switches to -traditional or
+whatever.
+
+
+~/bin is on PATH, but the shell needs a rehash to be able to find
+newly installed programs there.
+
+
+mosmllib/test failures:
+
+filesys:
+
+test6e 
+  -- succeeds, should fail?
+
+test6f
+  -- succeeds, should fail?
+
+test8d
+  -- succeeds, should fail? --- boils down to test6e
+
+test8h
+  -- succeeds, should fail? --- boils down to test6f
+
+
+Dynamic linking
+---------------
+
+man 3 dyld:
+
+DYLD(3)                                                   DYLD(3)
+
+
+
+NAME
+       dyld - low level programatic interface to the dynamic link
+       editor
+
+SYNOPSIS
+       #include <mach-o/dyld.h>
+       unsigned long _dyld_present(void);
+       unsigned long _dyld_image_count(void);
+       struct mach_header *_dyld_get_image_header(
+            unsigned long image_index);
+       unsigned long _dyld_get_image_vmaddr_slide(
+            unsigned long image_index);
+       char *_dyld_get_image_name(
+            unsigned long image_index);
+       void _dyld_lookup_and_bind(
+            char *symbol_name,
+            unsigned long *address,
+            void **module);
+       void _dyld_lookup_and_bind_with_hint(
+            char *symbol_name,
+            const char *library_name_hint,
+            unsigned long *address,
+            void **module);
+       void _dyld_lookup_and_bind_fully(
+            char *symbol_name,
+            unsigned long *address,
+            void **module);
+       enum bool _dyld_bind_fully_image_containing_address(
+            unsigned long *address);
+       enum bool _dyld_image_containing_address(
+            unsigned long address);
+       enum bool _dyld_launched_prebound(void);
+       int _dyld_func_lookup(
+            char *dyld_func_name,
+            unsigned long *address);
+       extern void _dyld_bind_objc_module(
+            void *objc_module);
+       extern void _dyld_get_objc_module_sect_for_module(
+            NSModule module,
+            void **objc_module,
+            unsigned long *size);
+       extern void _dyld_lookup_and_bind_objc(
+            const char *symbol_name,
+            unsigned long *address,
+            void **module);
+       extern void _dyld_moninit(
+            void (*monaddition)(char *lowpc, char *highpc));
+
+       extern void _dyld_register_func_for_add_image(
+            void (*func)(struct mach_header *mh, unsigned long vmaddr_slide));
+       extern void _dyld_register_func_for_remove_image(
+            void (*func)(struct mach_header *mh, unsigned long vmaddr_slide));
+       extern void _dyld_register_func_for_link_module(
+            void (*func)(NSModule module));
+
+DESCRIPTION
+       These routines are the low level programatic interface  to
+       the dynamic link editor.
+
+       _dyld_present  returns  non-zero  if the dynamic linker is
+       being used in the program and  zero  otherwise.   If  this
+       returns  zero  this  rest of these functions should not be
+       called and most likely crash the program if called.
+
+       _dyld_image_count returns the  current  number  of  images
+       mapped in by the dynamic link editor.
+
+       _dyld_get_image_header  returns  the  mach  header  of the
+       image indexed by image_index.  If image_index  is  out  of
+       range NULL is returned.
+
+       _dyld_get_image_vmaddr_slide  returns  the virtural memory
+       address slide amount of the image indexed by  image_index.
+       If image_index is out of range zero is returned.
+
+       _dyld_get_image_name returns the name of the image indexed
+       by image_index.  If image_index is out of  range  NULL  is
+       returned.
+
+       _dyld_lookup_and_bind  looks  up the symbol_name and binds
+       it into the program.  It indirectly  returns  the  address
+       and and a pointer to the module that defined the symbol.
+
+       _dyld_lookup_and_bind_with_hint    is    the    same    as
+       _dyld_lookup_and_bind but the library_name_hint  parameter
+       provides  a hint as to where to start the lookup in a pre-
+       bound program.  The library_name_hint parameter is matched
+       up with the actual library install names with strstr(3).
+
+       _dyld_lookup_and_bind_fully  looks  up the symbol_name and
+       binds it and all of its references into the  program.   It
+       indirectly  returns  the  address and and a pointer to the
+       module that defined the symbol.
+
+       _dyld_bind_fully_image_containing_address fully binds  the
+       image  containing  the specified address.  It returns TRUE
+       if the address is contained in a loaded  image  and  FALSE
+       otherwise.
+
+       _dyld_image_containing_address  It  returns  TRUE  if  the
+       address is contained an image dyld loaded and FALSE other-
+       wise.
+
+       _dyld_launched_prebound  returns  TRUE  if the program was
+       launched using the prebound state and FALSE otherwise.
+
+       _dyld_func_lookup is passed a name, dyld_func_name,  of  a
+       dynamic  link  editor  function and returns the address of
+       the function indirectly.  It returns non-zero if the func-
+       tion is found and zero otherwise.
+
+       _dyld_bind_objc_module is passed a pointer to something in
+       an (__OBJC,__module) section and causes the module that is
+       associated with that address to be bound.
+
+       _dyld_get_objc_module_sect_for_module  is  passed a module
+       and sets a pointer to the  (__OBJC,__module)  section  and
+       its size for the specified module.
+
+       _dyld_lookup_and_bind_objc()     is     the     same    as
+       _dyld_lookup_and_bind() but does  not  update  the  symbol
+       pointers  if  the symbol is in a bound module.  The reason
+       for    this    is    that    an    objc    symbol     like
+       .objc_class_name_Object is never used by a symbol pointer.
+       Since this is done a lot by the objc runtime and  updating
+       symbol pointers is not cheep it should not be done.
+
+       _dyld_moninit is called from the profiling runtime routine
+       moninit(3) to cause the dyld loaded code to  be  profiled.
+       It  is  passed a pointer to the the profiling runtime rou-
+       tine monaddtion(3) to be called after an  image  had  been
+       mapped in.
+
+       _dyld_register_func_for_add_image  registers the specified
+       function to be called when a new image is added (a  bundle
+       or  a  dynamic  shared library) to the program.  When this
+       function is first registered it is  called  for  once  for
+       each image that is currently part of the program.
+
+       _dyld_register_func_for_remove_image  registers the speci-
+       fied function to be called when an  image  is  removed  (a
+       bundle  or  a  dynamic  shared  library) from the program.
+       _dyld_register_func_for_link_module registers  the  speci-
+       fied function to be called when a module is bound into the
+       program.  When this function is  first  registered  it  is
+       called  for  once  for each module that is currently bound
+       into the program.
+
+Apple Computer, Inc.    November 22, 2000                 DYLD(3)
