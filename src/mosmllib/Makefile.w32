@@ -5,7 +5,7 @@ COMPFLAGS=-imptypes
 
 !include ..\Makedefs.w32
 
-all: Array.uo Array2.uo Arraysort.uo \
+all: Array.uo Array2.uo ArraySlice.uo Arraysort.uo \
      BasicIO.uo Binaryset.uo Binarymap.uo BinIO.uo Bool.uo Buffer.uo Byte.uo \
      Callback.uo Char.uo CharArray.uo CharArraySlice.uo \
      CharVector.uo CharVectorSlice.uo CommandLine.uo \
@@ -21,7 +21,7 @@ all: Array.uo Array2.uo Arraysort.uo \
      Signal.uo SML90.uo Socket.uo Splaymap.uo Splayset.uo Splaytree.uo \
      Strbase.uo String.uo StringCvt.uo Substring.uo Susp.uo \
      TextIO.uo Time.uo Timer.uo \
-     Unix.uo Vector.uo \
+     Unix.uo Vector.uo VectorSlice.uo \
      Weak.uo Word.uo Word8.uo Word8Array.uo Word8ArraySlice.uo \
      Word8Vector.uo Word8VectorSlice.uo
 
