@@ -1,8 +1,17 @@
-(* Mosmldep -- computing dependencies in a Moscow ML source directory.
+(* mosmldep -- (no arguments)
+	       computes dependencies in a Moscow ML source directory,
+	       only works correctly if all sources are 
+	       "flat" structure mode units.
+   mosmldep (-structure | -toplevel | <unit>)+ 
+            -- constructs dependencies from the ordered list of 
+               modes and units
+
    Handles strings and nested comments correctly; normalizes file names
    under DOS.
 
    Usage: mosmldep
+          mosmldep (-structure | -toplevel | <unit>)+ 
+
 *)
 
 #ifdef unix
@@ -94,15 +103,21 @@ in
 	end;
 
     fun addcommand mode context unit srcext =
+	let fun outcontext [] = ()
+	    |   outcontext (unit::units) = 
+		(outcontext units; 
+	         outstring (addExt unit "ui"))
+	in		 
 	 (col := 0; 
 	  app outstring (rev (!res));
 	  print "\n";
 	  print "\t$(MOSMLC) ";
 	  print mode;
 	  print " ";
-	  app (fn prec_unit => outstring (addExt prec_unit "ui")) context; 
+	  outcontext context;
 	  outstring (addExt unit srcext);
 	  print "\n")
+	end	
 end;
 
 fun read srcext objext filename =
@@ -136,30 +151,37 @@ fun processfile filename =
 
 val mode = ref "-structure";
 
-val context = ref ([]:string list)
+
+
+val context = ref ([]:string list) (* in reverse order *)
+
+fun outpredecessor [] = () 
+  | outpredecessor (unit::_) = outname unit;
 
 fun process_sig unit =
     if FileSys.access (addExt unit "sig", []) 
     then
 	(begincommand "ui" unit;
-	 List.app (fn prec_unit => outname prec_unit)
-                  (!context);
-	 addcommand (!mode) (!context) unit "sig")
+         case (!context) of 
+	   [] => () 
+	 | prec_unit::_ => outname prec_unit;
+	 addcommand (!mode) (rev(!context)) unit "sig")
     else ();
 
 fun process_sml unit = 
     if FileSys.access (addExt unit "sml", []) 
     then
 	(begincommand "uo" unit;
-	 List.app (fn prec_unit => outname prec_unit)
-                  (!context);
-	 addcommand (!mode) (!context) unit "sml")
+         case (!context) of  
+	   [] => () 
+	 | prec_unit::_ => outname prec_unit;
+	 addcommand (!mode) (rev(!context)) unit "sml")
     else ();
 
 fun add_unit unit = 
     if FileSys.access (addExt unit "sig", [])  orelse 
        FileSys.access (addExt unit "sml", []) 
-    then context := (!context) @ [unit] (* cvr: improve *)
+    then context := unit::(!context) (* cvr: improve *)
     else output(std_err, "mosmldep warning: unit "^unit^" has no .sig or .sml source files (ignored)!\n")
 ;
 
@@ -182,8 +204,9 @@ fun main () =
 
 fun main () =
   (case CommandLine.arguments() of
-     [] => List.app processfile (Mosml.listDir ".") (* revert to old behaviour, infer dependencies *)
-   | args => List.app processarg args  (* build linear dependencies *)
-  )
+     []   => (* revert to old behaviour, infer dependencies *)
+  	     List.app processfile (Mosml.listDir ".") 
+   | args => (* build linear dependencies *)
+  	     List.app processarg args)
   handle OS.SysErr (str, _) => output(std_err, str ^ "\n\n")
 val _ = main ();
