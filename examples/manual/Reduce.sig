@@ -1,4 +1,3 @@
-local open Expr
-in
-    val reduce : expr -> expr
+signature Reduce = sig
+   val reduce : Expr.expr -> Expr.expr
 end
