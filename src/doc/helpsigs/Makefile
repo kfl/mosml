@@ -21,11 +21,12 @@ makebase : Database.uo Htmlsigs.uo Lexer.uo Parser.uo Parsspec.uo \
 	$(MOSMLL) -o makebase makebase.uo
 
 base:
-	makebase
+	makebase $(LIBDIR)
 
 install:
-	cp helpsigs.val ../../../lib
-	cp htmlsigs/*.html ../../../doc/mosmllib
+	cp helpsigs.val $(LIBDIR)
+	cp htmlsigs/*.html $(DOCDIR)/mosmllib
+	cp index.html $(DOCDIR)/mosmllib
 
 depend: Lexer.sml Parser.sml 
 	rm -f Makefile.bak

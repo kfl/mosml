@@ -48,6 +48,7 @@ install:
 	test -d $(BINDIR) || mkdir -p $(BINDIR)
 	test -d $(LIBDIR) || mkdir -p $(LIBDIR)
 	test -d $(INCDIR) || mkdir -p $(INCDIR)
+	test -d $(DOCDIR) || mkdir -p $(DOCDIR)
 	test -d $(TOOLDIR) || mkdir -p $(TOOLDIR)
 	cd runtime; make install
 	cd config; make install

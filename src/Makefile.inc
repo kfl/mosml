@@ -27,8 +27,8 @@ ADDOBJS=dynlib.o
 ADDRUNCFLAGS=
 ADDDYNLIBCFLAGS=
 
-# For Linux, use:
-# ---------------
+# For Linux (x86 or Alpha), use:
+# ------------------------------
 CPP=/lib/cpp -P -traditional -Dunix -Umsdos
 STRIP=strip
 LD=gcc -rdynamic
@@ -111,10 +111,12 @@ SHELL=/bin/sh
 # BINDIR contains true executable files, such as scripts
 # LIBDIR contains bytecode files (such as mosmlcmp and library units)
 # INCDIR contains the runtime system header files (for compiling dynlibs)
+# DOCDIR contains documentation
 
 BINDIR=${MOSMLHOME}/bin
 LIBDIR=${MOSMLHOME}/lib
 INCDIR=${MOSMLHOME}/include
+DOCDIR=${MOSMLHOME}/doc
 TOOLDIR=${MOSMLHOME}/tools
 # LIBDIR=${MOSMLHOME}/lib/moscow_ml
 # TOOLDIR=${MOSMLHOME}/libexec/moscow_ml

@@ -46,11 +46,10 @@ mosmllib2up.ps: mosmllib.ps
 	psnup -pa4 -2 mosmllib.ps mosmllib2up.ps
 
 install:
-	cp mosmlref.pdf ../../doc
-	cp manual.pdf ../../doc
-	cp mosmllib.pdf ../../doc
-	cp mosmllib2up.pdf ../../doc
-	cp index.html ../../doc/mosmllib
+	cp mosmlref.pdf $(DOCDIR)
+	cp manual.pdf $(DOCDIR)
+	cp mosmllib.pdf $(DOCDIR)
+	cp mosmllib2up.pdf $(DOCDIR)
 	cd helpsigs; make install
 
 clean:

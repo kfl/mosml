@@ -1,5 +1,5 @@
 (* makebase -- create the signature database from the Moscow ML 
- * library signatures.  PS 1995-11-19, 1996-04-10, 1997-07-21, 1999-08-12
+ * library signatures.  PS 1995-11-19, 2000-06-29
  *)
 
 (* The version number inserted in generated files: *)
@@ -120,11 +120,11 @@ fun process (libdir, helpfile, txtIndex, texIndex, htmldir, htmlIndex) =
                          libdir helpfile texSigs)    
 
 val _ = 
-    case Mosml.argv () of
-	[_]                   => 
+    case CommandLine.arguments () of
+	[]       => 
 	    process (libdirDef, helpfileDef, 
 		     txtIndexDef, texIndexDef, htmlDirDef, htmlIndexDef)
-      | [_, libdir, helpfile, txtIndex, texIndex, htmlDir, htmlIndex] => 
-	    process (libdir, helpfile, txtIndex, texIndex, htmlDir, htmlIndex)
-      | _ => print "Usage: makebase libdir helpfile \
-                    \txtIndex texIndex htmlDir htmlIndex\n"
+      | [libdir] => 
+	    process (libdir, helpfileDef, 
+		     txtIndexDef, texIndexDef, htmlDirDef, htmlIndexDef)
+      | _ => print "Usage: makebase\n"
