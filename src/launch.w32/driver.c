@@ -19,7 +19,7 @@ char * xmalloc(int size)
   return res;
 }
 
-int suffix(char * name, char * suff)
+int suffix(char* name, char* suff)
 {
   int lname = strlen(name);
   int lsuff = strlen(suff);
@@ -27,12 +27,22 @@ int suffix(char * name, char * suff)
   return lname >= lsuff && strcmp(name + lname - lsuff, suff) == 0;
 }
 
-int prefix(char * name, char * pref)
+char* woSuffix(char* name)
+{
+  // We need to remove either `.sig' or `.sml'.
+  static char buffer[1024];
+  int lname = strlen(name);
+  strcpy(buffer, name);
+  buffer[lname - 4] = '\0';
+  return buffer;
+}
+
+int prefix(char* name, char* pref)
 {
   return strncmp(name, pref, strlen(pref)) == 0;
 }
 
-void format(char ** res, char * fmt, ...)
+void format(char** res, char* fmt, ...)
 {
   va_list ap;
   char buffer[1024];

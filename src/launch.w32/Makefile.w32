@@ -16,8 +16,8 @@ install:
         copy /b mosml.exe $(BINDIR)\mosml.exe
 
 clean:
-	del *.exe
-	del *.obj
+	-del *.exe
+	-del *.obj
 
 header.exe: $(HEADER_OBJS)
         $(CC) $(CFLAGS) /Feheader.exe $(HEADER_OBJS) ..\runtime\camlrt.lib

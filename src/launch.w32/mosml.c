@@ -45,7 +45,8 @@ int main(int argc, char* argv[])
       if( i < argc )
         argv2[argc2++] = argv[i];
     }
-    else if (eq(a, "-valuepoly") || eq(a, "-imptypes"))
+    else if (eq(a, "-quietdec") || eq(a, "-valuepoly") || eq(a, "-imptypes") ||
+             eq(a, "-orthodox") || eq(a, "-conservative") || eq(a, "-liberal") )
     {
       argv2[argc2++] = a;
     } 
@@ -71,7 +72,8 @@ int main(int argc, char* argv[])
     if (eq(a, "-I") || eq(a, "-include") || eq(a, "-P") || eq(a, "-perv") ||
         eq(a, "-m") || eq(a, "-msgstyle")) 
       i++;
-    else if (eq(a, "-valuepoly") || eq(a, "-imptypes"))
+    else if (eq(a, "-quietdec") || eq(a, "-valuepoly") || eq(a, "-imptypes") ||
+             eq(a, "-orthodox") || eq(a, "-conservative") || eq(a, "-liberal") )
       ; 
     else if (eq(a, "-stdlib")) 
       i++;

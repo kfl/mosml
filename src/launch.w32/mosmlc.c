@@ -24,9 +24,7 @@ int ExecCmd(char *cmd_args)
   STARTUPINFO si;
   DWORD dwExitCode;
 
-//#ifdef DEBUG
-  fprintf(stderr, "\t%s\n", cmd_args);
-//#endif
+  //fprintf(stderr, "\t%s\n", cmd_args);
 
   /* Initialize the STARTUPINFO structure: */
 
@@ -74,120 +72,173 @@ int ExecCmd(char *cmd_args)
 
 // -----
 
+char* camlrunm = "camlrunm.exe";
+char* linkout = "mosmlout.exe";
 
-char * camlrunm = "camlrunm.exe";
-char * stdlib;
-int linkalso = 1;
-char * includes = "";
-char * compopt = "";
-char * linkopt = "";
-char * linkfiles = "";
-char * linkout = "mosmlout.exe";
-
-main(argc, argv)
-     int argc;
-     char ** argv;
+main(int argc, char** argv)
 {
   int i;
-  char * a;
-  extern char * getenv();
-  char * cmd;
+  char* a;
+  extern char* getenv();
+  char* cmd;
   int status;
+  char* stdlib;
+
+  int linkalso = 1;
+  char* includes = NULL;
+  char* compopt = NULL;
+  char* linkopt = NULL;
+  char* linkfiles = NULL;
+  char* context = NULL;
+
+  format(&includes, "");
+  format(&compopt, "-conservative");
+  format(&linkopt, "");
+  format(&linkfiles, "");
+  format(&context, "-structure");
 
   stdlib = getenv("MOSMLLIB");
-  if (stdlib == NULL) {
+  if( stdlib == NULL )
+  {
     fprintf(stderr, "Variable MOSMLLIB is undefined.\n");
     exit(2);
   }
 
-  for (i = 1; i < argc; i++) {
+  for( i = 1; i < argc; i++ )
+  {
     a = argv[i];
-    if (suffix(a, ".sml")) {
-      format(&cmd, "%s \"%s\\mosmlcmp\" -stdlib \"%s\" %s %s \"%s\"",
-             camlrunm, stdlib, stdlib, includes, compopt, a);
-      /* fprintf(stderr, "%s\n", cmd); */
+    if( suffix(a, ".sml") )
+    {
+      format(&cmd, "%s \"%s\\mosmlcmp\" -stdlib \"%s\" %s %s %s \"%s\"",
+             camlrunm, stdlib, stdlib, includes, compopt, context, a);
+      //fprintf(stderr, "%s\n", cmd);
       status = ExecCmd(cmd);
       if( status ) exit(status);
       free(cmd);
+      reformat(&context, "%s \"%s.ui\"", context, woSuffix(a));
       reformat(&linkfiles, "%s \"%s\"", linkfiles, a);
-    } else
-    if (suffix(a, ".sig")) {
-      format(&cmd, "%s \"%s\\mosmlcmp\" -stdlib \"%s\" %s %s \"%s\"",
-             camlrunm, stdlib, stdlib, includes, compopt, a);
-      /* fprintf(stderr, "%s\n", cmd); */
+    }
+    else if( suffix(a, ".sig") )
+    {
+      format(&cmd, "%s \"%s\\mosmlcmp\" -stdlib \"%s\" %s %s %s \"%s\"",
+             camlrunm, stdlib, stdlib, includes, compopt, context, a);
+      //fprintf(stderr, "%s\n", cmd);
       status = ExecCmd(cmd);
       if( status ) exit(status);
       free(cmd);
-    } else
-    if (suffix(a, ".uo")) {
+      reformat(&context, "%s \"%s.ui\"", context, woSuffix(a));
+    }
+    else if( suffix(a, ".ui") )
+    {
+      reformat(&context, "%s \"%s\"", context, a);
+    }
+    else if( suffix(a, ".uo") )
+    {
       reformat(&linkfiles, "%s \"%s\"", linkfiles, a);
-    } else
-    if (eq(a, "-c")) {
+    }
+    else if( eq(a, "-structure") || eq(a, "-toplevel") )
+    {
+      reformat(&context, "%s %s", context, a);
+    }
+    else if( eq(a, "-c") )
+    {
       linkalso = 0;
-    } else
-    if (eq(a, "-m") || eq(a, "-msgstyle")) {
-      reformat(&compopt, "%s -msgstyle %s", compopt, argv[++i]);
-    } else
-    if (eq(a, "-I") || eq(a, "-include")) {
+    }
+    else if( eq(a, "-I") || eq(a, "-include") )
+    {
       reformat(&includes, "%s -I \"%s\"", includes, argv[++i]);
-    } else
-    if (eq(a, "-P") || eq(a, "-perv")) {
+    }
+    else if( eq(a, "-P") || eq(a, "-perv") )
+    {
       reformat(&compopt, "%s -P %s", compopt, argv[++i]);
       reformat(&linkopt, "%s -P %s", linkopt, argv[i]);
-    } else
-    if (eq(a, "-i")) {
-      reformat(&compopt, "%s -i", compopt);
-    } else
-    if (eq(a, "-valuepoly")) {
-      reformat(&compopt, "%s -valuepoly", compopt);
-    } else
-    if (eq(a, "-imptypes")) {
-      reformat(&compopt, "%s -imptypes", compopt);
-    } else
-    if (eq(a, "-q") || eq(a, "-quotation")) {
+    }
+    else if( eq(a, "-q") || eq(a, "-quotation") )
+    {
       reformat(&compopt, "%s -q", compopt);
-    } else
-    if (eq(a, "-g") || eq(a, "-debug")) {
+    }
+    else if( eq(a, "-i") )
+    {
+      reformat(&compopt, "%s -i", compopt);
+      reformat(&linkopt, "%s -i", linkopt);
+    }
+    else if( eq(a, "-g") || eq(a, "-debug") )
+    {
+      reformat(&compopt, "%s -g", compopt);
       reformat(&linkopt, "%s -g", linkopt);
-    } else
-    if (eq(a, "-noheader")) {
+    }
+    else if( eq(a, "-m") || eq(a, "-msgstyle") )
+    {
+      reformat(&compopt, "%s -msgstyle %s", compopt, argv[++i]);
+    }
+    else if( eq(a, "-noheader") )
+    {
       reformat(&linkopt, "%s -noheader", linkopt);
-    } else
-    if (eq(a, "-o") || eq(a, "-exec")) {
+    }
+    else if( eq(a, "-noautolink") )
+    {
+      reformat(&linkopt, "%s -noautolink", linkopt);
+    }
+    else if( eq(a, "-o") || eq(a, "-exec") )
+    {
       linkout = argv[++i];
-    } else
-    if (eq(a, "-stdlib")) {
+    }
+    else if( eq(a, "-standalone") )
+    {
+      reformat(&linkopt, "%s -standalone", linkopt);
+    }
+    else if( eq(a, "-stdlib") )
+    {
       stdlib = argv[++i];
-    } else
-    if (eq(a, "-v") || eq(a, "-version")) {
-      printf("The Moscow ML system for the 80386 PC, version 1.41\n");
+    }
+    else if( eq(a, "-v") || eq(a, "-version") )
+    {
+      printf("The Moscow ML system for the 80386 PC, version 2.00 (June 2000)\n");
       printf("  (standard library from %s)\n", stdlib);
       format(&cmd, "%s -V", camlrunm);
       ExecCmd(cmd);
+      free(cmd);
       format(&cmd, "%s \"%s\\mosmlcmp\" -version", camlrunm, stdlib);
       ExecCmd(cmd);
       free(cmd);
       format(&cmd, "%s \"%s\\mosmllnk\" -version", camlrunm, stdlib);
       ExecCmd(cmd);
       free(cmd);
-    } else
-    if (eq(a, "-files")) {
+    }
+    else if( eq(a, "-imptypes") )
+    {
+      reformat(&compopt, "%s -imptypes", compopt);
+    }
+    else if( eq(a, "-valuepoly") )
+    {
+      reformat(&compopt, "%s -valuepoly", compopt);
+    }
+    else if( eq(a, "-orthodox") || eq(a, "-conservative") || eq(a, "-liberal") )
+    {
+      reformat(&compopt, "%s %s", compopt, a);
+    }
+    else if( eq(a, "-files") )
+    {
       reformat(&linkfiles, "%s -files \"%s\"", linkfiles, argv[++i]);
-    } else
-    if (prefix(a, "-")) {
+    }
+    else if( prefix(a, "-") )
+    {
       fprintf(stderr, "Unknown option \"%s\", ignored\n", a);
-    } else {
+    }
+    else
+    {
       fprintf(stderr, "I don't know what to do with file \"%s\", ignored\n",
               a);
     }
   }
 
-  if (linkalso && linkfiles[0] != 0) {
+  if( linkalso && linkfiles[0] != 0 )
+  {
     format(&cmd,
            "%s \"%s\\mosmllnk\" -stdlib \"%s\" %s %s -exec \"%s\" %s",
            camlrunm, stdlib, stdlib, includes,
            linkopt, linkout, linkfiles);
-    /* fprintf(stderr, "%s\n", cmd); */
+    fprintf(stderr, "%s\n", cmd);
     status = ExecCmd(cmd);
     return status;
   }
