@@ -1201,6 +1201,77 @@ to write more coherently tomorrow.
 provided databases are created with LATIN1 or another 8-bit encoding,
 and recognizes the int8 type (returned by COUNT).
 
+* 2002-08-19: Kenneth MacKenzie <kwxm@dcs.ed.ac.uk>
+ 
+Hi Kenneth (Peter),
+ 
+Oh dear, that's an embarrassing grammatical bug. I do remember wondering if
+the absence of parentheses for signatures would bite me sometime, but I didn't
+look hard enough for counter-examples.
+ 
+Yes, I do have some pull with the implementors (technically, I'm still one of
+them, but I never seem to find the time and I haven't pulled my weight for a
+long while.)
+ 
+About the error message, I think its supposed to read that the type of the
+expression is found to be bool, but expected to be int from the context. I      can't remember if the compiler order them consistently or not.
+I'm forwarding the message to Peter too, for the record.
+ 
+-c
+ 
+-----Original Message-----
+From: Kenneth MacKenzie [mailto:kwxm@dcs.ed.ac.uk]
+Sent: 19 August 2002 14:58
+To: Claudio Russo
+Subject: Moscow ML
+ 
+Hi Claudio,
+   I just remembered that when you were up here I was complaining
+  about some problem I'd had with the Moscow ML syntax.  Here's the
+problem.
+ 
+Suppose you have
+ 
+   signature S = sig type t val x:t end;
+ 
+Then you can have the opaque functor signature
+ 
+   signature FSIG = functor (A: S where type t = int) -> S;
+ 
+and Moscow ML accepts it without complaining.  However,  if you
+attempt to make this into a transparent signature
+ 
+   signature FSIG' = functor A: S where type t = int -> S;
+ 
+then you get a syntax error,  presumably because the parser thinks
+that you're trying to refer to a type t = (int->S).  I wasn't able to           find any way of getting round this (and by now I've forgotten whether
+it makes any sense to have type constraints in a transparent
+signature).  It's not a huge problem,  but it does seem that using
+presence/absence of parentheses to denote different types of
+signatures means that you can't use parentheses to make sure that
+things have the correct precedence.
+ 
+By the way,  do you have any influence with writers of Moscow ML?
+I've found Moscow ML to be really useful,  but the messages that you
+get for type errors are really frustrating.  If you type
+ 
+   fun f x = x+1; f true;
+ 
+then you get
+ 
+! Toplevel input:
+! f true;
+!   ^^^^                                                                       ! Type clash: expression of type
+!   bool
+! cannot have type
+!   int
+ 
+The message is fairly easy to understand in this case, but for more
+complicated type errors I always find that I can't remember which type
+is the one that was expected.  It would be a lot easier if it said
+"expected expression of type int, but found expression of type bool",
+or something similar.
+ 
 * 2002-08-29: From Joe Hurd <joe.hurd@cl.cam.ac.uk>
 
    I've just been to TPHOLs, where I discussed with Carl Witty the issue
@@ -1229,18 +1300,53 @@ This could be implemented in sml_equal_aux, in the default (block of
 references) case.  When two referred-to values *p1 and *p2 are found
 to be equal but not identical (*p1 != *p2), and both point into the
 young or old heap, we can assign one to the other:
-   	*p1 = *p2 
+	*p2 = *p1
 or 
-	*p2 = *p1	
+   	*p1 = *p2
 
-If both p1 and p2 point into the old heap, assign to the one that has
-the lowest address.  If one points into the young heap and one points
-into the old heap, replace the young reference with the old one (this
-may remove the need to ever copy the young value, and is safe
-regardless whether the values v1 and v2 are in the young or old heap).
+If both p1 and p2 point into the old heap, make both point to the
+object with the lowest address (case p1 < p2 resp. p2 < p1 above).  
+This never creates a new reference from the old heap to the young one.
+
+If one (say p1) points into the young heap and one (say p2) points
+into the old heap, replace the young reference with the old one:
+	*p1 = *p2 
+This never creates a new reference from the old heap to the young one.
+
+If both p1 and p2 point into the young heap, then:
+  - if one block (say v1) is in the young heap and one (say v2) is in the 
+	old heap, update the young heap block 
+	*p1 = *p2
+    (this avoids creating a reference from old heap to the young one)
+  - otherwise (both v1 and v2 are in the young heap, or both are in
+	the old heap)
+	then make both point to least addr.
+    (if both are in the young heap, then obviously this does not
+    create a reference from the old heap; if both are in the old heap 
+    then both references p1 and p2 must be in the ref table already).
+
+The scenario we want to avoid: p1 and p2 point into the young heap and
+p2 < p1 so we want to assign *p1 = *p2.  But v1 is in the old heap and
+v2 in the young heap.  Then the assignment *p1 = *p2 would create a
+new reference from the old heap to the young one.
 
 The garbage collector's invariants must be maintained.  If the garbage
-collector is in the mark phase, the assigned-to block is black, and
-the pointed-to block is white, then the pointed-to block must be
-darkened.  This is not needed in the sweep phase.  What about the weak
-phase???
+collector is in the mark phase, and the pointed-to block (*p2
+resp. *p1 above) is in the old heap, then it must be darkened.  In
+principle, this is necessary only if the containing block (v2
+resp. v1) is grey or black.
+
+comp w old share 19.920s  ui+uo 4275878 total  
+
+comp w young+old share    ui+uo 4275750 total  
+lib  w young+old share    ui+uo 1622111 total 
+
+comp w/o share 20.530s    ui+uo 4280650 total 
+lib  w/o share            ui+uo 1622471 total 
+
+
+test10 w young+old share 
+                 User: 1028.260  System: 6.040  GC: 882.780 59388 KB
+
+test10 w/o share User: 1048.470  System: 1.090  GC: 904.220 59736 KB
+	         User: 1029.400  System: 0.900  GC: 884.230  
