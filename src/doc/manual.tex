@@ -146,8 +146,11 @@ compilation; see Section~\ref{sec-structure-mode}.
 \item The Moscow ML Modules language extends the Standard ML Modules
   language in three ways:
   \begin{itemize}
-  \item higher-order functors: functors may be defined within
-    structures and functors; see Section~\ref{sec-ho-modules}
+  \item higher-order functors: a functor may be defined within
+    a structure, passed as an argument to another functor, or 
+    returned as the result
+    of a functor; 
+    see Sections~\ref{sec-ho-modules}, \ref{sec-applicative-functors} and \ref{sec-functor-signatures}
   \item first-class modules: structures and functors may be packed and
     then handled as Core language values, which may then be unpacked
     as structures or functors again; see
@@ -155,6 +158,7 @@ compilation; see Section~\ref{sec-structure-mode}.
   \item recursive modules: signatures and structures may be
     recursively defined; see Section~\ref{sec-rec-modules}
   \end{itemize}
+
 \item Value polymorphism has become friendlier: non-generalizable free
   type variables are left free, and become instantiated (once only)
   when the bound variable is used; see Section~\ref{sec-valuepoly}.
@@ -1840,16 +1844,23 @@ The Moscow ML Modules language extends the Standard ML Modules
 language in several ways:
 
 \begin{itemize}
-\item higher-order functors: functors may be defined within
-  structures and functors; see Section~\ref{sec-ho-modules}
+\item higher-order functors: a functor may be defined within
+  a structure, passed as an argument to another functor, 
+  or returned as the result
+  of a functor; see Section~\ref{sec-ho-modules}
+\item applicative as well as (the usual) generative functors; see
+   Section~\ref{sec-applicative-functors}.
+\item transparent as well as opaque functor signatures; see
+    Section~\ref{sec-functor-signatures}.
 \item first-class modules: structures and functors may be packed and
   then handled as Core language values, which may then be unpacked as
   structures or functors again; see
   Section~\ref{sec-firstclass-modules}
 \item recursive modules: signatures and structures may be recursively
   defined; see Section~\ref{sec-rec-modules}
-\item applicative as well as (the usual) generative functors; see
-  Section~\ref{sec-applicative-functors}.
+\item relaxations of miscellaneous Standard ML restrictions;
+ see Section~\ref{sec-misc-relaxations}
+
 \end{itemize}
 
 \noindent 
@@ -1872,8 +1883,8 @@ and \texttt{use}.  The compilation mode can be set by the functions
 See the \emph{Moscow ML Language Overview} for the precise syntax of
 the extensions.
 
-
 \subsection{Higher-order modules}
+
 \label{sec-ho-modules}
 
 In Standard ML Modules, structures and functor bodies cannot declare
@@ -1889,8 +1900,8 @@ val (a, b) = R12.pair
 \end{program}
 
 \noindent 
-Higher-order functors can even be curried, avoiding the intermediate
-structures:
+A functor that returns a functor can be curried, avoiding the intermediate
+structure:
 
 \begin{program}
 functor F2(S : sig type t; val x : t end) (T : sig type u; val y : u end) = 
@@ -1900,6 +1911,208 @@ structure R2 =
 val (a, b) = R2.pair
 \end{program}
 
+\noindent 
+A functor may be declared to take another functor as an argument,
+and there is a syntax for anonymous functors:
+
+\begin{program}
+(* G is a functor signature *)
+signature G = functor(X:sig type t=int val x: t end)->sig type u val y : u end
+
+(* F3 takes the functor F as an argument, and applies it *)
+functor F3(F:G) = F(struct type t=int val x=177 end) 
+
+(* R3 is the result of F3 applied to an anonymous functor *)        
+structure R3 = F3(functor(X:sig type t=int val x:t end)=> 
+                  struct type u = X.t * X.t val y= (X.x,X.x) end)
+\end{program}
+
+\noindent
+Wherever a functor of a certain type is expected, a
+functor that has more a general type, ie.\  that is more polymorphic, 
+expects a less general argument or produces a more general result, 
+may be supplied instead:
+
+\begin{program}
+(* F3  is applied to a more general functor than it specifically requires *)
+structure R4 = F3(functor(X:sig type t end)=> 
+                  struct type u = X.t val y = 1 val z = [] end)
+\end{program}
+
+\subsection{Applicative functors}
+\label{sec-applicative-functors}
+
+In the Standard ML Modules language, all functors are generative.  If
+the body of generative functor \texttt{FG} declares a datatype 
+or opaque type
+\texttt{t}, then two applications of \texttt{FG} will create two
+structures \texttt{SG1} and \texttt{SG2} with distinct types
+\texttt{SG1.t} and \texttt{SG2.t}:
+
+\begin{program}
+functor FG (S : sig end) = struct datatype t = C end    (* generative  *)
+structure SG1 = FG() and SG2 = FG()
+val res = if true then SG1.C else SG2.C;                (* ill-typed   *)
+\end{program}
+
+\noindent
+(A conditional expression requires both branches to have equivalent types,
+ so \texttt{res} simply tests that
+ the type \texttt{S11.t} is equivalent to \texttt{S12.t}.)
+
+\noindent 
+If functors had an applicative, not generative,
+semantics, the two types would be equivalent. 
+Moscow ML Modules allows the declaration of applicative
+functors\footnote{Similar to Objective Caml.} as well as generative
+functors.  An applicative version \texttt{FA} of the above functor is
+declared the same way, except that the formal functor argument
+\texttt{S :\ sig end} is not enclosed in parentheses:
+
+\begin{program}
+functor FA S : sig end = struct datatype t = C end   (* applicative *)
+structure SA1 = FA() and SA2 = FA() 
+val res = if true then SA1.C else SA2.C;             (* well-typed  *)
+\end{program}
+
+\noindent
+More generally, if the type in the 
+functor's body depends on a datatype or opaque type of 
+the functor's formal argument, 
+then the types returned by separate applications of the functor
+will be equivalent, provided it is applied to equivalent
+type arguments:
+\begin{program}
+functor GA S : sig type t end = struct datatype u = C of S.t end (* applicative, *) 
+                                                                  (* but u depends on S.t *)
+structure TA1 = GA(type t = int) and TA2 = GA(type t = bool) and TA3 = GA(type t = int)
+val res = if true then TA1.C 1 else TA3.C 1;                       (* well-typed  *)
+val res = if true then TA1.C 1 else TA2.C true;                    (* ill-typed  *)
+\end{program}
+
+Moscow ML supports type projections (the dot notation for types)
+with local structure bindings:
+this makes it possible to refer directly to a type returned by 
+an applicative functor within another type expression, and
+is useful for expressing sharing constraints:
+
+\begin{program}
+signature S = sig functor F: functor X:sig type t end -> sig type u end
+                  type v =  X.u where X = F(type t = int)  (* X is local to X.u*)
+              end
+\end{program}
+
+\noindent
+The local binding has no run-time effect and is only evaluated at 
+compile-time, for its type information.
+
+\subsection{Opaque and transparent functor signatures}
+\label{sec-functor-signatures}
+
+The types of functors are specified using functor signatures. Similar
+to the distinction between generative and applicative functor expressions,
+functor signatures may be \emph{opaque} or \emph{transparent}.
+Whether
+a functor signature is opaque or transparent affects the interpretation
+of any datatype or opaque type specifications in its range:
+
+The \emph{opaque} signature 
+\begin{program}
+signature GO = functor(X:sigtype t val x:t end)->sig type u val y:u end   (* opaque *)
+\end{program}
+
+\noindent
+specifies the type of those functors that, when applied to
+an actual argument matching the domain signature
+\texttt{sig type t val x : t end},
+return a result 
+matching the range signature
+\texttt{sig type u val y:u end}, for some unknown implementation of the type 
+\texttt{u} (possibly depending on \texttt{X.t}).
+
+
+An \emph{transparent} version \texttt{GT} of the above functor signature is
+written the same way, except that the formal functor argument
+\texttt{X:sig type t val x: t end} is \emph{not} enclosed in parentheses:
+\begin{program}
+signature GT = functor X:sig type t val x: t end -> sig type u val y:u end  (* transparent *)
+\end{program}
+
+\noindent
+This functor signature
+specifies the \emph{family} of functor types, that, for a given 
+implementation of the result type \texttt{u} (possibly 
+depending on \texttt{X.t}),
+map structures matching the domain 
+\texttt{sig type t val x:t  end} to structures
+matching the range \texttt{sig type u val y:u end}.
+
+
+In practice, when writing a functor \texttt{H} that 
+takes a functor \texttt{F} as an argument,
+the choice between specifying that argument using an opaque
+or transparent signature will affect the amount of 
+type information that is propagated whenever \texttt{H}
+is applied to an actual functor.
+For instance, consider the four functors:
+
+\begin{program}
+functor F1 (X:sig type t val x: t end) = struct type u = X.t val y = X.x end
+functor F2 (X:sig type t val x: t end) = struct type u = int val y = 1 end
+
+functor HO(F:GO) = F(struct type t = string val x = "abc" end)
+functor HT(F:GT) = F(struct type t = string val x = "abc" end)
+\end{program}
+
+\noindent
+\texttt{F1} and \texttt{F2} are first-order functors: 
+\texttt{F1} returns a renamed version of its argument;
+and \texttt{F2} just ignores it argument and returns
+the same structure regardless.
+The higher-order functors \texttt{HO} and \texttt{HT}
+merely apply the supplied \texttt{F}, to the same argument, but assume,
+respectively, an opaque and transparent signature for \texttt{F}.
+
+Since \texttt{HO} uses the opaque signature \texttt{GO}, its formal argument
+\texttt{F}\ is
+assumed to return some new unknown type \texttt{u} whenever it is applied,
+so that the two applications of \texttt{HO} return new abstract types
+\texttt{RO1.u} and \texttt{RO2.u}.
+
+\begin{program}
+structure RO1 = HO(F1)
+structure RO2 = HO(F2)
+
+val resO1 = if true then RO1.y else "def";           (* ill-typed *) 
+val resO2 = if true then RO2.y else 1;               (* ill-typed *) 
+\end{program}
+
+\texttt{HT}, on the other hand, uses the transparent signature \texttt{GT}.
+This ensures that,
+no matter what the actual dependency of type \texttt{u} on type \texttt{t},
+\texttt{HT} may be applied to any functor \texttt{F} whose domain
+and range match \texttt{GT}: with the actual
+definition of \texttt{u} reflected in result. % the range of \texttt{HT}.
+In particular,
+the two applications of \texttt{HT} return the same
+definitions for type \texttt{u} as substituting \texttt{F1} 
+and \texttt{F2} directly into the body of \texttt{HT}: 
+ie. the
+types \texttt{RT1.u} and \texttt{RT2.u} are respectively
+equivalent to \texttt{string} and \texttt{int}:
+
+\begin{program}
+structure RT1 = HT(F1) 
+structure RT2 = HT(F2)
+
+val resT1 = if true then RT1.y else "def";            (* well-typed *)
+val resT2 = if true then RT2.y else 1;                (* well-typed *)
+\end{program}
+
+Another way to look at this is that \texttt{HO}'s formal argument has 
+a generative specification,
+while \texttt{HT}'s formal argument has an
+applicative specification.
 
 \subsection{First-class modules}
 \label{sec-firstclass-modules}
@@ -1909,16 +2122,64 @@ wrapped up as a \emph{package}, which is a first-class Core language
 value that may be handled as any other value, and then subsequently
 unpacked to re-create the structure or functor:
 
+% \begin{program}
+% signature BUNDLE = sig 
+%     type t;  val x : t;  val f : t -> int
+% end
+% structure Bundle = struct
+%    type t = real;  val x = 2.3;  fun f y = floor y
+% end
+% type bundle = [ BUNDLE ]	                        (* package type *)
+% fun g (bpack : bundle) =
+%     let structure B as BUNDLE = bpack in B.f B.x end    (* unpacking *)
+% val x = g [structure Bundle as BUNDLE]                  (* packing   *)
+% \end{program}
 \begin{program}
-signature BUNDLE = sig 
-    type t;  val x : t;  val f : t -> int
-end
-structure Bundle = struct
-   type t = real;  val x = 2.3;  fun f y = floor y
-end
-fun g (bpack : [BUNDLE]) =
-    let structure B as BUNDLE = bpack in B.f B.x end    (* unpacking *)
-val x = g [structure Bundle as BUNDLE]                  (* packing   *)
+signature NAT = sig type nat val Z:nat val S:nat -> nat val plus: nat -> nat -> nat end
+structure SafeNat =  (* unlimited range but slow *)
+  struct datatype nat = Z | S of nat fun plus Z m = m | plus (S n) m = S (plus n m) end
+structure FastNat =  (* limited range but fast *)
+  struct type nat = int val Z = 0 fun S n = n + 1 fun plus n m = n + m end
+
+type natpack = [ NAT ]                                      (* package type *)
+
+val safeNat = [ structure SafeNat as NAT ];                 (* packing *)
+val fastNat = [ structure FastNat as NAT ];    
+
+structure Nat as NAT = 	                                    (* unpacking *)
+      if (913 mod 7 = 5) then safeNat else fastNat
+
+val natlist = [safeNat,fastNat] : [ NAT ] list;             (* etc. *)
+
+\end{program}
+
+A functor may be packed using the similar Core expression
+\texttt{ [ functor {\it modexp} as {\it sigexp} ]} and
+unpacked using  the functor binding 
+\texttt{ functor {\it funid} as {\it sigexp} = {\it exp}}.
+
+Package types are compared by structure, not name, so
+the package type:
+\begin{program}
+    [sig type t val x: t type u = t val y: u end]
+\end{program}
+\noindent
+is equivalent to
+\begin{program}
+    [sig type u val x: u type t = u val y: t end]
+\end{program}
+\noindent 
+because the signatures are equivalent (every structure that
+matches one also matches the other).
+
+For type soundness reasons, a package may not be unpacked in the body of a functor (although it may be unpacked within a Core expression occuring in 
+that  body).
+
+\begin{program}
+functor Fail (val nat : [ NAT ]) = 
+  struct structure Nat as NAT = nat end                        (* illegal *)
+functor Ok (val nat : [ NAT ]) = 
+  struct val x = let structure Nat as NAT = nat in nat end end (* legal *)
 \end{program}
 
 
@@ -1926,54 +2187,125 @@ val x = g [structure Bundle as BUNDLE]                  (* packing   *)
 \label{sec-rec-modules}
 
 The Standard ML Modules language does not permit recursively defined
-modules.  For instance, two structures \texttt{A} and \texttt{B}
-depend on each other.  In the Moscow ML Modules language, a signature
-or structure may be defined recursively:
+modules and disallows, for instance, two structures \texttt{Even} and \texttt{Odd}
+that both depend on each other.  
+
+In the Moscow ML Modules language, a structure may be defined recursively:
 
 \begin{program}
-signature SIG = rec(X: sig structure A: sig type a end;
-                           structure B: sig type b end
-                       end)
-                   sig structure A: sig datatype a = Aa | Ba of X.B.b end
-                       structure B: sig datatype b = Ab | Bb of X.A.a end
-                   end;
-
-structure S = rec(X:SIG)
-    struct structure A = struct datatype a = datatype X.A.a end
-           structure B = struct datatype b = datatype X.B.b end
-    end
+structure S = rec (X:sig structure Odd : sig val test : int -> bool end end)
+              struct sructure Even = struct fun test 0 = true 
+                                              | test n = X.Odd.test (n-1)
+                                     end	
+                     structure Odd = struct fun test 0 = false
+                                              | test n = Even.test (n-1)
+                                     end	       
+              end;
 \end{program}
 
-
-\subsection{Applicative functors}
-\label{sec-applicative-functors}
-
-In the Standard ML Modules language, all functors are generative.  If
-the body of generative functor \texttt{FG} declares a datatype
-\texttt{t}, then two applications of \texttt{FG} will create two
-structures \texttt{S1} and \texttt{S2} with distinct types
-\texttt{S1.t} and \texttt{S2.t}:
+\noindent
+Here, \texttt{X} is a forward declaration of the structure's body
+that allows \texttt{Even.test} to refer to
+\texttt{X.Odd.test} before it has been defined.
+The body of a recursive structure must match the signature of
+the forward declaration; any opaque type or datatype 
+specified in the signature must be implemented in the body
+by \emph{copying} it using a forward reference:
 
 \begin{program}
-functor FG (S : sig end) = struct datatype t = C end    (* generative  *)
-structure S11 = FG() and S12 = FG()
-val res = (S11.C = S12.C);                              (* ill-typed   *)
+structure Ok   = (* well-typed *)
+                 rec (X:sig datatype t = C type u type v = int end)
+                 struct datatype t = datatype X.t type u = X.u type v = int end	
+structure Fail = (* ill-typed *)
+                 rec (X:sig datatype t = C type u type v = int end)
+                 struct datatype t = C type u = int type v = int end 
 \end{program}
 
-\noindent 
-If instead the functor were applicative, then the two types would be
-identical.  Moscow ML Modules allows the declaration of applicative
-functors\footnote{As in Objective Caml.} as well as generative
-functors.  An applicative version \texttt{FA} of the above functor is
-declared the same way, except that the formal functor argument
-\texttt{S :\ sig end} is not enclosed in parentheses:
+\noindent
+Attempting to evaluate the foward reference 
+of a recursive structure before its body has been
+been fully evaluated raises the Moscow ML exception \texttt{Bind}:
 
 \begin{program}
-functor FA S : sig end = struct datatype t = C end      (* applicative *)
-structure S21 = FA() and S22 = FA()
-val res = (S21.C = S22.C);                              (* well-typed  *)
+structure Fail = rec (X:sig end)X;                 (* raises Bind *)
+structure Fail = rec (X:sig val x: int end) 
+                 struct val x = X.x end;           (* raises Bind *)
+structure Ok = rec (X:sig val f: int -> int end) 
+               struct fun f n = X.f n  end;        (* ok *)
+val res = Ok.f n                                   (* loops *)
 \end{program}
 
+\noindent
+On their own, recursive structure can not be used to declared 
+mutually recursive datatypes that span module boundaries. 
+For this purpose, Moscow ML supports recursive signatures:
+
+\begin{program}
+signature REC = rec(X: sig structure Odd: sig type t end end)
+                sig structure Even: sig datatype t = Zero | Succ of X.Odd.t end
+                    structure  Odd: sig datatype t = One  | Succ of Even.t end
+                end;
+\end{program}
+
+\noindent
+Here, \texttt{X}\ is a forward declaration of a structure
+implementing the body of the signature that
+allows the specification of \texttt{Even.t} to refer to
+the type \texttt{X.Odd.t} before it has been fully specified.
+In a recursive signature, the body of the signature must 
+match the forward declaration and
+specify an implementation for any opaque types or datatypes
+declared  within the forward specification.
+
+\noindent
+Once this recursive signature has been defined, it can then 
+be used to implement a recursive structure 
+with datatypes that span module boundaries.
+
+\begin{program}
+structure S = rec(X:REC)
+              struct structure Even = struct datatype t = datatype X.Even.t 
+                                             fun succ Zero = X.Odd.One 
+                                               | succ E = X.Odd.Succ E
+                                       end
+                     structure Odd  = struct datatype t = datatype X.Odd.t
+                                             fun succ O = Even.Succ O
+                                      end
+              end
+\end{program}
+
+\subsection{Miscellaneous relaxations of Standard ML restrictions}
+\label{sec-misc-relaxations}
+
+In Standard ML, functors and signatures may only be declared
+at top-level and structures may only be declared at top-level and
+within structures. None of these may be declared
+within Core let expressions.
+Moscow ML removes these restrictions so that functors, signatures
+and structures may be declared anywhere, which is particularly useful when
+programming with first-class modules.
+
+In Standard ML, every parameterised type definition, and evey type scheme
+occuring within a signature,
+must be closed and not mention any type variables that are not explicitly
+listed as parameters. Moscow ML does not impose this restriction, and
+allows free type variables, provided they are bound in an enclosing scope.
+Again, this is can be useful when programming with first-class modules.
+
+\begin{program}
+
+type t = 'a -> 'a                                (* illegal, since 'a not in scope *)
+
+fun f (x:'a) = let type t = 'a * 'a              (* legal Mosml, illegal SML *)
+               in (x,x):t 
+               end;
+
+type 'a stackpack =                              (* legal Mosml *)
+    [ sig                             
+          type stack = 'a list;                  (* 'a occurs free in this type binding *)
+          val push : 'a -> stack -> stack        (* 'a occurs free in this type scheme *)
+      end ]
+\end{program}
 
 \newpage
 
