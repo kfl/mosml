@@ -61,7 +61,7 @@ in
 			numItems t = 2));
 
     val test9 = 
-	check'(fn _ => (filter (fn _ => true);
+	check'(fn _ => (filter (fn _ => true) t;
 			numItems t = 2));
 
     val test10 = 
