@@ -49,7 +49,9 @@ val collate  : ('a * 'a -> order) -> 'a vector * 'a vector -> order
    Raises Subscript if i<0 or i>=length v.
 
    [update(v, i, x)] creates a copy of v, sets position i to x, and
-   returns the new vector.  Raises Subscript if i<0 or i>=length v.
+   returns the new vector.  In contrast to Array.update, this is not a
+   constant-time operation, because it must copy the entire vector.
+   Raises Subscript if i<0 or i>=length v.
 
    [concat vs] returns a vector which is the concatenation from left
    to right og the vectors in vs.  Raises Size if the sum of the

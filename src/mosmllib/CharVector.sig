@@ -10,7 +10,6 @@ val tabulate : int * (int -> elem) -> vector
 
 val length   : vector -> int
 val sub      : vector * int -> elem
-val extract  : vector * int * int option -> vector
 val update   : vector * int * elem -> vector
 val concat   : vector list -> vector
 
@@ -24,10 +23,10 @@ val foldl    : (elem * 'b -> 'b) -> 'b -> vector -> 'b
 val foldr    : (elem * 'b -> 'b) -> 'b -> vector -> 'b
 
 val findi    : (int * elem -> bool) -> vector -> (int * elem) option
-val appi     : (int * elem -> unit) -> vector * int * int option -> unit
-val mapi     : (int * elem -> elem) -> vector * int * int option -> vector
-val foldli   : (int * elem * 'b -> 'b) -> 'b -> vector*int*int option -> 'b
-val foldri   : (int * elem * 'b -> 'b) -> 'b -> vector*int*int option -> 'b
+val appi     : (int * elem -> unit) -> vector -> unit
+val mapi     : (int * elem -> elem) -> vector -> vector
+val foldli   : (int * elem * 'b -> 'b) -> 'b -> vector -> 'b
+val foldri   : (int * elem * 'b -> 'b) -> 'b -> vector -> 'b
 
 val collate  : (elem * elem -> order) -> vector * vector -> order
 

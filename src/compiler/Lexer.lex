@@ -111,8 +111,7 @@ fun store_string_char c =
   in
     if !string_index >= len then
       let val new_buff = array(len * 2, #"\000") in
-        copy
-          { src = !string_buff, si = 0, len = NONE, dst = new_buff, di = 0 };
+        copy { src = !string_buff, dst = new_buff, di = 0 };
         string_buff := new_buff
       end
     else ();
@@ -121,37 +120,22 @@ fun store_string_char c =
   end
 
 fun get_stored_string() =
-  let open CharArray
-      val s = extract(!string_buff, 0, SOME (!string_index))
+  let open CharArraySlice
+      val s = vector(slice(!string_buff, 0, SOME (!string_index)))
   in
     string_buff := initial_string_buffer;
     s
   end
 
-(*
-fun splitQualId s =
-  let open CharVector
-      val len' = size s - 1
-      fun parse n =
-        if n >= len' then
-          ("", s)
-        else if sub(s, n) = #"." then
-          ( normalizedUnitName (extract(s, 0, SOME n)),
-            extract(s, n + 1, SOME(len' - n)) )
-        else
-          parse (n+1)
-  in parse 0 end
-*)
-
 (* cvr: NOTE normalizeUnitName done elsewhere now *)
 fun splitQualId s =
-  let open CharVector
+  let open CharVectorSlice
       val len' = size s
       fun parse i n acc =
         if n >= len' then
-          (extract(s, i, SOME (len' - i)) :: acc)
-        else if sub(s, n) = #"." then
-          parse (n+1) (n+1) ((extract(s, i, SOME (n - i)))::acc)
+	  vector(slice(s, i, SOME (len' - i))) :: acc
+        else if CharVector.sub(s, n) = #"." then
+          parse (n+1) (n+1) (vector(slice(s, i, SOME (n - i)))::acc)
         else
           parse i (n+1) acc
   in parse 0 0 [] end

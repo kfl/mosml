@@ -33,6 +33,8 @@ app use
  "word.sml",
  "word8.sml",
  "word8array.sml",
- "word8vector.sml"];
+ "word8arrayslice.sml",
+ "word8vector.sml",
+ "word8vectorslice.sml"];
 
 ignore(Process.exit Process.success);

@@ -69,13 +69,12 @@ fun mkKeyword lexbuf =
 val savedLexemeStart = ref 0;
 
 fun getQual s =
-  let open CharVector
-      val len' = size s - 1
+  let val len' = size s - 1
       fun parse n =
         if n >= len' then
 	    ""				(* This can't happen *)
-        else if sub(s, n) = #"." then
-	    extract(s, 0, SOME n)
+        else if CharVector.sub(s, n) = #"." then
+	    CharVectorSlice.vector(CharVectorSlice.slice(s, 0, SOME n))
         else
 	    parse (n+1)
   in parse 0 end;

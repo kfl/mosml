@@ -1,4 +1,4 @@
-(* Word8Array -- SML Basis Library, PS 1994-12-21, 2000-10-24 *)
+(* Word8Array -- SML Basis Library, PS 1994-12-21, 2000-10-25 *)
 
 type elem   = Word8.word;
 type vector = Word8Vector.vector;
@@ -71,30 +71,18 @@ fun vector (ref a) =
 	val newvec = vector_ n 
     in blitav_ a 0 newvec 0 n; newvec end;
 
-fun extract (ref a, i, slicelen) =
-    let val n = case slicelen of NONE => length_ a - i | SOME n => n 
-	val newvec = if i<0 orelse n<0 orelse i+n > length_ a then
-	                     raise Subscript
-			 else
-			     vector_ n 
-    in blitav_ a i newvec 0 n; newvec end;
-
-fun copy {src = ref a1: array, si=i1, len, dst = ref a2: array, di=i2} =
-    let val n = case len of NONE => length_ a1 - i1 | SOME k => k
+fun copy {src = ref a1: array, dst = ref a2: array, di=i2} =
+    let val n = length_ a1
     in
-	if n<0 orelse i1<0 orelse i1+n > length_ a1
-	       orelse i2<0 orelse i2+n > length_ a2
-	then raise Subscript
-	else blitaa_ a1 i1 a2 i2 n
+	if i2 < 0 orelse i2+n > length_ a2 then raise Subscript
+	else blitaa_ a1 0 a2 i2 n
     end
 
-fun copyVec {src = a1: vector, si=i1, len, dst = ref a2: array, di=i2} =
-    let val n = case len of NONE => lengthv_ a1 - i1 | SOME k => k
+fun copyVec {src = a1: vector, dst = ref a2: array, di=i2} =
+    let val n = lengthv_ a1
     in
-	if n<0 orelse i1<0 orelse i1+n > lengthv_ a1
-               orelse i2<0 orelse i2+n > length_ a2
-        then raise Subscript
-	else blitva_ a1 i1 a2 i2 n
+	if i2 < 0 orelse i2+n > length_ a2 then raise Subscript
+	else blitva_ a1 0 a2 i2 n
     end
 
 fun find (p : elem -> bool) (ref a) : elem option = 
@@ -138,13 +126,6 @@ fun app f (ref a) =
 		   else ()
     in lr 0 end
 
-fun sliceend (a, i, NONE) = 
-        if i<0 orelse i>length a then raise Subscript
-	else length a
-  | sliceend (a, i, SOME n) = 
-	if i<0 orelse n<0 orelse i+n>length a then raise Subscript
-	else i+n;
-
 fun findi (p : int * elem -> bool) (ref a) : (int * elem) option = 
     let val stop = length_ a
 	fun lr j = 
@@ -153,37 +134,32 @@ fun findi (p : int * elem -> bool) (ref a) : (int * elem) option =
 	    else NONE
     in lr 0 end
 
-fun foldli f e (slice as (ref a, i, _)) = 
-    let fun loop stop =
-	    let fun lr j res = 
-		if j < stop then lr (j+1) (f(j, sub_ a j, res))
-		else res
-	    in lr i e end
-    in loop (sliceend slice) end;
+fun foldli f e (ref a) = 
+    let val stop = length_ a 
+	fun lr j res = 
+	    if j < stop then lr (j+1) (f(j, sub_ a j, res))
+	    else res
+    in lr 0 e end;
 
-fun foldri f e (slice as (ref a, i, _)) = 
-    let fun loop start =
-	    let fun rl j res = 
-		    if j >= i then rl (j-1) (f(j, sub_ a j, res))
-		    else res
-	    in rl start e end;
-    in loop (sliceend slice - 1) end
+fun foldri f e (ref a) = 
+    let fun rl j res = 
+	    if j >= 0 then rl (j-1) (f(j, sub_ a j, res))
+	    else res
+    in rl (length_ a - 1) e end;
 
-fun modifyi f (slice as (ref a, i, _)) = 
-    let fun loop stop =
-	    let fun lr j = 
-		if j < stop then (update_ a j (f(j, sub_ a j)); lr (j+1))
-		else ()
-	    in lr i end
-    in loop (sliceend slice) end;
+fun modifyi f (ref a) = 
+    let val stop = length_ a
+	fun lr j = 
+	    if j < stop then (update_ a j (f(j, sub_ a j)); lr (j+1))
+	    else ()
+    in lr 0 end;
 
-fun appi f (slice as (ref a, i, _)) = 
-    let fun loop stop = 
-	    let	fun lr j = 
-		    if j < stop then (f(j, sub_ a j); lr (j+1)) 
-		    else ()
-	    in lr i end
-    in loop (sliceend slice) end;
+fun appi f (ref a) = 
+    let val stop = length_ a
+	fun lr j = 
+	    if j < stop then (f(j, sub_ a j); lr (j+1)) 
+	    else ()
+    in lr 0 end;
 
 fun collate cmp (ref a1, ref a2) =
     let val n1 = length_ a1 
@@ -198,5 +174,4 @@ fun collate cmp (ref a1, ref a2) =
 		    EQUAL => h (j+1)
 		  | res   => res
     in h 0 end;
-
 end

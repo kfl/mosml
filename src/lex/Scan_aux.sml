@@ -25,7 +25,7 @@ fun store_string_char c =
   in
     if !string_index >= len then
       let val new_buff = array(len * 2, #" ") in
-        copy { src= !string_buff, si=0, len = NONE, dst= new_buff, di=0 };
+        copy { src= !string_buff, dst= new_buff, di=0 };
         string_buff := new_buff
       end
     else ();
@@ -35,11 +35,12 @@ fun store_string_char c =
 ;
 
 fun get_stored_string () =
-  let val s = CharArray.extract(!string_buff, 0, SOME (!string_index)) in
-    string_buff := initial_string_buffer;
-    s
-  end
-;
+  let open CharArraySlice
+      val s = vector(slice(!string_buff, 0, SOME (!string_index))) 
+  in
+      string_buff := initial_string_buffer;
+      s
+  end;
 
 val char_for_backslash = fn
     #"n" => #"\010" (* #"\n" *)

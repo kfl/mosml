@@ -18,8 +18,7 @@ fun realloc_out_buffer () =
   let val len = CharArray.length (!out_buffer)
       val new_buffer = make_buffer (2 * len)
   in
-    CharArray.copy { src = !out_buffer, si = 0, len = NONE,
-                     dst = new_buffer, di = 0 };
+    CharArray.copy { src = !out_buffer, dst = new_buffer, di = 0 };
     out_buffer := new_buffer
   end;
 

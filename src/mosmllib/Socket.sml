@@ -93,7 +93,8 @@ struct
 
 	prim_val vector_ : int -> Word8Vector.vector = 1 "create_string"
 
-	fun extract vec len = Word8Vector.extract(vec, 0, SOME len)
+	fun extract vec len = 
+	    Word8VectorSlice.vector(Word8VectorSlice.slice(vec, 0, SOME len))
     in
 	fun getinetaddr (ADDR a : pf_inet sock_addr) = getinetaddr_ a
 

@@ -43,7 +43,7 @@ val test3a =
 val test4a = 
     check'(fn _ => 
 	   toReal (fromReal 100.25) = 100.25
-	   andalso toReal (fromReal 100.000025) = 100.000025);
+	   andalso toReal (fromReal 100.015625) = 100.015625);
 
 val test6a = 
     check'(fn _ => bigt + litt = litt + bigt

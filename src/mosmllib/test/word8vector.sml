@@ -1,5 +1,5 @@
 (* test/word8vector.sml -- some test cases for Word8Vector 
-   PS 1994-12-10, 1995-06-14, 2000-10-18 *)
+   PS 1994-12-10, 1995-06-14, 2000-10-24 *)
 
 use "auxil.sml";
 
@@ -40,27 +40,9 @@ val test7 = check'(fn _ => length e = 203);
 
 val test8 = check'(fn _ => length (concat []) = 0);
 
-val f = extract (e, 100, SOME 3);
+val f = Word8VectorSlice.vector(Word8VectorSlice.slice(e, 100, SOME 3));
 
 val test9 = check'(fn _ => f = b);
-
-val test9a = check'(fn _ => e = extract(e, 0, SOME (length e)) 
-		    andalso e = extract(e, 0, NONE));
-val test9b = check'(fn _ => fromList [] = extract(e, 100, SOME 0));
-val test9c = (extract(e, ~1, SOME (length e))  seq "WRONG") 
-             handle Subscript => "OK" | _ => "WRONG"
-val test9d = (extract(e, length e + 1, SOME 0)  seq "WRONG") 
-             handle Subscript => "OK" | _ => "WRONG"
-val test9e = (extract(e, 0, SOME (length e+1)) seq "WRONG") 
-             handle Subscript => "OK" | _ => "WRONG"
-val test9f = (extract(e, 20, SOME ~1)        seq "WRONG") 
-             handle Subscript => "OK" | _ => "WRONG"
-val test9g = (extract(e, ~1, NONE)  seq "WRONG") 
-             handle Subscript => "OK" | _ => "WRONG"
-val test9h = (extract(e, length e + 1, NONE)  seq "WRONG") 
-             handle Subscript => "OK" | _ => "WRONG"
-val test9i = check'(fn _ => fromList [] = extract(e, length e, SOME 0)
-		    andalso fromList [] = extract(e, length e, NONE));
 
 fun chkiter iter f vec reslast =
     check'(fn _ =>
@@ -73,33 +55,42 @@ fun chkiteri iter f vec reslast =
 	   let val last = ref ~1
 	       val res = iter (fn (i, x) => (last := i; f x)) vec
 	   in (res, !last) = reslast end)
+fun chkfold fold f start vec reslast =
+    check'(fn _ =>
+	   let val last = ref 0w255
+	       val res = fold (fn (x, r) => (last := x; f(x, r))) start vec
+	   in (res, !last) = reslast end)
+fun chkfoldi fold f start vec reslast =
+    check'(fn _ =>
+	   let val last = ref ~1
+	       val res = fold (fn (i, x, r) => (last := i; f(x, r))) start vec
+	   in (res, !last) = reslast end)
 
 val test10a = 
     chkiter map (fn x => 0w2*x) b (fromList [0w88,0w110,0w132], 0w66)
+val test10b = 
+    chkiter app (fn x => ignore(0w2*x)) b ((), 0w66)
+val test10c = 
+    chkiter find (fn x => false) b (NONE, 0w66)
+val test10d = 
+    chkiter exists (fn x => false) b (false, 0w66)
+val test10e = 
+    chkiter all (fn x => true) b (true, 0w66)
+val test10f = 
+    chkfold foldl (op +) 0w0 b (0w165, 0w66)
+val test10g = 
+    chkfold foldr (op +) 0w0 b (0w165, 0w44)
 
 val test11a = 
-    chkiteri mapi (fn x => 0w2*x) (b, 0, NONE) (fromList [0w88,0w110,0w132], 2)
+    chkiteri mapi (fn x => 0w2*x) b (fromList [0w88,0w110,0w132], 2)
 val test11b = 
-    chkiteri mapi (fn x => 0w2*x) (b, 1, NONE) (fromList [0w110,0w132], 2)
+    chkiteri appi (fn x => ignore(0w2*x)) b ((), 2)
 val test11c = 
-    chkiteri mapi (fn x => 0w2*x) (b, 1, SOME 0) (fromList [], ~1)
+    chkiteri findi (fn x => false) b (NONE, 2)
 val test11d = 
-    chkiteri mapi (fn x => 0w2*x) (b, 1, SOME 1) (fromList [0w110], 1)
+    chkfoldi foldli (op +) 0w0 b (0w165, 2)
 val test11e = 
-    chkiteri mapi (fn x => 0w2*x) (b, 3, NONE) (fromList [], ~1)
-
-val test11f =
-    (mapi #2 (b, 0, SOME 4) seq "WRONG") 
-    handle Subscript => "OK" | _ => "WRONG";
-val test11g =
-    (mapi #2 (b, 3, SOME 1) seq "WRONG") 
-    handle Subscript => "OK" | _ => "WRONG";
-val test11h =
-    (mapi #2 (b, 4, SOME 0) seq "WRONG") 
-    handle Subscript => "OK" | _ => "WRONG";
-val test11i =
-    (mapi #2 (b, 4, NONE) seq "WRONG") 
-    handle Subscript => "OK" | _ => "WRONG";
+    chkfoldi foldri (op +) 0w0 b (0w165, 0)
 
 val test12a = 
     check'(fn _ => 
