@@ -9,7 +9,7 @@ BASELIBS=
 
 !include ..\Makedefs.w32
 
-BASEOBJS=interp.obj misc.obj stacks.obj fix_code.obj main.obj fail.obj signals.obj \
+BASEOBJS=interp.obj expand.obj misc.obj stacks.obj fix_code.obj main.obj fail.obj signals.obj \
   freelist.obj major_gc.obj minor_gc.obj memory.obj alloc.obj roots.obj \
   compare.obj ints.obj floats.obj str.obj io.obj \
   extern.obj externcp.obj intern.obj interncp.obj \
@@ -28,7 +28,7 @@ BASEPRIMS=$(UNIXPRIMS)
 
 PRIMS=$(BASEPRIMS) $(ADDPRIMS)
 OBJS=$(BASEOBJS) $(ADDOBJS)
-LIBS=$(BASELIBS) $(ADDLIBS)
+LIBS=$(BASELIBS) $(ADDRUNLIBS)
 CFLAGS=$(BASECFLAGS) $(ADDCFLAGS)
 
 all: camlrt.dll
@@ -43,15 +43,15 @@ camlrt.dll: $(OBJS) prims.obj
 #	$(CC) $(CFLAGS) /Fecamlrunr prims.obj $(OBJS) $(LIBS) -lreadline
 
 clean:
-	del camlrt.dll
-	del camlrt.exp
-	del camlrt.lib
-	del *.obj
-	del prims
-	del prims.c
-	del opnames.h
-	del jumptbl.h
-	del makefile.bak
+	-del camlrt.dll
+	-del camlrt.exp
+	-del camlrt.lib
+	-del *.obj
+	-del prims
+	-del prims.c
+	-del opnames.h
+	-del jumptbl.h
+	-del makefile.bak
 
 install:
 	copy/b camlrt.dll $(BINDIR)
@@ -97,8 +97,8 @@ floats.obj : floats.c alloc.h misc.h config.h ../config.w32/m.h ../config.w32/s.
   debugger.h fail.h memory.h gc.h major_gc.h freelist.h minor_gc.h
 freelist.obj : freelist.c config.h ../config.w32/m.h ../config.w32/s.h debugger.h misc.h \
   mlvalues.h freelist.h gc.h gc_ctrl.h major_gc.h
-gc_ctrl.obj : gc_ctrl.c alloc.h misc.h config.h ../config.w32/m.h ../config.w32/s.h mlvalues.h \
-  debugger.h gc.h gc_ctrl.h major_gc.h freelist.h minor_gc.h
+gc_ctrl.obj : gc_ctrl.c alloc.h misc.h config.h ../config.w32/m.h \
+  ../config.w32/s.h mlvalues.h debugger.h gc.h gc_ctrl.h major_gc.h freelist.h minor_gc.h
 hash.obj : hash.c mlvalues.h config.h ../config.w32/m.h ../config.w32/s.h misc.h memory.h \
   gc.h major_gc.h freelist.h minor_gc.h str.h
 intern.obj : intern.c debugger.h misc.h config.h ../config.w32/m.h ../config.w32/s.h mlvalues.h \

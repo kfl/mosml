@@ -1,4 +1,4 @@
-# Win32 Makefile for Moscow ML 1.43 dynamic libraries: the interface example
+# Win32 Makefile for Moscow ML dynamic libraries: the interface example
 
 CC=cl
 OPTS= /nologo /LD /MT /W1 /GB /O2 /Oy- /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"

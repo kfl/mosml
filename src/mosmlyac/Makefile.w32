@@ -19,8 +19,8 @@ mosmlyac.exe: $(OBJS)
 	$(CC) $(CFLAGS) /Femosmlyac.exe $(OBJS) $(LIBS) /link /subsystem:console
 
 clean:
-	del *.obj
-	del mosmlyac.exe
+	-del *.obj
+	-del mosmlyac.exe
 
 install:
 	copy/b mosmlyac.exe $(BINDIR)\mosmlyac.exe

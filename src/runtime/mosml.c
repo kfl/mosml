@@ -1529,32 +1529,68 @@ char* exnmessage_aux(value exn)
   value argval = Field(exn, 1);
   if (strref == Field(global_data, SYS__EXN_SYSERR)) {
     value msgval = Field(argval, 0);
-    snprintf(buf, BUFSIZE, "%s: %s", 
+#if defined(__CYGWIN__) || defined(hpux)
+    sprintf(buf, "%s: %s",
 	     String_val(strval), String_val(msgval));
+#elif defined(WIN32)
+    _snprintf(buf, BUFSIZE, "%s: %s",
+	     String_val(strval), String_val(msgval));
+#else
+    snprintf(buf, BUFSIZE, "%s: %s",
+	     String_val(strval), String_val(msgval));
+#endif
     return buf;
   } else if (strref == Field(global_data, SYS__EXN_IO)) {
     value causeval = Field(argval, 0);
     value fcnval   = Field(argval, 1);
     value nameval  = Field(argval, 2);
     char* causetxt = exnmessage_aux(causeval);
+#if defined(__CYGWIN__) || defined(hpux)
+    sprintf(buf, "%s: %s failed on `%s'; %s", 
+	     String_val(strval), String_val(fcnval), 
+	     String_val(nameval), causetxt);
+#elif defined(WIN32)
+    _snprintf(buf, BUFSIZE, "%s: %s failed on `%s'; %s", 
+	     String_val(strval), String_val(fcnval), 
+	     String_val(nameval), causetxt);
+#else
     snprintf(buf, BUFSIZE, "%s: %s failed on `%s'; %s", 
 	     String_val(strval), String_val(fcnval), 
 	     String_val(nameval), causetxt);
+#endif
     free(causetxt);
     return buf;
   } else if (Is_block(argval)) {
     if (Tag_val(argval) == String_tag) { 
+#if defined(__CYGWIN__) || defined(hpux)
+      sprintf(buf, "%s: %s", String_val(strval), String_val(argval));
+#elif defined(WIN32)
+      _snprintf(buf, BUFSIZE, "%s: %s", String_val(strval), String_val(argval));
+#else
       snprintf(buf, BUFSIZE, "%s: %s", String_val(strval), String_val(argval));
+#endif
       return buf;
     } else if (Tag_val(argval) == Double_tag){
       char doubletxt[64];
       string_of_float_aux(doubletxt, Double_val(argval));
+#if defined(__CYGWIN__) || defined(hpux)
+      sprintf(buf, "%s: %s", String_val(strval), doubletxt);
+#elif defined(WIN32)
+      _snprintf(buf, BUFSIZE, "%s: %s", String_val(strval), doubletxt);
+#else
       snprintf(buf, BUFSIZE, "%s: %s", String_val(strval), doubletxt);
+#endif
       return buf;
     }
   }
   /* If unknown exception, copy the name and return it */
-  snprintf(buf, BUFSIZE, "%s", String_val(strval));  
+#if defined(__CYGWIN__)
+  sprintf(buf, "%s", String_val(strval));
+#elif defined(WIN32)
+  _snprintf(buf, BUFSIZE, "%s", String_val(strval));
+#else
+  snprintf(buf, BUFSIZE, "%s", String_val(strval));
+#endif
   return buf;
 #undef BUFSIZE 
 }

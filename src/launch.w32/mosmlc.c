@@ -238,7 +238,7 @@ main(int argc, char** argv)
            "%s \"%s\\mosmllnk\" -stdlib \"%s\" %s %s -exec \"%s\" %s",
            camlrunm, stdlib, stdlib, includes,
            linkopt, linkout, linkfiles);
-    fprintf(stderr, "%s\n", cmd);
+    // fprintf(stderr, "%s\n", cmd);
     status = ExecCmd(cmd);
     return status;
   }

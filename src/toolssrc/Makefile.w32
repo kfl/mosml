@@ -32,16 +32,16 @@ Deplex.sml: Deplex.lex
 Mosmldep.sml: Mosmldep.mlp
 
 clean:
-	del *.ui
-	del *.uo
-	del Makefile.bak
-	del Deppars.sig
-	del Deppars.sml
-	del Deplex.sig
-	del Deplex.sml
-	del Mosmldep.sml
-	del cutdeps
-	del mosmldep
+	-del *.ui
+	-del *.uo
+	-del Makefile.bak
+	-del Deppars.sig
+	-del Deppars.sml
+	-del Deplex.sig
+	-del Deplex.sml
+	-del Mosmldep.sml
+	-del cutdeps
+	-del mosmldep
 
 install:
 	copy /b cutdeps $(TOOLDIR)

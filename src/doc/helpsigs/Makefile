@@ -7,7 +7,6 @@ MOSMLC=mosmlc -c
 MOSMLL=mosmlc
 MOSMLLEX=mosmllex
 MOSMLYACC=mosmlyac
-CPP=/lib/cpp -P -traditional -Dunix -Umsdos
 
 all: Asynt.uo Database.uo Hasht.uo Htmlsigs.uo Lexer.uo Parser.uo Parsspec.uo \
 	Printbase.uo Stack.uo Texsigs.uo makebase.uo makebase

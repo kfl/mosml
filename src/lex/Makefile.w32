@@ -25,13 +25,13 @@ mosmllex: $(OBJS)
 	$(MOSMLL) $(LINKFLAGS) -noheader -o mosmllex Mainlex.uo
 
 clean:
-	del *.ui
-	del *.uo
-	del mosmllex
-	del Grammar.sml
-	del Grammar.sig
-	del Scanner.sml
-	del Makefile.bak
+	-del *.ui
+	-del *.uo
+	-del mosmllex
+	-del Grammar.sml
+	-del Grammar.sig
+	-del Scanner.sml
+	-del Makefile.bak
 
 install:
 	copy /b ..\launch.w32\header.exe+mosmllex $(BINDIR)\mosmllex.exe

@@ -221,6 +221,9 @@ void handle_ctrl_c(int sig)
 #endif /* WIN32 */
 
 void nonblocking_mode(int fd, int nonblocking) {
+#ifdef WIN32
+  int retcode = -1;
+#else
   int retcode = fcntl(fd, F_GETFL);
   if (retcode != -1) {
     if (nonblocking) 
@@ -228,8 +231,9 @@ void nonblocking_mode(int fd, int nonblocking) {
     else
       retcode = fcntl(fd, F_SETFL, retcode & (~O_NONBLOCK));
   }
+#endif
   if (retcode == -1)
-    failwith("set_blocking_io");
+    failwith("nonblocking_mode");
 }
 
 /* Risk: If an interrupt occurs after non-blocking mode has been set,

@@ -5,7 +5,7 @@
 
 # Where to find crypt header file and compiled library
 
-CRYPTDIR=..\cw32crypt.w32
+CRYPTDIR=..\w32\cw32crypt.w32
 
 CC=cl
 OPTS= /nologo /LD /MT /W1 /GB /O2 /Oy- /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"

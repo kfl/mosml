@@ -92,20 +92,20 @@ Config.sml: Config.mlp
 Filename.sml: Filename.mlp
 
 clean:
-	del mosmlcmp
-	del mosmllnk
-	del mosmltop
-	del *.ui
-	del *.uo
-	del Opcodes.sml
-	del Parser.sml
-	del Parser.sig
-	del Lexer.sml
-	del Config.sml
-	del Filename.sml
-	del Predef.sml
-	del Prim_c.sml
-	del Makefile.bak
+	-del mosmlcmp
+	-del mosmllnk
+	-del mosmltop
+	-del *.ui
+	-del *.uo
+	-del Opcodes.sml
+	-del Parser.sml
+	-del Parser.sig
+	-del Lexer.sml
+	-del Config.sml
+	-del Filename.sml
+	-del Predef.sml
+	-del Prim_c.sml
+	-del Makefile.bak
 
 install:
 	copy /b mosmlcmp $(LIBDIR)
@@ -114,7 +114,7 @@ install:
 
 depend: Filename.sml Config.sml Opcodes.sml Parser.sml Parser.sig Lexer.sml \
     Predef.sml Prim_c.sml
-	del Makefile.bak
+	-del Makefile.bak
 	ren Makefile Makefile.bak
 	$(MOSMLCUT) < Makefile.bak > Makefile
 	$(MOSMLDEP) >> Makefile

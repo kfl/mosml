@@ -1,4 +1,4 @@
-# Win32 Makefile for Moscow ML 1.43 dynamically loadable regex library
+# Win32 Makefile for Moscow ML dynamically loadable regex library
 
 # The runtime system must be compiled with support for dynamic libraries.
 # The GNU REGEX persistent hashtables must be installed.
