@@ -2940,6 +2940,7 @@ and elabSigExp (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE:TyE
 	  in  decrBindingLevel();
 	      (LAMBDAsig(T'',FUNmod (T,M,(EXISTSexmod([],copyMod T'toT'' [] M')))))
 	  end
+(*
    | WHEREsigexp (sigexp, tyvarseq, longtycon,ty) => (* cvr: TODO review *)
       (case (elabSigExp ME FE GE UE VE TE  sigexp) of
 	    (LAMBDAsig(_,FUNmod _)) =>
@@ -2996,6 +2997,112 @@ and elabSigExp (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE:TyE
 		       raise Toplevel);
 		 LAMBDAsig(remove tn T,STRmod RS) 
 	      end)
+*)
+   | WHEREsigexp (sigexp, tyvarseq, longtycon,ty) => (* cvr: TODO review *)
+      (case (elabSigExp ME FE GE UE VE TE  sigexp) of
+	    (LAMBDAsig(_,FUNmod _)) =>
+		errorMsg loc "Illegal where constraint: the constrained signature specifies a functor but should specify a structure"
+	|   (LAMBDAsig(T,STRmod RS)) =>
+	      let val S = SofRecStr RS
+		  val _ = incrBindingLevel();
+		  val _ = refreshTyNameSet PARAMETERts T;
+		  val _ = checkDuplIds tyvarseq "Duplicate type parameter"
+                  val pars = map (fn tyvar => hd(#id(#qualid tyvar))) tyvarseq
+		  val vs = map (fn tv => newExplicitTypeVar tv) pars
+		  val us = map TypeOfTypeVar vs
+		  val UE' = zip2 pars us
+                  val {qualid = qualid,info={idLoc,...}} = longtycon
+		  val tycon = hd (#id qualid)
+                  val tau = elabTy ME FE GE (UE' @ UE) VE TE ty
+                  val infTyFun = TYPEtyfun(vs,tau)
+		  val infTyStr = (infTyFun,ConEnv [])
+                  val _ = decrBindingLevel();
+                  val specTyStr = findLongTyConInStr S idLoc qualid
+                  val specTyFun = normTyFun (#1 specTyStr)
+                  val tn = (choose (equalsTyFunTyName specTyFun) T)
+                           handle Subscript =>
+			    (msgIBlock 0;
+			     errLocation loc;
+			     errPrompt "Illegal where constraint: the type constructor "; printQualId qualid;msgEOL();
+                             errPrompt "refers to a transparent type specification";msgEOL();
+                             errPrompt "but should refer to an opaque type or datatype specification";msgEOL();
+			     msgEBlock();
+			     raise Toplevel)
+		  exception IllFormed
+	      in  			
+		 setTnSort (#info tn) (VARIABLEts);
+		 ((realizeLongTyCon qualid infTyStr specTyStr)
+		  handle MatchError matchReason => 
+		      (msgIBlock 0;
+		       errLocation loc;
+		       errPrompt "Illegal where constraint: the type constructor "; printQualId qualid;msgEOL();
+		       errPrompt "cannot be constrained in this way because ...";msgEOL();
+		       msgEBlock();
+		       errMatchReason "constraint" "signature" matchReason;
+		       raise Toplevel));
+		 ((case !(#tnConEnv(!(#info(tn)))) of (* check well-formedness *)
+		       NONE => () (* nothing to check *)
+		     | SOME specConEnv => 
+			   (case normType tau of (* eta-equivalent to a type application? *)
+				CONt(ts,tyapp) => 
+				    let fun equal_args [] [] = ()
+					|   equal_args ((VARt w)::ts) (v::vs) = 
+					     if w = v 
+					     then equal_args ts vs
+					     else raise IllFormed
+                                        |   equal_args _ _ = raise IllFormed
+				    in
+					equal_args ts vs;
+					case conEnvOfTyApp tyapp of
+					    NONE => raise IllFormed
+					  | SOME infConEnv => (* equivalent conenvs ? *)
+					        let val infMod = STRmod (NONrec (STRstr
+							(NILenv,NILenv,NILenv,
+							 mk1Env tycon (infTyFun,infConEnv),
+							 (VEofCE infConEnv))))
+						    val specMod =  STRmod (NONrec (STRstr 
+							(NILenv,NILenv,NILenv,
+							 mk1Env tycon (specTyFun,specConEnv),
+							 (VEofCE specConEnv))))
+						in
+						   ((matchMod infMod specMod)
+						     handle MatchError matchReason => 
+							 (msgIBlock 0;
+							  errLocation loc;
+							  errPrompt "Illegal where constraint: the datatype constructor ";
+							   printQualId qualid;msgEOL();
+							  errPrompt "cannot be constrained in this way because ";msgEOL();
+							  errPrompt "the constraint's constructor environment \
+ 							   \does not match the specification's constructor environment";msgEOL();
+							  msgEBlock();
+							  errMatchReason "constraint" "specification" matchReason;
+							  raise Toplevel);
+						     (matchMod specMod infMod)
+						     handle MatchError matchReason => 
+							 (msgIBlock 0;
+							  errLocation loc;
+							  errPrompt "Illegal where constraint: the datatype constructor ";
+							   printQualId qualid;msgEOL();
+							  errPrompt "cannot be constrained in this way because ";msgEOL();
+							  errPrompt "the specification's constructor environment \
+ 							   \does not match the constraint's constructor environment";msgEOL();
+							  msgEBlock();
+							  errMatchReason "specification" "constraint" matchReason;
+							  raise Toplevel))
+						end
+				    end					
+			      | _ => raise IllFormed))
+		  handle IllFormed =>
+		      (msgIBlock 0;
+		       errLocation loc;
+		       errPrompt "Illegal where constraint: the type constructor ";printQualId qualid;msgEOL();
+		       errPrompt "is specified as a datatype"; msgEOL();
+		       errPrompt "but its constraint is not a datatype";msgEOL();
+		       msgEBlock();
+		       raise Toplevel));
+		 LAMBDAsig(remove tn T,STRmod RS) 
+	      end)
+
    | RECsigexp ((_,modid),sigexp as (locforward,_),sigexp' as (locbody,_)) =>
           let val LAMBDAsig(T,M) = elabSigExp ME FE GE UE VE TE  sigexp
 	      val (ME',RS) = 
