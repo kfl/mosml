@@ -1,9 +1,10 @@
 (* GenPm -- computes .pm for a (list of) old style Moscow ML source file(s). 
    Handles strings and nested comments correctly; 
 
-   Based on Peter Sestoft's mosmldep tool.
+   Based on Peter Sestoft's mosmldep tool, first modified for Holmake,
+   then for moscm, and finally(?) for this purpose.
 
-   Last modified: $Date: 2000-02-25 09:33:04 $ by $Author: kla $
+   Last modified: $Date: 2000-02-25 09:35:25 $ by $Author: kla $
 
    DOES NOT normalizes file names under DOS. (yet)
 
