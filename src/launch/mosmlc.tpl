@@ -80,7 +80,7 @@ while : ; do
       stdlib=$2
       shift;;
     -v|-version)
-      echo "The Moscow ML system, version 1.99"
+      echo "The Moscow ML system, version 2.00 (June 2000)"
       echo "  (standard library from $stdlib)"
       $mosmlbin/camlrunm -V
       $mosmlbin/camlrunm $stdlib/mosmlcmp -version
