@@ -1,4 +1,4 @@
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 [opening file "test.sml"]
 [opening file "array.sml"]
@@ -373,15 +373,15 @@ Enter `quit();' to quit.
 > val checkrange = fn : int * int -> (int -> bool) -> string
 [closing file "auxil.sml"]
 > val it = () : unit
-This is (local time) now:        Mon Jan 24 22:44:26 2000
-This is UTC now:                 Mon Jan 24 21:44:26 2000
-This is an hour from now:        Mon Jan 24 23:44:26 2000
-This is a day from now:          Tue Jan 25 22:44:26 2000
-This is a week from now:         Mon Jan 31 22:44:26 2000
-This is 120 days from now:       Tue May 23 23:44:26 2000
-This is 160 days from now:       Sun Jul  2 23:44:26 2000
-This is 200 days from now:       Fri Aug 11 23:44:26 2000
-This is 240 days from now:       Wed Sep 20 23:44:26 2000
+This is (local time) now:        Mon Feb  7 17:26:42 2000
+This is UTC now:                 Mon Feb  7 16:26:42 2000
+This is an hour from now:        Mon Feb  7 18:26:42 2000
+This is a day from now:          Tue Feb  8 17:26:42 2000
+This is a week from now:         Mon Feb 14 17:26:42 2000
+This is 120 days from now:       Tue Jun  6 18:26:42 2000
+This is 160 days from now:       Sun Jul 16 18:26:42 2000
+This is 200 days from now:       Fri Aug 25 18:26:42 2000
+This is 240 days from now:       Wed Oct  4 18:26:42 2000
 This is the epoch (UTC):         Thu Jan  1 00:00:00 1970
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
@@ -390,10 +390,10 @@ The UTC millenium (local time):  Sat Jan  1 01:00:00 2000
 The local millenium (UTC time):  Fri Dec 31 23:00:00 1999
 The UTC+01 millenium (UTC):      Fri Dec 31 23:00:00 1999
 The UTC-01 millenium (UTC):      Sat Jan  1 01:00:00 2000
-This is today's number:          024 (internally: 23)
+This is today's number:          038 (internally: 37)
 This is today's weekday:         Monday
-This is the name of this month:  January
-Today's ISO date:                2000-01-24
+This is the name of this month:  February
+Today's ISO date:                2000-02-07
 > val test1 = "OK" : string
   val test2 = "OK" : string
   val test3 = "OK" : string
@@ -1122,14 +1122,14 @@ abcde <--- this should read abcde
 > val it = () : unit
 
 Each line below should show roughly the same User, System, and Gc times:
-User: 0.160  System: 0.000  Gc: 0.000  Real: 0.159
+User: 0.150  System: 0.000  Gc: 0.000  Real: 0.155
+User: 0.160  System: 0.000  Gc: 0.000  Real: 0.157
+User: 0.150  System: 0.000  Gc: 0.000  Real: 0.154
+User: 0.160  System: 0.000  Gc: 0.000  Real: 0.152
 User: 0.140  System: 0.000  Gc: 0.000  Real: 0.148
-User: 0.150  System: 0.000  Gc: 0.000  Real: 0.148
-User: 0.150  System: 0.000  Gc: 0.000  Real: 0.148
-User: 0.160  System: 0.000  Gc: 0.000  Real: 0.154
-User: 0.140  System: 0.000  Gc: 0.000  Real: 0.149
-User: 0.150  System: 0.000  Gc: 0.000  Real: 0.149
 User: 0.150  System: 0.000  Gc: 0.000  Real: 0.150
+User: 0.160  System: 0.000  Gc: 0.000  Real: 0.152
+User: 0.140  System: 0.000  Gc: 0.000  Real: 0.148
 > val test1 = "OK" : string
   val test2 = "OK" : string
   val test3 = "OK" : string
@@ -1291,7 +1291,7 @@ test5:
 test6:
 test7:
 test8:
-//////////////////////////
+///////////////////////////////////////////
 > val a = <array> : int list array
   val test1 = "OK" : string
   val test2 = "OK" : string

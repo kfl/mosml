@@ -1,7 +1,7 @@
 cd interface; make test 
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/interface'
 mosml smlside.sml
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 [opening file "smlside.sml"]
 > val it = () : unit
@@ -61,7 +61,7 @@ make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/interface'
 cd intinf; make test 
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/intinf'
 mosml testintinf.sml
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 [opening file "testintinf.sml"]
 > val it = () : unit
@@ -128,18 +128,18 @@ make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/intinf'
 cd mgd; make test 
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/mgd'
 mosml testgdimage.sml
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 [opening file "testgdimage.sml"]
 > val it = () : unit
 Now try
-       xv try.gif hist.gif pie.gif graph.gif
+       xv try.png hist.png pie.png graph.png
 
 make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/mgd'
 cd mgdbm; make test 
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/mgdbm'
 mosml -P full testgdbm.sml
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 [opening file "testgdbm.sml"]
 > val it = () : unit
@@ -234,7 +234,7 @@ make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/mgdbm'
 cd mmysql; make test 
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/mmysql'
 mosml testmysql.sml
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 [opening file "testmysql.sml"]
 > val it = () : unit
@@ -387,7 +387,7 @@ make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/mmysql'
 cd mpq; make test 
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/mpq'
 mosml testpsql.sml
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 [opening file "testpsql.sml"]
 > val it = () : unit
@@ -536,7 +536,7 @@ make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/mpq'
 cd mregex; make test 
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/mregex'
 mosml testregex.sml
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 [opening file "testregex.sml"]
 > val it = () : unit
@@ -605,21 +605,21 @@ User: 0.000  System: 0.000  GC: 0.000  Real: 0.001
 size(s) = 368; length(res) = 80
 User: 0.000  System: 0.000  GC: 0.000  Real: 0.002
 size(s) = 736; length(res) = 160
-User: 0.010  System: 0.000  GC: 0.000  Real: 0.010
+User: 0.010  System: 0.000  GC: 0.010  Real: 0.010
 size(s) = 1472; length(res) = 320
 User: 0.010  System: 0.000  GC: 0.000  Real: 0.009
 size(s) = 2944; length(res) = 640
 User: 0.020  System: 0.000  GC: 0.000  Real: 0.020
 size(s) = 5888; length(res) = 1280
-User: 0.030  System: 0.000  GC: 0.010  Real: 0.035
+User: 0.040  System: 0.000  GC: 0.030  Real: 0.035
 size(s) = 11776; length(res) = 2560
-User: 0.070  System: 0.000  GC: 0.010  Real: 0.067
+User: 0.060  System: 0.010  GC: 0.030  Real: 0.067
 size(s) = 23552; length(res) = 5120
-User: 0.160  System: 0.000  GC: 0.040  Real: 0.154
+User: 0.160  System: 0.000  GC: 0.020  Real: 0.154
 size(s) = 47104; length(res) = 10240
-User: 0.270  System: 0.000  GC: 0.000  Real: 0.276
+User: 0.280  System: 0.000  GC: 0.010  Real: 0.278
 size(s) = 94208; length(res) = 20480
-User: 0.590  System: 0.000  GC: 0.070  Real: 0.586
+User: 0.580  System: 0.000  GC: 0.070  Real: 0.584
 size(s) = 188416; length(res) = 40960
 > val test1a = "OK" : string
   val test1b = "OK" : string
@@ -671,7 +671,7 @@ cd munix; make test
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/munix'
 gcc -O2 -o sieve sieve.c
 mosml testunix.sml
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 [opening file "testunix.sml"]
 > val it = () : unit
