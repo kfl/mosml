@@ -54,21 +54,25 @@ struct
 	else ()
       end
 
-    fun files_equal file1 file2 : bool =
-      let 
-	fun read f = 
-	  let val is = BinIO.openIn f
-	  in (BinIO.inputAll is before BinIO.closeIn is)
-	    handle ? => (BinIO.closeIn is; raise ?)
-	  end 
-      in read file1 = read file2
-      end handle _ => false
+    fun filesEqual file1 file2 =
+	let fun loop dev1 dev2 =
+		(BinIO.endOfStream dev1 andalso BinIO.endOfStream dev2)
+		orelse
+		(BinIO.inputN(dev1,128) = BinIO.inputN(dev2,128)
+		 andalso loop dev1 dev2)
+	    val dev1 = BinIO.openIn file1
+	    val dev2 = (BinIO.openIn file2) handle e => ( BinIO.closeIn dev1
+                                                        ; raise e)
+	in  (loop dev1 dev2) handle e => ( BinIO.closeIn dev1
+					 ; BinIO.closeIn dev2
+                                         ; false)
+	end handle _ => false
 
     fun check_ui_file file : bool (*true if dirty *) =
       let val ui = smlToUi file
 	val ui' = OS.Path.joinBaseExt{base=ui, ext=SOME "tmp"} 
       in
-	if files_equal ui ui' then
+	if filesEqual ui ui' then
 	  (OS.FileSys.rename {old=ui',new=ui}; false)
 	else true
       end handle _ => true
