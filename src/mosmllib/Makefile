@@ -20,7 +20,7 @@ all: Array.uo Array2.uo Arraysort.uo \
      Weak.uo Word.uo Word8.uo Word8Array.uo Word8Vector.uo \
      Obj.uo Nonstdio.uo Lexing.uo Parsing.uo Mosmlcgi.uo Gdbm.uo Polygdbm.uo \
      Mosmlcookie.uo Msp.uo Mysql.uo Postgres.uo Regex.uo Socket.uo \
-     Signal.uo Unix.uo
+     Signal.uo Unix.uo Gdimage.uo
 
 # Make with the current compiler
 current:
@@ -55,31 +55,31 @@ depend: Array.sml FileSys.sml Help.sml Int.sml Mosml.sml OS.sml Path.sml \
 	$(MOSMLDEP) >> Makefile
 
 ### DO NOT DELETE THIS LINE
-Signal.uo: Signal.ui Word.ui 
-Signal.ui: Word.ui 
+Gdimage.uo: Gdimage.ui Dynlib.ui Vector.ui 
 Unix.uo: Unix.ui Signal.ui Word.ui Dynlib.ui Option.ui Vector.ui Process.ui \
     TextIO.ui Obj.uo 
 Unix.ui: Signal.ui Process.ui TextIO.ui 
+Signal.uo: Signal.ui Word.ui 
+Signal.ui: Word.ui 
+Socket.ui: Word8Array.ui Word8Vector.ui Time.ui 
 Socket.uo: Socket.ui Word.ui Dynlib.ui Word8Array.ui Vector.ui \
     Word8Vector.ui Time.ui 
-Socket.ui: Word8Array.ui Word8Vector.ui Time.ui 
 Regex.uo: Regex.ui Word.ui Dynlib.ui List.ui Vector.ui Substring.ui 
-Mysql.uo: Mysql.ui String.ui Real.ui Dynlib.ui StringCvt.ui List.ui Date.ui \
-    Option.ui Vector.ui Substring.ui Int.ui 
-Mysql.ui: Date.ui Vector.ui 
 Postgres.uo: Postgres.ui String.ui Real.ui Dynlib.ui StringCvt.ui List.ui \
     Date.ui Option.ui Word8Array.ui Vector.ui Substring.ui Int.ui Bool.ui 
 Postgres.ui: Date.ui Word8Array.ui Vector.ui 
-Mosmlcookie.uo: Mosmlcookie.ui String.ui List.ui Date.ui Option.ui \
-    Process.ui Substring.ui Bool.ui 
-Mosmlcookie.ui: Date.ui 
+Mysql.uo: Mysql.ui String.ui Real.ui Dynlib.ui StringCvt.ui List.ui Date.ui \
+    Option.ui Vector.ui Substring.ui Int.ui 
+Mysql.ui: Date.ui Vector.ui 
 Msp.uo: Msp.ui String.ui StringCvt.ui Postgres.ui Mysql.ui List.ui \
     Option.ui Vector.ui TextIO.ui Int.ui Mosmlcgi.ui Char.ui 
 Msp.ui: Postgres.ui Mysql.ui 
-Weak.uo: Weak.ui 
+Mosmlcookie.uo: String.ui List.ui Date.ui Option.ui Process.ui Substring.ui \
+    Bool.ui 
 Word8Vector.uo: Word8Vector.ui List.ui Word8.ui 
 Word8Array.uo: Word8Array.ui List.ui Word8.ui Word8Vector.ui 
 Word.uo: Word.ui String.ui StringCvt.ui Char.ui 
+Weak.uo: Weak.ui 
 Vector.uo: Vector.ui List.ui 
 Strbase.uo: Strbase.ui List.ui 
 Process.uo: Process.ui List.ui BasicIO.ui 
