@@ -36,11 +36,15 @@ fun main () =
                ,("-debug",      ArgParse.Unit (assignTrue PMCompile.debugFlag))
 	       ] (assign filename)
     in  if !filename = "" then 
-	    app print ["Error: no project file specified\n", 
-		       usage]
+	    ( app print ["Error: no project file specified\n", 
+			 usage]
+            ; OS.Process.exit OS.Process.failure
+            )
 	else compileAndLink (!filename)
     end
 end
 
-val _ = main()
+val _ = (main() before OS.Process.exit OS.Process.success)
+        handle e => (print ("Error occurred:\n"^exnMessage e^"\n");
+		     OS.Process.exit OS.Process.failure)
 

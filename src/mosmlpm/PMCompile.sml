@@ -30,6 +30,14 @@ struct
     val toUi = newExt "ui"
     val toUo = newExt "uo"
 
+
+    fun unwindChDir toDir body =
+	let val current = OS.FileSys.getDir() 
+	                  before OS.FileSys.chDir toDir 
+	in  body() before OS.FileSys.chDir current
+	    handle e => (OS.FileSys.chDir current; raise e)
+	end
+
     fun normalizeName filename = OS.FileSys.fullPath filename
 		  
     (* Functions fo manipulating context *)
@@ -167,13 +175,17 @@ struct
 	    val peek   = Polyhash.peek table
 	    val update = Polyhash.insert table
 
-	    fun compileImports imps context = 
+	    fun isIn name = List.exists (fn n => n = name)
+	    fun indent files =
+		String.concat(foldl (fn(n,r) => "   "::n::"\n"::r) [] files)
+
+	    fun compileImports openFiles imps context = 
 		let fun oneImport (imp,cont) =
 			let val name = normalizeName imp 
 			in case peek name of
 			       SOME fs => addImport fs cont
 			     | NONE    => 
-			       let val res = compileFile name
+			       let val res = compileFile openFiles name
 			       in  update (name,res)
 			         ; addImport res cont
 			       end
@@ -181,21 +193,23 @@ struct
 		in  List.foldl oneImport context imps
 		end
 		    
-	    and compilePM prefix (PM{imports,body}) =
-		let val context = scope(compileImports imports initCont)
+	    and compilePM openFiles prefix (PM{imports,body}) =
+		let val context = scope(compileImports openFiles imports 
+					                         initCont)
 		in  dropImports(compileBody prefix body context)
 		end
 		    
-	    and compileFile filename = 
+	    and compileFile openFiles filename = 
 		let val name    = normalizeName filename
 		    val path    = OS.Path.dir name
-		    val current = OS.FileSys.getDir() 
-				  before OS.FileSys.chDir path 
-		in  (compilePM path (parseFile name) 
-		     before OS.FileSys.chDir current)
-		    handle e => (OS.FileSys.chDir current; raise e)
+		in  if isIn name openFiles then
+		       error ("Cycle dectected:\n"^
+			      indent (name :: openFiles))
+		    else unwindChDir path (fn() =>
+		          compilePM (name :: openFiles) path (parseFile name))
+			
 		end
-	in  compileFile filename
+	in  compileFile [] filename
 	end
 
     
@@ -237,11 +251,8 @@ struct
 	    and ifindFiles filename accu =
 		let val name    = normalizeName filename
 		    val path    = OS.Path.dir name
-		    val current = OS.FileSys.getDir() 
-				  before OS.FileSys.chDir path 
-		in  (findFilesPM path (parseFile name) accu 
-		     before OS.FileSys.chDir current)
-		    handle e => (OS.FileSys.chDir current; raise e)
+		in  unwindChDir path (fn() =>
+	       	    findFilesPM path (parseFile name) accu)
 		end
 	in  List.rev(ifindFiles filename [])
 	end
