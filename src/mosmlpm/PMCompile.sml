@@ -53,7 +53,7 @@ struct
 
     fun makeTempName file =
 	let val {base,ext} = OS.Path.splitBaseExt file
-	    val base = String.concat[base,"-",ext]
+	    val base = String.concat[base,"-",Option.valOf ext]
 	in  OS.Path.joinBaseExt{base = base, ext = SOME "tmp"}
 	end
 
