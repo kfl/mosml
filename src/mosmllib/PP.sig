@@ -95,11 +95,11 @@ val pp_to_string   : int -> (ppstream -> 'a -> unit) -> 'a -> string
 
    [with_pp consumer f] makes a new ppstream from the consumer and
    applies f (which can be thought of as a producer) to that
-   ppstream, then flushed the ppstream and returns the value of f.
+   ppstream, then flushes the ppstream and returns the value of f.
 
    [pp_to_string linewidth printit x] constructs a new ppstream
    ppstrm whose consumer accumulates the output in a string s.  Then
-   evaluates (printit ppstrm x) and finally returns the string s.
+   it evaluates (printit ppstrm x) and finally returns the string s.
 
    
    Example 1: A simple prettyprinter for Booleans:

@@ -1,13 +1,13 @@
-File install.txt.w32 for Moscow ML 2.00 for Win95/98/NT/2000 (June 2000)
+File install.txt.w32 for Moscow ML 2.00 for Win95/98/ME/NT/2000/XP (June 2000)
 
 
 SYSTEM REQUIREMENTS
 
-Moscow ML requires Windows 95, 98, NT or 2000. The installation
-requires around 18 MB disk space.
+Moscow ML requires Windows 95, 98, ME, NT, 2000 or XP. The
+installation requires around 18 MB disk space.
 
 
-INSTALLING MOSCOW ML (BINARIES ONLY) UNDER WINDOWS 95/98/NT
+INSTALLING MOSCOW ML (BINARIES ONLY) UNDER WINDOWS 95/98/ME/NT/2000/XP
 
 (1) Change directory to C:\ and unpack the Moscow ML distribution
     by executing
@@ -30,15 +30,24 @@ INSTALLING MOSCOW ML (BINARIES ONLY) UNDER WINDOWS 95/98/NT
           tools/        mosmldep, Makefile.stub
 
 (2) Add C:\mosml\bin to the PATH variable, and set the environment
-    variable `mosmllib' to C:\mosml\lib -- that is, in the case of
-    Windows 95/98 your AUTOEXEC.BAT file should contain something like:
+     variable `mosmllib' to C:\mosml\lib.  
 
-        set PATH=C:\dos;  ...  ;C:\mosml\bin
-        set MOSMLLIB=C:\mosml\lib
+    (a) In the case of Windows 95/98/ME your AUTOEXEC.BAT file should 
+        contain something like:
 
-(3) In the case of Windows 95/98 reboot the system to enable the new 
-    environment variables, and start Moscow ML by entering the command
-    line
+          set PATH=C:\dos;  ...  ;C:\mosml\bin
+          set MOSMLLIB=C:\mosml\lib
+
+        The system must be rebooted to enable the new environment 
+        variables. 
+
+    (b) In the case of Windows NT/2000/XP, choose 
+          Start | Settings | Control Panel | System | Advanced 
+                | Environment Variables | System Variables | New
+        Enter MOSMLLIB as Variable Name and C:\mosml\lib as Variable Value.
+        Double-click on Path and add  ;C:\mosml\bin  to the Variable Value.
+
+(3) Start Moscow ML by entering the command line
 
         mosml
     

@@ -1001,4 +1001,39 @@ and rec x = fn () => ()
     defensive in my (SML) programming.
 
 
-              
+* 2002-02-22: Ordered map desiderata: From: Michael Norrish
+<Michael.Norrish@cl.cam.ac.uk>
+ 
+The various map datatype implementations in the mosml library should
+include a function to update a value at a particular key.  This would
+then save a traversal of the tree  (well, not in the case of Splay
+maps I guess).
+ 
+  val fupdate : ('a,'b) dict -> ('b -> 'b) -> 'a -> ('a,'b)dict
+ 
+This sort of thing is useful when maintaining a map of counts, where
+you want to be incrementing values all over the place.
+ 
+The most efficient alternative at the moment would seem to be a
+hashtable of references.
+
+* 2002-02-26: David.Richerby@cl.cam.ac.uk       
+
+I found the following in Moscow ML version 2.00 on a RedHat 7.1
+machine while trying to fix a broken program.  Consider the following,
+where [^D] on the sixth line indicates that I pressed ctrl-D at that
+point rather than return.
+ 
+$ mosml
+Moscow ML version 2.00 (June 2000)
+Enter `quit();' to quit.
+- fun app (f: int->int) x = f x;
+> val app = fn : (int -> int) -> int -> int
+- fun bug f x y = (app (app f x)) y;[^D]! Toplevel input:
+! fun bug f x y = (app (app f x)) y;<EOF>
+!                       ^^^^^^^^^^^^
+! Type clash: expression of type
+!   int
+! cannot have type
+!   int -> int
+- quit();
