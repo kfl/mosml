@@ -1,4 +1,4 @@
-(* Signal -- Standard ML Basis Library *)
+(* Signal -- SML Basis Library *)
 
 eqtype signal
 
@@ -26,7 +26,8 @@ val ttou : signal
 val toWord   : signal -> Word.word 
 val fromWord : Word.word -> signal 
 
-(* Posix signals.
+(* 
+   Posix signals.
 
    [toWord sig] returns the signal number as an unsigned word.
 

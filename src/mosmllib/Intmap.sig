@@ -1,9 +1,6 @@
-(* Intmap -- Applicative maps with integer keys.
- *
- * Modified for Moscow ML from SML/NJ library v. 0.2 which is 
- * COPYRIGHT (c) 1993 by AT&T Bell Laboratories.
- * Original implementation due to Stephen Adams, Southampton, UK.
- *)
+(* Intmap -- Applicative maps with integer keys                  *)
+(* From SML/NJ lib 0.2, copyright 1993 by AT&T Bell Laboratories *)
+(* Original implementation due to Stephen Adams, Southampton, UK *)
 
 type 'a intmap
 
@@ -23,8 +20,8 @@ val foldl     : (int * 'a * 'b -> 'b) -> 'b -> 'a intmap -> 'b
 val map       : (int * 'a -> 'b) -> 'a intmap -> 'b intmap
 val transform : ('a -> 'b) -> 'a intmap -> 'b intmap
 
-
-(* Type 'a intmap is the type of applicative maps from int to 'a.
+(* 
+   ['a intmap] is the type of applicative maps from int to 'a.
 
    [empty] creates a new empty map.
 

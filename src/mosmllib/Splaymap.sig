@@ -1,9 +1,5 @@
-(* Splaymap -- applicative maps implemented by splay-trees.
- * 
- * Modified for Moscow ML from SML/NJ library v. 0.2 which is 
- * COPYRIGHT (c) 1993 by AT&T Bell Laboratories.  
- * See file mosml/copyrght/copyrght.att for details.
- *)
+(* Splaymap -- applicative maps implemented by splay-trees       *)
+(* From SML/NJ lib 0.2, copyright 1993 by AT&T Bell Laboratories *)
 
 type ('key, 'a) dict
 
@@ -23,11 +19,11 @@ val foldl     : ('key * 'a * 'b -> 'b) -> 'b -> ('key,'a) dict -> 'b
 val map       : ('_key * 'a -> '_b) -> ('_key,'a) dict -> ('_key, '_b) dict
 val transform : ('a -> '_b) -> ('_key,'a) dict -> ('_key, '_b) dict
 
-
-(* Type ('key, 'a) dict is the type of applicative maps from domain
-   type 'key to range type 'a, or equivalently, applicative
-   dictionaries with keys of type 'key and values of type 'a.  They
-   are implemented as ordered splay-trees (Sleator and Tarjan).
+(* 
+   [('key, 'a) dict] is the type of applicative maps from domain type
+   'key to range type 'a, or equivalently, applicative dictionaries
+   with keys of type 'key and values of type 'a.  They are implemented
+   as ordered splay-trees (Sleator and Tarjan).
 
    [mkDict ordr] returns a new, empty map whose keys have ordering
    ordr.
@@ -66,5 +62,4 @@ val transform : ('a -> '_b) -> ('_key,'a) dict -> ('_key, '_b) dict
 
    [transform f m] returns a new map whose entries have form (k, f v),
    where (k, v) is an entry in m.
-
 *)

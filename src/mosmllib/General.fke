@@ -1,4 +1,4 @@
-(* SML Basis Libray and Moscow ML top-level declarations *)
+(* SML Basis Library and Moscow ML top-level declarations *)
 
 (* SML Basis Library types *)
 
@@ -99,7 +99,6 @@ val /   : real * real -> real           (* raises Div, Overflow         *)
 val div : wordint * wordint -> wordint  (* raises Div, Overflow         *)
 val mod : wordint * wordint -> wordint  (* raises Div                   *)
 
-
 (*
    [exn] is the type of exceptions.
  
@@ -108,7 +107,7 @@ val mod : wordint * wordint -> wordint  (* raises Div                   *)
 
    [order] is used as the return type of comparison functions.
 
-   [bool] is the type of booleans, false and true.  Equals Bool.bool.
+   [bool] is the type of booleans: false and true.  Equals Bool.bool.
 
    [char] is the type of characters such as #"A".  Equals Char.char.
 
@@ -135,11 +134,12 @@ val mod : wordint * wordint -> wordint  (* raises Div                   *)
 
    [word8] is the type of unsigned bytes.  Equals Word8.word.
 
-   [list] is the type of lists.  Equals List.list.
+   ['a list] is the type of lists of elements of type 'a.  
+   Equals List.list.
 
-   [ref] is the type of mutable references.
+   ['a ref] is the type of mutable references to values of type 'a.
 
-   [frag] is the type of quotation fragments, resulting from the
+   ['a frag] is the type of quotation fragments, resulting from the
    parsing of quotations ` ... ` and antiquotations.  See the Moscow
    ML Owner's Manual.
 
@@ -220,11 +220,11 @@ val mod : wordint * wordint -> wordint  (* raises Div                   *)
 
    [not b] returns the logical negation of b.
 
-   [s1 ^ s2] returns the concatenation of s1 and s2.
+   [^] is the string concatenation operator.
 
-   [=(e1, e2)] returns true when e1 and e2 are equal; otherwise false.
+   [=] is the polymorphic equality predicate.
 
-   [<>(e1, e2)] returns false when e1 and e2 are equal; otherwise true.
+   [<>] is the polymorphic inequality predicate.
 
    [ceil r] is the smallest integer >= r (rounds towards plus infinity).
    May raise Overflow.

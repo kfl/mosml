@@ -1,10 +1,6 @@
-(* Intset -- applicative sets of integers.
- *
- * Modified for Moscow ML from SML/NJ library version 0.2, which is
- * COPYRIGHT (c) 1993 by AT&T Bell Laboratories.  
- * See file mosml/copyrght/copyrght.att for details.
- * Original implementation due to Stephen Adams, Southampton, UK.
- *)
+(* Intset -- applicative sets of integers                        *)
+(* From SML/NJ lib 0.2, copyright 1993 by AT&T Bell Laboratories *)
+(* Original implementation due to Stephen Adams, Southampton, UK *)
 
 type intset
 
@@ -30,7 +26,8 @@ val foldr        : (int * 'b -> 'b) -> 'b -> intset -> 'b
 val foldl        : (int * 'b -> 'b) -> 'b -> intset -> 'b
 val find         : (int -> bool) -> intset -> int option
 
-(* This unit implements sets of integers.  
+(* 
+   [intset] is the type of sets of integers.  
 
    [empty] is the empty set of integers.
 

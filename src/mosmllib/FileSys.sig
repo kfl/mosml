@@ -28,12 +28,13 @@ val fileSize  : string -> int
 
 val tmpName   : unit -> string
 
-eqtype file_id;
+eqtype file_id
 val fileId    : string -> file_id
 val hash      : file_id -> word
 val compare   : file_id * file_id -> order
 
-(* These functions operate on the file system.  They raise OS.SysErr
+(* 
+   These functions operate on the file system.  They raise OS.SysErr
    in case of errors.
 
    [openDir p] opens directory p and returns a directory stream for

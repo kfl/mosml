@@ -1,6 +1,6 @@
 (* StringCvt -- SML Basis Library *)
 
-datatype radix = BIN | OCT | DEC | HEX;
+datatype radix = BIN | OCT | DEC | HEX
 
 datatype realfmt = 
     SCI of int option   (* scientific,  arg = # dec. digits, dflt=6 *)
@@ -22,12 +22,13 @@ val skipWS     : (char, 'a) reader -> 'a -> 'a
 val padLeft    : char -> int -> string -> string
 val padRight   : char -> int -> string -> string
 
+(* 
+   This structure presents tools for scanning strings and values from
+   functional character streams, and for simple formatting.
 
-(* This structure presents tools for scanning strings and values from
-   functional character streams, and for formatting ML characters and
-   strings containing escape sequences.
-
-   A character source reader 
+   [('elm, 'src) reader] is the type of source readers for reading a
+   sequence of 'elm values from a source of type 'src.  For instance, 
+   a character source reader
         getc : (char, cs) reader 
    is used for obtaining characters from a functional character source
    src of type cs, one at a time. It should hold that

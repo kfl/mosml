@@ -33,10 +33,11 @@ val modifyi    : traversal -> (int * int * 'a -> 'a) -> 'a region -> unit
 val foldi      : traversal -> (int * int * 'a * 'b -> 'b) -> 'b 
                  -> 'a region -> 'b
 
-(* Type [ty Array2.array] is the type of two-dimensional, mutable,
-   zero-based constant-time-access arrays with elements of type ty.
-   Type ty array admits equality even if ty does not.  Arrays a1 and
-   a2 are equal if both were created by the same call to one of the
+(* 
+   ['ty array] is the type of two-dimensional, mutable, zero-based
+   constant-time-access arrays with elements of type 'ty.  
+   Type 'ty array admits equality even if 'ty does not.  Arrays a1 and a2 
+   are equal if both were created by the same call to one of the
    primitives array, fromList, and tabulate.
 
    [RowMajor] specifies that an operation must be done in row-major
@@ -180,5 +181,4 @@ val foldi      : traversal -> (int * int * 'a * 'b -> 'b) -> 'b
    dst are the same and the source and destination regions overlap.
    Raises Subscript if the src region is invalid, or if src translated
    to (dst_row, dst_col) is invalid for dst.
-
 *)

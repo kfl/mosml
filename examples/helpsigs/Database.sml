@@ -43,12 +43,24 @@ fun readbase filename =
 	val db = input_value is : database
     in close_in is; db end
 
+(* Make sure tilde gets collated as a symbol, before "A": *)
+
+fun caseless(#"~", #"~") = EQUAL
+  | caseless(#"~", c2) = 
+    if Char.toLower c2 < #"a" then GREATER else LESS
+  | caseless(c1, #"~") = 
+    if Char.toLower c1 < #"a" then LESS else GREATER
+  | caseless(c1, c2) = Char.compare(Char.toLower c1, Char.toLower c2)
+
+val keycompare = String.collate caseless
+
 fun lookup(db : database, sought : string) =
     let fun look Empty                      = []
 	  | look (Node(key, value, t1, t2)) =
-	    if sought < key then look t1
-	    else if key < sought then look t2
-	    else value
+	    case keycompare(sought, key) of
+		LESS    => look t1
+	      | GREATER => look t2
+	      | EQUAL   => value
     in look db end
 
 (* Extract the name from an entry: *)

@@ -13,7 +13,8 @@ val terminate : status -> 'a
 
 val getEnv    : string -> string option
 
-(* Portable functions for manipulating processes.
+(* 
+   Portable functions for manipulating processes.
 
    [success] is the unique status value that signifies successful
    termination of a process.  Note: MS DOS (sometimes) believes that
@@ -38,5 +39,4 @@ val getEnv    : string -> string option
 
    [getEnv evar] returns SOME s if the environment variable evar is
    defined and is associated with the string s; otherwise NONE.
-
 *)

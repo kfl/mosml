@@ -35,7 +35,9 @@ in
     val >= : string * string -> bool
 end
 
-(* The type [string] is the type of strings of characters.
+(* 
+   [string] is the type of immutable strings of characters, with
+   constant-time indexing.
 
    [maxSize] is the maximal number of characters in a string.
 
@@ -86,8 +88,8 @@ end
    Two tokens may be separated by more than one delimiter, whereas two
    fields are separated by exactly one delimiter.  If the only delimiter 
    is the character #"|", then
-   	"abc||def" contains two tokens:   "abc" and "def"
-   	"abc||def" contains three fields: "abc" and "" and "def"
+        "abc||def" contains two tokens:   "abc" and "def"
+        "abc||def" contains three fields: "abc" and "" and "def"
 
    [isPrefix s1 s2] is true if s1 is a prefix of s2.  
    That is, if there exists a string t such that s1 ^ t = s2.
@@ -116,6 +118,9 @@ end
    [collate cmp (s1, s2)] performs lexicographic comparison, using the 
    given ordering cmp on characters.  
 
-   [<], [<=], [>], and [>=] compare strings lexicographically.
+   [<]
+   [<=]
+   [>]
+   [>=] compare strings lexicographically, using the representation 
+   ordering on characters.
 *)
-

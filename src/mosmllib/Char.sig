@@ -6,10 +6,10 @@ val minChar : char
 val maxChar : char
 val maxOrd  : int       
 
-val chr     : int  -> char         (* may raise Chr *)
+val chr     : int  -> char       (* May raise Chr *)
 val ord     : char -> int
-val succ    : char -> char         (* may raise Chr *)
-val pred    : char -> char         (* may raise Chr *)
+val succ    : char -> char       (* May raise Chr *)
+val pred    : char -> char       (* May raise Chr *)
 
 val isLower     : char -> bool   (* contains "abcdefghijklmnopqrstuvwxyz"  *)
 val isUpper     : char -> bool   (* contains "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  *)
@@ -36,10 +36,10 @@ val toCString   : char -> string              (* C escape sequences  *)
 val contains    : string -> char -> bool
 val notContains : string -> char -> bool
 
-val <  : char * char -> bool
-val <= : char * char -> bool
-val >  : char * char -> bool
-val >= : char * char -> bool
+val <       : char * char -> bool
+val <=      : char * char -> bool
+val >       : char * char -> bool
+val >=      : char * char -> bool
 val compare : char * char -> order
 
 (* 
@@ -170,7 +170,10 @@ val compare : char * char -> order
              toString (chr 127) equals "\\177"
              toString (chr 128) equals "\\200"
 
-   [<] compares character codes.  That is, c1 < c2 returns true 
+   [<] 
+   [<=]
+   [>]
+   [>=] compares character codes.  For instance, c1 < c2 returns true 
    if ord(c1) < ord(c2), and similarly for <=, >, >=.  
 
    [compare(c1, c2)] returns LESS, EQUAL, or GREATER, according as c1 is

@@ -1,9 +1,5 @@
-(* Splayset -- applicative sets implemented by splay-trees.
- * 
- * Modified for Moscow ML 1995-04-22 from SML/NJ lib 0.2 file ordset-sig.sml.
- * COPYRIGHT (c) 1993 by AT&T Bell Laboratories.  
- * See file mosml/copyrght/copyrght.att for details.
- *)
+(* Splayset -- applicative sets implemented by splay-trees       *)
+(* From SML/NJ lib 0.2, copyright 1993 by AT&T Bell Laboratories *)
 
 type 'item set
 
@@ -31,11 +27,12 @@ val foldr        : ('item * 'b -> 'b) -> 'b -> 'item set -> 'b
 val foldl        : ('item * 'b -> 'b) -> 'b -> 'item set -> 'b
 val find         : ('item -> bool) -> 'item set -> 'item option
 
-(* This unit implements sets of ordered elements.  Every set is
-   equipped with an ordering relation; the ordering relation is used
-   in the representation of the set.  The result of combining two sets
-   (of the same type but) with different ordering relations is undefined.
-   The implementation uses splay-trees (Sleator and Tarjan).
+(* 
+   ['item set] is the type of sets of ordered elements of type 'item.
+   The ordering relation on the elements is used in the representation
+   of the set.  The result of combining two sets with different
+   underlying ordering relations is undefined.  The implementation
+   uses splay-trees (Sleator and Tarjan).
 
    [empty ordr] creates a new empty set with the given ordering
    relation.  

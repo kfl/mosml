@@ -37,7 +37,7 @@ fun printLatexBase(sigfile, outfile) =
 	val db = readbase sigfile
 	val os = TextIO.openOut outfile
 	fun out s = TextIO.output(os, s)
-	fun tt s = "\\verb#" ^ s ^ "#"
+	fun tt s = "\\verb\"" ^ s ^ "\""
 
 	(* Insert extra vertical space when meeting a new initial letter *)
 	val lastc1 = ref #" "

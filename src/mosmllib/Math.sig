@@ -2,8 +2,8 @@
 
 type real = real
 
-val pi : real
-val e  : real
+val pi    : real
+val e     : real
 
 val sqrt  : real -> real
 val sin   : real -> real
@@ -22,7 +22,7 @@ val cosh  : real -> real
 val tanh  : real -> real
 
 (*  
-   [pi] is the circumference of the circle with diameter 1: 
+   [pi] is the circumference of the circle with diameter 1, that is,
    3.14159265358979323846.
 
    [e] is the base of the natural logarithm: 2.7182818284590452354.

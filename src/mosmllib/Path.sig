@@ -33,7 +33,8 @@ val base         : string -> string
 val ext          : string -> string option
 
 
-(* This module provides OS-independent functions for manipulating
+(* 
+   This module provides OS-independent functions for manipulating
    strings that represent file names and paths in a directory
    structure.  None of these functions accesses the actual filesystem.
    
@@ -72,7 +73,7 @@ val ext          : string -> string option
        volume and a root:
 
                           vol  [--- arcs ---]        vol  root  [--- arcs ---]
-        ------------------------------------------------------------------ 
+        ---------------------------------------------------------------------- 
         Unix examples:         d  e  f  a.b.c               /   d  e  f  a.b.c
         DOS examples:     A:   d  e  f  a.b          A:     \   d  e  f  a.b
 

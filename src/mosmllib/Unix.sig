@@ -10,7 +10,6 @@ val kill         : proc * signal -> unit
 val reap         : proc -> Process.status 
 
 (* 
-
    This structure allows Moscow ML programs to start other processes
    and to communicate with them.  
 
@@ -19,16 +18,15 @@ val reap         : proc -> Process.status
    use Unix.kill(pr, Signal.term).  Then, to remove the terminated
    process from the operating system tables, call Unix.reap(pr).
 
-   Note that Moscow ML does not yet support non-blocking reads from
-   streams.  Thus the protocol for communication between the ML
-   program and its child process must be designed with some care.
+   The protocol for communication between the ML program and its child
+   process must be designed with some care, typically using
+   non-blocking input for reading from the child process.
 
-   A value of type [proc] represents a process started by the ML
-   program.
+   [proc] is the type of processes started by the ML program.
 
-   A value of type [signal] represents a Unix-style signal which can
-   be sent to another process.  Signal values must be obtained from
-   the Signal structure.
+   [signal] is the type of Unix-style signals, which can be sent to
+   another process.  Signal values must be obtained from the Signal
+   structure.
 
    [execute (cmd, args)] asks the operating system to execute the
    command cmd with the argument list args, as a separate process.

@@ -2,6 +2,8 @@
 
 exception Option
 
+datatype option = datatype option
+
 val getOpt         : 'a option * 'a -> 'a 
 val isSome         : 'a option -> bool 
 val valOf          : 'a option -> 'a 

@@ -1,5 +1,4 @@
-(* Strbase -- internal auxiliaries for String and Substring 
-   1995-04-13, 1995-11-06  *)
+(* Strbase -- internal auxiliaries for String and Substring *)
 
 local 
     type substring = string * int * int

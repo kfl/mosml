@@ -79,6 +79,7 @@ datatype Spec' =
   | TYPEDESCspec of TyNameEqu * TypDesc list
   | TYPEspec of TypBind list
   | DATATYPEspec of DatBind list * TypBind list option
+  | DATATYPErepspec of IdInfo * IdInfo
   | EXCEPTIONspec of ExDesc list
   | LOCALspec of Spec * Spec
   | OPENspec of string list

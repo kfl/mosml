@@ -1,6 +1,6 @@
 (* List -- SML Basis Library *)
 
-type 'a list = 'a list
+datatype list = datatype list
 
 exception Empty  (* Subscript and Size *)
 
@@ -40,6 +40,8 @@ val tabulate   : int * (int -> 'a) -> 'a list           (* Size      *)
 val getItem    : 'a list -> ('a * 'a list) option
 
 (* 
+   ['a list] is the type of lists of elements of type 'a.
+
    [null xs] is true iff xs is nil.
 
    [hd xs] returns the first element of xs.  Raises Empty if xs is nil.
@@ -115,5 +117,5 @@ val getItem    : 'a list -> ('a * 'a list) option
    This can be used for scanning booleans, integers, reals, and so on
    from a list of characters.  For instance, to scan a decimal integer
    from a list cs of characters, compute 
-	Int.scan StringCvt.DEC List.getItem cs
+        Int.scan StringCvt.DEC List.getItem cs
 *)

@@ -250,3 +250,16 @@ value input_nonblocking(value channel, value buff, value start, value length) /*
 
   Others?
 
+* Meta.fke; documentation; remove Meta.system
+
++ Lexing.sig
+
++ Parsing.sig
+
+* mosmllib/README
+
+* Parser combinators: 
+
+* TextIO.scanStream -- get rid of cs?
+
+* Should gc time be subtracted from sys time?  (Timer, Mosml)

@@ -1,16 +1,12 @@
-(* Misc 1997-01-29 *)
-
-(* These functions really belong in General, but can appear there only 
-   if defined in the runtime system.  So for now they are here.
- *)
+(* Misc -- top-level types and functions that ought to be in General *)
 
 type 'a array  = 'a Array.array
 
-val o : ('b -> 'c) * ('a -> 'b) -> 'a -> 'c
-val before : 'a * 'b -> 'a
+val o       : ('b -> 'c) * ('a -> 'b) -> 'a -> 'c
+val before  : 'a * 'b -> 'a
 
-val chr : int -> char
-val ord : char -> int
+val chr     : int -> char
+val ord     : char -> int
 
 val explode : string -> char list
 val implode : char list -> string
@@ -23,7 +19,7 @@ val getOpt  : 'a option * 'a -> 'a
 val isSome  : 'a option -> bool
 val valOf   : 'a option -> 'a      
 
-exception Empty;
+exception Empty
 
 val @       : 'a list * 'a list -> 'a list
 val app     : ('a -> unit) -> 'a list -> unit

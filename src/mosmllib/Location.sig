@@ -1,7 +1,5 @@
-(* Location -- reporting errors in source texts.
- * For use with mosmllex and mosmlyac.  Example in mosml/examples/lexyacc/.
- * Based on src/compiler/location from the Caml Light 0.6 distribution.
- *)
+(* Location -- error reporting for mosmllex and mosmlyac               *)
+(* Based on src/compiler/location from the Caml Light 0.6 distribution *)
 
 datatype Location =  (* Source file positions                            *)
     Loc of int       (* Position of the first character                  *)
@@ -22,6 +20,10 @@ val xxLR  : Location * 'a -> Location * 'b -> Location
 val xxRL  : Location * 'a -> Location * 'b -> Location
 
 (* 
+   These functions support error reporting in lexers and parsers
+   generated with mosmllex and mosmlyac.  The directory
+   mosml/examples/lexyacc/ contains an example of their use.
+ 
    [errLocation (file, stream, lexbuf) loc] prints the part of the lexer 
    input which is indicated by location loc.  
    
@@ -32,7 +34,7 @@ val xxRL  : Location * 'a -> Location * 'b -> Location
    Windows, OS/2, and MacOS), the stream must have been opened in
    binary mode (with Nonstdio.open_in_bin), or else the positioning in
    the file will be wrong (due to the translation of CRLF into
-   newline).
+   newline in text files).
 
    If file = "" then the lexer is assumed to read from some source
    other than a stream, and the lexbuf (rather than the instream) is

@@ -1,4 +1,4 @@
-(* Regex -- Moscow ML interface to POSIX 1003.2 regular expressions *)
+(* Regex -- regular expressions a la POSIX 1003.2 -- requires Dynlib *)
 
 exception Regex of string
 
@@ -33,20 +33,20 @@ datatype replacer =
   | Tr  of (string -> string) * int     (* Transformation of i'th group *)
   | Trs of substring vector -> string   (* Transformation of all groups *)
 
-val replace1    : regex -> replacer list -> string -> string
-val replace     : regex -> replacer list -> string -> string
+val replace1     : regex -> replacer list -> string -> string
+val replace      : regex -> replacer list -> string -> string
 
-val substitute1 : regex -> (string -> string) -> string -> string
-val substitute  : regex -> (string -> string) -> string -> string
+val substitute1  : regex -> (string -> string) -> string -> string
+val substitute   : regex -> (string -> string) -> string -> string
 
-val tokens      : regex -> string -> substring list
-val fields      : regex -> string -> substring list
+val tokens       : regex -> string -> substring list
+val fields       : regex -> string -> substring list
 
-val map         : regex -> (substring vector -> 'a) -> string -> 'a list
-val app         : regex -> (substring vector -> unit) -> string -> unit
-val fold        : regex 
-                  -> (substring * 'a -> 'a) * (substring vector * 'a -> 'a) 
-                  -> 'a -> string -> 'a
+val map          : regex -> (substring vector -> 'a) -> string -> 'a list
+val app          : regex -> (substring vector -> unit) -> string -> unit
+val fold         : regex 
+                   -> (substring * 'a -> 'a) * (substring vector * 'a -> 'a) 
+                   -> 'a -> string -> 'a
 
 (* 
    This structure provides pattern matching with POSIX 1003.2 regular

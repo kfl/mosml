@@ -115,7 +115,7 @@ val app5    : cptr -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
           val result = sillyfun(3.4)
 
    The C function (in mosml/src/runtime/callback.c)
-	void registercptr(char* nam, void* cptr);
+        void registercptr(char* nam, void* cptr);
 
    is used to register C pointers for access from ML.  Only pointers
    to static C variables, and C functions, should be registered. There

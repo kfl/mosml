@@ -1,0 +1,119 @@
+% texsigs.tex v. 2.00.0 Copyright (C) Peter Sestoft 2000, 2000-04-22
+%
+% You may edit for lay-out, or leave out irrelevant sections (if
+% such omissions are marked somehow), but you may not redistribute the
+% sources.  The authors' names and the Moscow ML URL must be left in place.
+
+% dvips -ta4 texsigs
+% psnup -pa4 -2 texsigs.ps texsigs2a4.ps
+% ps2pdf texsigs2a4.ps
+
+
+\documentclass[fleqn,twoside]{article}
+
+\usepackage{isolatin1,program,a4wide,pslatex}
+\usepackage[T1]{fontenc}
+
+\makeindex
+\pagestyle{headings}
+\thispagestyle{empty}
+
+\begin{document}
+
+\begin{center}
+
+  \vspace*{0cm}
+
+{\huge\bf Moscow ML Library}\\[0.5cm]
+
+{Version 2.00 of May 2000\\ Draft 2000-04-22}\\[1cm]
+
+% \begin{tabular}{ccc}
+% \large Sergei Romanenko && \large Peter Sestoft\\[0.1cm]
+% Russian Academy of Sciences && Royal Veterinary and Agricultural University\\
+% Moscow, Russia && Copenhagen, Denmark
+% \end{tabular}
+\end{center}
+
+\vspace{1cm}
+
+\noindent 
+This manual describes the Moscow ML library, which includes parts of
+the SML Basis Library\@.  The manual has been generated automatically
+from the commented signature files.
+
+
+
+\subsection*{Hypertext on the World-Wide Web}
+
+The manual is available also in HTML format at
+\verb$http://www.dina.kvl.dk/~sestoft/mosmllib/$ on the World Wide
+Web.
+
+
+\subsection*{Hypertext in the Moscow ML distribution}
+
+The manual is available also in HTML format at
+\verb$mosml/doc/mosmllib/index.html$ in the Moscow ML distribution.
+
+
+\subsection*{On-line help in the Moscow ML interactive system}
+
+The manual is available also in interactive {\tt mosml} sessions.
+Type {\tt help "lib";} for an overview of built-in function libraries.
+
+Type {\tt help "fromstring";} for help on a particular identifier,
+such as {\tt fromString}.  This will produce a menu of all library
+structures which contain the identifier {\tt fromstring} (disregarding
+the lowercase/uppercase distinction):
+
+{\small\begin{verbatim}
+    --------------------------------
+    |   1 | val  Bool.fromString   |
+    |   2 | val  Char.fromString   |
+    |   3 | val  Date.fromString   |
+    |   4 | val  Int.fromString    |
+    |   5 | val  Path.fromString   |
+    |   6 | val  Real.fromString   |
+    |   7 | val  String.fromString |
+    |   8 | val  Time.fromString   |
+    |   9 | val  Word.fromString   |
+    |  10 | val  Word8.fromString  |
+    --------------------------------
+\end{verbatim}}
+
+\noindent Choosing a number from this menu will invoke the help
+browser on the desired structure, e.g.\ {\tt Int}.  
+
+\vfill
+
+\begin{center}
+\begin{tabular}{|c|}\hline
+\rule[-0.4cm]{0cm}{1cm}The Moscow ML home page is\ \
+    \verb$http://www.dina.kvl.dk/~sestoft/mosml.html$\\\hline
+\end{tabular}
+\end{center}
+
+\newpage
+
+\twocolumn
+{\setlength{\parindent}{0cm}
+\renewcommand{\contentsline}[3]{#2\hfill #3\hspace*{3em}\newline}
+\tableofcontents
+}
+\onecolumn
+
+\newpage 
+
+\input{texsigsigs.tex}
+
+\newpage
+\addcontentsline{toc}{section}{Index}
+\input{texsigs.ind}
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

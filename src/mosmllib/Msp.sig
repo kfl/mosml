@@ -1,4 +1,4 @@
-(* Msp -- utilities for ML Server Pages and CGI scripts 2000-02-04 v 0.7 *)
+(* Msp -- utilities for CGI scripts and ML Server Pages *)
 
 (* Efficiently concatenable word sequences *)
 
@@ -23,44 +23,44 @@ val vec2list : 'a vector -> 'a list
 exception ParamMissing of string
 exception NotInt of string * string
 
-val %   : string -> string      
-val %?  : string -> bool
-val %#  : string -> int
-val %%  : string * string -> string
-val %%# : string * int -> int
+val %        : string -> string      
+val %?       : string -> bool
+val %#       : string -> int
+val %%       : string * string -> string
+val %%#      : string * int -> int
 
 
 (* HTML generic marks *)
 
-val mark0   : string -> wseq
-val mark0a  : string -> string -> wseq
-val mark1   : string -> wseq -> wseq
-val mark1a  : string -> string -> wseq -> wseq
-val comment : wseq -> wseq
+val mark0    : string -> wseq
+val mark0a   : string -> string -> wseq
+val mark1    : string -> wseq -> wseq
+val mark1a   : string -> string -> wseq -> wseq
+val comment  : wseq -> wseq
 
 (* HTML documents and headers *)
 
-val html    : wseq -> wseq
-val head    : wseq -> wseq
-val title   : wseq -> wseq
-val body    : wseq -> wseq
-val bodya   : string -> wseq -> wseq
-val htmldoc : wseq -> wseq -> wseq
+val html     : wseq -> wseq
+val head     : wseq -> wseq
+val title    : wseq -> wseq
+val body     : wseq -> wseq
+val bodya    : string -> wseq -> wseq
+val htmldoc  : wseq -> wseq -> wseq
 
 (* HTML headings and vertical format *)
 
-val h1  : wseq -> wseq
-val h2  : wseq -> wseq
-val h3  : wseq -> wseq
-val h4  : wseq -> wseq
-val h5  : wseq -> wseq
-val h6  : wseq -> wseq
-val p   : wseq -> wseq
-val pa  : string -> wseq -> wseq
-val br  : wseq
-val bra : string -> wseq
-val hr  : wseq
-val hra : string -> wseq
+val h1       : wseq -> wseq
+val h2       : wseq -> wseq
+val h3       : wseq -> wseq
+val h4       : wseq -> wseq
+val h5       : wseq -> wseq
+val h6       : wseq -> wseq
+val p        : wseq -> wseq
+val pa       : string -> wseq -> wseq
+val br       : wseq
+val bra      : string -> wseq
+val hr       : wseq
+val hra      : string -> wseq
 
 val divi        : wseq -> wseq
 val divia       : string -> wseq -> wseq
@@ -72,30 +72,30 @@ val pre         : wseq -> wseq
 
 (* HTML anchors and hyperlinks *)
 
-val ahref  : string -> wseq -> wseq
-val ahrefa : string -> string -> wseq -> wseq
-val aname  : string -> wseq -> wseq
+val ahref    : string -> wseq -> wseq
+val ahrefa   : string -> string -> wseq -> wseq
+val aname    : string -> wseq -> wseq
 
 (* HTML text formats and style *)
 
-val em     : wseq -> wseq
-val strong : wseq -> wseq
-val tt     : wseq -> wseq
-val sub    : wseq -> wseq
-val sup    : wseq -> wseq
-val fonta  : string -> wseq -> wseq
+val em       : wseq -> wseq
+val strong   : wseq -> wseq
+val tt       : wseq -> wseq
+val sub      : wseq -> wseq
+val sup      : wseq -> wseq
+val fonta    : string -> wseq -> wseq
 
 (* HTML lists *)
 
-val ul  : wseq -> wseq
-val ula : string -> wseq -> wseq
-val ol  : wseq -> wseq
-val ola : string -> wseq -> wseq
-val li  : wseq -> wseq
-val dl  : wseq -> wseq
-val dla : string -> wseq -> wseq
-val dt  : wseq -> wseq
-val dd  : wseq -> wseq
+val ul       : wseq -> wseq
+val ula      : string -> wseq -> wseq
+val ol       : wseq -> wseq
+val ola      : string -> wseq -> wseq
+val li       : wseq -> wseq
+val dl       : wseq -> wseq
+val dla      : string -> wseq -> wseq
+val dt       : wseq -> wseq
+val dd       : wseq -> wseq
 
 (* HTML tables *)
 
@@ -112,12 +112,12 @@ val captiona : string -> wseq -> wseq
 
 (* HTML images and image maps *)
 
-val img  : string -> wseq
-val imga : string -> string -> wseq
-val map  : string -> wseq -> wseq
-val mapa : string -> string -> wseq -> wseq
-val area : { alt : string option, coords : string, 
-             href : string option, shape : string} -> wseq
+val img      : string -> wseq
+val imga     : string -> string -> wseq
+val map      : string -> wseq -> wseq
+val mapa     : string -> string -> wseq -> wseq
+val area     : { alt : string option, coords : string, 
+                 href : string option, shape : string} -> wseq
 
 (* HTML forms etc *)
 
@@ -149,7 +149,8 @@ val urlencode  : string -> string
 val htmlencode : string -> string
 
 
-(* This module provides support functions for writing CGI scripts and
+(* 
+   This module provides support functions for writing CGI scripts and
    ML Server Page scripts.
 
    [wseq] is the type of efficiently concatenable word sequences.
@@ -413,5 +414,4 @@ val htmlencode : string -> string
    [htmlencode s] returns the html-encoding of s.  That is, < and >
    are replaced by &lt; and &gt; respectively, and & is replaced by 
    &amp;
-
 *)

@@ -1,7 +1,5 @@
 (* Array -- SML Basis Library *)
 
-signature Array = sig
-
 prim_EQtype 'a array
 
 val maxLen   : int
@@ -10,32 +8,32 @@ val array    : int * '_a -> '_a array
 val tabulate : int * (int -> '_a) -> '_a array
 val fromList : '_a list -> '_a array
 
-val length  : 'a array -> int
-val sub     : 'a array * int -> 'a
-val update  : 'a array * int * 'a  -> unit
-val extract : 'a array * int * int option -> 'a Vector.vector
+val length   : 'a array -> int
+val sub      : 'a array * int -> 'a
+val update   : 'a array * int * 'a  -> unit
+val extract  : 'a array * int * int option -> 'a Vector.vector
 
-val copy    : {src: 'a array,  si: int, len: int option,
-               dst: 'a array, di: int} -> unit
-val copyVec : {src: 'a vector, si: int, len: int option, 
-               dst: 'a array, di: int} -> unit
+val copy     : {src: 'a array,  si: int, len: int option,
+                dst: 'a array, di: int} -> unit
+val copyVec  : {src: 'a vector, si: int, len: int option, 
+                dst: 'a array, di: int} -> unit
 
-val app     : ('a -> unit) -> 'a array -> unit
-val foldl   : ('a * 'b -> 'b) -> 'b -> 'a array -> 'b
-val foldr   : ('a * 'b -> 'b) -> 'b -> 'a array -> 'b
-val modify  : ('a -> 'a) -> 'a array -> unit
+val app      : ('a -> unit) -> 'a array -> unit
+val foldl    : ('a * 'b -> 'b) -> 'b -> 'a array -> 'b
+val foldr    : ('a * 'b -> 'b) -> 'b -> 'a array -> 'b
+val modify   : ('a -> 'a) -> 'a array -> unit
 
-val appi    : (int * 'a -> unit) -> 'a array * int * int option -> unit
-val foldli  : (int * 'a * 'b -> 'b) -> 'b -> 'a array * int * int option -> 'b
-val foldri  : (int * 'a * 'b -> 'b) -> 'b -> 'a array * int * int option -> 'b
-val modifyi : (int * 'a -> 'a) -> 'a array * int * int option -> unit
-end
+val appi     : (int * 'a -> unit) -> 'a array * int * int option -> unit
+val foldli   : (int * 'a * 'b -> 'b) -> 'b -> 'a array * int * int option -> 'b
+val foldri   : (int * 'a * 'b -> 'b) -> 'b -> 'a array * int * int option -> 'b
+val modifyi  : (int * 'a -> 'a) -> 'a array * int * int option -> unit
 
-(* Type [ty array] is the type of one-dimensional, mutable, zero-based
-   constant-time-access arrays with elements of type ty.  Type ty
-   array admits equality even if ty does not.  Arrays a1 and a2 are
-   equal if both were created by the same call to a primitive (array,
-   tabulate, fromList).
+(* 
+   ['ty array] is the type of one-dimensional, mutable, zero-based
+   constant-time-access arrays with elements of type 'ty.  Type 
+   'ty array admits equality even if 'ty does not.  Arrays a1 and a2 
+   are equal if both were created by the same call to a primitive
+   (array, tabulate, fromList).
 
    Some functions work on a *slice* of an array:
 

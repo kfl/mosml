@@ -1,5 +1,4 @@
-(* AppleScript.sig *)
-(* 1997 Jul 04  e  *)
+(* AppleScript -- Apple MacOS scripting *)
 
 type OSAID
 type OSAerr = int
@@ -7,8 +6,8 @@ type OSAerr = int
 exception AppleScriptErr of OSAerr * string
 
 val as_compile    : string -> OSAID
-val as_dispose    :  OSAID -> unit
-val as_run_script :  OSAID -> string
+val as_dispose    : OSAID -> unit
+val as_run_script : OSAID -> string
 val as_run_text   : string -> string
 
 (*
@@ -34,11 +33,11 @@ val as_run_text   : string -> string
    [as_run_text str] compiles and runs the AppleScript source code text,
    disposing all resources allocated in the process, and returns the
    AppleScript result as a string.
-*)
 
-(*
-   references:
+
+   References:
+
    Inside Macintosh: Interapplication Communication, Chapter 10
-   AppleScript Language Guide English Edition
-   -- available at http://applescript.apple.com/support.html
+   AppleScript Language Guide English Edition,
+   available at http://applescript.apple.com/support.html
 *)

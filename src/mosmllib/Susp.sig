@@ -1,12 +1,13 @@
-(* Susp -- support for lazy evaluation 1995-05-21 *)
+(* Susp -- support for lazy evaluation *)
 
 type 'a susp
 
 val delay : (unit -> 'a) -> 'a susp
 val force : 'a susp -> 'a
 
-(* Type 'a susp is the type of lazily evaluated expressions with
-   result of type 'a.
+(* 
+   ['a susp] is the type of lazily evaluated expressions with result
+   type 'a.
 
    [delay (fn () => e)] creates a suspension for the expression e.
    The first time the suspension is forced, the expression e will be

@@ -23,8 +23,11 @@ val htmlDirDef = "htmlsigs"
 (* Default filename for the HTML format database: *)
 val htmlIndexDef = htmlDirDef ^ "/idIndex.html"
 
+(* Default filename for the LaTeX signatures: *)
+val texSigs = "texsigsigs.tex"
+
 (* Signatures not to be included in the help database: *)
-val stoplist = ["Misc", "Strbase"];
+val stoplist = ["Misc", "Strbase", "Splaytree"];
 
 (* The background colour in generated HTML files (HTML colour code): *)
 val bgcolor = "#fbf2e7";
@@ -36,17 +39,7 @@ val bgcolor = "#fbf2e7";
 
 fun mkbase (entries : Database.entry list) =
     let open Database
-(* 	fun caseless(c1, c2) = Char.compare(Char.toLower c1, Char.toLower c2)*)
-	(* Make sure tilde gets collated as a symbol, before "A": *)
-	fun caseless(#"~", #"~") = EQUAL
-	  | caseless(#"~", c2) = 
-	    if Char.toLower c2 < #"a" then GREATER else LESS
-	  | caseless(c1, #"~") = 
-		if Char.toLower c1 < #"a" then LESS else GREATER
-	  | caseless(c1, c2) = Char.compare(Char.toLower c1, Char.toLower c2)
-	val caseless = String.collate caseless
-	fun compname (e1, e2) = 
-	    caseless (getname e1, getname e2)
+	fun compname (e1, e2) = keycompare (getname e1, getname e2)
 	val entries = Listsort.sort compname entries
 	infix THEN
 	fun (comp1 THEN comp2) arg =
@@ -120,7 +113,10 @@ fun process (libdir, helpfile, txtIndex, texIndex, htmldir, htmlIndex) =
      print ("\nCreating HTML versions of signature files\n");
      Htmlsigs.sigsToHtml version bgcolor stoplist (libdir, htmldir);
      print ("\nWriting HTML signature index in file " ^ htmlIndex ^ "\n");
-     Htmlsigs.printHTMLBase version bgcolor (helpfile, htmlIndex))
+     Htmlsigs.printHTMLBase version bgcolor (helpfile, htmlIndex);
+     print ("\nWriting LaTeX signature bodies in file " ^ texSigs ^ "\n");
+     Texsigs.sigsToLatex (stoplist @ ["BasicIO"]) 
+                         libdir helpfile texSigs)    
 
 val _ = 
     case Mosml.argv () of

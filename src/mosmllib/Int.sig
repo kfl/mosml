@@ -6,21 +6,21 @@ val precision : int option
 val minInt    : int option
 val maxInt    : int option
 
-val ~    : int -> int                   (* Overflow      *)
-val *    : int * int -> int             (* Overflow      *)
-val div  : int * int -> int             (* Div, Overflow *)
-val mod  : int * int -> int             (* Div           *)
-val quot : int * int -> int             (* Div, Overflow *)
-val rem  : int * int -> int             (* Div           *)
-val +    : int * int -> int             (* Overflow      *)
-val -    : int * int -> int             (* Overflow      *)
-val >    : int * int -> bool
-val >=   : int * int -> bool
-val <    : int * int -> bool
-val <=   : int * int -> bool
-val abs  : int -> int                   (* Overflow      *)
-val min  : int * int -> int
-val max  : int * int -> int
+val ~         : int -> int              (* Overflow      *)
+val *         : int * int -> int        (* Overflow      *)
+val div       : int * int -> int        (* Div, Overflow *)
+val mod       : int * int -> int        (* Div           *)
+val quot      : int * int -> int        (* Div, Overflow *)
+val rem       : int * int -> int        (* Div           *)
+val +         : int * int -> int        (* Overflow      *)
+val -         : int * int -> int        (* Overflow      *)
+val >         : int * int -> bool
+val >=        : int * int -> bool
+val <         : int * int -> bool
+val <=        : int * int -> bool
+val abs       : int -> int              (* Overflow      *)
+val min       : int * int -> int
+val max       : int * int -> int
 
 val sign      : int -> int
 val sameSign  : int * int -> bool
@@ -31,12 +31,13 @@ val fromInt   : int -> int
 val toLarge   : int -> int
 val fromLarge : int -> int
 
-val toString   : int -> string
+val scan      : StringCvt.radix 
+                -> (char, 'a) StringCvt.reader -> (int, 'a) StringCvt.reader
+val fmt       : StringCvt.radix -> int -> string
+
+val toString  : int -> string
 val fromString : string -> int option   (* Overflow      *)
 
-val scan : StringCvt.radix 
-           -> (char, 'a) StringCvt.reader -> (int, 'a) StringCvt.reader
-val fmt  : StringCvt.radix -> int -> string
 
 (* 
    [precision] is SOME n, where n is the number of significant bits in an
@@ -47,8 +48,11 @@ val fmt  : StringCvt.radix -> int -> string
 
    [maxInt] is SOME n, where n is the most positive integer.
 
-   [~, *, +, -] are the usual operations on integers.  They raise
-   Overflow if the result is not representable as an integer.  
+   [~]
+   [*]
+   [+]
+   [-] are the usual operations on integers.  They raise Overflow if
+   the result is not representable as an integer.
 
    [abs] returns the absolute value of its argument.  Raises Overflow
    if applied to the most negative integer.
@@ -77,7 +81,10 @@ val fmt  : StringCvt.radix -> int -> string
 
    [sign x] is ~1, 0, or 1, according as x is negative, zero, or positive.
 
-   [>, >=, <, <=] are the usual comparisons on integers.
+   [<]
+   [<=]
+   [>]
+   [>=] are the usual comparisons on integers.
 
    [compare(x, y)] returns LESS, EQUAL, or GREATER, according 
    as x is less than, equal to, or greater than y.

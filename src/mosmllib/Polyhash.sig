@@ -21,14 +21,14 @@ val transform   : ('data -> '_res) -> ('_key, 'data) hash_table
 val copy        : ('_key, '_data) hash_table -> ('_key, '_data) hash_table
 val bucketSizes : ('key, 'data) hash_table -> int list
 
-(*** Polymorphic hash primitives from Caml Light *)
+(* Polymorphic hash primitives from Caml Light *)
 
 val hash        : 'key -> int
 val hash_param  : int -> int -> 'key -> int
 val mkPolyTable : int * exn -> (''_key, '_data) hash_table
 
-
-(* [('key, 'data) hash_table] is the type of hashtables with keys of type
+(* 
+   [('key, 'data) hash_table] is the type of hashtables with keys of type
    'key and data values of type 'data.
 
    [mkTable (hashVal, sameKey) (sz, exc)] returns a new hashtable,

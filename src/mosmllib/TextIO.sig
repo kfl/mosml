@@ -3,7 +3,7 @@
 type elem   = Char.char
 type vector = string
 
-(* Text input: *)
+(* Text input *)
 
 type instream 
 
@@ -25,7 +25,7 @@ val scanStream   : ((char, cs) StringCvt.reader -> ('a, cs) StringCvt.reader)
 
 val stdIn        : instream
 
-(* Text output: *)
+(* Text output *)
 
 type outstream
 
@@ -42,7 +42,8 @@ val stdErr       : outstream
 
 val print        : string -> unit
 
-(* This structure provides input/output functions on text streams.
+(* 
+   This structure provides input/output functions on text streams.
    The functions are state-based: reading from or writing to a stream
    changes the state of the stream.  The streams are buffered: output
    to a stream may not immediately affect the underlying file or
@@ -52,12 +53,13 @@ val print        : string -> unit
    `translated' by converting (e.g.) the double newline CRLF to a
    single newline character \n.
 
-   Type instream is the type of state-based characters input streams,
-   and type outstream is the type of state-based character output
-   streams.
+   [instream] is the type of state-based characters input streams.
 
-   Type elem is the type char of characters, and type vector is the
-   type of character vectors (strings).
+   [outstream] is the type of state-based character output streams.
+
+   [elem] is the type char of characters.
+
+   [vector] is the type of character vectors, that is, strings.
 
 
    TEXT INPUT:
@@ -186,5 +188,4 @@ val print        : string -> unit
 
    [setOutstream(ostr, sostr)] redirects the outstream ostr so that
    subsequent output goes to sostr.
-
 *)

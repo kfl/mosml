@@ -9,8 +9,8 @@ val exists : ('a * 'b -> bool) -> 'a list * 'b list -> bool
 val foldr  : ('a * 'b * 'c -> 'c) -> 'c -> 'a list * 'b list -> 'c
 val foldl  : ('a * 'b * 'c -> 'c) -> 'c -> 'a list * 'b list -> 'c
 
-
-(* These functions process pairs of lists.  No exception is raised
+(* 
+   These functions process pairs of lists.  No exception is raised
    when the lists are found to be of unequal length.  Instead the
    excess elements from the longer list are disregarded.
 

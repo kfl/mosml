@@ -1,4 +1,4 @@
-(* Random -- Random number generator -- 1995-04-23 *)
+(* Random -- random number generator *)
 
 type generator
 
@@ -9,8 +9,9 @@ val randomlist : int * generator -> real list
 val range      : int * int -> generator -> int
 val rangelist  : int * int -> int * generator -> int list
 
-(* Type generator is the abstract type of random number generators,
-   producing uniformly distributed pseudo-random numbers.
+(* 
+   [generator] is the type of random number generators, here the
+   linear congruential generators from Paulson 1991, 1996.
 
    [newgenseed seed] returns a random number generator with the given seed.
 

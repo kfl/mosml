@@ -1,6 +1,7 @@
-(* BasicIO -- non-standard, will be replaced by BinIO and TextIO *)
+(* BasicIO -- non-standard input-output; use BinIO and TextIO instead *)
 
-type instream and outstream;
+type instream
+type outstream
 
 val std_in        : instream;
 val open_in       : string -> instream;
@@ -23,5 +24,5 @@ val input_line    : instream -> string;
 val can_input     : instream * int -> bool;
 val open_append   : string -> outstream;
 
-val exit  : int -> 'a
-val print : string -> unit
+val exit          : int -> 'a
+val print         : string -> unit

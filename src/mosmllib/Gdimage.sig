@@ -1,6 +1,4 @@
-(* Gdimage -- Moscow ML interface to Thomas Boutell's gd image package *)
-(*         -- currently version 1.7.3, supporting PNG images           *)
-(* This module requires Dynlib and the gd package to be installed      *)
+(* Gdimage -- creating PNG images -- requires Dynlib *)
 
 type image
 
@@ -68,20 +66,23 @@ val string      : image -> color -> font -> xy -> string -> unit
 val stringUp    : image -> color -> font -> xy -> string -> unit
 val charsize    : font -> xy
 
-(* Type image is the abstract type of images being drawn.  They can be
-   created from scratch, imported from PNG files, and exported to PNG
-   files.
+(* 
+   This is an interface to version 1.7.3 of Thomas Boutell's gd image
+   package for creating PNG images.
+
+   [image] is the type of images being drawn.  They can be created
+   from scratch, imported from PNG files, and exported to PNG files.
 
    All functions correctly clip to the actual size of the image.
    
-   Type color is the abstract type of colors.  Currently there can be
-   at most 256 different colors in an image.
+   [color] is the type of colors.  Currently there can be at most 256
+   different colors in an image.
 
-   Type style is the type of drawing styles.  A style is either a
-   color, or transparent.
+   [style] is the type of drawing styles.  A style is either a color,
+   or transparent.
 
-   Type mode is the drawing more for line drawing and filling.  It may 
-   be 
+   [mode] is the type of drawing modes for line drawing and filling.  
+   It may be one of
         Color c         where c is a color
         Transparent
         Brushed img     for line drawing using the given image as brush
@@ -93,13 +94,12 @@ val charsize    : font -> xy
                         given bool vector
         Tiled img       for filling, using the given image as a tile
 
-   Type font is the type of fonts: Tiny, Small, MediumBold, Large,
-   Giant
+   [font] is the type of fonts: Tiny, Small, MediumBold, Large, Giant
 
-   Type rgb is the type of (r, g, b) triples, where the components
+   [rgb] is the type of (r, g, b) triples, where the components
    indicate color intensity as an integer value in the range 0..255.
 
-   Type xy is the type of pairs, used for (x, y) coordinates or to
+   [xy] is the type of pairs, used for (x, y) coordinates and to
    indicate dimensions (width, height).  The origin (0, 0) is the
    upper left-hand corner of the image.  The x coordinates increase to
    the right; the y coordinates increase downwards.

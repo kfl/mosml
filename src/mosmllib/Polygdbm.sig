@@ -1,10 +1,6 @@
-(* Polygdbm -- interface to GNU gdbm, persistent polymorphic hashtables 
-   Version 0.0, 1997-11-09
-*)
+(* Polygdbm -- GNU gdbm persistent polymorphic hashtables -- requires Dynlib *)
 
 type ('key, 'data) table 
-
-(* Read-only access is non-exclusive; read/write access excludes others *)
 
 exception NotFound
 exception AlreadyThere
@@ -29,20 +25,23 @@ val fastwrite  : bool ref
 val reorganize : ('key, 'data) table -> unit
 
 (* 
-
-   The type [('key, 'data) table] is the type of an opened table with
-   keys of type 'key and associated values of type 'data.  The actual
-   values of type 'key and 'data cannot contain function closures or
-   abstract values.  Values involving references (even circular
-   values) can be stored, but the identity of references is preserved
-   only with every single key or value stored, not across several
-   different values.  
+   [('key, 'data) table] is the type of an opened table with keys of
+   type 'key and associated values of type 'data.  The actual values
+   of type 'key and 'data cannot contain function closures or abstract
+   values.  Values involving references (even circular values) can be
+   stored, but the identity of references is preserved only with every
+   single key or value stored, not across several different values.
 
    The Polygdbm table files of are not portable across platforms,
    because word size and endianness affects the lay-out of values.
 
-   Note that the table can be used only inside the withtable function,
-   to make sure that the table is closed after use.
+   A value of type table can be used only in the argument f to the
+   withtable function.  This makes sure that the table is closed after
+   use.
+
+   [openmode] is the type of opening modes.  Read-only access (READER)
+   is non-exclusive; read/write access (WRITER, WRCREAT, NEWDB) is
+   exclusive.
     
    [withtable (nam, mod) f] first opens the table db in file nam with
    mode mod, then applies f to db, then closes db.  Makes sure to

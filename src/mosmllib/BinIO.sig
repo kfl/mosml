@@ -3,7 +3,7 @@
 type elem   = Word8.word
 type vector = Word8Vector.vector
 
-(* Binary input: *)
+(* Binary input *)
 
 type instream 
 
@@ -17,7 +17,7 @@ val inputN       : instream * int -> vector
 val endOfStream  : instream -> bool
 val lookahead    : instream -> elem option
 
-(* Binary output: *)
+(* Binary output *)
 
 type outstream
 
@@ -28,17 +28,20 @@ val output       : outstream * vector -> unit
 val output1      : outstream * elem -> unit
 val flushOut     : outstream -> unit
 
-(* This structure provides input/output functions on byte streams.
+(* 
+   This structure provides input/output functions on byte streams.
    The functions are state-based: reading from or writing to a stream
    changes the state of the stream.  The streams are buffered: output
    to a stream may not immediately affect the underlying file or
    device.
 
-   Type instream is the type of state-based byte input streams, and
-   type outstream is the type of state-based byte output streams.
+   [instream] is the type of state-based byte input streams.
 
-   Type elem is the type Word8.word of bytes, and type vector is the
-   type of Word8Vector.vector (byte vectors).
+   [outstream] is the type of state-based byte output streams.
+
+   [elem] is the type Word8.word of bytes.
+
+   [vector] is the type of Word8Vector.vector (byte vectors).
 
 
    BYTE INPUT:
@@ -143,5 +146,4 @@ val flushOut     : outstream -> unit
 
    [setOutstream(ostr, sostr)] redirects the outstream ostr so that
    subsequent output goes to sostr.
-
 *)

@@ -1,22 +1,21 @@
-signature Dynlib =
-sig
-    type dlHandle
-    type symHandle
-        
-    exception Closed
-    
-    datatype flag = RTLD_LAZY | RTLD_NOW
-    val dlopen  : { lib : string, flag : flag, global : bool } -> dlHandle
-    val dlsym   : dlHandle -> string -> symHandle
-    val dlclose : dlHandle -> unit
+(* Dynlib -- dynamic linking with foreign functions *)
 
-    val var  : symHandle -> 'b                            
-    val app1 : symHandle -> 'a1 -> 'b                     
-    val app2 : symHandle -> 'a1 -> 'a2 -> 'b              
-    val app3 : symHandle -> 'a1 -> 'a2 -> 'a3 -> 'b       
-    val app4 : symHandle -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'b
-    val app5 : symHandle -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
-end
+type dlHandle
+type symHandle
+    
+exception Closed
+
+datatype flag = RTLD_LAZY | RTLD_NOW
+val dlopen  : { lib : string, flag : flag, global : bool } -> dlHandle
+val dlsym   : dlHandle -> string -> symHandle
+val dlclose : dlHandle -> unit
+
+val var  : symHandle -> 'b                            
+val app1 : symHandle -> 'a1 -> 'b                     
+val app2 : symHandle -> 'a1 -> 'a2 -> 'b              
+val app3 : symHandle -> 'a1 -> 'a2 -> 'a3 -> 'b       
+val app4 : symHandle -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'b
+val app5 : symHandle -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
 
 (* 
    Structure Dynlib provides dynamic loading and calling of C

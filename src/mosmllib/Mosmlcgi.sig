@@ -1,24 +1,19 @@
-(* Mosmlcgi -- Support for writing CGI scripts in Moscow ML 
-
- (c) Jonas Barklund, Computing Science Dept., Uppsala University, 1996.
-     Documentation and support for file upload added by Peter Sestoft.
-     More CGI variables and cookies by Hans Molin, Uppsala Univ., 1999.
-*)
+(* Mosmlcgi -- support for writing CGI scripts in Moscow ML *)
 
 (* 1. Accessing the fields or parameters of a CGI call *)
 
-val cgi_fieldnames    : string list
-val cgi_field_strings : string -> string list;
-val cgi_field_string  : string -> string option;
-val cgi_field_integer : string * int -> int;
+val cgi_fieldnames     : string list
+val cgi_field_strings  : string -> string list;
+val cgi_field_string   : string -> string option;
+val cgi_field_integer  : string * int -> int;
 
 (* 2. Accessing parts in multipart/form-data; form-based file upload *)
 
-val cgi_partnames : string list
+val cgi_partnames      : string list
 
 type part
-val cgi_part  : string -> part option
-val cgi_parts : string -> part list
+val cgi_part           : string -> part option
+val cgi_parts          : string -> part list
 
 val part_fieldnames    : part -> string list
 val part_type          : part -> string option
@@ -64,7 +59,8 @@ val cgi_request_uri           : string option
 val cgi_request_filename      : string option
 val cgi_is_subreq             : string option
 
-(* The Mosmlcgi library is for writing CGI programs in Moscow ML.  A
+(* 
+   The Mosmlcgi library is for writing CGI programs in Moscow ML.  A
    CGI program may be installed on a WWW server and is invoked in
    response to HTTP requests sent to the server from a web browser,
    typically from an HTML FORM element.
@@ -82,7 +78,7 @@ val cgi_is_subreq             : string option
 
    [cgi_field_string fnm] returns SOME(s) where s is a string bound to
    field name fnm, if any; otherwise NONE.  Equivalent to 
-	case cgi_field_strings fnm of 
+        case cgi_field_strings fnm of 
              []     => NONE 
            | s :: _ => SOME s
 
@@ -105,7 +101,7 @@ val cgi_is_subreq             : string option
 
    [cgi_part pnm] is SOME(prt) where prt is a part called pnm, if any;
    otherwise NONE.  Equivalent to
-	case cgi_parts pnm of 
+        case cgi_parts pnm of 
              []       => NONE 
            | prt :: _ => SOME prt
 
@@ -123,9 +119,9 @@ val cgi_is_subreq             : string option
    [part_field_string prt fnm] returns SOME(s) where s is a string
    bound to field name fnm in part prt, if any; otherwise NONE.
    Equivalent to 
-	case part_field_strings prt fnm of 
-	     []     => NONE 
-	   | s :: _ => SOME s
+        case part_field_strings prt fnm of 
+             []     => NONE 
+           | s :: _ => SOME s
 
    [part_field_integer prt (fnm, deflt)] attempts to parse an integer
    from field fnm of part prt.  Returns i if part_field_string prt fnm

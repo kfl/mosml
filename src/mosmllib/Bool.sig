@@ -1,8 +1,8 @@
 (* Bool -- SML Basis Library *)
 
-type bool = bool
+datatype bool = datatype bool
 
-val not : bool -> bool
+val not        : bool -> bool
 
 val toString   : bool -> string
 val fromString : string -> bool option

@@ -5,41 +5,50 @@ type real = real
 exception Div
 and Overflow
 
-val ~    : real -> real
-val +    : real * real -> real
-val -    : real * real -> real
-val *    : real * real -> real
-val /    : real * real -> real
-val abs  : real -> real
-val min  : real * real -> real
-val max  : real * real -> real
-val sign : real -> int
-val compare : real * real -> order
+val ~           : real -> real
+val +           : real * real -> real
+val -           : real * real -> real
+val *           : real * real -> real
+val /           : real * real -> real
+val abs         : real -> real
+val min         : real * real -> real
+val max         : real * real -> real
+val sign        : real -> int
+val compare     : real * real -> order
 
 val sameSign    : real * real -> bool
 val toDefault   : real -> real
 val fromDefault : real -> real
 val fromInt     : int -> real
 
-val floor : real -> int
-val ceil  : real -> int
-val trunc : real -> int
-val round : real -> int
+val floor       : real -> int
+val ceil        : real -> int
+val trunc       : real -> int
+val round       : real -> int
 
-val >     : real * real -> bool
-val >=    : real * real -> bool
-val <     : real * real -> bool
-val <=    : real * real -> bool
-val ==    : real * real -> bool
-val !=    : real * real -> bool
-val ?=    : real * real -> bool
+val >           : real * real -> bool
+val >=          : real * real -> bool
+val <           : real * real -> bool
+val <=          : real * real -> bool
+val ==          : real * real -> bool
+val !=          : real * real -> bool
+val ?=          : real * real -> bool
 
-val toString   : real -> string
-val fromString : string -> real option
-val scan       : (char, 'a) StringCvt.reader -> (real, 'a) StringCvt.reader
-val fmt        : StringCvt.realfmt -> real -> string
+val toString    : real -> string
+val fromString  : string -> real option
+val scan        : (char, 'a) StringCvt.reader -> (real, 'a) StringCvt.reader
+val fmt         : StringCvt.realfmt -> real -> string
 
-(* [~, *, /, +, -, >, >=, <, <=] are the usual operations on reals.
+(* 
+   [~]
+   [*]
+   [/]
+   [+]
+   [-]
+   [>]
+   [>=]
+   [<]
+   [<=] are the usual operations on defined reals (excluding NaN and Inf).
 
    [abs x] is x if x >= 0, and ~x if x < 0, that is, the absolute value of x.
 
@@ -103,7 +112,7 @@ val fmt        : StringCvt.realfmt -> real -> string
    scanned from a prefix of string s, ignoring any initial whitespace;
    returns NONE otherwise.  The valid forms of floating-point numerals
    are described by:
-	[+~-]?(([0-9]+(\.[0-9]+)?)|(\.[0-9]+))([eE][+~-]?[0-9]+)?
+        [+~-]?(([0-9]+(\.[0-9]+)?)|(\.[0-9]+))([eE][+~-]?[0-9]+)?
 
    [scan getc charsrc] attempts to scan a floating-point number from
    the character source charsrc, using the accessor getc, and ignoring
@@ -111,5 +120,5 @@ val fmt        : StringCvt.realfmt -> real -> string
    where r is the number scanned, and rest is the unused part of the
    character source.  The valid forms of floating-point numerals
    are described by:
-	[+~-]?(([0-9]+(\.[0-9]+)?)|(\.[0-9]+))([eE][+~-]?[0-9]+)?
+        [+~-]?(([0-9]+(\.[0-9]+)?)|(\.[0-9]+))([eE][+~-]?[0-9]+)?
 *)

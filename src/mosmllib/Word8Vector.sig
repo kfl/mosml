@@ -23,8 +23,8 @@ val mapi     : (int * elem -> elem) -> vector * int * int option -> vector
 val foldli   : (int * elem * 'b -> 'b) -> 'b -> vector*int*int option -> 'b
 val foldri   : (int * elem * 'b -> 'b) -> 'b -> vector*int*int option -> 'b
 
-
-(* Type [vector] is the type of one-dimensional, immutable, zero-based
+(* 
+   [vector] is the type of one-dimensional, immutable, zero-based
    constant-time-access vectors with elements of type Word8.word, that
    is, 8-bit words.  Type vector admits equality, and vectors v1 and
    v2 are equal if they have the same length and their elements are

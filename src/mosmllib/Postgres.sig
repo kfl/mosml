@@ -1,22 +1,21 @@
-(* Postgres -- Moscow ML interface to the PostgreSQL database server *)
-(* This module requires Dynlib and PostgreSQL to be installed        *)
+(* Postgres -- interface to PostgreSQL database server -- requires Dynlib *)
 
-type dbconn;                            (* A connection to the server *)
-type dbresult;                          (* The result of a query      *)
-type oid;                               (* Internal object ids        *)
+type dbconn                                   (* Connection to server *)
+type dbresult                                 (* Result of a query    *)
+type oid                                      (* Internal object id   *)
 
-exception Closed;                       (* The connection is closed   *)
-exception Null;                         (* The field's value is NULL  *)
+exception Closed                              (* Connection is closed *)
+exception Null                                (* Field value is NULL  *)
 
 (* Opening, closing, and maintaining database connections *)
 
-val openbase : { dbhost    : string option, (* database server host *)
-                 dbname    : string option, (* database name        *)
-                 dboptions : string option, (* options              *)
-                 dbport    : string option, (* database server port *)
-                 dbpwd     : string option, (* user passwd          *)
-                 dbtty     : string option, (* tty for error log    *)
-                 dbuser    : string option  (* database user        *)
+val openbase : { dbhost    : string option,   (* database server host *)
+                 dbname    : string option,   (* database name        *)
+                 dboptions : string option,   (* options              *)
+                 dbport    : string option,   (* database server port *)
+                 dbpwd     : string option,   (* user passwd          *)
+                 dbtty     : string option,   (* tty for error log    *)
+                 dbuser    : string option    (* database user        *)
                } -> dbconn
 
 val closebase    : dbconn -> unit
@@ -109,13 +108,12 @@ val applyto : 'a -> ('a -> 'b) -> 'b
 val formattable : dbresult -> Msp.wseq
 val showquery   : dbconn -> string -> Msp.wseq
 
-
 (*
    [dbconn] is the type of connections to a PostgreSQL database.
 
    [dbresult] is the type of result sets from SQL queries.
 
-   [oid] is the type of PostgreSQL internal object ids.
+   [oid] is the type of PostgreSQL internal object identifiers.
 
    [openbase { dbhost, dbport, dboptions, dbtty, dbname, dbuser, dbpwd  }] 
    opens a connection to a PostgreSQL database server on the given

@@ -1,6 +1,6 @@
 (* List -- as of 1995-03-08, 1996-04-19 *)
 
-type 'a list = 'a list
+datatype list = datatype list
 
 exception Empty;
 

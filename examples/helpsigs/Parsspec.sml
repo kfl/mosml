@@ -46,6 +46,8 @@ fun processSpec is str ((Location.Loc(pos1, pos2), spec), res) =
 	fun datbind ((tyvars, idInfo, cbs), res) =
 	    {comp = Typ (getId idInfo), file = str, line = lineno} 
 	    :: foldl conbind res cbs
+	fun datrep (idInfo, res) = 
+	    {comp = Typ (getId idInfo), file = str, line = lineno} :: res
 	fun exdesc ((idInfo, tyOpt), res) = 
 	    {comp = Exc (getId idInfo), file = str, line = lineno} :: res
     in
@@ -56,6 +58,7 @@ fun processSpec is str ((Location.Loc(pos1, pos2), spec), res) =
 	  | TYPEspec tybs               => foldl typbind res tybs
 	  | DATATYPEspec (dbs, tybsOpt) => 
 		foldl datbind (foldl typbind res (getOpt(tybsOpt, []))) dbs
+	  | DATATYPErepspec (ty, _)     => datrep (ty, res)
 	  | EXCEPTIONspec eds           => foldl exdesc res eds
 	  | LOCALspec (spec1, spec2)    => processSpec is str (spec2, res)
 	  | OPENspec strs               => res

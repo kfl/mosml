@@ -1,8 +1,8 @@
-(* PP -- from the SML/NJ library *)
+(* PP -- pretty-printing -- from the SML/NJ library *)
 
-type ppconsumer = {consumer  : string -> unit,
-                   linewidth : int,
-                   flush     : unit -> unit}
+type ppconsumer = { consumer  : string -> unit,
+                    linewidth : int,
+                    flush     : unit -> unit }
 
 datatype break_style = 
     CONSISTENT
@@ -20,7 +20,8 @@ val flush_ppstream : ppstream -> unit
 val with_pp        : ppconsumer -> (ppstream -> unit) -> unit
 val pp_to_string   : int -> (ppstream -> 'a -> unit) -> 'a -> string
 
-(* This unit provides tools for creating customized Oppen-style
+(* 
+   This structure provides tools for creating customized Oppen-style
    pretty-printers, based on the type ppstream.  A ppstream is an
    output stream that contains prettyprinting commands.  The commands
    are placed in the stream by various function calls listed below.
@@ -32,16 +33,17 @@ val pp_to_string   : int -> (ppstream -> 'a -> unit) -> 'a -> string
    properly nested dynamically.  All calls to begin_block and
    end_block must be properly nested (dynamically).
 
-   A ppconsumer is a record 
-                 {consumer  : string -> unit,
-                  linewidth : int,
-                  flush     : unit -> unit}
+   [ppconsumer] is the type of sinks for pretty-printing.  A value of 
+   type ppconsumer is a record 
+                 { consumer  : string -> unit,
+                   linewidth : int,
+                   flush     : unit -> unit }
    of a string consumer, a specified linewidth, and a flush function
    which is called whenever flush_ppstream is called.
 
    A prettyprinter can be called outright to print a value.  In
-   addition, a prettyprinter for a nullary datatype ty can be
-   installed in the top-level system.  Then the installed
+   addition, a prettyprinter for a base type or nullary datatype ty
+   can be installed in the top-level system.  Then the installed
    prettyprinter will be invoked automatically whenever a value of
    type ty is to be printed.
 
@@ -115,7 +117,7 @@ val pp_to_string   : int -> (ppstream -> 'a -> unit) -> 'a -> string
                                     fn s => TextIO.output(TextIO.stdOut, s), 
                                     linewidth = 72,
                                     flush     = 
-				     fn () => TextIO.flushOut TextIO.stdOut};
+                                     fn () => TextIO.flushOut TextIO.stdOut};
 
        fun ppb b = (ppbool ppstrm b; PP.flush_ppstream ppstrm);
 

@@ -4,8 +4,8 @@ eqtype time
 
 exception Time
 
-val zeroTime : time
-val now      : unit -> time
+val zeroTime         : time
+val now              : unit -> time
 
 val toSeconds        : time -> int
 val toMilliseconds   : time -> int
@@ -14,25 +14,28 @@ val fromSeconds      : int -> time
 val fromMilliseconds : int -> time
 val fromMicroseconds : int -> time
 
-val fromReal : real -> time
-val toReal   : time -> real
+val fromReal         : real -> time
+val toReal           : time -> real
 
-val toString   : time -> string	(* rounded to millisecond precision *)
-val fmt        : int -> time -> string
-val fromString : string -> time option
-val scan       : (char, 'a) StringCvt.reader -> (time, 'a) StringCvt.reader
+val toString         : time -> string	(* rounded to millisecond precision *)
+val fmt              : int -> time -> string
+val fromString       : string -> time option
+val scan             : (char, 'a) StringCvt.reader 
+                       -> (time, 'a) StringCvt.reader
 
-val +  : time * time -> time
-val -  : time * time -> time
-val <  : time * time -> bool
-val <= : time * time -> bool
-val >  : time * time -> bool
-val >= : time * time -> bool
+val +       : time * time -> time
+val -       : time * time -> time
+val <       : time * time -> bool
+val <=      : time * time -> bool
+val >       : time * time -> bool
+val >=      : time * time -> bool
 
 val compare : time * time -> order
 
-(* Values of type [time] represent durations as well as absolute points 
-   in time (which can be thought of as durations since some time zero).
+(* 
+   [time] is a type for representing durations as well as absolute
+   points in time (which can be thought of as durations since some
+   fixed time zero).
 
    [zeroTime] represents the 0-second duration, and the origin of time, 
    so zeroTime + t = t + zeroTime = t for all t.
@@ -83,17 +86,19 @@ val compare : time * time -> order
    (t, rest) where t is a time and rest is rest of the input, or NONE
    if s cannot be parsed as a time value.
 
-   [t1 + t2] is the sum of the times t1 and t2.  For reals r1, r2 >= 0.0, 
-   realToTime r1 + realToTime r2 = realToTime(Real.+(r1,r2)).  Raises 
-   Overflow if the result is not representable as a time value.
+   [+] adds two time values. For reals r1, r2 >= 0.0, it holds that
+   realToTime r1 + realToTime r2 = realToTime(Real.+(r1,r2)).  
+   Raises Overflow if the result is not representable as a time value.
 
-   [t1 - t2] is the t1 minus t2, that is, the duration from t2 to t1.
-   Raises Time if t1 < t2 or if the result is not representable as a
-   time value.  It holds that t - zeroTime = t.
+   [-] subtracts a time value from another.  That is, t1 - t2 is the
+   duration from t2 to t1.  Raises Time if t1 < t2 or if the result is
+   not representable as a time value.  It holds that t - zeroTime = t.
 
-   [t1 < t2] asserts that t1 is strictly before t2.  Similarly for
-   <=, >, >=.  It holds for reals r1, r2 >= 0.0 that
-       realToTime r1 < realToTime r2  iff  Real.<(r1, r2) 
+   [<]
+   [<=]
+   [>]
+   [>=] compares time values.  For instance, for reals r1, r2 >= 0.0 
+   it holds that realToTime r1 < realToTime r2 iff Real.<(r1, r2)
 
    [compare(t1, t2)] returns LESS, EQUAL, or GREATER, according 
    as t1 precedes, equals, or follows t2 in time.

@@ -9,13 +9,13 @@ MOSMLYACC=mosmlyac
 CPP=/lib/cpp -P -traditional -Dunix -Umsdos
 
 all: Asynt.uo Database.uo Hasht.uo Htmlsigs.uo Lexer.uo Parser.uo Parsspec.uo \
-	Printbase.uo Stack.uo makebase.uo makebase
+	Printbase.uo Stack.uo Texsigs.uo makebase.uo makebase
 
 Parser.sml Parser.sig: Parser.grm
 	$(MOSMLYACC) Parser.grm
 
 makebase : Database.uo Htmlsigs.uo Lexer.uo Parser.uo Parsspec.uo \
-    Printbase.uo makebase.uo
+    Printbase.uo Texsigs.uo makebase.uo
 	$(MOSMLL) -o makebase makebase.uo
 
 base:
@@ -26,6 +26,7 @@ install:
 	cp helpsigs.val ../../lib
 	cp htmlsigs/*.html ../../doc/mosmllib
 	cp index.tex ../../src/doc
+	cp texsigsigs.tex ../../src/doc
 
 .SUFFIXES :
 .SUFFIXES : .sml .sig .ui .uo .mlp .lex .c .o
@@ -50,20 +51,21 @@ depend: Lexer.sml Parser.sml
 
 clean:
 	rm -f Parser.sig Parser.sml Lexer.sml
-	rm -f makebase helpsigs.val index.txt index.tex 
+	rm -f makebase helpsigs.val index.txt index.tex texsigsigs.tex
 	rm -f *.ui
 	rm -f *.uo
 	rm -f Makefile.bak
 	rm -f htmlsigs/*.html
 
 ### DO NOT DELETE THIS LINE
-Hasht.uo: Hasht.ui 
-Stack.uo: Stack.ui 
+Texsigs.uo: Texsigs.ui Database.ui 
 Parser.ui: Asynt.uo 
 Parser.uo: Parser.ui Asynt.uo 
 Lexer.uo: Parser.ui Stack.ui Hasht.ui 
-Htmlsigs.uo: Htmlsigs.ui Database.ui 
+makebase.uo: Htmlsigs.ui Database.ui Printbase.uo Parsspec.uo 
+Stack.uo: Stack.ui 
 Printbase.uo: Database.ui 
 Parsspec.uo: Asynt.uo Parser.ui Lexer.uo Database.ui 
+Htmlsigs.uo: Htmlsigs.ui Database.ui 
+Hasht.uo: Hasht.ui 
 Database.uo: Database.ui 
-makebase.uo: Htmlsigs.ui Database.ui Printbase.uo Parsspec.uo 

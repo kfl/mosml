@@ -34,7 +34,7 @@ type parserEnv =
   (* symbStart  *)      int *         (* Start pos. of the current symbol*)
   (* symbEnd  *)        int *         (* End pos. of the current symbol *)
   (* SP  *)             int *         (* The stack pointer *)
-  (* ruleLen  *)        int *         (* Number of rsh items in the rule *)
+  (* ruleLen  *)        int *         (* Number of rhs items in the rule *)
   (* ruleNumber *)      int           (* Rule number to reduce by *)
 ;
 
@@ -179,10 +179,10 @@ fun symbolEnd() =
   sub_ (getSymbEndStack env) (getSP env)
 ;
 
-fun rhsStart n =
+fun itemStart n =
   sub_ (getSymbStartStack env) (getSP env - (getRuleLen env - n))
 ;
 
-fun rhsEnd n =
+fun itemEnd n =
   sub_ (getSymbEndStack env) (getSP env - (getRuleLen env - n))
 ;

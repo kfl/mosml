@@ -1,21 +1,20 @@
-(* Mysql -- Moscow ML interface to the MySQL database server *)
-(* This module requires Dynlib and MySQL to be installed     *)
+(* Mysql -- interface to the MySQL database server -- requires Dynlib *)
 
-type dbconn;                            (* A connection to the server *)
-type dbresult;                          (* The result of a query      *)
+type dbconn                                   (* Connection to server *)
+type dbresult                                 (* Result of a query    *)
 
-exception Closed;                       (* The connection is closed   *)
-exception Null;                         (* The field's value is NULL  *)
+exception Closed                              (* Connection is closed *)
+exception Null                                (* Field value is NULL  *)
 
 (* Opening, closing, and maintaining database connections *)
 
-val openbase : { dbhost    : string option, (* database server host *)
-                 dbname    : string option, (* database name        *)
-                 dboptions : string option, (* (not used by MySQL)  *)
-                 dbport    : string option, (* database server port *)
-                 dbpwd     : string option, (* user passwd          *)
-                 dbtty     : string option, (* (not used by MySQL)  *)
-                 dbuser    : string option  (* database user        *)
+val openbase : { dbhost    : string option,   (* database server host *)
+                 dbname    : string option,   (* database name        *)
+                 dboptions : string option,   (* (not used by MySQL)  *)
+                 dbport    : string option,   (* database server port *)
+                 dbpwd     : string option,   (* user passwd          *)
+                 dbtty     : string option,   (* (not used by MySQL)  *)
+                 dbuser    : string option    (* database user        *)
                } -> dbconn
 
 val closebase    : dbconn -> unit
@@ -28,7 +27,6 @@ val tty          : dbconn -> string
 val status       : dbconn -> bool
 val reset        : dbconn -> unit
 val errormessage : dbconn -> string option
-
 
 (* Query execution and result set information *)
 
@@ -56,8 +54,8 @@ val fnumber      : dbresult -> string -> int option
 val getint       : dbresult -> int -> int -> int
 val getreal      : dbresult -> int -> int -> real
 val getstring    : dbresult -> int -> int -> string
-val getdate      : dbresult -> int -> int -> int * int * int (* Y M D *)
-val gettime      : dbresult -> int -> int -> int * int * int (* H M S *)
+val getdate      : dbresult -> int -> int -> int * int * int   (* Y M D *)
+val gettime      : dbresult -> int -> int -> int * int * int   (* H M S *)
 val getdatetime  : dbresult -> int -> int -> Date.date
 val getbool      : dbresult -> int -> int -> bool
 val isnull       : dbresult -> int -> int -> bool
@@ -71,10 +69,10 @@ datatype dynval =
   | DateTime of Date.date               (* MySQL datetime        *)
   | NullVal                             (* MySQL NULL value      *)
 
-val getdynfield : dbresult -> int -> int -> dynval
-val getdyntup   : dbresult -> int -> dynval vector
-val getdyntups  : dbresult -> dynval vector vector 
-val dynval2s    : dynval -> string
+val getdynfield  : dbresult -> int -> int -> dynval
+val getdyntup    : dbresult -> int -> dynval vector
+val getdyntups   : dbresult -> dynval vector vector 
+val dynval2s     : dynval -> string
 
 (* Bulk copying to or from a table *)
 
@@ -102,7 +100,6 @@ val applyto : 'a -> ('a -> 'b) -> 'b
 
 val formattable : dbresult -> Msp.wseq
 val showquery   : dbconn -> string -> Msp.wseq
-
 
 (*
    [dbconn] is the type of connections to a MySQL database.

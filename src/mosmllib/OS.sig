@@ -1,21 +1,22 @@
 (* OS -- SML Basis Library *)
 
-signature OS = 
-sig
-    type syserror = syserror
+signature OS = sig
 
-    exception SysErr of string * syserror option
+type syserror = syserror
 
-    val errorMsg : syserror -> string
+exception SysErr of string * syserror option
 
-    structure FileSys : FileSys
-    structure Path    : Path
-    structure Process : Process
+val errorMsg      : syserror -> string
+
+structure FileSys : FileSys
+structure Path    : Path
+structure Process : Process
+
 end
 
 (*  Various functions for interacting with the operating system.
 
    [errorMsg err] returns a string explaining the error message system
    error code err, as found in a SysErr exception.  The precise form
-   of the string is operating system dependent.  
+   of the string depends on the operating system.  
 *)

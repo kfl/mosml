@@ -1,54 +1,56 @@
 (* Word8 -- SML Basis Library *)
 
 type word = word8
-val wordSize : int
 
-val orb  : word * word -> word
-val andb : word * word -> word
-val xorb : word * word -> word
-val notb : word -> word
+val wordSize   : int
 
-val <<  : word * Word.word -> word
-val >>  : word * Word.word -> word
-val ~>> : word * Word.word -> word
+val orb        : word * word -> word
+val andb       : word * word -> word
+val xorb       : word * word -> word
+val notb       : word -> word
 
-val +   : word * word -> word
-val -   : word * word -> word
-val *   : word * word -> word
-val div : word * word -> word
-val mod : word * word -> word
+val <<         : word * Word.word -> word
+val >>         : word * Word.word -> word
+val ~>>        : word * Word.word -> word
 
-val >   : word * word -> bool
-val <   : word * word -> bool
-val >=  : word * word -> bool
-val <=  : word * word -> bool
-val compare : word * word -> order
+val +          : word * word -> word
+val -          : word * word -> word
+val *          : word * word -> word
+val div        : word * word -> word
+val mod        : word * word -> word
 
-val min : word * word -> word
-val max : word * word -> word
+val >          : word * word -> bool
+val <          : word * word -> bool
+val >=         : word * word -> bool
+val <=         : word * word -> bool
+val compare    : word * word -> order
+
+val min        : word * word -> word
+val max        : word * word -> word
 
 val toString   : word -> string
 val fromString : string -> word option
-val scan : StringCvt.radix 
-           -> (char, 'a) StringCvt.reader -> (word, 'a) StringCvt.reader
-val fmt  : StringCvt.radix -> word -> string
+val scan       : StringCvt.radix 
+               -> (char, 'a) StringCvt.reader -> (word, 'a) StringCvt.reader
+val fmt        : StringCvt.radix -> word -> string
 
-val toInt   : word -> int
-val toIntX  : word -> int		(* with sign extension *)
-val fromInt : int -> word
+val toInt      : word -> int
+val toIntX     : word -> int            (* with sign extension *)
+val fromInt    : int -> word
 
-val toLargeInt   : word -> int
-val toLargeIntX  : word -> int		(* with sign extension *)
-val fromLargeInt : int -> word
+val toLargeInt    : word -> int
+val toLargeIntX   : word -> int         (* with sign extension *)
+val fromLargeInt  : int -> word
 
 val toLargeWord   : word -> Word.word
-val toLargeWordX  : word -> Word.word	(* with sign extension *)
+val toLargeWordX  : word -> Word.word   (* with sign extension *)
 val fromLargeWord : Word.word -> word
 
-(* [word] is the type of 8-bit words, or 8-bit unsigned integers in
+(* 
+   [word] is the type of 8-bit words, or 8-bit unsigned integers in
    the range 0..255.
 
-   [wordSize] is 8.
+   [wordSize] equals 8.
 
    [orb(w1, w2)] returns the bitwise `or' of w1 and w2.
 
@@ -75,13 +77,19 @@ val fromLargeWord : Word.word -> word
    To make <<, >>, and ~>> infix, use the declaration:
                           infix 5 << >> ~>>
 
-   [+, -, *, div, mod] represent unsigned integer addition,
-   subtraction, multiplication, division, and remainder, modulus 256.
-   The operations (i div j) and (i mod j) raise Div when j = 0.
-   Otherwise no exceptions are raised.
+   [+]
+   [-]
+   [*]
+   [div]
+   [mod] represent unsigned integer addition, subtraction,
+   multiplication, division, and remainder, modulus 256.  The
+   operations (i div j) and (i mod j) raise Div when j = 0.  Otherwise
+   no exceptions are raised.
 
-   [w1 > w2] returns true if the unsigned integer represented by w1
-   is larger than that of w2, and similarly for <, >=, <=.  
+   [<]
+   [<=]
+   [>]
+   [>=] compare words as unsigned integers.
 
    [compare(w1, w2)] returns LESS, EQUAL, or GREATER, according 
    as w1 is less than, equal to, or greater than w2 (as unsigned integers).

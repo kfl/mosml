@@ -1,4 +1,4 @@
-(* Arraysort -- SML/NJ library *)
+(* Arraysort -- Quicksort for arrays, from SML/NJ library *)
 
 val sort   : ('a * 'a -> order) -> 'a Array.array -> unit
 val sorted : ('a * 'a -> order) -> 'a Array.array -> bool

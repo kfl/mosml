@@ -1,27 +1,34 @@
-(* Meta -- functions for use in an interactive Moscow ML session *)
+(* Meta -- functions available only in interactive Moscow ML sessions *)
 
-val printVal    : 'a -> 'a
-val printDepth  : int ref
-val printLength : int ref
-val installPP   : (ppstream -> 'a -> unit) -> unit
+val printVal         : 'a -> 'a
+val printDepth       : int ref
+val printLength      : int ref
+val installPP        : (ppstream -> 'a -> unit) -> unit
 
-val use         : string -> unit
-val compile     : string -> unit
-val load        : string -> unit
-val loadOne     : string -> unit
-val loaded      : unit -> string list
-val loadPath    : string list ref
+val liberal          : unit -> unit
+val conservative     : unit -> unit
+val orthodox         : unit -> unit
 
-val quietdec    : bool ref
-val verbose     : bool ref
+val use              : string -> unit
+val compile          : string -> unit
+val compileToplevel  : string -> unit
+val compileStructure : string -> unit
 
-val quotation   : bool ref
-val valuepoly   : bool ref
+val load             : string -> unit
+val loadOne          : string -> unit
+val loaded           : unit -> string list
+val loadPath         : string list ref
 
-val quit        : unit -> 'a
-val system      : string -> int
+val quietdec         : bool ref
+val verbose          : bool ref
 
-(* These values and functions are available in the Moscow ML
+val quotation        : bool ref
+val valuepoly        : bool ref
+
+val quit             : unit -> 'a
+
+(* 
+   These values and functions are available in the Moscow ML
    interactive system only.
  
    [printVal e] prints the value of expression e to standard output
@@ -152,11 +159,5 @@ val system      : string -> int
    imperative and applicative type variables, generalize all applicative 
    type variables, and generalize imperative type variables only in
    non-expansive expressions.  
-	Valuepoly is true by default.
-
-   [system "com"] causes the command com to be executed by the
-   operating system.  If a non-zero integer is returned, this must
-   indicate that the operating system has failed to execute the
-   command.  Under MS DOS, the integer returned tends to always equal
-   zero, even when the command fails.  
+        Valuepoly is true by default.
 *)

@@ -1,6 +1,6 @@
 (* Bool -- new basis 1995-03-30 *)
 
-type bool = bool
+datatype bool = datatype bool
 
 val not = not;
 

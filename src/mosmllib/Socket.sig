@@ -1,8 +1,4 @@
-(* Socket -- Moscow ML sockets interface       *)
-(* This module requires Dynlib to be installed *)
-
-signature Socket =
-sig
+(* Socket -- SML Basis Library -- requires Dynlib *)
 
 type ('addressfam, 'socktype) sock
 type 'addressfam sock_addr
@@ -18,8 +14,8 @@ type pf_file                            (* The Unix file protocol family *)
 type pf_inet                            (* The Internet protocol family  *)
 
 (* Address constructors *)
-val fileAddr : string -> pf_file sock_addr
-val inetAddr : string -> int -> pf_inet sock_addr
+val fileAddr   : string -> pf_file sock_addr
+val inetAddr   : string -> int -> pf_inet sock_addr
 
 (* Socket constructors *)
 val fileStream : unit -> (pf_file, 'a stream) sock
@@ -27,12 +23,12 @@ val fileDgram  : unit -> (pf_file, dgram) sock
 val inetStream : unit -> (pf_inet, 'a stream) sock
 val inetDgram  : unit -> (pf_inet, dgram) sock
 
-val accept   : ('a, passive stream) sock 
-               -> ('a, active stream) sock * 'a sock_addr
-val bind     : ('a, 'b) sock * 'a sock_addr -> unit
-val connect  : ('a, 'b) sock * 'a sock_addr -> unit
-val listen   : ('a, passive stream) sock * int -> unit
-val close    : ('a, 'b) sock -> unit
+val accept     : ('a, passive stream) sock 
+                 -> ('a, active stream) sock * 'a sock_addr
+val bind       : ('a, 'b) sock * 'a sock_addr -> unit
+val connect    : ('a, 'b) sock * 'a sock_addr -> unit
+val listen     : ('a, passive stream) sock * int -> unit
+val close      : ('a, 'b) sock -> unit
 
 (* Socket management *)
 datatype shutdown_mode = 
@@ -40,14 +36,14 @@ datatype shutdown_mode =
   | NO_SENDS                            (* No further sends      *)
   | NO_RECVS_OR_SENDS                   (* No receives nor sends *)
 
-val shutdown : ('a, 'b stream) sock * shutdown_mode -> unit
+val shutdown   : ('a, 'b stream) sock * shutdown_mode -> unit
 
 type sock_desc
 
-val sockDesc : ('a, 'b) sock -> sock_desc
-val sameDesc : sock_desc * sock_desc -> bool
-val compare  : sock_desc * sock_desc -> order
-val select : 
+val sockDesc   : ('a, 'b) sock -> sock_desc
+val sameDesc   : sock_desc * sock_desc -> bool
+val compare    : sock_desc * sock_desc -> order
+val select     : 
     { rds : sock_desc list, wrs : sock_desc list, exs : sock_desc list, 
       timeout : Time.time option } 
     -> { rds : sock_desc list, wrs : sock_desc list, exs : sock_desc list }
@@ -92,15 +88,14 @@ val recvVecFrom' : ('a, dgram) sock * int * in_flags
                    -> Word8Vector.vector * 'a sock_addr
 val recvArrFrom' : ('a, dgram) sock * Word8Array.array buf * in_flags
                    -> int * 'a sock_addr
-end
 
 (* 
    Structure Socket defines functions for creating and using sockets,
    a means for communication between SML processes on the same machine
    or via a network.
 
-   Type [('addressfam, 'socktype) sock] is the type of sockets with
-   address family 'addressfam and having type 'socktype.  
+   [('addressfam, 'socktype) sock] is the type of sockets with address
+   family 'addressfam and having type 'socktype.
 
    The possible protocol families are 
         type pf_file    The Unix address family (file)
@@ -289,5 +284,4 @@ end
    pending connection which can be accepted with `accept'.  A client
    socket is ready for writing when its connection is fully
    established.
-
 *)

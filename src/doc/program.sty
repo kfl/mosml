@@ -1,0 +1,53 @@
+% Program texts -----------------------------------------
+
+\newcommand{\programenvironment}{\programmode%
+        \def\par{\leavevmode\endgraf}\obeylines\nobreak%
+        \programmode}
+\newcommand{\programinfig}{%
+         \parindent 0em
+         \nobreak\programenvironment}
+\newcommand{\programmode}{\tt%
+        \catcode`\_=12 \catcode`\?=12 \catcode`\.=12 \catcode`\,=12
+        \catcode`\;=12 \catcode`\:=12 \catcode`\@=12 \catcode`\~=12
+        \catcode`\#=12 \catcode`\&=12      % Added by PS 1991-06-17
+        \catcode`\^=12                     % Added by PS 1992-11-03
+        \obeyspaces\frenchspacing}%
+
+\newenvironment{programintext}{\programenvironment}{}
+
+\newlength{\programwidth}
+
+\newenvironment{program}{%
+        \setlength{\programwidth}{\textwidth}
+        \addtolength{\programwidth}{-\leftmargin}
+        \setlength{\partopsep}{0mm}\setlength{\topsep}{0mm}
+        \begin{trivlist}\item[]
+        \addtolength{\programwidth}{-\mathindent}
+        \hspace*{\mathindent}\begin{minipage}{\programwidth}
+        \vspace{1mm}
+        \begin{programintext}
+        }{\end{programintext}
+        \vspace{1mm}
+        \end{minipage}
+        \end{trivlist}
+        \noindent}
+
+% The following is an environment for listing (long) programs in
+% appendices etc., by PS 1991-06-17
+
+\newcommand{\separatingline}{\noindent\rule[0.5\baselineskip]{\linewidth}{0.3mm}}
+
+\newenvironment{longprogram}{%
+        \parindent 0em
+        \programenvironment
+        \setlength{\baselineskip}{0.8\baselineskip}
+        }{}
+
+% What the following code does is not clear.  Maybe it makes Tex
+% respect spaces and tabs in the source text, which is useful for
+% program layout.
+
+{\catcode`\^^I=\active \obeyspaces\global\def^^I{ }}
+{\obeyspaces\global\let =\ } % let active space = control space
+{\catcode`\`=\active \gdef`{\relax\lq}}
+

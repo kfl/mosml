@@ -21,7 +21,7 @@ Library units, Moscow ML version 1.44 (August 1999)
     | Dynlib      dynamic linking with C                     |      |
     | FileSys     interaction with the file system           |S F   |
     | Gdbm        persistent hash tables of strings (gdbm)   |      |
-    | Gdimage     generation of GIF images (Boutell's GD)    |      |
+    | Gdimage     generation of PNG images (Boutell's GD)    |      |
     | General     various top-level primitives               |SD    |
     | Graphics    graphics primitives (DOS version only)     |      |   
     | Help        on-line help                               | DF NO|

@@ -44,8 +44,9 @@ val foldl     : (char * 'a -> 'a) -> 'a -> substring -> 'a
 val foldr     : (char * 'a -> 'a) -> 'a -> substring -> 'a
 val app       : (char -> unit) -> substring -> unit
 
-(* A substring is an abstract representation of a piece of a string.
-   The type [substring] is the abstract type of substrings of a basestring.
+(* 
+   [substring] is the type of substrings of a basestring, an efficient 
+   representation of a piece of a string.
    A substring (s,i,n) is valid if 0 <= i <= i+n <= size s, 
                   or equivalently, 0 <= i and 0 <= n and i+n <= size s.  
    A valid substring (s, i, n) represents the string s[i...i+n-1].  

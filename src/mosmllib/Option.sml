@@ -2,6 +2,8 @@
 
 exception Option
 
+datatype option = datatype option
+
 fun getOpt (SOME v, _) = v
   | getOpt (NONE,   a) = a;
 

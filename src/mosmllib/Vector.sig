@@ -1,4 +1,4 @@
-(* Vector.sig -- SML Basis Library *)
+(* Vector -- SML Basis Library *)
 
 type 'a vector = 'a vector
 val maxLen   : int
@@ -21,10 +21,11 @@ val mapi     : (int * 'a -> 'b) -> 'a vector * int * int option -> 'b vector
 val foldli   : (int * 'a * 'b -> 'b) -> 'b -> 'a vector*int*int option -> 'b
 val foldri   : (int * 'a * 'b -> 'b) -> 'b -> 'a vector*int*int option -> 'b
 
-(* Type [ty vector] is the type of one-dimensional, immutable,
-   zero-based constant-time-access vectors with elements of type ty.
-   Type ty vector admits equality if ty does.  Vectors v1 and v2
-   are equal if they have the same length and their elements are equal.
+(* 
+   ['ty vector] is the type of one-dimensional, immutable, zero-based
+   constant-time-access vectors with elements of type 'ty.  
+   Type 'ty vector admits equality if 'ty does.  Vectors v1 and v2 are 
+   equal if they have the same length and their elements are equal.
 
    [maxLen] is the maximal number of elements in a vector.
 

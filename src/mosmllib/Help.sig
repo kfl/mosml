@@ -1,8 +1,6 @@
-(* Help *)
+(* Help -- on-line help functions *)
 
-val help : string -> unit
-
-(* Configuration *)
+val help           : string -> unit
 
 val displayLines   : int ref
 val helpdirs       : string list ref

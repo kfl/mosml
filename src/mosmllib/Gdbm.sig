@@ -1,13 +1,9 @@
-(* Gdbm -- interface to GNU gdbm, persistent hashtables of strings
-   1997, 1998-04-20, sestoft@dina.kvl.dk.  Idea: Jonas Barklund
-*)
+(* Gdbm -- GNU gdbm persistent string hashtables -- requires Dynlib *)
 
 type table 
 
-(* Read-only access is non-exclusive; read/write access excludes others *)
-
 datatype openmode =
-    READER                              (* read-only access                *)
+    READER                              (* read-only access (nonexclusive) *)
   | WRITER                              (* read/write, table must exist    *)
   | WRCREAT                             (* read/write, create if necessary *)
   | NEWDB                               (* read/write, create empty table  *)
@@ -38,9 +34,13 @@ val fastwrite  : bool ref
 val reorganize : table -> unit
 
 (* 
-   The type [table] is the type of an opened table.  Note that it can
-   be used only inside the withtable function, to make sure that the
-   table is closed after use.
+   [table] is the type of an opened table.  A value of type table can
+   be used only in the argument f to the withtable function.  This
+   makes sure that the table is closed after use.
+
+   [openmode] is the type of opening modes.  Read-only access (READER)
+   is non-exclusive; read/write access (WRITER, WRCREAT, NEWDB) is
+   exclusive.
     
    [withtable (nam, mod) f] first opens the table db in file nam with
    mode mod, then applies f to db, then closes db.  Makes sure to

@@ -1,8 +1,6 @@
 (* Weak --- weak pointers and arrays of weak pointers *)
 
-signature Weak = sig
-
-(* Weak pointers *)
+(* Single weak pointers *)
 
 type 'a weak
 val weak    : 'a -> 'a weak
@@ -34,10 +32,8 @@ val foldri  : (int * 'a * 'b -> 'b) -> 'b -> 'a array * int * int option
               -> 'b
 val modifyi : (int * 'a -> 'a) -> 'a array * int * int option -> unit
 
-end
-
 (*
-   Type 'a weak is the type of weak pointers to objects of type 'a.  A
+   ['a weak] is the type of weak pointers to objects of type 'a.  A
    weak pointer is a pointer that cannot itself keep an object alive.
    Hence the object pointed to by a weak pointer may be deallocated by
    the garbage collector if the object is reachable only by weak
@@ -79,8 +75,8 @@ end
 
    ---
 
-   Type 'a array is the type of arrays of weak pointers to objects of
-   type 'a.  
+   ['a array] is the type of arrays of weak pointers to objects of
+   type 'a.
 
    A value of type 'a Weak.weak (above) is equivalent to, but more
    efficient than, a one-element 'a Weak.array.  On the other hand, an

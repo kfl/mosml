@@ -1,4 +1,4 @@
-(* Dynarray -- polymorphic dynamic arrays a la SML/NJ library, 1995-01-10 *)
+(* Dynarray -- polymorphic dynamic arrays a la SML/NJ library *)
 
 type 'a array
 
@@ -11,9 +11,10 @@ val update   : '_a array * int * '_a  -> unit
 val default  : 'a array -> 'a
 val bound    : 'a array -> int
 
-(* Type [ty array] is the type of one-dimensional, mutable, zero-based
-   unbounded arrays with elements of type ty.  Type ty array does 
-   not admit equality.  
+(* 
+   ['ty array] is the type of one-dimensional, mutable, zero-based
+   unbounded arrays with elements of type 'ty.  Type 'ty array does
+   not admit equality.
 
    [array(n, d)] returns a dynamic array, all of whose elements are
    initialized to the default d.  The parameter n is used as a hint of the 

@@ -25,7 +25,8 @@ type database = entry list table
 val writebase : string * database -> unit
 val readbase  : string -> database
 
-val lookup : database * string -> entry list
+val keycompare : string * string -> order
+val lookup     : database * string -> entry list
 
 (* Extract the name from an entry: *)
 

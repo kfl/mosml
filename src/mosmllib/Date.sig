@@ -19,21 +19,16 @@ val date : {
              offset : Time.time option  (* time zone west of UTC         *)
            } -> date
 
-val year    : date -> int
-val month   : date -> month
-val day     : date -> int
-val hour    : date -> int
-val minute  : date -> int
-val second  : date -> int
-val weekDay : date -> weekday
-val yearDay : date -> int
-val isDst   : date -> bool option
-val offset  : date -> Time.time option
-
-val fromTimeLocal : Time.time -> date
-val fromTimeUniv  : Time.time -> date
-val toTime        : date -> Time.time
-val localOffset   : unit -> Time.time
+val year       : date -> int
+val month      : date -> month
+val day        : date -> int
+val hour       : date -> int
+val minute     : date -> int
+val second     : date -> int
+val weekDay    : date -> weekday
+val yearDay    : date -> int
+val isDst      : date -> bool option
+val offset     : date -> Time.time option
 
 val compare    : date * date -> order
 
@@ -42,13 +37,19 @@ val fmt        : string -> date -> string
 val fromString : string -> date option
 val scan       : (char, 'a) StringCvt.reader -> (date, 'a) StringCvt.reader
 
-(* These functions convert times to dates and vice versa, and format
+val fromTimeLocal : Time.time -> date
+val fromTimeUniv  : Time.time -> date
+val toTime        : date -> Time.time
+val localOffset   : unit -> Time.time
+
+(* 
+   These functions convert times to dates and vice versa, and format
    and scan dates.
 
-   A value of type [date] represents a point in time in a given time
-   zone.  If the offset is NONE, then the date is in the local time
-   zone.  If the offset is SOME t, then t is the offset of the main
-   timezone (ignoring daylight savings time) west of UTC.  
+   [date] is the type of points in time in a given time zone.  If the
+   offset is NONE, then the date is in the local time zone.  If the
+   offset is SOME t, then t is the offset of the main timezone
+   (ignoring daylight savings time) west of UTC.
         When 0 hours <= t < 12 hours, the represented time is to the
    west of UTC and the local time is UTC-t.  
         When 12 hours <= t < 23 hours, the represented time is to the
@@ -90,28 +91,6 @@ val scan       : (char, 'a) StringCvt.reader -> (date, 'a) StringCvt.reader
    [offset dt] returns NONE if the date dt is in the local time zone;
    returns SOME t where t is the offset west of UTC otherwise.  Thus
    SOME(Time.zeroTime) is UTC.
-
-   [fromTimeLocal t] returns the local date at (UTC) time t.  The
-   resulting date will have offset = NONE.  The fields year, month,
-   day, hour, minute, and second are as expected.  The resulting isDst
-   may be NONE if the system cannot determine whether daylight savings
-   time is in effect at the given time.  Corresponds to the ANSI C
-   function `localtime'.
-
-   [fromTimeUniv t] is similar to fromTime, but returns the UTC date
-   at (UTC) time t.  The resulting date will have offset = SOME
-   Time.zeroTime.  Corresponds to the ANSI C function `gmtime'.
-
-   [toTime dt] returns the (UTC) time corresponding to the date dt.
-   Uses the isDst time field if it is present (SOME _) and cannot be
-   calculated from the given date.  May raise Date if the given date
-   is invalid.  Raises Time.Time if the Date cannot be represented as
-   a Time.time value.  At least the dates in the interval 1970-2030
-   can be represented as Time.time values.  Corresponds to the ANSI C
-   function `mktime'.
-
-   [localOffset ()] is the local time zone offset west of UTC.  
-   It holds that 0 hours <= localOffset () < 24 hours.
 
    [compare(dt1, dt2)] returns LESS, EQUAL, or GREATER, according as
    date dt1 precedes, equals, or follows dt2 in time.
@@ -168,4 +147,26 @@ val scan       : (char, 'a) StringCvt.reader -> (date, 'a) StringCvt.reader
    case of success, returns SOME(date, rst) where date is the scanned
    date and rst is the remainder of the stream; otherwise returns
    NONE.
+
+   [fromTimeLocal t] returns the local date at (UTC) time t.  The
+   resulting date will have offset = NONE.  The fields year, month,
+   day, hour, minute, and second are as expected.  The resulting isDst
+   may be NONE if the system cannot determine whether daylight savings
+   time is in effect at the given time.  Corresponds to the ANSI C
+   function `localtime'.
+
+   [fromTimeUniv t] is similar to fromTime, but returns the UTC date
+   at (UTC) time t.  The resulting date will have offset = SOME
+   Time.zeroTime.  Corresponds to the ANSI C function `gmtime'.
+
+   [toTime dt] returns the (UTC) time corresponding to the date dt.
+   Uses the isDst time field if it is present (SOME _) and cannot be
+   calculated from the given date.  May raise Date if the given date
+   is invalid.  Raises Time.Time if the Date cannot be represented as
+   a Time.time value.  At least the dates in the interval 1970-2030
+   can be represented as Time.time values.  Corresponds to the ANSI C
+   function `mktime'.
+
+   [localOffset ()] is the local time zone offset west of UTC.  
+   It holds that 0 hours <= localOffset () < 24 hours.
 *)
