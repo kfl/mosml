@@ -1,0 +1,71 @@
+# Win32 configuration Makefile for Moscow ML
+
+# Where to install stuff
+
+MOSMLHOME=D:\mosml
+
+# To compile the runtime system camlrunm with support for
+# dynamically loadable libraries (DDLs), uncomment these:
+
+ADDPRIMS=dynlib.c
+ADDOBJS=dynlib.obj
+# ADDLIBS=
+# ADDCFLAGS=
+
+# For Visual C++ use:
+CC=cl
+CPP=cl -C -EP -Dwin32 -Umsdos -Uunix
+STRIP=rem
+EXE=.exe
+# ADDLIBS=
+# ADDCFLAGS=
+
+# For GNU-WIN32, use:
+#CC=gcc
+#CPP=cpp -P -traditional -Dwin32 -Umsdos -Uunix
+#STRIP=strip
+#AWK=gawk
+#EXE=.exe
+
+# ---------- You shouldn't need to edit below this line ------------
+
+# BINDIR contains true executable files, such as scripts
+# LIBDIR contains bytecode files (such as mosmlcmp and library units)
+
+BINDIR=$(MOSMLHOME)\bin
+LIBDIR=$(MOSMLHOME)\lib
+TOOLDIR=$(MOSMLHOME)\tools
+
+CAMLRT=..\runtime
+
+MOSMLTOOLS=..\tools
+
+MOSMLC=..\camlrunm.exe ..\mosmlcmp.w32 -stdlib ..\mosmllib -P none
+MOSMLL=..\camlrunm.exe ..\mosmllnk.w32 -stdlib ..\mosmllib -P none
+MOSMLLDOS=..\camlrunm.exe ..\mosmllnk.dos -stdlib ..\mosmllib -P none
+
+MOSMLLEX=..\camlrunm.exe ..\mosmllex.w32
+MOSMLYACC=..\mosmlyac\mosmlyac.exe
+MOSMLCUT=..\camlrunm.exe ..\cutdeps.w32
+MOSMLDEP=..\camlrunm.exe ..\mosmldep.w32
+
+# For cross-compiling to MS DOS (from Linux) (development only)
+# CPP=\lib\cpp -P -traditional -Uunix -Dmsdos -Uwin32
+
+.SUFFIXES :
+.SUFFIXES : .mlp .sml .sig .ui .uo .lex .c .obj
+
+.sig.ui:
+	$(MOSMLC) $(COMPFLAGS) $<
+
+.sml.uo:
+	$(MOSMLC) $(COMPFLAGS) $<
+
+.mlp.sml:
+	$(CPP) $< > $*.sml
+
+.lex.sml:
+	$(MOSMLLEX) $<
+
+.c.obj:
+	$(CC) -c $(CFLAGS) -Fo$@ $<
