@@ -81,31 +81,28 @@ val quit             : unit -> 'a
    liberal mode may be set also by the mosml option -liberal.
 
    [conservative ()] sets conservative mode for the compilation
-   functions: accept all extensions to the Modules language, but issue
-   a warning for each use.  The conservative mode may be set also by
-   the mosml option -conservative.  This is the default.
+   functions: accept all extensions to the SML Modules language, but
+   issue a warning for each use.  The conservative mode may be set
+   also by the mosml option -conservative.  This is the default.
 
    [orthodox ()] sets orthodox mode for the compilation functions:
-   reject all uses of the extensions to the modules language.  That
-   is, accept only SML'97 Modules syntax.  The orthodox mode may be
+   reject all uses of the extensions to the SML Modules language.
+   That is, accept only SML Modules syntax.  The orthodox mode may be
    set also by the mosml option -orthodox.
 
-   [compile "U.sig"] will compile and elaborate the unit signature in
-   file U.sig, producing a compiled signature file U.ui.  During
-   compilation, the compiled signatures of other units will be
-   accessed if they are mentioned in U.sig.  This function is
-   backwards compatible with Moscow ML 1.44 and earlier.  Equivalent
-   to compileStructure [] "U.sig".
+   [compile "U.sig"] will compile and elaborate the specifications in
+   file U.sig in structure mode, producing a compiled signature U in
+   file U.ui.  This function is backwards compatible with Moscow ML
+   1.44 and earlier.  Equivalent to compileStructure [] "U.sig".
 
-   [compile "U.sml"] will elaborate and compile the unit body in file
-   U.sml, producing a bytecode file U.uo.  If there is an explicit
-   signature file U.sig, then file U.ui must exist, and the unit body
-   must match the signature.  If there is no U.sig, then an inferred
-   signature file U.ui will be produced also.  No evaluation takes
-   place.  During compilation, the compiled signatures of other units
-   will be accessed if they are mentioned in U.sml.  This function is
-   backwards compatible with Moscow ML 1.44 and earlier.  Equivalent
-   to compileStructure [] "U.sml".
+   [compile "U.sml"] will elaborate and compile the declarations in
+   file U.sml in structure mode, producing a compiled structure U in
+   bytecode file U.uo.  If there is an explicit signature file U.sig,
+   then file U.ui must exist, and the unit body must match the
+   signature.  If there is no U.sig, then an inferred signature file
+   U.ui will be produced also.  No evaluation takes place.  This
+   function is backwards compatible with Moscow ML 1.44 and earlier.
+   Equivalent to compileStructure [] "U.sml".
 
    The declared identifiers will be reported if verbose is true (see
    below); otherwise compilation will be silent.  In any case,
@@ -141,10 +138,6 @@ val quit             : unit -> 'a
    corresponds to invoking the batch compiler as follows:
         mosmlc -c U1.ui ... Un.ui -toplevel U.sig
    where opnunits equals ["U1", ..., "Un"]. 
-
-   the specifications in U.sig in
-   the interactive toplevel, in a context where all specifications in
-   opnunits are visible.  The same
 
    [compileToplevel opnunits "U.sml"] compiles the declarations in
    file U.sml, in a context in which all declarations from opnunits
@@ -210,19 +203,21 @@ val quit             : unit -> 'a
    ML symbolic identifiers.  When quotation is true, the backquote
    character is illegal in symbolic identifiers, and a quotation `a b
    c` will be recognized by the parser and evaluated to an object of
-   type 'a General.frag list.  The default value is ref false.
+   type 'a General.frag list.  False by default.
 
-   [valuepoly] determines whether `value polymorphism' is used or not
-   in the type checker.  With value polymorphism (the default), there
-   is no distinction between imperative ('_a) and applicative ('a)
-   type variables, and type variables are generalized only in
-   non-expansive expressions.  An expression is non-expansive if it is
-   a variable, a special constant, a function, a tuple or record of
-   non-expansive expressions, a parenthesized or typed non-expansive
-   expression, or the application of an exception or value constructor
-   (other than ref) to a non-expansive expression.  If valuepoly is
-   false, then the type checker will distinguish imperative and
-   applicative type variables, generalize all applicative type
-   variables, and generalize imperative type variables only in
-   non-expansive expressions.  Valuepoly is true by default.
+   [valuepoly] determines whether value polymorphism is used or not in
+   the type checker.  With value polymorphism (the default), there is
+   no distinction between imperative ('_a) and applicative ('a) type
+   variables, and type variables are generalized only in bindings to
+   non-expansive expressions.  Non-generalized type variables are left
+   free, to be instantiated when the bound identifier is used.  An
+   expression is non-expansive if it is a variable, a special
+   constant, a function, a tuple or record of non-expansive
+   expressions, a parenthesized or typed non-expansive expression, or
+   the application of an exception or value constructor (other than
+   ref) to a non-expansive expression.  If valuepoly is false, then
+   the type checker will distinguish imperative and applicative type
+   variables, generalize all applicative type variables, and
+   generalize imperative type variables only in non-expansive
+   expressions.  True by default.  
 *)

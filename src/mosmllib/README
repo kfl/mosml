@@ -1,4 +1,4 @@
-Library units, Moscow ML version 1.44 (August 1999)
+Library units, Moscow ML version 2.00 (June 2000)
 
       Name        Purpose                                     Notes
     -----------------------------------------------------------------
@@ -36,7 +36,7 @@ Library units, Moscow ML version 1.44 (August 1999)
     | Misc        various for initial top-level environment  | DF NO|
     | Mosml       various non-standard utilities             |  F   |
     | Mosmlcgi    utilities for writing CGI programs         |      |
-    | Mysql       interface to the Mysql database server     |      |
+    | Msp         utilities for generating HTML code         |      |
     | NJ93        top-level compatibility with SML/NJ 0.93   |    N |
     | Option      partial functions                          |SDF NO|
     | OS          operating system information               |S F   |
@@ -49,7 +49,8 @@ Library units, Moscow ML version 1.44 (August 1999)
     | Random      generation of pseudo-random numbers        |      |
     | Real        arithmetic on floating-point numbers       |S F   |
     | Regex       regular expressions as in POSIX 1003.2     |      |
-    | SML90       top-level compatibility with SML'90        |S    O|
+    | Real        arithmetic on floating-point numbers       |S F   |
+    | Signal      Unix signals                               |S     |
     | Socket      interface to sockets                       |      |
     | Splaymap    splay-tree implementation of finite maps   |   L  |
     | Splayset    splay-tree implementation of finite sets   |   L  |
@@ -60,6 +61,7 @@ Library units, Moscow ML version 1.44 (August 1999)
     | TextIO      text input-output streams (imperative)     |SDF   |
     | Time        time points and durations                  |S F   |
     | Timer       measuring real time and cpu time           |S F   |
+    | Unix        starting concurrent subprocesses           |S     |
     | Vector      immutable constant-time-access vectors     |SDF NO|
     | Weak        arrays of weak pointers                    |      |
     | Word        words (31-bit unsigned integers)           |S F   |

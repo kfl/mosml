@@ -38,7 +38,6 @@ val fmt       : StringCvt.radix -> int -> string
 val toString  : int -> string
 val fromString : string -> int option   (* Overflow      *)
 
-
 (* 
    [precision] is SOME n, where n is the number of significant bits in an
    integer.  In Moscow ML n is 31 in 32-bit architectures and 63 in 64-bit
