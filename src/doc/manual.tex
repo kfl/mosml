@@ -155,7 +155,7 @@ compilation; see Section~\ref{sec-structure-mode}.
     then handled as Core language values, which may then be unpacked
     as structures or functors again; see
     Section~\ref{sec-firstclass-modules}
-  \item recursive modules: signatures and structures may be
+  \item recursive modules:  structures and  signatures may be
     recursively defined; see Section~\ref{sec-rec-modules}
   \end{itemize}
 
@@ -176,7 +176,8 @@ compilation; see Section~\ref{sec-structure-mode}.
   have been removed; the runtime system and bytecode format now
   accommodate much larger programs; the representation of exceptions
   has been simplified; literals are now shared inside topdecs; etc.
-\item A project manager \texttt{mosmlpm} for recompilation management.
+% cvr: removed
+%\item A project manager \texttt{mosmlpm} for recompilation management.
 \end{itemize}
 
 % \subsection{What is new in release 1.44}
@@ -862,7 +863,7 @@ function, taking as parameter a type variable \texttt{'a}:
 \noindent 
 For a signature specifying an unknown type, the response is a type
 function \verb+/\t.{...}+ mapping any internal type name \texttt{t} to
-a record \verb+{...}+ which is the internal representation of the
+a record \verb+{...}+, which is the internal representation of the
 signature:
 
 \begin{program}
@@ -918,7 +919,6 @@ the functor body has the signature \verb+{...}+:
 Section~\ref{sec-applicative-functors}) then no new internal type
 names are generated at functor application.
 
-
 \newpage
 \section{Compilation units}
 \label{sec-compilation-units}
@@ -933,11 +933,12 @@ file \texttt{unitid.sig}.  A unit must be compiled in one of two modes:
   SML structure \texttt{A}, and file \texttt{A.sig}, if present,
   declares an explicit SML signature \texttt{A} that is used as an
   opaque constraint for structure \texttt{A}.
-  
-  A structure-mode unit has a restricted syntax: it can declare only a
-  single SML structure, and therefore admits simple recompilation
-  management using \texttt{mosmldep} and makefiles; see
-  Section~\ref{sec-structure-mode-recompilation}.
+
+% cvr: removed  
+%   A structure-mode unit has a restricted syntax: it can declare only a
+%   single SML structure, and therefore admits simple recompilation
+%   management using \texttt{mosmldep} and makefiles; see
+%   Section~\ref{sec-structure-mode-recompilation}.
   
   Structure-mode units are backwards compatible with the simple
   structures used in Moscow ML version 1.20 through 1.44.  Hence old
@@ -949,7 +950,6 @@ file \texttt{unitid.sig}.  A unit must be compiled in one of two modes:
   Section~\ref{sec-nonstandard-interactive}), or invoke the batch
   compiler \texttt{mosmlc}, preceding the unit file name with option
   \texttt{-structure} (see Section~\ref{sec-mosmlc-options}).
-
   
 \item \textbf{Toplevel mode:} File \texttt{A.sml} contains a Moscow ML
   declaration (which may itself be a sequence of declarations), and
@@ -974,12 +974,15 @@ units and toplevel-mode units is given in the \emph{Moscow ML Language
   Overview} \cite{MoscowML:2000:MoscowMLLanguage}.
 
 A programming project may consist of a mixture of structure-mode and
-toplevel-mode compilation units.  However, the old recompilation
-management with makefiles and \texttt{mosmldep} (see
-Section~\ref{sec-structure-mode-recompilation}) will work only with
-structure-mode units.  The new project manager \texttt{mosmlpm} (see
-Section~\ref{sec-project-manager}) can manage recompilation of
-both kinds of units.
+toplevel-mode compilation units. See the example in Section  \ref{sec-example-mixed-units}.
+% See Section
+% However, the old recompilation
+% management with makefiles and \texttt{mosmldep} (see
+% Section~\ref{sec-structure-mode-recompilation}) will work only with
+% structure-mode units.  
+% The new project manager \texttt{mosmlpm} (see
+% Section~\ref{sec-project-manager}) can manage recompilation of
+% both kinds of units.
  
 
 \subsection{Compiling, linking and loading units}
@@ -1023,7 +1026,8 @@ the interactive system.
 \subsection{Compiling existing SML programs that involve .sig files}
 
 The special meaning of .sig files may cause conflicts when compiling
-existing SML programs, in which .sig files are often used rather
+existing SML programs (written for other compilers),
+in which .sig files are often used rather
 informally to contain signature declarations.  For instance, file
 \texttt{A.sig} may declare the signatures of structures declared in
 file \texttt{A.sml} (but might contain other arbitrary SML
@@ -1104,6 +1108,7 @@ circumvent these problems as follows:
 
 
 \newpage
+
 \section{Structure-mode compilation units}
 \label{sec-structure-mode}
 
@@ -1166,7 +1171,7 @@ mosml
 loading into the interactive system:
 
 \begin{program}
-mosmlc -c -structure "unitid\et.ui" \ldots "unitid\n.ui" unitid.sig unitid.sml 
+mosmlc -c -structure unitid\et.ui \ldots unitid\n.ui unitid.sig unitid.sml 
 mosml
 > app load ["unitid\et",\ldots,"unitid\n"];
 > load "unitid";
@@ -1180,11 +1185,15 @@ mosml
 A unit U without an explicit signature consists of a file U.sml
 containing 
 
+% \begin{program}
+% structure U = struct {\rm \ldots\ declarations\ \ldots} end
+% \end{program}
 \begin{program}
-structure U = struct {\rm \ldots\ declarations\ \ldots} end
+  structure U = {\rm modexp}
 \end{program}
 
-\noindent This is the same as flat simple SML structure declaration.
+
+\noindent This is the same as a simple SML structure declaration.
 There must be no corresponding explicit signature file U.sig.
 
 
@@ -1194,15 +1203,24 @@ There must be no corresponding explicit signature file U.sig.
 A unit U with an explicit signature consists of a signature file
 U.sig containing
 
+%\begin{program}
+%signature U = sig {\rm \ldots\ specifications\ \ldots} end
+%\end{program}
+
 \begin{program}
-signature U = sig {\rm \ldots\ specifications\ \ldots} end
+signature U = {\rm sigexp}
 \end{program}
 
 \noindent and a file U.sml, containing
 
+% \begin{program}
+% structure U :> U = struct {\rm \ldots\ declarations\ \ldots} end
+% \end{program}
+
 \begin{program}
-structure U :> U = struct {\rm \ldots\ declarations\ \ldots} end
+structure U :> U = {\rm modexp} 
 \end{program}
+
 
 \noindent This is similar to an SML structure declaration with an
 opaque signature constraint.  Note that the file name, signature name,
@@ -1211,150 +1229,151 @@ an opaque signature constraint, meaning that other units have no
 access to the internals of U.sml, only to the signature U.sig.
 
 
-\subsection{An example program consisting of three structure-mode units}
-\label{sec-example-units}
+% \subsection{An example program consisting of three structure-mode units}
+% \label{sec-example-units}
 
-To illustrate structure-mode units, we present a tiny program working
-with arithmetic expressions.  It consists of three units {\tt Expr},
-{\tt Reduce}, and {\tt Evaluate}.  This example is in {\tt
-  mosml/examples/manual}.
+% To illustrate structure-mode units, we present a tiny program working
+% with arithmetic expressions.  It consists of three units {\tt Expr},
+% {\tt Reduce}, and {\tt Evaluate}.  This example is in {\tt
+%   mosml/examples/manual}.
 
-File {\tt Expr.sml} below contains structure {\tt Expr}, which defines
-a datatype {\tt expr} for representing expressions and a function {\tt
-  show} to display them.  It has no signature constraint and therefore
-exports both the datatype and the function:
+% File {\tt Expr.sml} below contains structure {\tt Expr}, which defines
+% a datatype {\tt expr} for representing expressions and a function {\tt
+%   show} to display them.  It has no signature constraint and therefore
+% exports both the datatype and the function:
 
-\begin{program}
-structure Expr = struct
-   datatype expr = Cst of int | Neg of expr | Plus of expr * expr
+% \begin{program}
+% structure Expr = struct
+%    datatype expr = Cst of int | Neg of expr | Plus of expr * expr
 
-   fun show (Cst n)         = makestring n
-     | show (Neg e)         = "(-" ^ show e ^ ")"
-     | show (Plus (e1, e2)) = "(" ^ show e1 ^ "+" ^ show e2 ^ ")"
-end
-\end{program}
+%    fun show (Cst n)         = makestring n
+%      | show (Neg e)         = "(-" ^ show e ^ ")"
+%      | show (Plus (e1, e2)) = "(" ^ show e1 ^ "+" ^ show e2 ^ ")"
+% end
+% \end{program}
 
-\noindent File {\tt Reduce.sig} below contains the signature  {\tt
-  Reduce}:
+% \noindent File {\tt Reduce.sig} below contains the signature  {\tt
+%   Reduce}:
 
-\begin{program}
-signature Reduce = sig
-   val reduce : Expr.expr -> Expr.expr
-end
-\end{program}
+% \begin{program}
+% signature Reduce = sig
+%    val reduce : Expr.expr -> Expr.expr
+% end
+% \end{program}
 
-\noindent File {\tt Reduce.sml} below contains the structure {\tt
-  Reduce}, which has the explicit signature shown above, and therefore
-exports only the function {\tt reduce} specified in the signature:
+% \noindent File {\tt Reduce.sml} below contains the structure {\tt
+%   Reduce}, which has the explicit signature shown above, and therefore
+% exports only the function {\tt reduce} specified in the signature:
 
-\begin{program}
-structure Reduce :> Reduce = struct 
-   local open Expr
-   in
-       fun negate (Neg e) = e
-         | negate e       = Neg e
-       fun reduce (Neg (Neg e))      = e
-         | reduce (Neg e)            = negate (reduce e)
-         | reduce (Plus (Cst 0, e2)) = reduce e2
-         | reduce (Plus (e1, Cst 0)) = reduce e1
-         | reduce (Plus (e1, e2))    = Plus (reduce e1, reduce e2)
-         | reduce e                  = e
-   end
-end
-\end{program}
+% \begin{program}
+% structure Reduce :> Reduce = struct 
+%    local open Expr
+%    in
+%        fun negate (Neg e) = e
+%          | negate e       = Neg e
+%        fun reduce (Neg (Neg e))      = e
+%          | reduce (Neg e)            = negate (reduce e)
+%          | reduce (Plus (Cst 0, e2)) = reduce e2
+%          | reduce (Plus (e1, Cst 0)) = reduce e1
+%          | reduce (Plus (e1, e2))    = Plus (reduce e1, reduce e2)
+%          | reduce e                  = e
+%    end
+% end
+% \end{program}
 
-\noindent File {\tt Evaluate.sig} below contains the signature {\tt
-  Evaluate}, which specifies a function {\tt eval} for evaluating
-expressions, and a function {\tt test}:
+% \noindent File {\tt Evaluate.sig} below contains the signature {\tt
+%   Evaluate}, which specifies a function {\tt eval} for evaluating
+% expressions, and a function {\tt test}:
 
-\begin{program}
-signature Evaluate = sig
-   val eval : Expr.expr -> int
-   val test : Expr.expr -> bool
-end
-\end{program}
+% \begin{program}
+% signature Evaluate = sig
+%    val eval : Expr.expr -> int
+%    val test : Expr.expr -> bool
+% end
+% \end{program}
 
-\noindent File {\tt Evaluate.sml} below contains structure {\tt
-  Evaluate}, which has a signature constraint, and mentions unit {\tt
-  Expr} as well as {\tt Reduce}:
+% \noindent File {\tt Evaluate.sml} below contains structure {\tt
+%   Evaluate}, which has a signature constraint, and mentions unit {\tt
+%   Expr} as well as {\tt Reduce}:
 
-\begin{program}
-structure Evaluate :> Evaluate = struct
-   local open Expr 
-   in 
-       fun eval (Cst n)         = n
-         | eval (Neg e)         = ~ (eval e)
-         | eval (Plus (e1, e2)) = eval e1 + eval e2;
-       fun test e = (eval e = eval (Reduce.reduce e))
-   end
-end
-\end{program}
-
-
-\subsection{Recompilation management for structure-mode programs}
-\label{sec-structure-mode-recompilation}
-
-Recompilation management helps the programmer recompile only what is
-necessary after a change to a unit interface or unit implementation.  
+% \begin{program}
+% structure Evaluate :> Evaluate = struct
+%    local open Expr 
+%    in 
+%        fun eval (Cst n)         = n
+%          | eval (Neg e)         = ~ (eval e)
+%          | eval (Plus (e1, e2)) = eval e1 + eval e2;
+%        fun test e = (eval e = eval (Reduce.reduce e))
+%    end
+% end
+% \end{program}
 
 
-Recompilation management for structure-mode units (that declare only
-flat structures)\footnote{For managing the recompilation of full
-  Standard ML programs, see Sections~\ref{sec-mixed-recompilation}
-  and~\ref{sec-project-manager}.} may be performed using the standard
-`make' tool in conjunction with the Moscow ML program
-\texttt{mosmldep}.
+% \subsection{Recompilation management for structure-mode programs}
+% \label{sec-structure-mode-recompilation}
 
-Consider the example program in Section~\ref{sec-example-units}
-consisting of the three units Evaluate, Expr, and Reduce.  Assume
-their source files *.sig and *.sml reside in a particular directory.
-Copy the Makefile stub from \texttt{mosml/tools/Makefile.stub} to that
-directory, and change to that directory.
+% Recompilation management helps the programmer recompile only what is
+% necessary after a change to a unit interface or unit implementation.  
 
-\begin{enumerate}
-\item Edit the Makefile so that the names of the bytecode files
-  Evaluate.uo, Expr.uo, and Reduce.uo appear on the line beginning
-  with `{\tt all:}' (see the example makefile in
-  \texttt{mosml/examples/manual/Makefile}).
 
-\item Compute the dependencies among the files by executing:
-\begin{program}
-make depend
-\end{program}
+% Recompilation management for structure-mode units (that declare only
+% flat structures)\footnote{For managing the recompilation of full
+%   Standard ML programs, see Sections~\ref{sec-mixed-recompilation}
+%   and~\ref{sec-project-manager}.} may be performed using the standard
+% `make' tool in conjunction with the Moscow ML program
+% \texttt{mosmldep}.
 
-\item Recompile all those files which have not yet been compiled, or
-  which have been modified but not yet recompiled, or which depend on
-  modified files, by executing:
+% Consider the example program in Section~\ref{sec-example-units}
+% consisting of the three units Evaluate, Expr, and Reduce.  Assume
+% their source files *.sig and *.sml reside in a particular directory.
+% Copy the Makefile stub from \texttt{mosml/tools/Makefile.stub} to that
+% directory, and change to that directory.
+
+% \begin{enumerate}
+% \item Edit the Makefile so that the names of the bytecode files
+%   Evaluate.uo, Expr.uo, and Reduce.uo appear on the line beginning
+%   with `{\tt all:}' (see the example makefile in
+%   \texttt{mosml/examples/manual/Makefile}).
+
+% \item Compute the dependencies among the files by executing:
+% \begin{program}
+% make depend
+% \end{program}
+
+% \item Recompile all those files which have not yet been compiled, or
+%   which have been modified but not yet recompiled, or which depend on
+%   modified files, by executing:
         
-\begin{program}
-make    
-\end{program}
-\end{enumerate}
+% \begin{program}
+% make    
+% \end{program}
+% \end{enumerate}
 
-\noindent Step (3) must be repeated whenever you have modified a
-component of the program system.  Step (2) need only be repeated if
-the inter-dependencies of some components change, or if you add or
-remove an explicit signature file.  Step (1) need only be repeated
-when you add or delete an entire unit of the program system.
+% \noindent Step (3) must be repeated whenever you have modified a
+% component of the program system.  Step (2) need only be repeated if
+% the inter-dependencies of some components change, or if you add or
+% remove an explicit signature file.  Step (1) need only be repeated
+% when you add or delete an entire unit of the program system.
 
-The compiled *.ui and *.uo files can be removed by executing:
+% The compiled *.ui and *.uo files can be removed by executing:
 
-\begin{program}
-make clean  
-\end{program}
+% \begin{program}
+% make clean  
+% \end{program}
 
-\noindent The unit dependencies are computed by the ML program
-{\tt mosmldep}, which can handle only structure-mode units, and only
-flat structures, neither functors nor nested structures.
+% \noindent The unit dependencies are computed by the ML program
+% {\tt mosmldep}, which can handle only structure-mode units, and only
+% flat structures, neither functors nor nested structures.
 
 
 \newpage
 
- \section{Toplevel-mode compilation units}
+\section{Toplevel-mode compilation units}
 \label{sec-toplevel-mode}
 
-A toplevel-mode compilation unit may contain arbitrary Moscow ML code,
-and consequently, arbitrary Standard ML code.  
+A toplevel-mode compilation unit may contain arbitrary Moscow ML toplevel declarations,
+and consequently, arbitrary Standard ML toplevel declarations (including functor, 
+signature and fixity declarations). 
 
 
 \subsection{Basic concepts}
@@ -1369,9 +1388,13 @@ arbitrary Moscow ML specifications.  When the unit interface is
 present, the unit implementation must implement everything specified
 in the unit interface, and only those identifiers specified in the
 interface are visible outside the unit.  It is considered a
-mistake for the implementation to declare more identifiers than
-specified in the interface; a warning is issued in this case.
-
+mistake for the implementation to declare more identifiers
+than specified in the interface or
+for the implementation to
+declare an identifier as a constructor or exception, but the interface
+to specify that identifier as an ordinary value:
+a warning is issued in these cases. 
+ 
 Provided the interface and implementation agree on which identifiers
 are declared, then it is immaterial whether a compilation unit is
 compiled and directly executed in the interactive toplevel system:
@@ -1412,21 +1435,21 @@ mosml
 loading into the interactive system:
 
 \begin{program}
-mosmlc -c -toplevel "unitid\et.ui" \ldots "unitid\n.ui" unitid.sig unitid.sml 
+mosmlc -c -toplevel unitid\et.ui \ldots unitid\n.ui unitid.sig unitid.sml 
 mosml
 > app load ["unitid\et",\ldots,"unitid\n"];
 > load "unitid";
 \end{program}
 
-\subsection{An example program consisting of four mixed-mode units}
+\section{An example program consisting of four mixed-mode units}
 \label{sec-example-mixed-units}
 
 To illustrate units, we present a tiny program working
-with arithmetic expressions.  It consists of two structure mode units {\tt Expr},
-{\tt Reduce} and two toplevel mode units {\tt Evaluate} and {\tt Test}.  This example is in {\tt
+with arithmetic expressions.  It consists of two structure-mode units, {\tt Expr}
+and {\tt Reduce} and two toplevel-mode units, {\tt Evaluate} and {\tt Test}.  This example is in {\tt
   mosml/examples/units}.
 
-File {\tt Expr.sml} below, is a structure mode implementation that 
+File {\tt Expr.sml} below, is a structure-mode implementation that 
 contains structure {\tt Expr} which defines
 a datatype {\tt expr} for representing expressions and a function {\tt
  show} to display them.  It has no signature constraint and therefore
@@ -1442,7 +1465,7 @@ structure Expr = struct
 end
 \end{program}
 
-\noindent File {\tt Reduce.sig} below is a structure mode interface 
+\noindent File {\tt Reduce.sig} below is a structure-mode interface 
   that contains the signature  {\tt Reduce}:
 
 \begin{program}
@@ -1451,7 +1474,7 @@ signature Reduce = sig
 end
 \end{program}
 
-\noindent File {\tt Reduce.sml} below is a structure mode implementation 
+\noindent File {\tt Reduce.sml} below is a structure-mode implementation 
   that declares the structure {\tt  Reduce}, 
   with the explicit signature shown above, and therefore
   exports only the function {\tt reduce} specified in that signature:
@@ -1473,7 +1496,7 @@ end
 \end{program}
 
 \noindent 
-File {\tt Evaluate.sig} below is a toplevel mode interface that
+File {\tt Evaluate.sig} below is a toplevel-mode interface that
 contains the specification of a functor {\tt Eval}, which maps any
 structure {\tt R} matching the signature {\tt Reduce} to a structure
 with a function {\tt eval} for evaluating expressions, and a function
@@ -1486,7 +1509,7 @@ functor Eval : functor(R:Reduce) ->
                  end
 \end{program}
 
-\noindent File {\tt Evaluate.sml} below is a toplevel mode implementation that contains the actual functor {\tt
+\noindent File {\tt Evaluate.sml} below is a toplevel mode-implementation that contains the actual functor {\tt
   Eval}, which mentions the unit {\tt Expr} as well as well as the unit interface {\tt Reduce}:
 
 \begin{program}
@@ -1513,13 +1536,14 @@ val t1 = T.test (Plus (Cst 244, Cst 0))
 val t2 = T.test (Neg (Plus (Neg (Cst 140), Cst 0)))
 \end{program}
 
-The simplest way to compile this example is to enter:
+\noindent The simplest way to compile this example is to enter:
 
 \begin{program}
 mosmlc -structure Expr.sml Reduce.sig Reduce.sml -toplevel Evaluate.sig Evaluate.sml Test.sml
 \end{program}
 
-which is equivalent to the individual compilations (and does not avoid unnecassary recompilations):
+\noindent
+which is equivalent to issuing the individual commands:
 \begin{program}
 mosmlc -c -structure Expr.sml 
 mosmlc -c -structure Expr.ui Reduce.sig 
@@ -1529,9 +1553,10 @@ mosmlc -c -toplevel Expr.ui Reduce.ui Evaluate.sml
 mosmlc -c -toplevel Expr.ui Reduce.ui Evaluate.ui Test.sml 
 \end{program}
 
+\noindent and, therefore, does not avoid unnecessary recompilation steps.
 
-\subsection{Mixed-mode recompilation management using mosmldep and make}
-\label{sec-mixed-recompilation}
+\section{Recompilation management using {\tt mosmldep} and {\tt make}}
+\label{sec-mixed-mode-recompilation}
 
 Recompilation management helps the programmer recompile only what is
 necessary after a change to a unit interface or unit implementation.  
@@ -1539,15 +1564,17 @@ necessary after a change to a unit interface or unit implementation.
 Consider the example program in Section~\ref{sec-example-mixed-units}
 consisting of the four units {\tt Expr}, {\tt Reduce}, {\tt Evaluate}
 and {\tt Test}.  Assume their source files {\tt *.sig} and {\tt *.sml}
-reside in a particular directory (or look in the
-\texttt{mosml/examples/units}.  Copy the Makefile stub from
+reside in a particular directory (you may copy them from
+\texttt{mosml/examples/units}).  Copy the Makefile stub from
 \texttt{mosml/tools/Makefile.stub} to that directory, and change to
 that directory.
 
 \begin{enumerate}
 \item\label{zero} Edit the Makefile so that the names of the units
   {\tt Expr}, {\tt Reduce}, {\tt Evaluate},  and {\tt Test} appear on the line beginning
-  with `{\tt UNITS:}', with each unit preceding by an option indicatings its mode
+  with `{\tt UNITS=}', with each unit preceded by the option {\tt -structure} (the default) or
+  {\tt -toplevel}
+  to indicate its mode
   (see the example makefile in \texttt{mosml/examples/units/Makefile}):
 
 \begin{program}
@@ -1581,7 +1608,7 @@ make
 component of the program system.  Step (\ref{two}) need only be repeated if
 the inter-dependencies of some components change, or if you add or
 remove an explicit signature file.  Steps (\ref{one} and \ref{zero}) need only be repeated
-when you add or delete an entire unit of the program system.
+when you add, delete or change the mode of an entire unit in the program system.
 
 The compiled {\tt *.ui} and {\tt *.uo} files can be removed by executing:
 
@@ -1596,7 +1623,7 @@ make clean
 mosmldep \$(UNITS)
 \end{program}
 
-\noindent When you explictly list the units (together with the indication of
+\noindent When you explicitly list the units (together with the indication of
 their compilation mode):
 
 \begin{program}
@@ -1605,8 +1632,8 @@ UNITS= -structure Expr Evaluate -toplevel Reduce Test
 
 \noindent {\tt mosmldep} merely constructs a dependency file on the
 assumption that units to the right depend on all preceding units,
-taking into account the presence of explicit interfaces {\tt .sig}
-files.  Unfortunately, this means that {\tt mosmldep} will generally
+taking into account the presence of explicit interfaces ({\tt .sig}
+files).  Unfortunately, this means that {\tt mosmldep} will generally
 create an inefficient Makefile, containing more dependencies than are
 actually in your source files.  However, it still saves some
 recompilation (which is cheap in Moscow ML anyway) and is more
@@ -1621,133 +1648,133 @@ UNITS=
 \end{program}
 
 \noindent 
-then {\tt mosmldep} will accurately {\emph infer} the dependencies
+then {\tt mosmldep} will accurately \emph{infer} the dependencies
 between all the {\tt .sig} and {\tt .sml} source files in the
-directory by inspecting their contents.  Unfortunately, this process
-only works with programs containing only structure mode units, that
-themselves contain only flat structures, but no functors or nested
-structures.  This is the behaviour of {\tt mosmldep} in releases of
+directory by inspecting their contents and looking for occurrences
+of unit names.  Unfortunately, this process
+only works for programs containing just structure-mode units, that
+themselves contain only flat structures, but no functors or sub-structures. 
+This is the behaviour of {\tt mosmldep} in releases of
 Moscow ML prior to 2.00, and is provided for backwards compatibility.
 
+% cvr: removed section on mosmlpm for now
+% \subsection{Mixed-mode recompilation management using mosmlpm}
+% \label{sec-project-manager}
 
-\subsection{Mixed-mode recompilation management using mosmlpm}
-\label{sec-project-manager}
+% The purpose of the project manager \texttt{mosmlpm}\footnote{The
+%   project manager was developed by Ken Larsen and Martin Elsman.}  is
+% to manage the compilation of projects consisting of more than one
+% compilation unit (file).  The project manager invokes the batch
+% compiler \texttt{mosmlc} to actually compile the source files.
 
-The purpose of the project manager \texttt{mosmlpm}\footnote{The
-  project manager was developed by Ken Larsen and Martin Elsman.}  is
-to manage the compilation of projects consisting of more than one
-compilation unit (file).  The project manager invokes the batch
-compiler \texttt{mosmlc} to actually compile the source files.
-
-The current \texttt{mosmlpm} implementation has the following
-limitations: (1) source files must be have extension .sml --- it
-cannot handle files with extension .sig; (2) it does not resolve
-filename conflicts in different (sub)projects; (3) error checking and
-error messages should be improved.
+% The current \texttt{mosmlpm} implementation has the following
+% limitations: (1) source files must be have extension .sml --- it
+% cannot handle files with extension .sig; (2) it does not resolve
+% filename conflicts in different (sub)projects; (3) error checking and
+% error messages should be improved.
 
 
-\subsubsection{Project files}
-\label{sec:gramm-proj-files}
+% \subsubsection{Project files}
+% \label{sec:gramm-proj-files}
 
-Each project is described by a \emph{project file}.  Projects can be
-organized hierarchically.  A project file has file extension
-\texttt{.pm} and must follow this grammar:
+% Each project is described by a \emph{project file}.  Projects can be
+% organized hierarchically.  A project file has file extension
+% \texttt{.pm} and must follow this grammar:
 
-\begin{tabular}{lcll}
+% \begin{tabular}{lcll}
 
-\textit{imports} &$::=$& \textit{path}\texttt{.pm} \textit{imports} & project\\
-                 & $|$ &                                            & empty\\
-\textit{body}    &$::=$& \textit{path}\texttt{.sml} \textit{body} & source\\
-                 & $|$ & \texttt{local} \textit{body} \texttt{in}
-                         \textit{body} \texttt{end} \textit{body} & local\\
-                 & $|$ &                                          & empty\\
-\textit{project} &$::=$& \texttt{import} \textit{imports} \texttt{in}
-                         \textit{body} \texttt{end} & with import\\
-                 & $|$ & \textit{body}              & basic
-\end{tabular}
+% \textit{imports} &$::=$& \textit{path}\texttt{.pm} \textit{imports} & project\\
+%                  & $|$ &                                            & empty\\
+% \textit{body}    &$::=$& \textit{path}\texttt{.sml} \textit{body} & source\\
+%                  & $|$ & \texttt{local} \textit{body} \texttt{in}
+%                          \textit{body} \texttt{end} \textit{body} & local\\
+%                  & $|$ &                                          & empty\\
+% \textit{project} &$::=$& \texttt{import} \textit{imports} \texttt{in}
+%                          \textit{body} \texttt{end} & with import\\
+%                  & $|$ & \textit{body}              & basic
+% \end{tabular}
 
-\noindent A project file can import source files and other project
-files using absolute or relative paths (relative to the location of
-the project file).  Project files may contain Standard ML style
-comments.  The declared identifiers of a project is the union of the
-identifiers declared by the source files in the project, except for
-source files included inside \texttt{local}.
+% \noindent A project file can import source files and other project
+% files using absolute or relative paths (relative to the location of
+% the project file).  Project files may contain Standard ML style
+% comments.  The declared identifiers of a project is the union of the
+% identifiers declared by the source files in the project, except for
+% source files included inside \texttt{local}.
 
-A source file must contain Standard ML top-level declarations.  The
-scope of a declaration is the subsequent source files mentioned in the
-project file, and other projects that import this project file.  Thus,
-a source file may depend on source files mentioned earlier in the
-project file and on other imported projects.  
+% A source file must contain Standard ML top-level declarations.  The
+% scope of a declaration is the subsequent source files mentioned in the
+% project file, and other projects that import this project file.  Thus,
+% a source file may depend on source files mentioned earlier in the
+% project file and on other imported projects.  
 
-The meaning of a project is the meaning of the top-level declaration
-that would result from first expanding all imported projects and then
-concatenating all the source files listed in the project file (with
-appropriate renaming of declared identifiers of source files that are
-included using \texttt{local}), in the order they are listed, except
-that each project is executed only the first time it is imported.
+% The meaning of a project is the meaning of the top-level declaration
+% that would result from first expanding all imported projects and then
+% concatenating all the source files listed in the project file (with
+% appropriate renaming of declared identifiers of source files that are
+% included using \texttt{local}), in the order they are listed, except
+% that each project is executed only the first time it is imported.
  
 
-\subsubsection{A simple project manager example}
-\label{sec:simple-example}
+% \subsubsection{A simple project manager example}
+% \label{sec:simple-example}
 
-Consider again the files \texttt{Expr.sml}, \texttt{Reduce.sig},
-\texttt{Reduce.sml}, \texttt{Evaluate.sig}, and \texttt{Evaluate.sml},
-from Section~\ref{sec-example-units}.  To compile these files with
-\texttt{mosmlpm} we first have to rename all
-\textit{name}\texttt{.sig} files to \textit{name}\texttt{-sig.sml}
-becase \texttt{mosmlpm} cannot handle \texttt{.sig} files (yet).
+% Consider again the files \texttt{Expr.sml}, \texttt{Reduce.sig},
+% \texttt{Reduce.sml}, \texttt{Evaluate.sig}, and \texttt{Evaluate.sml},
+% from Section~\ref{sec-example-units}.  To compile these files with
+% \texttt{mosmlpm} we first have to rename all
+% \textit{name}\texttt{.sig} files to \textit{name}\texttt{-sig.sml}
+% becase \texttt{mosmlpm} cannot handle \texttt{.sig} files (yet).
 
-Now we can make a project file (\texttt{evaluator.pm}) with the
-following contents:
+% Now we can make a project file (\texttt{evaluator.pm}) with the
+% following contents:
 
-\begin{program}
-Expr.sml
-Reduce-sig.sml
-Reduce.sml 
-Evaluate-sig.sml
-Evaluate.sml
-\end{program}
+% \begin{program}
+% Expr.sml
+% Reduce-sig.sml
+% Reduce.sml 
+% Evaluate-sig.sml
+% Evaluate.sml
+% \end{program}
 
-\noindent 
-This file can then be compiled and linked with the command:
+% \noindent 
+% This file can then be compiled and linked with the command:
 
-\begin{program}
-mosmlpm evaluator.pm
-\end{program}
+% \begin{program}
+% mosmlpm evaluator.pm
+% \end{program}
 
-\noindent For a more advanced example, see file
-\texttt{mosml/examples/mosmlpm}. 
+% \noindent For a more advanced example, see file
+% \texttt{mosml/examples/mosmlpm}. 
 
 
+% \subsubsection{Command-line options of mosmlpm}
+% \label{sec:command-line-options-mosmlpm}
 
-\subsubsection{Command-line options of mosmlpm}
-\label{sec:command-line-options-mosmlpm}
+% \newenvironment{commandlineoptions}{%
+%   \begin{list}{}%
+%     {\renewcommand{\makelabel}[1]{\parbox[b]{\labelwidth}{%
+%           \makebox[0pt][l]{\texttt{##1}}\\}}}
+%   }
+%   {\end{list}}
 
-\newenvironment{commandlineoptions}{%
-  \begin{list}{}%
-    {\renewcommand{\makelabel}[1]{\parbox[b]{\labelwidth}{%
-          \makebox[0pt][l]{\texttt{##1}}\\}}}
-  }
-  {\end{list}}
+% The following command--line options are recognized by
+% \texttt{mosmlpm}.
 
-The following command--line options are recognized by
-\texttt{mosmlpm}.
-
-\begin{commandlineoptions} 
-\item[-c] Compile only; do not link the compiled files.  Source code
-  files are turned into compiled files (.ui and .uo), but no
-  executable file is produced.
+% \begin{commandlineoptions} 
+% \item[-c] Compile only; do not link the compiled files.  Source code
+%   files are turned into compiled files (.ui and .uo), but no
+%   executable file is produced.
   
-\item[-quiet] Do not report the progress of compilation, linking, etc.
+% \item[-quiet] Do not report the progress of compilation, linking, etc.
   
-\item[-o \textrm{exec-file}] Specifies the name of the output file
-  produced by the linker.  In the absence of this option the name of
-  the main project file (without the \texttt{.pm} extension) is used.
+% \item[-o \textrm{exec-file}] Specifies the name of the output file
+%   produced by the linker.  In the absence of this option the name of
+%   the main project file (without the \texttt{.pm} extension) is used.
 
   
-\item[-standalone] Passes the option \texttt{standalone} on to
-  \texttt{mosmlc}
-\end{commandlineoptions}
+% \item[-standalone] Passes the option \texttt{standalone} on to
+%   \texttt{mosmlc}
+% \end{commandlineoptions}
 
 \newpage
 
@@ -1758,8 +1785,9 @@ Moscow ML includes a batch compiler and linker {\tt mosmlc} in
 addition to the interactive system {\tt mosml}.  It compiles units and
 links programs, and can turn them into standalone executable bytecode
 files.  The batch compiler can be invoked from a Makefile (see
-Section~\ref{sec-structure-mode-recompilation}) or from the project
-manager (see Section~\ref{sec-project-manager}), which simplifies the
+Section~\ref{sec-mixed-mode-recompilation}),
+%or from the project manager (see Section~\ref{sec-project-manager})
+which simplifies the
 (re)compilation of large programs considerably.
 
 
@@ -2065,16 +2093,21 @@ language in several ways:
   then handled as Core language values, which may then be unpacked as
   structures or functors again; see
   Section~\ref{sec-firstclass-modules}
-\item recursive modules: signatures and structures may be recursively
+\item recursive modules:  structures and signatures may be recursively
   defined; see Section~\ref{sec-rec-modules}
 \item relaxation of miscellaneous Standard ML restrictions;
  see Section~\ref{sec-misc-relaxations}.
 \end{itemize}
 
 \noindent 
+The \emph{Moscow ML Language Overview} defines the precise syntax of
+the extensions.
+For some additional examples of their use, see the directory {\tt
+mosml/examples/modules} and its {\tt README} file.
+
 By default, Moscow ML accepts all non-Standard ML extensions, but
-issues a warning at every use.  This is the behaviour in the so-called
-\emph{conservative} compilation mode.  The other compilation modes are
+issues a warning at every use.  This is the behaviour of Moscow ML's 
+\emph{conservative} compilation mode.  Two other compilation modes are available:
 \emph{liberal}, in which all extensions are silently accepted, and
 \emph{orthodox}, in which all extensions are rejected as errors.
 
@@ -2087,9 +2120,12 @@ ML code entered interactively, as well as the functions
 and \texttt{use}.  The compilation mode can be set by the functions
 \texttt{conservative}, \texttt{liberal}, and \texttt{orthodox}.
 
-See the \emph{Moscow ML Language Overview} for the precise syntax of
-the extensions.  For more examples, see the directory {\tt
-  mosml/examples/modules} and its {\tt README} file.
+The extensions described here are based, in part, on 
+(\cite{Russo:TypesForModules,Russo:FirstClassStructures});
+a formal definition of the extensions,
+derived from \cite{Milner:1990:TheDefinition, Milner:1997:TheDefinition},
+is available on request.
+
 
 
 \subsection{Higher-order modules}
@@ -2121,8 +2157,17 @@ val (a, b) = R2.pair
 \end{program}
 
 \noindent 
-A functor may be declared to take another functor as an argument,
-and there is a syntax for anonymous functors:
+
+% The definition of {\tt F2} above is short-hand for declaring {\tt F2} to return
+% an anonymous functor:
+% \begin{program}
+% functor F2 (S : sig type t; val x : t end) = 
+%    functor(T : sig type u; val y : u end) => struct val pair = (S.x, T.y) end  (* anonymous functor *)
+% \end{program}
+
+\noindent 
+A functor may be declared to take another functor as an argument, whose
+type is specified using a functor signature:
 
 \begin{program}
 (* G is a functor signature *)
@@ -2136,7 +2181,10 @@ structure R3 = F3(functor(X:sig type t=int val x:t end)=>
                   struct type u = X.t * X.t val y= (X.x,X.x) end)
 \end{program}
 
-\noindent
+\noindent 
+In the definition of {\tt R3}, the argument to {\tt F3} happens to be an anonymous functor.
+
+
 Wherever a functor of a certain type is expected, a
 functor that has more a general type, ie.\  that is more polymorphic, 
 expects a less general argument or produces a more general result, 
@@ -2149,6 +2197,36 @@ structure R4 = F3(functor(X:sig type t end)=>
 \end{program}
 
 \noindent 
+
+As in Standard ML, functors and structures reside in separate name spaces,
+so it is perfectly legal to re-use the same name for both a structure and a functor, without
+one hiding the other:
+
+\begin{program}
+structure M = struct end
+functor M() = struct end
+structure N1 = M             (* structure N1 bound to structure M *)
+functor   N2 = M             (* functor N1 bound to functor M *)
+structure N3 = M(M)          (* functor M applied to structure M *)
+\end{program}
+
+\noindent
+However, when another functor, say {\tt P}, simply returns the identifier {\tt M}, as in:
+\begin{program}
+functor P () = M
+\end{program}
+
+\noindent
+it is not clear whether {\tt M} refers to the structure {\tt M} or the functor {\tt M}. 
+In this ambiguous case, Moscow ML always interprets 
+{\tt M}, on its own, as a structure, but you can write {\tt op M}
+to refer to the functor {\tt M} instead:
+\begin{program}
+functor P () = M      (* P returns the structure M *)
+functor Q () = op M   (* Q returns the functor M *) 
+\end{program}
+
+
 The files {\tt mosml/examples/modules/\{poly.sml,bootstrap.sml\}} contain
 examples that use higher-order functors.
 
@@ -2170,10 +2248,10 @@ val res = if true then SG1.C else SG2.C;                (* ill-typed   *)
 
 \noindent
 Recall that a conditional expression requires both branches to have
-equivalent types, so the last valbind above is well-typed only if the
+equivalent types, so the last declaration above is well-typed only if the
 type \texttt{SG1.t} is equivalent to \texttt{SG2.t}.
 
-If functors had an applicative, not generative,
+If functors had an \emph{applicative}, not generative,
 semantics, the two types would be equivalent. 
 Moscow ML Modules allows the declaration of applicative
 functors\footnote{Similar to Objective Caml.} as well as generative
@@ -2191,11 +2269,11 @@ val res = if true then SA1.C else SA2.C;                (* well-typed  *)
 More generally, if a type in an applicative functor's body depends on
 a datatype or opaque type of the functor's formal argument, then the
 types returned by separate applications of the applicative functor
-will be equivalent, provided it is applied to equivalent type
+will be equivalent, provided the functor is applied to equivalent type
 arguments:
 \begin{program}
-functor GA S : sig type t end = struct datatype u = C of S.t end   (* applicative,         *) 
-                                                                   (* but u depends on S.t *)
+functor GA S : sig type t end = struct datatype u = C of S.t end  (* applicative, *) 
+                                                                  (* but u depends on S.t *)
 structure TA1 = GA(type t = int) and TA2 = GA(type t = bool) and TA3 = GA(type t = int)
 val res = if true then TA1.C 1 else TA3.C 1;            (* well-typed *)
 val res = if true then TA1.C 1 else TA2.C true;         (* ill-typed  *)
@@ -2237,9 +2315,9 @@ signature GO = functor(X:sig type t val x:t end)->sig type u val y:u end   (* op
 
 \noindent
 specifies the type of those functors that, when applied to an actual
-argument matching the argument signature \texttt{sig type t val x :\ t
-  end}, return a result matching the body signature \texttt{sig type u
-  val y:u end}, for some unknown implementation of the type \texttt{u}
+argument matching the argument signature \texttt{sig type t val x:t end}, 
+return a result matching the body signature \texttt{sig type u val y:u end}, 
+for some unknown implementation of the type \texttt{u}
 (possibly depending on \texttt{X.t}).
 
 
@@ -2317,8 +2395,11 @@ val resT2 = if true then RT2.y else 1;                (* well-typed *)
 
 \noindent 
 Another way to look at this is that \texttt{HO}'s formal argument has
-a generative specification, while \texttt{HT}'s formal argument has an
-applicative specification.
+a generative specification, so that its application in {\tt HO}'s  body returns
+a new type,  while
+\texttt{HT}'s formal argument has an
+applicative specification, so that its application in {\tt HT}'s body
+returns the same type as \texttt{HT}'s actual argument.
 
 \subsection{First-class modules}
 
@@ -2379,7 +2460,7 @@ The files {\tt
 contain more examples.
 
 
-\subsection{Recursive modules}
+\subsection{Recursive structures and signatures}
 \label{sec-rec-modules}
 
 The Standard ML Modules language does not permit recursively defined
@@ -2388,7 +2469,7 @@ may not depend on each other.  In the Moscow ML Modules language, a
 structure may be defined recursively:
 
 \begin{program}
-structure S = rec (X:sig structure Odd : sig val test : int -> bool end end)
+structure S = rec (X:sig structure Odd : sig val test : int -> bool end end)  
               struct structure Even = struct fun test 0 = true 
                                                | test n = X.Odd.test (n-1)
                                       end        
@@ -2417,7 +2498,7 @@ structure Fail = (* ill-typed *)
 \end{program}
 
 \noindent
-Attempting to evaluate the forward reference of a recursive structure
+At run-time, attempting to evaluate the forward reference of a recursive structure
 before its body has been been fully evaluated raises the exception
 \texttt{Bind}:
 
@@ -2433,7 +2514,7 @@ val res = Ok.f n                                               (* infinite loop 
 \noindent
 On their own, recursive structures cannot be used to declare mutually
 recursive datatypes that span module boundaries.  For this purpose,
-Moscow ML supports recursive signatures:
+Moscow ML also supports \emph{recursive signatures}:
 
 \begin{program}
 signature REC = rec(X: sig structure Odd: sig type t end end)
@@ -2534,8 +2615,14 @@ non-expansive expressions\\
 is not {\tt ref}\\
 && {\it excon\/}\ {\it nexp\/} & exception constructor application\\
 && {\it nexp} \verb#:# {\it ty\/} & typed non-expansive expression\\
-&& \verb#fn# {\it match} & function abstraction\\[2ex]
-
+&& \verb#fn# {\it match} & function abstraction\\
+& & {\tt [ structure {\it nmodexp\/} as {\it sigexp\/} ]} & structure package \\
+& & {\tt [ functor {\it nmodexp\/} as {\it sigexp\/} ]} & functor package \\[2ex]
+{\it nmodexp\/} & ::=  & $\langle${\tt op} $\rangle$ {\tt {\it longmodid\/}}& module identifier\\
+& & {\tt ( {\it nmodexp\/} )} & \\
+& & {\tt {\it nmodexp\/} :}({\tt :>}) {\tt {\it sigexp\/}} & transparent (opaque) constraint \\
+& & {\tt functor {\it  arg} => {\it modexp}}  & functor  \\
+& & {\tt rec ( {\it strid\/} :\ {\it sigexp} ) {\it nmodexp}}  & recursive structure \\[2ex]
 {\it nexprow} & ::= & {\it lab\/} \verb#=# {\it nexp\/}
 $\langle$\verb#,# {\it nexprow\/}$\rangle$  \\
 \end{tabular}
