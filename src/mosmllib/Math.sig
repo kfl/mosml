@@ -34,18 +34,18 @@ val tanh  : real -> real
    [cos r] is the cosine of r, where r is in radians.
 
    [tan r] is the tangent of r, where r is in radians.  Raises Domain if 
-   r is a multiple of pi/2.
+   r is a multiple of pi/2.0.
 
-   [atan t] is the arc tangent of t, in the open interval ] ~pi/2, pi/2 [.
+   [atan t] is the arc tangent of t, in the open interval ] ~pi/2.0, pi/2.0 [.
 
-   [asin t] is the arc sine of t, in the closed interval [ ~pi/2, pi/2 ].  
+   [asin t] is the arc sine of t, in the closed interval [ ~pi/2.0, pi/2.0 ].  
    Raises Domain if abs x > 1.
 
    [acos t] is the arc cosine of t, in the closed interval [ 0, pi ].
    Raises Domain if abs x > 1.
 
    [atan2(y, x)] is the arc tangent of y/x, in the interval ] ~pi, pi ],
-   except that atan2(y, 0) = sign y * pi/2.  The quadrant of the result
+   except that atan2(y, 0) = sign y * pi/2.0.  The quadrant of the result
    is the same as the quadrant of the point (x, y).
    Hence sign(cos(atan2(y, x))) = sign x 
    and   sign(sin(atan2(y, x))) = sign y. 
@@ -64,10 +64,10 @@ val tanh  : real -> real
    [log10 x] is the base-10 logarithm of x.  Raises Domain if x <= 0.0.
 
    [sinh x] returns the hyperbolic sine of x, mathematically defined as
-   (exp x - exp (~x)) / 2.  Raises Overflow if x is too large.
+   (exp x - exp (~x)) / 2.0.  Raises Overflow if x is too large.
 
    [cosh x] returns the hyperbolic cosine of x, mathematically defined as
-   (exp x + exp (~x)) / 2.  Raises Overflow if x is too large.
+   (exp x + exp (~x)) / 2.0.  Raises Overflow if x is too large.
 
    [tanh x] returns the hyperbolic tangent of x, mathematically defined 
    as (sinh x) / (cosh x).  Raises Domain if x is too large.
