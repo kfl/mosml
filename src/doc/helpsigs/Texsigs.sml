@@ -78,7 +78,7 @@ fun processSig db out sigfile =
 	fun beginsection title =
 	    let val header = "\\MakeUppercase{" ^ title ^ "}"
 	    in
-		out "\\newpage\n\n\\section*{Structure "; out title; out "}\n";
+		out "\\newpage\n\n\\section*{Module "; out title; out "}\n";
 		index' title Str "|("; out "\n";
 		out "\\markboth{"; out header; out "}{"; out header; out "}\n";
 		out "\\addcontentsline{toc}{section}{"; out title; out "}\n"
@@ -99,6 +99,7 @@ fun processSig db out sigfile =
 	fun scanident getc src =
 	    let open StringCvt
 		fun isn't c1 c2 = c1 <> c2
+		fun is    c1 c2 = c1 = c2
 		val sus1 = skipWS getc src
 		fun readident sus =
 		    takel smlIdChar getc (skipWS getc sus)
@@ -109,7 +110,8 @@ fun processSig db out sigfile =
 			in readident sus3 end
 		  | SOME(#"(", sus2) => 
 			let val sus3 = dropl (isn't #")") getc sus2
-			in readident sus3 end
+			    val sus4 = dropl (is #")") getc sus3
+			in readident sus4 end
 		  | SOME _ => readident sus1
 		  | NONE   => readident sus1
 	    end

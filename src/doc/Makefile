@@ -38,6 +38,7 @@ mosmllib.dvi: mosmllib.tex texsigsigs.tex
 	${LATEX} mosmllib
 	makeindex mosmllib
 	${LATEX} mosmllib
+	${LATEX} mosmllib
 
 mosmllib2up.ps: mosmllib.ps
 	psnup -pa4 -2 mosmllib.ps mosmllib2up.ps
@@ -46,7 +47,7 @@ install:
 	cp mosmlref.pdf ../../doc
 	cp manual.pdf ../../doc
 	cp mosmllib.pdf ../../doc
-	cp index.html ../../mosmllib
+	cp index.html ../../doc/mosmllib
 	cd helpsigs; make install
 
 clean:

@@ -1,5 +1,5 @@
 (* Htmlsigs: some hacks to turn Moscow ML annotated signature files into 
-   HTML-files.  Peter Sestoft 1997-05-08, 1997-07-31, 2000-01-10
+   HTML-files.  Peter Sestoft 1997-05-08, 1997-07-31, 2000-01-10, 2000-06-01 
 *)
 
 fun indexbar out =
@@ -13,12 +13,81 @@ val smlIdCharSym = Char.contains "'_!%&$#+-/:<=>?@\\~`^|*"
 fun smlIdChar c = Char.isAlphaNum c orelse smlIdCharSym c
 
 
-fun processSig version bgcolor sigfile htmlfile =
+fun processSig db version bgcolor sigfile htmlfile =
     let val strName = Path.base (Path.file sigfile)
 	val is = TextIO.openIn sigfile
 	val lines = Substring.fields (fn c => c = #"\n") 
 	                             (Substring.all (TextIO.inputAll is))
 	val _ = TextIO.closeIn is
+
+	fun comp2str comp =
+	    let open Database
+	    in
+		case comp of
+		    Exc _  => "exc" 
+		  | Typ _  => "typ" 
+		  | Con _  => "con"
+		  | Val _  => "val"
+		  | Str    => "str" 
+		  | Term _ => "ter"
+	    end
+
+	(* Skip 'tyvar and ('tyvar, ..., 'tyvar), return the id that
+	   follows *)
+
+	fun scanident getc src =
+	    let open StringCvt
+		fun isn't c1 c2 = c1 <> c2
+		fun is    c1 c2 = c1 = c2
+		val sus1 = skipWS getc src
+		fun readident sus =
+		    splitl smlIdChar getc (skipWS getc sus)
+	    in
+		case getc sus1 of
+		    SOME(#"'", sus2) => 
+			let val sus3 = dropl (not o Char.isSpace) getc sus2
+			in readident sus3 end
+		  | SOME(#"(", sus2) => 
+			let val sus3 = dropl (isn't #")") getc sus2
+			    val sus4 = dropl (is #")") getc sus3
+			in readident sus4 end
+		  | SOME _ => readident sus1
+		  | NONE   => readident sus1
+	    end
+
+	val scanident = scanident Substring.getc 
+
+	fun definition susline isntdef isdef =
+	    let open Database Substring 
+		val (id, after) = scanident (triml 4 susline)
+		fun relevant {file, ...} = file=strName
+		val comps = 
+		    List.map #comp (List.filter relevant (lookup (db, id)))
+		fun linehas s = not (isEmpty (#2 (position s after)))
+		fun indexcomp comp =
+		    case comp of 
+			Exc i  => if i=id then SOME comp else NONE
+		      | Typ i  => if i=id andalso linehas "type" then SOME comp
+				  else NONE
+		      | Con i  => if i=id then SOME comp else NONE
+		      | Val i  => if i=id then SOME comp else NONE
+		      | Str    => if linehas "structure" then SOME comp 
+				  else NONE
+		      | Term _ => SOME comp
+		fun kindof Str      = 3
+		  | kindof (Val _)  = 4
+		  | kindof (Typ _)  = 1
+		  | kindof (Exc _)  = 2
+		  | kindof (Con _)  = 5
+		  | kindof (Term _) = 6
+		fun kindCompare (c1, c2) = Int.compare(kindof c1, kindof c2)
+		val comps = Listsort.sort kindCompare
+		                          (List.mapPartial indexcomp comps)
+	    in
+		case comps of
+		    []        => isntdef susline		(* No def *)
+		  | comp :: _ => isdef susline id after comp    (* Def    *)
+	    end
 
 	(* First pass over the file: record anchors of identifier defs *)
 
@@ -26,10 +95,11 @@ fun processSig version bgcolor sigfile htmlfile =
 
 	fun pass1 susline lineno = 
 	    let open Substring
+		fun nameanchor _ id _ comp = 
+		    Polyhash.insert anchors (id ^ "-" ^ comp2str comp, ()) 
 	    in
 		if isPrefix "   [" susline then
-		    let val (id, _) = splitl smlIdChar (triml 4 susline)
-		    in Polyhash.insert anchors (string id, ()) end
+		    definition susline ignore nameanchor
 		else ()
 	    end
 
@@ -45,13 +115,10 @@ fun processSig version bgcolor sigfile htmlfile =
     
 	val seenDefinition = ref false
 
-	fun nameSubstr anchor target = 
-	    (out "<A NAME=\""; outSubstr target; out "\"><B>"; 
-	     outSubstr anchor; out "</B></A>")
 	fun name anchor target = 
 	    (out "<A NAME=\""; out target; out "\">"; out anchor; out "</A>")
 
-	fun definition susline =
+(*	fun definition susline =
 	    let open Substring
 		val (id, rest) = splitl smlIdChar (triml 4 susline)
 	    in
@@ -60,45 +127,67 @@ fun processSig version bgcolor sigfile htmlfile =
 		else
 		    (out "   ["; nameSubstr id id; outSubstr rest)
 	    end
+*)
 
-	fun idhref id = 
-	    (out "<A HREF=\"#"; outSubstr id; out "\">"; 
-	     outSubstr id; out"</A>")
+	fun idhref link id = 
+	    (out "<A HREF=\"#"; out link; out "\">"; out id; out"</A>")
 
-	fun declaration lineno space1 decl =
+	fun declaration lineno space1 decl kindtag =
 	    let open Substring 
-		val (kind, rest)   = splitl Char.isAlpha decl
-		val (space2, rest) = splitl Char.isSpace rest
-		val (id, rest)     = splitl smlIdChar rest
+		fun isKind c = Char.isAlpha c orelse c = #"_"
+		val (kind, rest) = splitl isKind decl
+		val (id, after)  = scanident rest
+		val preflen = size decl - size after - String.size id
+		val preid = slice(decl, 0, SOME preflen)
+		val link = id ^ "-" ^ kindtag
 	    in 
 		outSubstr space1;
-		outSubstr kind;
-		outSubstr space2; 
-		name "" ("line" ^ Int.toString lineno);
-		if isEmpty id then () 
-		else if Polyhash.peek anchors (string id) = NONE then 
-		    outSubstr id
-		else idhref id;
-		outSubstr rest
+		outSubstr preid;
+		if id="" then () 
+		else if Polyhash.peek anchors link = NONE then 
+		    out id
+		else idhref link id;
+		outSubstr after
+	    end
+
+	(* Format susline which defines identifier id of kind comp: *)
+
+	fun outisdef susline id after comp = 
+	    let open Substring 
+		fun namebold id s =
+		    (out "<A NAME=\""; out id; out "-"; out s; 
+		     out "\"><B>"; out id; out "</B></A>")
+		val preflen = size susline - size after - String.size id
+		val pref = slice(susline, 0, SOME preflen)
+	    in 
+		outSubstr pref; namebold id (comp2str comp);
+		outSubstr after
 	    end
 	    
 	fun pass2 susline lineno = 
 	    let open Substring
 	    in 
 		(if isPrefix "   [" susline then 		    
-		     (definition susline; 
+		     (definition susline outSubstr outisdef; 
 		      seenDefinition := true)
 		 else if not (!seenDefinition) then
 		     (name "" ("line" ^ Int.toString lineno);
 		      let val (space, suff) = splitl Char.isSpace susline
+			  val dec = declaration lineno space suff
 		      in
 			  if isPrefix "val " suff 
+			      orelse isPrefix "prim_val " suff then
+			      dec "val"
+			  else if isPrefix "prim_type " suff
+			      orelse isPrefix "prim_EQtype " suff
 			      orelse isPrefix "type " suff
 			      orelse isPrefix "eqtype " suff
-			      orelse isPrefix "datatype " suff 
-			      orelse isPrefix "structure " suff 
-			      orelse isPrefix "exception " suff then 
-			      declaration lineno space suff
+			      orelse isPrefix "datatype " suff then
+			      dec "typ"
+			  else if isPrefix "structure " suff then
+			      dec "str"
+			  else if isPrefix "exception " suff then 
+			      dec "exc"
 			  else 
 			      outSubstr susline
 		      end)
@@ -130,21 +219,22 @@ fun processSig version bgcolor sigfile htmlfile =
 	TextIO.closeOut os
     end
 
-fun processSigfile version bgcolor stoplist sigdir htmldir sigfile =
+fun processSigfile db version bgcolor stoplist sigdir htmldir sigfile =
     let val {base, ext} = Path.splitBaseExt sigfile
 	val htmlfile = Path.joinBaseExt{base=base, ext=SOME "html"}
     in 
 	case ext of
 	    SOME "sig" => 
 		if List.exists (fn name => base = name) stoplist then ()
-		else processSig version bgcolor
+		else processSig db version bgcolor
 		                (Path.concat(sigdir, sigfile))
 		                (Path.concat(htmldir, htmlfile))
 	  | _          => ()
     end
 
-fun sigsToHtml version bgcolor stoplist (sigdir, htmldir) =
-    let open FileSys
+fun sigsToHtml version bgcolor stoplist helpfile (sigdir, htmldir) =
+    let open FileSys Database
+	val db = readbase helpfile
 	fun mkdir htmldir =
 	    if access(htmldir, [A_WRITE, A_EXEC]) andalso isDir htmldir then
 		(print "Directory "; print htmldir; print " exists\n")
@@ -153,7 +243,7 @@ fun sigsToHtml version bgcolor stoplist (sigdir, htmldir) =
 		 print "Created directory "; print htmldir; print "\n");
     in 
 	mkdir htmldir;
-	app (processSigfile version bgcolor stoplist sigdir htmldir) 
+	app (processSigfile db version bgcolor stoplist sigdir htmldir) 
 	    (Mosml.listDir sigdir)
     end
     handle exn as OS.SysErr (str, _) => (print(str ^ "\n\n"); raise exn)

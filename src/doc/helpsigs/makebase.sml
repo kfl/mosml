@@ -3,7 +3,7 @@
  *)
 
 (* The version number inserted in generated files: *)
-val version = "Moscow ML 1.99";
+val version = "Moscow ML 2.00";
 
 (* Default directory containing the signature files: *)
 val libdirDef = "../../../lib/"
@@ -111,7 +111,7 @@ fun process (libdir, helpfile, txtIndex, texIndex, htmldir, htmlIndex) =
      print ("\nWriting Latex signature index in file " ^ texIndex ^ "\n");
      Printbase.printLatexBase(helpfile, texIndex);
      print ("\nCreating HTML versions of signature files\n");
-     Htmlsigs.sigsToHtml version bgcolor stoplist (libdir, htmldir);
+     Htmlsigs.sigsToHtml version bgcolor stoplist helpfile (libdir, htmldir);
      print ("\nWriting HTML signature index in file " ^ htmlIndex ^ "\n");
      Htmlsigs.printHTMLBase version bgcolor (helpfile, htmlIndex);
      print ("\nWriting LaTeX signature bodies in file " ^ texSigs ^ "\n");
