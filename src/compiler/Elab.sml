@@ -1121,7 +1121,7 @@ fun checkNoRebindingsTyEnv loc ids VE msg =
 and checkNoRebindingsModEnv loc modids ME msg = 
        foldEnv (fn id => fn _ =>  fn ids => 
 		if member id ids
-		    then errorMsg loc ("Illegal rebinding of module identifier "^id^": "^msg)
+		    then errorMsg loc ("Illegal rebinding of structure identifier "^id^": "^msg)
 		else id::ids) modids ME 
 and checkNoRebindingsVarEnv  loc vids VE msg = 
        foldEnv (fn id => fn _ =>  fn ids =>
@@ -1136,7 +1136,7 @@ and checkNoRebindingsFunEnv  loc funids FE msg =
 and checkNoRebindingsSigEnv loc sigids GE msg = 
        foldEnv (fn id => fn _ =>  fn ids =>
 		if member id ids
-		    then errorMsg loc ("Illegal rebinding of functor identifier "^id^": "^msg)
+		    then errorMsg loc ("Illegal rebinding of signature identifier "^id^": "^msg)
 		else id::ids) sigids GE 
 and checkNoRebindingsStr loc (modids,funids,sigids,tycons,vids) S msg = 
     case S of 
@@ -2954,44 +2954,47 @@ and elabSigExp (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE:TyE
 		  val us = map TypeOfTypeVar vs
 		  val UE' = zip2 pars us
                   val {qualid = qualid,info={idLoc,...}} = longtycon
-		  val infTyStr = (TYPEtyfun(vs,elabTy ME FE GE (UE' @ UE) VE TE ty),ConEnv [])
+                  val tau = elabTy ME FE GE (UE' @ UE) VE TE ty
+		  val infTyStr = (TYPEtyfun(vs,tau),ConEnv [])
                   val _ = decrBindingLevel();
-                  val specTyFun = normTyFun (#1 (findLongTyConInStr S idLoc qualid))
+                  val specTyStr = findLongTyConInStr S idLoc qualid
+                  val specTyFun = normTyFun (#1 specTyStr)
                   val tn = (choose (equalsTyFunTyName specTyFun) T)
                            handle Subscript =>
 			    (msgIBlock 0;
 			     errLocation loc;
-			     errPrompt "Illegal where constraint: the type constructor "; printQualId qualid;
-                             msgString " does not refer to an opaque type that is specified in the signature";
-           		     msgEOL();
+			     errPrompt "Illegal where constraint: the type constructor "; printQualId qualid;msgEOL();
+                             errPrompt "does not refer to an opaque type that is specified in the signature";msgEOL();
 			     msgEBlock();
 			     raise Toplevel)
-              in
-		  (case !(#tnConEnv(!(#info(tn)))) of
-			 NONE => 
-                             let val specTyStr = (APPtyfun (NAMEtyapp tn),ConEnv[]) 
-			     in  			
-				 setTnSort (#info tn) (VARIABLEts);
-				 ((realizeLongTyCon qualid infTyStr specTyStr)
-				  handle MatchError matchReason => 
-				      (msgIBlock 0;
-				       errLocation loc;
-				       errPrompt "Illegal where constraint: the type constructor "; printQualId qualid;
-				       msgString " cannot be constrained in this way because ...";
-				       msgEOL();
-				       msgEBlock();
-				       errMatchReason "constraint" "signature" matchReason;
-				       raise Toplevel));
-				 LAMBDAsig(remove tn T,STRmod RS) 
-			     end
-		       | SOME _ => 
-			     (msgIBlock 0;
-			      errLocation loc;
-			      errPrompt "Illegal where constraint: the type constructor "; printQualId qualid;
-			      msgString " refers to a specified datatype, not an opaque type";
-			      msgEOL();
-			      msgEBlock();
-			      raise Toplevel))
+	      in  			
+		 setTnSort (#info tn) (VARIABLEts);
+		 ((realizeLongTyCon qualid infTyStr specTyStr)
+		  handle MatchError matchReason => 
+		      (msgIBlock 0;
+		       errLocation loc;
+		       errPrompt "Illegal where constraint: the type constructor "; printQualId qualid;msgEOL();
+		       errPrompt "cannot be constrained in this way because ...";msgEOL();
+		       msgEBlock();
+		       errMatchReason "constraint" "signature" matchReason;
+		       raise Toplevel));
+		 if (case !(#tnConEnv(!(#info(tn)))) of (* check well-formedness *)
+		       NONE => true (* nothing to check *)
+		     | SOME _ => (case normType tau of (* eta-equivalent to a type application? *)
+				      CONt(ts,tyapp) => 
+					  ((foldL_zip  ( fn (VARt w) => (fn v => fn b =>  w = v andalso b)
+					                 |   _       => fn _ => fn _ =>  false) true ts vs)
+					   handle _ => false) 
+				    | _ => false)) 
+		 then ()
+		 else (msgIBlock 0;
+		       errLocation loc;
+		       errPrompt "Illegal where constraint: the type constructor ";printQualId qualid;msgEOL();
+		       errPrompt "is specified as a datatype"; msgEOL();
+		       errPrompt "but its realisation is not a type name";msgEOL();
+		       msgEBlock();
+		       raise Toplevel);
+		 LAMBDAsig(remove tn T,STRmod RS) 
 	      end)
    | RECsigexp ((_,modid),sigexp as (locforward,_),sigexp' as (locbody,_)) =>
           let val LAMBDAsig(T,M) = elabSigExp ME FE GE UE VE TE  sigexp

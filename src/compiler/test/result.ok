@@ -1992,7 +1992,8 @@ Enter `quit();' to quit.
 - ! Toplevel input:
 ! signature S = sig type t end where type 'a t = int;
 !                                    ^^^^^^^^^^^^^^^
-! Illegal where constraint: the type constructor t cannot be constrained in this way because ...
+! Illegal where constraint: the type constructor t
+! cannot be constrained in this way because ...
 ! Arity mismatch: type constructor t
 ! is specified with arity 0 in the signature
 !   type t = t
@@ -2002,7 +2003,8 @@ Enter `quit();' to quit.
 - ! Toplevel input:
 ! signature S = sig structure X : sig type t end end where type 'a X.t = int;
 !                                                          ^^^^^^^^^^^^^^^^^
-! Illegal where constraint: the type constructor X.t cannot be constrained in this way because ...
+! Illegal where constraint: the type constructor X.t
+! cannot be constrained in this way because ...
 ! Arity mismatch: type constructor X.t
 ! is specified with arity 0 in the signature
 !   type t = t
@@ -2012,7 +2014,8 @@ Enter `quit();' to quit.
 - ! Toplevel input:
 ! signature S = sig structure Y : sig structure X : sig type t end end end where type 'a Y.X.t = int;
 !                                                                                ^^^^^^^^^^^^^^^^^^^
-! Illegal where constraint: the type constructor Y.X.t cannot be constrained in this way because ...
+! Illegal where constraint: the type constructor Y.X.t
+! cannot be constrained in this way because ...
 ! Arity mismatch: type constructor Y.X.t
 ! is specified with arity 0 in the signature
 !   type t = t
@@ -4569,6 +4572,111 @@ Enter `quit();' to quit.
          con ('a, 'b) EMPTY : ('a, 'b) pairlist',
          con ('a, 'b) PAIR :
            'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'}}}
+- 
+Moscow ML version 1.99 (internal release)
+Enter `quit();' to quit.
+- > New type names: =t
+  datatype t = (t,{con C : t -> t})
+  con C = fn : t -> t
+- > New type names: =u
+  datatype 'a u = ('a u,{con 'a D : 'a -> 'a u})
+  con 'a D = fn : 'a -> 'a u
+- > New type names: =v
+  datatype ('a, 'b) v = (('a, 'b) v,{con ('a, 'b) E : 'a * 'b -> ('a, 'b) v})
+  con ('a, 'b) E = fn : 'a * 'b -> ('a, 'b) v
+- > signature S =
+  /\=t' =u' =v'.
+    {datatype t = (t',{con C : t' -> t'}),
+     con C : t' -> t',
+     datatype 'a u = ('a u',{con 'a D : 'a -> 'a u'}),
+     con 'a D : 'a -> 'a u',
+     datatype ('a, 'b) v =
+       (('a, 'b) v',{con ('a, 'b) E : 'a * 'b -> ('a, 'b) v'}),
+     con ('a, 'b) E : 'a * 'b -> ('a, 'b) v'}
+- > signature Ok =
+  {datatype t = (t,{con C : t -> t}),
+   con C : t -> t,
+   datatype 'a u = ('a u,{con 'a D : 'a -> 'a u}),
+   con 'a D : 'a -> 'a u,
+   datatype ('a, 'b) v = (('a, 'b) v,{con ('a, 'b) E : 'a * 'b -> ('a, 'b) v}),
+   con ('a, 'b) E : 'a * 'b -> ('a, 'b) v}
+- > signature WeirdButOk =
+  /\=u' =v'.
+    {datatype t = (int,{con C : int -> int}),
+     con C : int -> int,
+     datatype 'a u = ('a u',{con 'a D : 'a -> 'a u'}),
+     con 'a D : 'a -> 'a u',
+     datatype ('a, 'b) v =
+       (('a, 'b) v',{con ('a, 'b) E : 'a * 'b -> ('a, 'b) v'}),
+     con ('a, 'b) E : 'a * 'b -> ('a, 'b) v'}
+- ! Toplevel input:
+! signature Fail = S where type t = int * int;
+!                          ^^^^^^^^^^^^^^^^^^
+! Illegal where constraint: the type constructor t
+! is specified as a datatype
+! but its realisation is not a type name
+- > signature WeirdButOk =
+  /\=t' =v'.
+    {datatype t = (t',{con C : t' -> t'}),
+     con C : t' -> t',
+     datatype 'a u = ('a list,{con 'a D : 'a -> 'a list}),
+     con 'a D : 'a -> 'a list,
+     datatype ('a, 'b) v =
+       (('a, 'b) v',{con ('a, 'b) E : 'a * 'b -> ('a, 'b) v'}),
+     con ('a, 'b) E : 'a * 'b -> ('a, 'b) v'}
+- ! Toplevel input:
+! signature Fail = S where type 'a u = int u;
+!                          ^^^^^^^^^^^^^^^^^
+! Illegal where constraint: the type constructor u
+! is specified as a datatype
+! but its realisation is not a type name
+- ! Toplevel input:
+! signature Fail = S where type 'a u = 'a * 'a;
+!                          ^^^^^^^^^^^^^^^^^^^
+! Illegal where constraint: the type constructor u
+! is specified as a datatype
+! but its realisation is not a type name
+- > New type names: =w
+  datatype ('a, 'b) w = (('a, 'b) w,{con ('a, 'b) W : ('a, 'b) w})
+  con ('a, 'b) W = W : ('a, 'b) w
+- > type ('a, 'b, 'c) x = ('a, 'b) w
+- > type ('a, 'b) y = ('a, 'a) w
+- > signature WeirdButOk =
+  /\=t' =u'.
+    {datatype t = (t',{con C : t' -> t'}),
+     con C : t' -> t',
+     datatype 'a u = ('a u',{con 'a D : 'a -> 'a u'}),
+     con 'a D : 'a -> 'a u',
+     datatype ('a, 'b) v =
+       (('a, 'b) w,{con ('a, 'b) E : 'a * 'b -> ('a, 'b) w}),
+     con ('a, 'b) E : 'a * 'b -> ('a, 'b) w}
+- > signature WeirdButOk =
+  /\=t' =u'.
+    {datatype t = (t',{con C : t' -> t'}),
+     con C : t' -> t',
+     datatype 'a u = ('a u',{con 'a D : 'a -> 'a u'}),
+     con 'a D : 'a -> 'a u',
+     datatype ('a, 'b) v =
+       (('a, 'b) w,{con ('a, 'b) E : 'a * 'b -> ('a, 'b) w}),
+     con ('a, 'b) E : 'a * 'b -> ('a, 'b) w}
+- ! Toplevel input:
+! signature Fail = S where type ('a,'b) v = ('a,'a)w;
+!                          ^^^^^^^^^^^^^^^^^^^^^^^^^
+! Illegal where constraint: the type constructor v
+! is specified as a datatype
+! but its realisation is not a type name
+- ! Toplevel input:
+! signature Fail = S where type ('a,'b) v = ('a,'a)w;
+!                          ^^^^^^^^^^^^^^^^^^^^^^^^^
+! Illegal where constraint: the type constructor v
+! is specified as a datatype
+! but its realisation is not a type name
+- ! Toplevel input:
+! signature Fail = S where type ('a,'b) v = ('a,'b)y;
+!                          ^^^^^^^^^^^^^^^^^^^^^^^^^
+! Illegal where constraint: the type constructor v
+! is specified as a datatype
+! but its realisation is not a type name
 - 
 Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.

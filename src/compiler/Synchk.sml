@@ -702,7 +702,9 @@ and compliantModExp (loc,(modexp,_)) =
    | LETmodexp (dec,modexp) =>
 	  (compliantStrDec dec;compliantModExp modexp)
    | PARmodexp modexp => 
-	  compliantModExp modexp
+	  (complianceMsg loc 
+	      "<atmodexp> ::= ( <modexp> )";  
+           compliantModExp modexp)
    | CONmodexp (modexp,sigexp) =>
 	  (compliantModExp modexp;compliantSigExp sigexp)
    | ABSmodexp (modexp,sigexp) =>
@@ -719,9 +721,9 @@ and compliantModExp (loc,(modexp,_)) =
    | APPmodexp (func,arg) =>
 	(case (atmodexps [arg] func) of
 	     (head as (_,(LONGmodexp _,_)),
-	      [arg as (_,(PARmodexp _,_))]) =>
+	      [arg as (_,(PARmodexp modexp,_))]) =>
 	         (compliantModExp head;
-		  compliantModExp arg)
+		  compliantModExp modexp)
 	    | (head,args) =>
 		 (complianceMsg loc 
 		    "<modexp> ::= <atmodexp_1> ... <atmodexp_n>"; 
@@ -758,7 +760,7 @@ and compliantSpec (loc, spec') =
     VALspec ([],vds) => 
        compliantValDescList vds
   | VALspec ((tyvar::_), vds)=> 
-      (complianceMsg loc "<spec> ::= val <tyvarseq> <vid> : <ty>"; 
+      (complianceMsg loc "<spec> ::= val <tyvarseq> <valdesc>"; 
        compliantValDescList vds)
   | PRIM_VALspec _ => ()
   | TYPEDESCspec _ => ()

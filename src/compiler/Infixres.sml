@@ -1,9 +1,9 @@
 open List Fnlib Mixture Const Smlexc Smlprim Globals Location;
 open Units Types Asynt Asyntfn Primdec Infixst;
 
-fun checkInfixIds loc ids =
+fun checkInfixIds loc ids msg =
   if duplicates ids then
-    errorMsg loc "An identifier appears twice in a fixity declaration"
+    errorMsg loc msg
   else ()
 ;
 
@@ -318,7 +318,7 @@ and resolveDecOp (iBas : InfixBasis) (dec as (loc, dec')) =
           val iBas'' = resolveDecOp (plusEnv iBas iBas') dec2 
       in plusEnv iBas' iBas'' end
   | FIXITYdec(status, ids) =>
-      (checkInfixIds loc ids;
+      (checkInfixIds loc ids "An identifier appears twice in a fixity declaration";
        (foldL (fn id => fn env => bindInEnv env id status) NILenv ids))
   | STRUCTUREdec modbinds =>
       (app (resolveModBindOp iBas) modbinds;
@@ -386,10 +386,14 @@ and resolveFunBindOp iBas (FUNBINDfunbind(funid,modexp)) =
   | resolveFunBindOp iBas (ASfunbind(funid,sigexp,exp)) =
       (resolveSigExpOp iBas sigexp;
        resolveExpOp iBas exp)
-and resolveSigExpOp iBas (_,sigexp) =
+and resolveSigExpOp iBas (loc,sigexp) =
   case sigexp of
     SPECsigexp spec => 
-	(resolveSpecOp iBas spec;
+	(foldEnv (fn id => fn _ =>  fn ids => 
+	   if member id ids
+	      then (errorMsg loc 
+		    ("Illegal duplicate fixity specification for identifier "^id))
+	   else id::ids) [] (resolveSpecOp iBas spec);
 	 ())
   | SIGIDsigexp _ => ()
   | WHEREsigexp (sigexp, tyvarseq, longtycon, ty) =>
@@ -433,9 +437,9 @@ and resolveSpecOp (iBas : InfixBasis) (spec as (loc, spec')) =
   | EMPTYspec => 
        NILenv
   | SEQspec(spec1, spec2) =>
-      (resolveSpecOp iBas spec1;
-       resolveSpecOp iBas spec2;
-       NILenv)
+      let val iBas'  = resolveSpecOp iBas spec1
+          val iBas'' = resolveSpecOp (plusEnv iBas iBas') spec2 
+      in plusEnv iBas' iBas'' end
   | INCLUDEspec sigexp => 
       (resolveSigExpOp iBas sigexp;
        NILenv)
@@ -452,7 +456,7 @@ and resolveSpecOp (iBas : InfixBasis) (spec as (loc, spec')) =
       (resolveSpecOp iBas spec;
        NILenv)
   | FIXITYspec(status, ids) =>
-      (checkInfixIds loc ids;
+      (checkInfixIds loc ids "An identifier appears twice in a fixity specification";
        (foldL (fn id => fn env => bindInEnv env id status) NILenv ids))
   | SIGNATUREspec sigdescs =>
       (app (resolveSigBindOp iBas) sigdescs;

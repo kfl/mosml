@@ -288,17 +288,7 @@ val watchDog = ref (Hasht.new 17 : (string, SigStamp) Hasht.t);
 val preloadedUnits = ref ([] : string list);
 val preopenedPreloadedUnits = ref ([] : string list);
 
-(* Level of support for old style unit syntax *)
-(* we need *full* support for boostrapping! *)
-
-datatype UnitSupport =
-     NOunitsupport      
-   | SOMEunitsupport
-   | FULLunitsupport
-;
-
-val unitSupport = ref (FULLunitsupport)
-;
+(* compilation mode *)
 
 datatype Mode = STRmode | TOPDECmode
 ;

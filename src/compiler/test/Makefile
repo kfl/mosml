@@ -31,6 +31,7 @@ all:
 	$(MOSML) -P full < okasaki.sml >> result 2>&1        
 	$(MOSML) -P full < greederr.sml >> result 2>&1        
 	$(MOSML) -P full < sharing.sml >> result 2>&1        
+	$(MOSML) -P full < wheretyp.sml >> result 2>&1        
 	#this one last as its slow
 	$(MOSML) -P full test.sml >> result 2>&1
 	diff result result.ok

@@ -96,15 +96,6 @@ fun set_msgstyle p =
     raise Arg.Bad ("Unknown message style " ^ p)
 ;
 
-fun noUnitSupport () =
-  unitSupport := NOunitsupport;
-
-fun someUnitSupport () =
-  unitSupport := SOMEunitsupport;
-
-fun fullUnitSupport () =
-  unitSupport := FULLunitsupport;
-
 fun orthodox () = currentCompliance := Orthodox;
 fun conservative () = currentCompliance := Conservative;
 fun liberal () = currentCompliance := Liberal;
@@ -137,9 +128,6 @@ fun main () =
 	       (* cvr: 144 merge *)
                ("-msgstyle",  Arg.String set_msgstyle),
                ("-m",         Arg.String set_msgstyle),
-	       ("-units",  Arg.Unit fullUnitSupport),
-	       ("-nounits",  Arg.Unit noUnitSupport),
-	       ("-warnunits",  Arg.Unit someUnitSupport),
 	       ("-orthodox",  Arg.Unit orthodox),
 	       ("-conservative",  Arg.Unit conservative),
 	       ("-liberal",  Arg.Unit liberal)

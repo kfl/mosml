@@ -2751,9 +2751,11 @@ local
     | pathOfLongStrId (id::ids) = DOTpath(pathOfLongStrId ids,id)
     | pathOfLongStrId [] = NILpath
 in
-fun realizeLongTyCon (qualid as {qual,id = tycon::longstrid}) = 
-      realizeTyStr (pathOfLongStrId longstrid) tycon
-  | realizeLongTyCon _ = fatalError "realizeLongTyCon"
+fun realizeLongTyCon (qualid as {qual,id = tycon::longstrid}) infTyStr specTyStr = 
+    let val path = pathOfLongStrId longstrid
+    in  realizeTyStr path tycon infTyStr specTyStr
+    end
+  | realizeLongTyCon _ _ _ = fatalError "realizeLongTyCon"
 end;
    
    

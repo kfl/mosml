@@ -114,15 +114,6 @@ fun enable_quotation() =
   Lexer.quotation := true
 ;
 
-fun noUnitSupport () =
-  unitSupport := NOunitsupport;
-
-fun someUnitSupport () =
-  unitSupport := SOMEunitsupport;
-
-fun fullUnitSupport () =
-  unitSupport := FULLunitsupport;
-
 fun topdec_mode () =
   initialMode := TOPDECmode;
 
@@ -158,9 +149,6 @@ fun main () =
 	     (* cvr: 144 merge *)
              ("-msgstyle",  Arg.String set_msgstyle), 
              ("-m",         Arg.String set_msgstyle),
-             ("-units",  Arg.Unit fullUnitSupport),
-             ("-nounits",  Arg.Unit noUnitSupport),
-             ("-warnunits",  Arg.Unit someUnitSupport),
              ("-structure",  Arg.Unit str_mode),
              ("-toplevel",  Arg.Unit topdec_mode),
              ("-orthodox",  Arg.Unit orthodox),
