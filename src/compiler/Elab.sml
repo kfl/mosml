@@ -1726,7 +1726,7 @@ fun elabPrimTypBind equ (typdesc as (tyvars, loctycon) : TypDesc) =
   end;
 
 fun elabPrimTypBindList equ (tbs : TypDesc list) =
-  foldL_map (fn LAMBDA(T,(locid, tystr)) => fn (LAMBDA(T',env)) =>
+  foldL_map (fn LAMBDA(T',(locid, tystr)) => fn (LAMBDA(T,env)) =>
 	     LAMBDA(T@T',bindOnceInEnv env locid tystr
 		           "The same tycon is bound twice\
                             \ in a prim_type declaration"))
@@ -2940,65 +2940,13 @@ and elabSigExp (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE:TyE
 	  in  decrBindingLevel();
 	      (LAMBDAsig(T'',FUNmod (T,M,(EXISTSexmod([],copyMod T'toT'' [] M')))))
 	  end
-(*
    | WHEREsigexp (sigexp, tyvarseq, longtycon,ty) => (* cvr: TODO review *)
-      (case (elabSigExp ME FE GE UE VE TE  sigexp) of
-	    (LAMBDAsig(_,FUNmod _)) =>
-		errorMsg loc "Illegal where constraint: the constrained signature should specify a structure but specifies a functor"
-	|   (LAMBDAsig(T,STRmod RS)) =>
-	      let val S = SofRecStr RS
-		  val _ = incrBindingLevel();
-		  val _ = refreshTyNameSet PARAMETERts T;
-		  val _ = checkDuplIds tyvarseq "Duplicate type parameter"
-                  val pars = map (fn tyvar => hd(#id(#qualid tyvar))) tyvarseq
-		  val vs = map (fn tv => newExplicitTypeVar tv) pars
-		  val us = map TypeOfTypeVar vs
-		  val UE' = zip2 pars us
-                  val {qualid = qualid,info={idLoc,...}} = longtycon
-                  val tau = elabTy ME FE GE (UE' @ UE) VE TE ty
-		  val infTyStr = (TYPEtyfun(vs,tau),ConEnv [])
-                  val _ = decrBindingLevel();
-                  val specTyStr = findLongTyConInStr S idLoc qualid
-                  val specTyFun = normTyFun (#1 specTyStr)
-                  val tn = (choose (equalsTyFunTyName specTyFun) T)
-                           handle Subscript =>
-			    (msgIBlock 0;
-			     errLocation loc;
-			     errPrompt "Illegal where constraint: the type constructor "; printQualId qualid;msgEOL();
-                             errPrompt "does not refer to an opaque type that is specified in the signature";msgEOL();
-			     msgEBlock();
-			     raise Toplevel)
-	      in  			
-		 setTnSort (#info tn) (VARIABLEts);
-		 ((realizeLongTyCon qualid infTyStr specTyStr)
-		  handle MatchError matchReason => 
-		      (msgIBlock 0;
-		       errLocation loc;
-		       errPrompt "Illegal where constraint: the type constructor "; printQualId qualid;msgEOL();
-		       errPrompt "cannot be constrained in this way because ...";msgEOL();
-		       msgEBlock();
-		       errMatchReason "constraint" "signature" matchReason;
-		       raise Toplevel));
-		 if (case !(#tnConEnv(!(#info(tn)))) of (* check well-formedness *)
-		       NONE => true (* nothing to check *)
-		     | SOME _ => (case normType tau of (* eta-equivalent to a type application? *)
-				      CONt(ts,tyapp) => 
-					  ((foldL_zip  ( fn (VARt w) => (fn v => fn b =>  w = v andalso b)
-					                 |   _       => fn _ => fn _ =>  false) true ts vs)
-					   handle _ => false) 
-				    | _ => false)) 
-		 then ()
-		 else (msgIBlock 0;
-		       errLocation loc;
-		       errPrompt "Illegal where constraint: the type constructor ";printQualId qualid;msgEOL();
-		       errPrompt "is specified as a datatype"; msgEOL();
-		       errPrompt "but its realisation is not a type name";msgEOL();
-		       msgEBlock();
-		       raise Toplevel);
-		 LAMBDAsig(remove tn T,STRmod RS) 
-	      end)
-*)
-   | WHEREsigexp (sigexp, tyvarseq, longtycon,ty) => (* cvr: TODO review *)
+      (* Unlike SML, we reject where type constraints that construct inconsistent signatures 
+         by equating a specified datatype with an non-equivalent type or datatype. 
+	 In SML, an inconsitent signature can never be implemented, but in Mosml it
+         can, by using a recursive structure, so we have to rule out inconsitent signatures from
+	 the start.
+       *)
       (case (elabSigExp ME FE GE UE VE TE  sigexp) of
 	    (LAMBDAsig(_,FUNmod _)) =>
 		errorMsg loc "Illegal where constraint: the constrained signature specifies a functor but should specify a structure"
@@ -3056,14 +3004,17 @@ and elabSigExp (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE:TyE
 					case conEnvOfTyApp tyapp of
 					    NONE => raise IllFormed
 					  | SOME infConEnv => (* equivalent conenvs ? *)
-					        let val infMod = STRmod (NONrec (STRstr
-							(NILenv,NILenv,NILenv,
-							 mk1Env tycon (infTyFun,infConEnv),
-							 (VEofCE infConEnv))))
-						    val specMod =  STRmod (NONrec (STRstr 
-							(NILenv,NILenv,NILenv,
-							 mk1Env tycon (specTyFun,specConEnv),
-							 (VEofCE specConEnv))))
+					        let 
+   						    val infMod =
+							STRmod (NONrec (STRstr
+							  (NILenv,NILenv,NILenv,
+							   mk1Env tycon (infTyFun,infConEnv),
+							   (VEofCE infConEnv))))
+						    val specMod = copyMod [(tn,tyapp)] [] 
+							(STRmod (NONrec (STRstr 
+ 							  (NILenv,NILenv,NILenv,
+							   mk1Env tycon (specTyFun,specConEnv),
+							   (VEofCE specConEnv)))))
 						in
 						   ((matchMod infMod specMod)
 						     handle MatchError matchReason => 
@@ -3518,8 +3469,8 @@ fun elabToplevelSpec (spec : Spec) =
                    (* ps: true *) false spec
      in  
 	 if (!currentCompliance) <> Liberal 
-	     then Synchk.compliantTopSpec spec
-	 else ();
+	       then Synchk.compliantTopSpec spec
+	 else (); 
 	 StrSig
      end )
 ;
