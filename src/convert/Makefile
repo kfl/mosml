@@ -9,10 +9,14 @@ MOSMLL=$(MOSMLHOME)/bin/mosmlc
 MOSMLLEX=$(MOSMLHOME)/bin/mosmllex
 MOSMLYACC=$(MOSMLHOME)/bin/mosmlyac
 
-OBJS = Scanner.uo Parser.uo Convert.uo
+CONVOBJS = Scanner.uo Parser.uo Convert.uo
+GENPMOBJS = Deplex.uo Deppars.uo GenPm.uo
+
+LEXYACC = Scanner.sml Parser.sml Parser.sig Deplex.sml Deppars.sig Deppars.sml
+LEXYACCSML = Scanner.sml Parser.sml Deplex.sml Deppars.sml
 
 .SUFFIXES :
-.SUFFIXES : .sig .sml .ui .uo
+.SUFFIXES : .sig .sml .ui .uo .grm .lex
 
 .sig.ui:
 	$(MOSMLC) $<
@@ -20,36 +24,42 @@ OBJS = Scanner.uo Parser.uo Convert.uo
 .sml.uo:
 	$(MOSMLC) $<
 
-all: convert
+.lex.sml:
+	$(MOSMLLEX) $<
 
-convert: $(OBJS)
+.grm.sml:
+	$(MOSMLYACC) $<
+
+
+all: convert gen_pm
+
+convert: $(CONVOBJS)
 	$(MOSMLL) -standalone -o convert Convert.uo
 
+gen_pm: $(GENPMOBJS)
+	$(MOSMLL) -standalone -o gen_pm GenPm.uo
 
-
-Parser.sml Parser.sig: Parser.grm
-	$(MOSMLYACC) Parser.grm
-
-Scanner.sml: Scanner.lex
-	$(MOSMLLEX) Scanner.lex
 
 clean:
 	rm -f *.ui
 	rm -f *.uo
 	rm -f Makefile.bak
-	rm -f Parser.sig Parser.sml Scanner.sml
+	rm -f $(LEXYACC)
 	rm -f convert
 
 #install:
 #	${INSTALL_DATA} convert $(TOOLDIR)
 
-depend: Scanner.sml Parser.sml
+depend: $(LEXYACCSML)
 	rm -f Makefile.bak
 	mv Makefile Makefile.bak
 	$(MOSMLTOOLS)/cutdeps < Makefile.bak > Makefile
 	$(MOSMLTOOLS)/mosmldep >> Makefile
 
 ### DO NOT DELETE THIS LINE
-Convert.uo: Parser.ui Scanner.uo 
+Deppars.uo: Deppars.ui 
+Deplex.uo: Deppars.ui 
 Parser.uo: Parser.ui 
 Scanner.uo: Parser.ui 
+Convert.uo: Parser.ui Scanner.uo 
+GenPm.uo: Deppars.ui Deplex.uo 
