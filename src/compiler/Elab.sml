@@ -921,8 +921,8 @@ fun illegalVal id =
 
 fun illegalCon id = illegalVal id orelse id = "it"
 
-fun checkRebinding illegal ({qualid={id=[id], ...}, info = {idLoc, ...}} : IdInfo) =
-    if illegal id then
+fun checkRebinding illegal ({qualid={id=lid, ...}, info = {idLoc, ...}} : IdInfo) =
+    if illegal (longIdentAsIdent lid "checkRebinding") then
 	errorMsg idLoc "Illegal rebinding or respecification"
     else
 	();
@@ -1810,9 +1810,9 @@ fun maximizeEquality (TE : TyEnv) =
   while !equAttrReset do
     (equAttrReset := false;
      traverseEnv
-       (fn _ => fn (tyfun,ConEnv CE) =>
-         (case tyfun of
-	     APPtyfun (NAMEtyapp tyname) =>
+       (fn _ => fn tystr =>
+         (case tystr of
+	     (APPtyfun (NAMEtyapp tyname),ConEnv CE) =>
                let val {info, ...} = tyname in
                    case #tnEqu(!info) of
                         FALSEequ => ()
@@ -1837,10 +1837,11 @@ fun setTags (cbs : ConBind list) =
       fun loop n = fn
           [] => ()
         | (ConBind(ii, _)) :: rest =>
-            let val {qualid = {id = [id],...},info} = ii
+            let val {qualid = {id = lid,...},info} = ii
+		val id = longIdentAsIdent lid "setTags:1"
                 val {idLoc,...} = info
-                val _ = app (fn (ConBind ({qualid = {id = [id'],...},info = {idLoc=idLoc',...}},_)) =>
-			        if id = id' then
+                val _ = app (fn (ConBind ({qualid = {id = lid',...},info = {idLoc=idLoc',...}},_)) =>
+			        if id = (longIdentAsIdent lid' "setTags:2") then
 				    errorMsg idLoc' "Illegal constructor specification: \ 
 				                     \the constructor cannot be specified twice \ 
 						     \for the same datatype"
@@ -1918,7 +1919,7 @@ fun elabExBind  (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (T
     EXDECexbind(ii, SOME ty) =>
       let val _ = checkRebinding illegalCon ii
 	  val {qualid, info = {idLoc,idKind,...}} = ii
-          val {id=[id], ...} = qualid
+          val id = longIdentAsIdent (#id qualid) "elabExBind"
           val ei = mkExConInfo()
           val q = (* mkName onTop *) mkLocalName  id
           val _ = idKind := { qualid=q, info=EXCONik ei };
@@ -1941,7 +1942,7 @@ fun elabExBind  (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (T
   | EXDECexbind(ii, NONE) =>
       let val _ = checkRebinding illegalCon ii
           val {qualid, info = {idLoc,idKind,...}} = ii
-          val {id=[id], ...} = qualid
+          val id = longIdentAsIdent (#id qualid) "elabDec:EXDECexbind"
           val ei = mkExConInfo()
           val q = (* mkName onTop *) mkLocalName id
           val _ = idKind := { qualid=q, info=EXCONik ei };
@@ -1956,7 +1957,7 @@ fun elabExBind  (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (T
   | EXEQUALexbind(ii, ii') =>
       let val _ = checkRebinding illegalCon ii
 	  val {qualid, info={idLoc,idKind,...}} = ii
-          val {id=[id], ...} = qualid
+          val id = longIdentAsIdent (#id qualid) "elabDec:EXEQUALexbind"
           val {qualid=qualid', info=info'} = ii'
           val {idLoc=loc', ...} = info'
           val (fields,{qualid = csqualid, info = (sigma,cs)}) = findLongVId ME VE loc' qualid'
@@ -2829,7 +2830,7 @@ and elabPrimValBind ME FE GE UE VE TE tvs (ii, ty, arity, n) =
        *)
       val ty_t = elabTy ME FE GE UE VE TE ty
       val {qualid, info = {idLoc,...}} = ii
-      val {id = [pid], ...} = qualid
+      val pid = longIdentAsIdent (#id qualid) "elabPrimValBind"
       val q = (* mkName onTop *) mkLocalName pid 
   in ((idLoc,pid),
       {qualid =q,
@@ -2843,14 +2844,15 @@ and elabValDesc (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE : 
   let val _ = checkRebinding illegalVal ii
       val ty_t = elabTy ME FE GE UE VE TE ty
       val {qualid, info = {idLoc,...}} = ii
-      val {id = [vid], ...} = qualid
+      val vid = longIdentAsIdent (#id qualid) "elabValDesc"
       val q = (* mkGlobalName *)  mkLocalName vid 
   in ((idLoc,vid), {qualid = q, info = (mkScheme tvs ty_t,VARname (REGULARo))}) end
 
 and elabExDesc (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (TE : TyEnv) onTop
                ((ii, ty_opt) : ExDesc) =
   let val _ = checkRebinding illegalCon ii
-      val {qualid={id= [eid], ...}, info = {idLoc,idKind,...}} = ii
+      val {qualid, info = {idLoc,idKind,...}} = ii
+      val eid = longIdentAsIdent (#id qualid) "elabExDesc"
       val ei = mkExConInfo()
       val q = (* mkGlobalName *) mkName onTop eid  
   in

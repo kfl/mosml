@@ -43,7 +43,8 @@ and literal_table =
 fun get_slot_for_variable (uid as (qualid, stamp)) =
   find_in_numtable (!global_table) uid
   handle Subscript =>
-    (let val {qual,id=[mid]} = qualid
+    (let val {qual,id} = qualid
+	 val mid = longIdentAsIdent id "get_slot_for_variable"
 	 val (desc,s) = 
 	     case unmangle mid of
 		 ValId s => 

@@ -348,8 +348,8 @@ fun trVar (env as (rho, depth)) (ii : IdInfo) =
 
 (* coercion *)
 
-fun getGlobal asId {qual,id=[id]} =
-  Lprim(Pget_global ({qual=qual,id = [mangle (asId id)]},0),[])
+fun getGlobal asId {qual,id} =
+  Lprim(Pget_global ({qual=qual,id = [mangle (asId (longIdentAsIdent id "getGlobal"))]},0),[])
 ;
 
 fun coerceVarEnv S VE' =

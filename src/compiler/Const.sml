@@ -10,6 +10,13 @@ type QualifiedIdent =
   qual: string 
 };
 
+(* cvr: REVISE uses of this function should eventually be removed once we introduce a proper
+   distinction between short and long qualified idents *)
+
+fun longIdentAsIdent [id] _ = id
+  | longIdentAsIdent _ msg = fatalError msg
+;
+
 (* Constants *)
 
 datatype SCon =

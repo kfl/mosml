@@ -165,7 +165,7 @@ fun filter p xs =
 ;
 
 fun filterExcRenList excRenList uVarEnv =
-  filter (fn ({qual, id = [id]}, _) => isInTable id uVarEnv) excRenList
+  filter (fn ({qual, id = id}, _) => isInTable (longIdentAsIdent id "filterExnRenList") uVarEnv) excRenList
 ;
 
 fun filterValRenList valRenList uModEnv uFunEnv uVarEnv =

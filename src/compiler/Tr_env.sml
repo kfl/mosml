@@ -35,17 +35,18 @@ fun lookupRenEnv q =
 *)
 
 fun lookupRenEnv asId q =
-  let val {qual, id = [i]} = q 
-      val mangled_i = mangle (asId i) 
+  let val {qual, id = lid} = q 
+      val id = (longIdentAsIdent lid "lookupRenEnv")
+      val mangled_id = mangle (asId id)
   in (* cvr: TODO treat lond ids *)
-    if qual = "" then fatalError ("lookupRenEnv: empty qualifier for "^i)
+    if qual = "" then fatalError ("lookupRenEnv: empty qualifier for "^id)
     else ();
     if qual = currentUnitName() then
-      (mkUniqueGlobalName (mangled_i, Hasht.find (!currentRenEnv) (mangled_i))
+      (mkUniqueGlobalName (mangled_id, Hasht.find (!currentRenEnv) (mangled_id))
        handle Subscript => fatalError
          ("lookupRenEnv: unknown variable: " ^ showQualId q))
     else
-      ({qual=qual,id = [mangled_i]}, 0)
+      ({qual=qual,id = [mangled_id]}, 0)
   end
 ;
 
@@ -108,9 +109,9 @@ fun lookupInLocalEnv env q =
 ;
 *)
 fun lookupInLocalEnv asId env q =
-  let val {qual, id=[i]} = q in (* cvr: TODO handle long ids *)
+  let val {qual,id} = q in (* cvr: TODO handle long ids *)
     if qual = "" orelse qual = currentUnitName() then
-      lookupEnv env (asId i)
+      lookupEnv env (asId (longIdentAsIdent id "lookupInLocalEnv"))
     else
       raise Subscript
   end
