@@ -24,7 +24,6 @@ base:
 	makebase
 
 install:
-	cp helpsigs.val ../../mosmllib
 	cp helpsigs.val ../../../lib
 	cp htmlsigs/*.html ../../../doc/mosmllib
 

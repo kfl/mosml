@@ -28,3 +28,5 @@
 
 + mysql copytablefrom --- recoded for efficiency and to handle line
   fragments, and put args containing several lines, as in PostgreSQL
+
+2000-05-30: Severe inefficiency removed from function seekandgetrow.

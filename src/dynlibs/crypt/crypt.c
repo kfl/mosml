@@ -28,7 +28,7 @@ EXTERNML value ml_crypt(value mlkey, value mlsalt)
   char *salt = String_val(mlsalt);
 
   /* Invoke C library function: */
-  char *res = crypt(key, salt);
+  char *res = (char*)crypt(key, salt);
 
   /* The result is a pointer to a null-terminated C string.    */
   /* Copy it to a fresh string in the ML heap and return that: */

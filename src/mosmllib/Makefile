@@ -45,8 +45,8 @@ install:
 	${INSTALL_DATA} *.sig $(LIBDIR)
 	${INSTALL_DATA} General.fke $(LIBDIR)/General.sig
 	${INSTALL_DATA} Meta.fke $(LIBDIR)/Meta.sig
-	${INSTALL_DATA} helpsigs.val $(LIBDIR)
-	ln -fs $(BINDIR)/camlrunm $(LIBDIR)/camlrunm
+	rm -f $(LIBDIR)/camlrunm
+	ln -s $(BINDIR)/camlrunm $(LIBDIR)/camlrunm
 
 depend: Array.sml FileSys.sml Help.sml Int.sml Mosml.sml Path.sml \
     Process.sml Strbase.sml Vector.sml Word.sml Word8Array.sml \

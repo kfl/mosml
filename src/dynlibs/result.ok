@@ -1,7 +1,7 @@
 cd interface; make test 
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/interface'
 mosml smlside.sml
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 [opening file "smlside.sml"]
 > val it = () : unit
@@ -61,7 +61,7 @@ make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/interface'
 cd intinf; make test 
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/intinf'
 mosml testintinf.sml
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 [opening file "testintinf.sml"]
 > val it = () : unit
@@ -101,7 +101,7 @@ Enter `quit();' to quit.
   val test6c = ["OK", "OK", "OK", "OK"] : string list
   val chkToString = fn : int * string -> string
   val test12a = ["OK", "OK", "OK", "OK"] : string list
-  val 'a chk = fn : ('a -> int' option) -> 'a * int -> string
+  val 'a chk = fn : ('a -> int/1 option) -> 'a * int -> string
   val chkScan = fn : radix -> string * int -> string
   val test13a = ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] : string list
   val test13b =
@@ -128,7 +128,7 @@ make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/intinf'
 cd mgd; make test 
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/mgd'
 mosml testgdimage.sml
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 [opening file "testgdimage.sml"]
 > val it = () : unit
@@ -139,7 +139,7 @@ make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/mgd'
 cd mgdbm; make test 
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/mgdbm'
 mosml -P full testgdbm.sml
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 [opening file "testgdbm.sml"]
 > val it = () : unit
@@ -234,7 +234,7 @@ make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/mgdbm'
 cd mmysql; make test 
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/mmysql'
 mosml testmysql.sml
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 [opening file "testmysql.sml"]
 > val it = () : unit
@@ -385,6 +385,21 @@ Enter `quit();' to quit.
   val test3ha = ("OK", "OK") : string * string
   val test3hb = ("OK", "OK") : string * string
   val test3hc = ("OK", "OK") : string * string
+User: 0.290  System: 0.000  GC: 0.080  Real: 0.282
+User: 0.270  System: 0.010  GC: 0.090  Real: 0.284
+User: 0.290  System: 0.010  GC: 0.110  Real: 0.298
+User: 0.300  System: 0.000  GC: 0.090  Real: 0.298
+User: 0.290  System: 0.010  GC: 0.110  Real: 0.300
+User: 0.310  System: 0.000  GC: 0.090  Real: 0.304
+User: 0.290  System: 0.000  GC: 0.100  Real: 0.292
+User: 0.320  System: 0.000  GC: 0.120  Real: 0.314
+User: 0.300  System: 0.000  GC: 0.090  Real: 0.297
+User: 0.300  System: 0.000  GC: 0.090  Real: 0.307
+User: 0.300  System: 0.000  GC: 0.110  Real: 0.301
+User: 0.300  System: 0.000  GC: 0.130  Real: 0.303
+User: 0.300  System: 0.000  GC: 0.110  Real: 0.302
+User: 0.290  System: 0.000  GC: 0.100  Real: 0.294
+User: 0.310  System: 0.000  GC: 0.120  Real: 0.309
 > val test4 = "OK" : string
   val res5 = <dbresult> : dbresult
   val test5a = "OK" : string
@@ -393,11 +408,15 @@ Enter `quit();' to quit.
   val test8 = "OK" : string
   val test9 = "OK" : string
   val test10 = "OK" : string
+  val test11a = <dbresult> : dbresult
+  val test11b = () : unit
+  val 'a getall = fn : 'a -> dynval vector vector
+  val test11c = () : unit
 make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/mmysql'
 cd mpq; make test 
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/mpq'
 mosml testpsql.sml
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 [opening file "testpsql.sml"]
 > val it = () : unit
@@ -573,7 +592,7 @@ make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/mpq'
 cd mregex; make test 
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/mregex'
 mosml testregex.sml
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 [opening file "testregex.sml"]
 > val it = () : unit
@@ -642,21 +661,21 @@ User: 0.000  System: 0.000  GC: 0.000  Real: 0.001
 size(s) = 368; length(res) = 80
 User: 0.000  System: 0.000  GC: 0.000  Real: 0.002
 size(s) = 736; length(res) = 160
-User: 0.010  System: 0.000  GC: 0.010  Real: 0.010
+User: 0.020  System: 0.000  GC: 0.020  Real: 0.017
 size(s) = 1472; length(res) = 320
-User: 0.010  System: 0.000  GC: 0.000  Real: 0.009
+User: 0.000  System: 0.000  GC: 0.000  Real: 0.007
 size(s) = 2944; length(res) = 640
-User: 0.020  System: 0.000  GC: 0.000  Real: 0.020
+User: 0.020  System: 0.000  GC: 0.000  Real: 0.015
 size(s) = 5888; length(res) = 1280
-User: 0.040  System: 0.000  GC: 0.000  Real: 0.036
+User: 0.030  System: 0.000  GC: 0.000  Real: 0.033
 size(s) = 11776; length(res) = 2560
-User: 0.060  System: 0.000  GC: 0.000  Real: 0.064
+User: 0.080  System: 0.000  GC: 0.000  Real: 0.072
 size(s) = 23552; length(res) = 5120
-User: 0.140  System: 0.000  GC: 0.010  Real: 0.144
+User: 0.130  System: 0.000  GC: 0.010  Real: 0.133
 size(s) = 47104; length(res) = 10240
-User: 0.290  System: 0.000  GC: 0.060  Real: 0.287
+User: 0.280  System: 0.000  GC: 0.070  Real: 0.289
 size(s) = 94208; length(res) = 20480
-User: 0.570  System: 0.000  GC: 0.160  Real: 0.570
+User: 0.590  System: 0.000  GC: 0.120  Real: 0.592
 size(s) = 188416; length(res) = 40960
 > val test1a = "OK" : string
   val test1b = "OK" : string
@@ -708,7 +727,7 @@ cd munix; make test
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/munix'
 gcc -O2 -o sieve sieve.c
 mosml testunix.sml
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 [opening file "testunix.sml"]
 > val it = () : unit

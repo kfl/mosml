@@ -263,22 +263,11 @@ val _ = copytablefrom (pc, "t",
 val test10 = check'(fn _ => (copytableto (pc, "t", append6); 
 			    expected = return6 ()));
 
-			       Int.toString n ^ ")"); f (n-1))
-    in f 50000 end;
-
-(* Function getall should take at most 1 sec (on Intel P II 266 MHz): *)
-
-fun getall _ = let val dbres = execute pc "SELECT * FROM large"
-	       in Mosml.time getdyntups dbres end;
-
-val test11c = List.app (ignore o getall) (List.tabulate(15, fn i => i))
-
-
 (* This causes a segmentation fault with SuSE 6.1 and PostgreSQL 6.3:
    Probably a PostgreSQL or C library problem, but which one? 
 *)
 
-(* val _ = closebase pc; *)
+val _ = closebase pc; 
 
 end;
 

@@ -28,12 +28,14 @@ ADDRUNCFLAGS=
 ADDDYNLIBCFLAGS=
 
 # For Linux, use:
+# ---------------
 CPP=/lib/cpp -P -traditional -Dunix -Umsdos
 STRIP=strip
 LD=gcc -rdynamic
 DYNLD=ld -shared
 
 # For Cygwin 20.1, use:
+# ---------------------
 # MOSMLHOME=/mosml
 # CPP=/lib/cpp -P -traditional -Dunix -Umsdos
 # STRIP=strip
@@ -41,7 +43,8 @@ DYNLD=ld -shared
 # DYNLD=ld -shared
 # EXE=.exe
 
-# For NetBSD, use instead:
+# For NetBSD, use:
+# ------------------------
 # CPP=/usr/bin/cpp -P -traditional -Dunix -Umsdos
 # STRIP=/usr/bin/strip
 # ADDRUNCFLAGS=-fPIC
@@ -50,15 +53,21 @@ DYNLD=ld -shared
 # INSTALL_SCRIPT=${BSD_INSTALL_SCRIPT}
 # INSTALL_DATA=${BSD_INSTALL_DATA}
 
-# For Solaris 2 (not SunOS 4), use instead:
+# For Solaris 2 (not SunOS 4), use:
+# ---------------------------------
 # CPP=/usr/ccs/lib/cpp -P -Dunix -Umsdos
 # STRIP=/usr/ccs/bin/strip
-# LD=gcc -Wl,--export-dynamic
+# LD=gcc
 # DYNLD=ld -G -B symbolic -z nodefs
 # ADDRUNCFLAGS=
 # ADDDYNLIBCFLAGS=
 
+# If the above fails with dynlibs, try this:
+# LD=gcc -Wl,--export-dynamic
+
+
 # For HP-UX 9, use:
+# -----------------
 # CPP=/lib/cpp -P -Dunix -Umsdos
 # STRIP=strip
 # LD=gcc -Xlinker -E
@@ -68,6 +77,7 @@ DYNLD=ld -shared
 # ADDDYNLIBCFLAGS=-fPIC
 
 # For HP-UX 10, use:
+# ------------------
 # CPP=/opt/langtools/lbin/cpp -P -Dunix -Umsdos
 # STRIP=strip
 # LD=gcc -Xlinker -E
@@ -77,6 +87,7 @@ DYNLD=ld -shared
 # ADDDYNLIBCFLAGS=-fPIC
 
 # For OSF/1 (Digital Unix), use:
+# ------------------------------
 # CPP=/lib/cpp -P -traditional -Dunix -Umsdos
 # STRIP=strip
 # LD=gcc
@@ -86,7 +97,8 @@ DYNLD=ld -shared
 # ADDRUNCFLAGS=
 # ADDDYNLIBCFLAGS=
 
-# For Irix, use instead
+# For Irix, use:
+# --------------
 # CPP=/lib/cpp -P -Dunix -Umsdos
 # STRIP=/usr/bin/strip
 # LD=gcc -rdynamic
