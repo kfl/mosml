@@ -74,23 +74,28 @@ val quit             : unit -> 'a
    [liberal ()] sets liberal mode for the compilation functions:
    accept (without warnings) all extensions to the SML Modules
    language.  The extensions are: higher-order modules (functors
-   defined within structures and functors), and first-order modules
-   (structures can be packed as values, and values unpacked as
-   structures).  The liberal, conservative, and orthodox modes affect
-   the functions compile, compileStructure, and compileToplevel.
+   defined within structures and functors); first-order modules
+   (structures can be packed as values, and values can be unpacked
+   as structures); and modules (signatures and structures) may be 
+   defined recursively. The liberal, conservative, and orthodox modes 
+   affect the functions compile, compileStructure, and compileToplevel.
+   The liberal mode may be set by the mosml option -liberal.
 
    [conservative ()] sets conservative mode for the compilation
    functions: accept all extensions to the Modules language, but issue
-   a warning for each use.
+   a warning for each use.  The conservative mode may be set by the
+   mosml option -conservative.
 
    [orthodox ()] sets orthodox mode for the compilation functions:
    reject all uses of the extensions to the modules language.  That
-   is, accept only SML97 Modules.
+   is, accept only SML97 Modules syntax.  The orthodox mode may be set
+   by the mosml option -orthodox.
 
    [compile "U.sig"] will compile and elaborate the unit signature in
    file U.sig, producing a compiled signature file U.ui.  During
    compilation, the compiled signatures of other units will be
-   accessed if they are mentioned in U.sig.
+   accessed if they are mentioned in U.sig.  Equivalent to
+   compileStructure [] "U.sig".
 
    [compile "U.sml"] will elaborate and compile the unit body in file
    U.sml, producing a bytecode file U.uo.  If there is an explicit
@@ -98,12 +103,40 @@ val quit             : unit -> 'a
    match the signature.  If there is no U.sig, then an inferred
    signature file U.ui will be produced also.  No evaluation takes
    place.  During compilation, the compiled signatures of other units
-   will be accessed if they are mentioned in U.sml.
+   will be accessed if they are mentioned in U.sml.  Equivalent to
+   compileStructure [] "U.sml".
 
    The declared identifiers will be reported if verbose is true (see
    below); otherwise compilation will be silent.  In any case,
    compilation warnings are reported, and compilation errors abort the
    compilation and raise the exception Fail with a string argument.
+
+   [compileStructure opnunits "U.sig"] compiles the specifications
+   in U.sig as if they form a signature declaration
+     	signature U = sig ... contents of U.sig ... end
+   The specifications are compiled in a context in which all
+   declarations from opnunits are visible.  The result is a compiled
+   signature file U.ui.
+
+   [compileStructure opnunits "U.sml"] compiles the declarations in
+   U.sml as if they form a structure declaration 
+        structure U = struct ... contents of U.sml ... end
+
+   The declarations are compiled in a context in which all
+   declarations from opnunits are visible.  If U.ui exists already and
+   represents a signature called U, then the compiled declarations are
+   matched against it.  The result is a bytecode file U.uo, and if no
+   file U.ui existed, then also a file U.ui is created.
+XXXXXXX
+   [compileToplevel opnunits "U.sig"] compiles the specifications
+   in U.sig, in a context in which all declarations from opnunits are
+   visible, creating a compiled signature file U.ui.
+
+   [compileToplevel opnunits "U.sml"] compiles the declarations
+   in U.sml, in a context in which all declarations from opnunits are
+   visible, creating a bytecode file U.uo.  If U.ui exists already, then 
+   the compiled declarations are matched against it; otherwise the file
+   U.ui is created.
 
    [load "U"] will load and evaluate the compiled unit body from file
    U.uo.  The resulting values are not reported, but exceptions are

@@ -5,11 +5,11 @@ datatype Location =  (* Source file positions                            *)
     Loc of int       (* Position of the first character                  *)
          * int       (* Position of the character following the last one *)
 
-val errLocation : string * BasicIO.instream * Lexing.lexbuf 
-                  -> Location -> unit
-val errMsg      : string * BasicIO.instream * Lexing.lexbuf 
-                  -> Location -> string -> 'a
-val errPrompt : string -> unit; 
+val errLocation : string * BasicIO.instream * Lexing.lexbuf -> Location
+                  -> unit
+val errMsg      : string * BasicIO.instream * Lexing.lexbuf -> Location
+                  -> string -> 'a
+val errPrompt   : string -> unit; 
 val nilLocation : Location
 val getCurrentLocation : unit -> Location
 val mkLoc : 'a -> Location * 'a

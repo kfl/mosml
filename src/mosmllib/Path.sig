@@ -32,7 +32,6 @@ val joinBaseExt  : {base : string, ext: string option} -> string
 val base         : string -> string    
 val ext          : string -> string option
 
-
 (* 
    This module provides OS-independent functions for manipulating
    strings that represent file names and paths in a directory
