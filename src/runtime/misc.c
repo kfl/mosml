@@ -4,6 +4,7 @@
 #include "debugger.h"
 #include "misc.h"
 #include "io.h"
+#include "sys.h"
 #ifdef HAS_UI
 #include "ui.h"
 #endif

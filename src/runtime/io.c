@@ -220,9 +220,33 @@ void handle_ctrl_c(int sig)
 }
 #endif /* WIN32 */
 
-static int really_read(int fd, char * p, unsigned n)
+void nonblocking_mode(int fd, int nonblocking) {
+  int retcode = fcntl(fd, F_GETFL);
+  if (retcode != -1) {
+    if (nonblocking) 
+      retcode = fcntl(fd, F_SETFL, retcode | O_NONBLOCK);
+    else
+      retcode = fcntl(fd, F_SETFL, retcode & (~O_NONBLOCK));
+  }
+  if (retcode == -1)
+    failwith("set_blocking_io");
+}
+
+/* Risk: If an interrupt occurs after non-blocking mode has been set,
+   and before it has been reset (unlikely, just because the read is
+   non-blocking), then the next read on the same fd will be
+   non-blocking, whether or not that was the intention.  This may
+   cause SysError "Resource temporarily unavailable" to be raised,
+   when one would have expected the read to block.  Unlikely to be a
+   problem in practice, since reads on an fd are likely to be all
+   blocking or all non-blocking.  sestoft 2000-03-15 */
+
+static int really_read(int fd, char * p, unsigned n, int nonblocking)
 {
   int retcode;
+
+  if (nonblocking)
+    nonblocking_mode(fd, nonblocking);	   /* set non-blocking */
 
   enter_blocking_section();
 #ifdef HAS_UI
@@ -281,7 +305,13 @@ static int really_read(int fd, char * p, unsigned n)
 #endif
 #endif
   leave_blocking_section();
-  if (retcode == -1) sys_error(NULL);
+
+  if (nonblocking) {
+    nonblocking_mode(fd, 0);			/* unset non-blocking */
+    if (retcode == -1 && errno != EAGAIN)
+      sys_error(NULL);
+  } else if (retcode == -1)
+    sys_error(NULL);
   return retcode;
 }
 
@@ -289,7 +319,8 @@ unsigned char refill(struct channel * channel)
 {
   int n;
 
-  n = really_read(channel->fd, channel->buff, IO_BUFFER_SIZE);
+  n = really_read(channel->fd, channel->buff, IO_BUFFER_SIZE, 
+                  /* nonblocking = */ 0);
   if (n == 0) raiseprimitive0(SYS__EXN_SIZE);
   channel->offset += n;
   channel->max = channel->buff + n;
@@ -326,7 +357,8 @@ value input_int(struct channel * channel)        /* ML */
   return Val_long(i);
 }
 
-unsigned getblock(struct channel * channel, char * p, unsigned n)
+int getblock(struct channel * channel, char * p, unsigned n,
+             int nonblocking)
 {
   unsigned m, l;
 
@@ -340,19 +372,27 @@ unsigned getblock(struct channel * channel, char * p, unsigned n)
     channel->curr += m;
     return m;
   } else if (n < IO_BUFFER_SIZE) {
-    l = really_read(channel->fd, channel->buff, IO_BUFFER_SIZE);
-    channel->offset += l;
-    channel->max = channel->buff + l;
-    if (n > l) n = l;
-    bcopy(channel->buff, p, n);
-    channel->curr = channel->buff + n;
-    return n;
+    l = really_read(channel->fd, channel->buff, IO_BUFFER_SIZE, nonblocking);
+    if (l == -1) /* Non-blocking read returned no data */ 
+      return -1;
+    else {
+      channel->offset += l;
+      channel->max = channel->buff + l;
+      if (n > l) n = l;
+      bcopy(channel->buff, p, n);
+      channel->curr = channel->buff + n;
+      return n;
+    }
   } else {
     channel->curr = channel->buff;
     channel->max = channel->buff;
-    l = really_read(channel->fd, p, n);
-    channel->offset += l;
-    return l;
+    l = really_read(channel->fd, p, n, nonblocking);
+    if (l == -1)	/* Non-blocking read returned no data */ 
+      return -1;
+    else {
+      channel->offset += l;
+      return l;
+    }
   }
 }
 
@@ -360,7 +400,7 @@ int really_getblock(struct channel * chan, char * p, unsigned long n)
 {
   unsigned r;
   while (n > 0) {
-    r = getblock(chan, p, (unsigned) n);
+    r = (unsigned)getblock(chan, p, (unsigned) n,  /* nonblocking = */ 0);
     if (r == 0) return 0;
     p += r;
     n -= r;
@@ -372,7 +412,22 @@ value input(value channel, value buff, value start, value length) /* ML */
 {
   return Val_long(getblock((struct channel *) channel,
                            &Byte(buff, Long_val(start)),
-                           (unsigned) Long_val(length)));
+                           (unsigned) Long_val(length),
+                           /* nonblocking = */ 0));
+}
+
+value input_nonblocking(value channel, value buff, value start, value length) /* ML */
+{ int n = getblock((struct channel *) channel,
+                   &Byte(buff, Long_val(start)),
+                   (unsigned) Long_val(length),
+	           /* nonblocking = */ 1);
+  if (n == -1)		/* Non-blocking read returned no data */ 
+    return NONE;
+  else {
+    value res = alloc(1, SOMEtag);
+    Field(res, 0) = Val_long(n);
+    return res;
+  }
 }
 
 value seek_in(struct channel * channel, value pos)     /* ML */
@@ -428,7 +483,8 @@ value input_scan_line(struct channel * channel)       /* ML */
         return Val_long(-(channel->max - channel->curr));
       }
       /* Fill the buffer as much as possible */
-      n = really_read(channel->fd, channel->max, channel->end - channel->max);
+      n = really_read(channel->fd, channel->max, channel->end - channel->max,
+		      /* nonblocking = */ 0);
       if (n == 0) {
         /* End-of-file encountered. Return the number of characters in the
            buffer, with negative sign since we haven't encountered 

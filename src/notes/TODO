@@ -106,44 +106,133 @@
 
   (1) is inefficient, 
 
-  (2) may be done as follows: Add a new boolean parameter to
-  really_read.  It must 
+  (2) may be done as follows: Add a new boolean parameter `nonblocking' to
+  really_read.  If it is true, then use fcntl to change to
+  non-blocking (and back), and if read fails, return -1 instead of
+  raising sys_error.
 
-  static int really_read(int fd, char * p, unsigned n, int blocking) {
-    if (blocking)
-      fcntl(...) // set non-blocking
+  void nonblocking_mode(int fd, int nonblocking) {
+    int retcode = fcntl(fd, F_GETFL);
+    if (retcode != -1) {
+      if (blocking) 
+        retcode = fcntl(fd, F_SETFL, retcode | O_NONBLOCK);
+      else
+        retcode = fcntl(fd, F_SETFL, retcode & (~O_NONBLOCK));
+    }
+    if (retcode == -1)
+      failwith("set_blocking_io");
+  }
+
+  static int really_read(int fd, char * p, unsigned n, int nonblocking) {
+    if (nonblocking)
+      nonblocking_mode(fd, TRUE);		/* set non-blocking   */
+
     ...
 
     leave_blocking_section();
-    if (blocking) {
-      fcntl(...) // reset non-blocking
-      if (retcode == -1)
-         if (errno == EAGAIN)
-           return 0; // CHECK!!!
-         else
-           sys_error(NULL);
+    if (nonblocking) {
+      nonblocking_mode(fd, FALSE);		/* unset non-blocking */
+      if (retcode == -1 && errno != EAGAIN)
+        sys_error(NULL);
     } else if (retcode == -1)
-      sys_error(NULL);
+        sys_error(NULL);
     return retcode;
   }
 
-  Add a new parameter to getblock 
+  Function input_scan_line must call really_read with nonblocking = false.
 
-  unsigned getblock(struct channel * channel, char * p, unsigned n, 
-     int blocking)
+  Add a new parameter nonblocking to getblock.  It must be passed on
+  to really_read.  Getblock must check whether really_read returns
+  -1, which should be treated the same as 0, except that it does not mean 
+  end of file:
 
-  which it just passes on to really_read.
+int getblock(struct channel * channel, char * p, unsigned n, 
+   int nonblocking)
+{
+  unsigned m, l;
 
-  Make really_getblock call getblock with this parameter FALSE.
+  m = channel->max - channel->curr;
+  if (n <= m) {
+    bcopy(channel->curr, p, n);
+    channel->curr += n;
+    return n;
+  } else if (m > 0) {
+    bcopy(channel->curr, p, m);
+    channel->curr += m;
+    return m;
+  } else if (n < IO_BUFFER_SIZE) {
+    l = really_read(channel->fd, channel->buff, IO_BUFFER_SIZE, nonblocking);
+    if (l == -1) /* Non-blocking read returned no data */ 
+      return -1;
+    else {
+      channel->offset += l;
+      channel->max = channel->buff + l;
+      if (n > l) n = l;
+      bcopy(channel->buff, p, n);
+      channel->curr = channel->buff + n;
+      return n;
+    }
+  } else {
+    channel->curr = channel->buff;
+    channel->max = channel->buff;
+    l = really_read(channel->fd, p, n, nonblocking);
+    if (l == -1)	/* Non-blocking read returned no data */ 
+      return -1;
+    else {
+      channel->offset += l;
+      return l;
+    }
+  }
+}
 
-  Add a new function input_nonblocking, which will call getblock with non
+Function input will just call getblock with non-blocking = FALSE:
 
 value input(value channel, value buff, value start, value length) /* ML */
 {
   return Val_long(getblock((struct channel *) channel,
                            &Byte(buff, Long_val(start)),
                            (unsigned) Long_val(length),
-	                   TRUE));
+	                   /* nonblocking = */ FALSE));
+}
+
+
+
+Make really_getblock call getblock with nonblocking=FALSE:
+
+int really_getblock(struct channel * chan, char * p, unsigned long n)
+{
+  unsigned r;
+  while (n > 0) {
+    r = (unsigned)getblock(chan, p, (unsigned) n, /* nonblocking = */ FALSE);
+    if (r == 0) return 0;
+    p += r;
+    n -= r;
+  }
+  return 1;
+}
+
+
+  Add a new function input_nonblocking, which will call getblock with
+  nonblocking=TRUE.  Returns NONE if getblock returns -1, otherwise 
+  returns SOME 
+
+value input_nonblocking(value channel, value buff, value start, value length) /* ML */
+{ int n = getblock((struct channel *) channel,
+                   &Byte(buff, Long_val(start)),
+                   (unsigned) Long_val(length),
+	           /* nonblocking = */ TRUE));
+  if (n == -1)		/* Non-blocking read returned no data */ 
+    return Val_NONE;
+  else {
+    value res = alloc(1, SOMEtag);
+    Field(res, 0) = Val_long(n);
+    return res;
+  }
 }
 
   
+* 2000-03-15 Ken: Parametre til lexer-funktioner
+
+  rule comment depth = parse ...
+
+  for at kunne lave en rent funktionel lexing af indlejrede kommentarer.

@@ -33,7 +33,7 @@ static void read_compact(struct channel * chan, value * dest)
   unsigned int code;
   tag_t tag;
   mlsize_t size, len, ofs_ind;
-  value v;
+  value v = Val_unit;
   asize_t ofs;
   header_t header;
 

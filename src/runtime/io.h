@@ -42,7 +42,7 @@ void putword (struct channel *, uint32);
 void putblock (struct channel *, char *, unsigned);
 unsigned char refill (struct channel *);
 uint32 getword (struct channel *);
-unsigned getblock (struct channel *, char *, unsigned);
+int getblock (struct channel *, char *, unsigned, int);
 int really_getblock (struct channel *, char *, unsigned long);
 value close_in (struct channel *);
 void close_stdouterr(void);

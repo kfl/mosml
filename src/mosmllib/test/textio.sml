@@ -1,5 +1,5 @@
 (* test/textio.sml
-   PS 1995-11-22, 1996-04-18
+   PS 1995-11-22, 1996-04-18, 2000-03-15
 *)
 
 use "auxil.sml";
@@ -236,6 +236,65 @@ val test9e =
 	       andalso String.substring(input is, 0, 15) = "abcdefgabcdefga"
 	       before closeIn is 
 	   end);
+
+val test9na =
+    check'(fn _ =>
+	   let val is = openIn "empty.dat"
+	   in 
+	       (lookahead is = NONE 
+		andalso inputNoBlock is = SOME "" 
+		andalso lookahead is = NONE
+		andalso inputNoBlock is = SOME "")
+	       before closeIn is 
+	   end);
+
+val test9nb =
+    check'(fn _ =>
+	   let val is = openIn "small1.dat"
+	   in 
+	       (lookahead is = SOME #"+"
+		andalso inputNoBlock is = SOME "+" 
+		andalso inputNoBlock is = SOME ""
+		andalso lookahead is = NONE)
+	       before closeIn is 
+	   end);
+
+val test9nc =
+    check'(fn _ =>
+	   let val is = openIn "small2.dat"
+	   in 
+	       (lookahead is = SOME #"*"
+		andalso inputNoBlock is = SOME "*1" 
+		andalso inputNoBlock is = SOME ""
+		andalso lookahead is = NONE)
+	       before closeIn is 
+	   end);
+
+val test9nd =
+    check'(fn _ =>
+	   let val is = openIn "small2.dat"
+	   in 
+	       (inputNoBlock is = SOME "*1" 
+		andalso inputNoBlock is = SOME "")
+	       before closeIn is 
+	   end);
+
+val test9ne =
+    check'(fn _ =>
+	   let val is = openIn "medium.dat"
+	   in 
+	       lookahead is = SOME #"a"
+	       andalso 
+               (case inputNoBlock is of 
+		    SOME s => String.substring(s, 0, 15) = "abcdefgabcdefga"
+		  | _      => false)
+	       before closeIn is 
+	   end);
+
+val test9nf =
+    check'(fn _ =>
+	   inputNoBlock stdIn = NONE
+	   andalso inputNoBlock stdIn = NONE);
    
 val test10 = 
     check'(fn _ =>

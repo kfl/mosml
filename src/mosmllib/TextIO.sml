@@ -1,4 +1,4 @@
-(* TextIO -- 1995-11-22, 1996-07-07; no positions etc. yet *)
+(* TextIO -- 1995-11-22, 1996-07-07, 2000-03-15; no positions etc. yet *)
 
 type elem = Char.char
 type vector = string
@@ -79,6 +79,8 @@ and caml_std_err = open_descriptor_out 2
 
 prim_val fast_input :
   in_channel -> string -> int -> int -> int = 4 "input";
+prim_val fast_input_nonblocking :
+  in_channel -> string -> int -> int -> int option = 4 "input_nonblocking";
 prim_val fast_output :
   out_channel -> string -> int -> int -> unit = 4 "output";
 
@@ -162,6 +164,15 @@ fun input (is as ref {closed, ic, name}) =
 	   | m => sub_string_ buff 0 m
 	 end;
 
+fun inputNoBlock (is as ref {closed, ic, name}) =
+    if closed then SOME "" 
+    else let val buff = create_string_ 60 
+	 in case fast_input_nonblocking ic buff 0 60 of
+	     NONE   => NONE 
+	   | SOME 0 => SOME ""
+	   | SOME m => SOME (sub_string_ buff 0 m)
+	 end;
+
 fun inputN (is as ref {closed, ic, name}, n) =
     if n < 0 orelse n > String.maxSize then raise Size
     else if closed then "" 
@@ -225,8 +236,9 @@ fun scanStream scan  (instrm as ref {closed, ic, name}) =
       | SOME(res, _) => SOME res
     end;
 
-fun inputNoBlock (is : instream) : vector option =
+(* fun inputNoBlock (is : instream) : vector option =
     raise Fail "not implemented";
+*)
 
 fun lookahead (is as ref {closed, ic, name}) =
   if closed then NONE else
