@@ -1154,7 +1154,7 @@ Notes:
 
  + If camlrunm is stripped, the symbols defined in it are not linkable.
 
- + Must link files that are to be linked dynamiclly must be linked
+ + Files that are to be linked dynamically must be linked
    using cc, not ld, otherwise symbol dyld_stub_binding_helper is
    missing.
 
@@ -1548,3 +1548,33 @@ renaming code that assumes all bound variables are distinct.
 
 Changed closeValBindVE in Elab.sml to copy the type scheme before
 closing the valbind.
+
++ 2004-07-26: From David Greaves <David.Greaves@cl.cam.ac.uk>
+
+There is a bug in mosml sockets implementation that means that only 16
+byte of a received UDP datagram are passed up to the user.
+
+The bug is in the foreign function msocket_recvfrom in 
+src/dynlibs/msocket/msocket.c:
+
+/* ML type: sock_ -> Word8Vector.vector -> int -> int -> int -> int * addr */
+EXTERNML value msocket_recvfrom(value sock, value buff, value offset, ...
+  ...
+
+  ret = recvfrom(Sock_val(sock), &Byte(buff, Long_val(offset)), 
+                 Int_val(size),
+                 Int_val(flags), &addr.sockaddr_gen, &len);
+  ...
+
+    res = alloc_tuple(2);
+    modify(&Field(res, 0), Val_int(len));     <------ ERROR!!!!
+    modify(&Field(res, 1), roots[0]);
+
+  ...
+ 
+  return res;
+}
+
+The faulty line should read:
+
+  modify(&Field(res, 0), Val_int(ret));    

@@ -260,6 +260,7 @@ Moscow ML release history
     * Hash function now much faster on very long strings
     * Double alignment constraints now correct with gcc-3.2 and Solaris
     * Bug in Polyhash.filter
+    * Socket library returned only first 16 bytes of UDP datagram
   * SML Basis Library changes:
     * String and Substring: added concatWith, isSuffix, isSubstring, full
     * ListPair: added zipEq, appEq, mapEq, foldlEq, foldrEq, allEq

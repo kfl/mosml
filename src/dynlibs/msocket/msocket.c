@@ -630,7 +630,7 @@ EXTERNML value msocket_recvfrom(value sock, value buff, value offset,
     Push_roots(roots, 1);
     roots[0] = from_saddr(&addr, len);
     res = alloc_tuple(2);
-    modify(&Field(res, 0), Val_int(len));
+    modify(&Field(res, 0), Val_int(ret));
     modify(&Field(res, 1), roots[0]);
     Pop_roots();
   }
