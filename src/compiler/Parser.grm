@@ -12,8 +12,20 @@ val mkDerivedfunbind = fn (funid,funsort,modid,sigexp,modexp) =>
 	FUNBINDfunbind(funid,(xxLR modid modexp,
 	                      (FUNCTORmodexp(funsort,modid,ref VARik,sigexp,modexp),ref NONE)))
 
-fun normalizedUnitId (loc,s) = (loc,normalizedUnitName s)
-
+local
+  fun flattenDec (dec as (loc,dec')) acc =
+      case dec' of
+	  SEQdec (dec1,dec2) => flattenDec dec1 (flattenDec dec2 acc)
+        | _ => dec::acc
+in
+fun mkDerivedDecs (locmodexp as (loc,(modexp',_))) =
+	case modexp' of
+	  DECmodexp dec => flattenDec dec []
+        | _ => [(loc,LOCALdec ((loc,STRUCTUREdec [MODBINDmodbind((loc,anonId),locmodexp)]),
+			  (loc,OPENdec [(mkIdInfo (loc,anonQualId) false,ref NONE)])))]
+end
+;
+	
 %}
 
 
@@ -79,8 +91,15 @@ fun normalizedUnitId (loc,s) = (loc,normalizedUnitName s)
 %start SigFile
 %type <Asynt.Sig> SigFile
 
-%start StructFile
-%type <Asynt.Dec list> StructFile
+%start StructFile 
+%type <Asynt.Struct> StructFile 
+
+%start TopSpecFile
+%type <Asynt.Sig> TopSpecFile
+
+%start TopDecFile
+%type <Asynt.Struct> TopDecFile
+
 
 %type <bool> EOPh
 %type <string> Ident EqIdent 
@@ -99,8 +118,8 @@ fun normalizedUnitId (loc,s) = (loc,normalizedUnitName s)
 %type <unit> SemiEof
 %type <Mixture.Lab> Label
 %type <Const.SCon> SCon
-%type <Asynt.Dec> Dec KWDec_seq1 KWDec
-%type <Asynt.Dec list> KWDec_seq
+%type <Asynt.Dec> Dec KWDec_seq1 KWDec KWCoreDec KWModuleDec
+%type <Asynt.Dec list> KWDec_seq KWCoreDec_seq 
 %type <Asynt.ValBind list * Asynt.ValBind list> ValBind AndValBind_opt
 %type <Asynt.PrimValBind list> PrimValBind AndPrimValBind_opt
 %type <Asynt.ValBind list> FnValBind AndFnValBind_opt
@@ -138,8 +157,8 @@ fun normalizedUnitId (loc,s) = (loc,normalizedUnitName s)
 %type <Asynt.Ty list> TupleTy TyComma_seq2
 %type <Asynt.Ty Mixture.Row> TyRow_opt TyRow CommaTyRow_opt
 %type <Asynt.TyVar list> TyVarSeq TyVarSeq1 TyVarComma_seq1
-%type <Asynt.Spec> Spec KWSpec
-%type <Asynt.Spec list> Spec_seq
+%type <Asynt.Spec> Spec KWSpec KWCoreSpec KWModuleSpec
+%type <Asynt.Spec list> Spec_seq CoreSpec_seq
 %type <Asynt.ValDesc list> ValDesc AndValDesc_opt
 %type <Asynt.LongModId> LongModId
 %type <Asynt.LongModIdInfo list> LongModIdInfo_seq1
@@ -292,25 +311,76 @@ KWDec_seq1 :
   | KWDec               { $1 }
 ;
 
-StructFile :
-/*    STRUCTURE ModId EQUALS STRUCT KWDec_seq END SemiEof
-		{ NamedStruct{locstrid = normalizedUnitId $2, locsigid = NONE, decs = $5} }
-  | STRUCTURE ModId COLONGT SigId EQUALS 
-	                                      STRUCT KWDec_seq END SemiEof
-		{ Abstraction{locstrid = normalizedUnitId $2, locsigid = normalizedUnitId $4, decs = $7} }
-  | STRUCT KWDec_seq END EOF
- 		{ AnonStruct $2 } 
-*/
-    KWDec_seq EOF
- 		{ $1 } /* cvr: TODO introduces 3 reduce reduce conflicts */
+TopDecFile :
+    KWDec_seq EOF { TopDecs $1 }  /* cvr: TODO allow expressions? */
 ;
+
+StructFile :
+    STRUCTURE ModId EQUALS ModExp SemiEof
+		{ NamedStruct{locstrid = $2, locsigid = NONE, decs = mkDerivedDecs $4} }
+  | STRUCTURE ModId COLONGT SigId EQUALS ModExp SemiEof
+		{ Abstraction{locstrid = $2, locsigid = $4, decs = mkDerivedDecs $6} }
+  | KWCoreDec_seq EOF { AnonStruct $1 }  /* backwards compatability mode * */
+;
+
 KWDec_seq :
     KWDec KWDec_seq		{ $1 :: $2 }
   | SEMICOLON KWDec_seq		{ $2 }
   | /* */			{ [] }
 ;
 
+KWCoreDec_seq :
+    KWCoreDec KWCoreDec_seq		{ $1 :: $2 }
+  | SEMICOLON KWCoreDec_seq		{ $2 }
+  | /* */			{ [] }
+;
+
 KWDec :
+  KWCoreDec	{$1}
+| KWModuleDec	{$1}
+;	
+
+KWModuleDec:
+    STRUCTURE ModBind_seq1      { mkLoc(STRUCTUREdec $2)}
+  | FUNCTOR FunBind_seq1         { mkLoc(FUNCTORdec $2)}
+  | SIGNATURE SigBind_seq1         { mkLoc(SIGNATUREdec $2)}
+;
+
+/*
+KWDec :
+    VAL ValBind                 { mkLoc(VALdec ([], $2)) } 
+  | VAL TyVarSeq1 ValBind       { mkLoc(VALdec ($2, $3)) } 
+  | PRIM_VAL PrimValBind        { mkLoc(PRIM_VALdec ([],$2)) } 
+  | PRIM_VAL TyVarSeq1 PrimValBind
+	                        { mkLoc(PRIM_VALdec ($2,$3)) } 
+  | FUN FValBind                { mkLoc(FUNdec (ref (UNRESfundec([],  $2)))) }
+  | FUN TyVarSeq1 FValBind      { mkLoc(FUNdec (ref (UNRESfundec($2,  $3)))) }
+  | TYPE TypBind                { mkLoc(TYPEdec $2) }
+  | PRIM_TYPE TypDesc           { mkLoc(PRIM_TYPEdec(FALSEequ, $2)) }
+  | PRIM_EQTYPE TypDesc         { mkLoc(PRIM_TYPEdec(TRUEequ, $2)) }
+  | PRIM_REFTYPE TypDesc        { mkLoc(PRIM_TYPEdec(REFequ, $2)) }
+  | DATATYPE DatBind WithType_opt
+                                { mkLoc(DATATYPEdec($2,$3)) }
+  | DATATYPE TyVarSeq TyCon EQUALS DATATYPE TyVarSeq TyConPath
+                                { mkLoc(DATATYPErepdec($2,$3,$6,$7))}
+  | ABSTYPE DatBind WithType_opt WITH Dec END
+                                { mkLoc(ABSTYPEdec($2,$3,$5)) }
+  | EXCEPTION ExBind            { mkLoc(EXCEPTIONdec $2) }
+  | LOCAL Dec IN Dec END        { mkLoc(LOCALdec($2,$4)) }
+  | OPEN LongModIdInfo_seq1         { mkLoc(OPENdec $2) }
+  | STRUCTURE ModBind_seq1      { mkLoc(STRUCTUREdec $2)}
+  | FUNCTOR FunBind_seq1         { mkLoc(FUNCTORdec $2)}
+  | SIGNATURE SigBind_seq1         { mkLoc(SIGNATUREdec $2)}
+  | INFIX DIGIT_opt EqIdent_seq1
+                                { mkLoc(FIXITYdec(INFIXst $2, $3)) }
+  | INFIXR DIGIT_opt EqIdent_seq1
+                                { mkLoc(FIXITYdec(INFIXRst $2, $3)) }
+  | NONFIX EqIdent_seq1
+                                { mkLoc(FIXITYdec(NONFIXst, $2)) }
+;
+*/
+
+KWCoreDec :
     VAL ValBind                 { mkLoc(VALdec ([], $2)) } /* cvr: REVIEW */
   | VAL TyVarSeq1 ValBind       { mkLoc(VALdec ($2, $3)) } 
   | PRIM_VAL PrimValBind        { mkLoc(PRIM_VALdec ([],$2)) } /* cvr: REVIEW */
@@ -331,13 +401,6 @@ KWDec :
   | EXCEPTION ExBind            { mkLoc(EXCEPTIONdec $2) }
   | LOCAL Dec IN Dec END        { mkLoc(LOCALdec($2,$4)) }
   | OPEN LongModIdInfo_seq1         { mkLoc(OPENdec $2) }
-  | STRUCTURE ModBind_seq1      { mkLoc(STRUCTUREdec $2)}
-             /* causes a shift/reduce conflict with production
-                StructFile :  KWDec_seq EOF
-               (below) */
-/*  | MODULE ModBind_seq1         { mkLoc(MODULEdec $2)} */
-  | FUNCTOR FunBind_seq1         { mkLoc(FUNCTORdec $2)}
-  | SIGNATURE SigBind_seq1         { mkLoc(SIGNATUREdec $2)}
   | INFIX DIGIT_opt EqIdent_seq1
                                 { mkLoc(FIXITYdec(INFIXst $2, $3)) }
   | INFIXR DIGIT_opt EqIdent_seq1
@@ -770,11 +833,14 @@ Spec :
 ;
 
 
+TopSpecFile :
+    Spec_seq EOF	{ TopSpecs (rev [] $1) } 
+;
+
 SigFile :
-    SIGNATURE SigId EQUALS SIG Spec_seq END SemiEof
-                        { NamedSig{locsigid = normalizedUnitId $2, specs = rev [] $5 } }
-  | SIG Spec_seq END EOF	{ AnonSig (rev [] $2) } 
-  | Spec_seq EOF	{ AnonSig (rev [] $1) } 
+    SIGNATURE SigId EQUALS SigExp SemiEof
+                        { NamedSig{locsigid = $2, sigexp =  $4 } }
+  | CoreSpec_seq EOF	{ AnonSig (rev [] $1) } 
 ;
 
 Spec_seq :
@@ -785,9 +851,20 @@ Spec_seq :
   | /* */                 { [] }
 ;
 
+CoreSpec_seq :
+    CoreSpec_seq KWCoreSpec       { $2 :: $1 }
+  | CoreSpec_seq SEMICOLON    { $1 }
+  | /* */                 { [] }
+;
+
 KWSpec :
+   KWCoreSpec {$1}
+ | KWModuleSpec {$1}
+;
+
+KWCoreSpec :
     VAL TyVarSeq ValDesc                 { mkLoc(VALspec ($2,$3)) }
-  | PRIM_VAL PrimValBind        { mkLoc(PRIM_VALspec ([],$2)) } /* cvr: REVIEW */
+  | PRIM_VAL PrimValBind        { mkLoc(PRIM_VALspec ([],$2)) } 
   | PRIM_VAL TyVarSeq1 PrimValBind
 	                        { mkLoc(PRIM_VALspec ($2,$3)) } 
   | TYPE TypBind                { mkLoc(TYPEspec $2) }
@@ -801,11 +878,21 @@ KWSpec :
   | EXCEPTION ExDesc            { mkLoc(EXCEPTIONspec $2) }
   | LOCAL Spec IN Spec END      { mkLoc(LOCALspec($2,$4)) }
   | OPEN LongModIdInfo_seq1         { mkLoc(OPENspec $2) }
-  | STRUCTURE ModDesc_seq1      { mkLoc(STRUCTUREspec $2)}
+  | INFIX DIGIT_opt EqIdent_seq1
+                                { mkLoc(FIXITYspec(INFIXst $2, $3)) }
+  | INFIXR DIGIT_opt EqIdent_seq1
+                                { mkLoc(FIXITYspec(INFIXRst $2, $3)) }
+  | NONFIX EqIdent_seq1
+                                { mkLoc(FIXITYspec(NONFIXst, $2)) }
+;
+
+KWModuleSpec :
+    STRUCTURE ModDesc_seq1      { mkLoc(STRUCTUREspec $2)}
   | FUNCTOR FunDesc_seq1         { mkLoc(FUNCTORspec $2)}
-  | INCLUDE SigExp_seq  { mkLoc(foldR (fn sigexp => fn spec => (SEQspec(mkLoc(INCLUDEspec sigexp),mkLoc(spec))))
-	                                     (EMPTYspec)
-                                             ($2))} 
+  | INCLUDE SigExp_seq   { mkLoc(foldR (fn sigexp => fn spec => (SEQspec(mkLoc(INCLUDEspec sigexp),mkLoc(spec))))
+	                               (EMPTYspec)
+                                       ($2))} 
+  | SIGNATURE SigBind_seq1         { mkLoc(SIGNATUREspec $2)}
 ;
 
 SigExp_seq :

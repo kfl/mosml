@@ -187,10 +187,6 @@ fun exportMod os valRenList id
   end
 ;
 
-
-(* cvr: the following is redundant until we allow functor signatures in
-   unit signatures.
-*)
 fun exportGenFun os valRenList id 
           {info = F,qualid = infQualid} {info = F',qualid = specQualid} =
   (* cvr: TODO optimize for null coercions *)
@@ -210,6 +206,44 @@ fun exportGenFun os valRenList id
   end
 ;
 
+
+fun matchModes (inferredSig : CSig) (specSig : CSig) =
+  case (modeOfSig inferredSig,modeOfSig specSig) of
+      (STRmode,STRmode) => 
+	 if !(#uIdent(inferredSig)) = !(#uIdent(specSig))
+	     then ()
+	 else
+         (msgIBlock 0;
+          errPrompt "Identifier mismatch: the implementation of ";
+	  msgString (#uName inferredSig);msgEOL();
+          errPrompt "was compiled as the declaration of the structure ";msgEOL();
+	  errPrompt "  "; msgString (!(#uIdent inferredSig));msgEOL();
+          errPrompt "but its interface was compiled as the declaration of the signature"; msgEOL();
+	  errPrompt "  "; msgString (!(#uIdent specSig));msgEOL();
+	  errPrompt "The declarations should agree on the identifier";
+	  msgEOL();	  
+          msgEBlock();
+          raise Toplevel)
+  |   (TOPDECmode,TOPDECmode) => ()
+  |   (STRmode,TOPDECmode) =>
+         (msgIBlock 0;
+          errPrompt "Mode mismatch: the implementation of ";
+	  msgString (#uName inferredSig);msgEOL();
+          errPrompt "was compiled as a structure declaration"; msgEOL();
+          errPrompt "but its interface was compiled as a sequence of top level specifications"; msgEOL();
+          errPrompt "The implementation and its interface must be compiled in the same mode"; msgEOL();
+          msgEBlock();
+          raise Toplevel)
+  |   (TOPDECmode,STRmode) =>
+         (msgIBlock 0;
+          errPrompt "Mode mismatch: the implementation of "; 
+	  msgString (#uName inferredSig);msgEOL();
+          errPrompt "was compiled as a sequence of top level declarations";msgEOL();
+          errPrompt "but its interface was compiled as a signature declaration"; msgEOL();
+          errPrompt "The implementation and its interface must be compiled in the same mode"; msgEOL();
+          msgEBlock();
+          raise Toplevel)
+;
 
 fun matchStamps (inferredSig : CSig) (specSig : CSig) =
   Hasht.apply
@@ -231,111 +265,48 @@ fun matchStamps (inferredSig : CSig) (specSig : CSig) =
     (#uMentions specSig)
 ;
 
-(*
 fun matchSignature os valRenList (inferredSig : CSig) (specSig : CSig) =
-( case !(strOptOfSig specSig) of 
-      NONE => fatalError "matchSignature"
-    | SOME S =>
-  (* Matching stamps of mentioned signatures *)
-  (matchStamps inferredSig specSig;
-  (* Type realization. *)
-  let val LAMBDAsig(T,STRmod S) = 
-            copySig [] [] (LAMBDAsig(!(tyNameSetOfSig specSig),STRmod S))
-      val S' = STRstr (mk1TopEnv (#uModEnv inferredSig),
-                       mk1TopEnv (#uTyEnv  inferredSig),
-		       mk1TopEnv (#uVarEnv inferredSig))
-
-  in
-      refreshTyNameSet VARIABLEts T;
-      (matchStr [currentUnitName()] S' S 
-	      handle MatchError matchReasons => 
-		  (msgIBlock 0;
-		   errPrompt "Signature mismatch: \
-		    \the unit does not match the signature ...";
-		   msgEOL();
-		   msgEBlock();
-		   errMatchReasons matchReasons;
-		   raise Toplevel));
-     (* Status matching. *)
-     (* This may cause some code to be generated, *)
-     (* if a primitive function or a value constructor is *)
-     (* exported as a value. *)
-      Hasht.apply (fn id => fn specSc =>
-		       exportVar os id 
-		          (Hasht.find (varEnvOfSig inferredSig) id) specSc)
-                  (varEnvOfSig specSig);
-     (* Module matching. *)
-     (* This may cause some coercion code to be generated. *)
-      Hasht.apply (fn id => fn specInfo =>
-		     exportMod os valRenList id 
-		         (Hasht.find (modEnvOfSig inferredSig) id) specInfo)
-                   (modEnvOfSig specSig);
-     (* Generative functor matching. *)
-     (* This may cause some coercion code to be generated. *)
-      (* cvr: the following is redundant until we allow functor signatures in
-              unit signatures. 
-      *)
-      Hasht.apply (fn id => fn specInfo =>
-		     exportGenFun os valRenList id 
-		         (Hasht.find (funEnvOfSig inferredSig) id) specInfo)
-                   (funEnvOfSig specSig)
-end)
-);
-*)
-
-fun matchSignature os valRenList (inferredSig : CSig) (specSig : CSig) =
-( case !(strOptOfSig specSig) of 
-      NONE => fatalError "matchSignature"
-    | SOME S =>
-  (* Matching stamps of mentioned signatures *)
-  (matchStamps inferredSig specSig;
-  (* Type realization. *)
-  let val LAMBDAsig(T,STRmod (NONrec S)) = 
-            copySig [] [] (LAMBDAsig(!(tyNameSetOfSig specSig),STRmod (NONrec S)))
-      val S' = STRstr (mk1TopEnv (#uModEnv inferredSig),
-                       mk1TopEnv (#uFunEnv inferredSig),
-                       mk1TopEnv (#uTyEnv  inferredSig),
-		       mk1TopEnv (#uVarEnv inferredSig))
-
-  in
-      refreshTyNameSet VARIABLEts T;
-      (matchStr S' S 
-	      handle MatchError matchReason => 
-		  (msgIBlock 0;
-		   errPrompt "Signature mismatch: \
-		    \the unit does not match the signature ...";
-		   msgEOL();
-		   msgEBlock();
-		   errMatchReason "unit" "signature" matchReason;
-		   raise Toplevel));
-      let (* Status matching. *)
-	  (* This may cause some code to be generated, *)
-	  (* if a primitive function or a value constructor is *)
-	  (* exported as a value. *)
-	  val valRenList = 
-	    Hasht.fold (fn id => fn specSc => fn valRenList =>
-		        exportVar os valRenList id
-			(Hasht.find (varEnvOfSig inferredSig) id) specSc)
-	    valRenList (varEnvOfSig specSig);
-	  (* Module matching also may cause some coercion code
-             to be generated. *)
-	  val valRenList = 
-	    Hasht.fold (fn id => fn specInfo => fn valRenList =>
-			exportMod os valRenList id 
-			(Hasht.find (modEnvOfSig inferredSig) id) specInfo)
-	    valRenList (modEnvOfSig specSig);
-          (* functor matching may cause some coercion code to be generated. *)
-	  (* cvr: the following is redundant until we allow 
-                  functor signatures in unit signatures. *)
-          val valRenList = 
- 	    Hasht.fold (fn id => fn specInfo => fn valRenList =>
-			exportGenFun os valRenList id 
-			(Hasht.find (funEnvOfSig inferredSig) id) specInfo)
-	    valRenList (funEnvOfSig specSig)
-      in valRenList 
-      end
-end)
-);
+  ((* Matching compilation modes *)
+   matchModes inferredSig specSig;
+   (* Matching stamps of mentioned signatures *)
+   matchStamps inferredSig specSig;
+  (* Matching of components *)
+   (matchCSig  inferredSig specSig
+    handle MatchError matchReason => 
+	(msgIBlock 0;
+	 errPrompt "Interface mismatch: the implementation of unit ";msgString (#uName inferredSig);msgEOL();
+	 errPrompt "does not match its interface, because ... ";
+	 msgEOL();
+	 msgEBlock();
+	 errMatchReason "implementation" "interface" matchReason;
+	 raise Toplevel));
+  (* warn of any un(der)specified (co-variant) declarations in a topdec unit *)
+  checkCSig inferredSig specSig;
+  (* coercions *)
+  let 
+      (* value matching may cause some code to be generated, *)
+      (* if a primitive function or a value constructor is *)
+      (* exported as a value. *)
+      val valRenList = 
+	  Hasht.fold (fn id => fn specSc => fn valRenList =>
+		      exportVar os valRenList id
+		      (Hasht.find (varEnvOfSig inferredSig) id) specSc)
+	  valRenList (varEnvOfSig specSig);
+      (* structure matching may cause some coercion code to be generated. *)
+      val valRenList = 
+	  Hasht.fold (fn id => fn specInfo => fn valRenList =>
+		      exportMod os valRenList id 
+		      (Hasht.find (modEnvOfSig inferredSig) id) specInfo)
+	  valRenList (modEnvOfSig specSig);
+      (* functor matching may cause some coercion code to be generated. *)
+      val valRenList = 
+	  Hasht.fold (fn id => fn specInfo => fn valRenList =>
+		      exportGenFun os valRenList id 
+		      (Hasht.find (funEnvOfSig inferredSig) id) specInfo)
+	  valRenList (funEnvOfSig specSig)
+  in valRenList 
+  end)
+;
 
 
 

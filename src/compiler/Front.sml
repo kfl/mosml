@@ -431,7 +431,7 @@ and coerceModEnv S ME' tr_FE_VE =
 	tr_FE_VE 
 	ME'
     end
-and coerceStr lam S (STRstr(ME',FE',TE',VE')) =
+and coerceStr lam S (STRstr(ME',FE',GE',TE',VE')) =
       let val tr_VE = coerceVarEnv S VE' 
           val tr_FE_VE = coerceFunEnv S FE' tr_VE
           val tr_ME_FE_VE = coerceModEnv S ME' tr_FE_VE 
@@ -552,8 +552,8 @@ and coerceDec env (STRstr(ME,FE,TE,VE)) (STRstr(ME',FE',TE',VE')) =
       end;
 *)
 and coerceDec env RS RS' =
-      let val (STRstr(ME,FE,TE,VE)) = SofRecStr RS
-	  val (STRstr(ME',FE',TE',VE')) = SofRecStr RS'
+      let val (STRstr(ME,FE,GE,TE,VE)) = SofRecStr RS
+	  val (STRstr(ME',FE',GE',TE',VE')) = SofRecStr RS'
           val tr_VE = coerceDecVarEnv env VE VE' 
           val tr_FE_VE = coerceDecFunEnv env FE FE' tr_VE
           val tr_ME_FE_VE = coerceDecModEnv env ME ME' tr_FE_VE 
@@ -945,7 +945,7 @@ and trFunBindList (env as (rho, depth)) fbs =
 and trModExp (env as (rho,depth)) (_, (modexp,r)) = 
   case (modexp,!r) of
     (DECmodexp dec, SOME (EXISTSexmod (_, STRmod RS))) =>
-      let val STRstr(ME,FE,TE,VE) = SofRecStr RS
+      let val STRstr(ME,FE,GE,TE,VE) = SofRecStr RS
 	  val (env as (rho', depth'), envelope') = trDec env dec
           val tr_VE = 
 	      foldEnv  (fn id => fn {qualid,info = (_,cs)} => fn tr_VE => 

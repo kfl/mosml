@@ -144,9 +144,9 @@ fun main () =
     resetSMLTopDynEnv();
     initPervasiveEnvironments();
     setGlobalVal 16 (Obj.repr true); (* 16: cf ../runtime/globals.h *)
-    startCompilingUnit "Top";
+    startCompilingUnit "Top" "" TOPDECmode;
     app evalLoad (!preloadedUnits);
-    initInitialEnvironments();
+    initInitialEnvironments [];
     execToplevelOpen nilLocation "Meta";
     resetTypePrinter(); (* cvr *)
     Miscsys.catch_interrupt true;

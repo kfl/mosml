@@ -70,8 +70,9 @@ val parseToplevelPhrase =
 
 
 
-local 
-  fun normalizedUnitId (loc,s) = (loc,Config.normalizedUnitName s);
+
+(*
+  fun normalizedUnitId (loc,s) = (loc,Config.normalizedUnitName s); 
   val warnIfRequired = fn loc =>
       if(!unitSupport) = SOMEunitsupport then
 	  (msgIBlock 0;
@@ -93,41 +94,65 @@ local
 	  then AnonStruct decs
       else
 	  case decs of
-	  [(_,STRUCTUREdec([MODBINDmodbind(strid,modexp)]))] =>
-	      let val nstrid as (loc,strname) = normalizedUnitId strid
+	  [strdec as (locstrdec,STRUCTUREdec([MODBINDmodbind(locstrid as (_,strid),modexp)]))] =>
+	      let val (loc,strname) = normalizedUnitId locstrid
 	      in
 		  if strname = uname 
 		  then case modexp of
 		        (_,(ABSmodexp ((_,(DECmodexp dec,_)),
 				       (_,SIGIDsigexp(sigid)))
 			              ,_)) =>
-			   let val nsigid as (_,signame) = normalizedUnitId sigid
+			   let val (_,signame) = normalizedUnitId sigid
 			   in
 			       if signame = uname  
 			       then
 				  (warnIfRequired loc;
-				   Abstraction{locstrid=nstrid,
-					       locsigid=nsigid, 
+				   Abstraction{locstrid=locstrid,
+					       locsigid=sigid, 
 					       decs = flattenDec dec []})
+			       else AnonStruct decs
+			   end
+		      | (_,(ABSmodexp ((locmodexp,modexp),
+				       (_,SIGIDsigexp(sigid)))
+			              ,_)) =>
+			   let val (_,signame) = normalizedUnitId sigid
+			   in
+			       if signame = uname  
+			       then
+				  (warnIfRequired loc;
+				   Abstraction{locstrid=locstrid,
+					       locsigid=sigid, 
+					       decs = [(locstrdec,LOCALdec (strdec,
+									    (locstrdec,
+									     OPENdec [(Asyntfn.mkIdInfo
+										       (loc,(mkLocalName strid)) false, 
+										       ref NONE)])))]})
 			       else AnonStruct decs
 			   end
 		      | (_,(DECmodexp dec,_)) =>
 			   (warnIfRequired loc;
-			    NamedStruct{locstrid = nstrid,
-				       locsigid = NONE,
-				       decs = flattenDec dec []})
+			    NamedStruct{locstrid = locstrid,
+					locsigid = NONE,
+					decs = flattenDec dec []})
 		      | _ =>  AnonStruct decs
 		  else AnonStruct decs
 	      end
       | _ => AnonStruct decs
-in
-val parseStructFile = fn uname => fn lexbuff =>
-    resolveDecs uname (parsePhraseAndClear Parser.StructFile Lexer.Token lexbuff)
-end
+*)
+val parseStructFile = fn umode => fn lexbuff =>
+    case umode of
+      STRmode =>
+	    parsePhraseAndClear Parser.StructFile Lexer.Token lexbuff
+    | TOPDECmode => 
+	    parsePhraseAndClear Parser.TopDecFile Lexer.Token lexbuff
 ;
 
-val parseSigFile =
-  parsePhraseAndClear Parser.SigFile Lexer.Token
+val parseSigFile = fn umode => fn lexbuff =>
+    case umode of
+      STRmode =>
+	  parsePhraseAndClear Parser.SigFile Lexer.Token lexbuff
+    | TOPDECmode => 
+	  parsePhraseAndClear Parser.TopSpecFile Lexer.Token lexbuff
 ;
 
 fun isInTable key tbl =
@@ -293,7 +318,7 @@ fun writeCompiledSignature filename_ui =
 (* Checks and error messages for compiling units *)
 
 fun checkUnitId msg (locid as (loc, id)) uname =
-    if id <> uname then
+    if (Config.normalizedUnitName id) <> uname then
 	(msgIBlock 0;
 	 errLocation loc;
 	 errPrompt "Error: "; msgString msg; 
@@ -330,17 +355,19 @@ fun checkNotExists filename_sig filename_sml =
 (* cvr: TODO this could be optimized by using checkNoRebindings,
    and just calling the update functions instead of extendXXX, which
    are then made redundant *)
-fun compileSpecPhrase spec =
+fun compileSigExp sigexp =
   let 
-      val LAMBDA(T, S) = elabToplevelSpec spec
+      val sigexp = resolveToplevelSigExp sigexp
+      val LAMBDA(T, RS) = elabToplevelSigExp sigexp
   in
     updateCurrentStaticT T;  
-    extendCurrentStaticS S;
-    let val S' = normStr S  (* cvr: we norm S so that calculated (sub)fields
+    (strOptOfSig (!currentSig)) := SOME RS;
+    let val S' = normStr (SofRecStr RS)  (* cvr: we norm S so that calculated (sub)fields
 			       are correct *)
     in
 	extendCurrentStaticME (MEofStr S');  
 	extendCurrentStaticFE (FEofStr S');  
+	extendCurrentStaticGE (GEofStr S');  (* should actually be empty ... *)
 	extendCurrentStaticVE (VEofStr S');  
 	extendCurrentStaticTE (TEofStr S')
     end;
@@ -351,7 +378,31 @@ fun compileSpecPhrase spec =
   end
 ;
 
-fun compileSignature uname filename =
+fun compileSpecPhrase spec =
+  let 
+      val (iBas,spec) = resolveToplevelSpec spec
+      val LAMBDA(T, S) = elabToplevelSpec spec
+  in
+    updateCurrentStaticT T;  
+    extendCurrentStaticIBas iBas;
+    extendCurrentStaticS S;
+    let val S' = normStr S  (* cvr: we norm S so that calculated (sub)fields
+			       are correct *)
+    in
+	extendCurrentStaticME (MEofStr S');  
+	extendCurrentStaticFE (FEofStr S');  
+	extendCurrentStaticGE (GEofStr S');  
+	extendCurrentStaticVE (VEofStr S');  
+	extendCurrentStaticTE (TEofStr S')
+    end;
+    if !verbose then
+      ((* report_comp_results iBas cBas VE TE; *) (*cvr: TODO*)
+       msgFlush())
+    else ()
+  end
+;
+
+fun compileSignature context uname umode filename =
   let
       val source_name = filename ^ ".sig"
       val target_name = filename ^ ".ui"
@@ -359,26 +410,42 @@ fun compileSignature uname filename =
                    msgString "[compiling file \""; msgString source_name;
                    msgString "\"]"; msgEOL(); msgEBlock();) *)
       val restorePrState = savePrState()
+      val () = startCompilingUnit uname "" umode
+      val () = initInitialEnvironments context
       val () = resetTypePrinter()
-      val () = startCompilingUnit uname
-      val () = initInitialEnvironments()
       val is = open_in_bin source_name
       val () = remove_file target_name;
       val lexbuf = createLexerStream is
+      fun removeGEofSig () =
+	  case (strOptOfSig(!currentSig)) of
+	      ref NONE => ()
+	    | r as (ref (SOME RS)) => r := SOME (removeGEofRecStr RS)
       fun compileSig (AnonSig specs) = 
-	  app compileSpecPhrase specs
-	| compileSig (NamedSig{locsigid, specs}) = 
+	  (* cvr: TODO warn *)
+	  (app compileSpecPhrase specs;
+	   (#uIdent(!currentSig)):= uname;
+	   Hasht.clear (iBasOfSig(!currentSig));
+	   Hasht.clear (sigEnvOfSig(!currentSig));
+	   removeGEofSig()
+	   )
+	| compileSig (NamedSig{locsigid as (_,sigid), sigexp}) = 
 	  (checkUnitId "signature" locsigid uname;
-	   app compileSpecPhrase specs)
+	   compileSigExp sigexp;
+	   (#uIdent(!currentSig)):= sigid;
+	   Hasht.clear (iBasOfSig(!currentSig));
+	   Hasht.clear (sigEnvOfSig(!currentSig));
+	   removeGEofSig())
+        | compileSig (TopSpecs specs) = 
+	   app compileSpecPhrase specs
   in
        input_name   := source_name;
        input_stream := is;
        input_lexbuf := lexbuf;
-       extendCurrentStaticS (STRstr(NILenv,NILenv,NILenv,NILenv)); 
+       extendCurrentStaticS (STRstr(NILenv,NILenv,NILenv,NILenv,NILenv)); 
          (* cvr: need the above  to distinguish
 	         an empty sig file 
                  from a non-existent one *)
-       (compileSig (parseSigFile lexbuf);
+       (compileSig (parseSigFile umode lexbuf);
         ignore (rectifySignature ());
         ignore (writeCompiledSignature target_name);
         close_in is;
@@ -392,7 +459,7 @@ fun compileSignature uname filename =
 (* This is written in tail-recursive form to ensure *)
 (* that the intermediate results will be discarded. *)
 
-fun updateCurrentCompState ((iBas, cBas, ExEnv as EXISTS(T,(ME,FE,GE,VE, TE))), RE) =
+fun updateCurrentCompState ((iBas, ExEnv as EXISTS(T,(ME,FE,GE,VE, TE))), RE) =
 (
   updateCurrentInfixBasis iBas;
   updateCurrentStaticT T;
@@ -422,23 +489,21 @@ fun compLamPhrase os state (RE, lams) =
     updateCurrentCompState (state, RE)
 );
 
-fun compResolvedDecPhrase os (iBas, cBas, dec) =
+fun compResolvedDecPhrase os (iBas, dec) =
   let val ExEnv = elabToplevelDec dec in
     resolveOvlDec dec;
     commit_free_typevar_names (); (* cvr: will never be rolled-back *)
-    compLamPhrase os (iBas, cBas, ExEnv) (translateToplevelDec dec)
+    compLamPhrase os (iBas, ExEnv) (translateToplevelDec dec)
   end
 ;
 
 fun compileImplPhrase os dec =
   let val (iBas,resdec) = resolveToplevelDec dec in
-      compResolvedDecPhrase os (iBas,NILenv,resdec)
+      compResolvedDecPhrase os (iBas,resdec)
   end
 ;
 
-
-
-fun compileAndEmit uname filename specSig_opt decs =
+fun compileAndEmit context uname uident umode filename specSig_opt decs =
   let
     val filename_ui  = filename ^ ".ui"
     val filename_uo  = filename ^ ".uo"
@@ -446,13 +511,21 @@ fun compileAndEmit uname filename specSig_opt decs =
                  msgString "[compiling file \""; msgString filename_sml;
                  msgString "\"]"; msgEOL(); msgEBlock()) *)
     val restorePrState = savePrState(); (* cvr: *)
+    val () = startCompilingUnit uname uident umode
+    val () = initInitialEnvironments context
+    val () = extendInitialSigEnv specSig_opt
+             (* if in STRmode and the optional sig is there
+                then we add the signature to the environment of the body *)
     val () = resetTypePrinter();
-    val () = startCompilingUnit uname
-    val () = initInitialEnvironments()
     val os = open_out_bin filename_uo
   in
     ( start_emit_phrase os;
       app (compileImplPhrase os) decs;
+      (case umode of 
+	 STRmode =>      
+	     (Hasht.clear (iBasOfSig(!currentSig));
+	      Hasht.clear (sigEnvOfSig(!currentSig)))
+       | TOPDECmode => ());
       let val (excRenList, valRenList) = rectifySignature() in
           (case specSig_opt of
                NONE =>
@@ -480,38 +553,55 @@ fun compileAndEmit uname filename specSig_opt decs =
     handle x => (close_out os; remove_file filename_uo;restorePrState();raise x)
   end;
 
-fun compileUnitBody uname filename =
+(* cvr: TODO consider removing reference hasSpecifiedSignature,
+        match modes *before* compiling, to catch this error early on 
+	warn on deprecated syntax
+*)
+
+fun compileUnitBody context uname umode filename =
   let val filename_sig = filename ^ ".sig"
       val filename_ui  = filename ^ ".ui"
       val filename_sml = filename ^ ".sml"
       val is = open_in_bin filename_sml
       val lexbuf = createLexerStream is
       fun compileStruct (AnonStruct decs) = 
+	  (* cvr: TODO warn *)
 	  if file_exists filename_sig then
 	      (hasSpecifiedSignature := true;
 	       checkExists filename_ui filename_sig filename_sml;
-	       compileAndEmit uname filename (SOME (readSig uname)) decs)
+	       compileAndEmit context uname uname umode filename (SOME (readSig uname)) decs)
 	  else 
 	      (hasSpecifiedSignature := false;
 	       remove_file filename_ui;
-	       compileAndEmit uname filename NONE decs)
-	| compileStruct (NamedStruct{locstrid, locsigid = NONE, decs}) =
+	       compileAndEmit context uname uname umode filename NONE decs)
+	| compileStruct (NamedStruct{locstrid as (_,strid), locsigid = NONE, decs}) =
 	  (checkUnitId "structure" locstrid uname;
 	   checkNotExists filename_sig filename_sml;
 	   hasSpecifiedSignature := false;
 	   remove_file filename_ui;
-	   compileAndEmit uname filename NONE decs)
+	   compileAndEmit context uname strid umode filename NONE decs)
+	 (* cvr: TODO remove locsigid field from NamedStruct *)
 	| compileStruct (NamedStruct _) = fatalError "compileUnitBody"
-	| compileStruct (Abstraction{locstrid, locsigid, decs}) =
+	| compileStruct (Abstraction{locstrid as (_,strid), locsigid, decs}) =
 	  (checkUnitId "structure" locstrid uname;
 	   checkUnitId "signature" locsigid uname;
 	   checkExists filename_ui filename_sig filename_sml;
 	   hasSpecifiedSignature := true;
-	   compileAndEmit uname filename (SOME (readSig uname)) decs)
+	   compileAndEmit context uname strid umode filename (SOME (readSig uname)) decs
+)
+	| compileStruct (TopDecs decs) = 
+	  if file_exists filename_sig then
+	      (hasSpecifiedSignature := true;
+	       checkExists filename_ui filename_sig filename_sml;
+	       compileAndEmit context uname "" umode  filename (SOME (readSig uname)) decs)
+	  else 
+	      (hasSpecifiedSignature := false;
+	       remove_file filename_ui;
+	       compileAndEmit context uname "" umode filename NONE decs)
   in
       input_name := filename_sml;
       input_stream := is;
       input_lexbuf := lexbuf;
-      (compileStruct (parseStructFile uname lexbuf))
+      (compileStruct (parseStructFile umode lexbuf))
        handle x => (close_in is; raise x)	  
   end;

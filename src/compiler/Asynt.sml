@@ -199,11 +199,14 @@ and Spec' =
   | FUNCTORspec of FunDesc list
   | SHARINGTYPEspec of Spec * LongTyCon list
   | SHARINGspec of Spec * (Location * LongModId list)
+  | FIXITYspec of InfixStatus * string list
+  | SIGNATUREspec of SigBind list
  
 
 and Sig = 
-    NamedSig of {locsigid : SigId, specs : Spec list}
+    NamedSig of {locsigid : SigId, sigexp: SigExp}
   | AnonSig of Spec list
+  | TopSpecs of Spec list
 
 and Struct =
     NamedStruct of {locstrid : ModId, locsigid : SigId option,
@@ -211,6 +214,7 @@ and Struct =
   | Abstraction of {locstrid : ModId, locsigid : SigId, 
 		    decs : Dec list}
   | AnonStruct of Dec list
+  | TopDecs of Dec list
 
 withtype TyConPath = Location * TyConPath'
 and Ty = Location * Ty'

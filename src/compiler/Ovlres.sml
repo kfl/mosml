@@ -520,6 +520,9 @@ and resolveOvlSpec firstpass (_, spec') =
        resolveOvlSpec firstpass spec
   | SHARINGspec (spec, longmodids) => 
        resolveOvlSpec firstpass spec
+  | FIXITYspec _ => ()
+  | SIGNATUREspec sigdescs =>
+       resolveOvlSigBindList firstpass sigdescs
 and resolveOvlModDescList firstpass mds = 
     app (fn MODDESCmoddesc(modid,sigexp) =>
 	 resolveOvlSigExp firstpass sigexp) 

@@ -94,3 +94,14 @@ datatype UnitSupport =
 
 val unitSupport : UnitSupport ref; 
     (* we need *full* support for boostrapping *)
+
+(* current compilation mode for units
+   STRmode units are compiled as structures
+   TOPDECmode if units are compiled as topdecs
+   should be false for boostrapping!
+*)
+
+datatype Mode = STRmode | TOPDECmode
+;
+val currentMode : Mode ref
+;

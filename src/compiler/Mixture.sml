@@ -300,6 +300,10 @@ datatype UnitSupport =
 val unitSupport = ref (FULLunitsupport)
 ;
 
+datatype Mode = STRmode | TOPDECmode
+;
 
+val currentMode = ref STRmode
+;
 
    

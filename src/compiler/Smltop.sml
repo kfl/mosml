@@ -33,6 +33,7 @@ fun tryEvalLoad name =
     val code = ref ""
     val truename = find_in_path filename
     val is = open_in_bin truename
+    val open_after_loading = ref false
     val () =
       let
         val stop = input_binary_int is
@@ -56,12 +57,14 @@ fun tryEvalLoad name =
             (#cu_mentions tables)
         (* The following line will put the compiled signature into the *)
         (* current table of unit signatures, if not already there:     *)
-        val sign = (Hasht.find (!currentSigTable) uname
-                   handle Subscript => readSig uname)
+        val (sign,already_loaded) = ((Hasht.find (!currentSigTable) uname,true)
+			     handle Subscript => (readSig uname,false))
         prim_val create_string_ : int -> string = 1 "create_string";
         prim_val set_nth_char_  : string -> int -> char -> unit
                                                 = 3 "set_nth_char"
       in
+        open_after_loading := 
+            (modeOfSig sign = TOPDECmode andalso (not already_loaded));
         if #cu_sig_stamp tables <> getOption (!(#uStamp sign)) then
            raise Fail ("load: compiled body of unit "^uname^
                        " is incompatible with its compiled signature")
@@ -85,10 +88,13 @@ fun tryEvalLoad name =
     (* Initialize the unit.                                               *)
     (* In case this fails, remove it from the unit and signature tables:  *)
     val res = 
-	(do_code false (!code) 0 (!block_len))
-	handle x => (Hasht.remove (!currentSigTable) uname;
-		     Hasht.remove (!watchDog) uname;
-		     raise x)
+	(do_code false (!code) 0 (!block_len);
+	 if !open_after_loading then
+	     execToplevelOpen nilLocation uname 
+	 else ())
+	 handle x => (Hasht.remove (!currentSigTable) uname;
+		      Hasht.remove (!watchDog) uname;
+		      raise x)
   in () end;
 
 fun evalLoad s =
@@ -208,26 +214,28 @@ fun evalUse filename =
 
 (* Compile a file *)
 
-fun tryEvalCompile s =
+fun tryEvalCompile mode context s =
   protect_current_input (fn () => protectCurrentUnit (fn () =>
     if Filename.check_suffix s ".sig" then
       let val filename = Filename.chop_suffix s ".sig" in
-        compileSignature
+        compileSignature context
           (normalizedUnitName (Filename.basename filename))
+	  mode
           filename
       end
     else if Filename.check_suffix s ".sml" then
       let val filename = Filename.chop_suffix s ".sml" in
-        compileUnitBody
+        compileUnitBody context
           (normalizedUnitName (Filename.basename filename))
+          mode						      
           filename
       end
     else
       raise Fail "compile: unknown file name extension"))
 ;
 
-fun evalCompile s =
-  tryEvalCompile s
+fun evalCompile mode context s =
+  tryEvalCompile mode context s
   handle
        Interrupt     => raise Fail "compile: interrupted by the user"
      | Out_of_memory => raise Fail "compile: out of memory"
@@ -248,6 +256,8 @@ val smltop_con_basis =
   ("loadOne",{ qualid={qual="Meta", id=["loadOne"]},   info=VARname REGULARo}),
   ("loaded", { qualid={qual="Meta", id=["loaded"]},    info=VARname REGULARo}),
   ("compile",{ qualid={qual="Meta", id=["compile"]},   info=VARname REGULARo}),
+  ("compileStructure",{ qualid={qual="Meta", id=["compileStructure"]},   info=VARname REGULARo}),
+  ("compileToplevel",{ qualid={qual="Meta", id=["compileToplevel"]},   info=VARname REGULARo}),
   ("verbose",{ qualid={qual="Meta", id=["verbose"]},   info=VARname REGULARo}),
   ("quietdec",{ qualid={qual="Meta", id=["quietdec"]}, info=VARname REGULARo}),
   ("loadPath",{ qualid={qual="Meta", id=["loadPath"]}, info=VARname REGULARo}),
@@ -275,6 +285,12 @@ val smltop_VE =
    ("loaded",      trivial_scheme(type_arrow type_unit 
 				             (type_list type_string))),
    ("compile",     trivial_scheme(type_arrow type_string type_unit)),
+   ("compileStructure",trivial_scheme(type_arrow (type_list type_string)
+				                (type_arrow type_string 
+						            type_unit))),
+   ("compileToplevel",trivial_scheme(type_arrow (type_list type_string)
+				                (type_arrow type_string 
+						            type_unit))),
    ("verbose",     trivial_scheme(type_ref type_bool)),
    ("quietdec",    trivial_scheme(type_ref type_bool)),
    ("loadPath",    trivial_scheme(type_ref (type_list type_string))),
@@ -288,7 +304,7 @@ val smltop_VE =
    ("installPP",    sc_bogus)  
 ];
 
-val unit_smltop = newSig "Meta";
+val unit_smltop = newSig "Meta" "Meta" STRmode;
 
 val () =
     app
@@ -307,7 +323,9 @@ fun resetSMLTopDynEnv() =
     ("loadOne",     repr evalLoad),
     ("loaded",      repr evalLoaded),
     ("load",        repr smartEvalLoad),
-    ("compile",     repr evalCompile),
+    ("compile",     repr (evalCompile STRmode [])),
+    ("compileStructure", repr (evalCompile STRmode)),
+    ("compileToplevel", repr (evalCompile TOPDECmode)),
     ("verbose",     repr verbose),
     ("quietdec",    repr Exec_phr.quietdec),
     ("loadPath",    repr Mixture.load_path),

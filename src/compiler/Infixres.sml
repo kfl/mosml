@@ -393,7 +393,9 @@ and resolveFunBindOp iBas (FUNBINDfunbind(funid,modexp)) =
        resolveExpOp iBas exp)
 and resolveSigExpOp iBas (_,sigexp) =
   case sigexp of
-    SPECsigexp spec => resolveSpecOp iBas spec
+    SPECsigexp spec => 
+	(resolveSpecOp iBas spec;
+	 ())
   | SIGIDsigexp _ => ()
   | WHEREsigexp (sigexp, tyvarseq, longtycon, ty) =>
            (resolveSigExpOp iBas sigexp; resolveTyOp iBas ty)
@@ -404,29 +406,62 @@ and resolveSigExpOp iBas (_,sigexp) =
 and resolveSpecOp (iBas : InfixBasis) (spec as (loc, spec')) =
   case spec' of
     VALspec (tvs, vds) => 
-	app (fn (ii,ty) => resolveTyOp iBas ty) vds
+     (app (fn (ii,ty) => resolveTyOp iBas ty) vds;
+      NILenv)
   | PRIM_VALspec (tvs,pvbs) => 
-    app (fn (idinfo,ty,i,s) => resolveTyOp iBas ty) pvbs
-  | TYPEDESCspec _ => ()
-  | TYPEspec tbds => app (resolveTypBindOp iBas) tbds
-  | DATATYPEspec (dbds,SOME tbd) => (app (resolveDatBindOp iBas) dbds; app (resolveTypBindOp iBas) tbd)
-  | DATATYPEspec (dbds,NONE) => app (resolveDatBindOp iBas) dbds
+     (app (fn (idinfo,ty,i,s) => resolveTyOp iBas ty) pvbs;
+      NILenv)
+  | TYPEDESCspec _ => 
+      NILenv
+  | TYPEspec tbds => 
+      (app (resolveTypBindOp iBas) tbds;
+       NILenv)
+  | DATATYPEspec (dbds,SOME tbd) => 
+      (app (resolveDatBindOp iBas) dbds;
+       app (resolveTypBindOp iBas) tbd;
+       NILenv)
+  | DATATYPEspec (dbds,NONE) => 
+      (app (resolveDatBindOp iBas) dbds;
+       NILenv)
   | DATATYPErepspec (tyvarseq, tycon, tyvarseq',tyconpath) =>
-      resolveTyConPathOp iBas tyconpath
-  | EXCEPTIONspec eds => app (resolveExDescOp iBas) eds
+      (resolveTyConPathOp iBas tyconpath;
+       NILenv)
+  | EXCEPTIONspec eds => 
+      (app (resolveExDescOp iBas) eds;
+       NILenv)
   | LOCALspec(spec1, spec2) =>
       (resolveSpecOp iBas spec1;
-       resolveSpecOp iBas spec2)
-  | OPENspec _ => ()
-  | EMPTYspec => ()
+       resolveSpecOp iBas spec2;
+       NILenv)
+  | OPENspec _ => 
+       NILenv
+  | EMPTYspec => 
+       NILenv
   | SEQspec(spec1, spec2) =>
       (resolveSpecOp iBas spec1;
-       resolveSpecOp iBas spec2)
-  | INCLUDEspec sigexp => resolveSigExpOp iBas sigexp
-  | STRUCTUREspec moddescs => app (resolveModDescOp iBas) moddescs
-  | FUNCTORspec fundescs => app (resolveFunDescOp iBas) fundescs
-  | SHARINGTYPEspec (spec, longtycons) => resolveSpecOp iBas spec
-  | SHARINGspec (spec, longmodids) => resolveSpecOp iBas spec
+       resolveSpecOp iBas spec2;
+       NILenv)
+  | INCLUDEspec sigexp => 
+      (resolveSigExpOp iBas sigexp;
+       NILenv)
+  | STRUCTUREspec moddescs => 
+      (app (resolveModDescOp iBas) moddescs;
+       NILenv)
+  | FUNCTORspec fundescs => 
+      (app (resolveFunDescOp iBas) fundescs;
+       NILenv)
+  | SHARINGTYPEspec (spec, longtycons) => 
+      (resolveSpecOp iBas spec;
+       NILenv)
+  | SHARINGspec (spec, longmodids) => 
+      (resolveSpecOp iBas spec;
+       NILenv)
+  | FIXITYspec(status, ids) =>
+      (checkInfixIds loc ids;
+       (foldL (fn id => fn env => bindInEnv env id status) NILenv ids))
+  | SIGNATUREspec sigdescs =>
+      (app (resolveSigBindOp iBas) sigdescs;
+       NILenv)
 and resolveModDescOp iBas (MODDESCmoddesc(modid,sigexp)) =
        resolveSigExpOp iBas sigexp
 and resolveFunDescOp iBas (FUNDESCfundesc(funid,sigexp)) =
@@ -444,9 +479,14 @@ and resolveConBindOp iBas (ConBind (ii, NONE)) = ()
 
 (* --- resolveToplevelSpec --- *)
 
+fun resolveToplevelSigExp sigexp =
+  let val () = resolveSigExpOp (mkGlobalInfixBasis()) sigexp
+  in sigexp end
+;
+
 fun resolveToplevelSpec spec =
-  let val () = resolveSpecOp (mkGlobalInfixBasis()) spec
-  in spec end
+  let val iBas' = resolveSpecOp (mkGlobalInfixBasis()) spec
+  in (cleanEnv iBas', spec) end
 ;
 
 (* --- resolveToplevelDec --- *)

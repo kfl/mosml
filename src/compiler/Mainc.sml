@@ -3,18 +3,20 @@ open Types; (* cvr *)
 
 (* Compile a file *)
 
-fun compileFile s =
-  let val s = normalizedFileName s in
+fun compileFile (context,s,mode) =
+  let (* val s = normalizedFileName s *) in
     if Filename.check_suffix s ".sig" then
       let val filename = Filename.chop_suffix s ".sig" in
-        compileSignature
+        compileSignature context 
           (normalizedUnitName (Filename.basename filename))
+	  mode
           filename
       end
     else if Filename.check_suffix s ".sml" then
       let val filename = Filename.chop_suffix s ".sml" in
-        compileUnitBody
+        compileUnitBody context
           (normalizedUnitName (Filename.basename filename))
+	  mode
           filename
       end
     else
@@ -22,10 +24,42 @@ fun compileFile s =
   end
 ;
 
-val initialFiles = ref ([] : string list);
+val initialMode = ref (!currentMode);
+
+val initialContext = ref ([] : string list);
+
+val initialFiles = ref ([] : (string list * string * Mode) list);
 
 fun anonymous s =
-  initialFiles := (!initialFiles) @ [s]
+  let val s = normalizedFileName s in
+    if Filename.check_suffix s ".sig" then
+      let val filename = Filename.chop_suffix s ".sig" 
+      in
+	  (initialFiles := 
+	         (!initialFiles) @ 
+		 [(!initialContext,s,!initialMode)];
+	   initialContext := (!initialContext) @ [filename])
+      end
+    else if Filename.check_suffix s ".sml" then
+      let val filename = Filename.chop_suffix s ".sml" 
+      in
+	  (initialFiles := 
+	       (!initialFiles) @ 
+	       [(remove filename (!initialContext), 
+		 (* we remove filename to avoid a circular dependency on
+		    the .sig file, if any *)
+		 s,
+		 !initialMode)];
+	   initialContext := (!initialContext) @ [filename])
+      end
+    else if Filename.check_suffix s ".ui" then
+      let val filename = Filename.chop_suffix s ".ui" 
+      in
+	   initialContext := (!initialContext) @ [filename]
+      end (* cvr: this implies that the .ui file must be on the load path *)
+    else
+      raise (Fail "unknown file name extension")
+  end
 ;
 
 fun set_stdlib p =
@@ -89,6 +123,12 @@ fun someUnitSupport () =
 fun fullUnitSupport () =
   unitSupport := FULLunitsupport;
 
+fun topdec_mode () =
+  initialMode := TOPDECmode;
+
+fun str_mode () =
+  initialMode := STRmode;
+
 fun main () =
 (
   perv_set "default";
@@ -113,7 +153,9 @@ fun main () =
              ("-m",         Arg.String set_msgstyle),
              ("-units",  Arg.Unit fullUnitSupport),
              ("-nounits",  Arg.Unit noUnitSupport),
-             ("-warnunits",  Arg.Unit someUnitSupport)
+             ("-warnunits",  Arg.Unit someUnitSupport),
+             ("-structure",  Arg.Unit str_mode),
+             ("-toplevel",  Arg.Unit topdec_mode)
              ]
     anonymous;
   if !path_library <> "" then
@@ -159,3 +201,8 @@ handle
 ;
 
 val () = Printexc.f main ();
+
+
+
+
+

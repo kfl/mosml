@@ -12,7 +12,7 @@ val parseToplevelPhrase : Lexing.lexbuf -> Dec * bool;
 val cleanEnv : (''_a, 'b) Env -> (''_a * 'b) list;
 val reportFixityResult : string * InfixStatus -> unit;
 val verbose : bool ref;
-val compileSignature : string -> string -> unit;
-val compileUnitBody : string -> string -> unit;
+val compileSignature : (string list) -> string -> Mode -> string -> unit;
+val compileUnitBody : (string list) -> string -> Mode -> string -> unit;
 
 end;

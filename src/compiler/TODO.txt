@@ -1,3 +1,67 @@
+restore verbose mode
+match modes before compilation.
+warn on anonstruct and anonsigs
+mosmldep
+--------
+I haven't completed the new compilation model yet but I'm at the point where
+what I do will affect the command line arguments to mosml and  mosmlcmp,
+(as well as the top-level compilation functions).
+
+Basically, I'd like to change the command line arguments to mosmlcmp
+as follows.
+
+-str indicates compilation in structure mode for subsequent .sml and .sig files
+-topdec indicates compilaton in topdec mode for subsequent .sml and .sig files
+I guess -str should be the default or initial mode for backwards compatibility.
+
+foo.ui means add foo.ui (in the mode with which it was compiled) to the
+       compilation context of subsequent files
+
+foo.sig means compile foo.sig to foo.ui in the current compilation mode,
+       and add foo.ui to the compilation context for subsequent files.
+
+foo.sml means compile foo.sml to foo.uo in the current compilation mode,
+       (and foo.ui if no .sig file present)
+       and add foo.ui (if not already added),
+       to the current compilation context for subsequent files.
+
+eg.
+
+mosmlcmp -str A.ui B.sig B.sml -topdec C.ui D.sig D.sml -str E.sml
+
+This means that command line arguments are processed in sequence, building
+up a context. We need to be able to do this since topdec files can't be
+opened in .sig and .sml files, so there's no way to indicate dependency on 
+them. I'll keep the behaviour that a reference to a free structure identifier
+is implicitly resolved by searching the load path for a .ui file (that
+should have been compiled in str mode.
+
+Is that ok with you guys?
+
+
+PS. I noticed a problem with the current compilation of .sml and .sig files:
+
+A.sig:
+
+structure A : A = struct ... end
+
+A.sml:
+
+structure A : A = struct ... end
+
+Currently, the signature for A isn't bound in struct .... end (that was
+ok for core level ...), and any reference to A in struct end will refer to some other signature.
+The signature A should be bound in struct end  if we want the meaning
+to be equivalent to the sequence of top-level declarations:
+
+signature A = sig ... end
+structure A : A = struct ... end
+
+------------
+
+
+
+
 o add compiler/test/okasaki to cvs 
 o norming rec str should probably go all the way
 o add compiler/test/recmod.sml to cvs
@@ -457,4 +521,36 @@ Sharing (sigh)
 
 
 
+
+/* cvr: TODO delete
+KWSpec :
+    VAL TyVarSeq ValDesc                 { mkLoc(VALspec ($2,$3)) }
+  | PRIM_VAL PrimValBind        { mkLoc(PRIM_VALspec ([],$2)) } 
+  | PRIM_VAL TyVarSeq1 PrimValBind
+	                        { mkLoc(PRIM_VALspec ($2,$3)) } 
+  | TYPE TypBind                { mkLoc(TYPEspec $2) }
+  | TYPE TypDesc                { mkLoc(TYPEDESCspec(FALSEequ, $2)) }
+  | EQTYPE TypDesc              { mkLoc(TYPEDESCspec(TRUEequ, $2)) }
+  | PRIM_REFTYPE TypDesc        { mkLoc(TYPEDESCspec(REFequ, $2)) }
+  | DATATYPE DatBind WithType_opt
+                                { mkLoc(DATATYPEspec($2,$3)) }
+  | DATATYPE TyVarSeq TyCon EQUALS DATATYPE TyVarSeq TyConPath
+                                { mkLoc(DATATYPErepspec($2,$3,$6,$7))}
+  | EXCEPTION ExDesc            { mkLoc(EXCEPTIONspec $2) }
+  | LOCAL Spec IN Spec END      { mkLoc(LOCALspec($2,$4)) }
+  | OPEN LongModIdInfo_seq1         { mkLoc(OPENspec $2) }
+  | STRUCTURE ModDesc_seq1      { mkLoc(STRUCTUREspec $2)}
+  | FUNCTOR FunDesc_seq1         { mkLoc(FUNCTORspec $2)}
+  | INCLUDE SigExp_seq  { mkLoc(foldR (fn sigexp => fn spec => (SEQspec(mkLoc(INCLUDEspec sigexp),mkLoc(spec))))
+	                                     (EMPTYspec)
+                                             ($2))} 
+  | INFIX DIGIT_opt EqIdent_seq1
+                                { mkLoc(FIXITYspec(INFIXst $2, $3)) }
+  | INFIXR DIGIT_opt EqIdent_seq1
+                                { mkLoc(FIXITYspec(INFIXRst $2, $3)) }
+  | NONFIX EqIdent_seq1
+                                { mkLoc(FIXITYspec(NONFIXst, $2)) }
+  | SIGNATURE SigBind_seq1         { mkLoc(SIGNATUREspec $2)}
+;
+*/
 

@@ -91,6 +91,7 @@ and Mod =
 and Str = STRstr of ModEnv * 
                     (string, (TyName list * Mod * ExMod) global) Env *
 		    (*cvr:ugly, but FunEnv needs to be inlined because of the reference to TyName (defined below) *)
+		    SigEnv *
 		    TyEnv * 
 		    VarEnv
     |     SEQstr of Str * Str                      (* hack for matching algorithm *)
@@ -101,6 +102,7 @@ withtype ModEnv = (string, RecStr global) Env
 and TyStr = TyFun * ConEnv
 and TyEnv = (string, (TyFun * ConEnv)) Env
 and VarEnv = (string,(TypeScheme * ConStatusDesc) global) Env    
+and SigEnv = (string, Sig global) Env
 and TyName = 
 {
   tnKind: Kind,
