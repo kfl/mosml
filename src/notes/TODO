@@ -5,7 +5,7 @@
 
 * Avoid shift/reduce and reduce/reduce conflicts in the parser.
 
-* Documentation: 
++ Documentation: 
 
   - manual
   - syntax
@@ -255,7 +255,7 @@ value input_nonblocking(value channel, value buff, value start, value length) /*
 
 + Parsing.sig
 
-* mosmllib/README
++ mosmllib/README
 
 + TextIO.scanStream -- get rid of cs? -- no: cannot
 
@@ -450,11 +450,10 @@ sort tokens in grammar specifications.
 (5) Fix Mysql, Postgres, and their C code.
 (6) Fix dynlibs/interface
 
-* Change runtime bytecode version to 0.9e and tag to ML09
-
 * Check that it compiles with Solaris, HP-UX, Linux/Alpha, ...
 
-* Change version to 2.00 (June 2000)
++ Change version to 2.00 (June 2000)
 
 + Make -quietdec more quiet; drop the welcome greeting.
 
+* New SML Basis Library changes

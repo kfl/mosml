@@ -31,7 +31,7 @@ manual.dvi: manual.tex manual.bbl mosml.sty
 index.tex texsigsigs.tex:
 	cd helpsigs; make all base
 
-mosmlref.dvi: mosmlref.tex index.tex mosml.sty
+mosmlref.dvi: mosmlref.tex mosml.sty
 	${LATEX} mosmlref
 	${LATEX} mosmlref
 
@@ -49,6 +49,7 @@ install:
 	cp mosmlref.pdf ../../doc
 	cp manual.pdf ../../doc
 	cp mosmllib.pdf ../../doc
+	cp mosmllib2up.pdf ../../doc
 	cp index.html ../../doc/mosmllib
 	cd helpsigs; make install
 

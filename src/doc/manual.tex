@@ -10,16 +10,23 @@
 \usepackage{geometry}
 \usepackage[T1]{fontenc}
 
-%\pdfcompresslevel=9
+% True if running pdflatex
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+    \pdffalse
+\else
+    \pdftrue
+\fi
 
 % hyperref should be the *last* package loaded
-
-% This is fine for interactive color output devices (i.e. computer displays):
-%\usepackage[pdfpagemode=None,colorlinks,urlcolor=blue]{hyperref} 
-
-% This is for passive black and white output devices (i.e. printers):
-% -- the colors are awful when printed in black and white 
-\usepackage[pdfpagemode=None,colorlinks=false]{hyperref}
+\ifpdf
+   \pdfcompresslevel=9
+   % For interactive color output devices (i.e. computer displays):
+   \usepackage[pdfpagemode=None,colorlinks,urlcolor=blue]{hyperref}
+\else
+   % For passive black and white output devices (i.e. printers):
+   \usepackage{hyperref}
+\fi
 
 \begin{document}
 
@@ -2171,11 +2178,11 @@ ML code entered interactively, as well as the functions
 and \texttt{use}.  The compilation mode can be set by the functions
 \texttt{conservative}, \texttt{liberal}, and \texttt{orthodox}.
 
-The extensions described here are based, in part, on 
-(\cite{Russo:TypesForModules,Russo:FirstClassStructures});
-a formal definition of the extensions,
-derived from \cite{Milner:1990:TheDefinition, Milner:1997:TheDefinition},
-is available on request.
+The extensions described here are based in part on
+\cite{Russo:TypesForModules,Russo:FirstClassStructures}; a formal
+definition of the extensions, derived from
+\cite{Milner:1990:TheDefinition, Milner:1997:TheDefinition}, is
+available on request.
 
 
 

@@ -4,8 +4,9 @@
   mosml/              README, install.txt
        bin/           mosml, mosmlc, mosmllex, mosmlyac, camlrunm
        copyrght/      copyright notices
-       doc/           manual.pdf, mosmlref.pdf, recomp.txt
-       examples/      a few pedagogical examples
+       doc/           manual.pdf, mosmlref.pdf, mosmllib.pdf, recomp.txt
+       examples/      some pedagogical examples
+       include/       runtime .h header files for dynamic libraries
        lib/           bytecode files and compiled libraries and signatures
        tools/         mosmldep, cutdeps, Makefile.stub
        utility/       emacs mode for Moscow ML
@@ -16,10 +17,13 @@
   mosml/src/ 
            compiler/  sources for mosmlcmp, mosmllnk, mosmltop
            config/    configuration for the runtime
+	   doc/	      documentation source files
+              helpsigs/ auto-generation of documentation from .sig files 
            dynlibs/   dynamically loadable libraries: Gdbm, Regex, ...
            launch/    scripts to start mosml and mosmlc
            lex/       mosmllex sources
            mosmllib/  library sources
+	   mosmlpm/   recompilation (project) manager
            mosmlyac/  yacc sources (C)
            runtime/   sources for the modified Caml Light runtime system
            test/      test cases for mosml

@@ -43,11 +43,4 @@ current:
 
 clean:
 	rm -f result
-
-
-
-
-
-
-
-
+	rm -f *.ui *.uo

@@ -2,7 +2,7 @@
 
 MOSMLHOME=${HOME}/mosml
 MOSMLTOOLS=camlrunm $(MOSMLHOME)/tools
-MOSMLC=mosmlc -c
+MOSMLC=mosmlc -c -liberal
 MOSMLL=mosmlc
 MOSMLLEX=mosmllex
 MOSMLYACC=mosmlyac

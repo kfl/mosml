@@ -74,6 +74,10 @@ clean:
 	cd ../examples; make clean	
 	cd dynlibs; make clean
 	rm -f camlrunm$(EXE)
+	cd doc; make clean
+
+dynlibs:
+	cd dynlibs; make
 
 # Rebuild the dependencies in all Makefiles.
 # You can't do this unless you have a compiled runtime system.

@@ -81,9 +81,12 @@ Moscow ML owes much to:
     * the ML Kit by Lars Birkedal, Nick Rothwell, Mads Tofte and David Turner
       (Copenhagen University, Denmark, and Edinburgh University, Scotland);
     * inspiration from the SML/NJ compiler developed at Princeton
-      University and AT&T Bell Laboratories, New Jersey, USA; and
+      University and AT&T Bell Laboratories, New Jersey, USA; 
     * the good work by Doug Currie, Flavors Technology, USA, on the
-      MacOS port and many improvements.
+      MacOS port and many improvements; and
+    * feedback, contributions, and useful suggestions, in particular
+      from Ken Friis Larsen, but also from Jonas Barklund, Mike Gordon,
+      Michael Norrish, Konrad Slind, and numerous other people.
 
 COPYRIGHT NOTICE FOR MOSCOW ML
 
@@ -124,8 +127,6 @@ AVAILABILITY
         ftp://ftp.dina.kvl.dk/pub/mosml/mos20bin.zip
     * The Macintosh/MacOS (68k and PPC) executables are in
         ftp://ftp.dina.kvl.dk/pub/mosml/mac-mos20bin.sea.hqx
-    * The DOS source files (no documentation) are in
-        ftp://ftp.dina.kvl.dk/pub/mosml/mos20src.zip
     * The Unix source files (no documentation) are in
         ftp://ftp.dina.kvl.dk/pub/mosml/mos20src.tar.gz
     * The MacOS modified source files (relative to Unix) are in

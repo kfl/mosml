@@ -31,8 +31,24 @@
 \newcommand{\op}{{\tt op}}
 \newcommand{\longmodid}{{\it longmodid}}
 
+% True if running pdflatex
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+    \pdffalse
+\else
+    \pdftrue
+\fi
+
 % hyperref should be the *last* package loaded
-\usepackage[pdfpagemode=None,colorlinks,urlcolor=blue]{hyperref}
+\ifpdf
+   \pdfcompresslevel=9
+   % For interactive color output devices (i.e. computer displays):
+   \usepackage[pdfpagemode=None,colorlinks,urlcolor=blue]{hyperref}
+\else
+   % For passive black and white output devices (i.e. printers):
+   \usepackage{hyperref}
+\fi
+
 \begin{document}
 
 \begin{center}
