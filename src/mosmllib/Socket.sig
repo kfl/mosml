@@ -152,7 +152,7 @@ val recvArrFrom' : ('a, dgram) sock * Word8Array.array buf * in_flags
    [listen (sock, queuelen)] enables the passive stream socket sock to
    accept incoming connections.  The parameter queuelen specifies the
    maximal number of pending connections.  Further connections from
-   clients may be refised when this limit is reached.
+   clients may be refused when this limit is reached.
 
    [close sock] closes the socket.
 

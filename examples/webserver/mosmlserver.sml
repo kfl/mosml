@@ -8,7 +8,7 @@
 *)
 
 val server  = "Moscow ML HTTP Server version 0.6 of 1999-06-28"
-val myaddr  = "130.225.40.253"
+val myaddr  = "127.0.0.1"
 val port    = 8080 
 val docroot = "/home/sestoft/.public_html"
 val admin   = "sestoft@dina.kvl.dk"
