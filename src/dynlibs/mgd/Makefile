@@ -10,7 +10,7 @@ GDDIR=${HOME}/c/gd-1.7.3
 include ../../Makefile.inc
 
 OPTS=-fno-defer-pop
-CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I../../runtime -I ${GDDIR}
+CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(INCDIR) -I ${GDDIR}
 
 MOSMLTOOLS=camlrunm $(MOSMLHOME)/tools
 MOSMLC=mosmlc -c
@@ -24,13 +24,13 @@ mgd.o: mgd.c
 	$(CC) $(CFLAGS) -c -o mgd.o mgd.c
 
 libmgd.so: mgd.o
-	$(DYNLD) -o libmgd.so mgd.o ${GDDIR}/libgd.a -lpng -lz
+	$(DYNLD) -o libmgd.so mgd.o ${GDDIR}/libgd.a -L/usr/X11R6/lib -lpng -lz
 
 test: Graphs.uo
 	mosml testgdimage.sml
 
 install:
-	cp libmgd.so $(BINDIR)
+	cp libmgd.so $(LIBDIR)
 
 clean:
 	rm -f *.o

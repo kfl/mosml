@@ -1,10 +1,10 @@
-# Makefile for Moscow ML 1.43 dynamic libraries: the interface example
-
-OPTS=-fno-defer-pop
-CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I../../runtime
-BASELIBS=-lm -ldl
+# Makefile for Moscow ML dynamic libraries: the interface example
 
 include ../../Makefile.inc
+
+OPTS=-fno-defer-pop
+CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(INCDIR)
+BASELIBS=-lm -ldl
 
 all: libcside.so
 

@@ -76,3 +76,7 @@
 * Inexhaustive and redundant excon matches -- why not reported correctly?
 
 * Add Odbc interface til unixODBC.
+
+* .h files
+
++ move .so files to lib

@@ -6,7 +6,7 @@
 include ../../Makefile.inc
 
 OPTS=-fno-defer-pop
-CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I../../runtime
+CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(INCDIR)
 
 MOSMLTOOLS=camlrunm $(MOSMLHOME)/tools
 MOSMLC=mosmlc -c
@@ -24,7 +24,7 @@ libmregex.so: mregex.o
 	$(DYNLD) -o libmregex.so regex-0.12/regex.o mregex.o 
 
 install:
-	cp libmregex.so $(BINDIR)
+	cp libmregex.so $(LIBDIR)
 
 test:
 	mosml testregex.sml

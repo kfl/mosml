@@ -7,15 +7,13 @@
 
 MYSQLLIBDIR=/usr/lib/mysql
 MYSQLINCDIR=/usr/include/mysql
-include ../../Makefile.inc
-
 #MYSQLLIBDIR=/usr/local/lib/mysql
 #MYSQLINCDIR=/usr/local/include/mysql
-#include /usr/local/mosml/src/Makefile.inc
+
+include ../../Makefile.inc
 
 OPTS=-fno-defer-pop
-CFLAGS= -Dunix -O2 $(OPTS) -I ../../runtime -I ${MYSQLINCDIR}
-# CFLAGS= -Dunix -O2 $(OPTS) -I /usr/local/mosml/src/runtime -I ${MYSQLINCDIR}
+CFLAGS= -Dunix -O2 $(OPTS) -I$(INCDIR) -I ${MYSQLINCDIR}
 
 MOSMLTOOLS=camlrunm $(MOSMLHOME)/tools
 MOSMLC=mosmlc -c
@@ -33,7 +31,7 @@ libmmysql.so: mmysql.o
 #	$(DYNLD) -o libmmysql.so mmysql.o -L${MYSQLLIBDIR} -lmysqlclient
 
 install:
-	cp libmmysql.so $(BINDIR)
+	cp libmmysql.so $(LIBDIR)
 
 test:
 	mosml testmysql.sml

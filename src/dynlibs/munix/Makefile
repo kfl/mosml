@@ -5,7 +5,7 @@
 include ../../Makefile.inc
 
 OPTS=-fno-defer-pop
-CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I../../runtime
+CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(INCDIR)
 
 MOSMLTOOLS=camlrunm $(MOSMLHOME)/tools
 MOSMLC=mosmlc -c
@@ -22,7 +22,7 @@ libmunix.so: munix.o
 	$(DYNLD) -o libmunix.so munix.o 
 
 install:
-	cp libmunix.so $(BINDIR)
+	cp libmunix.so $(LIBDIR)
 
 test:
 	gcc -O2 -o sieve sieve.c

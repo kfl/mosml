@@ -10,7 +10,7 @@ GMPDIR=${HOME}/c/gmp-2.0.2
 include ../../Makefile.inc
 
 OPTS=-fno-defer-pop
-CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I../../runtime -I ${GMPDIR}
+CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(INCDIR) -I ${GMPDIR}
 
 MOSMLTOOLS=camlrunm $(MOSMLHOME)/tools
 MOSMLC=mosmlc -c
@@ -21,7 +21,7 @@ MOSMLYACC=mosmlyac
 all: libmgmp.so IntInf.uo
 
 install:
-	cp libmgmp.so $(BINDIR)
+	cp libmgmp.so $(LIBDIR)
 
 intinf.o: intinf.c
 	$(CC) $(CFLAGS) -c -o intinf.o intinf.c

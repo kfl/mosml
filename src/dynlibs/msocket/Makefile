@@ -6,7 +6,7 @@
 include ../../Makefile.inc
 
 OPTS=-fno-defer-pop
-CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I../../runtime
+CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(INCDIR)
 
 MOSMLTOOLS=camlrunm $(MOSMLHOME)/tools
 MOSMLC=mosmlc -c
@@ -25,7 +25,7 @@ libmsocket.so: msocket.o
 #	$(DYNLD) -o libmsocket.so -lsocket msocket.o 
 
 install:
-	cp libmsocket.so $(BINDIR)
+	cp libmsocket.so $(LIBDIR)
 
 test:
 	mosml testsocket.sml

@@ -98,9 +98,11 @@ SHELL=/bin/sh
 
 # BINDIR contains true executable files, such as scripts
 # LIBDIR contains bytecode files (such as mosmlcmp and library units)
+# INCDIR contains the runtime system header files (for compiling dynlibs)
 
 BINDIR=${MOSMLHOME}/bin
 LIBDIR=${MOSMLHOME}/lib
+INCDIR=${MOSMLHOME}/include
 TOOLDIR=${MOSMLHOME}/tools
 # LIBDIR=${MOSMLHOME}/lib/moscow_ml
 # TOOLDIR=${MOSMLHOME}/libexec/moscow_ml

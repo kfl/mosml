@@ -47,14 +47,17 @@ again:
 install:
 	test -d $(BINDIR) || mkdir -p $(BINDIR)
 	test -d $(LIBDIR) || mkdir -p $(LIBDIR)
+	test -d $(INCDIR) || mkdir -p $(INCDIR)
 	test -d $(TOOLDIR) || mkdir -p $(TOOLDIR)
-	cd runtime; make install BINDIR=$(BINDIR)
+	cd runtime; make install
+	cd config; make install
 	cd launch; make all install
-	cd mosmlyac; make install BINDIR=$(BINDIR)
+	cd mosmlyac; make install
 	cd mosmllib; make install
 	cd compiler; make install
 	cd toolssrc; make install
 	cd lex; make install
+	(cd ..; ln -fs include config)
 
 # Remove all generated files
 clean:

@@ -28,9 +28,6 @@ You must have the following components:
         MySQL           Can be found many places on the Internet, such as
                         http://www.mysql.com
 
-        Mysql           The Moscow ML library interface to the MySQL
-                        database server.
-
         Dynlib          The Moscow ML foreign (C) function interface.
                         Supported for Linux, Solaris, MS Win32, MacOS,
 	                Digital Unix, and HP-UX in mosml 1.44
@@ -47,15 +44,14 @@ include files.
         make
 
 3. Install libmmysql.so in the directory determined by BINDIR in
-src/Makefile.inc:
+   src/Makefile.inc:
 
         make install
 
 4. Set your LD_LIBRARY_PATH to point to the BINDIR directory.
 
         For tcsh: setenv LD_LIBRARY_PATH $BINDIR
-        For bash: LD_LIBRARY_PATH=$BINDIR
-                  export LD_LIBRARY_PATH
+        For bash: export LD_LIBRARY_PATH=$BINDIR
 
 5. Test the library:
 

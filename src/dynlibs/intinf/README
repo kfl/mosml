@@ -30,16 +30,33 @@ You must have the following components:
 
         Dynlib          The Moscow ML foreign (C) function interface.
                         Supported for Linux, Solaris, MS Win32, MacOS,
-	                Digital Unix, and HP-UX in mosml 1.44
+	                Digital Unix, and HP-UX.
 
 The runtime system must be compiled with support for dynamic linking
 of foreign functions (edit mosml/src/Makefile.inc to achieve this).
 
 To compile, test, and use IntInf:
 
+1. Edit the intinf/Makefile to make GMPDIR point to the directory in
+   which you installed GMP.
+
+2. Compile intinf.c:
+
         make
+
+3. Install libmgmp.so in the directory determined by LIBDIR in 
+   src/Makefile.inc:
+
+        make install
+
+4. Set your LD_LIBRARY_PATH to point to the LIBDIR directory.
+
+        For tcsh: setenv LD_LIBRARY_PATH $LIBDIR
+        For bash: export LD_LIBRARY_PATH=$LIBDIR
+
+5. Try the library:
+
         make test
-        mosml fac.sml
 
 -----------------------------------------------------------------------
 File mosml/src/dynlibs/intinf/README * sestoft@dina.kvl.dk * 1998-04-17

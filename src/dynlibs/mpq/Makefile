@@ -8,14 +8,15 @@
 
 PGSQLLIBDIR=/usr/lib
 PGSQLINCDIR=/usr/include/pgsql
-#PGSQLLIBDIR=/usr/local/pgsql/lib
-#PGSQLINCDIR=/usr/local/pgsql/include
+PGSQLLIBDIR=/usr/local/pgsql/lib
+PGSQLINCDIR=/usr/local/pgsql/include
 #PGSQLLIBDIR=/usr/lib/pgsql/lib
 #PGSQLINCDIR=/usr/lib/pgsql/include
+
 include ../../Makefile.inc
 
 OPTS=-fno-defer-pop
-CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I../../runtime -I ${PGSQLINCDIR}
+CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(INCDIR) -I ${PGSQLINCDIR}
 
 MOSMLTOOLS=camlrunm $(MOSMLHOME)/tools
 MOSMLC=mosmlc -c
@@ -34,7 +35,7 @@ libmpq.so: mpq.o
 #	$(DYNLD) -o libmpq.so mpq.o ${PGSQLLIBDIR}/libpq.a
 
 install:
-	cp libmpq.so $(BINDIR)
+	cp libmpq.so $(LIBDIR)
 
 test:
 	mosml testpsql.sml

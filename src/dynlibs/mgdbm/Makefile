@@ -1,4 +1,4 @@
-# Makefile for Moscow ML 1.43 dynamically loadable gdbm library
+# Makefile for Moscow ML dynamically loadable gdbm library
 
 # The runtime system must be compiled with support for dynamic libraries.
 # The GNU GDBM persistent hashtables must be installed.
@@ -10,16 +10,16 @@ GDBMINCDIR=${HOME}/c/gdbm-1.7.3
 #GDBMLIBDIR=/usr/lib
 #GDBMINCDIR=/usr/include
 
-OPTS=-fno-defer-pop
-CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I../../runtime -I ${GDBMINCDIR}
-BASELIBS=-lm -ldl
-
 include ../../Makefile.inc
+
+OPTS=-fno-defer-pop
+CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(INCDIR) -I ${GDBMINCDIR}
+BASELIBS=-lm -ldl
 
 all: libmgdbm.so
 
 install:
-	cp libmgdbm.so $(BINDIR)
+	cp libmgdbm.so $(LIBDIR)
 
 mgdbm.o: mgdbm.c
 	$(CC) $(CFLAGS) -c -o mgdbm.o mgdbm.c 
