@@ -3,5 +3,5 @@ PARSER COMBINATORS
 
 The module Parsercomb implements Hutton/Paulson-style parser
 combinators for Moscow ML.  It is based on work by Fritz Henglein, Ken
-Larsen, and Peter Sestoft.  A version of this module will be included
-in the Moscow ML Library, once it has stabilized.
+Friis Larsen, and Peter Sestoft.  A version of this module will be
+included in the Moscow ML Library, once it has stabilized.
