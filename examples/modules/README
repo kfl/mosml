@@ -1,0 +1,46 @@
+The files in this directory illustrate various feature of
+the Moscow ML module language.
+
+To try out the example in file.sml simple type:
+
+mosml -liberal file.sml 
+
+or
+
+mosml file.sml
+
+to have mosml highlight (ie. warn about) any extensions that are used.
+
+
+array.sml        - implementing dynamically sized, functional arrays  
+                   using first-class modules 
+
+choice.sml       - conditional module declarations using first-class modules 
+
+collect.sml      - simple example illustrating the difference between
+                   generative and applicative functors and the motivation 
+                   for supporting both.
+
+matrix.sml       - implementing dynamically sized, functional matrices 
+                   using first-class modules (uses array.sml)
+
+bootstrap.sml    - implementing Chris Okasaki's "bootstrapped heaps"
+                   The example uses higher-order functors, applicative 
+                   functors and recursive structures and signatures
+                   to good effect.
+
+poly.sml         - implementing polynomials using higher-order functors 
+
+recursion.sml    - simple recursive structures and signatures 
+
+sieve.sml        - implementing the Sieve of Eratosthenes using 
+                   first-class structures
+
+
+
+
+
+
+
+
+
