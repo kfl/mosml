@@ -46,22 +46,23 @@ struct
   exception GETOUT  
 
   fun insert (set as (compare, tree, n), key, data) =
-      let fun ins LEAF = RED(key,data,LEAF,LEAF)
+      let val addone = ref true
+          fun ins LEAF = RED(key,data,LEAF,LEAF)
 	    | ins (BLACK(k,x,left,right)) =
               (case compare(key, k) of
                    LESS    => lbalance k x (ins left) right
                  | GREATER => rbalance k x left (ins right)
-                 | EQUAL   => BLACK(key, data, left, right))
+                 | EQUAL   => (addone := false; BLACK(key, data, left, right)))
 	    | ins (RED(k, x,left,right)) =
               (case compare(key, k) of
                    LESS    => RED(k, x, (ins left), right)
                  | GREATER => RED(k, x, left, (ins right))
-                 | EQUAL   => RED(key, data, left, right))
+                 | EQUAL   => (addone := false; RED(key, data, left, right)))
       in  ( compare
           , case ins tree of
-                RED(k, x, l, r) => BLACK(k, x, l, r)
-              | tree            => tree          
-          , n+1) end
+                RED x => BLACK x
+              | tree  => tree          
+          , if !addone then n+1 else n) end
 
   fun push LEAF stack = stack
     | push tree stack = tree :: stack
