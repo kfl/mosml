@@ -12,6 +12,8 @@ all:
 	$(MOSML) -P full < testty.sml >> result 2>&1
 	$(MOSML) -P full < typerr.sml >> result 2>&1
 	$(MOSML) -P full < recfail.sml >> result 2>&1
+
+diff:
 	diff result result.ok
 
 current:

@@ -3,6 +3,8 @@
 # with the supplied compiler and the supplied library
 all: links
 	mosml -P full test.sml > result 2>&1
+
+diff:
 	diff result result.ok
 
 # with the supplied compiler and the current library

@@ -18,9 +18,9 @@ EXTERN value alloc_shr (mlsize_t, tag_t);
 void adjust_gc_speed (mlsize_t, mlsize_t);
 EXTERN void modify (value *, value);
 EXTERN void initialize (value *, value);
-char * stat_alloc (asize_t);	             /* Size in bytes. */
-void stat_free (char *);
-char * stat_resize (char *, asize_t);     /* Size in bytes. */
+EXTERN char * stat_alloc (asize_t);	         /* Size in bytes. */
+EXTERN void stat_free (char *);
+EXTERN char * stat_resize (char *, asize_t);     /* Size in bytes. */
 
 
 #define Alloc_small(result, wosize, tag) {				      \
