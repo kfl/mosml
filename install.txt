@@ -36,7 +36,7 @@ INSTALLING MOSCOW ML (BINARIES ONLY) UNDER LINUX
     /usr/local/mosml/bin/camlrunm).
 
 (4*) If you intend to use libraries that use dynamic linking, such as
-    Gdbm, Mysql, Polygdbm, Postgres, Regex, or Socket, define 
+    Gdbm, Mysql, Polygdbm, Postgres, Regex, Socket, or Unix, define 
 
         export LD_LIBRARY_PATH=${HOME}/mosml/lib        (for bash)
         setenv LD_LIBRARY_PATH ${HOME}/mosml/lib        (for csh, tcsh)
@@ -115,7 +115,8 @@ systems, then you can install Moscow ML as follows:
      implementation is broken.
 
 (8) If you want to install libraries that use dynamic linking, note
-    point (4*) in the instructions above.  Furthermore, 
+    point (4*) in the binary installation instructions above.  
+    Furthermore, 
 
     - to install support for Gdbm and Polygdbm persistent
     hash tables, consult mosml/src/dynlibs/mgdbm/README

@@ -2,7 +2,6 @@
 
 include ../../Makefile.inc
 
-MOSMLHOME=${HOME}/mosml
 MOSMLTOOLS=camlrunm $(MOSMLHOME)/tools
 MOSMLC=mosmlc -c 
 MOSMLL=mosmlc

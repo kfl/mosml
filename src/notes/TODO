@@ -459,3 +459,29 @@ sort tokens in grammar specifications.
 * Size of .ui files: sharing?
 
 * Problem compiling on LinuxPPC
+
+2000-07-01:
+
+* There is no snprintf on HPUX (it is a GNU-libc-extension),
+  so I said in mosml.h
+
+#define snprintf(dest, n, format, args...) sprintf(dest, format , ##
+args)
+
+   (all on a single line, the space before the last comma is
+   necessary).
+   This works with gcc (var-arg macros are another GNU extension,
+   but in the compiler, which is what I have).
+   I don't know whether mosml.h is a good place to put this line,
+   but this file is just included by those *.c who use snprintf.
+   Maybe the config stuff should check for it's existence
+   (or even provide an implementation for people with crippled
+   libcs).
+
++  src/doc/helpsigs/Makefile redefines MOSMLHOME, overriding
+   a possibly different value from src/Makefile.inc.
+
++  install.txt says in (8) to look for dynlib stuff in (4),
+   but this is in (5). I think the upper items were renumbered
+   without incrementing the reference.
+   [Not a mistake, but unclarity]

@@ -16,7 +16,7 @@ include Makefile.inc
 # Build the entire system for the first time
 
 world:
-	cd config; sh autoconf gcc
+	cd config; sh autoconf $(CC)
 	cd runtime; make all
 	cp runtime/camlrunm$(EXE) .
 	cd mosmlyac; make all
