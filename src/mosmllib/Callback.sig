@@ -92,7 +92,7 @@ val app5    : cptr -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
 
 
    ACCESSING REGISTERED C VARIABLES AND FUNCTIONS FROM ML
-   -----------------------------------------------------
+   ------------------------------------------------------
 
    This example shows how to register the C function 
 

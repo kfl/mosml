@@ -14,7 +14,6 @@ val defaultBrowser : string -> unit
    [help s] provides on-line help on the topic indicated by string s.  
 
       help "lib";   gives an overview of the Moscow ML library.
-
       help "id";    provides help on identifier id (case-insensitive).
 
    If exactly one identifier in the library matches id (case-insensitive), 
