@@ -8,6 +8,7 @@
 #include <mlvalues.h>
 #include <fail.h>
 #include <alloc.h>
+#include <globals.h>
 
 /* Arbitrary-precision integers: interface to the GNU
    Multiple-Precision Library GMP.
@@ -199,7 +200,7 @@ value largeint_to_si(value src)
   signed long int tmp = mpz_get_si(Large_val(src)); 
   value res = Val_long(tmp);
   if (Long_val(res) != tmp)
-    { mlraise(Atom(SMLEXN_OVF)); }
+    { raiseprimitive0(SYS__EXN_OVERFLOW); }
   return res;
 }
 
