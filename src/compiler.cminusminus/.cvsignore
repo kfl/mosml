@@ -1,2 +1,8 @@
-Opcodes.sml
 *.uo *.ui
+Config.sml
+Filename.sml
+Lexer.sml
+Opcodes.sml
+Parser.sig
+Parser.sml
+mosmlcmmc
