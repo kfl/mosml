@@ -1,3 +1,30 @@
+mosml doesn't allow derived form
+functor F()...()= ()
+for more than one argument
+------
+signature T = sig infix foo; infix foo end;
+mosml doesn't reject duplicate fixity specs in a sequential spec
+-----
+the error messages for checkNoRebindings[ModEnv|SigEnv] are incorrect:
+! signature T = sig signature S = sig end signature S = sig end end;
+!               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Illegal rebinding of functor identifier S: the same identifier is specified twice in the body of this signature
+----
+mosml doesn't complain about 
+structure Y = ();
+being non-SML,but should.
+---------
+checkin Parser.grm, it fixes this bug:
+mosml allows
+include sigexp1 ... sigexp_n 
+but this causes a shift/reduce conflict.
+mosml should only allow
+include sigexp
+and 
+include sigid1 ... sigid_n
+
+signature S = sig include S functor X:F end;
+
 ---------
 The problem with sharing constraints and abstractions.
 
