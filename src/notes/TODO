@@ -30,9 +30,10 @@
 		      )
   Functor GrammarUtils is declared in k32.sml.
  
-  Problem: open of 
+  Problem: open of local decs.
 
-+ Back.sml -- array size 65000 -> 4000
++ Back.sml -- array size 65000 -> 4000 (used only for the locals of 
+  the init code)
 
 + Size of mosmllex and mosmllnk: avoid linking in Types
 
@@ -43,3 +44,15 @@
   prim_val exnMessage : exn -> string = 1 "sml_exnmessage";
 
 * Add documentation to General.fke
+
++ Implement sharing of literals (strings, reals, etc) as globals cf
+  the hol98 and cholera problems: Updated Patch and Reloc and Code_dec
+  and Link.
+
++ Cleanup of the dynlibs; moved stable structures to src/mosmllib
+
+* Fix mgd dynlib to use new GD package and PNG format.
+
++ Fix mosmllib/test/Makefile to create sym- and hardlinks as needed
+
+* Fix errormessage in compiler/Back
