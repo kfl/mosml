@@ -795,7 +795,7 @@ compilation units; see Section~\ref{sec-compilation-units}.
 
 \newpage
 
-\section{How to read inferred types and signatures}
+\section{Understanding inferred types and signatures}
 
 When you enter a declaration in the interactive toplevel,
 \texttt{mosml} responds with a type or signature.  The response
@@ -1044,6 +1044,50 @@ by the implementation, and only those identifiers specified in the
 signature are visible outside the unit.  If no signature is given, all
 identifiers visible at the end of the unit implementation are visible
 outside the unit.
+
+For a structure-mode unit it is immaterial whether a compilation
+unit's interface and implementation is compiled and directly executed
+in the interactive toplevel system:
+
+\begin{program}
+mosml
+> use "unitid.sig";
+> use "unitid.sml";
+\end{program}
+
+\noindent 
+or whether they are first compiled in structure-mode, and then loaded
+into the interactive toplevel system:
+
+\begin{program}
+mosmlc -c -structure unitid.sig unitid.sml 
+mosml
+> load "unitid";
+\end{program}
+
+\noindent where \texttt{unitid.sig}, if present, must be compiled
+before \texttt{unitid.sml}.
+
+More generally, when a compilation unit depends on a number of other
+compilation units \texttt{"unitid\et"},\ldots,\texttt{"unitid\n"},
+then compilation inside the interactive toplevel system:
+
+\begin{program}
+mosml
+> app load ["unitid\et",\ldots,"unitid\n"];
+> use "unitid.sml";
+\end{program}
+
+\noindent is equivalent to toplevel-mode compilation followed by
+loading into the interactive system:
+
+\begin{program}
+mosmlc -c -toplevel "unitid\et.ui" \ldots "unitid\n.ui" unitid.sml 
+mosml
+> app load ["unitid\et",\ldots,"unitid\n"];
+> load "unitid";
+\end{program}
+
 
 
 \subsection{Structure-mode units without explicit signature}
