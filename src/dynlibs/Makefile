@@ -7,4 +7,5 @@ clean:
 	cd mmysql; make clean
 	cd mpq; make clean
 	cd mregex; make clean
+	cd munix; make clean
 
