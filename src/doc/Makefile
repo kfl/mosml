@@ -22,7 +22,7 @@ macmosml.dvi: macmosmlbib
 	${LATEX} macmosml
 	${LATEX} macmosml
 
-manual.dvi: manual.tex manual.bbl
+manual.dvi: manual.tex manual.bbl mosml.sty
 	${LATEX} manual
 	bibtex manual
 	${LATEX} manual
@@ -31,7 +31,7 @@ manual.dvi: manual.tex manual.bbl
 index.tex texsigsigs.tex:
 	cd helpsigs; make all base
 
-mosmlref.dvi: mosmlref.tex index.tex
+mosmlref.dvi: mosmlref.tex index.tex mosml.sty
 	${LATEX} mosmlref
 	${LATEX} mosmlref
 

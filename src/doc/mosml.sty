@@ -7,7 +7,7 @@
 \newcommand{\rcom}{\renewcommand}
 
 %  No leaders in contents list 
-\def\@dotsep{200}
+\def\@dotsep{400}
 
 % Going into math mode when possibly already there:
 \def\mymath#1{\relax\ifmmode{#1}\else${#1}$\fi}
@@ -35,7 +35,7 @@
 % displaymath, equations, etc.
 
 \newenvironment{quot}{\begin{list}{{}}{
-	\setlength{\partopsep}{0mm}\setlength{\topsep}{3mm}
+        \setlength{\partopsep}{0mm}\setlength{\topsep}{3mm}
 \setlength{\leftmargin}{\mathindent}\setlength{\rightmargin}{0mm}}
 \item[]}{\end{list}} 
 
@@ -55,17 +55,17 @@
 % Program texts -----------------------------------------
 
 \newcommand{\programenvironment}{\programmode%
-	\def\par{\leavevmode\endgraf}\obeylines\nobreak%
-	\programmode}
+        \def\par{\leavevmode\endgraf}\obeylines\nobreak%
+        \programmode}
 \newcommand{\programinfig}{%
-	 \parindent 0em
-	 \nobreak\programenvironment}
+         \parindent 0em
+         \nobreak\programenvironment}
 \newcommand{\programmode}{\small\tt%
-	\catcode`\_=12 \catcode`\?=12 \catcode`\.=12 \catcode`\,=12
-	\catcode`\;=12 \catcode`\:=12 \catcode`\@=12 \catcode`\~=12
+        \catcode`\_=12 \catcode`\?=12 \catcode`\.=12 \catcode`\,=12
+        \catcode`\;=12 \catcode`\:=12 \catcode`\@=12 \catcode`\~=12
         \catcode`\#=12 \catcode`\&=12      % Added by PS 1991-06-17
         \catcode`\^=12                     % Added by PS 1992-11-03
-	\obeyspaces\frenchspacing}%
+        \obeyspaces\frenchspacing}%
 
 \newenvironment{programintext}{\programenvironment}{}
 
@@ -75,16 +75,16 @@
         \setlength{\programwidth}{\textwidth}
         \addtolength{\programwidth}{-\leftmargin}
         \setlength{\partopsep}{0mm}\setlength{\topsep}{0mm}
-	\begin{trivlist}\item[]
+        \begin{trivlist}\item[]
         \addtolength{\programwidth}{-\mathindent}
-	\hspace*{\mathindent}\begin{minipage}{\programwidth}
-	\vspace{1mm}
-	\begin{programintext}
-	}{\end{programintext}
-	\vspace{1mm}
-	\end{minipage}
-	\end{trivlist}
-	\noindent}
+        \hspace*{\mathindent}\begin{minipage}{\programwidth}
+        \vspace{1mm}
+        \begin{programintext}
+        }{\end{programintext}
+        \vspace{1mm}
+        \end{minipage}
+        \end{trivlist}
+        \noindent}
 
 % The following is an environment for listing (long) programs in
 % appendices etc., by PS 1991-06-17
@@ -92,12 +92,12 @@
 \com{\separatingline}{\noindent\rule[0.5\baselineskip]{\linewidth}{0.3mm}}
 
 \newenvironment{longprogram}{%
-	\vspace{\baselineskip}
-	\separatingline
-	\programenvironment
-	\setlength{\baselineskip}{0.8\baselineskip}
+        \vspace{\baselineskip}
+        \separatingline
+        \programenvironment
+        \setlength{\baselineskip}{0.8\baselineskip}
         }{%
-	\separatingline}
+        \separatingline}
 
 % What the following code does is not clear.  Maybe it makes Tex
 % respect spaces and tabs in the source text, which is useful for

@@ -1,4 +1,4 @@
-% manual.tex v. 2.00.0 Copyright (C) Peter Sestoft 1994, 2000-06-20
+% manual.tex v. 2.00.0 Copyright (C) Peter Sestoft 1994, 2000-06-22
 %
 % You may edit for lay-out, or leave out irrelevant sections (if
 % such omissions are marked somehow), but you may not redistribute the
@@ -13,14 +13,21 @@
 %\pdfcompresslevel=9
 
 % hyperref should be the *last* package loaded
-\usepackage[pdfpagemode=None,colorlinks,urlcolor=blue]{hyperref} 
+
+% This is fine for interactive color output devices (i.e. computer displays):
+%\usepackage[pdfpagemode=None,colorlinks,urlcolor=blue]{hyperref} 
+
+% This is for passive black and white output devices (i.e. printers):
+% -- the colors are awful when printed in black and white 
+\usepackage[pdfpagemode=None,colorlinks=false]{hyperref}
+
 \begin{document}
 
 \begin{center}
 
   {\huge\bf Moscow ML Owner's Manual}\\[0.5cm]
 
-Version 2.00 of June 2000 --- draft 2000-06-17\\[0.5cm]
+Version 2.00 of June 2000 --- draft 2000-06-22\\[0.5cm]
 
 Sergei Romanenko, Russian Academy of Sciences, Moscow, Russia\\
 Claudio Russo, Cambridge University, Cambridge, United Kingdom\\
@@ -347,7 +354,7 @@ library modules and has a comprehensive index to exceptions,
 functions, structures, types, and values.  The same information is
 available also from {\tt mosml}'s built-in help function
 (Section~\ref{sec-mosml-help}) and as hypertext from Moscow ML's
-homepage and in the mosml/doc/mosmllib/index.html.
+homepage and in the file\\ \texttt{mosml/doc/mosmllib/index.html}.
 
 The \emph{Moscow ML for the Apple Macintosh}
 \cite{Currie:1999:MoscowMLMac} is a detailed user guide to the Apple
@@ -437,9 +444,9 @@ lines.
   window and edit source code in another.  After (re-)editing the
   source file, you must issue a {\tt use} command in the {\tt mosml}
   window.
-
-\item[MS DOS] You may use the simple {\tt edit} script to invoke an
-  editor from inside a {\tt mosml} session; see file
+  
+\item[MS DOS and MS Windows] You may use the simple {\tt edit} script
+  to invoke an editor from inside a {\tt mosml} session; see file
   \verb#mosml\utility\dosedit# for instructions.  You will not need to
   quit the {\tt mosml} session to edit a source file, and the script
   will automatically reload the newly edited file.
@@ -803,12 +810,12 @@ compilation units; see Section~\ref{sec-compilation-units}.
 
 When you enter a declaration in the interactive toplevel,
 \texttt{mosml} responds with a type or signature.  The response
-provides much information about the declaration, once you know how to
-read it.  
+provides much information about the declaration.  It is worth learning
+how to interpret this information.
 
-When reporting the type of a value binding, the generalized variables
-are listed between the \texttt{val} keyword and the identifier(s)
-bound by the declaration:
+In the type reported for a value binding, the generalized type
+variables are listed between the \texttt{val} keyword and the
+identifier bound by the declaration:
 
 \begin{program}
 - val f = length;
@@ -834,11 +841,12 @@ the constructors), and the constructors:
 \end{program}
 
 \noindent
-The notation \texttt{=u'} means that the type name \texttt{u'} admits
-equality.  Since the \texttt{datatype} declaration is generative,
-repeated declaration will produce distinct internal new type names
-\texttt{=u''}, \texttt{=u'''}, etc.  If the datatype is polymorphic,
-the type name will be a type function, taking as parameter a type
+The notation \texttt{=u'} means that the internal type name
+\texttt{u'} admits equality.  Since the \texttt{datatype} declaration
+is generative, repeated declaration of datatype \texttt{u} will
+produce distinct new internal type names \texttt{=u{'}{'}},
+\texttt{=u{'}{'}{'}}, etc.  If the datatype is polymorphic, the
+internal type name will be a type function, taking as parameter a type
 variable \texttt{'a}:
 
 \begin{program}
@@ -862,7 +870,8 @@ signature:
 \noindent 
 For a structure declaration, the response describes any new internal
 type names, and then the internal signature of the structure.  Here it
-has three components (\texttt{t}, \texttt{A}, and \texttt{x}):
+has three components (type \texttt{t}, constructor \texttt{A}, and
+value identifier \texttt{x}):
 
 \begin{program}
 - structure S = struct datatype t = A; val x = A end;
@@ -881,22 +890,21 @@ the signature of the functor body:
 \end{program}
 
 \noindent When the functor argument signature specifies an unknown
-type, the signature function will have the form \verb+!t'.{...}->{...}+
-in which the (internal) type name \texttt{t'} has been generalized:
+type, the signature function will have the form\\ \verb+!t'.{...}->{...}+
+in which the internal type name \texttt{t'} has been generalized:
 
 \begin{program}
 - functor F(X : sig type t; val x : t end) = struct val y = X.x end;
 > functor F : !t'.\verb+{+type t = t', val x : t'\verb+}+->\verb+{+val y : t'\verb+}+
 \end{program}
 
-\noindent When a standard generative functor \texttt{G}
-whose body contains a \texttt{datatype} declaration, the response
-describes which new (internal) type names will be generated at every
-application of the functor.  The notation \verb+{}->...+ means that
-the functor argument signature is empty, and the notation
-\verb+?=t'.{...}+ says that there is some type name \verb+t'+,
-admitting equality, such that the functor body has the signature
-\verb+{...}+:
+\noindent When the body of a (standard) generative functor \texttt{G}
+contains a \texttt{datatype} declaration, the response describes what
+new internal type names will be generated at every application of the
+functor.  The notation \verb+{}->...+ means that the functor argument
+signature is empty, and the notation \verb+?=t'.{...}+ says that there
+is some internal type name \verb+t'+, admitting equality, such that
+the functor body has the signature \verb+{...}+:
 
 \begin{program}
 - functor F() = struct datatype t = A end;
@@ -904,8 +912,8 @@ admitting equality, such that the functor body has the signature
 \end{program}
 
 \noindent When the functor is applicative (see
-Section~\ref{sec-applicative-functors}) then no new type names are
-generated.
+Section~\ref{sec-applicative-functors}) then no new internal type
+names are generated at functor application.
 
 
 \newpage
@@ -918,18 +926,20 @@ an implementation file \texttt{unitid.sml} and an optional interface
 file \texttt{unitid.sig}.  A unit must be compiled in one of two modes:
 
 \begin{itemize}
-\item \textbf{Structure mode:} File \texttt{unitid.sml} declares a
-  single Standard ML structure \texttt{unitid}, and file\\
-  \texttt{unitid.sig}, if present, declares an explicit signature
-  constraint for that structure.  
+\item \textbf{Structure mode:} File \texttt{A.sml} declares a single
+  SML structure \texttt{A}, and file \texttt{A.sig}, if present,
+  declares an explicit SML signature \texttt{A} that is used as an
+  opaque constraint for structure \texttt{A}.
   
   A structure-mode unit has a restricted syntax: it can declare only a
-  single structure, and therefore admits simple recompilation
+  single SML structure, and therefore admits simple recompilation
   management using \texttt{mosmldep} and makefiles; see
   Section~\ref{sec-structure-mode-recompilation}.
   
-  Structure-mode units are backwards compatible with Moscow ML version
-  1.20 through 1.44.
+  Structure-mode units are backwards compatible with the simple
+  structures used in Moscow ML version 1.20 through 1.44.  Hence old
+  Moscow ML programs can be compiled (in structure mode) with no
+  changes.
   
   To compile a unit in structure mode, use the function
   \texttt{compileStructure} (see
@@ -938,11 +948,10 @@ file \texttt{unitid.sig}.  A unit must be compiled in one of two modes:
   \texttt{-structure} (see Section~\ref{sec-mosmlc-options}).
 
   
-\item \textbf{Toplevel mode:} File \texttt{unitid.sml} contains a
-  Moscow ML declaration (which may itself be a sequence of
-  declarations), and file \texttt{unitid.sig}, if present, must be a
-  Moscow ML specification (which may itself be a sequence of
-  specifications).
+\item \textbf{Toplevel mode:} File \texttt{A.sml} contains a Moscow ML
+  declaration (which may itself be a sequence of declarations), and
+  file \texttt{A.sig}, if present, must be a Moscow ML specification
+  (which may itself be a sequence of specifications).
 
   Toplevel-mode units can contain arbitrary Moscow ML code, and hence
   arbitrary Standard ML code.
@@ -965,36 +974,104 @@ A programming project may consist of a mixture of structure-mode and
 toplevel-mode compilation units.  However, the old recompilation
 management with makefiles and \texttt{mosmldep} (see
 Section~\ref{sec-structure-mode-recompilation}) will work only with
-structure-mode units, and the project manager \texttt{mosmlpm} (see
-Section~\ref{sec-project-manager}) will compile all units in toplevel
-mode.
+structure-mode units.  The new project manager \texttt{mosmlpm} (see
+Section~\ref{sec-project-manager}) can manage recompilation of
+both kinds of units.
  
 
-\subsection{Compiling, linking, and loading units}
+\subsection{Compiling, linking and loading units}
 
-Units can be compiled and linked using the batch compiler {\tt
-  mosmlc}; see Section~\ref{sec-batch-compiler}.  Units compiled with
-option {\tt -c} can be linked together.  Use {\tt mosml -o mosmlout
-  A.uo} to produce a linked executable bytecode file {\tt mosmlout}
-which will invoke the runtime system {\tt camlrunm}.  The linker will
-automatically link any required bytecode files into {\tt mosmlout}.
-See Section~\ref{sec-mosmlc-options} for more options.
+Compiling a unit interface \texttt{A.sig} produces a compiled unit
+interface in file \texttt{A.ui}\@.  Compiling a unit implementation
+\texttt{A.sml} produces a compiled unit implementation in file
+\texttt{A.uo}, containing bytecode.  In addition, if there is no
+correspond interface \texttt{A.sig}, then a file \texttt{A.ui},
+containing an inferred unit interface, is produced.
 
-Units can also be compiled from and loaded into the interactive system
-{\tt mosml} using the primitives {\tt compile}, {\tt
-  compileStructure}, {\tt compileToplevel}, {\tt load}, and
-\texttt{loadOne}; see Section~\ref{sec-nonstandard-interactive} above.
+Only the compiled unit interface \texttt{A.ui} is needed when
+compiling other units that depend on \texttt{A.sml}.
+
+Thus the following file name extensions have a special meaning: 
+
+\begin{center}
+\begin{tabular}{|l|l|}\hline
+Extension & Contents\\\hline
+\texttt{.sig} & unit interface\\
+\texttt{.sml} & unit implementation\\
+\texttt{.ui}  & compiled (or inferred) unit interface\\
+\texttt{.uo}  & compiled unit implementation (bytecode)\\\hline
+\end{tabular}
+\end{center}
+
+\noindent 
+Compiled unit implementations can be linked together using {\tt mosml
+  -o mosmlout A.uo \ldots} to produce a linked executable bytecode
+file {\tt mosmlout}.  The linker will automatically link in any
+required bytecode files into {\tt mosmlout}.  See
+Section~\ref{sec-mosmlc-options} for more options.
+
+Compiled units can be loaded into the interactive system {\tt mosml}
+using the primitives {\tt load} and \texttt{loadOne}; see
+Section~\ref{sec-nonstandard-interactive}.  Loading a unit makes the
+entities declared by the unit accessible to subsequent declarations in
+the interactive system.
+
+
+\subsection{Compiling existing SML programs that involve .sig files}
+
+The special meaning of .sig files may cause conflicts when compiling
+existing SML programs, in which .sig files are often used rather
+informally to contain signature declarations.  For instance, file
+\texttt{A.sig} may declare the signatures of structures declared in
+file \texttt{A.sml} (but might contain other arbitrary SML
+declarations besides).
+
+By contrast, in Moscow ML, .sig files play a formal role.  More
+precisely, Moscow ML expects file \texttt{A.sig} to contain a unit
+interface.  Thus it may be necessary to rename \texttt{A.sig} to
+\texttt{A-sig.sml}, compile it before \texttt{A.sml}, and make its
+contents available to \texttt{A.sml} (see also
+Section~\ref{sec-toplevel-mode}):
+
+\begin{program}
+mosmlc -c -toplevel A-sig.sml
+mosmlc -c -toplevel A-sig.ui A.sml
+\end{program}
+
+
+% In Moscow ML structure-mode units, and in Moscow ML 1.44 and before,
+% the unit interface \texttt{A.sig} plays two roles: (1) it declares a
+% signature \texttt{A} for constraining the structure \texttt{A}
+% declared by file \texttt{A.sml}, and (2) it supports separate
+% compilation (by permitting changes to \texttt{A.sml} without requiring
+% recompilation of files that depend on \texttt{A}).
+
+% In Moscow ML toplevel-mode units, file \texttt{A.sig} plays only role
+% (2) above: it supports separate compilation by specifying the entities
+% declared in file \texttt{A.sml}, but it does not itself declare
+% anything (role 1).
+
+% Schematically, the roles of .sig files is this:
+
+% \begin{center}
+% \begin{tabular}{|l|ccc|}\hline
+% & Informal use & Mosml structure-mode units & Mosml
+% toplevel-mode units\\
+
+% &  & Mosml 1.44 units & \\\hline
+% Declares signature            & yes & yes & no \\
+% Supports separate compilation & no  & yes & yes\\\hline
+% \end{tabular}
+% \end{center}
 
 
 \subsection{Unit names and MS DOS/Windows/OS2 file names}
 
 In MS DOS, Windows, and OS/2, the file system may change the case of
-unit file names, and even truncate them (in MS DOS)\@.
-
-Under MS Windows, file names are not truly case sensitive.  Under MS
-DOS, filenames can be at most 8 characters long (plus a 3 character
-extension).  Since file names are used as unit names, this may cause
-problems.  We attempt to circumvent these problems as follows:
+unit file names, and even truncate them (in MS DOS)\@.  Under MS
+Windows, file names are not truly case sensitive.  Since file names
+are used as unit names, this may cause problems.  We attempt to
+circumvent these problems as follows:
 
 \begin{itemize}
 \item Unit names used inside ML programs under MS DOS and MS Windows
@@ -1008,8 +1085,8 @@ problems.  We attempt to circumvent these problems as follows:
   {\tt BinIO}, {\tt CharArray}, {\tt CharVector},\\ {\tt CommandLine},
   {\tt FileSys}, {\tt ListPair}, {\tt OS}, {\tt StringCvt}, {\tt
     Substring}, {\tt TextIO}, {\tt Word8Array}, {\tt Word8Vector};
-  they are normalized precisely as shown in this list for
-  compatibility with the SML Basis Library.
+  they are normalized precisely as shown above for compatibility with
+  the SML Basis Library.
 
 % \item In DOS makefiles, the file names appearing after {\tt all:}\
 %   must be all lower case and at most 8 characters long (otherwise
@@ -1027,30 +1104,29 @@ problems.  We attempt to circumvent these problems as follows:
 \section{Structure-mode compilation units}
 \label{sec-structure-mode}
 
-This section describes the use of the (old) structure-mode compilation
-units, which are backwards compatible with Moscow ML versions 1.20
-through 1.44.
+This section describes the use of structure-mode compilation units,
+which are backwards compatible with Moscow ML versions 1.20 through
+1.44.
 
 
 \subsection{Basic concepts}
 
 A structure-mode compilation unit consists of a {\em unit
-  implementation}, in file unitid.sml, and an optional {\em unit
-  interface}, in a file called unitid.sig\@.  The file unitid.sml must
-contain a single Moscow ML structure declaration.
+  implementation}, in file \texttt{unitid.sml}, and an optional {\em
+  unit interface}, in file \texttt{unitid.sig}\@.  
 
-The unit interface specifies the contents of the unit.  The unit
-implementation declares the contents of the unit.  When the unit
-interface is present, it is called the {\em explicit signature\/} to
-distinguish it from the signature inferred when elaborating the unit
-implementation.  When present, the explicit signature must be matched
-by the implementation, and only those identifiers specified in the
-signature are visible outside the unit.  If no signature is given, all
-identifiers visible at the end of the unit implementation are visible
-outside the unit.
+The file \texttt{unitid.sml} must contain a declaration of a single
+Moscow ML structure \texttt{unitid}, and file \texttt{unitid.sig}, if
+present, must contain a declaration of a single Moscow ML signature
+\texttt{unitid}.  When the unit interface is present, it is called the
+{\em explicit signature\/} to distinguish it from the signature
+inferred when elaborating the unit implementation.  When present, the
+explicit signature must be matched by the implementation, and only
+those identifiers specified in the signature are visible outside the
+unit.
 
 For a structure-mode unit it is immaterial whether a compilation
-unit's interface and implementation is compiled and directly executed
+unit's interface and implementation are compiled and directly executed
 in the interactive toplevel system:
 
 \begin{program}
@@ -1074,19 +1150,20 @@ before \texttt{unitid.sml}.
 
 More generally, when a compilation unit depends on a number of other
 compilation units \texttt{"unitid\et"},\ldots,\texttt{"unitid\n"},
-then compilation inside the interactive toplevel system:
+then compilation inside the interactive system:
 
 \begin{program}
 mosml
 > app load ["unitid\et",\ldots,"unitid\n"];
+> use "unitid.sig";
 > use "unitid.sml";
 \end{program}
 
-\noindent is equivalent to toplevel-mode compilation followed by
+\noindent is equivalent to structure-mode compilation followed by
 loading into the interactive system:
 
 \begin{program}
-mosmlc -c -toplevel "unitid\et.ui" \ldots "unitid\n.ui" unitid.sml 
+mosmlc -c -structure "unitid\et.ui" \ldots "unitid\n.ui" unitid.sig unitid.sml 
 mosml
 > app load ["unitid\et",\ldots,"unitid\n"];
 > load "unitid";
@@ -1284,10 +1361,22 @@ and consequently, arbitrary Standard ML code.
 
 \subsection{Basic concepts}
 
-TODO: the meaning of .sig and .sml files in this context.
+A toplevel-mode compilation unit consists of a {\em unit
+  implementation}, in file \texttt{unitid.sml}, and an optional {\em
+  unit interface}, in a file called \texttt{unitid.sig}\@.  
 
-For a toplevel-mode unit it is immaterial whether a compilation unit
-is compiled and directly executed in the interactive toplevel system:
+The file \texttt{unitid.sml} may contain arbitrary Moscow ML
+declarations, and file \texttt{unitid.sig}, if present, may contain
+arbitrary Moscow ML specifications.  When the unit interface is
+present, the unit implementation must implement everything specified
+in the unit interface, and only those identifiers specified in the
+interface are visible outside the unit.  It is considered a
+mistake for the implementation to declare more identifiers than
+specified in the interface; a warning is issued in this case.
+
+Provided the interface and implementation agree on which identifiers
+are declared, then it is immaterial whether a compilation unit is
+compiled and directly executed in the interactive toplevel system:
 
 \begin{program}
 mosml
@@ -1296,20 +1385,24 @@ mosml
 
 \noindent 
 or whether it is first compiled in toplevel-mode, and then loaded into
-the interactive toplevel system:
+the interactive system:
 
 \begin{program}
-mosmlc -c -toplevel unitid.sml 
+mosmlc -c -toplevel unitid.sig unitid.sml 
 mosml
 > load "unitid";
 \end{program}
 
-\noindent where \texttt{unitid.sig}, if present, must be compiled
-before \texttt{unitid.sml}.
+\noindent In contrast to a structure-mode unit, the
+unit interface \texttt{unitid.sig} should not be loaded in the
+interactive system, as it declares nothing.  If there is no
+\texttt{unitid.sig}, then leave it out on the \texttt{mosmlc} command
+above.
 
-More generally, when a compilation unit depends on a number of other
-compilation units \texttt{"unitid\et"}, \ldots, \texttt{"unitid\n"},
-then compilation inside the interactive toplevel system:
+More generally, when a toplevel compilation unit depends on a number
+of other compilation units \texttt{"unitid\et"}, \ldots,
+\texttt{"unitid\n"} (compiled in structure mode or toplevel mode),
+then compilation inside the interactive system:
 
 \begin{program}
 mosml
@@ -1321,7 +1414,7 @@ mosml
 loading into the interactive system:
 
 \begin{program}
-mosmlc -c -toplevel "unitid\et.ui" \ldots "unitid\n.ui" unitid.sml 
+mosmlc -c -toplevel "unitid\et.ui" \ldots "unitid\n.ui" unitid.sig unitid.sml 
 mosml
 > app load ["unitid\et",\ldots,"unitid\n"];
 > load "unitid";
@@ -1856,24 +1949,31 @@ structure S = rec(X:SIG)
 \label{sec-applicative-functors}
 
 In the Standard ML Modules language, all functors are generative.  If
-the body of generative functor \texttt{F} declares a datatype
-\texttt{t}, then two applications of \texttt{F} will create two
-structures with distinct types \texttt{t}.  If instead \texttt{F} were
-an applicative functor, then the two types would be identical.  Moscow
-ML Modules allows the declaration of applicative functors\footnote{As
-  in Objective Caml.} as well as generative functors.  Applicative
-functors are declared the same way as generative functors, except that
-the formal functor argument is not enclosed in parentheses:
+the body of generative functor \texttt{FG} declares a datatype
+\texttt{t}, then two applications of \texttt{FG} will create two
+structures \texttt{S1} and \texttt{S2} with distinct types
+\texttt{S1.t} and \texttt{S2.t}:
 
 \begin{program}
 functor FG (S : sig end) = struct datatype t = C end    (* generative  *)
 structure S11 = FG() and S12 = FG()
 val res = (S11.C = S12.C);                              (* ill-typed   *)
+\end{program}
 
+\noindent 
+If instead the functor were applicative, then the two types would be
+identical.  Moscow ML Modules allows the declaration of applicative
+functors\footnote{As in Objective Caml.} as well as generative
+functors.  An applicative version \texttt{FA} of the above functor is
+declared the same way, except that the formal functor argument
+\texttt{S :\ sig end} is not enclosed in parentheses:
+
+\begin{program}
 functor FA S : sig end = struct datatype t = C end      (* applicative *)
 structure S21 = FA() and S22 = FA()
 val res = (S21.C = S22.C);                              (* well-typed  *)
 \end{program}
+
 
 \newpage
 
@@ -2704,8 +2804,8 @@ Lexical errors (e.g.\ illegal symbols) and syntax errors can be
 reported in an intelligible way by using the {\tt Location} module
 from the Moscow ML library.  It provides functions to print out
 fragments of a source text, using location information from the lexer
-and parser.  See {\tt help "Location.sig"} for more information.  See
-file {\tt mosml/examples/lexyacc/Main.sml} for an example.
+and parser.  Try {\tt help "Location"} for more information.  See file
+{\tt mosml/examples/lexyacc/Main.sml} for an example.
 
 \newpage
 
@@ -2801,6 +2901,7 @@ copyrght/copyrght.cl.\\[2ex]
 %for the Macintosh.
 
 
+\newpage
 \section{Books and other materials on Standard ML}
 \label{sec-books}
 
@@ -2851,7 +2952,7 @@ Definition.
 
 \begin{itemize}
 \item Andrew Cumming, \emph{A Gentle Introduction to ML}, Napier
-  University.  At
+  University.  At\\
   \url{http://www.dcs.napier.ac.uk/course-notes/sml/manual.html}
 
 \item Emden Gansner and John Reppy (editors): Standard ML Basis
@@ -2882,3 +2983,5 @@ and  \url{http://www.dina.kvl.dk/~sestoft/sml/sml-std-basis.html}
 \bibliography{books,mosml}
 
 \end{document}
+
+
