@@ -499,11 +499,29 @@ args)
      | To of 'key
      | FromTo of 'key * 'key
 
-   val itemInterval : ('key, 'a) dict * 'key interval -> ('key * 'a) list
+   val getAll : ('key, 'a) dict * 'key interval -> ('key * 'a) list
 
-  such that  itemInterval dict all  is  equivalent to  listItems dict
+  such that  getAll dict All  is  equivalent to  listItems dict.
 
-  Should have a function 
+  The complexity of getAll dict intv should be O(log(N) + M) where N
+  is the number of items in the dict, and M is the number of items in
+  the answer.
+
+  Also useful:
+
+  val getMin : ('key, 'a) dict * 'key interval -> ('key * 'a) option
+  val getMax : ('key, 'a) dict * 'key interval -> ('key * 'a) option
+
+  which return the element with the least (resp. the largest) key in
+  the interval, if any.  Thus
+
+  getMin dict intv = (SOME (List.hd (getAll dict intv)) handle Empty => NONE
+  getMax dict intv = (SOME (List.last (getAll dict intv)) handle Empty => NONE
+
+  But the complexity of getMin dict intv and getMax dict intv should
+  be O(log(N)) where N is the number of items in the dict.
+
+  Also useful: a general lookup/insert/update/delete function 
    val peekMap : ('key, 'a) dict * 'key * ('a option -> 'a option) -> unit
   such that 
 
@@ -518,6 +536,7 @@ args)
 
 * 2000-08-10 #line comments for machine-generated mosml code:
 
+--------------------------------------------------
 From: Norman Ramsey <nr@eecs.harvard.edu>
 
 I wonder if there's any chance of supporting some form of #line numbering.
@@ -536,4 +555,26 @@ val emptyMap : 'a simplemap = []
 I'd be delighted if there were some way to get one of these
 conventions, or a similar convention, into Moscow ML.
 Do let me know what you think.
+--------------------------------------------------
 
+One way to implement this (2000-08-11): Maintain a table of the source
+positions (byte offsets) at which #line directives occur (could be a
+dynamic array; the positions would automatically be sorted increasing
+and thus be suitable for binary search).  Whenever a message with
+start and end locations xL and xR is to be emitted, look up the most
+recent #line directive at or preceding xL.  Scan the source file until
+xL, then reset the line counter to the line number indicated by that
+#line directive and set the filename, then continue as usual.  This
+ignores any #line directives between xL and xR.
+
+The lexer should recognize the special comments of form 
+(*#line n... "x..."*) 
+where n... is a non-negative decimal number, x... is a string of
+characters (in which an occurrence of *) is taken to be part of the
+file name, presumably?).  In SML/NJ nothing can separate the terminal
+quote (") and the asterisk (*) in the closing comment bracket.
+
+?1 Must a #line directive appear at the very beginning of a line?  In
+   SML/NJ: yes (but this makes lexing 
+
+?2 Should a #line directive inside a comment be ignored?  In SML/NJ: yes.
