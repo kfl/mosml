@@ -12,22 +12,28 @@ prim_val rshiftuns_ : int -> int -> int = 2 "shift_right_unsigned";
 
 (* Generation of bytecode for .uo files *)
 
-fun checkAccessIndex8 n =
-  if n <= maxint_byte then () else
+fun tooManyError kind = 
     (msgIBlock 0;
-     errPrompt "Too many parameters, unable to compile into bytecode";
+     errPrompt ("Too many " ^ kind ^ "; unable to generate bytecode");
      msgEOL();
      msgEBlock();
      raise Toplevel);
+    
+fun checkArguments n =
+    if n > maxint_byte then tooManyError "arguments" else ()
 
-fun checkAccessIndex16 n =
-  if n <= 0xFFFF then () else
-    (msgIBlock 0;
-     errPrompt "Too many local variables, unable to compile into bytecode";
-     msgEOL();
-     msgEBlock();
-     raise Toplevel);
+(* This won't happen unless there's a bug in the switch compilation: *)
+fun checkBranches n =
+    if n > maxint_byte then tooManyError "switch branches" else ()
 
+fun checkGlobals n =
+    if n > 0xFFFF then tooManyError "globals" else ()
+
+fun checkLocals n =
+    if n > 0xFFFF then tooManyError "local variables" else ()
+
+fun checkFields n =
+    if n > 0xFFFF then tooManyError "fields" else ()
 
 fun out_bool_test tst =
   fn PTeq    => out tst
@@ -105,36 +111,36 @@ fun emit_zam zam =
     | Kget_global uid => (out GETGLOBAL; slot_for_get_global uid)
     | Kset_global uid => (out SETGLOBAL; slot_for_set_global uid)
     | Kgetfield n =>
-        (checkAccessIndex16 n;
+        (checkFields n;
 	 if n < 4 then out (GETFIELD0 + n)
          else (out GETFIELD; out_short n))
     | Ksetfield n =>
-        (checkAccessIndex16 n;
+        (checkFields n;
 	 if n < 4 then out (SETFIELD0 + n)
          else (out SETFIELD; out_short n))
     | Kaccess n =>
-        (checkAccessIndex16 n;
+        (checkLocals n;
          if n < 8 then out(ACC0 + n) else (out ACCESS; out_short n))
     | Kenvacc m =>
         let val n = m + 1
         in
-          checkAccessIndex16 n;
+          checkLocals n;
           if n < 8 then out(ENV1 + m) else (out ENVACC; out_short n)
         end
     | Kassign n =>
-        (checkAccessIndex16 n; out ASSIGN; out_short n)
+        (checkLocals n; out ASSIGN; out_short n)
     | Kapply n =>
-        (checkAccessIndex8 n;
+        (checkArguments n;
          if n < 5 then out(APPLY1 + n - 1) else (out APPLY; out n))
     | Kappterm (n,z) =>
-        (checkAccessIndex8 n;
+        (checkArguments n;
          if n < 5 then out(APPTERM1 + n - 1) else (out APPTERM; out n);
-         checkAccessIndex16 z;
+         checkLocals z;
          out_short z)
-    | Kpop n =>    (checkAccessIndex16 n; out POP; out_short n)
-    | Kgrab n =>   (checkAccessIndex8 n; out GRAB; out n)
+    | Kpop n    => (checkLocals n; out POP; out_short n)
+    | Kgrab n   => (checkArguments n; out GRAB; out n)
     | Kreturn n => 
-	(checkAccessIndex16 n; 
+	(checkLocals n; 
 	 if n < 3 then out(RETURN1 + n - 1) else (out RETURN; out_short n))
     | Kmakeblock(tag,n) =>
         (if n <= 0 then
@@ -163,7 +169,7 @@ fun emit_zam zam =
             val ()  = out len;
             val orig = !out_position
         in
-	    checkAccessIndex8 len;
+	    checkBranches len;
 	    for (fn i => out_label_with_orig orig (Array.sub(lblvect, i)))
 	        0 (len-1)
         end
@@ -208,7 +214,7 @@ fun emit_zam zam =
     | Kprim p =>
         (case p of
             Pdummy n =>
-              (checkAccessIndex16 n; out DUMMY; out_short n)
+              (checkLocals n; out DUMMY; out_short n)
           | Ptest tst =>
               (case tst of
                   Peq_test => out EQ
@@ -254,11 +260,11 @@ fun emit zams =
 	 emit C)
     | Kpush :: Kquote sc :: C => (out PUSH_GETGLOBAL; slot_for_literal sc; emit C)
     | Kpush :: Kaccess n :: C =>
-        (checkAccessIndex16 n;
+        (checkLocals n;
          if n < 8 then out(PUSHACC0 + n) else (out PUSHACC; out_short n);
          emit C)
     | Kpush :: Kenvacc 0 :: Kapply n :: C =>
-        (checkAccessIndex8 n;
+        (checkArguments n;
          if n < 5 then 
 	     out(PUSH_ENV1_APPLY1 + n - 1)
 	 else 
@@ -266,41 +272,40 @@ fun emit zams =
 	      out APPLY; out n);
          emit C)
     | Kpush :: Kenvacc 0 :: Kappterm (n,z) :: C =>
-        (checkAccessIndex8 n;
-         (if n < 5 then 
+        ((if n < 5 then 
 	      out(PUSH_ENV1_APPTERM1 + n - 1)
 	  else 
-	      (out PUSHENV1; out APPTERM; out n));
-         checkAccessIndex16 z; out_short z;
+	      (checkArguments n; out PUSHENV1; out APPTERM; out n));
+         checkLocals z; out_short z;
          emit C)
     | Kpush :: Kenvacc m :: C =>
         let val n = m + 1
         in
-          checkAccessIndex16 n;
+          checkLocals n;
           if n < 8 then out(PUSHENV1 + m) else (out PUSHENVACC; out_short n);
           emit C
         end
     | Kpush :: Kget_global uid :: Kapply n :: C =>
-        (checkAccessIndex8 n;
-         if n < 5 then 
+        (if n < 5 then 
 	     (out(PUSH_GETGLOBAL_APPLY1 + n - 1);
 	      slot_for_get_global uid)
 	 else 
-	     (out PUSH_GETGLOBAL;
+	     (checkArguments n;
+	      out PUSH_GETGLOBAL;
 	      slot_for_get_global uid;
 	      out APPLY; out n);
          emit C)
     | Kpush :: Kget_global uid :: Kappterm (n,z) :: C =>
-        (checkAccessIndex8 n; 
-         if n < 5 then 
+        (if n < 5 then 
 	     (out(PUSH_GETGLOBAL_APPTERM1 + n - 1);
-	      checkAccessIndex16 z; out_short z;
+	      checkLocals z; out_short z;
 	      slot_for_get_global uid)
 	 else 
-	     (out PUSH_GETGLOBAL;
+	     (checkArguments n; 
+	      out PUSH_GETGLOBAL;
 	      slot_for_get_global uid;
 	      out APPTERM; out n;
-	      checkAccessIndex16 z;
+	      checkLocals z;
 	      out_short z);
          emit C)
     | Kpush :: Kget_global uid :: C =>
