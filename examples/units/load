@@ -1,0 +1,4 @@
+app load ["Expr", "Reduce", "Evaluate","Test"];
+open Expr;
+
+val e = Plus (Neg (Neg (Cst 0)), Plus (Cst 56, Cst 9));
