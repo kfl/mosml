@@ -766,7 +766,8 @@ and compliantSpec (loc, spec') =
   | TYPEDESCspec _ => ()
   | TYPEspec tbds => app compliantTypBind tbds
   | DATATYPEspec (dbds,SOME tbds) => 
-       ((app compliantDatBind dbds);
+       (complianceMsg loc "<spec> ::= datatype <datdesc> withtype <typbind>"; 
+	(app compliantDatBind dbds);
         (app compliantTypBind tbds))
   | DATATYPEspec (dbds,NONE) => 
        app compliantDatBind dbds
