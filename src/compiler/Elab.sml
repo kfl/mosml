@@ -1059,11 +1059,61 @@ fun checkTypDesc (tyvars, tycon) =
     "Duplicate parameter in a prim_type binding"
 ; 
 
-(* checkApplicativeDec dec is used to ensures that module values are
-   not opened at top-level within structure bodies (doing so
-   is unsound in the presence of applicative functors).
+(* checkApplicativeModExp dec is used to ensures that module values are
+   not opened at top-level within (both generative and applicative) functor bodies 
+   (doing so is unsound in the presence of applicative functors).
 *)
+fun checkApplicativeModExp (_,(modexp,_)) = 
+    case modexp of
+      DECmodexp dec => 
+	  checkApplicativeDec dec
+   | LONGmodexp _ => ()
+   | WHEREmodexp (_,_,modexp) => 
+	  checkApplicativeModExp modexp
+   | LETmodexp (dec,modexp) =>
+	  (checkApplicativeDec dec;
+	   checkApplicativeModExp modexp)
+   | PARmodexp modexp => 
+	  checkApplicativeModExp modexp
+   | CONmodexp (modexp,sigexp) =>
+	  checkApplicativeModExp modexp
+   | ABSmodexp (modexp,sigexp) =>
+	  checkApplicativeModExp modexp
+   | FUNCTORmodexp (_,modid,_, sigexp, modexp) =>
+	  ()
+          (* checkApplicativeModExp modexp is already ensured by the
+             elaboration of modexp *)
+   | APPmodexp (modexp,modexp') =>
+	  (checkApplicativeModExp modexp;
+	   checkApplicativeModExp modexp')
+   | RECmodexp (modid,_,sigexp, modexp) =>
+	  checkApplicativeModExp modexp 
+and checkApplicativeDec (loc,dec') = 
+  case dec' of
+    ABSTYPEdec(_, _, dec2) =>
+      checkApplicativeDec dec2
+  | LOCALdec (dec1, dec2) =>
+      (checkApplicativeDec dec1;checkApplicativeDec dec2)
+  | SEQdec (dec1, dec2) =>
+      (checkApplicativeDec dec1;checkApplicativeDec dec2)
+  | STRUCTUREdec mbs => 
+      app (fn ASmodbind ((loc,_),_,_) =>
+	        errorMsg loc "Illegal structure binding: \
+		             \a structure value cannot be opened in a functor body"
+	   | MODBINDmodbind (_,modexp') => 
+		checkApplicativeModExp modexp')
+           mbs
+  | FUNCTORdec fbs => 
+      app (fn ASfunbind ((loc,_),_,_) =>
+	        errorMsg loc "Illegal functor binding: \
+		             \a functor value cannot be opened in a functor body"
+	   | FUNBINDfunbind (_,modexp') => 
+		checkApplicativeModExp modexp')
+           fbs
+  | _ => ()
+;
 
+(*
 fun checkApplicativeDec (loc,dec') = 
   case dec' of
     ABSTYPEdec(_, _, dec2) =>
@@ -1086,7 +1136,7 @@ fun checkApplicativeDec (loc,dec') =
            fbs
   | _ => ()
 ;
-
+*)
 (* semantic checks *)
 
 
@@ -2568,7 +2618,7 @@ and elabModExp expectation (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv)
    (VE : VarEnv) (TE : TyEnv) (loc,(modexp',r)) = 
   case modexp' of
       DECmodexp dec => 
-       let val _ = checkApplicativeDec dec;
+       let (* val _ = checkApplicativeDec dec; *)
 	   val EXISTS(T',(ME',FE',GE',VE',TE')) = elabDec ME FE GE UE VE TE false dec
            val exmod = EXISTSexmod(T',(STRmod (NONrec (STRstr (sortEnv ME',
 							       sortEnv FE',
@@ -2695,7 +2745,7 @@ and elabModExp expectation (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv)
            end
        end
    | LETmodexp (dec, modexp) =>
-      let val _ = checkApplicativeDec dec;
+      let (* val _ = checkApplicativeDec dec; *)
 	  val EXISTS(T',(ME',FE',GE',VE', TE')) =
 	      elabDec ME FE GE UE VE TE false dec;
           val _ = incrBindingLevel();
@@ -2710,7 +2760,8 @@ and elabModExp expectation (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv)
           end
       end
   | FUNCTORmodexp (Generative standard,(loc,modid),idKindDescRef,sigexp,modexp) =>
-      let val LAMBDAsig (T,M) = elabSigExp ME FE GE UE VE TE sigexp
+      let val _ = checkApplicativeModExp modexp
+	  val LAMBDAsig (T,M) = elabSigExp ME FE GE UE VE TE sigexp
 	  val (ME',FE') = case M of 
 	      STRmod S =>
                   (idKindDescRef := STRik;
@@ -3477,9 +3528,19 @@ fun elabSigSpec (spec : Spec) =
      end )
 ;
 
+
+
 (* tie the knot *)
 
 (* cvr: TODO remove in favour of mutual recursion *)
 
 val () = elabSigExpRef := elabSigExp;
 val () = elabModExpRef := elabModExp;
+
+
+
+
+
+
+
+
