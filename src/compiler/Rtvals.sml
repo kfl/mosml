@@ -275,8 +275,7 @@ fun prVal (depth: int) (prior: int) (tau: Type) (v: obj) =
                       end))
 *)
     | CONt(ts, tyapp) => (* cvr: TODO complete for APPtyapp *)
-	withConEnvOfTyApp tyapp (fn conEnvOpt =>
-        (case conEnvOpt of
+        (case conEnvOfTyApp tyapp of
            NONE => 
             (case tyapp of
 		 NAMEtyapp tyname =>
@@ -403,7 +402,7 @@ fun prVal (depth: int) (prior: int) (tau: Type) (v: obj) =
                                      prP ")"))))
                             | _ => fatalError "prVal"
                       end)
-	 | _ => fatalError "prVal 1"))
+	 | _ => fatalError "prVal 1")
 (*  | CONt (ts, APPtyapp _) => fatalError "prVal: unimplemented CONt(ts, APPtyapp _)" *)
  (* cvr: TODO revise *)
  | PACKt (EXISTSexmod(T,STRmod S)) =>  (prP " "; msgString "[structure ...]")

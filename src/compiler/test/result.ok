@@ -1007,8 +1007,8 @@ Enter `quit();' to quit.
 - > structure ArrayZero :
   {type 'a array = 'a,
    val 'a init : 'a -> 'a,
-   val ('a, 'b) sub : 'a -> ('b -> 'a),
-   val ('a, 'b, 'c) update : 'a -> ('b -> ('c -> 'c))}
+   val ('a, 'b) sub : 'a -> 'b -> 'a,
+   val ('a, 'b, 'c) update : 'a -> 'b -> 'c -> 'c}
 - > functor ArraySucc :
   !array.
    {type 'a array = 'a array,
@@ -1017,9 +1017,9 @@ Enter `quit();' to quit.
     val 'a update : 'a array -> int -> 'a -> 'a array}->
        {type 'a array = 'a array * 'a array,
         val 'a init : 'a -> 'a array * 'a array,
-        val 'a sub : 'a array * 'a array -> (int -> 'a),
+        val 'a sub : 'a array * 'a array -> int -> 'a,
         val 'a update :
-          'a array * 'a array -> (int -> ('a -> 'a array * 'a array))}
+          'a array * 'a array -> int -> 'a -> 'a array * 'a array}
 - > val mkArray = fn :
   int ->
   [?array.
@@ -1030,7 +1030,7 @@ Enter `quit();' to quit.
 - > val two = fn : int -> int
 - > val n = 10 : int
 - > val max = 1024 : int
-- > val 'a iter = fn : ('a -> (int -> 'a)) -> 'a -> int -> 'a
+- > val 'a iter = fn : ('a -> int -> 'a) -> 'a -> int -> 'a
 - > New type names: array
   structure A :
   {type 'a array = 'a array,
@@ -1069,8 +1069,8 @@ Enter `quit();' to quit.
 - > structure ArrayZero :
   {type 'a array = 'a,
    val 'a init : 'a -> 'a,
-   val ('a, 'b) sub : 'a -> ('b -> 'a),
-   val ('a, 'b, 'c) update : 'a -> ('b -> ('c -> 'c))}
+   val ('a, 'b) sub : 'a -> 'b -> 'a,
+   val ('a, 'b, 'c) update : 'a -> 'b -> 'c -> 'c}
 - > functor ArraySucc :
   !array.
    {type 'a array = 'a array,
@@ -1079,9 +1079,9 @@ Enter `quit();' to quit.
     val 'a sub : 'a array -> int -> 'a}->
        {type 'a array = 'a array * 'a array,
         val 'a init : 'a -> 'a array * 'a array,
-        val 'a sub : 'a array * 'a array -> (int -> 'a),
+        val 'a sub : 'a array * 'a array -> int -> 'a,
         val 'a update :
-          'a array * 'a array -> (int -> ('a -> 'a array * 'a array))}
+          'a array * 'a array -> int -> 'a -> 'a array * 'a array}
 - > val mkArray = fn :
   int ->
   [?array.
@@ -1092,7 +1092,7 @@ Enter `quit();' to quit.
 - > val two = fn : int -> int
 - > val n = 10 : int
 - > val max = 1024 : int
-- > val 'a iter = fn : ('a -> (int -> 'a)) -> 'a -> int -> 'a
+- > val 'a iter = fn : ('a -> int -> 'a) -> 'a -> int -> 'a
 - > New type names: array
   structure A :
   {type 'a array = 'a array,
@@ -1237,7 +1237,7 @@ Enter `quit();' to quit.
   {type nat = int,
    val z : int,
    val s : int -> int,
-   val 'a i : 'a -> ('a -> 'a) -> int -> 'a}->{val add : int -> (int -> int)}
+   val 'a i : 'a -> ('a -> 'a) -> int -> 'a}->{val add : int -> int -> int}
 - > functor M :
   {type nat = int,
    val z : int,
@@ -1249,7 +1249,7 @@ Enter `quit();' to quit.
         val 'a i : 'a -> ('a -> 'a) -> int -> 'a}->
            {val add : int -> int -> int})->
           {structure Add : {val add : int -> int -> int},
-           val mult : int -> (int -> int)}
+           val mult : int -> int -> int}
 - > structure Poly :
   {structure Add : {val add : int -> int -> int},
    structure Mult : {val mult : int -> int -> int},
@@ -1265,7 +1265,7 @@ Enter `quit();' to quit.
    {type nat = nat,
     val s : nat -> nat,
     val i : nat -> (nat -> nat) -> nat -> nat}->
-       {val add : nat -> (nat -> nat), val sum : nat -> nat list -> nat}
+       {val add : nat -> nat -> nat, val sum : nat -> nat list -> nat}
 - > structure Poly' :
   {structure Add : {val add : int -> int -> int},
    structure Mult : {val mult : int -> int -> int},
@@ -1280,14 +1280,14 @@ Enter `quit();' to quit.
    val 'a i : 'a -> ('a -> 'a) -> int -> 'a,
    val s : int -> int,
    val z : int}
-- > functor A : {}->{val add : int -> (int -> int)}
+- > functor A : {}->{val add : int -> int -> int}
 - > functor M :
   {}->
       ({type nat = int,
         val z : int,
         val s : int -> int,
         val 'a i : 'a -> ('a -> 'a) -> int -> 'a}->{})->
-          {val mult : int -> (int -> int)}
+          {val mult : int -> int -> int}
 - > structure IntPoly :
   {structure Add : {val add : int -> int -> int},
    structure Mult : {val mult : int -> int -> int},
@@ -1434,21 +1434,113 @@ Enter `quit();' to quit.
 - > signature S = /\u.!w.{type w = w, type t = w}->{type u = (u w)}
 - > functor F : !w.{type w = w, type t = w}->{type u = w * w}
 - > functor G : !w.{type w = w, type t = w}->{type u = int * int}
+- ! Toplevel input:
+! functor Fail = (functor (X:sig type t  end) => struct datatype u = C of X.t * X.t end):S;
+!                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Scope Violation: type constructor u of the range has specification:
+!   type u = (u w)
+! in the signature
+! but is implemented by the declaration: 
+!   datatype u = (u',{con C : w * w -> u'})
+! in the module
+! The declaration violates the specification because 
+! the type constructor u' is a parameter 
+! that is declared within the scope of u.
 - > New type names: u
+  functor F :
+  !t.
+   {type t = t, val x : t}->
+       {datatype u = ((u t),{con C : t -> (u t), con D : (u t) -> (u t)}),
+        con C : t -> (u t),
+        con D : (u t) -> (u t),
+        val y : (u t),
+        val z : (u t)}
+- > structure X :
+  {datatype u =
+     ((u string),
+      {con C : string -> (u string), con D : (u string) -> (u string)}),
+   con C : string -> (u string),
+   con D : (u string) -> (u string),
+   val y : (u string),
+   val z : (u string)}
+- > datatype u =
+  ((u string),{con C : string -> (u string), con D : (u string) -> (u string)})
+  con C = fn : string -> (u string)
+  con D = fn : (u string) -> (u string)
+  val y = C "x" : (u string)
+  val z = D(C "x") : (u string)
+- > New type names: u'
+  functor F :
+  !s t.
+   {type s = s, val w : s, type t = t, val x : t}->
+       {datatype u =
+          ((u' s t),{con C : s * t -> (u' s t), con D : (u' s t) -> (u' s t)}),
+        con C : s * t -> (u' s t),
+        con D : (u' s t) -> (u' s t),
+        val y : (u' s t),
+        val z : (u' s t)}
+- > structure X :
+  {datatype u =
+     ((u' bool string),
+      {con C : bool * string -> (u' bool string),
+       con D : (u' bool string) -> (u' bool string)}),
+   con C : bool * string -> (u' bool string),
+   con D : (u' bool string) -> (u' bool string),
+   val y : (u' bool string),
+   val z : (u' bool string)}
+- > datatype u =
+  ((u' bool string),
+   {con C : bool * string -> (u' bool string),
+    con D : (u' bool string) -> (u' bool string)})
+  con C = fn : bool * string -> (u' bool string)
+  con D = fn : (u' bool string) -> (u' bool string)
+  val y = C(true, "x") : (u' bool string)
+  val z = D(C(true, "x")) : (u' bool string)
+- > New type names: u''
+  functor F :
+  !s t.
+   {type s = s, val w : s, type t = t, val x : t}->
+       {datatype 'a u =
+          ('a (u'' s t),
+           {con 'a C : s * t * 'a -> 'a (u'' s t),
+            con 'a D : ('a * 'a) (u'' s t) -> 'a (u'' s t)}),
+        con 'a C : s * t * 'a -> 'a (u'' s t),
+        con 'a D : ('a * 'a) (u'' s t) -> 'a (u'' s t),
+        val y : int (u'' s t),
+        val z : int (u'' s t)}
+- > structure X :
+  {datatype 'a u =
+     ('a (u'' bool string),
+      {con 'a C : bool * string * 'a -> 'a (u'' bool string),
+       con 'a D : ('a * 'a) (u'' bool string) -> 'a (u'' bool string)}),
+   con 'a C : bool * string * 'a -> 'a (u'' bool string),
+   con 'a D : ('a * 'a) (u'' bool string) -> 'a (u'' bool string),
+   val y : int (u'' bool string),
+   val z : int (u'' bool string)}
+- > datatype 'a u =
+  ('a (u'' bool string),
+   {con 'a C : bool * string * 'a -> 'a (u'' bool string),
+    con 'a D : ('a * 'a) (u'' bool string) -> 'a (u'' bool string)})
+  con 'a C = fn : bool * string * 'a -> 'a (u'' bool string)
+  con 'a D = fn : ('a * 'a) (u'' bool string) -> 'a (u'' bool string)
+  val y = C(true, "x", 1) : int (u'' bool string)
+  val z = D(C(true, "x", (1, 1))) : int (u'' bool string)
+- > New type names: u'''
   functor A :
   !b a.
    {type a = a, type b = b, val a : a, val b : b}->
-       {datatype u = ((u b a),{con C : a * b -> (u b a)}),
-        con C : a * b -> (u b a),
-        val y : (u b a)}
+       {datatype u = ((u''' b a),{con C : a * b -> (u''' b a)}),
+        con C : a * b -> (u''' b a),
+        val y : (u''' b a)}
 - > structure A :
-  {datatype u = ((u bool int),{con C : int * bool -> (u bool int)}),
-   con C : int * bool -> (u bool int),
-   val y : (u bool int)}
-- > datatype u = ((u bool int),{con C : int * bool -> (u bool int)})
-  con C = fn : int * bool -> (u bool int)
-  val y = C(1, false) : (u bool int)
-- > New type names: u', v, =w, x
+  {datatype u = ((u''' bool int),{con C : int * bool -> (u''' bool int)}),
+   con C : int * bool -> (u''' bool int),
+   val y : (u''' bool int)}
+- > datatype u = ((u''' bool int),{con C : int * bool -> (u''' bool int)})
+  con C = fn : int * bool -> (u''' bool int)
+  val y = C(1, false) : (u''' bool int)
+- > New type names: u'''', v, =w, x
   functor A :
   !c b a.
    {type a = a,
@@ -1457,7 +1549,7 @@ Enter `quit();' to quit.
     val 'a a : a,
     val 'a b : b,
     val 'a f : 'a -> 'a c}->
-       {datatype u = ((u' c b a),{con C : a * b -> (u' c b a)}),
+       {datatype u = ((u'''' c b a),{con C : a * b -> (u'''' c b a)}),
         datatype v =
           ((v c b a),
            {con B : (v c b a), con D : a * b * (v c b a) -> (v c b a)}),
@@ -1470,16 +1562,16 @@ Enter `quit();' to quit.
            {con 'a B : 'a -> 'a (x c b a),
             con 'a D : 'a c (x c b a) -> 'a (x c b a)}),
         con 'a B : 'a -> 'a (x c b a),
-        con C : a * b -> (u' c b a),
+        con C : a * b -> (u'''' c b a),
         con 'a D : 'a c (x c b a) -> 'a (x c b a),
-        val u : (u' c b a),
+        val u : (u'''' c b a),
         val v : (v c b a),
         val w : (a * b) (w c b a),
         val x : (a * b) (x c b a)}
 - > structure A :
   {datatype u =
-     ((u' (/\'a.{l : 'a, r : 'a}) bool int),
-      {con C : int * bool -> (u' (/\'a.{l : 'a, r : 'a}) bool int)}),
+     ((u'''' (/\'a.{l : 'a, r : 'a}) bool int),
+      {con C : int * bool -> (u'''' (/\'a.{l : 'a, r : 'a}) bool int)}),
    datatype v =
      ((v (/\'a.{l : 'a, r : 'a}) bool int),
       {con B : (v (/\'a.{l : 'a, r : 'a}) bool int),
@@ -1499,17 +1591,17 @@ Enter `quit();' to quit.
          {l : 'a, r : 'a} (x (/\'a'.{l : 'a', r : 'a'}) bool int) ->
          'a (x (/\'a'.{l : 'a', r : 'a'}) bool int)}),
    con 'a B : 'a -> 'a (x (/\'a'.{l : 'a', r : 'a'}) bool int),
-   con C : int * bool -> (u' (/\'a.{l : 'a, r : 'a}) bool int),
+   con C : int * bool -> (u'''' (/\'a.{l : 'a, r : 'a}) bool int),
    con 'a D :
      {l : 'a, r : 'a} (x (/\'a'.{l : 'a', r : 'a'}) bool int) ->
      'a (x (/\'a'.{l : 'a', r : 'a'}) bool int),
-   val u : (u' (/\'a.{l : 'a, r : 'a}) bool int),
+   val u : (u'''' (/\'a.{l : 'a, r : 'a}) bool int),
    val v : (v (/\'a.{l : 'a, r : 'a}) bool int),
    val w : (int * bool) (w (/\'a.{l : 'a, r : 'a}) bool int),
    val x : (int * bool) (x (/\'a.{l : 'a, r : 'a}) bool int)}
 - > datatype u =
-  ((u' (/\'a.{l : 'a, r : 'a}) bool int),
-   {con C : int * bool -> (u' (/\'a.{l : 'a, r : 'a}) bool int)})
+  ((u'''' (/\'a.{l : 'a, r : 'a}) bool int),
+   {con C : int * bool -> (u'''' (/\'a.{l : 'a, r : 'a}) bool int)})
   datatype v =
   ((v (/\'a.{l : 'a, r : 'a}) bool int),
    {con B : (v (/\'a.{l : 'a, r : 'a}) bool int),
@@ -1529,12 +1621,13 @@ Enter `quit();' to quit.
       {l : 'a, r : 'a} (x (/\'a'.{l : 'a', r : 'a'}) bool int) ->
       'a (x (/\'a'.{l : 'a', r : 'a'}) bool int)})
   con 'a B = fn : 'a -> 'a (x (/\'a'.{l : 'a', r : 'a'}) bool int)
-  con C = fn : int * bool -> (u' (/\'a.{l : 'a, r : 'a}) bool int)
+  con C = fn : int * bool -> (u'''' (/\'a.{l : 'a, r : 'a}) bool int)
   con 'a D = fn :
   {l : 'a, r : 'a} (x (/\'a'.{l : 'a', r : 'a'}) bool int) ->
   'a (x (/\'a'.{l : 'a', r : 'a'}) bool int)
-  val u = C(1, false) : (u' (/\'a.{l : 'a, r : 'a}) bool int)
-  val v = D(1, false, ) : (v (/\'a.{l : 'a, r : 'a}) bool int)
+  val u = C(1, false) : (u'''' (/\'a.{l : 'a, r : 'a}) bool int)
+  val v = D(1, false, D(1, false, D(1, false, B))) :
+  (v (/\'a.{l : 'a, r : 'a}) bool int)
   val w = D(B((1, false), (1, false))) :
   (int * bool) (w (/\'a.{l : 'a, r : 'a}) bool int)
   val x = D(B{l = (1, false), r = (1, false)}) :
@@ -1553,8 +1646,8 @@ Enter `quit();' to quit.
 - > val it = true : bool
 - > val it = "c" : string
 - > val 'a it = [] : 'a list
-- > val it = ?{e} : exn
-- > val it = ?{e} : exn
+- > val it = e : exn
+- > val it = e : exn
 - > val it = "c" : string
 - > val it = "c" : string
 - > type u = int
@@ -1765,7 +1858,7 @@ Enter `quit();' to quit.
 Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
 Enter `quit();' to quit.
 - > val 'a ok = fn : 'a -> 'a
-- > val ('a, 'b) ok = fn : ('a -> 'b) -> ('a -> 'b)
+- > val ('a, 'b) ok = fn : ('a -> 'b) -> 'a -> 'b
 - ! Toplevel input:
 ! type fail = 'a -> 'b;
 ! ^^^^^^^^^^^^^^^^^^^^
@@ -1879,14 +1972,7 @@ Enter `quit();' to quit.
 ! but declared as an ordinary value in the module
 !   val 'a x : 'a -> 'a
 - > exn e = e : exn
-- ! Toplevel input:
-! structure X = struct exception e = e end : sig exception e (* dynamic *) end;
-!               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-! Signature mismatch: the module does not match the signature ...
-! Status mismatch: identifier e is specified as a dynamic exception in the signature
-!   exn e : exn
-! but declared as a static exception in the module
-!   exn e : exn
+- > structure X : {exn e : exn}
 - ! Toplevel input:
 ! structure X = struct val x = fn 1 => 1 end : sig val x : 'a -> 'a end;
 !               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3226,7 +3312,7 @@ Enter `quit();' to quit.
 - > val ok = fn : int -> int
 - - > val ok = fn : int -> int
 - > val ok = fn : int -> int
-- > functor OK : !a.{type a = a, val a : a}->{val 'a x : a -> ('a -> a)}
+- > functor OK : !a.{type a = a, val a : a}->{val 'a x : a -> 'a -> a}
 - ! Toplevel input:
 ! 					       else  B.b
 ! 					             ^^^
@@ -3237,7 +3323,7 @@ Enter `quit();' to quit.
 ! because of a scope violation:
 ! the type constructor b is a parameter 
 ! that is declared within the scope of 'a
-- > functor OK : !a.{type a = a, val a : a}->{val 'a x : 'a -> ('a -> 'a)}
+- > functor OK : !a.{type a = a, val a : a}->{val 'a x : 'a -> 'a -> 'a}
 - - ! Toplevel input:
 !             		                     (if true then j else B.b))
 !             		                                          ^^^
@@ -3279,7 +3365,7 @@ Enter `quit();' to quit.
    val min : real * real -> real,
    val round : real -> int,
    val sameSign : real * real -> bool,
-   val 'a scan : ('a -> (char * 'a) option) -> ('a -> (real * 'a) option),
+   val 'a scan : ('a -> (char * 'a) option) -> 'a -> (real * 'a) option,
    val sign : real -> int,
    val toDefault : real -> real,
    val toString : real -> string,
@@ -3686,7 +3772,7 @@ File "sample4.sml", line 303-307, characters 6-186:
 [closing file "sample4.sml"]
 > val it = () : unit
 [opening file "sample5.sml"]
-> val 'a insort = fn : ('a * 'a -> bool) -> ('a list -> 'a list)
+> val 'a insort = fn : ('a * 'a -> bool) -> 'a list -> 'a list
 > val ('a, 'b, 'c) secl = fn : 'a -> ('a * 'b -> 'c) -> 'b -> 'c
 > val ('a, 'b, 'c) secr = fn : ('a * 'b -> 'c) -> 'b -> 'a -> 'c
 > val summation = fn : (int -> real) -> int -> real
@@ -3737,7 +3823,7 @@ File "sample4.sml", line 303-307, characters 6-186:
 > val seqChange = fn :
   int list * int list * int * (unit -> int list seq) -> int list seq
 > val randseq = fn : int -> real seq
-> val sift = fn : int -> (int seq -> int seq)
+> val sift = fn : int -> int seq -> int seq
 File "sample5.sml", line 172, characters 4-62:
 ! fun sieve (Cons(p,nf)) = Cons(p, fn()=> sieve (sift p (nf())));
 !     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -4583,7 +4669,7 @@ File "sample9.sml", line 352, characters 11-20:
 > val insertEnv = fn : (string * string) * t'''''''''' t''' -> t'''''''''' t'''
 > val stdEnv = <t> : t'''''''''' t'''
 > val stdRead = fn : string -> t''''''''''
-> val try = fn : (t'''''''''' -> t'''''''''') -> (string -> unit)
+> val try = fn : (t'''''''''' -> t'''''''''') -> string -> unit
 [closing file "sample9.sml"]
 > val it = () : unit
 [opening file "sample10.sml"]
@@ -4706,22 +4792,22 @@ File "sample10.sml", line 192, characters 6-62:
      val subgoals : state -> (form list * form list) list,
      val initial : form -> state,
      val final : state -> bool,
-     val basic : int -> (state -> state t'''''),
-     val unify : int -> (state -> state t'''''),
-     val conjL : int -> (state -> state t'''''),
-     val conjR : int -> (state -> state t'''''),
-     val disjL : int -> (state -> state t'''''),
-     val disjR : int -> (state -> state t'''''),
-     val impL : int -> (state -> state t'''''),
-     val impR : int -> (state -> state t'''''),
-     val negL : int -> (state -> state t'''''),
-     val negR : int -> (state -> state t'''''),
-     val iffL : int -> (state -> state t'''''),
-     val iffR : int -> (state -> state t'''''),
-     val allL : int -> (state -> state t'''''),
-     val allR : int -> (state -> state t'''''),
-     val exL : int -> (state -> state t'''''),
-     val exR : int -> (state -> state t''''')}
+     val basic : int -> state -> state t''''',
+     val unify : int -> state -> state t''''',
+     val conjL : int -> state -> state t''''',
+     val conjR : int -> state -> state t''''',
+     val disjL : int -> state -> state t''''',
+     val disjR : int -> state -> state t''''',
+     val impL : int -> state -> state t''''',
+     val impR : int -> state -> state t''''',
+     val negL : int -> state -> state t''''',
+     val negR : int -> state -> state t''''',
+     val iffL : int -> state -> state t''''',
+     val iffR : int -> state -> state t''''',
+     val allL : int -> state -> state t''''',
+     val allR : int -> state -> state t''''',
+     val exL : int -> state -> state t''''',
+     val exR : int -> state -> state t'''''}
 File "sample10.sml", line 409, characters 25-69:
 !   val conjL = propL "&" (fn (([p1,p2], ps), qs) => [(p1::p2::ps, qs)]);
 !                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -4850,21 +4936,19 @@ File "sample10.sml", line 478, characters 14-48:
 > structure Tactical :
   {type ('a, 'b) multifun = 'a -> 'b t''''',
    val ('b, 'a, 'c) -- :
-     ('a -> 'b t''''') * ('b -> 'c t''''') -> ('a -> 'c t'''''),
+     ('a -> 'b t''''') * ('b -> 'c t''''') -> 'a -> 'c t''''',
    val 'a all : 'a -> 'a t''''',
-   val 'a depthFirst : ('a -> bool) -> ('a -> 'a t''''') -> ('a -> 'a t'''''),
+   val 'a depthFirst : ('a -> bool) -> ('a -> 'a t''''') -> 'a -> 'a t''''',
    val 'a depthIter :
-     ('a -> bool) * int -> ('a -> 'a t''''') -> ('a -> 'a t'''''),
+     ('a -> bool) * int -> ('a -> 'a t''''') -> 'a -> 'a t''''',
    val ('a, 'b, 'c) firstF :
-     ('a -> ('b -> 'c t''''')) list -> 'a -> ('b -> 'c t'''''),
+     ('a -> 'b -> 'c t''''') list -> 'a -> 'b -> 'c t''''',
    val ('a, 'b) no : 'a -> 'b t''''',
-   val 'a repeat : ('a -> 'a t''''') -> ('a -> 'a t'''''),
-   val 'a repeatDeterm : ('a -> 'a t''''') -> ('a -> 'a t'''''),
-   val 'a try : ('a -> 'a t''''') -> ('a -> 'a t'''''),
-   val ('a, 'b) |@| :
-     ('a -> 'b t''''') * ('a -> 'b t''''') -> ('a -> 'b t'''''),
-   val ('a, 'b) || :
-     ('a -> 'b t''''') * ('a -> 'b t''''') -> ('a -> 'b t''''')}
+   val 'a repeat : ('a -> 'a t''''') -> 'a -> 'a t''''',
+   val 'a repeatDeterm : ('a -> 'a t''''') -> 'a -> 'a t''''',
+   val 'a try : ('a -> 'a t''''') -> 'a -> 'a t''''',
+   val ('a, 'b) |@| : ('a -> 'b t''''') * ('a -> 'b t''''') -> 'a -> 'b t''''',
+   val ('a, 'b) || : ('a -> 'b t''''') * ('a -> 'b t''''') -> 'a -> 'b t'''''}
 > signature TAC =
   {val safeSteps : int -> state -> state t''''',
    val quant : int -> state -> state t''''',
@@ -4886,22 +4970,21 @@ File "sample10.sml", line 478, characters 14-48:
   val pr = fn : state -> unit
 > type ('a, 'b) multifun = 'a -> 'b t'''''
   val ('b, 'a, 'c) -- = fn :
-  ('a -> 'b t''''') * ('b -> 'c t''''') -> ('a -> 'c t''''')
+  ('a -> 'b t''''') * ('b -> 'c t''''') -> 'a -> 'c t'''''
   val 'a all = fn : 'a -> 'a t'''''
-  val 'a depthFirst = fn :
-  ('a -> bool) -> ('a -> 'a t''''') -> ('a -> 'a t''''')
+  val 'a depthFirst = fn : ('a -> bool) -> ('a -> 'a t''''') -> 'a -> 'a t'''''
   val 'a depthIter = fn :
-  ('a -> bool) * int -> ('a -> 'a t''''') -> ('a -> 'a t''''')
+  ('a -> bool) * int -> ('a -> 'a t''''') -> 'a -> 'a t'''''
   val ('a, 'b, 'c) firstF = fn :
-  ('a -> ('b -> 'c t''''')) list -> 'a -> ('b -> 'c t''''')
+  ('a -> 'b -> 'c t''''') list -> 'a -> 'b -> 'c t'''''
   val ('a, 'b) no = fn : 'a -> 'b t'''''
-  val 'a repeat = fn : ('a -> 'a t''''') -> ('a -> 'a t''''')
-  val 'a repeatDeterm = fn : ('a -> 'a t''''') -> ('a -> 'a t''''')
-  val 'a try = fn : ('a -> 'a t''''') -> ('a -> 'a t''''')
+  val 'a repeat = fn : ('a -> 'a t''''') -> 'a -> 'a t'''''
+  val 'a repeatDeterm = fn : ('a -> 'a t''''') -> 'a -> 'a t'''''
+  val 'a try = fn : ('a -> 'a t''''') -> 'a -> 'a t'''''
   val ('a, 'b) |@| = fn :
-  ('a -> 'b t''''') * ('a -> 'b t''''') -> ('a -> 'b t''''')
+  ('a -> 'b t''''') * ('a -> 'b t''''') -> 'a -> 'b t'''''
   val ('a, 'b) || = fn :
-  ('a -> 'b t''''') * ('a -> 'b t''''') -> ('a -> 'b t''''')
+  ('a -> 'b t''''') * ('a -> 'b t''''') -> 'a -> 'b t'''''
 > val showResult = fn : unit -> unit
 > val checkFailed = fn : unit -> string
 P & Q --> Q & P

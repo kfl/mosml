@@ -14,11 +14,53 @@ functor F = (functor X:sig type t  end => struct type u = X.t * X.t end):S;
 
 functor G = (functor X:sig type t  end  => struct type u = int * int end):S;
 
-(* fail cases 
-functor B = (functor (X:sig type t  end) => struct datatype u = C of X.t * X.t end):S;
-*)
 
-(* test printing of datatypes *)
+functor Fail = (functor (X:sig type t  end) => struct datatype u = C of X.t * X.t end):S;
+
+(* test printing of applicative datatypes *)
+
+(* unary dependencies *)
+
+functor F X:sig type t val x: t end =
+struct 
+    datatype u = 
+	C of X.t 
+      |  D of u  
+    val y = C X.x 
+    val z = D y 
+end;
+
+structure X = F(type t = string val x = "x");
+open X;
+
+(* binary dependencies *)
+
+functor F X:sig type s val w: s type t val x: t  end =
+struct
+    datatype u = 
+	C of X.s * X.t 
+      | D of u  
+    val y = C (X.w,X.x)  
+    val z = D y 
+end;
+
+structure X = F(type t = string val x = "x" type s = bool val w = true);
+open X;
+
+(* binary dependencies and non-regularity *)
+functor F X:sig type s val w: s type t val x: t  end =
+struct 
+    datatype 'a u = 
+	C of X.s * X.t * 'a 
+      | D of ('a * 'a) u 
+    val y = C (X.w,X.x,1)  
+    val z = D (C (X.w,X.x,(1,1)))
+end;
+
+structure X = F(type t = string val x = "x" type s = bool val w = true);
+open X;
+
+
 
 functor A = functor X:sig type a and b val a: a and b:b  end => 
 		 struct datatype u = C of X.a * X.b
@@ -26,6 +68,8 @@ functor A = functor X:sig type a and b val a: a and b:b  end =>
 
 structure A = A(struct type a = int and b = bool val a = 1 and b = false end);
 open A;
+
+(* no more mister nice guy *)
 
 functor A = functor X:sig type a and b and 'a c val a: a and b:b and f: 'a -> 'a c  end => 
 		 struct datatype u = C of X.a * X.b

@@ -31,28 +31,28 @@ all:
 # cvr: TODO remove in the final release
 newtest:
 	rm -f result
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < opnlcl.sml >> result 2>&1
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < opntop.sml >> result 2>&1
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < link.sml >> result 2>&1
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < array.sml >> result 2>&1
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < array2.sml >> result 2>&1
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < sieve.sml >> result 2>&1
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < poly.sml >> result 2>&1
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < hiorder.sml >> result 2>&1
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < applic.sml >> result 2>&1
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < where.sml >> result 2>&1
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < gnvsap.sml >> result 2>&1
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < refeq.sml >> result 2>&1
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < eq.sml >> result 2>&1        
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < scope.sml >> result 2>&1        
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < matchsuc.sml >> result 2>&1        
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < matcherr.sml >> result 2>&1        
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < sigcon.sml >> result 2>&1        
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < coerce.sml >> result 2>&1        
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < modres.sml >> result 2>&1        
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full < inf.sml >> result 2>&1        
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < opnlcl.sml >> result 2>&1
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < opntop.sml >> result 2>&1
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < link.sml >> result 2>&1
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < array.sml >> result 2>&1
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < array2.sml >> result 2>&1
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < sieve.sml >> result 2>&1
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < poly.sml >> result 2>&1
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < hiorder.sml >> result 2>&1
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < applic.sml >> result 2>&1
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < where.sml >> result 2>&1
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < gnvsap.sml >> result 2>&1
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < refeq.sml >> result 2>&1
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < eq.sml >> result 2>&1        
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < scope.sml >> result 2>&1        
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < matchsuc.sml >> result 2>&1        
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < matcherr.sml >> result 2>&1        
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < sigcon.sml >> result 2>&1        
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < coerce.sml >> result 2>&1        
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < modres.sml >> result 2>&1        
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full < inf.sml >> result 2>&1        
 	#this one last as its slow
-	../../camlrunm ../mosmltop -stdlib ../../cvrlib -P full test.sml >> result 2>&1
+	../../camlrunm ../mosmltop -stdlib ../../mosmllib -P full test.sml >> result 2>&1
 	diff result result.ok
 
 clean:

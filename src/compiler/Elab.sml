@@ -761,7 +761,7 @@ fun findSigId GE loc sigid =
 				  raise Toplevel)
 			   | SOME S =>
 				{qualid = {qual = i,id = []},
-				 info = copySig [] [] (* cvr: revise *)
+				 info = (* cvr: remove copySig [] [] *)
 				 (LAMBDAsig(!(tyNameSetOfSig cu),
 					    STRmod S))}
 		      end
@@ -2492,7 +2492,7 @@ and elabModExp expectation (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv)
 		   val {idKind, idFields,... } = info
 		   val (fields,{qualid=resqualid,info=S}) = 
 		       findLongModId ME loc qualid
-		   val X = EXISTSexmod([],STRmod ((* cvr: copyStr  [] [] *) S))
+		   val X = EXISTSexmod([],STRmod ((* cvr: avoid*) copyStr  [] [] S))
 	       in
 		     idKind := {qualid = resqualid, info = STRik};
 		     idFields := fields;
@@ -2504,7 +2504,7 @@ and elabModExp expectation (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv)
 		   val {idKind, idFields,... } = info
 		   val (fields,{qualid=resqualid,info=F}) = 
 		       findLongFunId ME FE loc qualid
-		   val X = EXISTSexmod([],FUNmod ((* cvr: copyGenFun  [] [] *) F))
+		   val X = EXISTSexmod([],FUNmod ((* cvr: avoid*) copyGenFun  [] [] F))
 	       in
 		   idKind := {qualid = resqualid, info = FUNik};
 		   idFields := fields;

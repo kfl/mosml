@@ -193,7 +193,7 @@ val copyGenFun : (TyName * TyApp) list -> (TypeVar * Type) list -> GenFun -> Gen
 
 val parameteriseTyNameSet: TyNameSet -> TyNameSet -> (TyNameSet * (TyName * TyApp) list);
 
-val withConEnvOfTyApp: TyApp -> (ConEnv option -> unit) -> unit;
+val conEnvOfTyApp: TyApp -> ConEnv option;
 
 (* cvr: added *)
 (* destructively change the kind and update the binding level of type names

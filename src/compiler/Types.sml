@@ -324,7 +324,7 @@ fun etaExpandTyFun tyfun =
       | LAMtyfun _ => fatalError "etaExpandTyFun";
       
 (* cvr: new, optimized and highly dodgy copying *)
-
+(* cvr: get rid of the n-ary tests *)
 local 
 fun restrictBns bns1 bns2 = 
     drop (fn (tn1,NAMEtyapp tn1') => 
@@ -539,7 +539,12 @@ and copyTyApp bns bvs tyapp  =
 			      copyTyFun bns bvs tyfun 
 		      in
 			  if styfun then
-			      (bns,bvs,true,tyapp)
+(*			      (bns,bvs,true,tyapp) (* cvr: is this ok ? *) *)
+			      let val ctyname = 
+				      copyAndRealiseTyName tyname tyfun
+				  val ctyapp = NAMEtyapp ctyname
+			      in ((tyname,ctyapp)::bns,bvs,false,ctyapp)
+			      end
 			  else
 			      let val ctyname = 
 				      copyAndRealiseTyName tyname ctyfun
@@ -1205,26 +1210,25 @@ local
 	      in  (tn::tns,conenv) 
 	      end
 in
- fun withConEnvOfTyApp tyapp f =
+
+ fun conEnvOfTyApp tyapp =
      let val (tn,tyfuns) = stripTyApp [] tyapp
      in
 	 case !(#tnConEnv (!(#info tn))) of
-	     NONE => f (NONE)
+	     NONE => NONE
+           | conenvopt as (SOME (ConEnv _)) => conenvopt (* cvr: needn't copy *)
 	   | SOME conenv =>
-		 let val (tns,conenv) = stripConEnv conenv
-		     val tempTnSorts = map (fn tn => #tnSort(!(#info tn))) tns
+		 let val conenv = copyConEnv [] [] conenv
+		     val (tns,conenv) = stripConEnv conenv
 		 in 
 		    app2 (fn tn => fn tyfun => 
 			  setTnSort (#info tn) (REAts tyfun))
 		          tns 
 			  tyfuns;
-		    ((f (SOME conenv)) handle _ => ());
-		    app2 (fn tn => fn tnSort => 
-			  setTnSort (#info tn) tnSort)
-		          tns
-			  tempTnSorts
+		    SOME conenv
 		 end
      end
+
 end
 ;		
 	     
