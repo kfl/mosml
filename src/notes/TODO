@@ -87,3 +87,8 @@
 + make dynlibs/* refer to mosml/include
 
 + move .so files from mosml/bin to mosml/lib
+
++ strange bug in dynlibs/interface/ for Solaris.  Crashes.  Fails
+  test7, because it doesn't pass the fifth argument (a boolean)
+  correctly.  test 7 works if the number of arguments is reduced to 4.
+  test10 fails as well, why?  
