@@ -2768,7 +2768,7 @@ val () = matchExModRef := matchExMod NILpath;
 
 (* cvr: printing semantic objects *)
 
-val free_tyname_names = ref ([] : (TyName * string) list);
+val free_tyname_names = ref ([] : (TyName * (string * int)) list);
 val free_tyname_counter = ref 0;
 
 val free_variable_names = ref ([] : (TypeVar * string) list);
@@ -2807,21 +2807,32 @@ fun alphaOfInt i =
 
 fun choose_arbitrary_tyname () =
         let fun choose_arbitrary_tyname name =
-	    if exists (fn (_,name') => name' = name) (!free_tyname_names)
+	    if exists (fn (_,(name',_)) => name' = name) (!free_tyname_names)
 		then (incr free_tyname_counter;
 		      choose_arbitrary_tyname (alphaOfInt( !free_tyname_counter)))
 	    else (incr free_tyname_counter;
-		  name)
+		  (name,0))
 	in
 	    choose_arbitrary_tyname (alphaOfInt( !free_tyname_counter))
 	end;
 
-
-
+(*
 fun choose_derived_tyname name =
 	if exists (fn (_,name') => name' = name) (!free_tyname_names)  
 	    then choose_derived_tyname (name ^ "'") 
 	else name;
+*)
+
+fun choose_derived_tyname name =
+	   let val (_,(_,lastsuffix)) = 
+	       choose (fn (_,(name',_)) => name' = name) (!free_tyname_names)
+	   in
+	       (name,lastsuffix + 1)
+	   end
+           handle Subscript => (name,0)
+;
+
+
 
 fun choose_arbitrary_variable () =
         let fun choose_arbitrary_variable name =
@@ -2927,33 +2938,37 @@ fun prTypeVar var =
  end;
 
 
-fun showTyNameEqu equ =    
-    case equ of
-        FALSEequ => ""
-      | TRUEequ => "="
-      | REFequ => "="
-      | ARROWequ(_,equ) => showTyNameEqu equ
-;
-
-fun prTyName showTnEqu tn =
-    (msgString (find (isEqTN tn) (!free_tyname_names))) (* cvr: REVISE*)
+local fun prNameSuffix (name,0) = msgString name
+      |   prNameSuffix (name,suffix) = (msgString name;msgString "/";msgInt suffix)
+      fun prEqu equ =    
+	  case equ of
+	      FALSEequ => msgString ""
+	    | TRUEequ => msgString "="
+	    | REFequ => msgString "="
+	    | ARROWequ(_,equ) => prEqu equ
+in
+fun prTyName showTnEqu tn = 
+    (let val namesuffix = find (isEqTN tn) (!free_tyname_names)
             (* we use find instead of lookup because tynames in different
                units may be equivalent according to isEqTn without being
 	       equivalent references *)
+     in
+	 prNameSuffix namesuffix
+     end
     handle Subscript =>
-	let val name =
+	let val namesuffix as (name,suffix) =
 	    case (#id(#qualid(tn))) of
 		[""] => choose_arbitrary_tyname ()
 	      | [name] => choose_derived_tyname name
 	      | _ => choose_arbitrary_tyname ()
 	in
-	    (free_tyname_names := (tn, name) :: !free_tyname_names;
-	     msgString ((if showTnEqu 
-			     then showTyNameEqu (EqualityOfTyName tn)
-			 else "")^
-			name)
-	   )
-	end
+	   free_tyname_names := (tn, namesuffix) :: !free_tyname_names;
+	   if showTnEqu 
+	       then prEqu (EqualityOfTyName tn)
+           else ();
+	   prNameSuffix namesuffix
+	end)
+end
 ;
 
 fun arrowsToList tau =
@@ -3370,7 +3385,8 @@ fun resetTypePrinter () =
 	  not (member (#qual qualid) (!preopenedPreloadedUnits)) andalso
 	  not (member (#qual qualid) (pervasiveOpenedUnits))
 	    then
-		free_tyname_names := (tn,showQualId qualid) :: !free_tyname_names
+(*		free_tyname_names := (tn,showQualId qualid) :: !free_tyname_names *)
+		free_tyname_names := (tn,(showQualId qualid,0)) :: !free_tyname_names  (* cvr: TODO revise *)
 	else
 	    (case #id(qualid) of
 		 [""] => free_tyname_names := ((tn,choose_arbitrary_tyname())
