@@ -36,6 +36,7 @@
 #include "debugger.h"
 #include "interp.h"
 #include "globals.h"
+#include "mosml.h"
 
 /* SunOS 4 appears not to have mktime: */
 #if defined(sun) && !defined(__svr4__)
@@ -476,15 +477,21 @@ value sml_string_of_int(value arg)      /* ML */
   return copy_string(format_buffer);
 }
 
-value sml_string_of_float(value arg)    /* ML */
+/* Convert real x to SMLish format in format_buffer */
+
+void string_of_float_aux(char* format_buffer, double x)
 {
-  char format_buffer[64];
-  double x = Double_val(arg);
   sprintf(format_buffer, "%.12g", x);
   mkSMLMinus(format_buffer);
   if( countChar('.', format_buffer) == 0 &&
       countChar('E', format_buffer) == 0 )
     strcat(format_buffer, ".0");
+}
+
+value sml_string_of_float(value arg)    /* ML */
+{
+  char format_buffer[64];
+  string_of_float_aux(format_buffer, Double_val(arg));
   return copy_string(format_buffer);
 }
 
@@ -1145,7 +1152,8 @@ value sml_general_string_of_float(value fmt, value arg)    /* ML */
 
   /* Unfortunately there seems to be no way to ensure that this does not
    * crash by overflowing the format_buffer (e.g. when specifying a huge 
-   * number of decimal digits in the fixed-point format): 
+   * number of decimal digits in the fixed-point format).  Well, we might
+   * use snprintf if universally supported?
    */
 
   double x = Double_val(arg);
@@ -1499,4 +1507,65 @@ value sml_localoffset(value v)	/* ML */
 #endif
 
   return copy_double(td); /* not SYStoSMLtime(td) */
+}
+
+/* Return a name (as a string) of SML exception exn */
+
+value sml_exnname(value exn)	/* ML */
+{
+  value strval = Field(Field(exn, 0), 0);
+  return strval;
+}
+
+/* Create a string representation of SML exception exn, if possible. */
+
+char* exnmessage_aux(value exn)
+{
+#define BUFSIZE 256
+  char* buf = (char*)malloc(BUFSIZE+1);
+  /* An exn val is a pair (strref, argval) : string ref * 'a */
+  value strref = Field(exn, 0);
+  value strval = Field(strref, 0);
+  value argval = Field(exn, 1);
+  if (strref == Field(global_data, SYS__EXN_SYSERR)) {
+    value msgval = Field(argval, 0);
+    snprintf(buf, BUFSIZE, "%s: %s", 
+	     String_val(strval), String_val(msgval));
+    return buf;
+  } else if (strref == Field(global_data, SYS__EXN_IO)) {
+    value causeval = Field(argval, 0);
+    value fcnval   = Field(argval, 1);
+    value nameval  = Field(argval, 2);
+    char* causetxt = exnmessage_aux(causeval);
+    snprintf(buf, BUFSIZE, "%s: %s failed on `%s'; %s", 
+	     String_val(strval), String_val(fcnval), 
+	     String_val(nameval), causetxt);
+    free(causetxt);
+    return buf;
+  } else if (Is_block(argval)) {
+    if (Tag_val(argval) == String_tag) { 
+      snprintf(buf, BUFSIZE, "%s: %s", String_val(strval), String_val(argval));
+      return buf;
+    } else if (Tag_val(argval) == Double_tag){
+      char doubletxt[64];
+      string_of_float_aux(doubletxt, Double_val(argval));
+      snprintf(buf, BUFSIZE, "%s: %s", String_val(strval), doubletxt);
+      return buf;
+    }
+  }
+  /* If unknown exception, copy the name and return it */
+  snprintf(buf, BUFSIZE, "%s", String_val(strval));  
+  return buf;
+#undef BUFSIZE 
+}
+
+
+/* Return a string representation of SML exception exn, if possible */
+
+value sml_exnmessage(value exn)	/* ML */
+{
+  char* buf = exnmessage_aux(exn);
+  value res = copy_string(buf);
+  free(buf);
+  return res;
 }

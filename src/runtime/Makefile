@@ -162,7 +162,7 @@ minor_gc.o: minor_gc.c config.h ../config/m.h ../config/s.h debugger.h \
  memory.h minor_gc.h roots.h runtime.h
 misc.o: misc.c config.h ../config/m.h ../config/s.h debugger.h misc.h \
  mlvalues.h io.h
-mosml.o: mosml.c fail.h misc.h config.h ../config/m.h ../config/s.h \
+mosml.o: mosml.c mosml.h fail.h misc.h config.h ../config/m.h ../config/s.h \
  mlvalues.h memory.h gc.h major_gc.h freelist.h minor_gc.h str.h \
  runtime.h alloc.h intext.h io.h debugger.h globals.h
 msdos.o: msdos.c mlvalues.h config.h ../config/m.h ../config/s.h \

@@ -25,6 +25,7 @@
 #include "stacks.h"
 #include "sys.h"
 #include "interp.h"
+#include "mosml.h"
 
 #ifndef macintosh
 #if defined(__STDC__) || defined(WIN32)
@@ -256,18 +257,10 @@ int main(int argc, char * argv[])
     if (Field(exn_bucket, 0) == Field(global_data, SYS__EXN_MEMORY))
       fatal_error ("Fatal error: out of memory.\n");
     else {
-      /* Field 0 of exn_bucket is a ref, whose field 0 is a string */
-      value str = Field(Field(exn_bucket, 0), 0);
       char* buf = (char*)malloc(201);
-      { 
-	value arg = Field(exn_bucket, 1);
-	if (Tag_val(arg) == String_tag)
-	  snprintf(buf, 200, "Uncaught exception:\n%s: %s\n", 
-		   String_val(str), String_val(arg));
-	else
-	  snprintf(buf, 200, "Uncaught exception:\n%s\n", 
-		   String_val(str));
-      }
+      char* exnmsg = exnmessage_aux(exn_bucket);
+      snprintf(buf, 200, "Uncaught exception:\n%s\n", exnmsg);
+      free(exnmsg);
       fatal_error(buf);
     }
   }
