@@ -1,0 +1,130 @@
+.TH MOSML 1 "18 September 2001" "Version 2.0"
+.SH NAME
+mosml \- Standard ML interpreter
+.SH SYNOPSIS
+.B mosml [\fIOPTION\fR]... [\fIFILE\fR]...
+.SH DESCRIPTION
+.PP
+Invokes the interactive Moscow ML system. The interactive system allows
+you to enter declarations and evaluate expressions.
+.PP
+You can quit the interactive session by typing \fBquit();\fR or
+control-D.  Type \fBhelp "lib";\fR for an overview of built-in
+function libraries, and e.g. \fBhelp "Array";\fR for help on
+\fBArray\fR operations.
+.PP
+Invoking the interactive system with a list of files \fIFILE\fRs
+correspond to invoking it without the file list, and when the
+Moscow ML has started entering
+\fBuse "file1";\fR ... \fBuse "filen";\fR.
+.PP
+This manual page documents the options accepted by 
+.B mosml.
+For more information consult the online manuals.
+.SH OPTIONS
+.TP
+\fB\-conservative\fR
+Sets conservative mode for compilation of subsequent units: accept
+all extensions to the SML Modules language, but issue a warning for
+each use. This is the default.
+.TP
+\fB\-I\fR \fIdirectory\fR
+Specifies directories to be searched for interface files, bytecode
+files, and source files.  A call to \fBuse\fR, \fBload\fR or
+\fBloadOne\fR will first search the current directory, then all
+directories specified by option \fB\-I\fR in order of appearance
+from left to right, and finally the standard library directory.
+(This option affects the variable \fBMeta.loadPath\fR.)
+.TP
+\fB\-imptypes\fR
+Specifies that the type checker should distinguish between
+imperative and applicative type variables, generalize all
+applicative type variables, and generalize imperative type variables
+only in non-expansive expressions.
+.TP
+\fB\-liberal\fR
+Sets liberal mode for compilation of subsequent units: accept
+without warnings all extensions to the SML Modules language.
+.TP
+\fB\-orthodox\fR
+Sets orthodox mode for the compilation of subsequent units: reject
+all uses of the extensions to the SML Modules language.  That is,
+accept only SML Modules syntax.
+.TP
+\fB\-P\fR \fIunit-set\fR
+Determines which library units will be included and open at
+compile-time.  Any library unit in the load path can be used by the
+\fBcompile\fR function for type checking purposes.  Thus regardless
+\fB\-P\fR option, the \fBcompile\fR function knows the type of
+library functions such as \fBArray.foldl\fR.
+.RS
+.TP
+\fB\-P\fR \fIdefault\fR
+The initial environment for the SML Basis Library: modules
+\fBArray\fR, \fBChar\fR, \fBList\fR, \fBString\fR, and \fBVector\fR
+will be loaded, and \fBChar\fR, \fBList\fR, and \fBString\fR will be
+partially opened.
+.TP
+\fB\-P sml90\fR 
+This provides an initial environment which is upwards compatible with
+that of the 1990 `Definition of Standard ML' and with pre-1.30 releases
+of Moscow ML. In particular, the functions \fBchr\fR, \fBexplode\fR,
+\fBimplode\fR, and \fBord\fR work on strings, not characters.  The new
+versions of these functions are still available as \fBChar.chr\fR,
+\fBChar.ord\fR, \fBString.explode\fR, and \fBString.implode\fR.  The
+math functions and input-output facilities required by the 1990
+Definition are available at top-level.  In addition the same libraries
+are loaded as with \fB-P default\fR.
+.TP
+\fB\-P nj93\fR
+This provides a top-level environment which is mostly compatible with
+that of SML/NJ 0.93.  The functions \fBapp\fR, \fBceiling\fR,
+\fBchr\fR, \fBdec\fR, \fBexplode\fR, \fBfold\fR, \fBhd\fR, \fBimplode\fR,
+\fBinc\fR, \fBmax\fR, \fBmin\fR, \fBnth\fR, \fBnthtail\fR, \fBord\fR,
+\fBordof\fR, \fBrevapp\fR, \fBrevfold\fR, \fBsubstring\fR, \fBtl\fR,
+and \fBtruncate\fR have the same type and meaning as in SML/NJ 0.93.
+Note that this is incompatible with SML/NJ version 110. The math
+functions and input-output facilities required by the 1990 `Definition
+of Standard ML' are available at top-level.  In addition the same (new)
+libraries are loaded as with \fB-P default\fR.  This option does not
+imply \fB-imptypes\fR.
+.TP
+\fB\-P full\fR
+This loads all the libraries marked \fBF\fR in the library list (see
+the online manuals), and partially opens the \fBChar\fR, \fBList\fR,
+and \fBString\fR units.
+.TP
+\fB\-P none\fR
+No library units are loaded or opened initially.
+.PP
+Additional library units can loaded into the interactive system by
+using the \fBload\fR function.
+.RE
+.TP
+\fB\-quietdec\fR
+Turns off the interactive system's prompt and responses, except for
+warnings and error messages.  Useful for writing scripts in SML.
+Sets \fBMeta.quietdec\fR to \fBtrue\fR.
+.TP
+\fB\-stdlib\fR \fIstdlib-directory\fR
+Specify the standard library directory to be \fIstdlib-directory\fR. 
+The default standard library is \fB/usr/lib/mosml\fR under Debian.
+.TP
+\fB\-valuepoly\fR
+Specifies that the type checker should use `value polymorphism'.
+Default.
+.SH AUTHOR
+Compiled by Henning Niss from the various Moscow ML documents 
+written by Sergei Romanenko, Claudio Russo, and Peter Sestoft.
+.SH "SEE ALSO"
+.BR mosmlc (1),
+.BR mosmlyac (1),
+.BR mosmllex (1)
+.PP
+The full documentation for
+.B mosml
+and the other Moscow ML tools can be found in the online manuals in 
+\fB/usr/share/doc/mosml/manual.pdf.gz\fR
+(`Moscow ML Owner's Manual') and
+\fB/usr/share/doc/mosml/mosmllib.pdf.gz\fR
+(`Moscow ML Library Documentation').

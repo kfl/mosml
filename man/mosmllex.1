@@ -1,0 +1,38 @@
+.TH MOSMLLEX 1 "18 September 2001" "Version 2.0"
+.SH NAME
+mosmllex \- Moscow ML lexer generator
+.SH SYNOPSIS
+.B mosmllex \fIFILE\fR
+.SH DESCRIPTION
+.PP
+Given a set of regular expressions with attached semantic actions
+.B mosmllex
+produces a lexical analyser in the style of \fBlex\fR.
+.PP
+If \fiFILE\fR is \fBlexer.lex\fR containing a specification
+of a lexical analyser then
+.B mosmllex
+\fblexer.lex\fR
+produces a file \fBlexer.sml\fR containing Moscow ML code
+for the lexical analyser.  This file defines one lexing function per
+entry point in the lexer definition.  These functions have the same
+names as the entry points.  Lexing functions take as argument a lexer
+buffer, and return the semantic attribute of the corresponding entry
+point.
+.PP
+For more information consult the online manuals.
+.SH AUTHOR
+Compiled by Henning Niss from the various Moscow ML documents 
+written by Sergei Romanenko, Claudio Russo, and Peter Sestoft.
+.SH "SEE ALSO"
+.BR mosml (1),
+.BR mosmlc (1),
+.BR mosmlyac (1)
+.PP
+The full documentation for
+.B mosmllex
+and the other Moscow ML tools can be found in the online manuals in 
+\fB/usr/share/doc/mosml/manual.pdf.gz\fR
+(`Moscow ML Owner's Manual') and
+\fB/usr/share/doc/mosml/mosmllib.pdf.gz\fR
+(`Moscow ML Library Documentation').

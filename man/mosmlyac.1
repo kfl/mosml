@@ -1,0 +1,49 @@
+.TH MOSMLYAC 1 "18 September 2001" "Version 2.0"
+.SH NAME
+mosmlyac \- Moscow ML parser generator
+.SH SYNOPSIS
+.B mosmlyac [\fIOPTION\fR]... \fIFILE\fR
+.SH DESCRIPTION
+.PP
+Given a context-free grammar specification with attached semantic
+actions, 
+.B mosmlyac
+produces a parser, in the style of \fByacc\fR.
+.PP
+If \fiFILE\fR is \fBgrammar.grm\fR containing a grammar specification
+then
+.B mosmlyac
+\fBgrammar.grm\fR
+produces a file \fBgrammar.sml\fR containing a Moscow ML unit with
+code for a parser and a file \fBgrammar.sig\fR containing its
+interface.
+.PP
+This manual page documents the options accepted by 
+.B mosmlyac.
+For more information consult the online manuals.
+.SH OPTIONS
+.TP
+\fB\-v\fR
+Generate a description of the parsing tables and a report on
+conflicts resulting from ambiguities in the grammar.  The
+description is put in file \fBgrammar.output\fR (when
+\fIFILE\fR is \fBgrammar.grm\fR).
+.TP
+\fB\-v\fR \fIprefix\fR
+Name the output files \fBprefix.sml\fR, \fBprefix.sig\fR, 
+\fBprefix.output\fR, instead of using the default naming convention.
+.SH AUTHOR
+Compiled by Henning Niss from the various Moscow ML documents 
+written by Sergei Romanenko, Claudio Russo, and Peter Sestoft.
+.SH "SEE ALSO"
+.BR mosml (1),
+.BR mosmlc (1),
+.BR mosmllex (1)
+.PP
+The full documentation for
+.B mosmlyac
+and the other Moscow ML tools can be found in the online manuals in 
+\fB/usr/share/doc/mosml/manual.pdf.gz\fR
+(`Moscow ML Owner's Manual') and
+\fB/usr/share/doc/mosml/mosmllib.pdf.gz\fR
+(`Moscow ML Library Documentation').

@@ -1,0 +1,230 @@
+.TH MOSMLC 1 "18 September 2001" "Version 2.0"
+.SH NAME
+mosmlc \- Standard ML batch compiler
+.SH SYNOPSIS
+.B mosmlc [\fIOPTION\fR]... [\fIFILE\fR]...
+.SH DESCRIPTION
+.PP
+Invokes the Moscow ML batch compiler and linker.  The compiler
+compiles units and links programs, and can turn them into standalone
+executable bytecode files.
+.PP
+The 
+.B mosmlc
+command has a command-line interface similar to that of most C
+compilers.  It accepts several types of arguments: source files for
+unit interfaces, source files for unit implementations, compiled unit
+interfaces (which are added to the compilation context), and compiled
+unit implementations (which are added to the linked executable).
+.PP
+A \fIFILE\fR argument ending in \fB.sig\fR is taken to be the name of
+a source file containing a unit interface.  Given a file \fBU.sig\fR,
+the compiler produces a compiled interface in the file \fBU.ui\fR.
+.PP
+A \fIFILE\fR argument ending in \fB.sml\fR is taken to be the name of
+a source file containing a unit implementation.  Given a file \fBU.sml\fR,
+the compiler produces compiled object code in the file \fBU.uo\fR. It
+also produces an inferred interface file \fBU.ui\fR if there is no
+explicit interface \fBU.sig\fR.
+.PP
+A \fIFILE\fR argument ending in \fB.ui\fR is taken to be the name of a
+compilation unit interface.  The contents of that compilation unit
+are added to the compilation context of the remaining source files.
+.PP  
+A \fIFILE\fR argument ending in \fB.uo\fR is taken to be the name of a
+compiled unit implementation.  Such files are linked together, along
+with the compiled unit implementations obtained by compiling \fB.sml\fR
+arguments (if any), and the necessary Moscow ML library files, to produce
+a standalone executable program.
+.PP
+The output of the linking phase is a file containing compiled code
+that can be executed by the runtime system 
+.B camlrunm.  
+If \fBmosmlout\fR is the name of the file produced by the linking
+phase (with option \fB\-o mosmlout\fR), the command
+.B mosmlout arg1 ... argn
+executes the compiled code contained in \fBmosmlout\fR.
+.PP
+Executing the code means executing the toplevel declarations of all
+the bytecode files involved, in the order in which they were linked.
+The list of command-line arguments \fBarg1\fR ... \fBargn\fR can
+be obtained in a program by \fBCommandLine.arguments ()\fR.
+.PP
+There is no distinguished function which is automatically invoked when
+the program is executed, but it is common to define a \fBmain\fR
+function and invoke it using the toplevel declaration 
+\fBval \_ = main()\fR.
+.PP
+This manual page documents the options accepted by 
+.B mosmlc.
+For more information consult the online manuals.
+.SH OPTIONS
+.TP
+\fB\-c\fR
+Compile only. Suppresses the linking phase of the compilation.
+Source code files are turned into compiled files (\fB.ui\fR
+and \fB.uo\fR), but no executable file is produced.  This option is
+useful for compiling separate units.
+.TP
+\fB\-conservative\fR
+Sets conservative mode for compilation of subsequent units: accept
+all extensions to the SML Modules language, but issue a warning for
+each use. This is the default.
+.TP
+\fB\-files\fR \fIresponse-file\fR
+Pass the names of files listed in file \fIresponse-file\fR to the
+linking phase just as if these names appeared on the command line.
+File names in \fIresponse-file\fR are separated by blanks (spaces,
+tabs, newlines) and must end either in \fB.sml\fR or \fB.uo\fR. A
+name \fBU.sml\fR appearing in the response file is equivalent to
+\fBU.uo\fR.
+.TP
+\fB\-g\fR
+This option causes some information about exception names to be
+written at the end of the executable bytecode file.
+.TP
+\fB\-g\fR
+Causes the compiler to print the inferred interface(s) of the unit
+implementation(s) being compiled.  Also causes the linker to list
+all object files linked.  A \fBU.sig\fR file corresponding to a given
+\fBU.sml\fR file can be produced semi-automatically by piping the
+output of the compiler to a file \fBU.out\fR, and subsequently editing
+this file to obtain a file \fBU.sig\fR.
+.TP
+\fB\-I\fR \fIdirectory\fR
+Add the given directory to the list of directories searched for
+compiled interface files (\fB.ui\fR) and compiled implementation
+files (\fB.uo\fR).  By default, the current directory is searched
+first, then the standard library directory.  Directories added with
+\fB\-I\fR are searched after the current directory, but before the
+standard library directory.  When several directories are added with
+several \fB\-I\fR options on the command line, these directories are
+searched from left to right.
+.TP
+\fB\-imptypes\fR
+Specifies that the type checker should distinguish between
+imperative and applicative type variables, generalize all
+applicative type variables, and generalize imperative type variables
+only in non-expansive expressions.
+.TP
+\fB\-liberal\fR
+Sets liberal mode for compilation of subsequent units: accept
+without warnings all extensions to the SML Modules language.
+.TP
+\fB\-msgstyle\fR \fIstyle\fR
+By specifying \fB\-msgstyle msdev\fR, one can make the compiler
+generate error messages understandable by Microsoft Developer
+Studio.  The default behaviour is to generate error messages
+understandable the Emacs editor in SML mode.
+.TP
+\fB\-noautolink\fR
+The linker automatically links in any additional object files
+required by the files explicitly specified on the command line.
+With option \fB\-noautolink\fR all required object files must be
+explicitly specified in the appropriate order.
+.TP
+\fB\-noheader\fR
+Causes the output file produced by the linker to contain only the
+bytecode, not preceded by any executable code.  A file 
+\fBmosmlout\fR thus obtained can be executed only by explicitly
+invoking the runtime system as follows: 
+.B camlrunm mosmlout.
+.TP
+\fB\-o\fR \fIexec-file\fR
+Specify the name of the output file produced by the linker.  In the
+absence of this option, a default name, \fBa.out\fR is used.
+.TP
+\fB\-orthodox\fR
+Sets orthodox mode for the compilation of subsequent units: reject
+all uses of the extensions to the SML Modules language.  That is,
+accept only SML Modules syntax.
+.TP
+\fB\-P\fR \fIunit-set\fR
+Determines which library units will be open at compile-time.
+Any library unit in the load path can be used by the compiler for
+type checking purposes.  Thus regardless of the \fB\-P\fR option,
+the compiler knows the type of library functions such as
+\fBArray.foldl\fR.
+.RS
+.TP
+\fB\-P\fR \fIdefault\fR
+The units \fBChar\fR, \fBList\fR, and \fBString\fR will be partially
+openend. This is the default, permitting e.g. \fBString.concat\fR
+to be referred to just as \fBconcat\fR.
+.TP
+\fB\-P sml90\fR 
+Provides an initial environment which is upwards compatible with
+that of the 1990 `Definition of Standard ML' and with pre-1.30 releases
+of Moscow ML. In particular, the functions \fBchr\fR, \fBexplode\fR,
+\fBimplode\fR, and \fBord\fR work on strings, not characters.   The
+math functions and input-output facilities required by the 1990
+Definition are available at top-level.  In addition the same libraries
+are opened as with \fB-P default\fR.
+.TP
+\fB\-P nj93\fR
+Provides a top-level environment which is mostly compatible with
+that of SML/NJ 0.93.  The functions \fBapp\fR, \fBceiling\fR,
+\fBchr\fR, \fBdec\fR, \fBexplode\fR, \fBfold\fR, \fBhd\fR, \fBimplode\fR,
+\fBinc\fR, \fBmax\fR, \fBmin\fR, \fBnth\fR, \fBnthtail\fR, \fBord\fR,
+\fBordof\fR, \fBrevapp\fR, \fBrevfold\fR, \fBsubstring\fR, \fBtl\fR,
+and \fBtruncate\fR have the same type and meaning as in SML/NJ 0.93.
+Note that this is incompatible with SML/NJ version 110. The math
+functions and input-output facilities required by the 1990 `Definition
+of Standard ML' are available at top-level.  In addition the same (new)
+libraries are opened as with \fB-P default\fR.  This option does not
+imply \fB-imptypes\fR.
+.TP
+\fB\-P full\fR
+Same as \fB\-P default\fR.
+.TP
+\fB\-P none\fR
+No library units are initially opened.
+.PP
+Additional directories to be searched for library units can be
+specified with the \fB-I\fR \fIdirectory\fR option.
+.RE
+.TP
+\fB\-q\fR
+Enables the quotation/antiquotation mechanism.
+.TP
+\fB\-standalone\fR
+Specifies that the runtime system should be prepended to the
+linked bytecode, thus creating a stand-alone executable.  This adds
+75--100 KB to the size of the linked file. 
+.TP
+\fB\-stdlib\fR \fIstdlib-directory\fR
+Specifies the standard library directory, which will be searched by
+the compiler and linker for the \fB.ui\fR and \fB.uo\fR files
+corresponding to units mentioned in the files being linked.  The
+default standard library is set when the system is created; under
+Debian it is \fB/usr/lib/mosml\fR.
+.TP
+\fB\-structure\fR
+Specifies that subsequent \fB.sml\fR and \fB.sig\fR source files
+must be compiled in `structure' mode.
+.TP
+\fB\-toplevel\fR
+Specifies that subsequent \fB.sml\fR and \fB.sig\fR source files
+must be compiled in `toplevel' mode.
+.TP
+\fB\-v\fR
+Prints the version number of the various passes of the compiler.
+.TP
+\fB\-valuepoly\fR
+Specifies that the type checker should use `value polymorphism'.
+Default.
+.SH AUTHOR
+Compiled by Henning Niss from the various Moscow ML documents 
+written by Sergei Romanenko, Claudio Russo, and Peter Sestoft.
+.SH "SEE ALSO"
+.BR mosml (1),
+.BR mosmlyac (1),
+.BR mosmllex (1)
+.PP
+The full documentation for
+.B mosmlc
+and the other Moscow ML tools can be found in the online manuals in 
+\fB/usr/share/doc/mosml/manual.pdf.gz\fR
+(`Moscow ML Owner's Manual') and
+\fB/usr/share/doc/mosml/mosmllib.pdf.gz\fR
+(`Moscow ML Library Documentation').
