@@ -1,10 +1,8 @@
-% manual.tex v. 2.00.0 Copyright (C) Peter Sestoft 1994, 2000-06-15
+% manual.tex v. 2.00.0 Copyright (C) Peter Sestoft 1994, 2000-06-16
 %
 % You may edit for lay-out, or leave out irrelevant sections (if
 % such omissions are marked somehow), but you may not redistribute the
 % sources.  The authors' names and the Moscow ML URL must be left in place.
-
-% TODO: Moscow ML type messages
 
 \documentclass[fleqn]{article}
 
@@ -19,7 +17,7 @@
 
   {\huge\bf Moscow ML Owner's Manual}\\[0.5cm]
 
-Version 2.00 of June 2000 --- draft 2000-06-15\\[0.5cm]
+Version 2.00 of June 2000 --- draft 2000-06-16\\[0.5cm]
 
 Sergei Romanenko, Russian Academy of Sciences, Moscow, Russia\\
 Claudio Russo, Cambridge University, Cambridge, United Kingdom\\
@@ -52,6 +50,10 @@ ML syntax and the most common built-in functions
 the \emph{Moscow ML Library Documentation}, describes in detail all
 Moscow ML library modules \cite{MoscowML:2000:MoscowMLLibrary}. 
 
+\vspace{0.5cm}
+
+\tableofcontents
+
 \vfill
 
 \begin{center}
@@ -63,7 +65,6 @@ Moscow ML library modules \cite{MoscowML:2000:MoscowMLLibrary}.
 
 \vfill
 
-\tableofcontents
 
 \newpage
 
@@ -793,6 +794,117 @@ compilation units; see Section~\ref{sec-compilation-units}.
 
 
 \newpage
+
+\section{How to read inferred types and signatures}
+
+When you enter a declaration in the interactive toplevel,
+\texttt{mosml} responds with a type or signature.  The response
+provides much information about the declaration, once you know how to
+read it.  
+
+When reporting the type of a value binding, the generalized variables
+are listed between the \texttt{val} keyword and the identifier(s)
+bound by the declaration:
+
+\begin{program}
+- val f = length;
+> val 'a f = fn : 'a list -> int        \rm{--- polymorphic function; \texttt{'a} has been generalized}
+\end{program}
+
+\noindent When value polymorphism (see
+Section~\ref{sec-valuepoly}) prevents the generalization of a type
+variable, it remains free and ungeneralized.  Hence \texttt{'a} will
+appear in the type \texttt{'a list -> int}, but will not be listed
+after \texttt{val}.
+
+For a \texttt{datatype} declaration, which is generative, the response
+describes the new internal type names (here \texttt{=u'}), the
+datatype's type structure (consisting of the internal type name and
+the constructors), and the constructors:
+
+\begin{program}
+- datatype u = A;
+> New type names: =u'
+  datatype u = (u',\verb+{+con A : u'\verb+}+)
+  con A = A : u'
+\end{program}
+
+\noindent
+The notation \texttt{=u'} means that the type name \texttt{u'} admits
+equality.  Since the \texttt{datatype} declaration is generative,
+repeated declaration will produce distinct internal new type names
+\texttt{=u''}, \texttt{=u'''}, etc.  If the datatype is polymorphic,
+the type name will be a type function, taking as parameter a type
+variable \texttt{'a}:
+
+\begin{program}
+- datatype 'a u = A of 'a;
+> New type names: =u
+  datatype 'a u = ('a u,\verb+{+con 'a A : 'a -> 'a u\verb+}+)
+  con 'a A = fn : 'a -> 'a u
+\end{program}
+
+\noindent 
+For a signature specifying an unknown type, the response is a type
+function \verb+/\t.{...}+ mapping any internal type name \texttt{t} to
+a record \verb+{...}+ which is the internal representation of the
+signature:
+
+\begin{program}
+- signature SIG = sig type t val x : t end;
+> signature SIG = /\verb+\+t.\verb+{+type t = t, val x : t\verb+}+
+\end{program}
+
+\noindent 
+For a structure declaration, the response describes any new internal
+type names, and then the internal signature of the structure.  Here it
+has three components (\texttt{t}, \texttt{A}, and \texttt{x}):
+
+\begin{program}
+- structure S = struct datatype t = A; val x = A end;
+> New type names: =t
+  structure S : \verb+{+datatype t = (t,\verb+{+con A : t\verb+}+), con A : t, val x : t\verb+}+
+\end{program}
+
+\noindent 
+For a functor, the response describes a signature function
+\verb+{...}->{...}+, mapping the signature of the functor argument to
+the signature of the functor body:
+
+\begin{program}
+- functor F(X : sig val x : int end) = struct val y = X.x end;
+> functor F : \verb+{+val x : int\verb+}+->\verb+{+val y : int\verb+}+
+\end{program}
+
+\noindent When the functor argument signature specifies an unknown
+type, the signature function will have the form \verb+!t'.{...}->{...}+
+in which the (internal) type name \texttt{t'} has been generalized:
+
+\begin{program}
+- functor F(X : sig type t; val x : t end) = struct val y = X.x end;
+> functor F : !t'.\verb+{+type t = t', val x : t'\verb+}+->\verb+{+val y : t'\verb+}+
+\end{program}
+
+\noindent When a standard generative functor \texttt{G}
+whose body contains a \texttt{datatype} declaration, the response
+describes which new (internal) type names will be generated at every
+application of the functor.  The notation \verb+{}->...+ means that
+the functor argument signature is empty, and the notation
+\verb+?=t'.{...}+ says that there is some type name \verb+t'+,
+admitting equality, such that the functor body has the signature
+\verb+{...}+:
+
+\begin{program}
+- functor F() = struct datatype t = A end;
+> functor F : \verb+{+\verb+}+->?=t'.\verb+{+datatype t = (t',\verb+{+con A : t'\verb+}+), con A : t'\verb+}+
+\end{program}
+
+\noindent When the functor is applicative (see
+Section~\ref{sec-applicative-functors}) then no new type names are
+generated.
+
+
+\newpage
 \section{Compilation units}
 \label{sec-compilation-units}
 
@@ -1121,7 +1233,9 @@ A toplevel-mode compilation unit may contain arbitrary Moscow ML code,
 and consequently, arbitrary Standard ML code.  
 
 
-\subsection{The meaning of toplevel-mode compilation}
+\subsection{Basic concepts}
+
+TODO: the meaning of .sig and .sml files in this context.
 
 For a toplevel-mode unit it is immaterial whether a compilation unit
 is compiled and directly executed in the interactive toplevel system:
@@ -1146,7 +1260,7 @@ before \texttt{unitid.sml}.
 
 More generally, when a compilation unit depends on a number of other
 compilation units \texttt{"unitid\et"},\ldots,\texttt{"unitid\n"},
-then 
+then compilation inside the interactive toplevel system:
 
 \begin{program}
 mosml
@@ -1154,7 +1268,8 @@ mosml
 > use "unitid.sml";
 \end{program}
 
-\noindent should be equivalent to the following:
+\noindent is equivalent to toplevel-mode compilation followed by
+loading into the interactive system:
 
 \begin{program}
 mosmlc -c -toplevel "unitid\et.ui" \ldots "unitid\n.ui" unitid.sml 
@@ -1170,19 +1285,21 @@ mosml
 The purpose of the project manager \texttt{mosmlpm}\footnote{The
   project manager was developed by Ken Larsen and Martin Elsman.}  is
 to manage the compilation of projects consisting of more than one
-compilation unit (file).  Projects can be organized hierarchically.
+compilation unit (file).  The project manager invokes the batch
+compiler \texttt{mosmlc} to actually compile the source files.
 
-The current \texttt{mosmlpm} implementation has the following limitations: (1)
-source files must be have extension .sml --- it cannot handle files
-with extension .sig; (2) it does not resolve filename conflicts in
-different (sub)projects.
+The current \texttt{mosmlpm} implementation has the following
+limitations: (1) source files must be have extension .sml --- it
+cannot handle files with extension .sig; (2) it does not resolve
+filename conflicts in different (sub)projects.
 
 
 \subsubsection{Project files}
 \label{sec:gramm-proj-files}
 
-Each project is described by a \emph{project file}.  A project file
-has file extension \texttt{.pm} and must follow this grammar:
+Each project is described by a \emph{project file}.  Projects can be
+organized hierarchically.  A project file has file extension
+\texttt{.pm} and must follow this grammar:
 
 \begin{tabular}{lcll}
 
@@ -1202,7 +1319,7 @@ files using absolute or relative paths (relative to the location of
 the project file).  Project files may contain Standard ML style
 comments.  The declared identifiers of a project is the union of the
 identifiers declared by the source files in the project, except for
-source files that included inside \texttt{local}.
+source files included inside \texttt{local}.
 
 A source file must contain Standard ML top-level declarations.  The
 scope of a declaration is the subsequent source files mentioned in the
@@ -1223,10 +1340,10 @@ that each project is executed only the first time it is imported.
 
 Consider again the files \texttt{Expr.sml}, \texttt{Reduce.sig},
 \texttt{Reduce.sml}, \texttt{Evaluate.sig}, and \texttt{Evaluate.sml},
-from Section~\ref{sec-example-units}.  To compile these files with PM
-we first have to rename all \textit{name}\texttt{.sig} files to
-\textit{name}\texttt{-sig.sml} becase PM cannot handle \texttt{.sig}
-files (yet).
+from Section~\ref{sec-example-units}.  To compile these files with
+\texttt{mosmlpm} we first have to rename all
+\textit{name}\texttt{.sig} files to \textit{name}\texttt{-sig.sml}
+becase \texttt{mosmlpm} cannot handle \texttt{.sig} files (yet).
 
 Now we can make a project file (\texttt{evaluator.pm}) with the
 following contents:
@@ -1565,6 +1682,8 @@ The following command-line options are recognized by {\tt mosmlc}.
   Specify that the type checker should use `value polymorphism'; see
   Section~\ref{sec-valuepoly}.  Default.
 \end{description}
+
+
 
 
 
@@ -2185,7 +2304,7 @@ but with a more ML-like syntax.
 \item[{\tt `{\rm char}`}]\mbox{ }
 
   A character constant, with a syntax similar to that of Moscow ML
-  character constants; see Section~\ref{sec-character-constants}.
+  character constants; see Section~\ref{sec-character-string-constants}.
   Match the denoted character.
 
 \item[{\tt \_}]\mbox{ }
@@ -2197,10 +2316,10 @@ but with a more ML-like syntax.
   Match the end of the lexer input.
 
 \item[{\tt "{\rm string}"}]\mbox{ }
-
+  
   A string constant, with a syntax similar to that of Moscow ML string
-  constants; see Section~\ref{sec-string-constants}.  Match the
-  denoted string.
+  constants; see Section~\ref{sec-character-string-constants}.  Match
+  the denoted string.
 
 \item[{\tt [ {\rm character-set} ]}]\mbox{ }
 
@@ -2293,7 +2412,7 @@ conjunction with the operations on lexer buffers (provided by the {\tt
 
 
 \subsubsection{Character constants and string constants}
-\label{sec-character-constants}
+\label{sec-character-string-constants}
 
 A \emph{character constant} in the lexer definition is delimited by
 \verb#`# (backquote) characters.  The two backquotes enclose either a
