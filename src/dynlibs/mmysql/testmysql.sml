@@ -1,4 +1,4 @@
-(* Testing the Mysql interface -- 1999-08-08 *)
+(* Testing the Mysql interface -- 1999-08-08, 2000-05-30 *)
 
 (* Test number 5a fails because MySQL reports the number of affected
    rows incorrectly after an SQL delete operation.  This is evident
@@ -8,7 +8,7 @@
 (* MySQL does not implement boolean fields correctly, so the bool
 tests have been disabled below; see MYSQLBOOLERROR *)
 
-app load ["Int", "Mysql"];
+app load ["Int", "Mysql", "Mosml"];
 
 use "../../mosmllib/test/auxil.sml";
 
@@ -280,6 +280,25 @@ val _ = copytablefrom (pc, "t",
 
 val test10 = check'(fn _ => (copytableto (pc, "t", append6); 
 			    expected = return6 ()));
+
+val _ = (execute pc "DROP TABLE large"; ()) handle Fail _ => ();
+
+val test11a = execute pc "CREATE TABLE large (nr INT)";
+
+val test11b = 
+    let fun f 0 = ()
+	  | f n = (execute pc ("INSERT INTO large VALUES (" ^ 
+			       Int.toString n ^ ")"); f (n-1))
+    in f 50000 end;
+
+(* Function getall used to take 189 sec, now takes 0.3 sec, on 
+   AMD K7 600 MHz (2000-05-30): 
+*)
+
+fun getall _ = let val dbres = execute pc "SELECT * FROM large"
+	       in Mosml.time getdyntups dbres end;
+
+val test11c = List.app (ignore o getall) (List.tabulate(15, fn i => i))
 
 end;
 

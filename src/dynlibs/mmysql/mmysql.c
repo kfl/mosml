@@ -1,6 +1,6 @@
 /* mmysql.c -- Moscow ML interface interface to the mysql library.
    thomassi@dina.kvl.dk 1999-07-06  
-   sestoft@dina.kvl.dk 1999-08-07 */
+   sestoft@dina.kvl.dk 1999-08-07, 2000-05-30 */
 
 #include <stdlib.h>
 
@@ -10,15 +10,13 @@
 #include <string.h>
 #endif
 
-#include <fail.h>
-#include <alloc.h>
-
-
 /* Access to the camlrunm/Moscow ML runtime data representation: */
 
 #include <mlvalues.h>
 #include <memory.h>
 #include <str.h>
+#include <fail.h>
+#include <alloc.h>
 
 /* Access to Mysql stuff: */
 
@@ -41,20 +39,29 @@
    must be closed explicitly for its resources to be deallocated.
 
 
-   A query result dbresult_ should be a finalized object: a pair, 
+   A query result dbresult_ should be a finalized object: a triple
 
               header with Final_tag
               0: finalization function dbresult_finalize
               1: MYSQL_RES pointer
+              2: MYSQL_ROW_OFFSET pointer
 
    whose component 0 is a pointer to the finalizing function
-   dbresult_finalize, and whose component 1 is a pointer to a MYSQL_RES
-   value.  The finalization function will apply mysql_free_result to
-   the second component of the pair. */
+   dbresult_finalize, whose component 1 is a pointer to a MYSQL_RES
+   value, and whose component 2 is a pointer to an array of 
+   MYSQL_ROW_OFFSETs, used for fast indexing into the result set.  The 
+   length of the array equals the number of tuples in the result set.
+   The array is needed because we use mysql_row_seek, which seems to 
+   take time O(1), for indexing into the resultset.  Using 
+   mysql_data_seek was a bad idea, that appeared to take time O(n).
+   The finalization function will apply mysql_free_result to component 
+   1 and free the component 2 array.
+*/
 
 #define DBconn_val(x) ((MYSQL*)(Field(x, 0)))
 
-#define DBresult_val(x) ((MYSQL_RES*)(Field(x, 1)))
+#define DBresult_val(x)      ((MYSQL_RES*)(Field(x, 1)))
+#define DBresultindex_val(x) ((MYSQL_ROW_OFFSET*)(Field(x, 2)))
 
 value dbconn_alloc(MYSQL* conn)
 { 
@@ -66,18 +73,37 @@ value dbconn_alloc(MYSQL* conn)
 void dbresult_finalize(value dbresval)
 { 
   MYSQL_RES* dbres = DBresult_val(dbresval);
-  if (dbres != NULL)
+  MYSQL_ROW_OFFSET* index = DBresultindex_val(dbresval);
+  if (dbres != NULL) {
     mysql_free_result(dbres);
+    DBresult_val(dbresval) = NULL;
+    stat_free((char*)index);
+    DBresultindex_val(dbresval) = NULL;
+  }
 }
 
 /* When the dbresult_ value becomes unreachable from the ML process,
    it will be garbage-collected, and dbresult_finalize() will be
    called on the pointer to the MYSQL_RES struct to deallocate it.  */
 
-value dbresult_alloc(MYSQL_RES* dbres)
-{ 
-  value res = alloc_final(2, &dbresult_finalize, 1, 10000);
+value dbresult_alloc(MYSQL_RES* dbres) { 
+  value res = alloc_final(3, &dbresult_finalize, 1, 10000);
+  MYSQL_ROW_OFFSET* index = NULL;
   initialize(&Field(res, 1), (value)dbres);
+  if (dbres != NULL) {
+    int numrows = mysql_num_rows(dbres);
+    if (numrows > 0) {
+      int i = 0;
+      MYSQL_ROW row;
+      index = (MYSQL_ROW_OFFSET*)
+	(stat_alloc(sizeof(MYSQL_ROW_OFFSET) * numrows));
+      for (i=0; i<numrows; i++) {
+	index[i] = mysql_row_tell(dbres);
+	mysql_fetch_row(dbres);
+      }
+    }
+  }
+  initialize(&Field(res, 2), (value)index);
   return res;
 }
 
@@ -341,17 +367,21 @@ EXTERNML value db_ftype(value dbresval, value fieldno)
 
 /* See /usr/local/include/mysql/mysql.h for the Mysql C types */
 
+MYSQL_ROW seekandgetrow(value dbresval, int n) {
+  /* mysql_row_seek seems to take time O(1), mysql_data_seek takes O(n) */
+  mysql_row_seek(DBresult_val(dbresval), 
+		 DBresultindex_val(dbresval)[n]);
+  return mysql_fetch_row(DBresult_val(dbresval));
+}
+
 /* ML type : dbresult_ -> int -> int -> int */
 EXTERNML value db_getint(value dbresval, value tupno, value fieldno) 
 {
   MYSQL_ROW row;
   checkbounds(dbresval, tupno, fieldno, "db_getint");
-  /* seek to right tupple */
-  mysql_data_seek(DBresult_val(dbresval), Long_val(tupno));
-
-  row = mysql_fetch_row(DBresult_val(dbresval));
+  row = seekandgetrow(dbresval, Long_val(tupno));
   if (row == NULL)
-    failwith("db_getint");
+    failwith("db_getint 2");
   return Val_long(atoi(row[Long_val(fieldno)])); 
 }
 
@@ -360,11 +390,7 @@ EXTERNML value db_getreal(value dbresval, value tupno, value fieldno)
 {
   MYSQL_ROW row;
   checkbounds(dbresval, tupno, fieldno, "db_getreal");
-
-  /* seek to right tupple */
-  mysql_data_seek(DBresult_val(dbresval), Long_val(tupno));
-
-  row = mysql_fetch_row(DBresult_val(dbresval));
+  row = seekandgetrow(dbresval, Long_val(tupno));
   if (row == NULL)
     failwith("db_getreal");
   return copy_double(atof(row[Long_val(fieldno)]));
@@ -375,11 +401,7 @@ EXTERNML value db_getstring(value dbresval, value tupno, value fieldno)
 {
   MYSQL_ROW row;
   checkbounds(dbresval, tupno, fieldno, "db_getstring");
-
-  /* seek to right tupple */
-  mysql_data_seek(DBresult_val(dbresval), Long_val(tupno));
-
-  row = mysql_fetch_row(DBresult_val(dbresval));
+  row = seekandgetrow(dbresval, Long_val(tupno));
   if (row == NULL)
     failwith("db_getint");
   return copy_string(row[Long_val(fieldno)]);
@@ -390,14 +412,9 @@ EXTERNML value db_getbool(value dbresval, value tupno, value fieldno)
 {
   MYSQL_ROW row;
   checkbounds(dbresval, tupno, fieldno, "db_getbool");
-
-  /* seek to right tupple */
-  mysql_data_seek(DBresult_val(dbresval), Long_val(tupno));
-  row = mysql_fetch_row(DBresult_val(dbresval));
-
+  row = seekandgetrow(dbresval, Long_val(tupno));
   if (row == NULL)
     failwith("db_getbool");
-
   return Val_bool(!strcmp(row[Long_val(fieldno)], "t"));
 }
 
@@ -406,11 +423,7 @@ EXTERNML value db_getisnull(value dbresval, value tupno, value fieldno)
 {
   MYSQL_ROW row;
   checkbounds(dbresval, tupno, fieldno, "db_getisnull");
-
-  /* seek to right tupple */
-  mysql_data_seek(DBresult_val(dbresval), Long_val(tupno));
-  row = mysql_fetch_row(DBresult_val(dbresval));
-
+  row = seekandgetrow(dbresval, Long_val(tupno));
   if (row == NULL)
     failwith("db_getisnull");
   return Val_bool(row[Long_val(fieldno)]==NULL); 
@@ -459,7 +472,7 @@ EXTERNML value db_exec(value conn, value query)
   if (mysql_real_query(DBconn_val(conn), String_val(query), string_length(query)))
     failwith("db_exec query failed"); 
   else {
-    MYSQL_RES *dbres=mysql_store_result(DBconn_val(conn));
+    MYSQL_RES *dbres = mysql_store_result(DBconn_val(conn));
     return dbresult_alloc(dbres); 
   }
 }
