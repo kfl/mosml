@@ -12,6 +12,7 @@ val length   : 'a array -> int
 val sub      : 'a array * int -> 'a
 val update   : 'a array * int * 'a  -> unit
 val extract  : 'a array * int * int option -> 'a Vector.vector
+val vector   : 'a array -> 'a Vector.vector
 
 val copy     : {src: 'a array,  si: int, len: int option,
                 dst: 'a array, di: int} -> unit

@@ -80,6 +80,17 @@ fun update(a, i, v) =
 	else update_ a i v
     end
 
+fun vector (a : 'a array) =
+    let val a = from_array a : 'a array_ 
+	val n = length_ a
+	val newvec = vector_ n () : 'a vector
+	fun copy j = 
+	    if j<n then
+		(updatev newvec j (sub_ a j); copy (j+1))
+	    else
+		()
+    in copy 0; newvec end;
+
 fun extract (a : 'a array, i, slicelen) =
     let val a = from_array a : 'a array_ 
 	val n = case slicelen of NONE => length_ a - i | SOME n => n
