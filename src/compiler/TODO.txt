@@ -1,8 +1,7 @@
 ---------
-sharing constraints.
+The problem with sharing constraints and abstractions.
 
-
-previously:
+until now:
 0.	type names are pointer to realistions.
 
 1.	mosml represented sharing constraints by making the shared
@@ -27,14 +26,14 @@ By 3) u is tyname that point to the tyname t.
 
 structure X = struct type t = int type u = int end:>S.
 
-When we the structure againts S, t in S is realised to int, then, by 2) u is compressed to point directly at int, by passing t. After resetting t to hide its
-realistion, u still points to int, causing a loss of abstraction. Moreover,
+When we match the structure against S, t in S is realised to int, then, by 2) u is compressed to point directly at int, by-passing t. After resetting t to hide its realistion, u still points to int, 
+causing a loss of abstraction. Moreover,
 X.t and X.u no longer share, though they should.
 
 Possible solutions:
 
 A. Do sharing constraints not by swinging pointers but by substitution (taking a fresh copy modulo the substitution),
-ie relace u directly by t, instead of making t point to u.
+ie relace u directly by t, instead of making u point to t.
 This slows down the elaboration of sharing constraints.
 
 B. Take (another) copy of the signature before matching, use it for matching, but
@@ -42,8 +41,7 @@ return the original as the type of the phrase. This means that
 any path compression only affects the copy. It also means that copying must
 copy realised names too!
 
-C. Don't to path compression at all, 
-Copying, again, has to copy realised
+C. Don't to path compression at all! Copying, again, has to copy realised
 names too (I think).
 
 I've adopted C. as its simplest, although it does increase the size
@@ -54,6 +52,7 @@ but I may be wrong.
 This should probably be reviewed!
 
 -c
+
 ---------
 clean trToplevelDec --- the obscure mangling code could be improved 
 remove patch directory
