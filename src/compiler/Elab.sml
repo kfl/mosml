@@ -411,7 +411,7 @@ and unguardedSigExp (_,sigexp) =
   | WHEREsigexp (sigexp, tyvarseq, longtycon, ty) =>
            (unguardedSigExp sigexp U (unguardedTy ty without tyvarseq))
   | FUNSIGsigexp (_,modid, sigexp,sigexp') =>
-           (unguardedSigExp sigexp;unguardedSigExp sigexp')
+           (unguardedSigExp sigexp U unguardedSigExp sigexp')
 and unguardedSpec (_, spec') = 
   case spec' of
     VALspec _ => []
