@@ -3,6 +3,5 @@
 Lexer.sml
 Parser.sig
 Parser.sml
-htmlsigs
 index.txt
 makebase
