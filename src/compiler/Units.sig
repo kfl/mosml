@@ -99,6 +99,7 @@ val startCompilingUnit : string -> unit;
 val rectifySignature : unit ->
   (QualifiedIdent * (QualifiedIdent * int)) list * (string * int) list;
 
+
 end;
 
 

@@ -739,7 +739,7 @@ fun findSigId GE loc sigid =
 		  if i = #uName(!currentSig) then
 		      (msgIBlock 0;
 		       errLocation loc;
-		       errPrompt "The free signature dentifier may not refer to the current unit: ";
+		       errPrompt "The free signature identifier may not refer to the current unit: ";
 		       msgString sigid; msgEOL();
 		       msgEBlock();
 		       raise Toplevel)

@@ -80,7 +80,7 @@ fun normalizedUnitId (loc,s) = (loc,normalizedUnitName s)
 %type <Asynt.Sig> SigFile
 
 %start StructFile
-%type <Asynt.Struct> StructFile
+%type <Asynt.Dec list> StructFile
 
 %type <bool> EOPh
 %type <string> Ident EqIdent 
@@ -299,15 +299,16 @@ KWDec_seq1 :
 ;
 
 StructFile :
-    STRUCTURE ModId EQUALS STRUCT KWDec_seq END SemiEof
+/*    STRUCTURE ModId EQUALS STRUCT KWDec_seq END SemiEof
 		{ NamedStruct{locstrid = normalizedUnitId $2, locsigid = NONE, decs = $5} }
   | STRUCTURE ModId COLONGT SigId EQUALS 
 	                                      STRUCT KWDec_seq END SemiEof
 		{ Abstraction{locstrid = normalizedUnitId $2, locsigid = normalizedUnitId $4, decs = $7} }
   | STRUCT KWDec_seq END EOF
  		{ AnonStruct $2 } 
+*/
   | KWDec_seq EOF
- 		{ AnonStruct $1 } /* cvr: TODO introduces 3 reduce reduce conflicts */
+ 		{ $1 } /* cvr: TODO introduces 3 reduce reduce conflicts */
 ;
 KWDec_seq :
     KWDec KWDec_seq		{ $1 :: $2 }

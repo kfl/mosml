@@ -80,6 +80,15 @@ fun enable_quotation() =
   Lexer.quotation := true
 ;
 
+fun noUnitSupport () =
+  unitSupport := NOunitsupport;
+
+fun someUnitSupport () =
+  unitSupport := SOMEunitsupport;
+
+fun fullUnitSupport () =
+  unitSupport := FULLunitsupport;
+
 fun main () =
 (
   perv_set "default";
@@ -101,7 +110,10 @@ fun main () =
              ("-valuepoly", Arg.Unit (set_value_polymorphism true)),
 	     (* cvr: 144 merge *)
              ("-msgstyle",  Arg.String set_msgstyle), 
-             ("-m",         Arg.String set_msgstyle) 
+             ("-m",         Arg.String set_msgstyle),
+             ("-units",  Arg.Unit fullUnitSupport),
+             ("-nounits",  Arg.Unit noUnitSupport),
+             ("-warnunits",  Arg.Unit someUnitSupport)
              ]
     anonymous;
   if !path_library <> "" then

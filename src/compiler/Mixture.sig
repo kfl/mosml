@@ -78,3 +78,19 @@ val watchDog : (string, SigStamp) Hasht.t ref;
 
 val preloadedUnits : string list ref;
 val preopenedPreloadedUnits : string list ref;
+
+(* cvr: support for old-style unit implementations syntax *)
+datatype UnitSupport =
+     NOunitsupport      (* don't resolve .sml files nor
+			   free strids to unitids
+			 *)
+   | SOMEunitsupport    (* do resolve .sml files and 
+			   free strids to unitids --- with warnings!
+			 *)
+   | FULLunitsupport    (* silently resolve .sml files and 
+			   free strids to unitids.
+			 *)
+;
+
+val unitSupport : UnitSupport ref; 
+    (* we need *full* support for boostrapping *)

@@ -1,9 +1,25 @@
-o fix printing of record values (see compiler/test/result for the bug)
+o the -units option that tries to recogize old style 
+  unit implementation sytax currently incorrectly
+  recognizes
+  foo.sml :  structure foo = struct decs end :> foo 
+  as an occurrence of old style syntax, because it
+  resolves the phrase *after* expansion of derived forms.
+  It would be easy to add a flag to ABSmodexp to indicate whether
+  it was introduced by a derived form or not, but that's probably overkill.
+o restore reporting of results during signature compilation in Compile.sml
+o the last reduce/reduce conflict arises
+  from 
+  functor modid: sigexp => modexp  (* anonymous functor *)
+  and 
+  functor modid : sigexp = modexp  (* derived form for functor bindings *)
+  This should be fixed somehow, although both just affect parsing
+  of the extensions (they aren't legal sml anyway).
+
+o fix printing of record values (see compiler/test/result for the bug) (DONE)
 o reconsider use of large array in Back.sml (see bindEnv bug)
-o ask Peter about bindEnv bug raised by compiler/test/open2.sml
 o restore verbose mode
 o get rid of Units.extendXXX functions
-o get rid of reduce/reduce conflicts by post parse resolution.
+o get rid of reduce/reduce conflicts by post parse resolution (DONE).
 o cvr: TODO revise Match.sml
       translating a long exception name under the lambda of
       a pattern matching function can lead to a space leak --- 

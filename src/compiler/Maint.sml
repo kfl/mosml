@@ -96,6 +96,16 @@ fun set_msgstyle p =
     raise Arg.Bad ("Unknown message style " ^ p)
 ;
 
+fun noUnitSupport () =
+  unitSupport := NOunitsupport;
+
+fun someUnitSupport () =
+  unitSupport := SOMEunitsupport;
+
+fun fullUnitSupport () =
+  unitSupport := FULLunitsupport;
+
+
 fun main () =
 (
   msgIBlock 0;
@@ -121,7 +131,10 @@ fun main () =
                ("-quietdec",  Arg.Unit (set_quietdec true)),
 	       (* cvr: 144 merge *)
                ("-msgstyle",  Arg.String set_msgstyle),
-               ("-m",         Arg.String set_msgstyle)
+               ("-m",         Arg.String set_msgstyle),
+	       ("-units",  Arg.Unit fullUnitSupport),
+	       ("-nounits",  Arg.Unit noUnitSupport),
+	       ("-warnunits",  Arg.Unit someUnitSupport)
 	       ]
       anonymous;
     if !path_library <> "" then

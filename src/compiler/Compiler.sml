@@ -68,8 +68,62 @@ val parseToplevelPhrase =
   parsePhraseAndClear Parser.ToplevelPhrase Lexer.Token
 ;
 
-val parseStructFile =
-  parsePhraseAndClear Parser.StructFile Lexer.Token
+
+
+local 
+  fun normalizedUnitId (loc,s) = (loc,Config.normalizedUnitName s);
+  val warnIfRequired = fn loc =>
+      if(!unitSupport) = SOMEunitsupport then
+	  (msgIBlock 0;
+	   errLocation loc;
+	   errPrompt "Warning: because the option `-warnunits' is set, \
+	              \ the body of this structure \
+		      \(but not the structure declaration itself) \
+		      \is being used as the unit's implementation";
+	   msgEOL();
+	   msgEBlock())
+      else ()      
+  fun flattenDec (dec as (loc,dec')) acc =
+      case dec' of
+	  SEQdec (dec1,dec2) => flattenDec dec1 (flattenDec dec2 acc)
+(*        | EMPTYdec => acc *)
+        | _ => dec::acc
+  fun resolveDecs uname decs = 
+      if (!unitSupport) = NOunitsupport 
+	  then AnonStruct decs
+      else
+	  case decs of
+	  [(_,STRUCTUREdec([MODBINDmodbind(strid,modexp)]))] =>
+	      let val nstrid as (loc,strname) = normalizedUnitId strid
+	      in
+		  if strname = uname 
+		  then case modexp of
+		        (_,(ABSmodexp ((_,(DECmodexp dec,_)),
+				       (_,SIGIDsigexp(sigid)))
+			              ,_)) =>
+			   let val nsigid as (_,signame) = normalizedUnitId sigid
+			   in
+			       if signame = uname  
+			       then
+				  (warnIfRequired loc;
+				   Abstraction{locstrid=nstrid,
+					       locsigid=nsigid, 
+					       decs = flattenDec dec []})
+			       else AnonStruct decs
+			   end
+		      | (_,(DECmodexp dec,_)) =>
+			   (warnIfRequired loc;
+			    NamedStruct{locstrid = nstrid,
+				       locsigid = NONE,
+				       decs = flattenDec dec []})
+		      | _ =>  AnonStruct decs
+		  else AnonStruct decs
+	      end
+      | _ => AnonStruct decs
+in
+val parseStructFile = fn uname => fn lexbuff =>
+    resolveDecs uname (parsePhraseAndClear Parser.StructFile Lexer.Token lexbuff)
+end
 ;
 
 val parseSigFile =
@@ -458,6 +512,6 @@ fun compileUnitBody uname filename =
       input_name := filename_sml;
       input_stream := is;
       input_lexbuf := lexbuf;
-      (compileStruct (parseStructFile lexbuf))
+      (compileStruct (parseStructFile uname lexbuf))
        handle x => (close_in is; raise x)	  
   end;

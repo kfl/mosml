@@ -170,7 +170,7 @@ and ModExp' =
   | LETmodexp of Dec * ModExp 
   | PARmodexp of ModExp
   | CONmodexp of ModExp *  SigExp
-  | ABSmodexp of ModExp *  SigExp
+  | ABSmodexp of ModExp *  SigExp 
   | FUNCTORmodexp of FunctorSort *  ModId * (IdKindDesc ref) * SigExp * ModExp
   | APPmodexp of ModExp * ModExp
 and ModDesc = MODDESCmoddesc of ModId * SigExp
