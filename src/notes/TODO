@@ -1037,3 +1037,50 @@ Enter `quit();' to quit.
 ! cannot have type
 !   int -> int
 - quit();
+
+sestoft: The abstract syntax tree is annotated with source code
+positions which are used when reporting errors.  Somehow the end of
+the subtree (app f x) is wrong.  Probably this is due to some mistake
+in mosml/src/mosmllib/Parsing.sml or (more likely) in
+mosml/src/runtime/parsing.c.  I'll investigate.
+ 
+I've never encountered the problem myself, possibly because emacs
+always appends a newline at the end of source code files when saved.
+
+* 2002-04-08: MacOS X on swallow.al.cl.cam.ac.uk
+
+Compiler is cc, not gcc.
+
+Added option -traditional-cpp to CC.
+
+Added option -S to strip.
+
+~/bin is on PATH, but the shell needs a rehash to be able to find
+newly installed programs there.
+
+The mosmllib/test/filesys.sml tests test6e test6f test8d test8h fail
+because realpath and fullpath are too intelligent on MacOS X.  Changed
+the tests to accept the results.
+
+Dynamic linking is done using the dlcompat package from
+http://sourceforge.net/projects/fink/ which appears to be preinstalled
+in /sw/include and /sw/lib (but undocumented); it gives an interface
+similar to dlopen from Solaris/Linux.  
+
+Notes:
+
+ + If camlrunm is stripped, the symbols defined in it are not linkable.
+
+ + Must link files that are to be linked dynamiclly must be linked
+   using cc, not ld, otherwise symbol dyld_stub_binding_helper is
+   missing.
+
+ + The compiler (or linker?) inserts an underscore in front of
+   symbols it attempts to look up.  Wonderful.  This has been fixed by
+   a MacOS X specific version of dlsym() in runtime/dynlib.c.  We
+   recognize MacOS X as #if defined(__APPLE__) && defined(__MACH__)
+   and hope this is adequate.
+
+Now the crypt, interface, munix, mregex, msocket, mgdbm examples work.
+The remaining examples mgd mpq intinf mmysql require extra software.
+Callbacks work as well.

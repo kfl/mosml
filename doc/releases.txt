@@ -242,6 +242,7 @@ Moscow ML release history
     * Moved exnName and exnMessage to General (where they belong)
 
 2.01 (?)
+  * Support for dynamic linking and callback from C also under MacOS X
   * Bugs fixed:
     * The HTML files generated for mosmllib now have valid URLs
     * Substring.app more efficient

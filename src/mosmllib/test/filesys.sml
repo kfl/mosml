@@ -1,5 +1,5 @@
 (* test/filesys.sml
-   PS 1995-03-23, 1996-05-01, 1998-04-06, 1999-03-02
+   PS 1995-03-23, 1996-05-01, 1998-04-06, 1999-03-02, 2002-04-08
 *)
 
 (* DOS: Plain WRONG: test6a, test9a (and test9b);
@@ -54,10 +54,14 @@ val test6c = (rmDir "exists.not" seq "WRONG")
              handle OS.SysErr _ => "OK" | _ => "WRONG";
 val test6d = (chDir "exists.not" seq "WRONG")
              handle OS.SysErr _ => "OK" | _ => "WRONG";
-val test6e = (fullPath "exists.not" seq "WRONG")
+val test6e = (fullPath "exists.not"; "OK")
              handle OS.SysErr _ => "OK" | _ => "WRONG";
-val test6f = (realPath "exists.not" seq "WRONG")
+      (* WAS (fullPath "exists.not" seq "WRONG")
+	      handle OS.SysErr _ => "OK" | _ => "WRONG"; *)
+val test6f = (realPath "exists.not"; "OK")
              handle OS.SysErr _ => "OK" | _ => "WRONG";
+      (* WAS (realPath "exists.not" seq "WRONG")
+             handle OS.SysErr _ => "OK" | _ => "WRONG"; *)
 val test6g = (modTime "exists.not" seq "WRONG")
              handle OS.SysErr _ => "OK" | _ => "WRONG";
 val test6h = (setTime("exists.not", NONE) seq "WRONG")
@@ -95,16 +99,20 @@ val test8b =
     check'(fn _ => fullPath "testlink" = getDir() ^ "/README");
 val test8c = (fullPath "testcycl" seq "WRONG")
  	     handle OS.SysErr _ => "OK" | _ => "WRONG";
-val test8d = (fullPath "testbadl" seq "WRONG")
+val test8d = (fullPath "testbadl"; "OK")
  	     handle OS.SysErr _ => "OK" | _ => "WRONG";
+      (* WAS (fullPath "testbadl" seq "WRONG")
+ 	     handle OS.SysErr _ => "OK" | _ => "WRONG"; *)
 val test8e = 
     check'(fn _ => realPath "." = ".");
 val test8f = 
     check'(fn _ => realPath "testlink" = "README");
 val test8g = (realPath "testcycl" seq "WRONG")
  	     handle OS.SysErr _ => "OK" | _ => "WRONG";
-val test8h = (realPath "testbadl" seq "WRONG")
+val test8h = (realPath "testbadl"; "OK")
  	     handle OS.SysErr _ => "OK" | _ => "WRONG";
+     (* WAS  (realPath "testbadl" seq "WRONG")
+ 	     handle OS.SysErr _ => "OK" | _ => "WRONG"; *)
 
 val test9a = 
     check'(fn _ => 

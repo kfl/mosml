@@ -124,6 +124,7 @@ Enter `quit();' to quit.
   val test6e = "OK" : string
   val test6f = "OK" : string
   val test6g = "OK" : string
+  val 'a ### = fn : 'a list -> 'a vector
   val test6h = "OK" : string
   val test6i = "OK" : string
   val test6j = "OK" : string
@@ -437,15 +438,15 @@ Enter `quit();' to quit.
 > val checkrange = fn : int * int -> (int -> bool) -> string
 [closing file "auxil.sml"]
 > val it = () : unit
-This is (local time) now:        Wed Nov  1 19:58:37 2000
-This is UTC now:                 Wed Nov  1 18:58:37 2000
-This is an hour from now:        Wed Nov  1 20:58:37 2000
-This is a day from now:          Thu Nov  2 19:58:37 2000
-This is a week from now:         Wed Nov  8 19:58:37 2000
-This is 120 days from now:       Thu Mar  1 19:58:37 2001
-This is 160 days from now:       Tue Apr 10 20:58:37 2001
-This is 200 days from now:       Sun May 20 20:58:37 2001
-This is 240 days from now:       Fri Jun 29 20:58:37 2001
+This is (local time) now:        Mon Apr  8 21:20:39 2002
+This is UTC now:                 Mon Apr  8 19:20:39 2002
+This is an hour from now:        Mon Apr  8 22:20:39 2002
+This is a day from now:          Tue Apr  9 21:20:39 2002
+This is a week from now:         Mon Apr 15 21:20:39 2002
+This is 120 days from now:       Tue Aug  6 21:20:39 2002
+This is 160 days from now:       Sun Sep 15 21:20:39 2002
+This is 200 days from now:       Fri Oct 25 21:20:39 2002
+This is 240 days from now:       Wed Dec  4 20:20:39 2002
 This is the epoch (UTC):         Thu Jan  1 00:00:00 1970
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
@@ -454,10 +455,10 @@ The UTC millenium (local time):  Sat Jan  1 01:00:00 2000
 The local millenium (UTC time):  Fri Dec 31 23:00:00 1999
 The UTC+01 millenium (UTC):      Fri Dec 31 23:00:00 1999
 The UTC-01 millenium (UTC):      Sat Jan  1 01:00:00 2000
-This is today's number:          306 (internally: 305)
-This is today's weekday:         Wednesday
-This is the name of this month:  November
-Today's ISO date:                2000-11-01
+This is today's number:          098 (internally: 97)
+This is today's weekday:         Monday
+This is the name of this month:  April
+Today's ISO date:                2002-04-08
 > val test1 = "OK" : string
   val test2 = "OK" : string
   val test3 = "OK" : string
@@ -771,11 +772,28 @@ Should be `Io':
 [closing file "listpair.sml"]
 [opening file "listsort.sml"]
 > val it = () : unit
+[opening file "auxil.sml"]
+> infix 1 seq
+  val ('a, 'b) seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> (int -> bool) -> string
+[closing file "auxil.sml"]
 > val it = () : unit
-> val it = () : unit
-> val test1 = true : bool
-  val test2 = true : bool
-  val test3 = true : bool
+> val test1r = "OK" : string
+  val test1i = "OK" : string
+  val test2r = "OK" : string
+  val test2i = "OK" : string
+  val test3r = "OK" : string
+  val test3i = "OK" : string
+  val 'a double = fn : 'a list -> 'a list
+  val test4 = "OK" : string
+  val test5 = "OK" : string
+  val inteqccheck = fn :
+  (int * int -> order) -> int list -> int list list -> bool
+  val f = fn : int list * int list list -> bool
+  val test6 = "OK" : string
 [closing file "listsort.sml"]
 [opening file "math.sml"]
 [opening file "auxil.sml"]
@@ -1239,14 +1257,14 @@ abcde <--- this should read abcde
 > val it = () : unit
 
 Each line below should show roughly the same User, System, and Gc times:
+User: 0.150  System: 0.000  Gc: 0.000  Real: 0.152
+User: 0.150  System: 0.000  Gc: 0.000  Real: 0.152
+User: 0.160  System: 0.000  Gc: 0.000  Real: 0.152
+User: 0.150  System: 0.000  Gc: 0.000  Real: 0.150
 User: 0.150  System: 0.000  Gc: 0.000  Real: 0.151
+User: 0.150  System: 0.000  Gc: 0.000  Real: 0.152
 User: 0.150  System: 0.000  Gc: 0.000  Real: 0.151
-User: 0.160  System: 0.000  Gc: 0.000  Real: 0.151
-User: 0.150  System: 0.000  Gc: 0.000  Real: 0.150
-User: 0.150  System: 0.000  Gc: 0.000  Real: 0.150
-User: 0.150  System: 0.000  Gc: 0.000  Real: 0.150
-User: 0.150  System: 0.000  Gc: 0.000  Real: 0.150
-User: 0.150  System: 0.000  Gc: 0.000  Real: 0.150
+User: 0.150  System: 0.000  Gc: 0.000  Real: 0.149
 > val test1 = "OK" : string
   val test2 = "OK" : string
   val test3 = "OK" : string
@@ -1512,7 +1530,7 @@ test5:
 test6:
 test7:
 test8:
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
 > val a = <array> : int list array
   val test1 = "OK" : string
   val test2 = "OK" : string

@@ -12,6 +12,10 @@ PERL=perl
 
 BASELIBS=-lm
 
+# This works with most systems, but not MacOS X:
+
+CC=gcc
+
 # To compile the runtime system camlrunm with support for
 # dynamically loadable libraries (DDLs), uncomment these:
 
@@ -40,9 +44,13 @@ DYNLD=ld -shared
 # For MacOS X, use:
 # -----------------
 # CPP=/usr/bin/cpp -P -traditional -Dunix -Umsdos
-# STRIP=strip
-# LD=gcc
-# DYNLD=ld -shared
+# STRIP=strip -S
+# CC=cc -traditional-cpp
+# LD=cc
+# DYNLD=$(LD) -I/sw/include -bundle -flat_namespace -undefined suppress
+# ADDDYNLIBCFLAGS=-I/sw/include -fPIC
+# ADDRUNCFLAGS=-I/sw/include
+# ADDRUNLIBS=-L/sw/lib -ldl
 # BASELIBS=
 
 # For Cygwin 20.1, use:
@@ -157,8 +165,6 @@ MOSMLDEP=../camlrunm ../mosmldep
 
 # For cross-compiling to Win 32 (from Linux) (development only)
 # CPP=/lib/cpp -P -traditional -Umsdos -Uunix -Dwin32
-
-CC=gcc
 
 .SUFFIXES :
 .SUFFIXES : .sml .sig .ui .uo .mlp .lex .c .o
