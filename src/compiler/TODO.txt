@@ -1,3 +1,5 @@
+o fix printing of record values (see compiler/test/result for the bug)
+o reconsider use of large array in Back.sml (see bindEnv bug)
 o ask Peter about bindEnv bug raised by compiler/test/open2.sml
 o restore verbose mode
 o get rid of Units.extendXXX functions

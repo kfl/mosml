@@ -761,7 +761,7 @@ fun findSigId GE loc sigid =
 				  raise Toplevel)
 			   | SOME S =>
 				{qualid = {qual = i,id = []},
-				 info = copySig [] [] 
+				 info = copySig [] [] (* cvr: revise *)
 				 (LAMBDAsig(!(tyNameSetOfSig cu),
 					    STRmod S))}
 		      end
@@ -1351,7 +1351,22 @@ fun applyTyConPath ME FE GE UE VE TE ((tyconpath as (loc,_)) : TyConPath) ts =
         APPtyfun tyapp =>
           CONt(ts, tyapp)
       | TYPEtyfun(pars, body) =>
-          type_subst (zip2 pars ts) body
+          type_subst (zip2 pars ts) body 
+(* cvr: TODO would this improve sharing? *) 
+(*      | TYPEtyfun(pars, body) =>
+	  let val tyname = 
+	     {qualid = {qual="",id = [""]}, 
+	      info = ref {tnKind = ARITYkind arity,
+			 tnEqu = TRUEequ, (* cvr: TODO revise *)
+			 tnSort = REAts tyfun, 
+			 tnStamp = newTyNameStamp(),
+			 tnLevel = currentBindingLevel(),
+			 tnConEnv = ref NONE}}
+	  in
+	      CONt(ts, NAMEtyapp tyname)
+	  end
+*)
+(* cvr: end *)
       | LAMtyfun _ => fatalError "applyTyConpath"
   end;
 

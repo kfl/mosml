@@ -323,7 +323,472 @@ fun etaExpandTyFun tyfun =
       | TYPEtyfun _ => tyfun
       | LAMtyfun _ => fatalError "etaExpandTyFun";
       
+(* cvr: new, optimized and highly dodgy copying *)
 
+local 
+fun restrictBns bns1 bns2 = 
+    drop (fn (tn1,NAMEtyapp tn1') => 
+	       exists (fn (tn2,NAMEtyapp tn2') =>
+		           tn1 = tn2 andalso tn1' = tn2'
+	               | _ => false) bns2
+	  |  _ => false) bns1;
+fun restrictBvs bvs1 bvs2 = 
+    drop (fn (tv1,VARt tv1') => 
+	       exists (fn (tv2,VARt tv2') =>
+		           tv1 = tv2 andalso tv1' = tv2'
+			| _ => false) bvs2
+	  |  _ => false) bvs1;
+fun copyAndRealiseTyName (tn:TyName) tyfun =  
+    case tn of	
+	{qualid,info = ref { tnKind,tnEqu,tnStamp,tnSort = _, tnLevel,tnConEnv}} =>
+	    {qualid = qualid, 
+	     info = ref {tnKind = tnKind,
+			 tnEqu = tnEqu, 
+			 tnSort = REAts tyfun, 
+			 tnStamp = newTyNameStamp(),
+			 tnLevel = tnLevel,
+			 tnConEnv = ref NONE}}
+;
+
+fun copyEnv copyInfo bns bvs env = 
+    case env of
+      NILenv => (bns,bvs,true,env)
+    | BNDenv(k, info, env') =>
+	  let val (bns,bvs,sinfo,cinfo) = copyInfo bns bvs info
+	      val (bns,bvs,senv',cenv') = copyEnv copyInfo bns bvs env'
+	  in
+		case (sinfo,senv') of
+		       (false,false) => 
+			   (bns,bvs,false,BNDenv(k,cinfo,cenv'))
+		     | (true,false) => 
+			   (bns,bvs,false,BNDenv(k,info,cenv'))
+		     | (false,true) => 
+			   (bns,bvs,false,BNDenv(k,cinfo,env'))
+		     | (true,true) => (bns,bvs,true,env)
+	  end
+    | COMPenv(env1, env2) =>
+	  let val (bns,bvs,senv1,cenv1) = copyEnv copyInfo bns bvs env1
+	      val (bns,bvs,senv2,cenv2) = copyEnv copyInfo bns bvs env2
+	  in
+	      case (senv1,senv2) of
+		  (false,false) => (bns,bvs,false,COMPenv(cenv1,cenv2))
+		| (true,false) => (bns,bvs,false,COMPenv(env1,cenv2))
+		| (false,true) => (bns,bvs,false,COMPenv(cenv1,env2))
+		| (true,true) => (bns,bvs,true,env)
+	  end
+    | TOPenv(x, env) => fatalError "copyEnv"
+;
+
+fun copyPair copyFst copySnd bns bvs (pair as (fst,snd)) =  
+    let val (bns,bvs,sfst,cfst) = copyFst bns bvs fst
+	val (bns,bvs,ssnd,csnd) = copySnd bns bvs snd
+    in
+	case (sfst,ssnd) of
+	    (false,false) => (bns,bvs,false,(cfst,csnd))
+	  | (true,false) => (bns,bvs,false,(fst,csnd))
+	  | (false,true) => (bns,bvs,false,(cfst,snd))
+		| (true,true) => (bns,bvs,true,pair)
+    end
+;
+
+fun copyGlobal copyInfo bns bvs (global as {qualid,info}) =  
+	    let val (bns,bvs,sinfo,cinfo) = copyInfo bns bvs info
+	     in
+		 if sinfo 
+		 then (bns,bvs,true,global)
+		 else (bns,bvs,false,{qualid = qualid,info = cinfo})
+	     end
+;
+
+fun copyTyNameSet tnSort bns bvs T =  
+  let val bns' = 
+         map (fn tn =>
+	        case tn of
+		    {qualid,info = ref {tnKind,tnEqu,tnStamp,tnSort = _,tnLevel,tnConEnv}} =>
+                     let val tn' = {qualid = qualid, 
+				    info = ref {tnKind = tnKind,
+						tnEqu = tnEqu, 
+						tnSort = tnSort, 
+						tnStamp = newTyNameStamp(),
+						tnLevel= !binding_level,
+						tnConEnv = ref NONE}}
+		     in (tn, NAMEtyapp tn')
+		     end) 
+	 T
+      val bns'' = bns'@bns
+      fun copyConEnvs bns bvs [] = (bns,bvs,[])
+	| copyConEnvs bns bvs ((tn,NAMEtyapp tn')::bns') =
+	    case !(#tnConEnv (!(#info tn))) of
+		NONE => 
+		    let 
+			val (bns,bvs,T') = copyConEnvs bns bvs bns'
+		    in
+			(bns,bvs,tn'::T')
+		    end
+	      | SOME conenv => 
+		    let val (bns,bvs,sconenv,cconenv) = 
+			    copyConEnv bns bvs conenv
+			val (bns,bvs,T') = copyConEnvs bns bvs bns'
+		    in
+			if sconenv 
+		        then setTnConEnv (#info tn') (#tnConEnv(!(#info tn)))
+			else setTnConEnv (#info tn') (ref (SOME cconenv));
+			(bns,bvs,tn'::T')
+		    end
+       val (bns,bvs,T') = copyConEnvs bns'' bvs bns'
+   in
+        (restrictBns bns bns',bvs,T',bns')
+   end
+and copyTyName tnSort bns bvs tn =  
+    let val (bns,bvs,[tn'],[tn2tn']) = copyTyNameSet tnSort bns bvs [tn]
+    in
+	(bns,bvs,tn',tn2tn')
+    end
+and copyType bns bvs tau = 
+    case tau of
+	VARt var =>
+	    ((bns,bvs,false,lookup var bvs)
+	     handle Subscript => 
+		 (case #tvKind(!var) of
+		      NoLink => (bns,bvs,true,tau)
+		    | Explicit s => (bns,bvs,true,tau)
+		    | LinkTo tau' =>
+			  let val (bns,bvs,shared,tau'') = 
+			      copyType bns bvs tau' 
+			  in
+			      if shared then (bns,(var,tau')::bvs,false,tau')
+			      else (bns,(var,tau'')::bvs,false,tau'')
+			  end))
+      | ARROWt(t,u) =>
+	    let val (bns,bvs,st,ct) = copyType bns bvs t
+		val (bns,bvs,su,cu) = copyType bns bvs u
+	    in
+		case (st,su) of
+		       (false,false) => (bns,bvs,false,ARROWt(ct,cu))
+		     | (true,false) => (bns,bvs,false,ARROWt(t,cu))
+		     | (false,true) => (bns,bvs,false,ARROWt(ct,u))
+		     | (true,true) => (bns,bvs,true,tau)
+	    end
+      | CONt(ts, tyapp) =>
+	    let val (bns,bvs,sts,cts) = copyTypeList bns bvs ts
+		val (bns,bvs,styapp,ctyapp) = copyTyApp bns bvs tyapp
+	    in 
+		case (sts,styapp) of
+		    (false,false) => (bns,bvs,false,CONt(cts,ctyapp))
+		  | (true,false) => (bns,bvs,false,CONt(ts,ctyapp))
+		  | (false,true) => (bns,bvs,false,CONt(cts,tyapp))
+		  | (true,true) => (bns,bvs,true,tau)
+	    end
+      | RECt (ref {fields, rho = rowtype}) =>
+	    let val (bns,bvs,sfields,cfields) = copyFields bns bvs fields
+	    in 
+		if sfields then (bns,bvs,true,tau)
+		else (bns,bvs,false,RECt (ref {fields = cfields,rho = rowtype}))
+	    end
+      | PACKt X => 
+	    let val (bns,bvs,sX,cX) = copyExMod bns bvs X
+	    in
+		if sX then (bns,bvs,true,tau)
+		else (bns,bvs,false,PACKt cX)
+	    end
+and copyTypeList bns bvs (ts as []) = (bns,bvs,true,ts)
+|   copyTypeList bns bvs (tts as (t::ts)) = 
+    let val (bns,bvs,st,ct)= copyType bns bvs t
+	val (bns,bvs,sts,cts) = copyTypeList bns bvs ts
+    in  
+	case (st,sts) of
+	    (false,false) => (bns,bvs,false,ct::cts)
+	  | (true,false) => (bns,bvs,false,t::cts)
+	  | (false,true) => (bns,bvs,false,(ct::ts))
+	  | (true,true) => (bns,bvs,true,tts)    
+    end
+and copyFields bns bvs (fields as []) = (bns,bvs,true,fields)
+|   copyFields bns bvs (fields as ((field as (lab,t))::fields')) = 
+    let val (bns,bvs,st,ct)= copyType bns bvs t
+	val (bns,bvs,sfields',cfields') = copyFields bns bvs fields'
+    in  
+	case (st,sfields') of
+	    (false,false) => (bns,bvs,false,(lab,ct)::cfields')
+	  | (true,false) => (bns,bvs,false,field::cfields')
+	  | (false,true) => (bns,bvs,false,(lab,ct)::fields')
+	  | (true,true) => (bns,bvs,true,fields)    
+    end
+and copyTypeScheme bns bvs (scheme as TypeScheme {tscParameters=vs,tscBody=ty})  = 
+        let val _ = incrBindingLevel()
+            val vs' = map refreshTypeParameter vs 
+	    val bvs' = zip2 vs (map VARt vs')
+	    val (bns,bvs,sty,cty) = copyType bns (bvs'@bvs) ty
+	    val bvs = restrictBvs bvs bvs' 
+        in   
+	    decrBindingLevel();
+            if sty 
+	    then (bns,bvs,true,scheme)
+	    else (bns,bvs,false,TypeScheme{tscParameters = vs',tscBody = cty})
+        end
+and copyTyApp bns bvs tyapp  =  
+    case tyapp of
+       NAMEtyapp tyname => 
+         ((bns,bvs,false,lookup tyname bns)
+           handle Subscript =>
+             (case #tnSort(!(#info(tyname))) of
+		  VARIABLEts => (bns,bvs,true,tyapp)
+		| PARAMETERts => (bns,bvs,true,tyapp)
+		| REAts tyfun =>
+		      let 
+			  val (bns,bvs,styfun,ctyfun) = 
+			      copyTyFun bns bvs tyfun 
+		      in
+			  if styfun then
+			      (bns,bvs,true,tyapp)
+			  else
+			      let val ctyname = 
+				      copyAndRealiseTyName tyname ctyfun
+				  val ctyapp = NAMEtyapp ctyname
+			      in ((tyname,ctyapp)::bns,bvs,false,ctyapp)
+			      end
+		      end))
+    |  APPtyapp (tyapp',tyfun) =>  
+	    let val (bns,bvs,styapp',ctyapp') = copyTyApp bns bvs tyapp'
+		val (bns,bvs,styfun,ctyfun) = copyTyFun bns bvs tyfun
+	    in
+		case (styapp',styfun) of
+		       (false,false) => 
+			   (bns,bvs,false,APPtyapp(ctyapp',ctyfun))
+		     | (true,false) => 
+			   (bns,bvs,false,APPtyapp(tyapp',ctyfun))
+		     | (false,true) => 
+			   (bns,bvs,false,APPtyapp(ctyapp',tyfun))
+		     | (true,true) => (bns,bvs,true,tyapp)
+	    end
+and copyTyFun bns bvs tyfun =
+    case tyfun of 
+       TYPEtyfun (vs,ty) => 
+        let val _ = incrBindingLevel()
+            val vs' = map refreshTypeParameter vs 
+	    val bvs' = zip2 vs (map VARt vs')
+	    val (bns,bvs,sty,cty) = copyType bns (bvs'@bvs) ty
+	    val bvs = restrictBvs bvs bvs' 
+        in   
+	    decrBindingLevel();
+            if sty 
+	    then (bns,bvs,true,tyfun)
+	    else (bns,bvs,false,TYPEtyfun(vs',cty))
+        end
+    |  LAMtyfun (tn,tyfun') =>
+        let val () = incrBindingLevel ();
+            val (bns,bvs,tn',tn2tn') = copyTyName PARAMETERts bns bvs tn;
+	    val (bns,bvs,styfun',ctyfun') = 
+		copyTyFun (tn2tn'::bns) bvs tyfun
+	    val bns = restrictBns bns [tn2tn']
+        in   
+            decrBindingLevel();
+            if styfun'
+	    then (bns,bvs,true,tyfun)
+	    else (bns,bvs,false,LAMtyfun(tn',ctyfun'))
+        end
+    |  APPtyfun tyapp => 
+        let val (bns,bvs,styapp,ctyapp) = copyTyApp bns bvs tyapp
+        in   
+            if styapp
+	    then (bns,bvs,true,tyfun)
+	    else (bns,bvs,false,APPtyfun ctyapp)
+        end
+and copyConInfo bns bvs (coninfo as ref { conArity, conIsGreedy, conSpan, conTag, conType}) = 
+    let val (bns,bvs,sconType,cconType) = copyTypeScheme bns bvs conType
+    in 
+	if sconType 
+	then (bns,bvs,true,coninfo)
+	else (bns,
+	      bvs,
+	      false,
+	      ref {conArity = conArity,
+		   conIsGreedy = conIsGreedy,
+		   conSpan = conSpan,
+		   conTag = conTag,
+		   conType = cconType})
+    end
+and copyConStatusDesc bns bvs csd =
+    (case csd of 
+      CONname coninfo => 
+	  let val (bns,bvs,sconinfo,cconinfo) = copyConInfo bns bvs coninfo
+	  in
+	      if sconinfo 
+	      then (bns,bvs,true,csd)
+	      else (bns,bvs,false,CONname cconinfo)
+	  end
+    |   _ => (bns,bvs,true,csd))
+and copyVarEnv bns bvs env = 
+    copyEnv (copyGlobal 
+	     (fn bns => fn bvs =>
+	      fn (info as (scheme,status)) =>  
+	      let val (bns,bvs,sscheme,cscheme) = copyTypeScheme bns bvs scheme
+		  val (bns,bvs,sstatus,cstatus) = copyConStatusDesc bns bvs status
+	      in
+		  case (sscheme,sstatus) of
+		      (false,false) => (bns,bvs,false,(cscheme,cstatus))
+		    | (true,false) => (bns,bvs,false,(scheme,cstatus))
+		    | (false,true) => (bns,bvs,false,(cscheme,status))
+		    | (true,true) => (bns,bvs,true,info)
+	      end))
+    bns bvs env
+and copyConBindList bns bvs (coninfos as []) =
+    (bns,bvs,true,coninfos)
+|   copyConBindList bns bvs (coninfos as (coninfo :: coninfos')) =
+    let val (bns,bvs,sconinfo,cconinfo)= copyGlobal copyConInfo bns bvs coninfo
+	val (bns,bvs,sconinfos',cconinfos') = copyConBindList bns bvs coninfos'
+    in  
+	case (sconinfo,sconinfos') of
+	    (false,false) => (bns,bvs,false,cconinfo::cconinfos')
+	  | (true,false) => (bns,bvs,false,coninfo::cconinfos')
+	  | (false,true) => (bns,bvs,false,cconinfo::coninfos')
+	  | (true,true) => (bns,bvs,true,coninfos)    
+    end
+and copyConEnv bns bvs conenv =
+    case conenv of
+	ConEnv CE => 
+	    let val (bns,bvs,sCE,cCE) = copyConBindList bns bvs CE
+	    in 
+		if sCE
+		then (bns,bvs,true,conenv)
+		else (bns,bvs,false,ConEnv cCE)
+	    end
+      | LAMconenv(tn,conenv') =>
+        let val () = incrBindingLevel ();
+            val (bns,bvs,tn',tn2tn') = copyTyName PARAMETERts bns bvs tn;
+	    val (bns,bvs,sconenv',cconenv') = 
+		copyConEnv (tn2tn'::bns) bvs conenv'
+	    val bns = restrictBns bns [tn2tn']
+        in   
+            decrBindingLevel();
+            if sconenv'
+	    then (bns,bvs,true,conenv)
+	    else (bns,bvs,false,LAMconenv(tn',cconenv'))
+        end
+and copyTyEnv bns bvs TE = 
+    copyEnv (fn bns => fn bvs => 
+	     fn (info as (tyfun,CE)) => 
+	     let val (bns,bvs,styfun,ctyfun) = copyTyFun bns bvs tyfun
+		 val (bns,bvs,sCE,cCE) = copyConEnv bns bvs CE
+	     in
+		 case (styfun,sCE) of
+		     (false,false) => (bns,bvs,false,(ctyfun,cCE))
+		   | (true,false) => (bns,bvs,false,(tyfun,cCE))
+		   | (false,true) => (bns,bvs,false,(ctyfun,CE))
+		   | (true,true) => (bns,bvs,true,info)
+	     end)
+    bns bvs TE
+and copyStr bns bvs S =
+    case S of
+       STRstr (ME,FE,TE,VE) =>
+	     let val (bns,bvs,sME,cME) = copyModEnv bns bvs ME
+		 val (bns,bvs,sFE,cFE) = copyFunEnv bns bvs FE
+		 val (bns,bvs,sTE,cTE) = copyTyEnv bns bvs TE
+		 val (bns,bvs,sVE,cVE) = copyVarEnv bns bvs VE
+		 val rME = if sME then ME else cME
+		 val rFE = if sFE then FE else cFE
+		 val rTE = if sTE then TE else cTE
+		 val rVE = if sVE then VE else cVE
+	     in
+	        if sME andalso sFE andalso sTE andalso sVE 
+		then (bns,bvs,true,S) 
+		else (bns,bvs,false,STRstr (rME,rFE,rTE,rVE))
+	     end
+     |  SEQstr (S1,S2) =>
+	     let val (bns,bvs,sS1,cS1) = copyStr bns bvs S1
+		 val (bns,bvs,sS2,cS2) = copyStr bns bvs S2
+	     in
+		 case (sS1,sS2) of
+		     (false,false) => (bns,bvs,false,SEQstr(cS1,cS2))
+		   | (true,false) => (bns,bvs,false,SEQstr(S1,cS2))
+		   | (false,true) => (bns,bvs,false,SEQstr(cS1,S2))
+		| (true,true) => (bns,bvs,true,S)
+	     end
+and copyMod bns bvs M = 
+    case M of
+      STRmod S => 
+	  let val (bns,bvs,sS,cS) = copyStr bns bvs S
+	  in
+             if sS
+	     then (bns,bvs,true,M) 
+	     else (bns,bvs,false,STRmod cS)
+	  end		  
+    | FUNmod F => 
+	  let val (bns,bvs,sF,cF) = copyFun bns bvs F
+	  in
+             if sF
+	     then (bns,bvs,true,M) 
+	     else (bns,bvs,false,FUNmod cF)
+	  end		
+and copyModEnv bns bvs ME = 
+    copyEnv (copyGlobal copyStr) bns bvs ME
+and copyFunEnv bns bvs FE =
+    copyEnv (copyGlobal copyFun) bns bvs FE
+and copyFun bns bvs (F as (T,M,X)) =
+    let val () = incrBindingLevel ();
+	val (bns,bvs,T',T2T') = copyTyNameSet PARAMETERts bns bvs T 
+	val (bns,bvs,sM,cM) = copyMod ((T2T')@bns) bvs M
+	val (bns,bvs,sX,cX) = copyExMod bns bvs X
+	val bns = restrictBns bns T2T'
+    in
+        decrBindingLevel();	
+	case (sM,sX) of
+	    (false,false) => (bns,bvs,false,(T',cM,cX))
+	  | (true,false) => (bns,bvs,false,(T',M,cX))
+	  | (false,true) => (bns,bvs,false,(T',cM,X))
+	  | (true,true) => (bns,bvs,true,F)
+    end
+and copyExMod bns bvs (X as EXISTSexmod(T,M)) = 
+    let val () = incrBindingLevel ();
+	val (bns,bvs,T',T2T') = copyTyNameSet PARAMETERts bns bvs T 
+	val (bns,bvs,sM,cM) = copyMod ((T2T')@bns) bvs M
+	val bns = restrictBns bns T2T'
+    in
+        decrBindingLevel();	
+	if sM 
+	then (bns,bvs,true,X)
+	else (bns,bvs,false,EXISTSexmod(T',cM))
+    end
+and copySig bns bvs (G as LAMBDAsig(T,M)) = 
+    let val () = incrBindingLevel ();
+	val (bns,bvs,T',T2T') = copyTyNameSet PARAMETERts bns bvs T 
+	val (bns,bvs,sM,cM) = copyMod ((T2T')@bns) bvs M
+	val bns = restrictBns bns T2T'
+    in
+        decrBindingLevel();	
+	if sM 
+	then (bns,bvs,true,G)
+	else (bns,bvs,false,LAMBDAsig(T',cM))
+    end;
+in
+    val copyTyName = fn tnSort => fn  bns => fn bvs => fn  tn =>
+	let val (_,_,tn',tn2tn') = copyTyName tnSort bns bvs tn
+	in
+	    (tn',tn2tn')
+	end
+    val copyTyNameSet = fn tnSort => fn bns => fn bvs => fn T =>
+	let val (_,_,T',T2T') = copyTyNameSet tnSort bns bvs T
+	in
+	    (T',T2T')
+	end
+    val copyType = fn bns => fn bvs => fn t => 
+	#4 (copyType bns bvs t)
+    val copyTyFun = fn bns => fn bvs => fn tyfun => 
+	#4 (copyTyFun bns bvs tyfun)
+    val copyTyApp = fn bns => fn bvs => fn tyapp => 
+	#4 (copyTyApp bns bvs tyapp)
+    val copyConEnv = fn bns => fn bvs => fn conenv => 
+	#4 (copyConEnv bns bvs conenv)
+    val copyStr = fn bns => fn bvs => fn S => 
+	#4 (copyStr bns bvs S)
+    val copyGenFun = fn bns => fn bvs => fn F => 
+	#4 (copyFun bns bvs F) (* cvr: should be copyFun *)
+    val copyMod = fn bns => fn bvs => fn M => 
+	#4 (copyMod bns bvs M)
+    val copyExMod = fn bns => fn bvs => fn X => 
+	#4 (copyExMod bns bvs X)
+    val copySig = fn bns => fn bvs => fn G => 
+	#4 (copySig bns bvs G)
+end;
 
 (* free variables (type names, type vars and rho vars) *)
 (* cvr: TODO freevars currently done in reverse order for envs --- change this as it affects
@@ -412,8 +877,10 @@ and freeVarsSigEnv bns bvs fnvs GE =
 and freeVarsExEnv bns bvs fnvs (EXISTS(T,(ME,FE,GE,VE,TE))) = 
         freeVarsModEnv bns bvs (freeVarsFunEnv bns bvs (freeVarsSigEnv bns bvs (freeVarsTyEnv bns bvs (freeVarsVarEnv bns bvs fnvs VE) TE) GE) FE) ME
 
-(* cvr: copying *)
 
+
+(* cvr: original, non sharing but correct copying code *)
+(* 
 and copyTyNameSet tnSort bns bvs T =  
   let val bns' = 
          map (fn tn =>
@@ -579,8 +1046,13 @@ and copySig bns bvs (LAMBDAsig(T,M)) =
               decrBindingLevel();
               G
           end
+*)
+(* cvr: end original copying *)
+
+
 and apptycon tys tyfun = 
    case tyfun of 
+    (* TYPEtyfun([],tau) => tau *)
      TYPEtyfun(tvs,tau) => copyType [] (zip2 tvs tys) tau
    | APPtyfun tyapp => CONt (tys,tyapp)
    | _ => fatalError "apptycon"
@@ -657,9 +1129,9 @@ and normTyApp tyapp =
      (*                 (* normTyFun *) (apptyfun (normTyApp tyapp) tyfun) (* cvr: TODO does the outer norm cause looping? *) *)
 and normTyFun tyfun = 
   case tyfun of
-    LAMtyfun (tn,tyfun) => LAMtyfun (tn,tyfun)
+    LAMtyfun _ => tyfun
   | APPtyfun tyapp => normTyApp tyapp
-  | TYPEtyfun (tyvars,ty) => TYPEtyfun (tyvars,ty);
+  | TYPEtyfun _ => tyfun;
 
 (* cvr: normalizing a module type sorts the entries of its term components           so their field positions can be calculated correctly *)
 
