@@ -164,11 +164,15 @@ echo "#define sighandler_return_type $h" >> s.h
 
 # Check the semantics of signal handlers
 
+ostype=`uname`
+
+if test "IRIX64" != "$ostype"; then
 if sh runtest signals.c; then
   echo "Signals have the BSD semantics."
   echo "#define BSD_SIGNALS" >> s.h
 else
   echo "Signals have the System V semantics."
+fi
 fi
 
 # For the sys module
