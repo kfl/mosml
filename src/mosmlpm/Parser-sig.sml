@@ -17,6 +17,8 @@ sig
     val || : ('a, 'b) parser * ('a, 'b) parser -> ('a, 'b) parser
     val >> : ('a, 'b) parser * ('b -> 'c) -> ('a, 'c) parser
 
+    val bind : ('a, 'b) parser * ('b -> ('a, 'c) parser) -> ('a, 'c) parser
+
     val #-- : ('a, 'b) parser * ('a, 'c) parser -> ('a, 'c) parser
     val --# : ('a, 'b) parser * ('a, 'c) parser -> ('a, 'b) parser
 

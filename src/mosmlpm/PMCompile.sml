@@ -53,7 +53,7 @@ struct
 	    let open Process
 		val cont = List.concat ([file] :: files context)
 		val cont = rev(insertSep " " cont)
-		val args = String.concat("mosmlc -c -toplevel ":: cont)
+		val args = String.concat("mosmlc -c -orthodox -toplevel ":: cont)
 	    in  chat ["Compiling: ", file]
 	      ; (true, system args = success)
 	    end

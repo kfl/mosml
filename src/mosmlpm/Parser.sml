@@ -59,23 +59,34 @@ struct
 				   else NONE
 	  | NONE => NONE
 		    
+
+    fun (pf1 || pf2) stream =
+	case pf1 stream of
+	    NONE => pf2 stream
+	  | res  => res 
+
+    fun bind (phr, fphr) strm =
+	case phr strm of
+	    SOME(a, strm) => fphr a strm
+          | _             => NONE
+
+    fun (phr >> f) = bind(phr, fn a => fn strm => SOME(f a, strm))
+
+    fun (phr1 -- phr2) = bind(phr1, fn a => phr2 >> (fn b => (a, b)))
+
+(*
     fun (pf1 -- pf2) stream =
 	case pf1 stream of
 	    SOME(x, stream) => (case pf2 stream of
 				    SOME(y, stream) => SOME((x,y), stream)
 				  | NONE            => NONE)
 	  | NONE => NONE
-		    
-    fun (pf1 || pf2) stream =
-	case pf1 stream of
-	    NONE => pf2 stream
-	  | res  => res 
-		    
+		    		    
     fun (pf >> f) stream =
 	case pf stream of
 	    SOME(x, stream) => SOME(f x, stream)
 	  | _               => NONE
-			    
+*)			    
     fun pf1 #-- pf2 = pf1 -- pf2 >> #2
     fun pf1 --# pf2 = pf1 -- pf2 >> #1
 
