@@ -3,7 +3,7 @@
  *)
 
 (* The version number inserted in generated files: *)
-val version = "Moscow ML 1.44";
+val version = "Moscow ML 1.99";
 
 (* Default directory containing the signature files: *)
 val libdirDef = "../../lib/"
