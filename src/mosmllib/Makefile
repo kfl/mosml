@@ -5,6 +5,8 @@ COMPFLAGS=-imptypes
 
 include ../Makefile.inc
 
+
+# with the supplied compiler
 all: Array.uo Array2.uo Arraysort.uo \
      BasicIO.uo Binaryset.uo Binarymap.uo BinIO.uo Bool.uo Byte.uo \
      Callback.uo Char.uo CharArray.uo CharVector.uo CommandLine.uo Date.uo \
@@ -17,6 +19,11 @@ all: Array.uo Array2.uo Arraysort.uo \
      TextIO.uo Time.uo Timer.uo Vector.uo \
      Weak.uo Word.uo Word8.uo Word8Array.uo Word8Vector.uo \
      Obj.uo Nonstdio.uo Lexing.uo Parsing.uo Mosmlcgi.uo Gdbm.uo Polygdbm.uo
+
+# with the current compiler
+current:
+	make clean
+	make all MOSMLC=../camlrunm\ ../compiler/mosmlcmp\ -stdlib\ .\ -P\ none
 
 clean:
 	rm -f *.ui
