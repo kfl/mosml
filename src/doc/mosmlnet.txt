@@ -36,7 +36,7 @@ More generally, you can specify the assembly, the namespace and the
 class that declares the method that you need.  For instance, the full
 specification of the sml_sqrt method indicated above would be:
 
-   prim_val sqrt : real -> real = 1 "[Mosml.Runtime]Mosml.Stdlib.sml_sqrt";
+   prim_val sqrt : real -> real = 1 "[Mosml.Runtime]Mosml.Stdlib::sml_sqrt";
 
 Here, the assembly is Mosml.Runtime (in file Mosml.Runtime.dll), the
 namespace is Mosml, the class us Stdlib, and sml_sqrt is the method.
@@ -102,16 +102,16 @@ file src/runtime/Values.cs.  The ML value class hierarchy is
        MLVector                 Vectors (SML 'a vector, C# Value[])
        MLBlock0                 Tuples, records, datatypes
          MLBlock1               Tuples, records, datatypes
-           ...			...
+           ...                  ...
              MLBlock6           Tuples, records, datatypes
                MLBlockInf       Tuples, records, datatypes
        MLInChannel              Input channel (abstract)
-         MLInFileStream		SML BinIO.in_channel
-         MLTextReader		SML {TextIO,BasicIO}.in_channel
+         MLInFileStream         SML BinIO.in_channel
+         MLTextReader           SML {TextIO,BasicIO}.in_channel
        MLOutChannel             Output channel (abstract)
-         MLOutFileStream	SML BinIO.out_channel
-         MLTextWriter		SML {TextIO,BasicIO}.out_channel
-       MLClosure_		SML functions (abstract)
+         MLOutFileStream        SML BinIO.out_channel
+         MLTextWriter           SML {TextIO,BasicIO}.out_channel
+       MLClosure_               SML functions (abstract)
          Concrete closures
        ANY
        MLDirHandle

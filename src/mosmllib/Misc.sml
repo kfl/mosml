@@ -3,7 +3,7 @@
 type 'a array  = 'a Array.array
 
 fun (g o f) x = g (f x);
-fun a before b = a;
+fun a before () = a;
 
 fun getOpt (SOME v, _) = v
   | getOpt (NONE,   a) = a;

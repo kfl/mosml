@@ -53,7 +53,7 @@ val print        : string -> unit
    `translated' by converting (e.g.) the double newline CRLF to a
    single newline character \n.
 
-   [instream] is the type of state-based characters input streams.
+   [instream] is the type of state-based character input streams.
 
    [outstream] is the type of state-based character output streams.
 

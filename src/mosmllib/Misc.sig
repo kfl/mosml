@@ -3,7 +3,7 @@
 type 'a array  = 'a Array.array
 
 val o         : ('b -> 'c) * ('a -> 'b) -> 'a -> 'c
-val before    : 'a * 'b -> 'a
+val before    : 'a * unit -> 'a
 
 val chr       : int -> char
 val ord       : char -> int
