@@ -90,7 +90,6 @@ fun normalizedUnitId (loc,s) = (loc,normalizedUnitName s)
 %type <Asynt.TyVar> TyVar
 %type <Asynt.TyCon> TyCon
 %type <Asynt.ModId> ModId
-%type <Asynt.FunId> FunId
 %type <Asynt.SigId> SigId
 
 
@@ -183,11 +182,6 @@ EqIdent :
 
 
 ModId :
-    IdentWithLoc       { $1 }
-;
-
-
-FunId :
     IdentWithLoc       { $1 }
 ;
 
@@ -307,7 +301,7 @@ StructFile :
   | STRUCT KWDec_seq END EOF
  		{ AnonStruct $2 } 
 */
-  | KWDec_seq EOF
+    KWDec_seq EOF
  		{ $1 } /* cvr: TODO introduces 3 reduce reduce conflicts */
 ;
 KWDec_seq :
@@ -859,16 +853,16 @@ OptConEqualsModExp :
   | COLONGT SigExp EQUALS ModExp {mkLoc((ABSmodexp($4,$2)),ref NONE)} 
 
 FunBind_seq1 : /* cvr: TODO rationalize */
-   FunId AS SigExp EQUALS Exp AndFunBind_opt
+    ModId AS SigExp EQUALS Exp AndFunBind_opt
                         { (ASfunbind($1,$3,$5)) :: $6 }
-|  FunId OptConEqualsModExp AndFunBind_opt
+|   ModId OptConEqualsModExp AndFunBind_opt
                         { (FUNBINDfunbind($1, $2 )) :: $3 }
-|  FunId LPAREN ModId COLON SigExp RPAREN FunBindBody AndFunBind_opt
+|   ModId LPAREN ModId COLON SigExp RPAREN FunBindBody AndFunBind_opt
 	 {(FUNBINDfunbind($1,
 		mkLoc(FUNCTORmodexp(Generative true,$3,ref VARik,$5,$7),
                       ref NONE))
            ::$8)}
-|  FunId LPAREN Spec RPAREN OptConEqualsModExp AndFunBind_opt
+|   ModId LPAREN Spec RPAREN OptConEqualsModExp AndFunBind_opt
 	  {let val modid = (xLR $3,anonId)
 	       val longmodidinfo = (mkIdInfo (xLR $3, anonQualId) false,ref NONE)
 	   in
@@ -881,13 +875,13 @@ FunBind_seq1 : /* cvr: TODO rationalize */
 					  ref NONE))))
 	       :: $6
 	   end}
-|  FunId ModId COLON SigExp FunBindBody AndFunBind_opt
+|   ModId ModId COLON SigExp FunBindBody AndFunBind_opt
 	 {(FUNBINDfunbind($1,
 			   mkLoc(FUNCTORmodexp(Applicative,$2,ref VARik,$4,$5),
 				 ref NONE))
 	    ::$6)}
 
-|  FunId SIG Spec END OptConEqualsModExp AndFunBind_opt
+|   ModId SIG Spec END OptConEqualsModExp AndFunBind_opt
 	  {let val modid = (xLR $3,anonId)
 	       val longmodidinfo = (mkIdInfo (xLR $3, anonQualId) false,ref NONE)
 	   in
@@ -997,7 +991,7 @@ FunDescBody :
          {mkLoc(FUNSIGsigexp(Applicative,$1,$3,$4)) }
 ;
 FunDesc_seq1 :
-    FunId FunDescBody AndFunDesc_opt
+     ModId FunDescBody AndFunDesc_opt
                       { (FUNDESCfundesc($1, $2)) :: $3 }
 ;
 
