@@ -1,51 +1,58 @@
-# Primitive (too) Makefile for documentation
+# Primitive Makefile for Moscow ML documentation -- for DIN A4 paper
 
-# There's no guarantee any of this will work except on my workstations
+# Requires latex, bibtex, makeindex, dvips, ps2pdf, psnup
+# Thus no guarantee this will work except on my workstations ...
 
-all: html allps allpdf
+all: helpsigs allps allpdf
 
-allpdf: manual.pdf mosmlref.pdf texsigs.pdf 
+allpdf: manual.pdf mosmlref.pdf mosmllib.pdf mosmllib2up.pdf 
 
-allps: manual.ps mosmlref.ps texsigs.ps 
+allps: manual.ps mosmlref.ps mosmllib.ps mosmllib2up.ps 
 
-html helpsigs:
+LATEX=latex -interaction=batchmode
+
+helpsigs:
 	cd helpsigs; make all base 
 
-macmosmlbib: macmosml.tex macmosml.aux.bbl
-	latex macmosml
+macmosmlbib: macmosml.tex macmosml.bbl
+	${LATEX} macmosml
 	bibtex macmosml
 
 macmosml.dvi: macmosmlbib
-	latex macmosml
-	latex macmosml
+	${LATEX} macmosml
+	${LATEX} macmosml
 
-manualbib: manual.tex manual.bbl
-	latex manual
+manual.dvi: manual.tex manual.bbl
+	${LATEX} manual
 	bibtex manual
 
-manual.dvi: manualbib
-	latex manual
-	latex manual
+index.tex texsigsigs.tex:
+	cd helpsigs; make all base
 
-mosmlref.dvi: mosmlref.tex helpsigs/index.tex
-	latex mosmlref
-	latex mosmlref
+mosmlref.dvi: mosmlref.tex index.tex
+	${LATEX} mosmlref
+	${LATEX} mosmlref
 
-texsigs.dvi: texsigs.tex helpsigs/texsigsigs.tex
-	latex texsigs
-	latex texsigs
-	makeindex texsigs
-	latex texsigs
+mosmllib.dvi: mosmllib.tex texsigsigs.tex
+	touch mosmllib.ind
+	${LATEX} mosmllib
+	makeindex mosmllib
+	${LATEX} mosmllib
 
-texsigs2up.ps: texsigs.ps
-	psnup -pa4 -2 texsigs.ps texsigs2up.ps
+mosmllib2up.ps: mosmllib.ps
+	psnup -pa4 -2 mosmllib.ps mosmllib2up.ps
 
 install:
+	cp mosmlref.pdf ../../doc
+	cp manual.pdf ../../doc
+	cp mosmllib.pdf ../../doc
 	cp index.html ../../mosmllib
 	cd helpsigs; make install
 
 clean:
-	rm -f *.aux *.dvi *.blg *.ps *.pdf *.bbl *.log *.idx *.ilg
+	rm -f *.aux *.dvi *.blg *.ps *.pdf *.bbl *.blg *.log
+	rm -f *.ind *.idx *.ilg *.toc
+	rm -f index.tex texsigsigs.tex
 	cd helpsigs; make clean
 
 .SUFFIXES :
@@ -56,6 +63,9 @@ clean:
 
 .dvi.ps:
 	dvips -ta4 $< -o
+
+.tex.aux: 
+	${LATEX} $<
 
 .aux.bbl:
 	bibtex $<

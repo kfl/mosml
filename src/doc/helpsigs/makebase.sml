@@ -15,7 +15,7 @@ val helpfileDef = "helpsigs.val"
 val txtIndexDef = "index.txt"
 
 (* Default filename for the LaTeX format database: *)
-val texIndexDef = "index.tex"
+val texIndexDef = "../index.tex"
 
 (* Default directory for signatures in HTML format: *)
 val htmlDirDef = "htmlsigs"
@@ -24,7 +24,7 @@ val htmlDirDef = "htmlsigs"
 val htmlIndexDef = htmlDirDef ^ "/idIndex.html"
 
 (* Default filename for the LaTeX signatures: *)
-val texSigs = "texsigsigs.tex"
+val texSigs = "../texsigsigs.tex"
 
 (* Signatures not to be included in the help database: *)
 val stoplist = ["Misc", "Strbase", "Splaytree"];
