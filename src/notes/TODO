@@ -1384,12 +1384,10 @@ out.  After January 10, 2004, the number of seconds since January 1,
 This causes two problems:
 
 (1) On all 32-bit platforms (except Moscow ML.Net) Time.toSeconds will
-raise Overflow.  This is unavoidable...
+raise Overflow.  This is unavoidable.  Use Time.toReal instead (this
+gives fractional seconds).
 
-(2) On all platforms, Time.fromReal(Math.pow(2.0, 30.0)) or
-Time.toString(Time.fromReal(Math.pow(2.0, 30.0))) raises Overflow.
-
-(3) Under Moscow ML 2.00 for Windows, loading the Timer structure (or
+(2) Under Moscow ML 2.00 for Windows, loading the Timer structure (or
 invoking Moscow ML with mosml -P full, which loads the Timer
 structure), will fail.  The reason is that function getrutime in
 mosml/src/runtime/mosml.c takes both usr time and real time from the
@@ -1407,3 +1405,41 @@ This code ought to be fixed as follows:
   Field (res, 4) = Val_long (t.time + TIMEBASE);
   Field (res, 5) = Val_long (((long) t.millitm) * 1000);
 
+(3) Under CVS mosml, Time.fromReal(Math.pow(2.0, 30.0)) raises
+Overflow in fromReal because trunc is applied to the number of seconds
+>= 2^30.  Under 2.00 it does not.  
+
+Easily fixed by not doing any truncation in Time.fromReal.
+
+(4) Under CVS mosml Random.newgen() fails because of computations on
+time.  Moscow ML 2.00 works (actually, the surprise is that it worked
+before 10 Jan 2004).  
+
+Fixed by dividing the number of microseconds by 10^7 rather than 10^6
+before applying trunc; this works until year 2310.
+
+(5) Under Moscow ML 2.00, Time.toString(Time.now()) raises Overflow
+after 10 Jan 2004 (under CVS mosml it does not).  
+
+Fixed by using basically the same code as in CVS mosml:
+    fun fmt p t =
+	Real.fmt (StringCvt.FIX (SOME (if p > 0 then p else 0))) (toReal t)
+
+This changes the behaviour of fmt for negative p, but that's mandated
+by the new Basis spec anyway.
+
+(6) Under Moscow ML 2.00, Time.now() + Time.fromReal 0.0 raises Overflow.
+
+This has been fixed by performing the computation in reals and convert
+to integers afterwards.  Not very pretty:
+
+    val op + = fn ({sec=sec1, usec=usec1} : time, {sec=sec2, usec=usec2}) =>
+	let val usecs = usec1 + usec2 in
+	    {sec  = trunc(real sec1 - real timebase 
+			  + real sec2 + real(usecs div 1000000)),
+	     usec = usecs mod 1000000}
+	end 
+
+
+The good news is that under Moscow ML 2.00 as well as CVS mosml,
+Date.toString(Date.fromTimeUniv(Time.now())) works correctly.

@@ -28,20 +28,14 @@ in
 
     fun toMicroseconds r = trunc r;
 
-    (* Should replace with a more efficient real truncation: *)
-
-    fun fromReal r = 
-	let val sec = trunc r
-	    val usec = trunc(1000000.0 * (r - real sec))
-	in 1000000.0 * real sec + real usec end;
+    fun fromReal r = r * 1000000.0;
 
     fun toReal r = r / 1000000.0;
 
     fun timeToUnits (t, p) = floor(toReal t * negpow10 p + 0.5);
 
-    fun fmt p usec =
-	Real.fmt (StringCvt.FIX (SOME (if p > 0 then p else 0))) 
-	(usec/1000000.0);
+    fun fmt p r =
+	Real.fmt (StringCvt.FIX (SOME (if p > 0 then p else 0))) (r/1000000.0);
 
     fun toString t = fmt 3 t;
 
