@@ -1,4 +1,4 @@
-# Makefile for the Moscow ML 1.44 version of the Caml Light runtime system
+# Makefile for the Moscow ML 2.00 version of the Caml Light runtime system
 
 OPTS=-fno-defer-pop -fomit-frame-pointer -DTHREADED
 BASECFLAGS= -Dunix -O2 $(OPTS)

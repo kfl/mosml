@@ -259,8 +259,15 @@ int main(int argc, char * argv[])
       /* Field 0 of exn_bucket is a ref, whose field 0 is a string */
       value str = Field(Field(exn_bucket, 0), 0);
       char* buf = (char*)malloc(201);
-      snprintf(buf, 200, "(mainc) Uncaught exception: %s\n", 
-	       String_val(str));
+      { 
+	value arg = Field(exn_bucket, 1);
+	if (Tag_val(arg) == String_tag)
+	  snprintf(buf, 200, "Uncaught exception:\n%s: %s\n", 
+		   String_val(str), String_val(arg));
+	else
+	  snprintf(buf, 200, "Uncaught exception:\n%s\n", 
+		   String_val(str));
+      }
       fatal_error(buf);
     }
   }
