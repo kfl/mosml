@@ -3,6 +3,8 @@
 # Requires latex, bibtex, makeindex, dvips, ps2pdf, psnup
 # Thus no guarantee this will work except on my workstations ...
 
+include ../Makefile.inc
+
 all: helpsigs allps allpdf
 
 allpdf: manual.pdf mosmlref.pdf mosmllib.pdf mosmllib2up.pdf 
