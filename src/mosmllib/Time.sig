@@ -63,11 +63,11 @@ val compare : time * time -> order
    represented by t, truncated.  Raises Overflow if t that number is
    not representable as an int.
 
-   [realToTime r] converts a real to a time value representing that
+   [fromReal r] converts a real to a time value representing that
    many seconds.  Raises Time if r < 0 or if r is not representable
    as a time value.  It holds that realToTime 0.0 = zeroTime.  
 
-   [timeToReal t] converts a time the number of seconds it represents;
+   [toReal t] converts a time the number of seconds it represents;
    hence realToTime and timeToReal are inverses of each other when 
    defined.  Raises Overflow if t is not representable as a real.
 

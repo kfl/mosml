@@ -254,11 +254,11 @@ val mod : wordint * wordint -> wordint  (* raises Div                   *)
    [makestring v] returns a representation of value v as a string, for
    v of type int, Word.word, Word8.word, real, char or string.
 
-   [~ x] is the numeric negation of x (of type real or int).  May
+   [~ x] is the numeric negation of x (which can be real or int).  May
    raise Overflow.
 
-   [abs x] is the absolute value of x (of type real or int).  May raise
-   Overflow.
+   [abs x] is the absolute value of x (which can be real or int).  May
+   raise Overflow.
                                                                         
    [+ (e1, e2)]
    [- (e1, e2)]

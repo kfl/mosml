@@ -39,10 +39,6 @@ val reorganize : ('key, 'data) table -> unit
    withtable function.  This makes sure that the table is closed after
    use.
 
-   [openmode] is the type of opening modes.  Read-only access (READER)
-   is non-exclusive; read/write access (WRITER, WRCREAT, NEWDB) is
-   exclusive.
-    
    [withtable (nam, mod) f] first opens the table db in file nam with
    mode mod, then applies f to db, then closes db.  Makes sure to
    close db even if an exception is raised during the evaluation of

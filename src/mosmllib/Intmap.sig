@@ -59,5 +59,4 @@ val transform : ('a -> 'b) -> 'a intmap -> 'b intmap
 
    [transform f m] returns a new map whose entries have form (i, f(i,v)),
    where (i, v) is an entry in m.
-
 *)

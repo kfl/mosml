@@ -47,11 +47,13 @@ val pp_to_string   : int -> (ppstream -> 'a -> unit) -> 'a -> string
    prettyprinter will be invoked automatically whenever a value of
    type ty is to be printed.
 
-   [type break_style] determines the way a block is broken into
-   lines.  Style CONSISTENT means that if any line break occurs
-   inside the block, then all indicated line breaks occur.  Style
-   INCONSISTENT means that breaks will be inserted to only to avoid
-   overfull lines.
+   [break_style] is the type of line break styles for blocks:
+
+   [CONSISTENT] specifies that if any line break occurs inside the
+   block, then all indicated line breaks occur.
+
+   [INCONSISTENT] specifies that breaks will be inserted to only to
+   avoid overfull lines.
 
    [mk_ppstream {consumer, linewidth, flush}] creates a new ppstream
    which invokes the consumer to output text, putting at most

@@ -1,7 +1,6 @@
 (* OS.FileSys -- SML Basis Library *)
 
 type dirstream
-datatype access = A_READ | A_WRITE | A_EXEC
 
 val openDir   : string -> dirstream
 val readDir   : dirstream -> string option
@@ -23,7 +22,10 @@ val modTime   : string -> Time.time
 val setTime   : string * Time.time option -> unit
 val remove    : string -> unit
 val rename    : {old: string, new: string} -> unit
+
+datatype access = A_READ | A_WRITE | A_EXEC
 val access    : string * access list -> bool
+
 val fileSize  : string -> int
 
 val tmpName   : unit -> string
@@ -105,6 +107,14 @@ val compare   : file_id * file_id -> order
    [remove p] deletes file p from the file system.
 
    [rename {old, new}] changes the name of file `old' to `new'.
+
+   [access] is the type of access permissions:
+
+   [A_READ] specifies read access.
+
+   [A_WRITE] specifies write access.
+
+   [A_EXEC] specifies permission to execute the file (or directory).
 
    [access (p, accs)] tests the access permissions of file p,
    expanding symbolic links as necessary.  If the list accs of

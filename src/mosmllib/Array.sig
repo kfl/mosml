@@ -64,8 +64,6 @@ val modifyi  : (int * 'a -> 'a) -> 'a array * int * int option -> unit
    [fromList xs] returns an array whose elements are those of xs.
    Raises Size if length xs > maxLen.
 
-   [array0] is a zero-length array.
-
    [length a] returns the number of elements in a.
 
    [sub(a, i)] returns the i'th element of a, counting from 0.  

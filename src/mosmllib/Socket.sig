@@ -97,7 +97,10 @@ val recvArrFrom' : ('a, dgram) sock * Word8Array.array buf * in_flags
    [('addressfam, 'socktype) sock] is the type of sockets with address
    family 'addressfam and having type 'socktype.
 
-   The possible protocol families are 
+   ['addressfam sock_addr] is the type of sockets addresses.
+
+   The possible address (protocol) families are 
+
         type pf_file    The Unix address family (file)
         type pf_inet    The Internet address family
 
@@ -165,9 +168,10 @@ val recvArrFrom' : ('a, dgram) sock * Word8Array.array buf * in_flags
    [getinetaddr addr] returns the Internet number
    (e.g. "130.225.40.253") of the Internet socket address addr.
 
-   [buf] is { buf, ofs, size } which represents a subvector or subarray:
-   if size = SOME s it means buf[ofs..ofs+s-1];
-   if size = NONE   it means buf[ofs..len-1] where len is the length of buf.
+   ['a buf] is the type of records { buf, ofs, size } which represent
+   subvectors or subarrays:
+   if size = SOME s it represents buf[ofs..ofs+s-1];
+   if size = NONE   it represents buf[ofs..len-1] where len is buf's length.
    When the subbuffer is used in a call, exception Subscript will be raised 
    if ofs < 0 or size < 0 or ofs+size > len.   
 
@@ -182,9 +186,9 @@ val recvArrFrom' : ('a, dgram) sock * Word8Array.array buf * in_flags
    out_flags.  Returns the number of bytes sent.  Blocks until
    sufficient space is available at the socket.
 
-   [out_flags] is { don't_route, oob } in which the field don't_route
-   specifies whether routing should be bypassed, and the field oob
-   specifies whether data should be sent out-of-band.
+   [out_flags] is the type of records { don't_route, oob } in which
+   the field don't_route specifies whether routing should be bypassed,
+   and the field oob specifies whether data should be sent out-of-band.
 
    [sendArr' (sock, arrbuf, out_flags)] is analogous til sendVec'.
 
@@ -224,9 +228,10 @@ val recvArrFrom' : ('a, dgram) sock * Word8Array.array buf * in_flags
    data, up to n bytes.  Data in excess of n bytes are not lost; they
    are available for subsequent receive calls.
 
-   [in_flags] is { peek, oob } in which the field peek specifies that
-   the data read should not be removed from the receive queue, and the
-   field oob specifies that data may be received out-of-band.
+   [in_flags] is the type of records { peek, oob } in which the field
+   peek specifies that the data read should not be removed from the
+   receive queue, and the field oob specifies that data may be
+   received out-of-band.
 
    [recvArr' (sock, arrbuf, in_flags)] receives bytes from the active
    stream socket sock into the subarray arrbuf, observing the

@@ -78,21 +78,27 @@ val app5 : symHandle -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
 
 
    [dlopen { lib, flag, global }] will load and open the library in
-   file `lib', returning a handle to it.  
-        If `flag' is RTLD_LAZY, then only symbol relocations will be
-   performed now, and function relocations will be performed when each
-   function is invoked for the first time (if ever).  This is the
-   normal situation.  If `flag' is RTLD_NOW, then all relocations are
-   performed immediately, also for functions that will never be
-   called.  This may waste some time.  
+   file `lib', returning a handle to it.  Libraries are usually
+   specified just by file name, leaving out the directory path.
+   Linux/Unix-specific information: Libraries are searched for in
+   those directories mentioned in LD_LIBRARY_PATH, those mentioned in
+   /etc/ld.so.cache, in /usr/lib and /lib.  (Note that
+   /etc/ld.so.cache is created from /etc/ld.so.conf by running
+   ldconfig; you must be superuser to do that).
         If `global' is true, then the library's global symbols are
    made available for other libraries subsequently loaded.
-        Libraries are usually specified just by file name, leaving out
-   the directory path.  Linux/Unix-specific information: Libraries are
-   searched for in those directories mentioned in LD_LIBRARY_PATH,
-   those mentioned in /etc/ld.so.cache, in /usr/lib and /lib.  (Note
-   that /etc/ld.so.cache is created from /etc/ld.so.conf by running
-   ldconfig; you must be superuser to do that).
+
+   [flag] is the type of library loading modes: RTLD_LAZY and RTLD_NOW.  
+
+   [RTLD_LAZY] specifies that only symbol relocations will be
+   performed when calling dlopen, whereas function relocations will be
+   performed later when a function is invoked for the first time (if
+   ever).  This is the normal situation.
+
+   [RTLD_NOW] specifies that all function relocations must be
+   performed immediately, also for functions that will never be
+   called.  This checks that all functions are defined, but may waste
+   some time.
 
    [dlsym dlh nam] returns a symbol handle for the symbol called `nam'
    in the library associated with dlh.  Raises Closed if dlh has been

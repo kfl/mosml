@@ -102,7 +102,8 @@ val fold         : regex
 
    [regcomp pat cflags] returns a compiled representation of the
    regular expression pat.  Raises Regex in case of failure.  
-   The cflags have the following meaning:
+
+   [cflag] is the type of compilation flags with the following meanings:
 
    [Extended] : compile as POSIX extended regular expression.
    [Icase]    : compile case-insensitive match.
@@ -133,10 +134,12 @@ val fold         : regex
    beginning of the underlying string.  For a group that takes part in
    the match repeatedly, such as the group (b+) in "(a(b+))*" when
    matched against "babbabbb", the corresponding substring is the last
-   (rightmost) one matched.  The eflags have the following meaning:
+   (rightmost) one matched.  
 
-   [Notbol]   : do not match ^ at beginning of string.
-   [Noteol]   : do not match $ at end of string.
+   [eflag] is the type of end flags with the following meaning:
+
+   [Notbol] : do not match ^ at beginning of string.
+   [Noteol] : do not match $ at end of string.
 
    [regexecBool regex eflags s] returns true if some substring of s
    matches regex, false otherwise.  Equivalent to, but faster than, 

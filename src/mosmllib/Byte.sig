@@ -29,7 +29,7 @@ val packString      : Substring.substring * Word8Array.array * int -> unit
    the bytes of v[i..length v-1].  Raises Subscript if i<0 or i>length v.
    Equivalent to bytesToString(Word8Vector.extract (v, i, NONE)).
    
-   [unpackStringV (v, i, SOME n)] is the string whose character codes are
+   [unpackStringVec (v, i, SOME n)] is the string whose character codes are
    the bytes of v[i..i+n-1].  Raises Subscript if i<0 or n<0 or i+n>length v.
    Equivalent to bytesToString(Word8Vector.extract (v, i, SOME n)).
 

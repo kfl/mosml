@@ -2,7 +2,7 @@
 
 datatype list = datatype list
 
-exception Empty  (* Subscript and Size *)
+exception Empty
 
 val null       : 'a list -> bool
 val hd         : 'a list -> 'a                          (* Empty     *)

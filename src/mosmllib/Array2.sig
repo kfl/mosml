@@ -40,6 +40,8 @@ val foldi      : traversal -> (int * int * 'a * 'b -> 'b) -> 'b
    are equal if both were created by the same call to one of the
    primitives array, fromList, and tabulate.
 
+   [traversal] is the type of traversal orders: row major or column major.
+
    [RowMajor] specifies that an operation must be done in row-major
    order, that is, one row at a time, from top to bottom, and from
    left to right within each row.  Row-major traversal visits the
@@ -131,11 +133,12 @@ val foldi      : traversal -> (int * int * 'a * 'b -> 'b) -> 'b
 
    The following iterators generalize the above ones in two ways:
 
-     . the indexes i and j are also being passed to the function;
-     . the iterators work on a region (submatrix) of a matrix.          
+     * the indexes i and j are also being passed to the function;
+     * the iterators work on a region (submatrix) of a matrix.          
 
-   The region { base, row, col, nrows, ncols } determines a region or
-   submatrix of base whose upper left corner has index (row, col).  
+   [region] is the type of records { base, row, col, nrows, ncols }
+   determining the region or submatrix of array base whose upper left
+   corner has index (row, col).
 
    If nrows = SOME r, then the region has r rows: row, row+1, ..., row+r-1.
    If nrows = NONE, then the region extends to the bottom of the matrix.

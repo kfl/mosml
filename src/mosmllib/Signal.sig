@@ -27,7 +27,8 @@ val toWord   : signal -> Word.word
 val fromWord : Word.word -> signal 
 
 (* 
-   Posix signals.
+   [signal] is the type of Unix/Posix-style signals, which can be sent
+   to another process.  
 
    [toWord sig] returns the signal number as an unsigned word.
 

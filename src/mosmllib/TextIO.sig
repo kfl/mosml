@@ -148,6 +148,8 @@ val print        : string -> unit
    [stdErr] is the unbuffered state-based standard error stream.  That
    is, it is always kept flushed, so flushOut(stdErr) is redundant.
 
+   [print s] outputs s to stdOut and flushes immediately.
+
 
    The functions below are not yet implemented:
 

@@ -11,8 +11,8 @@ val orthodox         : unit -> unit
 
 val use              : string -> unit
 val compile          : string -> unit
-val compileToplevel  : string -> unit
-val compileStructure : string -> unit
+val compileToplevel  : string list -> string -> unit
+val compileStructure : string list -> string -> unit
 
 val load             : string -> unit
 val loadOne          : string -> unit
@@ -57,14 +57,13 @@ val quit             : unit -> 'a
 
    [quit ()] quits Moscow ML immediately.
 
-   [installPP pp] installs the prettyprinter pp at type ty, provided
-   pp has type ppstream -> ty -> unit.  The type ty must be a nullary
-   (parameter-less) type constructor representing a datatype, either
-   built-in (such as bool) or user-defined.  Whenever a value of type
-   ty is about to be printed by the interactive system, or function
-   printVal is invoked on an argument of type ty, the pretty-printer 
-   pp will be invoked to print it.  See library unit PP for more
-   information.
+   [installPP pp] installs the prettyprinter pp : ppstream -> ty -> unit 
+   at type ty.  The type ty must be a nullary (parameter-less) type
+   constructor representing a datatype, either built-in (such as bool)
+   or user-defined.  Whenever a value of type ty is about to be
+   printed by the interactive system, or function printVal is invoked
+   on an argument of type ty, the pretty-printer pp will be invoked to
+   print it.  See library unit PP for more information.
 
    [use "f"] causes ML declarations to be read from file f as if they
    were entered from the console.  A file loaded by use may, in turn,
@@ -75,36 +74,38 @@ val quit             : unit -> 'a
    accept (without warnings) all extensions to the SML Modules
    language.  The extensions are: higher-order modules (functors
    defined within structures and functors); first-order modules
-   (structures can be packed as values, and values can be unpacked
-   as structures); and modules (signatures and structures) may be 
-   defined recursively. The liberal, conservative, and orthodox modes 
-   affect the functions compile, compileStructure, and compileToplevel.
-   The liberal mode may be set by the mosml option -liberal.
+   (structures can be packed as values, and values can be unpacked as
+   structures); and recursively defined modules (signatures and
+   structures). The liberal, conservative, and orthodox modes affect
+   the functions compile, compileStructure, and compileToplevel.  The
+   liberal mode may be set also by the mosml option -liberal.
 
    [conservative ()] sets conservative mode for the compilation
    functions: accept all extensions to the Modules language, but issue
-   a warning for each use.  The conservative mode may be set by the
-   mosml option -conservative.
+   a warning for each use.  The conservative mode may be set also by
+   the mosml option -conservative.  This is the default.
 
    [orthodox ()] sets orthodox mode for the compilation functions:
    reject all uses of the extensions to the modules language.  That
-   is, accept only SML97 Modules syntax.  The orthodox mode may be set
-   by the mosml option -orthodox.
+   is, accept only SML'97 Modules syntax.  The orthodox mode may be
+   set also by the mosml option -orthodox.
 
    [compile "U.sig"] will compile and elaborate the unit signature in
    file U.sig, producing a compiled signature file U.ui.  During
    compilation, the compiled signatures of other units will be
-   accessed if they are mentioned in U.sig.  Equivalent to
-   compileStructure [] "U.sig".
+   accessed if they are mentioned in U.sig.  This function is
+   backwards compatible with Moscow ML 1.44 and earlier.  Equivalent
+   to compileStructure [] "U.sig".
 
    [compile "U.sml"] will elaborate and compile the unit body in file
    U.sml, producing a bytecode file U.uo.  If there is an explicit
-   signature U.sig, then file U.ui must exist, and the unit body must
-   match the signature.  If there is no U.sig, then an inferred
+   signature file U.sig, then file U.ui must exist, and the unit body
+   must match the signature.  If there is no U.sig, then an inferred
    signature file U.ui will be produced also.  No evaluation takes
    place.  During compilation, the compiled signatures of other units
-   will be accessed if they are mentioned in U.sml.  Equivalent to
-   compileStructure [] "U.sml".
+   will be accessed if they are mentioned in U.sml.  This function is
+   backwards compatible with Moscow ML 1.44 and earlier.  Equivalent
+   to compileStructure [] "U.sml".
 
    The declared identifiers will be reported if verbose is true (see
    below); otherwise compilation will be silent.  In any case,
@@ -112,31 +113,47 @@ val quit             : unit -> 'a
    compilation and raise the exception Fail with a string argument.
 
    [compileStructure opnunits "U.sig"] compiles the specifications
-   in U.sig as if they form a signature declaration
-     	signature U = sig ... contents of U.sig ... end
-   The specifications are compiled in a context in which all
-   declarations from opnunits are visible.  The result is a compiled
-   signature file U.ui.
+   in file U.sig as if they form a signature declaration
+        signature U = sig ... contents of U.sig ... end
+   The contents of opnunits is added to the compilation context in
+   which the specifications in U.sig are compiled.  The result is a
+   compiled signature file U.ui.  This
+   corresponds to invoking the batch compiler as follows:
+        mosmlc -c U1.ui ... Un.ui -structure U.sig
+   where opnunits equals ["U1", ..., "Un"]. 
 
    [compileStructure opnunits "U.sml"] compiles the declarations in
-   U.sml as if they form a structure declaration 
+   file U.sml as if they formed a structure declaration 
         structure U = struct ... contents of U.sml ... end
+   The contents of opnunits is added to the compilation context in
+   which the declarations in U.sml are compiled.  If U.ui exists
+   already and represents a signature called U, then the compiled
+   declarations are matched against it.  The result is a bytecode file
+   U.uo.  If no file U.ui existed, then also a file U.ui is created,
+   containing the inferred signature of structure U.  This
+   corresponds to invoking the batch compiler as follows:
+        mosmlc -c U1.ui ... Un.ui -structure U.sml
+   where opnunits equals ["U1", ..., "Un"]. 
 
-   The declarations are compiled in a context in which all
-   declarations from opnunits are visible.  If U.ui exists already and
-   represents a signature called U, then the compiled declarations are
-   matched against it.  The result is a bytecode file U.uo, and if no
-   file U.ui existed, then also a file U.ui is created.
-XXXXXXX
-   [compileToplevel opnunits "U.sig"] compiles the specifications
-   in U.sig, in a context in which all declarations from opnunits are
-   visible, creating a compiled signature file U.ui.
+   [compileToplevel opnunits "U.sig"] compiles the specifications in
+   file U.sig, in a context in which all declarations from opnunits
+   are visible, creating a compiled signature file U.ui.  This
+   corresponds to invoking the batch compiler as follows:
+        mosmlc -c U1.ui ... Un.ui -toplevel U.sig
+   where opnunits equals ["U1", ..., "Un"]. 
 
-   [compileToplevel opnunits "U.sml"] compiles the declarations
-   in U.sml, in a context in which all declarations from opnunits are
-   visible, creating a bytecode file U.uo.  If U.ui exists already, then 
-   the compiled declarations are matched against it; otherwise the file
-   U.ui is created.
+   the specifications in U.sig in
+   the interactive toplevel, in a context where all specifications in
+   opnunits are visible.  The same
+
+   [compileToplevel opnunits "U.sml"] compiles the declarations in
+   file U.sml, in a context in which all declarations from opnunits
+   are visible, creating a bytecode file U.uo.  If U.ui exists
+   already, then the compiled declarations are matched against it;
+   otherwise the file U.ui is created.  This corresponds to invoking the
+   batch compiler as follows
+        mosmlc -c U1.ui ... Un.ui -toplevel U.sml
+   where opnunits equals ["U1", ..., "Un"]. 
 
    [load "U"] will load and evaluate the compiled unit body from file
    U.uo.  The resulting values are not reported, but exceptions are
@@ -172,10 +189,10 @@ XXXXXXX
    if additional directories are specified using option -I, then these
    directories are prepended to loadPath.
 
-   [quietdec] when {\tt true}, turns off the interactive system's
-   prompt and responses, except warnings and error messages.  Useful
-   for writing scripts in SML.  The default value is false; can be set
-   to true with the -quietdec command line option.
+   [quietdec] when true, turns off the interactive system's prompt and
+   responses, except warnings and error messages.  Useful for writing
+   scripts in SML.  The default value is false; can be set to true
+   with the -quietdec command line option.
 
    [verbose] determines whether the signature inferred by a call to
    compile will be printed.  The printed signature follows the syntax
@@ -190,23 +207,22 @@ XXXXXXX
    language phrases in ML programs; see the Moscow ML Owner's Manual
    for a brief explanation of quotations.  When quotation is false,
    the backquote character is an ordinary symbol which can be used in
-   ML symbolic identifiers.  When quotation is {\tt true}, the
-   backquote character is illegal in symbolic identifiers, and a
-   quotation `a b c` will be recognized by the parser and evaluated to
-   an object of type 'a General.frag list.  The default value is ref
-   false.
+   ML symbolic identifiers.  When quotation is true, the backquote
+   character is illegal in symbolic identifiers, and a quotation `a b
+   c` will be recognized by the parser and evaluated to an object of
+   type 'a General.frag list.  The default value is ref false.
 
-   [valuepoly] determines whether the type checker should use `value
-   polymorphism', making no distinction between imperative ('_a) and
-   applicative ('a) type variables, and generalizing type variables
-   only in non-expansive expressions.  An expression is non-expansive
-   if it is a variable, a special constant, a function, a tuple or 
-   record of non-expansive expressions, a parenthesized or typed 
-   non-expansive expression, or the application of an exception or value 
-   constructor (other than ref) to a non-expansive expression.  
-        If valuepoly is false, then the type checker will distinguish 
-   imperative and applicative type variables, generalize all applicative 
-   type variables, and generalize imperative type variables only in
-   non-expansive expressions.  
-        Valuepoly is true by default.
+   [valuepoly] determines whether `value polymorphism' is used or not
+   in the type checker.  With value polymorphism (the default), there
+   is no distinction between imperative ('_a) and applicative ('a)
+   type variables, and type variables are generalized only in
+   non-expansive expressions.  An expression is non-expansive if it is
+   a variable, a special constant, a function, a tuple or record of
+   non-expansive expressions, a parenthesized or typed non-expansive
+   expression, or the application of an exception or value constructor
+   (other than ref) to a non-expansive expression.  If valuepoly is
+   false, then the type checker will distinguish imperative and
+   applicative type variables, generalize all applicative type
+   variables, and generalize imperative type variables only in
+   non-expansive expressions.  Valuepoly is true by default.
 *)
