@@ -1,7 +1,9 @@
+uIdent should be string, not string ref
 restore verbose mode
 match modes before compilation.
-warn on anonstruct and anonsigs
-mosmldep
+warn on anonstruct and anonsigs, perhaps  add error production
+for module level decs and specs occurring in anonstructs and anonsigs.
+add mosmldep function
 --------
 I haven't completed the new compilation model yet but I'm at the point where
 what I do will affect the command line arguments to mosml and  mosmlcmp,

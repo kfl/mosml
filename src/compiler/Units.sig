@@ -4,7 +4,13 @@ in
 
 type CSig =
 {
-  uName:       string,
+  uMode:       Mode, (* true if compiled as a structure, false if compiled as
+			     top dec *)
+  uName:       string, (* the normalized basename of the filename *)
+  uIdent:      string ref, (* the (non-normalized) 
+			    ML structure and signature identifier 
+			    for the unit if uMode = STRmode *)
+  uIBas:       (string,InfixStatus) Hasht.t,
   uVarEnv:     (string, VarInfo) Hasht.t,
   uTyEnv:      (string, TyInfo) Hasht.t, 
   uModEnv:     (string, ModInfo) Hasht.t,   
@@ -17,35 +23,39 @@ type CSig =
   (* The optional Str uStrOpt comes from the unit's optional interface.
      It is the body of the signature to be matched against.
    *)
-  uStrOpt:     Str option ref, 
+  uStrOpt:     RecStr option ref, 
   uStamp:      SigStamp option ref,
                     (* present, if this signature comes from a .ui file *)
   uMentions:   (string, SigStamp) Hasht.t
 };
 
+val modeOfSig : CSig -> Mode;
+val iBasOfSig : CSig -> (string, InfixStatus) Hasht.t;
 val varEnvOfSig : CSig -> (string, (TypeScheme * ConStatusDesc)global) Hasht.t;
 val tyEnvOfSig  : CSig -> (string, (TyFun * ConEnv)) Hasht.t;
 val modEnvOfSig : CSig -> (string, RecStr global) Hasht.t;
 val funEnvOfSig : CSig -> (string, GenFun global) Hasht.t;
 val sigEnvOfSig : CSig -> (string, Sig global) Hasht.t;
 val tyNameSetOfSig : CSig -> TyNameSet ref;
-val strOptOfSig  :  CSig -> Str option ref;
+val strOptOfSig  :  CSig -> RecStr option ref;
 
 
 type SigTable = (string, CSig) Hasht.t;
 
 val pervSigTable : SigTable;
 val currentSigTable : SigTable ref;
-val newSig : string -> CSig;
+val newSig : (* uName *) string -> (* uIdent *) string ->  Mode -> CSig;
 val currentSig : CSig ref;
 val currentRenEnv : (string, int) Hasht.t ref;
 val hasSpecifiedSignature : bool ref;
 val readSig : string -> CSig;
+val readAndMentionSig : string -> CSig;
 val findSig : Location -> string -> CSig;
 val pervasiveInfixTable : (string, InfixStatus) Hasht.t;
 val initPervasiveEnvironments : unit -> unit;
 val findAndMentionSig : Location -> string -> CSig;
-val initInitialEnvironments : unit -> unit;
+val initInitialEnvironments : (string list) -> unit;
+val extendInitialSigEnv : CSig option -> unit;
 val protectCurrentUnit : (unit -> 'a) -> unit;
 val currentUnitName : unit -> string;
 val mkGlobalName : string -> QualifiedIdent;
@@ -64,11 +74,10 @@ val newValStamp : unit -> int;
 
 
 val isEqTN : TyName -> TyName -> bool;
-val updateCurrentInfixBasis : (string, InfixStatus) Env -> unit;
-
 
 val updateCurrentStaticT : TyNameSet -> unit;
-
+val updateCurrentInfixBasis : InfixBasis -> unit;
+val extendCurrentStaticIBas : InfixBasis -> unit;
 val updateCurrentStaticVE : VarEnv -> unit;
 val extendCurrentStaticVE : VarEnv -> unit; 
 val updateCurrentStaticTE : TyEnv -> unit;
@@ -95,7 +104,7 @@ val mkGlobalGE : unit -> SigEnv;
 val execToplevelOpen : Location -> string -> unit;
 val printVQ : QualifiedIdent -> unit;
 
-val startCompilingUnit : string -> unit;
+val startCompilingUnit : (* uName *) string -> (*uIdent *) string -> Mode -> unit;
 val rectifySignature : unit ->
   (QualifiedIdent * (QualifiedIdent * int)) list * (string * int) list;
 

@@ -1,3 +1,4 @@
+structure C = struct 
 val _ = TextIO.print "linking values";
 
 fun check id s = TextIO.print (if id = s then "\nOK: "^s else "\nFAIL expecting value A."^id^" found "^s);
@@ -406,3 +407,5 @@ val _ = check "functor" (let structure V = y() in V.v end) "B.y";
 end
 
 val _ = TextIO.print "\n";
+
+end;

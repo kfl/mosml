@@ -14,19 +14,39 @@ ccfiles=""
 cclib=""
 ccopt=""
 linkout=a.out
+context="-structure"
 
 while : ; do
   case $1 in
     "")
       break;;
     *.sml)
-      $mosmlbin/camlrunm $stdlib/mosmlcmp -stdlib $stdlib $includes $compopt $1 || exit $?
+      $mosmlbin/camlrunm $stdlib/mosmlcmp -stdlib $stdlib $includes $compopt $context $1 || exit $?
+      case $1 in 
+	    */*)
+	    context="$context `dirname $1`/`basename $1 .sml`.ui"
+	    ;;
+	    *) context="$context `basename $1 .sml`.ui"
+	    ;;
+      esac
       linkfiles="$linkfiles $1";;
     *.sig)
-      $mosmlbin/camlrunm $stdlib/mosmlcmp -stdlib $stdlib $includes $compopt $1 || exit $?
+      $mosmlbin/camlrunm $stdlib/mosmlcmp -stdlib $stdlib $includes $compopt $context $1 || exit $?
+      case $1 in 
+	    */*)
+	    context="$context `dirname $1`/`basename $1 .sig`.ui"
+	    ;;
+	    *) context="$context `basename $1 .sig`.ui"
+	    ;;
+      esac
+      ;;
+    *.ui)
+      context="$context $1"
       ;;
     *.uo)
       linkfiles="$linkfiles $1";;
+    -structure|-toplevel)
+      context="$context $1";;
     -c)
       linkalso=false;;      
     -I|-include)
@@ -60,7 +80,7 @@ while : ; do
       stdlib=$2
       shift;;
     -v|-version)
-      echo "The Moscow ML system, version 1.44"
+      echo "The Moscow ML system, version 1.99"
       echo "  (standard library from $stdlib)"
       $mosmlbin/camlrunm -V
       $mosmlbin/camlrunm $stdlib/mosmlcmp -version

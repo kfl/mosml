@@ -1,3 +1,4 @@
+structure A = struct
 val a = "a";
 val b = "b";
 val c = "c";
@@ -63,3 +64,4 @@ and j () = struct val v = "j" end
 and k () = struct val v = "k" end 
 and l () = struct val v = "l" end;
 
+end;

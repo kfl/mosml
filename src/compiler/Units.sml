@@ -5,7 +5,12 @@ open Misc BasicIO Nonstdio Fnlib Config Mixture Const Globals Location;
 
 type CSig =
 {
-  uName:       string,
+  uMode:       Mode, (* whether to interpret the unit as a structure or topdec *)
+  uName:       string,  (* the normalized basename of the filename *)
+  uIdent:      string ref,  (* the (non-normalized) 
+			   ML structure and signature identifier 
+			   for the unit if uMode = STRmode *)
+  uIBas:       (string,InfixStatus) Hasht.t,
   uVarEnv:     (string, VarInfo) Hasht.t,
   uTyEnv:      (string, TyInfo) Hasht.t, 
   uModEnv:     (string, ModInfo) Hasht.t,   
@@ -18,19 +23,23 @@ type CSig =
   (* The optional Str uStrOpt comes from the unit's optional interface.
      It is the body of the signature to be matched against.
    *)
-  uStrOpt:     Str option ref, 
+  uStrOpt:     RecStr option ref, 
   uStamp:      SigStamp option ref,
                     (* present, if this signature comes from a .ui file *)
   uMentions:   (string, SigStamp) Hasht.t
 };
 
-fun varEnvOfSig     (cu : CSig) = #uVarEnv cu
+
+
+fun iBasOfSig       (cu : CSig) = #uIBas cu
+and varEnvOfSig     (cu : CSig) = #uVarEnv cu
 and tyEnvOfSig      (cu : CSig) = #uTyEnv cu
 and modEnvOfSig      (cu : CSig) = #uModEnv cu
 and funEnvOfSig      (cu : CSig) = #uFunEnv cu
 and sigEnvOfSig      (cu : CSig) = #uSigEnv cu
 and tyNameSetOfSig   (cu : CSig) = #uTyNameSet cu
 and strOptOfSig      (cu : CSig) = #uStrOpt cu
+and modeOfSig   (cu : CSig) = #uMode cu
 ;
 
 (* The table of unit signatures already loaded in memory *)
@@ -44,9 +53,12 @@ val pervSigTable = (Hasht.new 7 : SigTable);
 
 val currentSigTable = ref dummySigTable;
 
-fun newSig nm : CSig =
+fun newSig nm id mode : CSig =
 {
   uName = nm,
+  uMode = mode,
+  uIdent = ref id,
+  uIBas = Hasht.new 7,
   uVarEnv     = Hasht.new 17,
   uTyEnv      = Hasht.new 7,
   uModEnv     = Hasht.new 7,
@@ -58,9 +70,12 @@ fun newSig nm : CSig =
   uStamp      = ref NONE
 };
 
+(* the current order of unit signatures *)
+
+
 (* Current signature *)
 
-val dummySig = newSig "";
+val dummySig = newSig "" "" STRmode;
 
 val currentSig = ref dummySig;
 
@@ -79,6 +94,7 @@ val hasSpecifiedSignature = ref false;
 
 (* To load a signature from a file *)
 
+(*
 fun readSig name =
   let val filename = find_in_path (name ^ ".ui")
       val is = open_in_bin filename
@@ -110,6 +126,53 @@ fun readSig name =
        msgString filename; msgEOL();
        msgEBlock();
        raise Toplevel)
+  end;
+*)
+fun readSig filename =
+  let 
+      val name = normalizedUnitName(Filename.basename filename)
+      val filename = find_in_path (filename ^ ".ui")
+      val is = open_in_bin filename
+  in
+    let
+      val sigStamp = input(is, 22)
+      val () = if size sigStamp < 22 then raise Fail "sigStamp" else ()
+      val cu = (input_value is : CSig)
+      val {uStamp, uName, ...} = cu
+    in
+      close_in is;
+      uStamp := SOME sigStamp;
+      if name <> uName then (
+        msgIBlock 0;
+        errPrompt "File "; msgString filename;
+        msgString " contains the signature of unit ";
+        msgString uName; msgEOL();
+        errPrompt "instead of the signature of unit ";
+        msgString name; msgEOL();
+        msgEBlock();
+        raise Toplevel)
+      else ();
+      cu
+    end
+    handle Fail _ =>
+      (close_in is;
+       msgIBlock 0;
+       errPrompt "Corrupted compiled signature file: ";
+       msgString filename; msgEOL();
+       msgEBlock();
+       raise Toplevel)
+  end;
+
+fun readAndMentionSig filename =
+  let val cu = readSig filename in
+    (case !(#uStamp cu) of
+         NONE => ()
+       | SOME stamp =>
+           let val mentions = #uMentions (!currentSig) in
+             ignore(Hasht.find mentions (#uName(cu)))
+             handle Subscript => Hasht.insert mentions (#uName(cu)) stamp
+           end);
+    cu
   end;
 
 (* To find a pervasive signature by its name *)
@@ -146,7 +209,7 @@ fun findSig loc uname =
 val pervasiveInfixTable =
   (Hasht.new 7 : (string, InfixStatus) Hasht.t);
 
-val pervasiveInfixBasis = mk1TopEnv pervasiveInfixTable;
+val pervasiveInfixBasis = ref (NILenv : InfixBasis);
 val pervasiveStaticT = ref ([]:TyNameSet);
 val pervasiveStaticVE   = ref (NILenv : VarEnv);
 val pervasiveStaticTE   = ref (NILenv : TyEnv);
@@ -157,15 +220,17 @@ val pervasiveStaticGE   = ref (NILenv : SigEnv);
 (* cvr: TODO at the moment there are no pervasive modules functors
    or signatures but there probably should be *) 
 fun initPervasiveEnvironments() =
-( pervasiveStaticT    := [];
+( pervasiveInfixBasis := mk1TopEnv pervasiveInfixTable;
+  pervasiveStaticT    := [];
   pervasiveStaticVE   := NILenv;
   pervasiveStaticTE   := NILenv;
-   pervasiveStaticME   := NILenv;
+  pervasiveStaticME   := NILenv;
   pervasiveStaticFE   := NILenv;
   pervasiveStaticGE   := NILenv;
   List.app
     (fn uname =>
        let val cu = findPervSig uname in
+	 pervasiveInfixBasis := bindTopInEnv (!pervasiveInfixBasis) (#uIBas cu);
          pervasiveStaticT :=
             (!pervasiveStaticT) @ (!(#uTyNameSet cu));
          pervasiveStaticVE :=
@@ -196,6 +261,7 @@ fun findAndMentionSig loc uname =
     cu
   end;
 
+val initialInfixBasis  = ref (NILenv : InfixBasis);
 val initialStaticT   = ref ([]:TyNameSet);
 val initialStaticVE   = ref (NILenv : VarEnv);
 val initialStaticTE   = ref (NILenv : TyEnv);
@@ -203,8 +269,9 @@ val initialStaticME   = ref (NILenv : ModEnv);
 val initialStaticFE   = ref (NILenv : FunEnv);
 val initialStaticGE   = ref (NILenv : SigEnv);
 
-fun initInitialEnvironments() =
-( initialStaticT    := !pervasiveStaticT;
+fun initInitialEnvironments context =
+( initialInfixBasis   := !pervasiveInfixBasis;
+  initialStaticT    := !pervasiveStaticT;
   initialStaticVE   := !pervasiveStaticVE;
   initialStaticTE   := !pervasiveStaticTE;
   initialStaticME   := !pervasiveStaticME;
@@ -213,6 +280,7 @@ fun initInitialEnvironments() =
   List.app
     (fn uname =>
        let val cu = findAndMentionSig nilLocation uname in
+	 initialInfixBasis   := bindTopInEnv (!initialInfixBasis) (#uIBas cu);
          initialStaticT := (!initialStaticT) @ (!(#uTyNameSet cu));
          initialStaticTE := bindTopInEnv (!initialStaticTE) (#uTyEnv cu);
          initialStaticVE := bindTopInEnv (!initialStaticVE) (#uVarEnv cu);
@@ -220,8 +288,59 @@ fun initInitialEnvironments() =
          initialStaticFE := bindTopInEnv (!initialStaticFE) (#uFunEnv cu);
          initialStaticGE := bindTopInEnv (!initialStaticGE) (#uSigEnv cu)
        end)
-    (!preopenedPreloadedUnits)
+    (!preopenedPreloadedUnits);
+  List.app
+    (fn filename =>
+       let val cu = readAndMentionSig filename in
+	   case #uMode cu of
+	     STRmode => 
+	        let val id = !(#uIdent cu)
+		    val T = !(tyNameSetOfSig cu) 
+		in
+		   (case !(strOptOfSig cu) of
+			NONE => ()
+		      | SOME RS =>
+			    (initialStaticGE := 
+			     bindInEnv (!initialStaticGE) 
+			               id
+				       {qualid = {qual = "",id=[id]},
+					info = (LAMBDAsig (T,
+							   STRmod RS))}));
+		    initialStaticT := (!initialStaticT) @ T;
+		    initialStaticME :=
+               	        bindInEnv (!initialStaticME) 
+			          id 
+				  {qualid = {qual = #uName cu,id=[]},
+				   info = NONrec (STRstr(mk1TopEnv (modEnvOfSig cu),
+							 mk1TopEnv(funEnvOfSig cu),
+							 mk1TopEnv(sigEnvOfSig cu), (* should be NILenv *)
+							 mk1TopEnv(tyEnvOfSig cu),
+							 mk1TopEnv(varEnvOfSig cu)))}
+		  end
+	   | TOPDECmode =>
+		 (initialInfixBasis := bindTopInEnv (!initialInfixBasis) (#uIBas cu);
+		  initialStaticT := (!initialStaticT) @ (!(#uTyNameSet cu));
+		  initialStaticTE := bindTopInEnv (!initialStaticTE) (#uTyEnv cu);
+		  initialStaticVE := bindTopInEnv (!initialStaticVE) (#uVarEnv cu);
+		  initialStaticME := bindTopInEnv (!initialStaticME) (#uModEnv cu);
+		  initialStaticFE := bindTopInEnv (!initialStaticFE) (#uFunEnv cu);
+		  initialStaticGE := bindTopInEnv (!initialStaticGE) (#uSigEnv cu))
+       end)
+    context
 );
+
+fun extendInitialSigEnv (SOME ({uMode = STRmode,
+				uIdent = ref id, 
+				uTyNameSet = ref T,
+				uStrOpt = ref (SOME RS),
+				...}:CSig)) =
+    (initialStaticGE := bindInEnv (!initialStaticGE) 
+                                  id
+				  {qualid = {qual = "",id=[id]},
+				   info = (LAMBDAsig (T,STRmod RS))})
+| extendInitialSigEnv _ = ();
+
+
 
 (* To put aside the current toplevel unit while compiling another unit. *)
 
@@ -229,11 +348,11 @@ fun protectCurrentUnit fct =
   let
     val saved_currentSigTable = !currentSigTable
     val saved_currentSig = !currentSig
-    val saved_currentInfixBasis = !currentInfixBasis
     val saved_currentTypeStamp = !currentTypeStamp
     val saved_currentExcStamp = !currentExcStamp
     val saved_currentValStamp = !currentValStamp
     val saved_currentRenEnv = !currentRenEnv
+    val saved_InfixBasis = !initialInfixBasis
     val saved_initialStaticT = !initialStaticT
     val saved_initialStaticVE = !initialStaticVE
     val saved_initialStaticTE = !initialStaticTE
@@ -245,11 +364,11 @@ fun protectCurrentUnit fct =
     fct();
     currentSigTable := saved_currentSigTable;
     currentSig := saved_currentSig;
-    currentInfixBasis := saved_currentInfixBasis;
     currentTypeStamp := saved_currentTypeStamp;
     currentExcStamp := saved_currentExcStamp;
     currentValStamp := saved_currentValStamp;
     currentRenEnv := saved_currentRenEnv;
+    initialInfixBasis := saved_InfixBasis;
     initialStaticT := saved_initialStaticT;
     initialStaticVE := saved_initialStaticVE;
     initialStaticTE := saved_initialStaticTE;
@@ -261,11 +380,11 @@ fun protectCurrentUnit fct =
       (
       currentSigTable := saved_currentSigTable;
       currentSig := saved_currentSig;
-      currentInfixBasis := saved_currentInfixBasis;
       currentTypeStamp := saved_currentTypeStamp;
       currentExcStamp := saved_currentExcStamp;
       currentValStamp := saved_currentValStamp;
       currentRenEnv := saved_currentRenEnv;
+      initialInfixBasis := saved_InfixBasis;
       initialStaticT := saved_initialStaticT;
       initialStaticVE := saved_initialStaticVE;
       initialStaticTE := saved_initialStaticTE;
@@ -344,11 +463,9 @@ fun add_qualified_info sel_fct i (info as {qualid = {qual,id},info = info'}) =
   end
 ;
 
-fun add_InfixBasis id info =
-  Hasht.insert (!currentInfixBasis) id info
-;
 
-val add_VarEnv   = add_qualified_info varEnvOfSig
+val add_InfixBasis  = add_global_info iBasOfSig
+and add_VarEnv   = add_qualified_info varEnvOfSig
 and add_TyEnv    = add_global_info tyEnvOfSig
 and add_ModEnv    = add_qualified_info modEnvOfSig
 and add_FunEnv    = add_qualified_info funEnvOfSig
@@ -360,6 +477,20 @@ and add_SigEnv    = add_qualified_info sigEnvOfSig
 
 (* cvr: these functions should eventually all be redundant once
    signature elaboration is done properly *)
+
+fun extend_InfixBasis id info =
+  let val tbl = iBasOfSig (!currentSig) in
+    (ignore (Hasht.find tbl id);
+     msgIBlock 0;
+     errPrompt "The fixity status of ";
+     msgString id; msgString " cannot be redefined in a signature.";
+     msgEOL();
+     msgEBlock();
+     raise Toplevel)
+    handle Subscript =>
+      (* Hasht.insert tbl id info *)
+      add_InfixBasis id info
+  end;
 
 fun extend_VarEnv id info =
   let val tbl = varEnvOfSig (!currentSig) in
@@ -473,14 +604,18 @@ fun extendCurrentStaticS S =
     let val strOpt = strOptOfSig (!currentSig) 
     in (* cvr: TODO check for duplicate specs? *)
     strOpt := (case !strOpt of
-                 NONE => SOME S
-	      |  SOME S' => SOME (SEQstr (S',S)))
+                 NONE => SOME (NONrec S)
+	      |  SOME (NONrec S') => SOME (NONrec (SEQstr (S',S)))
+	      |  SOME (RECrec _) => fatalError "extendCurrentStaticS")
     end;
+
+fun extendCurrentStaticIBas iBas =
+  traverseEnv extend_InfixBasis (revEnv iBas)
+;
 
 fun extendCurrentStaticVE VE =
   traverseEnv extend_VarEnv (revEnv VE)
 ;
-
 
 fun updateCurrentStaticVE VE =
   traverseEnv add_VarEnv (revEnv VE)
@@ -518,10 +653,14 @@ fun updateCurrentStaticGE GE =
   traverseEnv add_SigEnv (revEnv GE)
 ;
 
-
-
+(*
 fun mkGlobalInfixBasis() =
   bindTopInEnv pervasiveInfixBasis (!currentInfixBasis)
+;
+*)
+
+fun mkGlobalInfixBasis() =
+  bindTopInEnv (!initialInfixBasis) (#uIBas (!currentSig));
 ;
 
 fun mkGlobalT() = (!initialStaticT) @ (!(#uTyNameSet (!currentSig)))
@@ -547,6 +686,7 @@ fun mkGlobalGE() =
 
 fun execToplevelOpen loc uname =
   let val cu = findAndMentionSig loc uname in
+    updateCurrentInfixBasis (mk1TopEnv (#uIBas cu));
     updateCurrentStaticT  (!(#uTyNameSet cu));
     updateCurrentStaticVE (mk1TopEnv (#uVarEnv cu));
     updateCurrentStaticTE (mk1TopEnv (#uTyEnv cu));
@@ -591,10 +731,10 @@ fun printVQ q =
 fun mkInfixBasis() = (Hasht.new 13 : (string, InfixStatus) Hasht.t);
 fun mkRenEnv() = (Hasht.new 113 : (string, int) Hasht.t);
 
-fun startCompilingUnit name =
+fun startCompilingUnit uname uident umode =
 (
   currentSigTable := mkSigTable();
-  currentSig := newSig name;
+  currentSig := newSig uname uident umode;
   currentInfixBasis := mkInfixBasis();
   currentTypeStamp := 0;
   currentExcStamp := 0;

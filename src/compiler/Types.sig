@@ -6,8 +6,12 @@ in
 val SofRecStr : RecStr -> Str;
 val MEofStr : Str -> ModEnv;
 val FEofStr : Str -> FunEnv;
+val GEofStr : Str -> SigEnv;
 val VEofStr : Str -> VarEnv;
 val TEofStr : Str -> TyEnv;
+
+val removeGEofStr : Str -> Str;
+val removeGEofRecStr : RecStr -> RecStr;
 
 val VEofCE : ConEnv -> VarEnv;
 
@@ -78,6 +82,7 @@ val prSig : Sig -> unit;
 val prModInfo : string -> RecStr global -> unit;
 val prFunInfo : string -> GenFun global -> unit;
 val prSigInfo : string -> Sig global -> unit;
+val prInfixStatus : string -> InfixStatus -> unit;
 val prVarInfo : ((TypeScheme * ConStatusDesc) global -> unit) -> 
     string -> (TypeScheme * ConStatusDesc) global -> unit
 val prTyInfo : string -> (TyFun * ConEnv) -> unit;
@@ -204,11 +209,11 @@ val conEnvOfTyApp: TyApp -> ConEnv option;
 val refreshTyName: TnSort -> TyName ->  unit; 
 val refreshTyNameSet: TnSort -> TyNameSet  -> unit;
 
-
 val realizeLongTyCon : QualifiedIdent -> TyStr ->  TyStr -> unit;
 val matchMod : Mod -> Mod -> unit; (* cvr: added *)
-val matchStr : Str -> Str -> unit; (* cvr: added *)
+val matchCSig : CSig -> CSig -> unit; (* cvr: added *)
 val errMatchReason : string -> string -> matchReason -> unit;
+val checkCSig : CSig -> CSig -> unit; (* cvr: added *)
 
 (* cvr: operations on normed structures and environments to return
    runtime field and  static info *)

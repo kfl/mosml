@@ -1,4 +1,3 @@
-
 open Misc List Fnlib Mixture 
      Config 
      Const Smlprim Globals Location Units;
@@ -11,17 +10,33 @@ fun SofRecStr RS =
     | NONrec S => S   
 ;
 
-fun MEofStr (STRstr (ME,_,_,_)) = ME
-  | MEofStr (SEQstr (Str1,Str2)) = plusEnv (MEofStr Str1) (MEofStr Str2);
+fun MEofStr (STRstr (ME,_,_,_,_)) = ME
+  | MEofStr (SEQstr (Str1,Str2)) = plusEnv (MEofStr Str1) (MEofStr Str2)
 
-fun FEofStr (STRstr (_,FE,_,_)) = FE
+fun FEofStr (STRstr (_,FE,_,_,_)) = FE
   | FEofStr (SEQstr (Str1,Str2)) = plusEnv (FEofStr Str1) (FEofStr Str2)
 
-fun TEofStr (STRstr (_,_,TE,_)) = TE
+fun GEofStr (STRstr (_,_,GE,_,_)) = GE
+  | GEofStr (SEQstr (Str1,Str2)) = plusEnv (GEofStr Str1) (GEofStr Str2)
+
+fun TEofStr (STRstr (_,_,_,TE,_)) = TE
   | TEofStr (SEQstr (Str1,Str2)) = plusEnv (TEofStr Str1) (TEofStr Str2)
 
-fun VEofStr (STRstr (_,_,_,VE)) = VE
-  | VEofStr (SEQstr (Str1,Str2)) = plusEnv (VEofStr Str1) (VEofStr Str2);
+fun VEofStr (STRstr (_,_,_,_,VE)) = VE
+  | VEofStr (SEQstr (Str1,Str2)) = plusEnv (VEofStr Str1) (VEofStr Str2)
+
+fun removeGEofStr S =
+    case S of 
+	STRstr (ME,FE,NILenv,TE,VE) => S (* share if possible *)
+      | STRstr (ME,FE,GE,TE,VE) => STRstr (ME,FE,NILenv,TE,VE)
+      | SEQstr (S1,S2) => SEQstr (removeGEofStr S1,removeGEofStr S2) (* cvr: TODO improve sharing? *)
+;
+
+fun removeGEofRecStr RS = 
+    case RS of
+       RECrec(_,_) => RS
+    |  NONrec S => NONrec (removeGEofStr S)
+;
 
 fun VEofCE (ConEnv CE : ConEnv) =
   foldL (fn cs => fn env =>
@@ -39,6 +54,7 @@ datatype path = NILpath
               | DOTpath of path * string
               | DOMpath of path 
               | RNGpath of path 
+              | UNITpath 
 ;
 
 datatype ScopeViolation = 
@@ -55,7 +71,11 @@ and matchReason =
     MissingValue of path * string * VarInfo
 |   MissingStructure of path * string * ModInfo
 |   MissingFunctor of path * string * FunInfo
+|   MissingSignature of path * string * SigInfo
 |   MissingType of path * string * TyInfo
+|   MissingInfixStatus of path * string * InfixStatus
+|   InfixStatusMismatch of path * string * InfixStatus * InfixStatus
+|   SignatureMismatch of path * string * SigInfo * SigInfo * matchReason option * matchReason option
 |   SchemeMismatch of path * string * VarInfo * VarInfo
 |   StatusMismatch of path * string * VarInfo * VarInfo
 |   ConEnvMismatch of  path * string * TyInfo * TyInfo
@@ -686,15 +706,16 @@ and copyTyEnv bns bvs TE =
     bns bvs TE
 and copyStr bns bvs S =
     case S of
-       STRstr (ME,FE,TE,VE) =>
+       STRstr (ME,FE,GE,TE,VE) =>
 	     let val (bns,bvs,sME,cME) = copyModEnv bns bvs ME
 		 val (bns,bvs,sFE,cFE) = copyFunEnv bns bvs FE
+		 val (bns,bvs,sGE,cGE) = copySigEnv bns bvs GE
 		 val (bns,bvs,sTE,cTE) = copyTyEnv bns bvs TE
 		 val (bns,bvs,sVE,cVE) = copyVarEnv bns bvs VE
 	     in
-	        if sME andalso sFE andalso sTE andalso sVE 
+	        if sME andalso sFE andalso sGE andalso sTE andalso sVE 
 		then (bns,bvs,true,S) 
-		else (bns,bvs,false,STRstr (cME,cFE,cTE,cVE))
+		else (bns,bvs,false,STRstr (cME,cFE,cGE,cTE,cVE))
 	     end
      |  SEQstr (S1,S2) =>
 	     let val (bns,bvs,sS1,cS1) = copyStr bns bvs S1
@@ -741,6 +762,8 @@ and copyModEnv bns bvs ME =
     copyEnv (copyGlobal copyRecStr) bns bvs ME
 and copyFunEnv bns bvs FE =
     copyEnv (copyGlobal copyFun) bns bvs FE
+and copySigEnv bns bvs GE =
+    copyEnv (copyGlobal copySig) bns bvs GE
 and copyFun bns bvs (F as (T,M,X)) =
     let val () = incrBindingLevel ();
 	val (bns,bvs,T',T2T') = copyTyNameSet PARAMETERts bns bvs T 
@@ -843,7 +866,9 @@ and freeVarsTypeScheme   bns bvs fnvs (TypeScheme {tscParameters,tscBody})  =
 and freeVarsTyApp bns bvs (fnvs as (fns, fvs,frvs)) tyapp  = 
     case tyapp of
        NAMEtyapp tyname => 
-                  if member tyname fns orelse member tyname bns 
+(*                  if member tyname fns orelse member tyname bns  *)
+                  if exists (isEqTN tyname) fns 
+		      orelse exists (isEqTN tyname) bns
                   then fnvs 
                   else (tyname::fns,fvs,frvs)
     |  APPtyapp (tyapp,tyfun) => 
@@ -870,8 +895,8 @@ and freeVarsConEnv bns bvs fnvs conenv =
 	    freeVarsConEnv (tn::bns) bvs fnvs conenv
 and freeVarsStr  bns bvs fnvs S = 
     case S of 
-       STRstr (ME,FE,TE,VE) =>
-        freeVarsModEnv bns bvs (freeVarsFunEnv bns bvs (freeVarsTyEnv bns bvs (freeVarsVarEnv bns bvs fnvs VE) TE) FE) ME
+       STRstr (ME,FE,GE,TE,VE) =>
+        freeVarsModEnv bns bvs (freeVarsFunEnv bns bvs (freeVarsSigEnv bns bvs (freeVarsTyEnv bns bvs (freeVarsVarEnv bns bvs fnvs VE) TE) GE) FE) ME
     |  SEQstr (S,S') => 
         (freeVarsStr bns bvs (freeVarsStr bns bvs fnvs S) S')
 and freeVarsRecStr  bns bvs fnvs RS = 
@@ -892,6 +917,7 @@ and freeVarsGenFun  bns bvs fnvs (T,M,X) =
           (freeVarsExMod (bns') bvs (freeVarsMod bns' bvs fnvs M) X)
        end
 and freeVarsFunInfo bns bvs fnvs {qualid=_,info = F} = freeVarsGenFun bns bvs fnvs F
+and freeVarsSigInfo bns bvs fnvs {qualid=_,info = G} = freeVarsSig bns bvs fnvs G
 and freeVarsFunEnv bns bvs fnvs FE = 
        foldEnv (fn id => fn info => fn fnvs => freeVarsFunInfo bns bvs fnvs info) fnvs FE
 and freeVarsExMod  bns bvs fnvs (EXISTSexmod(T,M)) = freeVarsMod  (T@bns) bvs fnvs M
@@ -1162,6 +1188,7 @@ and normTyFun tyfun =
 fun normStr S = 
     STRstr (sortEnv (mapEnv normModBind (MEofStr S)),
             sortEnv (FEofStr S),
+	    GEofStr S,
 	    TEofStr S,
 	    sortEnv (VEofStr S))
 and normRecStr RS =
@@ -1902,9 +1929,10 @@ and checkClosedTyEnv parameters VE =
        traverseEnv (fn id => fn (tyfun,_) => checkClosedTyFun parameters tyfun) VE
 and checkClosedStr parameters str = 
     case str of 
-       STRstr (ME,FE,TE,VE) =>
+       STRstr (ME,FE,GE,TE,VE) =>
         (checkClosedModEnv parameters ME;
 	 checkClosedFunEnv parameters FE;
+	 checkClosedSigEnv parameters GE;
          checkClosedTyEnv parameters TE;
          checkClosedVarEnv parameters VE)
     |  SEQstr (str,str') => 
@@ -2225,7 +2253,7 @@ val initial_option_CE = ConEnv [infoNONE, infoSOME];
 val initial_order_CE = ConEnv [infoLESS, infoEQUAL, infoGREATER];
 val initial_frag_CE = ConEnv [infoQUOTE, infoANTIQUOTE];
 
-val unit_General = newSig "General";
+val unit_General = newSig "General" "General" STRmode;
 
 (* cvr: TODO  
 val () = setConstructors unit_General 100 initial_bool_CE;
@@ -2263,12 +2291,16 @@ fun lookupStr_FunEnv S path id info =
    (lookupStr #2 S id)    
    handle Subscript => 
        raise MatchError (MissingFunctor (path, id, info))
+fun lookupStr_SigEnv S path id info =
+   (lookupStr #3 S id)    
+   handle Subscript => 
+       raise MatchError (MissingSignature (path, id, info))
 fun lookupStr_TyEnv S path id info =
-   (lookupStr #3 S id)
+   (lookupStr #4 S id)
    handle Subscript => 
        raise MatchError (MissingType (path, id, info))
 fun lookupStr_VarEnv S path id info =
-   (lookupStr #4 S id)    
+   (lookupStr #5 S id)    
    handle Subscript => 
        raise MatchError (MissingValue (path, id, info))
 end;
@@ -2589,7 +2621,7 @@ fun matchIdStatus (* os *) path id
   end
 and matchStr path S S' = 
     case S' of
-      STRstr (ME,FE,TE,VE) => 
+      STRstr (ME,FE,GE,TE,VE) => 
 	  (traverseEnv (fn id => fn specInfo =>
 			realizeTyStr path id 
 			  (lookupStr_TyEnv S path id specInfo) specInfo)
@@ -2612,7 +2644,11 @@ and matchStr path S S' =
 	   traverseEnv (fn id => fn specInfo =>
 			matchFunBind path id 
 			(lookupStr_FunEnv S path id specInfo) specInfo)
-	   FE)
+	   FE;
+	   traverseEnv (fn id => fn specInfo =>
+			matchSigBind path id 
+			(lookupStr_SigEnv S path id specInfo) specInfo)
+	   GE)
   |  SEQstr (S1',S2') => (matchStr path S S1'; matchStr path S S2')
 and matchRecStr path RS (RECrec (RS1',RS2')) = 
     (matchRecStr path RS RS1'; matchRecStr path RS RS2')
@@ -2631,6 +2667,13 @@ and matchModBind path id {qualid = _,info = RS} {qualid = _,info = RS'} =
     matchRecStr (DOTpath(path,id))  RS RS'
 and matchFunBind path id {qualid = _,info = F} {qualid = _,info = F'} =
     matchFun  (DOTpath(path,id)) F F'
+and matchSigBind path id (infInfo as {qualid = _,info = G}) (specInfo as  {qualid = _,info = G'}) =
+    ((matchSig  (NILpath) G G')
+     handle MatchError reason => 
+	 raise MatchError (SignatureMismatch(path,id,infInfo,specInfo,SOME reason,NONE));
+     (matchSig  (NILpath) G' G)
+     handle MatchError reason => 
+	 raise MatchError (SignatureMismatch(path,id,infInfo,specInfo,NONE,SOME reason)))
 and matchMod path M M' =
   case (M,M') of
      (STRmod RS,STRmod RS') => matchRecStr path RS RS'
@@ -2646,9 +2689,52 @@ and matchExMod path (EXISTSexmod(T,M)) (EXISTSexmod(T',M')) =
     refreshTyNameSet VARIABLEts T';
     matchMod path M M';
     refreshTyNameSet PARAMETERts T'; (* forget the realisation *)
+    decrBindingLevel())
+and matchSig path (LAMBDAsig(T,M)) (LAMBDAsig(T',M')) =
+   (incrBindingLevel();
+    refreshTyNameSet PARAMETERts T;
+    refreshTyNameSet VARIABLEts T';
+    matchMod path M M';
+    refreshTyNameSet PARAMETERts T'; (* forget the realisation *)
     decrBindingLevel());
 
-(* define the exported functions *)
+fun matchInfixStatus path id infFixity specFixity = 
+    if specFixity = infFixity then ()
+    else raise MatchError(InfixStatusMismatch(path,id,infFixity,specFixity))
+;
+
+fun matchInfixBasis path infIBas specIBas =
+   (Hasht.apply 
+    (fn id => fn specFixity =>
+        matchInfixStatus path id 
+	                  ((Hasht.find infIBas id) 
+			   handle Subscript => 
+			       raise MatchError (MissingInfixStatus (path,id,specFixity)))
+			  specFixity)
+    specIBas)
+;
+
+fun matchCSig (inferredSig:CSig) (specSig:CSig) =
+  case !(strOptOfSig specSig) of 
+    NONE => fatalError "matchSignature"
+  | SOME RS => 
+     (* NB: the infix bases and sigenv's will be empty in STRmode *)
+     let val LAMBDAsig(T,STRmod RS) = 
+	 copySig [] [] (LAMBDAsig(!(tyNameSetOfSig specSig),STRmod RS))
+	 val RS' = NONrec (STRstr (mk1TopEnv (#uModEnv inferredSig),
+				   mk1TopEnv (#uFunEnv inferredSig),
+				   mk1TopEnv (#uSigEnv inferredSig),
+				   mk1TopEnv (#uTyEnv  inferredSig),
+				   mk1TopEnv (#uVarEnv inferredSig)))
+	     
+     in
+	 refreshTyNameSet VARIABLEts T;
+	 matchRecStr UNITpath RS' RS;
+	 matchInfixBasis UNITpath (iBasOfSig inferredSig) (iBasOfSig specSig)
+     end
+;
+
+(* define the exported variants *)
 
 local 
     fun pathOfLongStrId [id] = IDpath id
@@ -2661,12 +2747,11 @@ end;
    
    
 val matchMod = matchMod NILpath;
-val matchStr = matchStr NILpath;
-val matchExMod = matchExMod NILpath;
+val matchSig = matchSig NILpath;
 
 (* tie the knot *)
 
-val () = matchExModRef := matchExMod;
+val () = matchExModRef := matchExMod NILpath;
 
 (* cvr: printing semantic objects *)
 
@@ -3049,6 +3134,19 @@ and prTyFun prior tyfun =
     |  APPtyfun tyapp => 
        prTyApp prior tyapp
   end
+and prInfixStatus id status =
+(
+  (case status of
+       NONFIXst =>
+         msgString "nonfix "
+     | INFIXst i =>
+         (msgString "infix ";
+          msgInt i; msgString " ")
+     | INFIXRst i =>
+         (msgString "infixr ";
+          msgInt i; msgString " "));
+  msgString id
+)
 and prVarInfo prVal id info = 
     under_binder (fn {qualid,info = (TypeScheme {tscParameters,tscBody},status)} =>
 		 (msgString
@@ -3132,9 +3230,10 @@ and prConEnv CE =
  	     msgEBlock())
 and prStrBody S initial = 
     case S of 
-       STRstr (ME,FE,TE,VE) =>
+       STRstr (ME,FE,GE,TE,VE) =>
         let val initial = prEnv prModInfo ME initial  
 	    val initial = prEnv prFunInfo FE initial  
+	    val initial = prEnv prSigInfo GE initial  
 	    val initial = prEnv prTyInfo TE initial 
 	in prEnv (prVarInfo (fn info => ())) VE initial
 	end
@@ -3369,6 +3468,17 @@ local
 	     (msgString " ";msgString id;
 	      fn () => (msgString " of";
 			prPath path()))
+       | DOTpath (UNITpath,id) => 
+	     (case (modeOfSig (!currentSig)) of
+		  STRmode => (msgString " ";msgString (!(#uIdent(!currentSig)));
+			      msgString ".";msgString id;
+			      fn () =>
+			      (msgString " in the unit ";
+			       msgString (currentUnitName())))
+		| TOPDECmode => (msgString " ";msgString id;
+				 fn () =>
+				   (msgString " in the toplevel unit ";
+				    msgString (currentUnitName())))) 
        | DOTpath (path,id) => 
 	     (let val cont = prPath path
 	      in
@@ -3385,7 +3495,15 @@ local
 	    (fn () => msgString " the range")
       | RNGpath(path) =>
 	    (fn () => (msgString " the range of";
-		       prPath path ()));
+		       prPath path ()))
+      | UNITpath =>
+	    (fn () => (case (modeOfSig (!currentSig)) of
+			 STRmode =>
+			     (msgString " the structure unit ";
+			      msgString (currentUnitName()))
+		       | TOPDECmode =>
+			     (msgString " the toplevel unit ";
+			      msgString (currentUnitName()))))
 in
     val prPath = fn path => prPath path ()
 end
@@ -3398,24 +3516,26 @@ fun errMatchReason infDesc specDesc matchreason =
 let fun prInf path =
         case path of
 	    NILpath => msgString infDesc
-	  |   IDpath _ => msgString infDesc
-	  |   DOTpath (path,_) => prInf path 
-	  |   DOMpath path => prSpec path 
-	  |   RNGpath path => prInf path 
+	  | UNITpath => msgString infDesc
+	  | IDpath _ => msgString infDesc
+	  | DOTpath (path,_) => prInf path 
+	  | DOMpath path => prSpec path 
+	  | RNGpath path => prInf path 
     and prSpec path  =
 	case path of
 	    NILpath => msgString specDesc
-	  |   IDpath _ => msgString specDesc
-	  |   DOTpath (path,_) => prSpec path
-	  |   DOMpath path => prInf path 
-	  |   RNGpath path => prSpec path
+	  | UNITpath => msgString specDesc
+	  | IDpath _ => msgString specDesc
+	  | DOTpath (path,_) => prSpec path
+	  | DOMpath path => prInf path 
+	  | RNGpath path => prSpec path
 
    fun errMissingDeclaration (path,id,info) s freeVarsInfo prInfo =
 	under_binder (fn info => 
 		      (collectExplicitVarsInObj freeVarsInfo info;	     
 		       msgIBlock 0;
-		       errPrompt "Missing declaration: ";msgString s;prPath (DOTpath(path,id));
-		       msgString " is specified in the ";
+		       errPrompt "Missing declaration: ";msgString s;prPath (DOTpath(path,id));msgEOL();
+		       errPrompt "is specified in the ";
 		       prSpec path;msgString " as ";
 		       msgEOL();
 		       errPrompt "  ";prInfo id info;msgEOL();
@@ -3433,7 +3553,7 @@ in
 			      (prVarInfo (fn info => ()))
   | MissingType pathidinfo =>
 	errMissingDeclaration pathidinfo 
-	                      "type"
+	                      "type constructor"
 			      freeVarsTyStr 
 			      prTyInfo
   | MissingStructure pathidinfo =>
@@ -3446,6 +3566,60 @@ in
 	                      "functor"
 			      freeVarsFunInfo 
 			      prFunInfo
+  | MissingSignature pathidinfo =>
+	errMissingDeclaration pathidinfo 
+	                      "signature"
+			      freeVarsSigInfo 
+			      prSigInfo
+  | MissingInfixStatus pathidinfo =>
+	errMissingDeclaration pathidinfo 
+	                      "the infix status of"
+			      (fn _ => fn _ => fn _ => fn _ => ([],[],[]))
+			      prInfixStatus
+  | InfixStatusMismatch (path,id,infInfo,specInfo) =>
+       	    (msgIBlock 0;
+	     errPrompt "Infix status mismatch: value identifier";
+	     prPath(DOTpath(path,id));
+	     errPrompt "is specified with fixity status ";msgEOL();
+	     errPrompt "  ";prInfixStatus id specInfo;msgEOL();
+	     errPrompt "in the ";prSpec path;msgEOL();
+             errPrompt "but declared with status ";msgEOL();
+	     errPrompt "  ";prInfixStatus id infInfo;msgEOL();
+	     errPrompt "in the ";prInf path;msgEOL();
+	     msgEBlock())
+  | SignatureMismatch (path,id,infInfo,specInfo,reasonopt,reasonopt') =>
+	    under_binder
+	    (fn () =>
+	    (collectExplicitVarsInObj freeVarsSigInfo specInfo;
+	     collectExplicitVarsInObj freeVarsSigInfo infInfo;
+	     msgIBlock 0;
+	     errPrompt "Signature mismatch: signature identifier";
+	     prPath(DOTpath(path,id));
+	     msgString " is specified as ";msgEOL();
+	     errPrompt "  ";prSigInfo id specInfo;msgEOL();
+	     errPrompt "in the ";prSpec path;msgEOL();
+	     errPrompt "but is declared as";
+	     msgEOL();
+ 	     errPrompt "  ";prSigInfo id infInfo;msgEOL();
+	     errPrompt "in the ";prInf path;msgEOL();
+	     (case reasonopt of 
+		  NONE => () 
+		| SOME reason => 
+		      (errPrompt "The declaration does \
+		         \not match the specification because ...";
+		       msgEOL();
+		       errMatchReason "declared signature" "specified signature" reason);
+ 	      case reasonopt' of 
+		  NONE => () 
+		| SOME reason => 
+		      (errPrompt "The specification does \
+		         \not match the declaration because";
+		       msgEOL();
+		       errMatchReason "specified signature" "declared signature" reason));
+	     errPrompt "The signatures should be equivalent.";
+	     msgEOL();
+	     msgEBlock()))
+            ()
   | StatusMismatch (path,id,infInfo as {info=(_,infStatus),...},
 			    specInfo as {info=(_,specStatus),...})=>
        under_binder (fn () =>
@@ -3719,6 +3893,140 @@ in
 end
 ;
 
+local 
+  fun warnAdditional path desc =
+	     (msgIBlock 0;
+	      errPrompt "Warning: "; msgString desc;
+	      prPath path;msgEOL();
+              errPrompt "is declared by the implementation"; msgEOL ();
+	      errPrompt "but not specified in the interface";
+	      msgEOL();
+	      msgEBlock());
+  fun checkTyInfo path id (infTyStr : TyFun * ConEnv) (specTyStr : TyFun * ConEnv) =
+	case (#2 infTyStr,#2 specTyStr) of
+	    (ConEnv [], ConEnv []) => ()
+	  | (ConEnv (_::_), ConEnv []) => 
+		(msgIBlock 0;
+		 errPrompt "Warning: type constructor";
+		 prPath (DOTpath(path,id));msgEOL();
+		 errPrompt "is declared by the implementation as a datatype";
+		 msgEOL();
+		 errPrompt "but specified as an ordinary type in the interface";
+       	         msgEOL();
+		 msgEBlock())
+	  | (ConEnv _, ConEnv _) => ()
+
+  fun checkVarInfo path id 
+    (infInfo as {info = (_,infStatus),qualid = infQualid})
+    (specInfo as {info = (_,specStatus),qualid = specQualid}) =
+    let
+	val {qual=infQual, ...} = infQualid
+	val {qual=specQual,...} = specQualid 
+    in
+      case specStatus of
+        VARname ovltype => 
+          (case infStatus of
+	       CONname _ =>
+		   (msgIBlock 0;
+		    errPrompt "Warning: value";
+		    prPath (DOTpath(path,id));msgEOL();
+		    errPrompt "is declared by the implementation as a constructor";
+		    msgEOL();
+	            errPrompt "but specified as an ordinary value in the interface";
+		    msgEOL();
+		    msgEBlock())
+	     | EXNname _ =>
+		   (msgIBlock 0;
+		    errPrompt "Warning: value";
+		    prPath (DOTpath(path,id));msgEOL();
+		    errPrompt "is declared by the implementation as an \
+	                       \exception constructor";
+		    msgEOL();
+		    errPrompt "but specified as an ordinary value in the interface";
+		    msgEOL();
+		    msgEBlock())
+	     | _ => ())
+      | _  => ()
+  end
+  and checkStr path S S' = 
+      case S of
+	 STRstr (ME,FE,GE,TE,VE) => 
+	  (traverseEnv (fn id => fn infInfo =>
+			checkTyInfo path id infInfo (lookupEnv (TEofStr S') id)
+			handle Subscript => 
+			    warnAdditional (DOTpath(path,id)) "type constructor")
+	   TE;
+	   traverseEnv (fn id => fn infInfo =>
+			 checkVarInfo path id infInfo (lookupEnv (VEofStr S') id)
+			 handle Subscript => 
+			     warnAdditional (DOTpath(path,id)) "value")
+	   VE;
+	   traverseEnv (fn id => fn infInfo =>
+			checkModInfo path id infInfo (lookupEnv (MEofStr S') id)
+			handle Subscript =>  
+			    warnAdditional (DOTpath(path,id)) "structure")
+	   ME;
+	   traverseEnv (fn id => fn infInfo =>
+			checkFunInfo path id infInfo (lookupEnv (FEofStr S') id)
+			handle Subscript => 
+			    warnAdditional (DOTpath(path,id)) "functor")
+	   FE;
+	   traverseEnv (fn id => fn infInfo =>
+			checkSigInfo path id infInfo (lookupEnv (GEofStr S') id)
+			handle Subscript => 
+			    warnAdditional (DOTpath(path,id)) "signature")
+	   GE)
+       |  SEQstr (S1,S2) => (checkStr path S1 S'; checkStr path S2 S')
+  and checkRecStr path RS (RECrec (RS1',RS2')) = 
+	checkRecStr path RS RS2'
+    | checkRecStr path (NONrec S) (NONrec S') = 
+	checkStr path S S'
+    | checkRecStr path (RECrec(RS1,RS2)) RS' = 
+        checkRecStr path RS2 RS'
+  and checkFun path (T,M,X) (T',M',X') = 
+	checkExMod (RNGpath(path)) X X'
+  and checkModInfo path id {qualid = _,info = RS} {qualid = _,info = RS'} =
+        checkRecStr (DOTpath(path,id))  RS RS'
+  and checkFunInfo path id {qualid = _,info = F} {qualid = _,info = F'} =
+        checkFun  (DOTpath(path,id)) F F'
+  and checkSigInfo path id {qualid = _,info = G} {qualid = _,info = G'} =
+      ()
+  and checkMod path M M' =
+      case (M,M') of
+	  (STRmod RS,STRmod RS') => checkRecStr path RS RS'
+	|  (FUNmod F, FUNmod F') => checkFun path F F'
+	|  (_,_) => fatalError "checkMod"
+  and checkExMod path (EXISTSexmod(T,M)) (EXISTSexmod(T',M')) =
+        checkMod path M M'
+  and checkInfixBasis path infIBas specIBas =
+      Hasht.apply
+        (fn id => fn infInfo =>
+	 ((ignore (Hasht.find specIBas id))
+	  handle Subscript => 
+	      warnAdditional (DOTpath(path,id)) "the infix status of"))
+	infIBas
+in
+
+fun checkCSig infCSig specCSig = 
+    if modeOfSig(specCSig) = STRmode then () 
+    else
+	case !(strOptOfSig specCSig) of 
+	    NONE => fatalError "checkCSig"
+	  | SOME RS => 
+		let val RS' = NONrec (STRstr (mk1TopEnv (#uModEnv infCSig),
+					      mk1TopEnv (#uFunEnv infCSig),
+					      mk1TopEnv (#uSigEnv infCSig),
+					      mk1TopEnv (#uTyEnv  infCSig),
+					      mk1TopEnv (#uVarEnv infCSig)))
+		in
+		    checkRecStr UNITpath RS' RS; 
+		    checkInfixBasis UNITpath (iBasOfSig (infCSig)) 
+		                             (iBasOfSig (specCSig))
+		end
+end;
+
+
+
 (* lookup with calculated position in 
    normed (sorted) structures and environments *)
 
@@ -3742,7 +4050,7 @@ fun sizeOfFunEnv env =
 fun sizeOfVarEnv env =
     foldEnv (fn _ => fn info => fn size => size + sizeVarInfo info) 0 env
 
-fun sizeOfStr (STRstr(ME,FE,TE,VE)) = sizeOfModEnv ME + sizeOfFunEnv  FE + sizeOfVarEnv VE
+fun sizeOfStr (STRstr(ME,FE,GE,TE,VE)) = sizeOfModEnv ME + sizeOfFunEnv  FE + sizeOfVarEnv VE
  |  sizeOfStr (SEQstr (S,S')) = sizeOfStr S + sizeOfStr S'
 
 
@@ -3753,13 +4061,13 @@ fun sizeOfStr (STRstr(ME,FE,TE,VE)) = sizeOfModEnv ME + sizeOfFunEnv  FE + sizeO
 
 fun lookupMEofStr str =
     case str of 
-	  STRstr(ME,FE,TE,VE) => 
+	  STRstr(ME,FE,GE,TE,VE) => 
 		(fn mid => lookupEnvWithPos sizeModInfo ME mid 0)
 	| _ => fn mid => (0, lookupEnv (MEofStr str) mid)
 
 fun lookupFEofStr str =
     case str of 
-	 STRstr(ME,FE,TE,VE) => 
+	 STRstr(ME,FE,GE,TE,VE) => 
 	    let val sizeOfME = sizeOfModEnv ME in
 		fn fid => lookupEnvWithPos sizeFunInfo FE fid sizeOfME 
 	    end
@@ -3767,7 +4075,7 @@ fun lookupFEofStr str =
 
 fun lookupVEofStr str =
     case str of 
-	 STRstr(ME,FE,TE,VE) => 
+	 STRstr(ME,FE,GE,TE,VE) => 
 	    let val sizeOfMEFE = (sizeOfModEnv ME) + (sizeOfFunEnv FE) in
 		fn vid => lookupEnvWithPos sizeVarInfo VE vid sizeOfMEFE 
 	    end
@@ -3827,3 +4135,5 @@ fun checkClosedExEnvironment  (EXISTS(T,(ME,FE,GE,VE,TE))) =
             () GE)
   end
 end;
+
+
