@@ -1,4 +1,4 @@
-% manual.tex v. 2.00.0 Copyright (C) Peter Sestoft 1994, 2000-06-22
+% manual.tex v. 2.00.0 Copyright (C) Peter Sestoft 1994, 2000-06-26
 %
 % You may edit for lay-out, or leave out irrelevant sections (if
 % such omissions are marked somehow), but you may not redistribute the
@@ -27,7 +27,7 @@
 
   {\huge\bf Moscow ML Owner's Manual}\\[0.5cm]
 
-Version 2.00 of June 2000 --- draft 2000-06-22\\[0.5cm]
+Version 2.00 of June 2000 --- draft 2000-06-26\\[0.5cm]
 
 Sergei Romanenko, Russian Academy of Sciences, Moscow, Russia\\
 Claudio Russo, Cambridge University, Cambridge, United Kingdom\\
@@ -830,28 +830,27 @@ identifier bound by the declaration:
 Section~\ref{sec-valuepoly}) prevents the generalization of a type
 variable, it remains free and ungeneralized.  Hence \texttt{'a} will
 appear in the type \texttt{'a list -> int}, but will not be listed
-after \texttt{val}.
+between \texttt{val} and \texttt{f}.
 
 For a \texttt{datatype} declaration, which is generative, the response
-describes the new internal type names (here \texttt{=u'}), the
+describes the new internal type names (here \texttt{u}), the
 datatype's type structure (consisting of the internal type name and
 the constructors), and the constructors:
 
 \begin{program}
 - datatype u = A;
-> New type names: =u'
-  datatype u = (u',\verb+{+con A : u'\verb+}+)
-  con A = A : u'
+> New type names: =u
+  datatype u = (u,\verb+{+con A : u\verb+}+)
+  con A = A : u
 \end{program}
 
 \noindent
-The notation \texttt{=u'} means that the internal type name
-\texttt{u'} admits equality.  Since the \texttt{datatype} declaration
-is generative, repeated declaration of datatype \texttt{u} will
-produce distinct new internal type names \texttt{=u{'}{'}},
-\texttt{=u{'}{'}{'}}, etc.  If the datatype is polymorphic, the
-internal type name will be a type function, taking as parameter a type
-variable \texttt{'a}:
+The notation \texttt{=u} means that the internal type name \texttt{u}
+admits equality.  Since the \texttt{datatype} declaration is
+generative, repeated declaration of datatype \texttt{u} will produce
+distinct new internal type names \texttt{u/1}, \texttt{u/2}, etc.  If
+the datatype is polymorphic, the internal type name will be a type
+function, taking as parameter a type variable \texttt{'a}:
 
 \begin{program}
 - datatype 'a u = A of 'a;
@@ -874,7 +873,7 @@ signature:
 \noindent 
 For a structure declaration, the response describes any new internal
 type names, and then the internal signature of the structure.  Here it
-has three components (type \texttt{t}, constructor \texttt{A}, and
+has three components (datatype \texttt{t}, constructor \texttt{A}, and
 value identifier \texttt{x}):
 
 \begin{program}
@@ -894,25 +893,25 @@ the signature of the functor body:
 \end{program}
 
 \noindent When the functor argument signature specifies an unknown
-type, the signature function will have the form\\ \verb+!t'.{...}->{...}+
-in which the internal type name \texttt{t'} has been generalized:
+type, the signature function will have the form\\ \verb+!t.{...}->{...}+
+in which the internal type name \texttt{t} has been generalized:
 
 \begin{program}
 - functor F(X : sig type t; val x : t end) = struct val y = X.x end;
-> functor F : !t'.\verb+{+type t = t', val x : t'\verb+}+->\verb+{+val y : t'\verb+}+
+> functor F : !t.\verb+{+type t = t, val x : t\verb+}+->\verb+{+val y : t\verb+}+
 \end{program}
 
 \noindent When the body of a (standard) generative functor \texttt{G}
 contains a \texttt{datatype} declaration, the response describes what
 new internal type names will be generated at every application of the
 functor.  The notation \verb+{}->...+ means that the functor argument
-signature is empty, and the notation \verb+?=t'.{...}+ says that there
-is some internal type name \verb+t'+, admitting equality, such that
+signature is empty, and the notation \verb+?=t.{...}+ says that there
+is some internal type name \verb+t+, admitting equality, such that
 the functor body has the signature \verb+{...}+:
 
 \begin{program}
 - functor F() = struct datatype t = A end;
-> functor F : \verb+{+\verb+}+->?=t'.\verb+{+datatype t = (t',\verb+{+con A : t'\verb+}+), con A : t'\verb+}+
+> functor F : \verb+{+\verb+}+->?=t.\verb+{+datatype t = (t,\verb+{+con A : t\verb+}+), con A : t\verb+}+
 \end{program}
 
 \noindent When the functor is applicative (see
@@ -1266,8 +1265,7 @@ end
 
 \noindent File {\tt Evaluate.sig} below contains the signature {\tt
   Evaluate}, which specifies a function {\tt eval} for evaluating
-expressions, and a function {\tt test}.  Note the use of `{\tt open
-  Expr}' to make the type {\tt expr} refer to {\tt Expr.expr}:
+expressions, and a function {\tt test}:
 
 \begin{program}
 signature Evaluate = sig
@@ -1299,17 +1297,13 @@ end
 Recompilation management helps the programmer recompile only what is
 necessary after a change to a unit interface or unit implementation.  
 
-Type-safe linking prevents the programmer from creating unsafe or
-meaningless programs.  The {\tt load} function and the batch linker in
-Moscow ML ensure probabilistically type-safe linking, so it is
-virtually impossible to cause the system to create a type-unsafe
-program.
 
 Recompilation management for structure-mode units (that declare only
 flat structures)\footnote{For managing the recompilation of full
-  Standard ML programs, see Section~\ref{sec-project-manager}.} may be
-performed using the standard `make' tool in conjunction with the
-Moscow ML program \texttt{mosmldep}.
+  Standard ML programs, see Sections~\ref{sec-mixed-recompilation}
+  and~\ref{sec-project-manager}.} may be performed using the standard
+`make' tool in conjunction with the Moscow ML program
+\texttt{mosmldep}.
 
 Consider the example program in Section~\ref{sec-example-units}
 consisting of the three units Evaluate, Expr, and Reduce.  Assume
@@ -1425,7 +1419,7 @@ mosml
 \end{program}
 
 \subsection{An example program consisting of four mixed-mode units}
-\label{sec-example-units}
+\label{sec-example-mixed-units}
 
 To illustrate units, we present a tiny program working
 with arithmetic expressions.  It consists of two structure mode units {\tt Expr},
@@ -1478,16 +1472,17 @@ structure Reduce :> Reduce = struct
 end
 \end{program}
 
-\noindent File {\tt Evaluate.sig}  below is a toplevel mode interface that contains the specification of
-  a functor {\tt  Eval}, which maps any structure {\tt R} matching the signature
-  {\tt Reduce}  to a structure with a function {\tt eval} for evaluating
-  expressions, and a function {\tt test} for testing {\tt R}.  Note the use of `{\tt open
-  Expr}' to make the type {\tt expr} refer to {\tt Expr.expr}:
+\noindent 
+File {\tt Evaluate.sig} below is a toplevel mode interface that
+contains the specification of a functor {\tt Eval}, which maps any
+structure {\tt R} matching the signature {\tt Reduce} to a structure
+with a function {\tt eval} for evaluating expressions, and a function
+{\tt test} for testing {\tt R}:
 
 \begin{program}
 functor Eval : functor(R:Reduce) ->
                  sig val eval: Expr.expr -> int 
-                       val test: Expr.expr -> bool
+                     val test: Expr.expr -> bool
                  end
 \end{program}
 
@@ -1534,54 +1529,44 @@ mosmlc -c -toplevel Expr.ui Reduce.ui Evaluate.sml
 mosmlc -c -toplevel Expr.ui Reduce.ui Evaluate.ui Test.sml 
 \end{program}
 
-\subsection{Recompilation management using {\tt make} and {\tt mosmldep}}
-\label{sec-recompilation}
+
+\subsection{Mixed-mode recompilation management using mosmldep and make}
+\label{sec-mixed-recompilation}
 
 Recompilation management helps the programmer recompile only what is
 necessary after a change to a unit interface or unit implementation.  
 
-Type-safe linking prevents the programmer from creating unsafe or
-meaningless programs.  The {\tt load} function and the batch linker in
-Moscow ML ensure probabilistically type-safe linking, so it is
-virtually impossible to cause the system to create a type-unsafe
-program.
-
-% Recompilation management for structure-mode units (that declare only
-% flat structures)\footnote{For managing the recompilation of full
-%   Standard ML programs, see Section~\ref{sec-project-manager}.} may be
-% performed using the standard `make' tool in conjunction with the
-% Moscow ML program \texttt{mosmldep}.
-
 Consider the example program in Section~\ref{sec-example-mixed-units}
-consisting of the four units {\tt Expr},  {\tt Reduce}, {\tt Evaluate} and {\tt Test}.  Assume
-their source files {\tt *.sig} and {\tt *.sml} reside in a particular directory (or
-look in the \texttt{mosml/examples/units}.
-Copy the Makefile stub from \texttt{mosml/tools/Makefile.stub} to that
-directory, and change to that directory.
+consisting of the four units {\tt Expr}, {\tt Reduce}, {\tt Evaluate}
+and {\tt Test}.  Assume their source files {\tt *.sig} and {\tt *.sml}
+reside in a particular directory (or look in the
+\texttt{mosml/examples/units}.  Copy the Makefile stub from
+\texttt{mosml/tools/Makefile.stub} to that directory, and change to
+that directory.
 
 \begin{enumerate}
 \item\label{zero} Edit the Makefile so that the names of the units
   {\tt Expr}, {\tt Reduce}, {\tt Evaluate},  and {\tt Test} appear on the line beginning
   with `{\tt UNITS:}', with each unit preceding by an option indicatings its mode
-  (see the example makefile in \texttt{mosml/examples/manual/Makefile}):
+  (see the example makefile in \texttt{mosml/examples/units/Makefile}):
 
-  \begin{program}
-  UNITS=-structure Expr Reduce -toplevel Evaluate Test
-  \end{program}
+\begin{program}
+UNITS=-structure Expr Reduce -toplevel Evaluate Test
+\end{program}
 
 \item\label{one} Edit the Makefile so that the names of the bytecode files
   {\tt Expr.uo}, {\tt Evaluate.uo} and {\tt Reduce.uo} and {\tt Test.uo} appear on the line beginning
   with `{\tt all:}':
 
-  \begin{program}
-  all: Expr.uo Reduce.uo Evaluate.uo Test.uo
-  \end{program}
+\begin{program}
+all: Expr.uo Reduce.uo Evaluate.uo Test.uo
+\end{program}
 
 \item\label{two} Compute the dependencies among the files by executing:
 
-  \begin{program}
-  make depend
-  \end{program}
+\begin{program}
+make depend
+\end{program}
 
 \item\label{three} Recompile all those files which have not yet been compiled, or
   which have been modified but not yet recompiled, or which depend on
@@ -1604,42 +1589,48 @@ The compiled {\tt *.ui} and {\tt *.uo} files can be removed by executing:
 make clean  
 \end{program}
 
-The unit dependencies are computed by the ML program
+\noindent The unit dependencies are computed by the ML program
 {\tt mosmldep}, called with
 
 \begin{program}
 mosmldep \$(UNITS)
 \end{program}
 
-When you explictly supply the units,
+\noindent When you explictly list the units (together with the indication of
+their compilation mode):
+
 \begin{program}
 UNITS= -structure Expr Evaluate -toplevel Reduce Test
 \end{program}
-(together with the indication of their compilation
-mode), {\tt mosmldep} merely 
-constructs a dependency file on 
-the assumption that units to the right depend on all preceding units, taking
-into account the presence of explicit interfaces {\\tt .sig} files.
-Unfortunately, this means that {\tt mosmldep} will generally create an inefficient Makefile,
-containing more dependencies than are actually in your source files.
-However, it still saves some recompilation (which is cheap in Moscow ML anyway) and
-is more convenient than hand-crafting the Makefile.
-We hope to improve  on this situation in the future, but computing dependencies
-for full Standard ML programs is known to be difficult.
 
-If you omit step (\ref{zero}) and leave {\tt \$(UNITS)} undefined, ie.:
+\noindent {\tt mosmldep} merely constructs a dependency file on the
+assumption that units to the right depend on all preceding units,
+taking into account the presence of explicit interfaces {\tt .sig}
+files.  Unfortunately, this means that {\tt mosmldep} will generally
+create an inefficient Makefile, containing more dependencies than are
+actually in your source files.  However, it still saves some
+recompilation (which is cheap in Moscow ML anyway) and is more
+convenient than hand-crafting the Makefile.  We hope to improve on
+this situation in the future, but computing dependencies for full
+Standard ML programs is known to be difficult.
+
+If you omit step (\ref{zero}) and leave {\tt \$(UNITS)} undefined:
+
 \begin{program}
 UNITS=
 \end{program}
-then {\tt mosmldep} will accurately {\emph infer} the dependencies between
-all the {\tt .sig} and {\tt .sml} source files in the directory by inspecting
-their contents.
-Unfortunately, this process only works with programs containing only
-structure mode units, that themselves contain only flat structures, 
-but no functors or nested structures. This is the behaviour of {\tt mosmldep}
-in releases of Moscow ML prior to 2.00, and is provided for backwards compatibility.
 
-\subsection{Toplevel-mode recompilation management: mosmlpm}
+\noindent 
+then {\tt mosmldep} will accurately {\emph infer} the dependencies
+between all the {\tt .sig} and {\tt .sml} source files in the
+directory by inspecting their contents.  Unfortunately, this process
+only works with programs containing only structure mode units, that
+themselves contain only flat structures, but no functors or nested
+structures.  This is the behaviour of {\tt mosmldep} in releases of
+Moscow ML prior to 2.00, and is provided for backwards compatibility.
+
+
+\subsection{Mixed-mode recompilation management using mosmlpm}
 \label{sec-project-manager}
 
 The purpose of the project manager \texttt{mosmlpm}\footnote{The
@@ -1810,6 +1801,10 @@ executable).
   declarations of the files are evaluated in the order in which the
   files were linked; in the absence of any warning, this is the order
   of the .uo and .sml files on the command line.
+  
+  The linker (and the {\tt load} function in the interactive toplevel)
+  ensure probabilistically type-safe linking, so it is virtually
+  impossible to cause the system to create a type-unsafe program.
 \end{itemize}
 
 \noindent 
@@ -2063,18 +2058,17 @@ language in several ways:
   or returned as the result
   of a functor; see Section~\ref{sec-ho-modules}
 \item applicative as well as (the usual) generative functors; see
-   Section~\ref{sec-applicative-functors}.
+   Section~\ref{sec-applicative-functors}
 \item transparent as well as opaque functor signatures; see
-    Section~\ref{sec-functor-signatures}.
+    Section~\ref{sec-functor-signatures}
 \item first-class modules: structures and functors may be packed and
   then handled as Core language values, which may then be unpacked as
   structures or functors again; see
   Section~\ref{sec-firstclass-modules}
 \item recursive modules: signatures and structures may be recursively
   defined; see Section~\ref{sec-rec-modules}
-\item relaxations of miscellaneous Standard ML restrictions;
- see Section~\ref{sec-misc-relaxations}
-
+\item relaxation of miscellaneous Standard ML restrictions;
+ see Section~\ref{sec-misc-relaxations}.
 \end{itemize}
 
 \noindent 
@@ -2087,7 +2081,6 @@ issues a warning at every use.  This is the behaviour in the so-called
 The compilation mode can be set by the command-line options
 \texttt{-conservative}, \texttt{-liberal}, and \texttt{-orthodox}; see
 Sections~\ref{sec-mosml-options} and~\ref{sec-mosmlc-options}.
-
 In the interactive system \texttt{mosml}, the compilation mode affects
 ML code entered interactively, as well as the functions
 \texttt{compile}, \texttt{compileStructure}, \texttt{compileToplevel},
@@ -2095,9 +2088,9 @@ and \texttt{use}.  The compilation mode can be set by the functions
 \texttt{conservative}, \texttt{liberal}, and \texttt{orthodox}.
 
 See the \emph{Moscow ML Language Overview} for the precise syntax of
-the extensions.
-The directory {\tt mosml/examples/modules} contains simple examples of
-these extensions (see the {\tt README file}).
+the extensions.  For more examples, see the directory {\tt
+  mosml/examples/modules} and its {\tt README} file.
+
 
 \subsection{Higher-order modules}
 
@@ -2155,8 +2148,9 @@ structure R4 = F3(functor(X:sig type t end)=>
                   struct type u = X.t val y = 1 val z = [] end)
 \end{program}
 
-The files {\tt mosml/examples/modules/poly.sml,bootstrap.sml}
-contain examples that use higher-order functors.
+\noindent 
+The files {\tt mosml/examples/modules/\{poly.sml,bootstrap.sml\}} contain
+examples that use higher-order functors.
 
 \subsection{Applicative functors}
 \label{sec-applicative-functors}
@@ -2175,11 +2169,10 @@ val res = if true then SG1.C else SG2.C;                (* ill-typed   *)
 \end{program}
 
 \noindent
-(A conditional expression requires both branches to have equivalent types,
- so \texttt{res} simply tests that
- the type \texttt{SG1.t} is equivalent to \texttt{SG2.t}.)
+Recall that a conditional expression requires both branches to have
+equivalent types, so the last valbind above is well-typed only if the
+type \texttt{SG1.t} is equivalent to \texttt{SG2.t}.
 
-\noindent 
 If functors had an applicative, not generative,
 semantics, the two types would be equivalent. 
 Moscow ML Modules allows the declaration of applicative
@@ -2189,87 +2182,83 @@ declared the same way, except that the formal functor argument
 \texttt{S :\ sig end} is not enclosed in parentheses:
 
 \begin{program}
-functor FA S : sig end = struct datatype t = C end   (* applicative *)
+functor FA S : sig end = struct datatype t = C end      (* applicative *)
 structure SA1 = FA() and SA2 = FA() 
-val res = if true then SA1.C else SA2.C;             (* well-typed  *)
+val res = if true then SA1.C else SA2.C;                (* well-typed  *)
 \end{program}
 
 \noindent
-More generally, if the type in the 
-functor's body depends on a datatype or opaque type of 
-the functor's formal argument, 
-then the types returned by separate applications of the functor
-will be equivalent, provided it is applied to equivalent
-type arguments:
+More generally, if a type in an applicative functor's body depends on
+a datatype or opaque type of the functor's formal argument, then the
+types returned by separate applications of the applicative functor
+will be equivalent, provided it is applied to equivalent type
+arguments:
 \begin{program}
-functor GA S : sig type t end = struct datatype u = C of S.t end (* applicative, *) 
-                                                                  (* but u depends on S.t *)
+functor GA S : sig type t end = struct datatype u = C of S.t end   (* applicative,         *) 
+                                                                   (* but u depends on S.t *)
 structure TA1 = GA(type t = int) and TA2 = GA(type t = bool) and TA3 = GA(type t = int)
-val res = if true then TA1.C 1 else TA3.C 1;                       (* well-typed  *)
-val res = if true then TA1.C 1 else TA2.C true;                    (* ill-typed  *)
+val res = if true then TA1.C 1 else TA3.C 1;            (* well-typed *)
+val res = if true then TA1.C 1 else TA2.C true;         (* ill-typed  *)
 \end{program}
 
-Moscow ML supports type projections (the dot notation for types)
-with local structure bindings:
-this makes it possible to refer directly to a type returned by 
-an applicative functor within another type expression, and
-is useful for expressing sharing constraints:
+\noindent 
+Moscow ML supports type projections \texttt{X.u} (the dot notation for
+types) with local structure bindings.  This makes it possible to refer
+directly to a type returned by an applicative functor within another
+type expression, which is useful for expressing sharing constraints:
 
 \begin{program}
 signature S = sig functor F: functor X:sig type t end -> sig type u end
-                  type v =  X.u where X = F(type t = int)  (* X is local to X.u*)
+                  type v = X.u where X = F(type t = int)           (* X is local to X.u*)
               end
 \end{program}
 
 \noindent
+The local binding has no run-time effect and is only elaborated at
+compile-time for its type information.  For more examples of
+applicative functors, see the files {\tt
+  mosml/examples/modules/\{collect.sml,bootstrap.sml\}}.
 
-The local binding has no run-time effect and is only evaluated at 
-compile-time, for its type information.
-
-The file {\tt mosml/examples/modules/collect.sml,bootstrap.sml}
-contains examples applicative functors.
 
 \subsection{Opaque and transparent functor signatures}
 \label{sec-functor-signatures}
 
 The types of functors are specified using functor signatures. Similar
-to the distinction between generative and applicative functor expressions,
-functor signatures may be \emph{opaque} or \emph{transparent}.
-Whether
-a functor signature is opaque or transparent affects the interpretation
-of any datatype or opaque type specifications in its range:
+to the distinction between generative and applicative functor
+expressions, functor signatures may be \emph{opaque} or
+\emph{transparent}.  Whether a functor signature is opaque or
+transparent affects the interpretation of any datatype or opaque type
+specifications in its body signature:
 
-The \emph{opaque} signature 
+The \emph{opaque} functor signature 
 \begin{program}
-signature GO = functor(X:sigtype t val x:t end)->sig type u val y:u end   (* opaque *)
+signature GO = functor(X:sig type t val x:t end)->sig type u val y:u end   (* opaque      *)
 \end{program}
 
 \noindent
-specifies the type of those functors that, when applied to
-an actual argument matching the domain signature
-\texttt{sig type t val x : t end},
-return a result 
-matching the range signature
-\texttt{sig type u val y:u end}, for some unknown implementation of the type 
-\texttt{u} (possibly depending on \texttt{X.t}).
+specifies the type of those functors that, when applied to an actual
+argument matching the argument signature \texttt{sig type t val x :\ t
+  end}, return a result matching the body signature \texttt{sig type u
+  val y:u end}, for some unknown implementation of the type \texttt{u}
+(possibly depending on \texttt{X.t}).
 
 
-An \emph{transparent} version \texttt{GT} of the above functor signature is
-written the same way, except that the formal functor argument
-\texttt{X:sig type t val x: t end} is \emph{not} enclosed in parentheses:
+A \emph{transparent} version \texttt{GT} of the above functor
+signature is written the same way, except that the formal functor
+argument \texttt{X:sig type t val x:t end} is \emph{not} enclosed in
+parentheses:
 \begin{program}
-signature GT = functor X:sig type t val x: t end -> sig type u val y:u end  (* transparent *)
+signature GT = functor X:sig type t val x:t end -> sig type u val y:u end  (* transparent *)
 \end{program}
 
 \noindent
 This functor signature
-specifies the \emph{family} of functor types, that, for a given 
+specifies the \emph{family} of functor types that, for a given 
 implementation of the result type \texttt{u} (possibly 
 depending on \texttt{X.t}),
-map structures matching the domain 
+map structures matching the argument signature
 \texttt{sig type t val x:t  end} to structures
-matching the range \texttt{sig type u val y:u end}.
-
+matching the body signature \texttt{sig type u val y:u end}.
 
 In practice, when writing a functor \texttt{H} that 
 takes a functor \texttt{F} as an argument,
@@ -2280,61 +2269,55 @@ is applied to an actual functor.
 For instance, consider the four functors:
 
 \begin{program}
-functor F1 (X:sig type t val x: t end) = struct type u = X.t val y = X.x end
-functor F2 (X:sig type t val x: t end) = struct type u = int val y = 1 end
+functor F1 (X:sig type t val x:t end) = struct type u = X.t val y = X.x end
+functor F2 (X:sig type t val x:t end) = struct type u = int val y = 1 end
 
 functor HO(F:GO) = F(struct type t = string val x = "abc" end)
 functor HT(F:GT) = F(struct type t = string val x = "abc" end)
 \end{program}
 
 \noindent
-\texttt{F1} and \texttt{F2} are first-order functors: 
-\texttt{F1} returns a renamed version of its argument;
-and \texttt{F2} just ignores it argument and returns
-the same structure regardless.
-The higher-order functors \texttt{HO} and \texttt{HT}
-merely apply the supplied \texttt{F}, to the same argument, but assume,
-respectively, an opaque and transparent signature for \texttt{F}.
+Functor \texttt{F1} returns a renamed version of its argument, and
+functor \texttt{F2} just ignores its argument and returns the same
+structure regardless.  The two higher-order functors \texttt{HO} and
+\texttt{HT} apply the supplied \texttt{F} to the same argument (in
+which \texttt{x} is a string), but assume, respectively, an opaque and
+a transparent signature for \texttt{F}.
 
-Since \texttt{HO} uses the opaque signature \texttt{GO}, its formal argument
-\texttt{F}\ is
-assumed to return some new unknown type \texttt{u} whenever it is applied,
-so that the two applications of \texttt{HO} return new abstract types
-\texttt{RO1.u} and \texttt{RO2.u}.
+Since functor \texttt{HO} uses the opaque signature \texttt{GO}, its
+formal argument \texttt{F}\ is assumed to return some new unknown type
+\texttt{u} whenever it is applied, so that the two applications of
+\texttt{HO} return new abstract types \texttt{RO1.u} and
+\texttt{RO2.u}:
 
 \begin{program}
-structure RO1 = HO(F1)
-structure RO2 = HO(F2)
-
-val resO1 = if true then RO1.y else "def";           (* ill-typed *) 
-val resO2 = if true then RO2.y else 1;               (* ill-typed *) 
+structure RO1 = HO(F1) and RO2 = HO(F2)
+val resO1 = if true then RO1.y else "def";            (* ill-typed *) 
+val resO2 = if true then RO2.y else 1;                (* ill-typed *) 
 \end{program}
 
-\texttt{HT}, on the other hand, uses the transparent signature \texttt{GT}.
-This ensures that,
-no matter what the actual dependency of type \texttt{u} on type \texttt{t},
-\texttt{HT} may be applied to any functor \texttt{F} whose domain
-and range match \texttt{GT}: with the actual
-definition of \texttt{u} reflected in result. % the range of \texttt{HT}.
-In particular,
-the two applications of \texttt{HT} return the same
-definitions for type \texttt{u} as substituting \texttt{F1} 
-and \texttt{F2} directly into the body of \texttt{HT}: 
-ie. the
-types \texttt{RT1.u} and \texttt{RT2.u} are respectively
-equivalent to \texttt{string} and \texttt{int}:
+\noindent 
+Functor \texttt{HT}, on the other hand, uses the transparent signature
+\texttt{GT}\@.  This ensures that, no matter what the actual
+dependency of result type \texttt{u} on argument type \texttt{t},
+\texttt{HT} may be applied to any functor \texttt{F} whose argument
+signature and result signature match \texttt{GT}, with the actual
+definition of \texttt{u} reflected in the result.  In particular, the
+two applications of \texttt{HT} return the same definitions for type
+\texttt{u} as would the substitution of \texttt{F1} and \texttt{F2}
+directly into the body of \texttt{HT}\@.  That is, the types
+\texttt{RT1.u} and \texttt{RT2.u} are equivalent to \texttt{string}
+and \texttt{int}:
 
 \begin{program}
-structure RT1 = HT(F1) 
-structure RT2 = HT(F2)
-
+structure RT1 = HT(F1) and RT2 = HT(F2)
 val resT1 = if true then RT1.y else "def";            (* well-typed *)
 val resT2 = if true then RT2.y else 1;                (* well-typed *)
 \end{program}
 
-Another way to look at this is that \texttt{HO}'s formal argument has 
-a generative specification,
-while \texttt{HT}'s formal argument has an
+\noindent 
+Another way to look at this is that \texttt{HO}'s formal argument has
+a generative specification, while \texttt{HT}'s formal argument has an
 applicative specification.
 
 \subsection{First-class modules}
@@ -2343,61 +2326,45 @@ applicative specification.
 
 In the Moscow ML Modules language, a structure or functor can be
 wrapped up as a \emph{package}, which is a first-class Core language
-value that may be handled as any other value, and then subsequently
-unpacked to re-create the structure or functor:
+value just like any other value, and then subsequently unpacked to
+re-create the structure or functor:
 
-% \begin{program}
-% signature BUNDLE = sig 
-%     type t;  val x : t;  val f : t -> int
-% end
-% structure Bundle = struct
-%    type t = real;  val x = 2.3;  fun f y = floor y
-% end
-% type bundle = [ BUNDLE ]	                        (* package type *)
-% fun g (bpack : bundle) =
-%     let structure B as BUNDLE = bpack in B.f B.x end    (* unpacking *)
-% val x = g [structure Bundle as BUNDLE]                  (* packing   *)
-% \end{program}
 \begin{program}
-signature NAT = sig type nat val Z:nat val S:nat -> nat val plus: nat -> nat -> nat end
+signature NAT = sig type nat  val Z:nat  val S:nat -> nat  val plus: nat -> nat -> nat end
 structure SafeNat =  (* unlimited range but slow *)
-  struct datatype nat = Z | S of nat fun plus Z m = m | plus (S n) m = S (plus n m) end
+  struct datatype nat = Z | S of nat  fun plus Z m = m | plus (S n) m = S (plus n m) end
 structure FastNat =  (* limited range but fast *)
-  struct type nat = int val Z = 0 fun S n = n + 1 fun plus n m = n + m end
+  struct type nat = int  val Z = 0  fun S n = n + 1  fun plus n m = n + m end
 
-type natpack = [ NAT ]                                      (* package type *)
-
-val safeNat = [ structure SafeNat as NAT ];                 (* packing *)
+type natpack = [ NAT ]                                (* package type *)
+val safeNat = [ structure SafeNat as NAT ];           (* packing      *)
 val fastNat = [ structure FastNat as NAT ];    
-
-structure Nat as NAT = 	                                    (* unpacking *)
+structure Nat as NAT =                                (* unpacking    *)
       if (913 mod 7 = 5) then safeNat else fastNat
-
-val natlist = [safeNat,fastNat] : [ NAT ] list;             (* etc. *)
-
+val natlist = [safeNat,fastNat] : [ NAT ] list;
 \end{program}
 
-A functor may be packed using the similar Core expression
-\texttt{ [ functor {\it modexp} as {\it sigexp} ]} and
-unpacked using  the functor binding 
-\texttt{ functor {\it funid} as {\it sigexp} = {\it exp}}.
-
-Package types are compared by structure, not name, so
-the package type:
-\begin{program}
-    [sig type t val x: t type u = t val y: u end]
-\end{program}
-\noindent
-is equivalent to
-\begin{program}
-    [sig type u val x: u type t = u val y: t end]
-\end{program}
 \noindent 
-because the signatures are equivalent (every structure that
-matches one also matches the other).
+A functor may be packed using the similar Core expression
+\texttt{ [ functor {\it modexp} as {\it sigexp} ]} and unpacked using
+the functor binding \texttt{ functor {\it funid} as {\it sigexp} =
+  {\it exp}}.
 
-For type soundness reasons, a package may not be unpacked in the body of a functor (although it may be unpacked within a Core expression occuring in 
-that  body).
+Package type equivalence is determined by structure, not name, so the
+following package types are equivalent:
+
+\begin{program}
+[sig type t val x: t type u = t val y: u end]
+[sig type u val x: u type t = u val y: t end]
+\end{program}
+
+\noindent 
+because the signatures are equivalent (every structure that matches
+one also matches the other).
+
+For type soundness reasons, a package may not be unpacked in the body
+of a functor (although it may be unpacked within a Core expression
+occurring in that body):
 
 \begin{program}
 functor Fail (val nat : [ NAT ]) = 
@@ -2406,26 +2373,28 @@ functor Ok (val nat : [ NAT ]) =
   struct val x = let structure Nat as NAT = nat in nat end end (* legal *)
 \end{program}
 
-The files {\tt mosml/examples/modules/sieve.sml,array.sml,choice.sml,matrix.sml}
+\noindent 
+The files {\tt
+  mosml/examples/modules/\{sieve.sml,array.sml,choice.sml,matrix.sml\}}
 contain more examples.
+
 
 \subsection{Recursive modules}
 \label{sec-rec-modules}
 
 The Standard ML Modules language does not permit recursively defined
-modules and disallows, for instance, two structures \texttt{Even} and \texttt{Odd}
-that both depend on each other.  
-
-In the Moscow ML Modules language, a structure may be defined recursively:
+modules.  For instance, two structures \texttt{Even} and \texttt{Odd}
+may not depend on each other.  In the Moscow ML Modules language, a
+structure may be defined recursively:
 
 \begin{program}
 structure S = rec (X:sig structure Odd : sig val test : int -> bool end end)
-              struct sructure Even = struct fun test 0 = true 
-                                              | test n = X.Odd.test (n-1)
-                                     end	
-                     structure Odd = struct fun test 0 = false
-                                              | test n = Even.test (n-1)
-                                     end	       
+              struct structure Even = struct fun test 0 = true 
+                                               | test n = X.Odd.test (n-1)
+                                      end        
+                     structure Odd  = struct fun test 0 = false
+                                               | test n = Even.test (n-1)
+                                      end               
               end;
 \end{program}
 
@@ -2441,30 +2410,30 @@ by \emph{copying} it using a forward reference:
 \begin{program}
 structure Ok   = (* well-typed *)
                  rec (X:sig datatype t = C type u type v = int end)
-                 struct datatype t = datatype X.t type u = X.u type v = int end	
+                 struct datatype t = datatype X.t type u = X.u type v = int end 
 structure Fail = (* ill-typed *)
                  rec (X:sig datatype t = C type u type v = int end)
                  struct datatype t = C type u = int type v = int end 
 \end{program}
 
 \noindent
-Attempting to evaluate the foward reference 
-of a recursive structure before its body has been
-been fully evaluated raises the Moscow ML exception \texttt{Bind}:
+Attempting to evaluate the forward reference of a recursive structure
+before its body has been been fully evaluated raises the exception
+\texttt{Bind}:
 
 \begin{program}
-structure Fail = rec (X:sig end)X;                 (* raises Bind *)
+structure Fail = rec (X:sig end) X;                            (* raises Bind   *)
 structure Fail = rec (X:sig val x: int end) 
-                 struct val x = X.x end;           (* raises Bind *)
+                 struct val x = X.x end;                       (* raises Bind   *)
 structure Ok = rec (X:sig val f: int -> int end) 
-               struct fun f n = X.f n  end;        (* ok *)
-val res = Ok.f n                                   (* loops *)
+               struct fun f n = X.f n  end;                    (* ok            *)
+val res = Ok.f n                                               (* infinite loop *)
 \end{program}
 
 \noindent
-On their own, recursive structure can not be used to declared 
-mutually recursive datatypes that span module boundaries. 
-For this purpose, Moscow ML supports recursive signatures:
+On their own, recursive structures cannot be used to declare mutually
+recursive datatypes that span module boundaries.  For this purpose,
+Moscow ML supports recursive signatures:
 
 \begin{program}
 signature REC = rec(X: sig structure Odd: sig type t end end)
@@ -2474,19 +2443,17 @@ signature REC = rec(X: sig structure Odd: sig type t end end)
 \end{program}
 
 \noindent
-Here, \texttt{X}\ is a forward declaration of a structure
-implementing the body of the signature that
-allows the specification of \texttt{Even.t} to refer to
-the type \texttt{X.Odd.t} before it has been fully specified.
-In a recursive signature, the body of the signature must 
-match the forward declaration and
-specify an implementation for any opaque types or datatypes
-declared  within the forward specification.
+Here, \texttt{X}\ is a forward declaration of a structure implementing
+the body of the signature that allows the specification of
+\texttt{Even.t} to refer to the type \texttt{X.Odd.t} before it has
+been fully specified.  In a recursive signature, the body of the
+signature must match the forward declaration and specify an
+implementation for any opaque types or datatypes declared within the
+forward specification.
 
-\noindent
-Once this recursive signature has been defined, it can then 
-be used to implement the recursive structure \texttt{T}
-with datatypes that span module boundaries.
+Once a recursive signature has been defined, it can be used to
+implement the recursive structure \texttt{T} with datatypes that span
+module boundaries:
 
 \begin{program}
 structure T = rec(X:REC)
@@ -2500,39 +2467,37 @@ structure T = rec(X:REC)
               end
 \end{program}
 
-The files {\tt mosml/examples/modules/recursion.sml,bootstrap.sml}
+\noindent The files {\tt mosml/examples/modules/\{recursion.sml,bootstrap.sml\}}
 contain examples of using recursive structures and signatures.
 
 \subsection{Miscellaneous relaxations of Standard ML restrictions}
 \label{sec-misc-relaxations}
 
-In Standard ML, functors and signatures may only be declared
-at top-level and structures may only be declared at top-level and
-within structures. None of these may be declared
-within Core let expressions.
-Moscow ML removes these restrictions so that functors, signatures
-and structures may be declared anywhere, which is particularly useful when
-programming with first-class modules.
+In Standard ML, functors and signatures may only be declared at
+top-level, and structures may only be declared at top-level and within
+structures.  None of these may be declared within Core let
+expressions.  Moscow ML removes these restrictions so that functors,
+signatures and structures may be declared anywhere, which is
+particularly useful when programming with first-class modules.
 
-In Standard ML, every parameterised type definition, and evey type scheme
-occuring within a signature,
-must be closed and not mention any type variables that are not explicitly
-listed as parameters. Moscow ML does not impose this restriction, and
-allows free type variables, provided they are bound in an enclosing scope.
-Again, this is can be useful when programming with first-class modules.
+In Standard ML, every parameterised type definition, and every type
+scheme occurring within a signature, must be closed and must not
+mention any type variables that are not explicitly listed as
+parameters.  Moscow ML does not impose this restriction, and allows
+free type variables, provided they are bound in an enclosing scope.
+Again, this is useful when programming with first-class modules.
 
 \begin{program}
+type t = 'a -> 'a                                (* illegal, since 'a not in scope      *)
 
-type t = 'a -> 'a                                (* illegal, since 'a not in scope *)
-
-fun f (x:'a) = let type t = 'a * 'a              (* legal Mosml, illegal SML *)
+fun f (x:'a) = let type t = 'a * 'a              (* legal Mosml, illegal SML            *)
                in (x,x):t 
                end;
 
-type 'a stackpack =                              (* legal Mosml *)
+type 'a stackpack =                              (* legal Mosml                         *)
     [ sig                             
           type stack = 'a list;                  (* 'a occurs free in this type binding *)
-          val push : 'a -> stack -> stack        (* 'a occurs free in this type scheme *)
+          val push : 'a -> stack -> stack        (* 'a occurs free in this type scheme  *)
       end ]
 \end{program}
 
