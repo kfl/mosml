@@ -2,6 +2,7 @@
 
 open List BasicIO Nonstdio;
 open Miscsys Memory Fnlib Config Mixture Location Units Smlperv Rtvals Smltope;
+open Types (* cvr *);
 
 val initialFiles = ref ([] : string list);
 
@@ -89,23 +90,27 @@ fun perv_set set' =
 		raise Arg.Bad ("Unknown preloaded unit set " ^ set)
     end
 
+fun set_msgstyle p =
+  if exists (fn x => x = p) ["default", "msdev"] then
+    msgStyle := p
+  else
+    raise Arg.Bad ("Unknown message style " ^ p)
+;
+
+fun orthodox () = currentCompliance := Orthodox;
+fun conservative () = currentCompliance := Conservative;
+fun liberal () = currentCompliance := Liberal;
+
 fun main () =
 (
-  msgIBlock 0;
-  msgString "Moscow ML version 1.43 (April 1998)";
-  msgEOL();
-  msgString "Mangled by e & eMake 06 May 1998";
-  msgEOL();
-  msgString "Use the Enter key to evaluate an input expression.";
-  msgEOL();
-  msgEBlock();
-  msgFlush();
   let in
     perv_set "default";
     load_path := [];
     toplevel := true;
     (* Choose the default (value polymorphism or imperative types) here: *)
     value_polymorphism := true;
+    (* Choose the default SML compliance checks here *)
+    currentCompliance := Liberal;
     Arg.parse [("-stdlib",    Arg.String set_stdlib),
                ("-I",         Arg.String add_include),
                ("-include",   Arg.String add_include),
@@ -113,8 +118,25 @@ fun main () =
                ("-perv",      Arg.String perv_set),
                ("-imptypes",  Arg.Unit (set_value_polymorphism false)),
                ("-valuepoly", Arg.Unit (set_value_polymorphism true)),
-               ("-quietdec",  Arg.Unit (set_quietdec true))]
+               ("-quietdec",  Arg.Unit (set_quietdec true)),
+               ("-msgstyle",  Arg.String set_msgstyle),
+               ("-m",         Arg.String set_msgstyle),
+	       ("-orthodox",  Arg.Unit orthodox),
+	       ("-conservative",  Arg.Unit conservative),
+	       ("-liberal",  Arg.Unit liberal)
+	       ]
       anonymous;
+    if !Exec_phr.quietdec then ()
+    else
+	(msgIBlock 0;
+	 msgString ("Moscow ML version "^Config.version);
+	 msgEOL();
+     msgString "Mangled by e & eMake 04 Jul 2000";
+     msgEOL();
+     msgString "Use the Enter key to evaluate an input expression.";
+     msgEOL();
+	 msgEBlock();
+	 msgFlush());
     if !path_library <> "" then
       load_path := !load_path @ [!path_library]
     else ();
@@ -122,10 +144,11 @@ fun main () =
     resetSMLTopDynEnv();
     initPervasiveEnvironments();
     setGlobalVal 16 (Obj.repr true); (* 16: cf ../runtime/globals.h *)
-    startCompilingUnit "Top";
+    startCompilingUnit "Top" "" TOPDECmode;
     app evalLoad (!preloadedUnits);
-    initInitialEnvironments();
+    initInitialEnvironments [];
     execToplevelOpen nilLocation "Meta";
+    resetTypePrinter(); (* cvr *)
     Miscsys.catch_interrupt true;
     input_lexbuf := Compiler.createLexerStream std_in;
     (initial_loop() handle EndOfFile => ());

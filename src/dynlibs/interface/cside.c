@@ -13,6 +13,7 @@
 #include <alloc.h>		/* For copy_string, alloc_string, ...      */
 #include <memory.h>		/* For Modify, Push_roots, Pop_roots       */
 #include <str.h>		/* For string_length                       */
+#include <interp.h>		/* For callback                            */
 
 #ifdef WIN32
 #define EXTERNML __declspec(dllexport)
@@ -63,7 +64,7 @@ EXTERNML value cfr(value v)
 EXTERNML value cfs(value v)
 {
   char *oldp, *newp, *q;
-  int i, len;
+  int len;
   oldp = String_val(v);		/* Null-terminated heap-allocated string */
   len = string_length(v);	/* Much faster than strlen */
   

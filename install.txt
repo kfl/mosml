@@ -9,52 +9,52 @@ requires 25 MB disk space.
 
 INSTALLING MOSCOW ML (BINARIES ONLY) UNDER LINUX
 
-(1) For a personal installation, move to your home directory, and unpack
-    the Moscow ML distribution using 
+(B1) For a personal installation, move to your home directory, and unpack
+     the Moscow ML distribution using 
 
-        gzip -dc linux-mos20bin.tar.gz | tar xfv -
+         gzip -dc linux-mos20bin.tar.gz | tar xfv -
 
-    This creates a directory ~/mosml with subdirectories 
+     This creates a directory ~/mosml with subdirectories 
 
-    mosml/              readme, install.txt
-          bin/          mosml, mosmlc, mosmllex, mosmlyac, camlrunm,
-          copyrght/     copyright notices
-          doc/          manual.pdf, mosmlref.pdf, mosmllib.pdf, ...
-              mosmllib/ HTML-documentation of the Moscow ML library 
-          examples/     a few example programs
-          lib/          bytecode files, basis library units, 
-                        and the dynamically loadable libraries
-          tools/        mosmldep, Makefile.stub
+     mosml/              readme, install.txt
+	   bin/          mosml, mosmlc, mosmllex, mosmlyac, camlrunm,
+	   copyrght/     copyright notices
+	   doc/          manual.pdf, mosmlref.pdf, mosmllib.pdf, ...
+	       mosmllib/ HTML-documentation of the Moscow ML library 
+	   examples/     a few example programs
+	   lib/          bytecode files, basis library units, 
+			 and the dynamically loadable libraries
+	   tools/        mosmldep, Makefile.stub
 
-(2) Edit the variables `stdlib' and `mosmlbin' in the scripts
-         mosml/bin/mosml
-    and  mosml/bin/mosmlc
-    and  mosml/bin/mosmllex
+(B2) Edit the variables `stdlib' and `mosmlbin' in the scripts
+	  mosml/bin/mosml
+     and  mosml/bin/mosmlc
+     and  mosml/bin/mosmllex
 
-(3) Edit the file mosml/lib/header to contain the absolute location of
-    the camlrunm runtime system (e.g. /home/foo/mosml/bin/camlrunm or
-    /usr/local/mosml/bin/camlrunm).
+(B3) Edit the file mosml/lib/header to contain the absolute location of
+     the camlrunm runtime system (e.g. /home/foo/mosml/bin/camlrunm or
+     /usr/local/mosml/bin/camlrunm).
 
-(4*) If you intend to use libraries that use dynamic linking, such as
-    Gdbm, Mysql, Polygdbm, Postgres, Regex, Socket, or Unix, define 
+(B4*) If you intend to use libraries that use dynamic linking, such as
+     Gdbm, Mysql, Polygdbm, Postgres, Regex, Socket, or Unix, define 
 
-        export LD_LIBRARY_PATH=${HOME}/mosml/lib        (for bash)
-        setenv LD_LIBRARY_PATH ${HOME}/mosml/lib        (for csh, tcsh)
+	 export LD_LIBRARY_PATH=${HOME}/mosml/lib        (for bash)
+	 setenv LD_LIBRARY_PATH ${HOME}/mosml/lib        (for csh, tcsh)
 
-    Alternatively, if you are doing a systemwide installation, 
-    as needed for CGI scripts, do
-        - log in as root
-        - execute  cp -p ~/mosml/lib/lib*.so /usr/local/lib
-        - edit /etc/ld.so.conf to list /usr/local/lib on a separate line
-        - execute  ldconfig
+     Alternatively, if you are doing a systemwide installation, 
+     as needed for CGI scripts, do
+	 - log in as root
+	 - execute  cp -p ~/mosml/lib/lib*.so /usr/local/lib
+	 - edit /etc/ld.so.conf to list /usr/local/lib on a separate line
+	 - execute  ldconfig
 
-(5) Start Moscow ML by typing
-        mosml
+(B5) Start Moscow ML by typing
+         mosml
 
-(6*) To check that dynamic linking works, do
-        fun myload u =
-            (load u; print ("\nLoaded " ^ u ^ "\n")) handle Fail _ => ();
-        app myload ["Gdbm", "Mysql", "Postgres", "Regex", "Socket", "Unix"];
+(B6*) To check that dynamic linking works, do
+	 fun myload u =
+	     (load u; print ("\nLoaded " ^ u ^ "\n")) handle Fail _ => ();
+	 app myload ["Gdbm", "Mysql", "Postgres", "Regex", "Socket", "Unix"];
 
 To quit Moscow ML, type `quit();' or control-D.
 
@@ -65,79 +65,79 @@ If you have Linux, FreeBSD, NetBSD, HPPA+HP/UX 9 or 10, Sparc+SunOS,
 Sparc+Solaris, SGI MIPS+IRIX 5, DEC Alpha+OSF/1, and possibly other
 systems, then you can install Moscow ML as follows:
 
-(1) Choose a directory for the Moscow ML subdirectory to reside in,
-    such as /usr/local/ for a systemwide installation, or ${HOME}
-    for a personal installation.
+(S1) Choose a directory for the Moscow ML subdirectory to reside in,
+     such as /usr/local/ for a systemwide installation, or ${HOME}
+     for a personal installation.
 
-(2) Download the Unix source files from
-     ftp://ftp.dina.kvl.dk/pub/mosml/mos20src.tar.gz
+(S2) Download the Unix source files from
+         ftp://ftp.dina.kvl.dk/pub/mosml/mos20src.tar.gz
 
-(3) Unpack it by executing (in /usr/local, or ${HOME})
+(S3) Unpack it by executing (in /usr/local, or ${HOME})
 
-        gzip -dc mos20src.tar.gz | tar xvf -
+         gzip -dc mos20src.tar.gz | tar xvf -
 
-(4) Change directory to mosml/src
+(S4) Change directory to mosml/src
 
-(5) Edit file mosml/src/Makefile.inc to suit your system.  Set
-    MOSMLHOME to /usr/local/mosml, or ${HOME}/mosml.  Also, the
-    versions of /lib/cpp and other minor things differ among
-    operating systems; choose suitable values of the configuration
-    parameters for your system.
+(S5) Edit file mosml/src/Makefile.inc to suit your system.  Set
+     MOSMLHOME to /usr/local/mosml, or ${HOME}/mosml.  Also, the
+     versions of /lib/cpp and other minor things differ among
+     operating systems; choose suitable values of the configuration
+     parameters for your system.
   
-    If you want the runtime system to support dynamic linking of
-    foreign (C) functions, further uncomment the setup for this in the
-    Makefile.inc file. 
+     If you want the runtime system to support dynamic linking of
+     foreign (C) functions, further uncomment the setup for this in the
+     Makefile.inc file. 
 
-(6) Execute (in mosml/src)
+(S6) Execute (in mosml/src)
 
-        make world
-        make install
+	 make world
+	 make install
 
-    Doing `make install' will also install the documentation from
-    mosml/src/doc, which is supplied precompiled.  It is also
-    available from the Moscow ML homepage.  If you want to rebuild the
-    documents (e.g. for a different papersize), then do it later, as a
-    separate step 9.  Due to variances in LaTeX installations, you may
-    run into some problems.
+     Doing `make install' will also install the documentation from
+     mosml/src/doc, which is supplied precompiled.  It is also
+     available from the Moscow ML homepage.  If you want to rebuild the
+     documents (e.g. for a different papersize), then do it later, as a
+     separate step S9.  Due to variances in LaTeX installations, you may
+     run into some problems.
 
-(7) To check that the installation went well, you can try 
-     (7.1) * change directory to mosml/src/test 
-           * execute: make clean
-           * execute: make 
-           * diff result result.ok     (may differ in times)
-     (7.2) * change directory to mosml/src/mosmllib/test 
-           * execute: make clean
-           * execute: make 
-           * diff result result.ok     (may differ in times, dates, etc)
+(S7) To check that the installation went well, you can try 
+     (S7.1) * change directory to mosml/src/test 
+	    * execute: make clean
+	    * execute: make 
+	    * diff result result.ok     (may differ in times)
+     (S7.2) * change directory to mosml/src/mosmllib/test 
+	    * execute: make clean
+	    * execute: make 
+	    * diff result result.ok     (may differ in times, dates, etc)
      Note that some of the test cases are suitable only for 32-bit 
      architectures, and will fail on 64-bit architectures (such as DEC
      Alpha); this does not necessarily indicate that the Moscow ML
      implementation is broken.
 
-(8) If you want to install libraries that use dynamic linking, note
-    point (4*) in the binary installation instructions above.  
-    Furthermore, 
+(S8) If you want to install libraries that use dynamic linking, note
+     point (B4*) in the binary installation instructions above.  
+     Furthermore, 
 
-    - to install support for Gdbm and Polygdbm persistent
-    hash tables, consult mosml/src/dynlibs/mgdbm/README
+     - to install support for Gdbm and Polygdbm persistent
+     hash tables, consult mosml/src/dynlibs/mgdbm/README
 
-    - to install support for the Postgresql relational
-    database server, consult mosml/src/dynlibs/mpq/README
+     - to install support for the Postgresql relational
+     database server, consult mosml/src/dynlibs/mpq/README
 
-    - to install support for the Mysql relational database
-    server, consult mosml/src/dynlibs/mmysql/README
+     - to install support for the Mysql relational database
+     server, consult mosml/src/dynlibs/mmysql/README
 
-    - to install support for POSIX 1003.2 regular
-    expressions, consult mosml/src/dynlibs/mregex/README
+     - to install support for POSIX 1003.2 regular
+     expressions, consult mosml/src/dynlibs/mregex/README
 
-    - to install support for sockets, consult
-    mosml/src/dynlibs/msocket/README
+     - to install support for sockets, consult
+     mosml/src/dynlibs/msocket/README
 
-    - to install support for Thomas Boutell's gd GIF image
-    package, consult mosml/src/dynlibs/mgd/README
+     - to install support for Thomas Boutell's gd GIF image
+     package, consult mosml/src/dynlibs/mgd/README
 
-    - to install support for process manipulation under Unix,
-    consult mosml/src/dynlibs/munix/README
+     - to install support for process manipulation under Unix,
+     consult mosml/src/dynlibs/munix/README
 
 
 AUTHOR AND CREDITS

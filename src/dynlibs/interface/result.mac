@@ -1,0 +1,60 @@
+ 
+Moscow ML version 2.00 (June 2000)
+Mangled by e & eMake 04 Jul 2000
+Use the Enter key to evaluate an input expression.
+- chDir "jalaMPW:ml:mosml200:src:dynlibs:interface:"; use "smlside_mac.sml";
+> val it = () : unit
+- [opening file "smlside_mac.sml"]
+> val it = () : unit
+> datatype flag = (flag,{con RTLD_LAZY : flag, con RTLD_NOW : flag})
+  type symHandle = symHandle
+  type dlHandle = dlHandle
+  con RTLD_LAZY = RTLD_LAZY : flag
+  val ('a1, 'b) app1 = fn : symHandle -> 'a1 -> 'b
+  con RTLD_NOW = RTLD_NOW : flag
+  val ('a1, 'a2, 'b) app2 = fn : symHandle -> 'a1 -> 'a2 -> 'b
+  val ('a1, 'a2, 'a3, 'b) app3 = fn : symHandle -> 'a1 -> 'a2 -> 'a3 -> 'b
+  val ('a1, 'a2, 'a3, 'a4, 'b) app4 = fn :
+  symHandle -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'b
+  val dlclose = fn : dlHandle -> unit
+  val ('a1, 'a2, 'a3, 'a4, 'a5, 'b) app5 = fn :
+  symHandle -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
+  val dlsym = fn : dlHandle -> string -> symHandle
+  exn Closed = Closed : exn
+  val dlopen = fn : {flag : flag, global : bool, lib : string} -> dlHandle
+  val 'b var = fn : symHandle -> 'b
+> New type names: =t
+  datatype t =
+  (t,{con Br : int * t * t -> t, con Brs : t list -> t, con Lf : t})
+  val dlh = <dlHandle> : dlHandle
+  val fu = fn : unit -> unit
+  val fi = fn : int -> int
+  val fc = fn : char -> char
+  val fr = fn : real -> real
+  val fs = fn : string -> string
+  val fb = fn : bool -> bool
+  val fcur = fn : int -> char -> real -> string -> bool -> int
+  val ftup = fn : int * char * real -> int
+  val frec = fn : {age : int, givenname : string, surname : string} -> bool
+  con Br = fn : int * t * t -> t
+  con Brs = fn : t list -> t
+  con Lf = Lf : t
+  val fdat = fn : t -> int
+  val ffun = fn : (int -> real) -> int -> string
+> val frtup = fn : int -> int * bool
+> val frrec = fn : int -> {half : int, odd : bool}
+> val fconcat = fn : string -> string -> string
+> val test1 = true : bool
+> val test2 = true : bool
+> val test3 = true : bool
+> val test4 = true : bool
+> val test5 = true : bool
+> val test6 = true : bool
+> val test7 = true : bool
+> val test8 = true : bool
+> val test9 = true : bool
+> val test10 = true : bool
+  val test11 = true : bool
+> val test12 = true : bool
+> val test13 = true : bool
+> val test14 = true : bool

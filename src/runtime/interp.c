@@ -57,13 +57,13 @@ typedef unsigned char opcode_t;
 
 #if defined(MOSML_BIG_ENDIAN) && !defined(ALIGNMENT)
 static opcode_t byte_raise_break_exn[] =
-        { GETGLOBAL, 0, EXN_INTERRUPT, RAISE };
+       { GETGLOBAL, 0, EXN_INTERRUPT, RAISE };
 static opcode_t byte_callback1_code[] = { ACC1, APPLY1, POP, 0, 1, STOP };
 static opcode_t byte_callback2_code[] = { ACC2, APPLY2, POP, 0, 1, STOP };
 static opcode_t byte_callback3_code[] = { ACC3, APPLY3, POP, 0, 1, STOP };
 #else
 static opcode_t byte_raise_break_exn[] =
-        { GETGLOBAL, EXN_INTERRUPT, 0, RAISE };
+       { GETGLOBAL, EXN_INTERRUPT, 0, RAISE };
 static opcode_t byte_callback1_code[] = { ACC1, APPLY1, POP, 1, 0, STOP };
 static opcode_t byte_callback2_code[] = { ACC2, APPLY2, POP, 1, 0, STOP };
 static opcode_t byte_callback3_code[] = { ACC3, APPLY3, POP, 1, 0, STOP };
@@ -735,12 +735,8 @@ EXTERN value interprete(int mode, bytecode_t bprog, int code_size, CODE* rprog)
         }
       }
 #endif
-#ifdef macintosh
-#ifndef __MWERKS__
-      { static int spin_count = 1;
-        if (--spin_count == 0) { spin_count = 24; SpinCursor ((short) 1); }
-      }
-#endif
+#if defined(macintosh) && !defined(PERIODIC_ACTION_FREQ)
+       ui_periodic_action();
 #endif
 #if ( defined(MSDOS) && defined(__GNUC__) ) || defined(WIN32)
       { static int poll_count = 1;

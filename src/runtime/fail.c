@@ -7,12 +7,8 @@
 #if defined(__MWERKS__) || defined(WIN32)
 #define MAXDOUBLE 1.7976931348623157081e+308
 #else
-#if (defined(BSD) && BSD >= 199306) || defined(__CYGWIN__)
 #include <float.h>
 #define MAXDOUBLE DBL_MAX
-#else
-#include <values.h>
-#endif
 #endif
 #include "alloc.h"
 #include "fail.h"

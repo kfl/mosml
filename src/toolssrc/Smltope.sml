@@ -33,6 +33,7 @@ fun tryEvalLoad name =
     val code = ref ""
     val truename = find_in_path filename
     val is = open_in_bin truename
+    val open_after_loading = ref false
     val () =
       let
         val stop = input_binary_int is
@@ -56,20 +57,21 @@ fun tryEvalLoad name =
             (#cu_mentions tables)
         (* The following line will put the compiled signature into the *)
         (* current table of unit signatures, if not already there:     *)
-        val sign = (Hasht.find (!currentSigTable) uname
-                   handle Subscript => readSig uname)
-        prim_val set_nth_char_ : string -> int -> char -> unit
-                                                 = 3 "set_nth_char"
+        val (sign,already_loaded) = ((Hasht.find (!currentSigTable) uname,true)
+                             handle Subscript => (readSig uname,false))
+        prim_val create_string_ : int -> string = 1 "create_string";
+        prim_val set_nth_char_  : string -> int -> char -> unit
+                                                = 3 "set_nth_char"
       in
+        open_after_loading := 
+            (modeOfSig sign = TOPDECmode andalso (not already_loaded));
         if #cu_sig_stamp tables <> getOption (!(#uStamp sign)) then
            raise Fail ("load: compiled body of unit "^uname^
                        " is incompatible with its compiled signature")
         else ();
         seek_in is start;
-        code := static_alloc (!block_len);
+        code := create_string_ (!block_len);
         fast_really_input is (!code) 0 code_len;
-        (* `set_nth_char' must not check the length of buff, *)
-        (* because `code' is allocated outside the heap! *)
         set_nth_char_ (!code) code_len (Char.chr Opcodes.STOP);
         app
           (fn phr =>
@@ -86,10 +88,13 @@ fun tryEvalLoad name =
     (* Initialize the unit.                                               *)
     (* In case this fails, remove it from the unit and signature tables:  *)
     val res = 
-        (do_code false (!code) 0 (!block_len))
-        handle x => (Hasht.remove (!currentSigTable) uname;
-                     Hasht.remove (!watchDog) uname;
-                     raise x)
+        (do_code false (!code) 0 (!block_len);
+         if !open_after_loading then
+             execToplevelOpen nilLocation uname 
+         else ())
+         handle x => (Hasht.remove (!currentSigTable) uname;
+                      Hasht.remove (!watchDog) uname;
+                      raise x)
   in () end;
 
 fun evalLoad s =
@@ -140,6 +145,9 @@ fun smartEvalLoad s =
       | x => (catch_interrupt true; raise x)
     in tryload s [] end
 ;
+
+fun evalLoaded () : string list =
+    Hasht.fold (fn k => fn _ => fn res => k :: res) [] (!watchDog) 
 
 fun protect_current_input fct =
   let val saved_input_name = !input_name
@@ -206,26 +214,28 @@ fun evalUse filename =
 
 (* Compile a file *)
 
-fun tryEvalCompile s =
+fun tryEvalCompile mode context s =
   protect_current_input (fn () => protectCurrentUnit (fn () =>
     if Filename.check_suffix s ".sig" then
       let val filename = Filename.chop_suffix s ".sig" in
-        compileSignature
+        compileSignature context
           (normalizedUnitName (Filename.basename filename))
+          mode
           filename
       end
     else if Filename.check_suffix s ".sml" then
       let val filename = Filename.chop_suffix s ".sml" in
-        compileUnitBody
+        compileUnitBody context
           (normalizedUnitName (Filename.basename filename))
+          mode                                                
           filename
       end
     else
       raise Fail "compile: unknown file name extension"))
 ;
 
-fun evalCompile s =
-  tryEvalCompile s
+fun evalCompile mode context s =
+  tryEvalCompile mode context s
   handle
        Interrupt     => raise Fail "compile: interrupted by the user"
      | Out_of_memory => raise Fail "compile: out of memory"
@@ -385,6 +395,11 @@ fun closedeps pdl =
     (n,hn,ap,di,oi)
   end;
 
+val depsht = ref (Hasht.new 31 : (string, string list) Hasht.t);
+
+fun reset_depsht _ =
+       depsht := (Hasht.new 31 : (string, string list) Hasht.t);
+
 fun read' pdl srcext objext filename =
   let val is       = open_in (addExt filename srcext)
       val lexbuf   = createLexerStream is
@@ -404,6 +419,10 @@ fun read' pdl srcext objext filename =
     List.app (fn name => Hasht.insert mentions name ()) names;
     if srcext = "sml" andalso FileSys.access(addExt filename "sig", [])
         then Hasht.insert mentions filename () else ();
+    let val ls = Hasht.find (!depsht) filename
+    in List.app (fn name => Hasht.insert mentions name ()) ls
+    end
+    handle _ => ();
     Hasht.apply (fn name => fn _ => adddep name) mentions;
     pdl := ((addExt filename objext),
             (addExt filename srcext),
@@ -561,7 +580,7 @@ fun ensure epoch (n,hn,ap,di,oi) =
                     end )
                 then moo 3 " ensuring: " objname
                 else ( moo 2 "compiling: " objname;
-                       evalCompile srcname;
+                       evalCompile STRmode [] srcname;
                        Array.update(timarr,x,FileSys.modTime objname) );
                 nxt (z+1)
              end
@@ -569,16 +588,18 @@ fun ensure epoch (n,hn,ap,di,oi) =
      moo 3 "" ""
   end;
 
-fun make oset stdlib includes path =
+fun make oset stdlib includes path deps =
   let open FileSys
       val _   = if !moolevel < 0  (* kludgy way to reset table *)
                 then (reset_readht(); moolevel := (~ (!moolevel)))
                 else ()
+      val _   = reset_depsht ();
+      val _   = List.app (fn (nm,ds) => Hasht.insert (!depsht) nm ds) deps
       val pdl = ref []
       val dir = openDir path
       val _   =   chDir path
-      fun read "" = ()
-        | read f  = ( processfile pdl f ; read (readDir dir) )
+      fun read  NONE    = ()
+        | read (SOME f) = ( processfile pdl f ; read (readDir dir) )
       val _ = ( read (readDir dir); closeDir dir; () )
               handle exn as OS.SysErr (msg, _) => (moo 1 msg ""; raise exn)
       val nhnapdioi = closedeps (!pdl)
@@ -616,37 +637,43 @@ fun lynk exec_file (gopt,hopt) (auto,oset) stdlib includes files =
 
 (* ****************************************************** *)
 
+(* cvr: TODO
+   it would be better if smltop_con_basis, sml_VE and the global dynamic
+   env were initialised from a single association list instead of three
+   possibly inconsistent ones 
+*)
+
 val smltop_con_basis =
 [
-  ("use",    { qualid={qual="Meta", id="use"},       info=VARname REGULARo}),
-  ("load",   { qualid={qual="Meta", id="load"},      info=VARname REGULARo}),
-  ("loadOne",{ qualid={qual="Meta", id="loadOne"},   info=VARname REGULARo}),
-  ("compile",{ qualid={qual="Meta", id="compile"},   info=VARname REGULARo}),
-  ("verbose",{ qualid={qual="Meta", id="verbose"},   info=VARname REGULARo}),
-  ("quietdec",{ qualid={qual="Meta", id="quietdec"}, info=VARname REGULARo}),
-  ("loadPath",{ qualid={qual="Meta", id="loadPath"}, info=VARname REGULARo}),
+  ("use",    { qualid={qual="Meta", id=["use"]},       info=VARname REGULARo}),
+  ("load",   { qualid={qual="Meta", id=["load"]},      info=VARname REGULARo}),
+  ("loadOne",{ qualid={qual="Meta", id=["loadOne"]},   info=VARname REGULARo}),
+  ("loaded", { qualid={qual="Meta", id=["loaded"]},    info=VARname REGULARo}),
+  ("compile",{ qualid={qual="Meta", id=["compile"]},   info=VARname REGULARo}),
+  ("compileStructure",{ qualid={qual="Meta", id=["compileStructure"]},   info=VARname REGULARo}),
+  ("compileToplevel",{ qualid={qual="Meta", id=["compileToplevel"]},   info=VARname REGULARo}),
+  ("verbose",{ qualid={qual="Meta", id=["verbose"]},   info=VARname REGULARo}),
+  ("quietdec",{ qualid={qual="Meta", id=["quietdec"]}, info=VARname REGULARo}),
+  ("loadPath",{ qualid={qual="Meta", id=["loadPath"]}, info=VARname REGULARo}),
   ("quotation",
-             { qualid={qual="Meta", id="quotation"}, info=VARname REGULARo}),
+             { qualid={qual="Meta", id=["quotation"]}, info=VARname REGULARo}),
   ("valuepoly",
-             { qualid={qual="Meta", id="valuepoly"}, info=VARname REGULARo}),
-  ("exnName",
-             { qualid={qual="Meta", id="exnName"},   info=VARname REGULARo}),
-  ("exnMessage",
-             { qualid={qual="Meta", id="exnMessage"},info=VARname REGULARo}),
-  ("printVal", { qualid={qual="Meta", id="printVal"},info=VARname OVL1TXXo}),
+             { qualid={qual="Meta", id=["valuepoly"]}, info=VARname REGULARo}),
+  ("printVal", { qualid={qual="Meta", id=["printVal"]},info=VARname OVL1TXXo}),
   ("printDepth",
-             { qualid={qual="Meta", id="printDepth"},info=VARname REGULARo}),
+             { qualid={qual="Meta", id=["printDepth"]},info=VARname REGULARo}),
   ("printLength",
-             { qualid={qual="Meta", id="printLength"}, info=VARname REGULARo}),
-  ("chDir",  { qualid={qual="Meta", id="chDir"},     info=VARname REGULARo}), (* e *)
- ("moolevel",{ qualid={qual="Meta", id="moolevel"},  info=VARname REGULARo}), (* e *)
-  ("make",   { qualid={qual="Meta", id="make"},      info=VARname REGULARo}), (* e *)
-  ("link",   { qualid={qual="Meta", id="link"},      info=VARname REGULARo}), (* e *)
-  ("system", { qualid={qual="Meta", id="system"},
-               info=PRIMname (mkPrimInfo 1 (MLPccall(1, "sml_system"))) }),
-  ("quit",   { qualid={qual="Meta", id="quit"},    info=VARname REGULARo}),
+             { qualid={qual="Meta", id=["printLength"]}, info=VARname REGULARo}),
+  ("chDir",  { qualid={qual="Meta", id=["chDir"]},     info=VARname REGULARo}), (* e *)
+ ("moolevel",{ qualid={qual="Meta", id=["moolevel"]},  info=VARname REGULARo}), (* e *)
+  ("make",   { qualid={qual="Meta", id=["make"]},      info=VARname REGULARo}), (* e *)
+  ("link",   { qualid={qual="Meta", id=["link"]},      info=VARname REGULARo}), (* e *)
+  ("quit",   { qualid={qual="Meta", id=["quit"]},    info=VARname REGULARo}),
+  ("orthodox",   { qualid={qual="Meta", id=["orthodox"]},    info=VARname REGULARo}),
+  ("conservative",   { qualid={qual="Meta", id=["conservative"]},    info=VARname REGULARo}),
+  ("liberal",   { qualid={qual="Meta", id=["liberal"]},    info=VARname REGULARo}),
   ("installPP",
-             { qualid={qual="Meta", id="installPP"}, info=VARname OVL1TPUo})
+             { qualid={qual="Meta", id=["installPP"]}, info=VARname OVL1TPUo})
 ];
 
 val smltop_VE =
@@ -654,14 +681,21 @@ val smltop_VE =
    ("use",         trivial_scheme(type_arrow type_string type_unit)),
    ("load",        trivial_scheme(type_arrow type_string type_unit)),
    ("loadOne",     trivial_scheme(type_arrow type_string type_unit)),
+   ("loaded",      trivial_scheme(type_arrow type_unit 
+                                             (type_list type_string))),
    ("compile",     trivial_scheme(type_arrow type_string type_unit)),
+   ("compileStructure",trivial_scheme(type_arrow (type_list type_string)
+                                                (type_arrow type_string 
+                                                            type_unit))),
+   ("compileToplevel",trivial_scheme(type_arrow (type_list type_string) 
+                                                (type_arrow type_string
+                                                            type_unit))),
    ("verbose",     trivial_scheme(type_ref type_bool)),
    ("quietdec",    trivial_scheme(type_ref type_bool)),
    ("loadPath",    trivial_scheme(type_ref (type_list type_string))),
    ("quotation",   trivial_scheme(type_ref type_bool)),
    ("valuepoly",   trivial_scheme(type_ref type_bool)),
-   ("exnName",     trivial_scheme(type_arrow type_exn type_string)),
-   ("exnMessage",  trivial_scheme(type_arrow type_exn type_string)),
+   ("printVal",    sc_bogus),  
    ("printDepth",  trivial_scheme(type_ref type_int)),
    ("printLength", trivial_scheme(type_ref type_int)),
    ("chDir",       trivial_scheme(type_arrow type_string type_unit)), (* e *)
@@ -669,28 +703,32 @@ val smltop_VE =
    ("make",        trivial_scheme(type_arrow type_string              (* e *)
                                    (type_arrow type_string
                                    (type_arrow (type_list type_string)
-                                   (type_arrow type_string type_unit))))),
+                                   (type_arrow type_string
+                                   (type_arrow (type_list (type_pair
+                                                           type_string
+                                                           (type_list type_string)))
+                                    type_unit)))))),
    ("link",        trivial_scheme(type_arrow type_string              (* e *)
                                    (type_arrow (type_pair type_bool type_bool)
                                    (type_arrow (type_pair type_bool type_string)
                                    (type_arrow type_string
                                    (type_arrow (type_list type_string)
                                    (type_arrow (type_list type_string) type_unit))))))),
-   ("system",      trivial_scheme(type_arrow type_string type_int)),
-   ("quit",        trivial_scheme(type_arrow type_unit type_unit))
+   ("quit",        trivial_scheme(type_arrow type_unit type_unit)),
+   ("orthodox",    trivial_scheme(type_arrow type_unit type_unit)),
+   ("conservative",trivial_scheme(type_arrow type_unit type_unit)),
+   ("liberal",     trivial_scheme(type_arrow type_unit type_unit)),
+   ("installPP",   sc_bogus)  
 ];
 
-val unit_smltop = newSig "Meta";
+val unit_smltop = newSig "Meta" "Meta" STRmode;
 
 val () =
-  app
-    (fn (id, status) => Hasht.insert (#uConBasis unit_smltop) id status)
-    smltop_con_basis
-;
-
-val () =
-  app
-    (fn (id, sc) => Hasht.insert (#uVarEnv unit_smltop) id sc)
+    app
+    (fn (id, sc) => let val {qualid,info} = lookup id smltop_con_basis
+                    in Hasht.insert (#uVarEnv unit_smltop) id 
+                                    {qualid = qualid, info = (sc, info)}
+                    end)
     smltop_VE
 ;
 
@@ -700,16 +738,17 @@ fun resetSMLTopDynEnv() =
   loadGlobalDynEnv "Meta" [
     ("use",         repr (evalUse: string -> unit)),
     ("loadOne",     repr evalLoad),
+    ("loaded",      repr evalLoaded),
     ("load",        repr smartEvalLoad),
-    ("compile",     repr evalCompile),
+    ("compile",     repr (evalCompile STRmode [])),
+    ("compileStructure", repr (evalCompile STRmode)),
+    ("compileToplevel", repr (evalCompile TOPDECmode)),
     ("verbose",     repr verbose),
     ("quietdec",    repr Exec_phr.quietdec),
     ("loadPath",    repr Mixture.load_path),
     ("quotation",   repr Lexer.quotation),
     ("valuepoly",   repr Mixture.value_polymorphism),
     ("printVal",    repr evalPrint),
-    ("exnName",     repr Rtvals.getExnName),
-    ("exnMessage",  repr Rtvals.getExnMessage),
     ("printDepth",  repr printDepth),
     ("printLength", repr printLength),
     ("chDir",       repr (fn n => FileSys.chDir n)), (* e *)
@@ -717,6 +756,9 @@ fun resetSMLTopDynEnv() =
     ("make",        repr make),                      (* e *)
     ("link",        repr lynk),                      (* e *)
     ("quit",        repr (fn () => (msgFlush(); BasicIO.exit 0))),
+    ("orthodox",    repr (fn () => (currentCompliance := Orthodox))),
+    ("conservative",repr (fn () => (currentCompliance := Conservative))),
+    ("liberal",     repr (fn () => (currentCompliance := Liberal))),
     ("installPP",   repr evalInstallPP)
 ];
 

@@ -8,6 +8,7 @@ app use
  "array2.sml",
  "arraysort.sml",                       (* MOSML *)
  "bytecmac.sml",   (* "bytechar.sml" *)
+ "callback.sml",                        (* MOSML *)
  "date.sml",
  "filesmac.sml",   (* "filesys.sml"  *)
  "generalmac.sml", (* "general.sml"  *)

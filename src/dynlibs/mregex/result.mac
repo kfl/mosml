@@ -1,0 +1,139 @@
+ 
+Moscow ML version 2.00 (June 2000)
+Mangled by e & eMake 04 Jul 2000
+Use the Enter key to evaluate an input expression.
+- chDir "jalaMPW:ml:mosml200:src:dynlibs:mregex:"; use "testregex_mac.sml";
+> val it = () : unit
+- [opening file "testregex_mac.sml"]
+> val it = () : unit
+! Cannot find file :::mosmllib/test/auxil.sml
+[closing file "testregex_mac.sml"]
+- use "testregex_mac.sml";
+[opening file "testregex_mac.sml"]
+> val it = () : unit
+[opening file ":::mosmllib:test:auxil.sml"]
+> infix 1 seq
+  val ('a, 'b) seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> (int -> bool) -> string
+[closing file ":::mosmllib:test:auxil.sml"]
+> val it = () : unit
+> datatype eflag = (eflag,{con Notbol : eflag, con Noteol : eflag})
+  type regex = regex
+  datatype cflag =
+  (cflag,{con Extended : cflag, con Icase : cflag, con Newline : cflag})
+  datatype replacer =
+  (replacer,
+   {con Str : string -> replacer,
+    con Sus : int -> replacer,
+    con Tr : (string -> string) * int -> replacer,
+    con Trs : (substring vector -> string) -> replacer})
+  val ('a, 'b) fapp = fn : ('a -> 'b) -> 'a * 'b list -> 'b list
+  val get = fn : int -> substring vector -> string
+  con Noteol = Noteol : eflag
+  con Notbol = Notbol : eflag
+  val 'a map = fn : regex -> (substring vector -> 'a) -> string -> 'a list
+  val regnexec = fn :
+  regex -> eflag list -> substring -> substring vector option
+  con Extended = Extended : cflag
+  exn Regex = fn : string -> exn
+  con Str = fn : string -> replacer
+  val regexecBool = fn : regex -> eflag list -> string -> bool
+  con Icase = Icase : cflag
+  val regnexecBool = fn : regex -> eflag list -> substring -> bool
+  val substitute1 = fn : regex -> (string -> string) -> string -> string
+  val regmatchBool = fn :
+  {pat : string, tgt : string} -> cflag list -> eflag list -> bool
+  val 'a fold = fn :
+  regex -> (substring * 'a -> 'a) * (substring vector * 'a -> 'a) -> 'a ->
+  string -> 'a
+  val replace1 = fn : regex -> replacer list -> string -> string
+  val app = fn : regex -> (substring vector -> unit) -> string -> unit
+  con Trs = fn : (substring vector -> string) -> replacer
+  val fields = fn : regex -> string -> substring list
+  val regmatch = fn :
+  {pat : string, tgt : string} -> cflag list -> eflag list ->
+  substring vector option
+  val replace = fn : regex -> replacer list -> string -> string
+  val substitute = fn : regex -> (string -> string) -> string -> string
+  con Tr = fn : (string -> string) * int -> replacer
+  val regcomp = fn : string -> cflag list -> regex
+  con Sus = fn : int -> replacer
+  con Newline = Newline : cflag
+  val regexec = fn : regex -> eflag list -> string -> substring vector option
+  val tokens = fn : regex -> string -> substring list
+User: 0.000  System: 0.000  GC: 0.000  Real: 0.000
+size(s) = 23; length(res) = 5
+User: 0.000  System: 0.000  GC: 0.000  Real: 0.000
+size(s) = 46; length(res) = 10
+User: 0.001  System: 0.000  GC: 0.000  Real: 0.000
+size(s) = 92; length(res) = 20
+User: 0.001  System: 0.000  GC: 0.000  Real: 0.000
+size(s) = 184; length(res) = 40
+User: 0.002  System: 0.000  GC: 0.000  Real: 0.000
+size(s) = 368; length(res) = 80
+User: 0.005  System: 0.082  GC: 0.000  Real: 0.100
+size(s) = 736; length(res) = 160
+User: 0.009  System: 0.000  GC: 0.000  Real: 0.017
+size(s) = 1472; length(res) = 320
+User: 0.017  System: 0.002  GC: 0.000  Real: 0.017
+size(s) = 2944; length(res) = 640
+User: 0.034  System: 0.150  GC: 0.007  Real: 0.200
+size(s) = 5888; length(res) = 1280
+User: 0.067  System: 0.003  GC: 0.036  Real: 0.100
+size(s) = 11776; length(res) = 2560
+User: 0.134  System: 0.181  GC: 0.040  Real: 0.350
+size(s) = 23552; length(res) = 5120
+User: 0.272  System: 0.498  GC: 0.136  Real: 0.900
+size(s) = 47104; length(res) = 10240
+User: 0.541  System: 0.835  GC: 0.202  Real: 1.583
+size(s) = 94208; length(res) = 20480
+User: 1.084  System: 2.168  GC: 0.508  Real: 3.767
+size(s) = 188416; length(res) = 40960
+> val test1a = "OK" : string
+  val test1b = "OK" : string
+  val test2a = "OK" : string
+  val test2b = "OK" : string
+  val test3a = "OK" : string
+  val test3b = "OK" : string
+  val test4a = "OK" : string
+  val test4b = "OK" : string
+  val test5a = "OK" : string
+  val test5b = "OK" : string
+  val test6a = "OK" : string
+  val test6b = "OK" : string
+  val test6c = "OK" : string
+  val test6d = "OK" : string
+  val test6e = "OK" : string
+  val test6f = "OK" : string
+  val test6g = "OK" : string
+  val test7a = "OK" : string
+  val test7b = "OK" : string
+  val test7c = "OK" : string
+  val test7d = "OK" : string
+  val test7e = "OK" : string
+  val test8a = "OK" : string
+  val test8b = "OK" : string
+  val test8c = "OK" : string
+  val test8d = "OK" : string
+  val test9a = "OK" : string
+  val test9b = "OK" : string
+  val test10a = "OK" : string
+  val test10b = "OK" : string
+  val test10c = "OK" : string
+  val test10d = "OK" : string
+  val test11a = "OK" : string
+  val test11b = "OK" : string
+  val test11c = "OK" : string
+  val test11d = "OK" : string
+  val test12a = "OK" : string
+  val test12b = "OK" : string
+  val test13a = "OK" : string
+  val test13b = "OK" : string
+  val test14a = "OK" : string
+  val test14b = "OK" : string
+  val test15a = "OK" : string
+  val test16a = "OK" : string
+  val test16b = "OK" : string

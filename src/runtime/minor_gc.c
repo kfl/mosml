@@ -53,10 +53,28 @@ void set_minor_heap_size (asize_t size)
   ref_table_end = ref_table + ref_table_size + ref_table_reserve;
 }
 
+#ifdef macintosh
+unsigned long moml_stack_limit;
+#endif
+
 static void oldify (value *p, value v)
 {
   value result;
   mlsize_t i;
+  
+#ifdef macintosh
+#if __POWERPC__
+  register int sptr;
+  asm{ mr sptr, r1 }
+  if( sptr <= moml_stack_limit )
+#else
+  if( (unsigned long )&i <= moml_stack_limit )
+#endif
+  { //DebugStr( "\pThe processor stack is exhausted -- type ES to quit." );
+    //raise_out_of_memory(); // this needs even more stack, so short circuit it...
+    // longjmp will be caught in minor_collection() below with the stack unwound
+    longjmp(external_raise->buf, 1); }
+#endif
 
  tail_call:
   if (Is_block (v) && Is_young (v)){

@@ -1,0 +1,73 @@
+ 
+Moscow ML version 1.44 (August 1999)
+Mangled by e & eMake 14 August 1999
+Use the Enter key to evaluate an input expression.
+- chDir "StarMPW:ml:mosml144:src:mosmllib:test:callback:"; use "testcallbackmac.sml";
+> val it = () : unit
+- [opening file "testcallbackmac.sml"]
+> val it = () : unit
+[opening file "::auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> (int -> bool) -> string
+[closing file "::auxil.sml"]
+> val it = () : unit
+> type cptr
+  val app1 = fn : cptr -> 'a1 -> 'b
+  val app2 = fn : cptr -> 'a1 -> 'a2 -> 'b
+  val app3 = fn : cptr -> 'a1 -> 'a2 -> 'a3 -> 'b
+  val app4 = fn : cptr -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'b
+  val getcptr = fn : string -> cptr
+  val app5 = fn : cptr -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
+  val isRegistered = fn : string -> bool
+  val register = fn : string -> 'a -> unit
+  val unregister = fn : string -> unit
+  val var = fn : cptr -> 'b
+> val dlh = <dlHandle> : Dynlib.dlHandle
+> val fu = fn : unit -> unit
+> val fi = fn : int -> int
+> val fc = fn : char -> char
+> val fr = fn : real -> real
+> val fs = fn : string -> string
+> val fb = fn : bool -> bool
+> val fcur = fn : int -> char -> real -> string -> bool -> int
+> val ftup = fn : int * char * real -> int
+> val frec = fn : {age : int, givenname : string, surname : string} -> bool
+> datatype t
+  con Lf = Lf : t
+  con Br = fn : int * t * t -> t
+  con Brs = fn : t list -> t
+  val fdat = fn : t -> int
+> val ffun = fn : (int -> real) -> int -> string
+> val frtup = fn : int -> int * bool
+> val frrec = fn : int -> {half : int, odd : bool}
+> val fconcat = fn : string -> string -> string
+> val test1 = true : bool
+> val test2 = true : bool
+> val test3 = true : bool
+> val test4 = true : bool
+> val test5 = true : bool
+> val test6 = true : bool
+> val test7 = true : bool
+> val test8 = true : bool
+> val test9 = true : bool
+> val test10 = true : bool
+  val test11 = true : bool
+> val test12 = true : bool
+> val test13 = true : bool
+> val test14 = true : bool
+> val test15 = true : bool
+> val test16 = true : bool
+> val test17 = true : bool
+> val test18 = true : bool
+User: 2.550  System: 0.267  GC: 0.015  Real: 2.833
+User: 2.243  System: 0.289  GC: 0.000  Real: 2.550
+> val mkfun = fn : real -> (real -> real)
+  val test19 = true : bool
+  val test20 = true : bool
+[closing file "testcallbackmac.sml"]
+> val it = () : unit
+- 

@@ -1,0 +1,80 @@
+ 
+Moscow ML version 2.00 (June 2000)
+Mangled by e & eMake 04 Jul 2000
+Use the Enter key to evaluate an input expression.
+- 
+> val it = () : unit
+- 
+! Cannot find file ../../mosmllib/test/auxil.sml
+- 
+! Cannot find file ::mosmllib:test:auxil.sml
+- 
+! Cannot find file :::mosmllib:test:auxil.sml
+- chDir "jalaMPW:ml:mosml200:src:dynlibs:intinf:"; use "testintinf_mac.sml";
+> val it = () : unit
+- [opening file "testintinf_mac.sml"]
+> val it = () : unit
+! Cannot find file ::mosmllib:test:auxil.sml
+[closing file "testintinf_mac.sml"]
+- use "testintinf_mac.sml";
+[opening file "testintinf_mac.sml"]
+> val it = () : unit
+[opening file ":::mosmllib:test:auxil.sml"]
+> infix 1 seq
+  val ('a, 'b) seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> (int -> bool) -> string
+[closing file ":::mosmllib:test:auxil.sml"]
+> val it = () : unit
+> val test1a = "OK" : string
+  val test1b = "OK" : string
+  val test1c = "OK" : string
+  val test1d = "OK" : string
+  val test2a = "OK" : string
+  val test2b = "OK" : string
+  val test2c = "OK" : string
+  val test2d = "OK" : string
+  val test3a = "OK" : string
+  val test3b = "OK" : string
+  val test3c = "OK" : string
+  val test3d = "OK" : string
+  val test4a = "OK" : string
+  val test4b = "OK" : string
+  val test4c = "OK" : string
+  val test4d = "OK" : string
+  val test5a = "OK" : string
+  val test5b = "OK" : string
+  val test5c = "OK" : string
+  val test5d = "OK" : string
+  val test5e = "OK" : string
+  val test5f = "OK" : string
+  val test6a = ["OK", "OK", "OK", "OK"] : string list
+  val test6b = ["OK", "OK", "OK", "OK"] : string list
+  val test6c = ["OK", "OK", "OK", "OK"] : string list
+  val chkToString = fn : int * string -> string
+  val test12a = ["OK", "OK", "OK", "OK"] : string list
+  val 'a chk = fn : ('a -> int/1 option) -> 'a * int -> string
+  val chkScan = fn : radix -> string * int -> string
+  val test13a = ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] : string list
+  val test13b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] :
+  string list
+  val test14a = ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] : string list
+  val test14b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] :
+  string list
+  val test15a = ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] : string list
+  val test15b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"] : string list
+  val test16a = ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] : string list
+  val test16b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK"] : string list
+  val test17a = ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] : string list
+  val test17b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] :
+  string list
+  val test18 = "OK" : string

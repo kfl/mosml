@@ -17,11 +17,20 @@ val test3 = (sub(s1, 0)  seq "WRONG") handle Subscript => "OK" | _ => "WRONG";
 val test4 = (sub(s2, ~1) seq "WRONG") handle Subscript => "OK" | _ => "WRONG";
 val test5 = (sub(s2, 10) seq "WRONG") handle Subscript => "OK" | _ => "WRONG";
 
-val test6 = 
+val test6a = 
+    check'(fn _ => "abcdef" = "abc" ^ "def" 
+	   andalso "abc" = "" ^ "abc"
+	   andalso "abc" = "abc" ^ ""
+	   andalso "abc" = "" ^ "abc" ^ ""
+	   andalso "" = "" ^ "")
+val test6b = 
     check'(fn _ => 
-           "" = concat [] andalso "" = concat [s1] 
-           andalso s2 = concat [s2] andalso s2^s2 = concat [s2,s2]
-           andalso "ABCD" = concat ["A","B","C","D"]);
+       "" = concat [] andalso "" = concat [s1] 
+	   andalso "" = concat [""] andalso "" = concat ["", ""] 
+       andalso s2 = concat [s2] andalso s2^s2 = concat [s2,s2]
+	   andalso s2 = concat ["", s2] andalso s2 = concat [s2,""]
+	   andalso "ABCD" = concat ["A","B","C","D"]
+	   andalso "ABCD" = concat ["A","B","", "C","D"]);
     
 val test7 = check'(fn _ => "A" = str(chr 65));
 
@@ -91,6 +100,19 @@ val test12g =
              handle Subscript => "OK" | _ => "WRONG")
        | _ => "OK";
 
+val test12'a = 
+    check'(fn _ =>
+	   map Char.toLower "AbHYUpqQ" = "abhyupqq"
+	   andalso map Char.toLower "" = "")
+val test12'b = 
+    check'(fn _ => let val s = "7yuewjHHGDywj;p"
+		       val v = ref []
+		       fun prep c = (v := c :: !v; #"X")
+		   in 
+		       map prep s = "XXXXXXXXXXXXXXX"
+		       andalso !v = rev(explode s)
+		   end)
+
 val test13a = 
     check'(fn _ => 
            (translate (fn _ => "") s2 = ""
@@ -158,8 +180,8 @@ val test17 =
                (#"\127", "\\127"),
                (#"\128", "\\128"),
                (#"\255", "\\255")]
-        val (arg, res) = (implode (map #1 argResList), 
-                          concat (map #2 argResList))
+        val (arg, res) = (implode (List.map #1 argResList), 
+                          concat (List.map #2 argResList))
     in check'(fn _ => List.all chk argResList
                       andalso toString arg = res)
     end;
@@ -168,7 +190,7 @@ val test18 =
     let val chars = CharVector.tabulate(256, chr)
     in check'(fn _ => fromString(toString chars) = SOME chars) end
 
-val test19 =                 
+val test19 =   		     
     let fun chkFromString (arg, res) = fromString arg = SOME (str res)
         val argResList = 
             [("A", #"A"),
@@ -206,8 +228,8 @@ val test19 =
              ("\\   \t\n\n \\\\000", #"\000"),
              ("\\   \t\n\n \\\\097", #"a"),
              ("\\   \t\n\n \\\\255", #"\255")]
-        val (arg, res) = (concat (map #1 argResList), 
-                          implode (map #2 argResList))
+        val (arg, res) = (concat (List.map #1 argResList), 
+                          implode (List.map #2 argResList))
     in 
         check'(fn _ => List.all chkFromString argResList 
                        andalso fromString arg = SOME res)
@@ -255,8 +277,8 @@ val test22 =
              ("?", "\\?"),
              ("'", "\\'"),
              ("\"", "\\\"")]
-        val (arg, res) = (concat (map #1 argResList), 
-                          concat (map #2 argResList))
+        val (arg, res) = (concat (List.map #1 argResList), 
+                          concat (List.map #2 argResList))
     in
         check'(fn _ => 
                List.all (fn (arg, res) => toCString arg = res) argResList
@@ -303,8 +325,8 @@ val test23 =
              ("\\x0000000Ag", "\010g"),
              ("\\x00000000000000000000000000000000000000000000000000000000000000011+",
               "\017+")]
-        val (arg, res) = (concat (map #1 argResList), 
-                          concat (map #2 argResList))
+        val (arg, res) = (concat (List.map #1 argResList), 
+                          concat (List.map #2 argResList))
     in 
         check'(fn _ => List.all checkFromCStringSucc argResList
                        andalso fromCString arg = SOME res)

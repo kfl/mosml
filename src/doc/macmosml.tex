@@ -1,4 +1,4 @@
-% macmosml.tex v. 1.44.3 last updated 1999-08-31
+% macmosml.tex v. 2.00.1 last updated 2000-07-19
 % Copyright (C) Doug Currie <e@flavors.com> 
 % Formatted by Peter Sestoft <sestoft@dina.kvl.dk>
 %
@@ -19,7 +19,7 @@
 
   {\huge\bf Moscow ML for the Apple Macintosh$^{\mbox{\small\sc tm}}$}\\[0.5cm]
 
-Version 1.44 of August 1999\\[0.7cm]
+Version 2.00 of July 2000\\[0.7cm]
 
 \large Doug Currie (e@flavors.com)\\
 Flavors Technology, Inc.\\
@@ -29,25 +29,26 @@ Manchester, New Hampshire, USA\\
 \vspace{0.5cm}
 
 \noindent 
-This document describes Moscow ML 1.44 for the Apple Macintosh.  It
-was done by e (Doug Currie) in August 1999 based on previous ports.
+This document describes Moscow ML 2.00 for the Apple Macintosh\@.  It
+was done by e (Doug Currie) in July 2000 based on previous ports.
 
-The biggest changes since version 1.43 are in the placement of the
-mosml library and new mechanisms to build stand-alone mosml
-applications and CGI applications.  See \verb+ReleaseNotes_Mac.txt+
-for other recent changes and improvements.
+The biggest changes since version 1.44 are: increased default and minimum 
+memory requirements, Appearance and Navigation Services support, changes 
+to the make function, IntInf and libgmp.so added, Cookies, Bin234map, etc.  
+See \verb+ReleaseNotes_Mac.txt+ for other recent changes and improvements.
 
-Two other documents, the \emph{Moscow ML Owner's Manual}
-\cite{MoscowML:1999:OwnersManual} and the {\em Moscow ML Language
-  Overview\/} \cite{MoscowML:1999:MoscowMLLanguage} describe general
-aspects of the Moscow ML system.
+Three other documents, the \emph{Moscow ML Owner's Manual}
+\cite{MoscowML:2000:OwnersManual}, the {\em Moscow ML Language
+  Overview\/} \cite{MoscowML:2000:MoscowMLLanguage}, and the
+\emph{Moscow ML Library Documentation}
+\cite{MoscowML:2000:MoscowMLLibrary}, describe general aspects of the
+Moscow ML system.
 
-Moscow ML implements the Core language of Standard ML (SML), as
-defined in the 1997 {\em Definition of Standard ML\/}, and supports
-most required parts of the new SML Basis Library.  Moscow ML also
-provides a simple subset of the Standard ML Modules language,
-restricted to signatures and non-nested structures.  It supports
-separate compilation and the generation of stand-alone executables.
+Moscow ML implements Standard ML (SML), as defined in the 1997 {\em
+  Definition of Standard ML}, with some extensions to the SML Modules
+language, and supports most required parts of the new SML Basis
+Library\@.  Moscow ML supports separate compilation and the generation
+of stand-alone executables.
 
 \vfill
 
@@ -71,7 +72,7 @@ separate compilation and the generation of stand-alone executables.
 % á &Omega; 0x03A9 0xBD 0x57 -- capital Greek Omega
 % Å &trade; 0x2122 0xAA 0xD4 -- trademark sign (small TM superscripted)
 
-% README   Mosml Mac 1.44e   1999Aug25   e  [Doug Currie <e@flavors.com>]
+% README   Mosml Mac 2.00e   2000Jul12   e  [Doug Currie <e@flavors.com>]
 
 
 \section{Read this if nothing else}
@@ -108,12 +109,12 @@ The m68k applications do not support shared libraries (dynlibs).
 See \verb+ReleaseNotes_Mac.txt+ for a history of improvements and fixes.
 
 In this document, the character sequence XXX in file names represents
-the current version number of Moscow ML. For example, in release 1.44,
-references to the file mosmlXXX.app are actually references to
-mosml144.app.
+the current version number of Moscow ML\@. For example, in release
+2.00, references to the file mosmlXXX.app are actually references to
+mosml200.app.
 
 
-\section{Credits/Support}
+\section{Credits/support}
 
 Moscow ML (mosml) is freeware.  The entire source code for mosml is
 available.  A number of authors have contributed to its development;
@@ -123,9 +124,9 @@ for distribution of this software.
 I have tested mosml on two PowerMacs (8600 and StarMax 4200); note
 that the recent m68k versions have been tested only in emulation. I
 have not extensively stress tested memory requirements. I usually run
-with 8M allocated to mosml, but it will probably run with much less.
-It will launch and open files in 1 MB\@. Running the full library test
-requires about 12 MB\@.
+with 16M allocated to mosml, but it will probably run with much less.
+It will launch and open files in 3 MB\@. Running the full library test
+requires about 16 MB\@.
 
 Comments/questions about the port should be directed to me,
 <e@flavors.com>.
@@ -139,20 +140,20 @@ newsgroup comp.lang.ml which I watch via the SML-LIST mailing list.
 
 
 
-\section{Getting Started}
+\section{Getting started}
 
 The installation steps in brief are:
 
 \begin{enumerate}
 \item launch the installer, MacMoscowMLXXXinstaller (where XXX is the
-  version, e.g.\ 144);
+  version, e.g.\ 200);
 
 \item select Custom Install, and choose the PPC or m68k installation;
 
 \item click the Install button.
 \end{enumerate}
 
-\noindent Note that  if
+\noindent Note that if
 you want a source code installation (i.e., the source code for Moscow
 ML itself, which is not required to use Moscow ML) be sure to read the
 information displayed by the installer when it's launched: you must
@@ -244,7 +245,7 @@ followed by Enter.
 The Command menu contains mosml specific commands. Use these menu
 items to use, load, compile, etc. The meaning of these commands is
 documented in the Moscow ML documentation
-\cite{MoscowML:1999:OwnersManual}.  The File, Edit, Search, and
+\cite{MoscowML:2000:OwnersManual}.  The File, Edit, Search, and
 Windows menus are for using the built in editor. Also in the Edit menu
 is a Styles item for setting preferences (which are recorded in a
 "Mosml Preferences" file in your Preferences Folder).
@@ -261,7 +262,7 @@ features provided by eConsole\@.  Here are some newer features
 specific to the mosml version of eConsole:
 
 A command in the Search menu, Open Selection, can be used to open a file
-by selecting its name in any window and typing Command-D. This can also
+by selecting its name in any window and typing Command-D\@. This can also
 be used with mosml's error messages; in this case, the file that caused the
 error will be opened, and the error text scrolled-to and highlighted. For
 example, selecting the line:
@@ -307,7 +308,7 @@ only the console code is still running.
 
 
 
-\section{Cow Icons}
+\section{Cow icons}
 
 My nine (now thirteen) year old daughter, Megan, drew the icons. She
 is better at it than me. I chose a cow for the icon for three reasons:
@@ -321,7 +322,7 @@ there who are also artists, please feel free to contribute more
 polished icons!
 
 
-\section{Library Status}
+\section{Library status}
 
 The Moscow ML library units, including the SML Basis Library, Mosml
 extensions, and Dynlibs (dynamically loaded or shared libraries) are
@@ -332,7 +333,7 @@ the runtime.
 \subsection{Moscow ML library units}
 
 Although much of it is UNIX derived, a surprising amount of the library
-now works with the Mac. In particular, walking directory structures, and
+now works with the Mac\@. In particular, walking directory structures, and
 getting information about files, elapsed/used time, time of day, and dates
 are all working. In fact, as of this release, the Mac version is ahead of
 the DOS and UNIX versions in capability. In particular, the Mac version:
@@ -353,7 +354,7 @@ if the name starts with a ":" then it's relative, else if it contains
 a ":" it's absolute, else it's relative. This seems to handle common
 cases (i.e., it's rare to store files at root level). Path.sml also
 has assumptions built in about how pathname arcs "." and ".." behave.
-These are just file (or directory) names on the Mac. The Mac approach
+These are just file (or directory) names on the Mac\@. The Mac approach
 of "::" meaning up versus ":" meaning down is very dissimilar to the
 UNIX approach; I tried to make Path.sml work as best I could. It
 should do the right thing in most cases, certainly all common and
@@ -373,7 +374,7 @@ open for reading, the results are unpredictable.
 When files are opened by Moscow ML runtime, a simple UNIX to Mac
 pathname translation is performed if the name contains any '/'
 characters. This is indispensable when porting from the UNIX version
-of mosml to the Mac. It is less useful after the port is done, but
+of mosml to the Mac\@. It is less useful after the port is done, but
 remains in place if you need it. One drawback to this mechanism is
 that some legal Mac file and folder names cannot be used in mosml
 paths, i.e., file or folder names containing '/' characters.  This has
@@ -383,10 +384,10 @@ not proved to be a problem in practice.
 \subsection{AppleScript library module}
 
 The module AppleScript supplies facilities for compiling, running, and
-receiving results from AppleScripts. Examples are provided in
+receiving results from AppleScripts\@. Examples are provided in
 \verb+e_SML+ of using AppleScript from mosml to communicate with
 Microsoft Excel and Eudora\@.  Many Mac applications support scripting
-via AppleScript. AppleScript is also used in MakeMacApplication.sml.
+via AppleScript\@. AppleScript is also used in MakeMacApplication.sml.
 
 There are also many libraries of scripting additions available for use
 with AppleScript, e.g., speech, encryption, etc. These libraries must
@@ -397,7 +398,7 @@ be placed in your extensions folder to be used from mosml.
 
 The text argument to \verb+system()+ is sent to the AppleScript
 compiler and executed as long as AppleScriptLib is in the Extensions
-folder. This is only tested on PowerMacs. Using AppleScript and
+folder. This is only tested on PowerMacs\@. Using AppleScript and
 \verb+system()+ you can now send AppleEvents to other applications,
 e.g., send e-mail, launch applications with the Finder, etc. But this
 is not compatible with the DOS or UNIX versions of the \verb+system()+
@@ -422,8 +423,8 @@ writer is provided as an example shared library. It can also be used
 to read and write floating point numbers accurately (e.g., to work
 around MSL problems). See \verb+e_SML:gay.sml+.
 
-Also provided are Mac versions of the Moscow ML Sockets and Regex
-dynlibs.
+Also provided are Mac versions of the Moscow ML IntInf, Sockets, and
+Regex dynlibs (libmgmp.so, libmsocket.so, and libmregex.so).
 
 Dynlibs common to Moscow ML are provided with a ".so" pathname
 extension for compatibility. The Mac Moscow ML application and CGI
@@ -464,25 +465,34 @@ included "pre-processed."]
 \subsection{The function \texttt{make}}
 \label{sec-make}
 
+\begin{description}
+\item[Note:] The make function only supports compilation in toplevel mode.
+This is adequate for rebuilding Moscow ML itself, and for making all the 
+example code included with the distribution. The dependency tracing 
+portion of make will need extensive work to accommodate structure mode.
+\end{description}
+
+\noindent 
 The make function compiles all files in a directory needing
-recompilation.  It has all the compile capabilities of mosmlc, plus it
-finds dependencies among the files. It only compiles what needs to be
-compiled.  It has the type:
+recompilation.  It has all the compile capabilities of mosmlc in
+toplevel mode, plus it finds dependencies among the files. It only
+compiles what needs to be compiled.  It has the type:
 
 \begin{verbatim}
-  make : string -> string -> string list -> string -> unit
+  make : string -> string -> string list -> string ->
+         (string * string list) list -> unit
 \end{verbatim}
 
 \noindent Evaluating
 
 \begin{verbatim}
-  make <oset> <stdlib> [<dir1>..<dirN>] <path>
+  make <oset> <stdlib> [<dir1>..<dirN>] <path> [deps]
 \end{verbatim}
 
 \noindent is equivalent to running mosmlc as follows:
 
 \begin{verbatim}
-  mosmlc -P <oset> -stdlib <stdlib> -I <dir1> ..  -I <dirN> <files...>
+  mosmlc -c -toplevel -P <oset> -stdlib <stdlib> -I <dir1> .. -I <dirN> <files...>
 \end{verbatim}
 
 \noindent 
@@ -498,6 +508,15 @@ modification times of units outside the target directory as long as
 they're visible to \verb+find_in_path()+), and compiles the files if
 necessary. It takes as arguments -stdlib and -I paths and -P so it can
 be used to compile the library and compiler directories.
+
+The final argument to make is a list of unit dependencies that are
+necessary for correct compilation, but which cannot be inferred by
+mosmldep. It has the format of a list of pairs: a unit name and a list
+of units it depends upon. See the \emph{Moscow ML Owner's Manual}
+\cite{MoscowML:2000:OwnersManual} for a description of why this may be
+necessary. In all of Moscow ML itself, there is only one directory
+which requires additional dependency info: mosmllib. See
+Section~\ref{sec-examples} for an example.
 
 A file needs compilation if:
 
@@ -622,6 +641,7 @@ application.
 
 
 \subsection{Examples}
+\label{sec-examples}
 
 To create a new mosml project, put all the source files in a new directory,
 "project." Don't put any incomplete or irrelevant sources in the same
@@ -632,7 +652,7 @@ and then evaluate:
 \begin{verbatim}
    let val base = get_home()
    in
-     make "full" (find_lib()) [] (base ^ "project")
+     make "full" (find_lib()) [] (base ^ "project") []
    end;
 \end{verbatim}
 
@@ -655,11 +675,12 @@ Here is a sample make and link script to build mosml.image:
    let val base = home ^ "src:"
    in
      valuepoly := false;
-     make "none" (base ^ "mosmllib") [] (base ^ "mosmllib");
+     make "none" (base ^ "mosmllib") [] (base ^ "mosmllib")
+           [("OS",["FileSys","Path","Process"])];
      valuepoly := true;
-     make "none" (base ^ "mosmllib") [] (base ^ "compiler");
-     make "none" (base ^ "mosmllib") [(base ^ "compiler")] (base ^ "toolssrc");
-     make "none" (base ^ "mosmllib") [(base ^ "compiler")] (base ^ "lex")
+     make "none" (base ^ "mosmllib") [] (base ^ "compiler") [];
+     make "none" (base ^ "mosmllib") [(base ^ "compiler")] (base ^ "toolssrc") [];
+     make "none" (base ^ "mosmllib") [(base ^ "compiler")] (base ^ "lex") []
    end;
 
    (* to build the toplevel mosml image into file "testtop.image" *)
@@ -679,7 +700,7 @@ Here is a sample make and link script to build mosml.image:
 \verb+e_SML+ folder.
 
 
-\section{Creating Standalone Mac Applications}
+\section{Creating standalone Mac applications}
 
 Mosml can be used to create stand-alone Macintosh applications.
 
@@ -771,7 +792,7 @@ argument, the name of the application to build, and prompts you for
 the template and image with Standard File Dialogs.
 
 
-\section{Creating Standalone Mac CGI Applications}
+\section{Creating standalone Mac CGI applications}
 
 Using the process described above, you can create stand-alone CGIs.
 The only differences are: the shared lib is mosmlXXXcgi.lib, and the
@@ -788,19 +809,19 @@ CGIs interface to the web server through cgi AppleEvents ('WWW$\Omega$'
 accept cgi AppleEvents and provide the mosml code with access to the
 data. The mosml code has a full mosml runtime, but no console or
 editor. The CGI application should only be launched by a web server,
-which will send the application a cgi AppleEvent. All output to stdOut
+which will send the application a cgi AppleEvent\@. All output to stdOut
 is collected and returned to the web server in an AppleEvent reply at
 exit.
 
 The environment of these applications is extended with several new variables.
 They correspond to the UNIX CGI environment variables as closely as possible,
-and can be obtained with Process.getEnv. In some cases stdIn will supply
-additional data for the cgi request, e.g., POST. Use the environment variable
+and can be obtained with Process.getEnv\@. In some cases stdIn will supply
+additional data for the cgi request, e.g., POST\@. Use the environment variable
 \verb+CONTENT_LENGTH+ to determine the number of characters waiting at stdIn.
 
 The environment variables are documented in the Environment Variables section.
 
-CGI applications have a bare minimum user interface: Quit. Quitting should
+CGI applications have a bare minimum user interface: Quit\@. Quitting should
 only be necessary when your X.image has a bug which prevents it from exiting.
 You can Quit from the File menu or with Command-Q.
 
@@ -824,7 +845,7 @@ and an image file appropriate names is still supported, but less nice\ldots
 See the 'image pathname heuristic' below.
 
 
-\section{Environment Variables}
+\section{Environment variables}
 
 Environment variables are not provided by MacOS, but Mac mosml emulates this
 facility for compatibilty with UNIX and CGI applications.
@@ -846,7 +867,7 @@ Variable & Defined where \\\hline
 \verb+CAMLRUNPARAM+ is accessed by the runtime system at launch time
 for configuration (see file mosml/src/runtime/main.c);
 \verb+PATH_TRANSLATED+ is the pathname of the running application
-(used by GetHome.sml).  Examples:
+(used by GetHome.sml)\@.  Examples:
 
 \begin{verbatim}
    - load "Process";
@@ -887,13 +908,15 @@ Variable &            Mac AE name &   Description \\\hline
 
 \verb+SCRIPT_NAME+ &         'scnm'  & The (raw) path of the CGI being executed\\
 
-\verb+SERVER_NAME+ &        'svnm'  & Domain name of server (or IP address if no DNS)\\
+\verb+SERVER_NAME+ &         'svnm'  & Domain name of server (or IP address if no DNS)\\
 
 \verb+SERVER_PORT+ &         'svpt'  & TCP/IP port server is listening on\\
 
 \verb+HTTP_REFERER+ &        'refr'  & URL of page from which this CGI was referenced\\
 
 \verb+HTTP_USER_AGENT+ &     'Agnt'  & The WWW client software name and version\\
+
+\verb+HTTP_COOKIE+ &         'Kfrq'  & The HTTP cookies parsed from the Full Request\\
 
 \verb+GATEWAY_INTERFACE+ &   'Kact'  & The action being performed by the CGI,
                                either the name of the user defined action or
@@ -918,7 +941,7 @@ References:
 \end{description}
 
 
-\newpage\section{Alternate Launching Mechanisms, CGI}
+\newpage\section{Alternate launching mechanisms, CGI}
 
 Mac mosml has a few ad hoc features related to application launching to
 support automating mosml applications with AppleScript, AppleEvents, and the
@@ -950,7 +973,7 @@ mosmlXXXapp) with the command line <cmdline>.
 A version of mosml which accepts cgi AppleEvents ('WWW$\Omega$'
 'sdoc') is provided as a template used to create stand-alone
 applications as described above in Creating Standalone Mac CGI
-Applications. This works analogously to the above miscdosc mechanism,
+Applications\@. This works analogously to the above miscdosc mechanism,
 but rather than a command line, a CGI request is passed.  It is the
 mechanism used by web servers on the Mac, so you will never need to
 use it in scripts, it is all handled behind the scenes.
@@ -988,9 +1011,9 @@ this case, for example, a copy of mosmlXXXcgi named "echo.cgi" will run the
 image named "echo.image" when launched from a web server.
 
 
-\newpage\section{Command Lines}
+\newpage\section{Command lines}
 
-Command lines are very non-Mac. You don't need to use them unless you
+Command lines are very non-Mac\@. You don't need to use them unless you
 need to use mosmllex, want to create an application that uses command
 lines, or is launch-AppleScriptable, or are bootstrapping a new
 version of mosml.
@@ -1065,10 +1088,10 @@ Configuration section to make sense. Don't worry, you don't need to
 know any of this to use mosml.]
 
 The Mac version of mosml simulates UNIX environment variables with
-resources of type 'ENV '. The resource number doesn't matter, the
+resources of type 'ENV '\@. The resource number doesn't matter, the
 resources are identified by name. The format of an 'ENV ' resource is
 simply a C string. Mosml itself only looks for one 'ENV ' variable called
-CAMLRUNPARAM. It is used to configure the memory manager. I don't know
+CAMLRUNPARAM\@. It is used to configure the memory manager. I don't know
 where it's documented (probably the Moscow ML distribution). A sensible
 value for this string is provided as an 'ENV ' resource in the mosml
 application. If the resource is not found, another sensible value is used.
@@ -1119,7 +1142,7 @@ console name          &  \verb+Mosml Console+ & \\\hline
 
 \noindent  
 This causes the image to be loaded from the Data Fork of the
-application file where it was placed by MakeMacApplication.sml. These
+application file where it was placed by MakeMacApplication.sml\@. These
 values come from the PPC or m68k application template.
 
 The image name in econfigstrs is used only if
@@ -1143,7 +1166,7 @@ The image name in econfigstrs is used only if
 \end{itemize}
 
 
-\newpage\section{eConsole User Notes}
+\newpage\section{eConsole user notes}
 \label{sec-econsole}
 
 Mosml remembers your Styles preferences in a Preferences Folder file.
@@ -1164,7 +1187,7 @@ interpreter to be evaluated. The result of the evaluation is then output
 to the interaction window. The preferred way of evaluating an expression
 is to place the insertion point (caret) immediately after the expression
 to evaluate and then typing the <enter> key. An alternative method is to
-use the <opt-return> (i.e. press the <return> key while pressing the
+use the <opt-return> (i.e., press the <return> key while pressing the
 <option> key). When <enter> is pressed, the sequence of "user input"
 characters immediately preceding the insertion point are sent to the
 interpreter. Because it doesn't check for a properly formed expression,
@@ -1272,7 +1295,7 @@ down or right arrow will make the end of the selection the active end.
 \subsection{Error finder}
 
 A command in the Search menu, Open Selection, can be used to open a file
-by selecting its name in any window and typing Command-D. This can also
+by selecting its name in any window and typing Command-D\@. This can also
 be used with mosml's error messages; in this case, the file that caused the
 error will be opened, and the error text scrolled-to and highlighted. For
 example, selecting the line:

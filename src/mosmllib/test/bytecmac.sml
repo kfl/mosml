@@ -1,5 +1,5 @@
 (* test/bytechar.sml -- test cases for Byte and Char, suitable for ASCII
-   PS 1994-12-10, 1995-05-11, 1995-11-10 *)
+   PS 1994-12-10, 1995-05-11, 1995-11-10, 1996-09-30 *)
 
 (* Mac: changed \^M to \^J in three places *)
 
@@ -216,7 +216,7 @@ val test37 =
         fun chk c = Char.fromString(Char.toString c) = SOME c
     in check'(fn _ => List.all chk chars) end
 
-val test38 =                 
+val test38 =   		     
     let fun chkFromString (arg, res) = Char.fromString arg = SOME res
         val argResList = 
             [("A", #"A"),

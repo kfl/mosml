@@ -103,8 +103,8 @@ static int sys_open_flags[] = {
   O_TEXT, O_TRUNC, O_WRONLY
 };
 #ifdef macintosh
-static int sys_text_flags []  = { 0, 0, 0, 0, 0, 0, 0, 0, 1 };
-static int sys_write_flags [] = { 0, 1, 1, 0, 0, 0, 0, 0, 0 };
+static int sys_text_flags []  = { 0, 0, 0, 0, 0, 0, 1, 0, 0 };
+static int sys_write_flags [] = { 0, 0, 0, 0, 0, 1, 0, 0, 1 };
 #endif
 
 value sys_open(value path, value flags, value perm) /* ML */
