@@ -12,14 +12,16 @@ struct
     fun eq x y = x=y
 
     local
-	open Parser
-	infix 6 $-- --$ #-- --#
-	infix 5 --
-	infix 3 >>
-	infix 0 ||
+	open Parsercomb
+        infix 6 $-- --$ #-- --#
+        infix 5 --
+        infix 3 >> >>*
+        infix 2 >>=
+        infix 0 ||
 
-	fun fileChar c = Char.isAlphaNum c 
-			 orelse c = #"_" orelse c = #"/" orelse c = #"-" orelse c = #"."
+	fun fileChar c = 
+	    Char.isAlphaNum c 
+	    orelse c = #"_" orelse c = #"/" orelse c = #"-" orelse c = #"."
 
 	val ident = getChars1 fileChar 
     
@@ -32,7 +34,7 @@ struct
 
 
 	fun toList stream =
-	    case split stream of
+	    case getItem stream of
 		SOME(EOF_T,  _) => [EOF_T]
 	      | SOME(x, stream) => x :: toList stream
 	      | NONE            => []
@@ -56,7 +58,7 @@ struct
 	     ||*) ident  >>  keyword
 	     || $ "(*" #-- comment 1
 	     || eof        EOF_T
-            ) (StringCvt.skipWS split stream) 
+            ) (StringCvt.skipWS getItem stream) 
 
 	(* FIXME: write the third clause without recursion *)
 	and comment depth stream =
@@ -67,28 +69,32 @@ struct
              || eof () >> (fn _ => raise Fail "Comment not closed")
             ) stream
 
-	val lexer = makeStream token
+	val lexer = stream token
 		    
 	fun getIf pred stream = 
-	    case split stream of
+	    case getItem stream of
 		res as SOME(x, src) => if pred x then res
 				       else NONE
 	      | _  => NONE
 		      
 	infix 6 &-- --&
-	fun (t &-- pf) = getIf(eq t) #-- pf
-	fun (pf --& t) = pf --# getIf(eq t)
-			 
+	fun (t &-- pf) = getLit t #-- pf
+	fun (pf --& t) = pf --# getLit t
+(*			 
 	val getFile = getIf (fn (FILENAME_T _) => true | _ => false) >>
 			    (fn (FILENAME_T s) => s)   
-			    
-	val imports = repeat getFile
+*)			    
+	fun getOpt f = getItem >>* f
+
+	val getFile = getOpt(fn (FILENAME_T s) => SOME s | _ => NONE)
+
+	val imports = repeat0 getFile
 		      
 	fun body stream = 
 	    (   getFile -- body >> SRC
 	     || LOCAL_T &-- body -- IN_T &-- body -- END_T &-- body
 	                                >> (fn((b1,b2),b3) => LOCAL(b1,b2,b3))
-             || empty                      NULL
+             || success                    NULL
             ) stream
 
 	val pm = 
@@ -99,7 +105,7 @@ struct
 	val pmfile = pm --& EOF_T
     in
     fun parse get src =
-	let val stream = makeStream get src
+	let val stream = stream get src
 	    val lexer  = lexer stream
 	in  case pmfile lexer of
 		SOME(res, _) => SOME(res, src) (*FIXME: src is wrong *)
@@ -118,11 +124,11 @@ struct
 	let open TextIO
 	    val dev = openIn filename
 	    val ss  = Substring.all(inputAll dev) before closeIn dev
-	in  toList (lexer(makeStream Substring.getc ss))
+	in  toList (lexer(stream Substring.getc ss))
 	end
 
     fun parse get src =
-	let val stream = makeStream get src
+	let val stream = stream get src
 	    val lexer  = lexer stream
 	in  case pmfile lexer of
 		SOME(res, _) => SOME res
