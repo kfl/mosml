@@ -1,4 +1,4 @@
-% manual.tex v. 1.44.7 Copyright (C) Peter Sestoft 1994, 1998-08-27
+% manual.tex v. 2.00.1 Copyright (C) Peter Sestoft 1994, 2000-04-29
 %
 % You may edit for lay-out, or leave out irrelevant sections (if
 % such omissions are marked somehow), but you may not redistribute the
@@ -17,7 +17,7 @@
 
   {\huge\bf Moscow ML Owner's Manual}\\[0.5cm]
 
-Version 1.44 of August 1999\\[0.7cm]
+Version 2.00 of May 2000\\[0.7cm]
 
 \begin{tabular}{ccc}
 \large Sergei Romanenko && \large Peter Sestoft\\
@@ -37,17 +37,19 @@ Moscow, Russia && Copenhagen, Denmark
 
 \vspace{0.5cm}
 
-\noindent Moscow ML implements the Core language of Standard ML (SML),
+\noindent Moscow ML implements Standard ML (SML),
 as defined in the 1997 {\em Definition of Standard ML\/}, and supports
 most required parts of the new SML Basis Library.  Moscow ML also
-provides a simple subset of the Standard ML Modules language,
-restricted to signatures and non-nested structures.  It supports
-separate compilation and the generation of stand-alone executables.
+provides some extensions of the Standard ML Modules language.  It
+supports separate compilation and the generation of stand-alone
+executables.
 
 This document explains how to use the Moscow ML system.  A companion
 document, the {\em Moscow ML Language Overview\/}, summarizes Moscow
-ML syntax and some built-in functions
-\cite{MoscowML:1999:MoscowMLLanguage}.  
+ML syntax and the most common built-in functions
+\cite{MoscowML:2000:MoscowMLLanguage}.  Another companion document,
+the \emph{Moscow ML Library Documentation}, describes in detail all
+Moscow ML library structures \cite{MoscowML:2000:MoscowMLLibrary}. 
 
 {\bf Acknowledgements:} The Caml Light system was instrumental in
 creating Moscow ML, which uses its runtime system and essentially the
@@ -92,7 +94,7 @@ prompt.  It allows you to enter declarations and evaluate expressions:
 
 \begin{program}
 \$ mosml
-Moscow ML version 1.44 (August 1999)
+Moscow ML version 2.00 (May 2000)
 Enter `quit();' to quit.
 -  fun fac n = if n = 0 then 1 else n * fac (n-1);
 > val fac = fn : int -> int
@@ -132,37 +134,68 @@ semantics of compilation units.  Section~\ref{sec-recompilation-guide}
 explains automatic recompilation management.
 
 
-\subsection{What is new in release 1.44}
+\subsection{What is new in release 2.00}
 
 \begin{itemize}
-\item Added interface to the PostgreSQL and MySQL database servers
-  (structure {\tt Postgres} and {\tt Mysql}); see Sections
-  \ref{sec-using-mpq} and~\ref{sec-using-mmysql}.  Requires
-  {\tt Dynlib}.
-  
-\item Added interface to POSIX 1003.2 regular expressions (structure
-  {\tt Regex}); see Section \ref{sec-using-mregex}.  Requires {\tt
-    Dynlib}.
-  
-\item Added interface to Thomas Boutell's gd library for creating GIF
-  images (structure {\tt Gdimage}); see Section \ref{sec-using-mgd}.
-  Requires {\tt Dynlib}.
-  
-\item Added interface to Internet and file sockets (structure {\tt
-    Socket}); see Section \ref{sec-using-msocket}. Requires {\tt
-    Dynlib}.
-  
-\item Added registration of ML values, including functions, for access
-  from C code (structure \texttt{Callback}).
-  
-\item Faster bytecode execution, especially on RISC CPUs.
-  
-\item A list of the loaded structures is accessible as {\tt
-    Meta.loaded()}.
-
-\item For other minor changes and fixes, see file
-  mosml/doc/releases.txt.
+\item The full SML Modules language (structures, signatures, and
+  functors) is now supported, thanks to Claudio Russo.
+\item Several extensions to the SML Modules language are provided,
+  thanks to Claudio Russo:
+  \begin{itemize}
+  \item higher-order functors: functors may be defined within
+    structures and functors; see Section~\ref{sec-ho-modules}
+  \item first-class modules: structures may be packed and then handled
+    as Core language values, which may then be unpacked to structures
+    again; see Section~\ref{sec-ho-modules}
+  \item recursive modules: signatures and structures may be
+    recursively defined; see Section~\ref{sec-rec-modules}
+  \end{itemize}
+\item Value polymorphism has become friendlier: non-generalizable free
+  type variables are left free, and become instantiated when the bound
+  variable is used; see Section~\ref{sec-valuepoly}.
+\item Added facilities for creating and communicating with
+  subprocesses (structure \texttt{Unix} and \texttt{Signal} from SML
+  Basis Library).
+\item Added facilities for efficient functional generation of HTML
+  code (structure \texttt{Msp}); also supports the writing of ML
+  Server Page scripts.
+\item Added facilities setting and accessing `cookies' in CGI scripts
+  \texttt{Mosmlcookie}, thanks to Hans Molin, Uppsala, Sweden.
+\item The \texttt{Gdimage} structure now produces PNG images (still
+  using Thomas Boutell's gd library).
 \end{itemize}
+
+% \subsection{What is new in release 1.44}
+
+% \begin{itemize}
+% \item Added interface to the PostgreSQL and MySQL database servers
+%   (structure {\tt Postgres} and {\tt Mysql}); see Sections
+%   \ref{sec-using-mpq} and~\ref{sec-using-mmysql}.  Requires
+%   {\tt Dynlib}.
+  
+% \item Added interface to POSIX 1003.2 regular expressions (structure
+%   {\tt Regex}); see Section \ref{sec-using-mregex}.  Requires {\tt
+%     Dynlib}.
+  
+% \item Added interface to Thomas Boutell's gd library for creating GIF
+%   images (structure {\tt Gdimage}); see Section \ref{sec-using-mgd}.
+%   Requires {\tt Dynlib}.
+  
+% \item Added interface to Internet and file sockets (structure {\tt
+%     Socket}); see Section \ref{sec-using-msocket}. Requires {\tt
+%     Dynlib}.
+  
+% \item Added registration of ML values, including functions, for access
+%   from C code (structure \texttt{Callback}).
+  
+% \item Faster bytecode execution, especially on RISC CPUs.
+  
+% \item A list of the loaded structures is accessible as {\tt
+%     Meta.loaded()}.
+
+% \item For other minor changes and fixes, see file
+%   mosml/doc/releases.txt.
+% \end{itemize}
 
 
 % \subsection{What is new in release 1.43}
@@ -283,52 +316,41 @@ explains automatic recompilation management.
 
 \newpage
 
-\section{Core language and libraries}
+\section{Overview and documentation}
 
-Moscow ML implements the Core language of Standard ML as revised in
-1997 \cite{Milner:1997:TheDefinition, Milner:1990:TheDefinition}, and
-much of the Standard ML Basis Library \cite{SMLBasis:1996:StandardML},
-the most important omission being the functional stream input-output
-operations.  The second edition of Paulson's textbook {\em ML for the
-  Working Programmer\/} uses the revised Core language and the new SML
-Basis Library.
-
-
-\subsection{The Standard ML Basis Library}
-
-The Standard ML Basis Library is a joint effort of the Standard ML of
-New Jersey, MLWorks, and Moscow ML developers\footnote{The Basis
-  Library authors are Andrew Appel (Princeton, USA); Emden Gansner
-  (AT\&T Research, USA); John Reppy, Lal George, Lorenz Huelsbergen,
-  Dave MacQueen (Bell Laboratories, USA); Matthew Arcus, Dave Berry,
-  Richard Brooksby, Nick Barnes, Brian Monahan, Jon Thackray
-  (Harlequin Ltd., Cambridge, England); Carsten M{\"u}ller (Berlin,
-  Germany); and Peter Sestoft (Royal Veterinary and Agricultural
-  University, Denmark).} to enhance the portability of Standard ML
-programs.
+Moscow ML implements Standard ML as revised in 1997, also known as
+SML'97 \cite{Milner:1997:TheDefinition, Milner:1990:TheDefinition},
+and some extensions to the Modules language.  
 
 The {\em Moscow ML Language Overview\/}
-\cite{MoscowML:1999:MoscowMLLanguage} lists the library structures
-implemented by Moscow ML, and contains an index to all the identifiers
-they define.  The same information is available also from {\tt
-  mosml}'s on-line help (Section~\ref{sec-mosml-help}) and as
-hypertext from Moscow ML's homepage.
+\cite{MoscowML:2000:MoscowMLLanguage} describes the source syntax
+(that is, SML'97 plus some extensions), and the most common built-in
+functions.
 
-For a comprehensive description of the libraries, see the Basis
-Library documentation \cite{SMLBasis:1996:StandardML}, which will
-become available from a commercial publisher.  Currently it must be
-obtained from the Internet; see Section~\ref{sec-books}.
+The \emph{Moscow ML Library Documentation}
+\cite{MoscowML:2000:MoscowMLLibrary} describes in detail all Moscow ML
+library structures and has a comprehensive index to exceptions,
+functions, structures, types, and values.  The same information is
+available also from {\tt mosml}'s built-in help function
+(Section~\ref{sec-mosml-help}) and as hypertext from Moscow ML's
+homepage and in the mosml/doc/mosmllib/index.html.
 
-The Basis Library and the revised Standard ML language are slightly
-incompatible with both the 1990 {\em Definition of Standard ML\/} and
-with SML/NJ version 0.93.  Invoking Moscow ML with `{\tt mosml -P
-  sml90}' gives a top-level environment compatible with the 1990
-Definition.  Invoking Moscow ML with option `{\tt mosml -P nj93}',
-gives a top-level environment compatible with the old SML/NJ version
-0.93.  See Section~\ref{sec-mosml-options} for more information on
-command-line options.  An important change in SML'1997 is the adoption
-of value polymorphism; see Section~\ref{sec-valuepoly}.
+Moscow ML implements much of the Standard ML Basis Library
+\cite{SMLBasis:1996:StandardML}, the most important omission being the
+functional stream input-output operations.  The Standard ML Basis
+Library is a joint effort of the Standard ML of New Jersey, MLWorks,
+and Moscow ML developers\footnote{The Basis Library authors are Andrew
+  Appel (Princeton, USA); Emden Gansner (AT\&T Research, USA); John
+  Reppy, Lal George, Lorenz Huelsbergen, Dave MacQueen (Bell
+  Laboratories, USA); Matthew Arcus, Dave Berry, Richard Brooksby,
+  Nick Barnes, Brian Monahan, Jon Thackray (Harlequin Ltd., Cambridge,
+  England); Carsten M{\"u}ller (Berlin, Germany); and Peter Sestoft
+  (Royal Veterinary and Agricultural University, Denmark).} to enhance
+the portability of Standard ML programs.
 
+The Apple Macintosh version of Moscow ML is described in detail in
+\emph{Moscow ML for the Apple Macintosh}
+\cite{Currie:1999:MoscowMLMac}.
 
 %\newpage
 
@@ -340,7 +362,7 @@ The interactive system {\tt mosml} is invoked simply by typing {\tt
 
 \begin{program}
 \$ mosml
-Moscow ML version 1.44 (August 1999)
+Moscow ML version 2.00 (May 2000)
 Enter `quit();' to quit.
 - 
 \end{program}
@@ -399,10 +421,6 @@ browser on the desired structure, e.g.\ {\tt Int}.  The help browser
 is primitive but easy to use.  It works best with a window size of 24
 lines.
 
-The texts accessed by {\tt help} are found in directory {\tt
-  mosml/lib}.  For instance, all {\tt List} functions are described in
-file {\tt mosml/lib/List.sig}.
-
 
 \subsection{Editing and running ML programs}
 \label{sec-editing}
@@ -425,6 +443,7 @@ file {\tt mosml/lib/List.sig}.
   quit the {\tt mosml} session to edit a source file, and the script
   will automatically reload the newly edited file.
 \end{description}
+
 
 \subsection{Command-line options}
 \label{sec-mosml-options}
@@ -551,19 +570,9 @@ Moscow ML compilation units; see Section~\ref{sec-compilation-units}.
     abort the compilation and raise the exception {\tt Fail} with a
     string argument.
 
-\item[{\tt exnName :\ exn -> string}]\mbox{ }
+\item[{\tt compileStructure :\ string list -> string -> unit}]\mbox{ }
 
-  Returns a name for the exception constructor in the exception.
-  Never raises an exception itself.  The name returned may be that of
-  any exception constructor aliasing with exn.  For instance,   {\tt let
-  exception E1; exception E2 = E1 in exnName E2 end} may evaluate to
-  {\tt "E1"} or {\tt "E2"}.
-
-\item[{\tt exnMessage :\ exn -> string}]\mbox{ }
-
-  Formats and returns a message corresponding to the exception.  For
-  the exceptions defined in the SML Basis Library, the message will
-  include the argument carried by the exception.
+\item[{\tt compileToplevel :\ string list -> string -> unit}]\mbox{ }
 
 \item[{\tt installPP :\ (ppstream -> 'a -> unit) -> unit}]\mbox{ }
 
@@ -2443,9 +2452,9 @@ file {\tt mosml/examples/lexyacc/Main.sml} for an example.
 
 \begin{description}
 \item[Copyright notice] Moscow ML - a lightweight implementation of
-  Core Standard ML\@.  Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999.
-  Sergei Romanenko, Moscow, Russia and Peter Sestoft, Copenhagen,
-  Denmark.
+  Standard ML\@.  Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999,
+  2000.  Sergei Romanenko, Moscow, Russia and Peter Sestoft,
+  Copenhagen, Denmark.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -2468,27 +2477,34 @@ permission from INRIA; see the INRIA copyright notice in file
 copyrght/copyrght.cl.\\[2ex]
 
 
-\item[Moscow ML was written by] Sergei Romanenko
-  (roman@keldysh.ru), Keldysh Institute of Applied Mathematics, 
-  Russian Academy of Sciences, Miusskaya Pl.\ 4, 125047 Moscow, Russia.
-\item[and] Peter Sestoft (sestoft@dina.kvl.dk), Department of
-  Mathematics and Physics, Royal Veterinary and Agricultural
-  University, Thorvaldsensvej 40, DK-1871 Frederiksberg C, Denmark.
-  Much of the work was done at the Department of Computer Science at
-  the Technical University of Denmark, and while visiting AT\&T Bell
-  Laboratories, Murray Hill, New Jersey, USA.\\[2ex]
+\item[Main Moscow ML contributors] 
+  \begin{itemize}
+  \item Doug Currie (e@flavors.com), Flavors Technology, USA.
+  \item Sergei Romanenko (roman@keldysh.ru), Keldysh Institute of
+    Applied Mathematics, Russian Academy of Sciences, Russia.
+  \item Claudio V.\ Russo (Claudio.Russo@cl.cam.ac.uk),
+    University of Cambridge.  Much of the work was done at the
+    University of Edinburgh under project XXXXXXX??.
+  \item Peter Sestoft (sestoft@dina.kvl.dk), Department of Mathematics
+    and Physics, Royal Veterinary and Agricultural University, Denmark
+    and The IT University of Copenhagen, Denmark.  Part of the work
+    was done while at the Department of Computer Science at the
+    Technical University of Denmark, and while visiting AT\&T 
+    Bell Laboratories, Murray Hill, New Jersey, USA.
+  \end{itemize}
 
 \item[Moscow ML owes much to]\mbox{ }
 \begin{itemize}
 \item the CAML Light implementation by Xavier Leroy and Damien
   Doligez (INRIA, Rocquencourt, France);
-\item the ML Kit by Lars Birkedal, Nick Rothwell, Mads Tofte and David
-  Turner (Copenhagen University, Denmark, and Edinburgh University,
-  Scotland);
+\item the ML Kit by Lars Birkedal, Martin Elsman, Niels Hallenberg,
+  Nick Rothwell, Mads Tofte and David Turner (Copenhagen University,
+  Denmark, and Edinburgh University, Scotland);
 \item inspiration from the SML/NJ compiler developed at Princeton
   University and AT\&T Bell Laboratories, New Jersey, USA; and
-\item the good work by Doug Currie, Flavors Technology, USA, on the
-  MacOS port.
+\item feedback, suggestions, contributions, or proposals for new
+  features from Jonas Barklund, Michael Gordon, Ken Friis Larsen,
+  Michael Norrish, Konrad Slind, and numerous other people.
 \end{itemize}
 \end{description}
 
@@ -2500,21 +2516,19 @@ copyrght/copyrght.cl.\\[2ex]
 \item The Moscow ML home page is
         http://www.dina.kvl.dk/\verb#~#sestoft/mosml.html
 \item The Linux executables are in
-        ftp://ftp.dina.kvl.dk/pub/mosml/linux-mos14bin.tar.gz
+        ftp://ftp.dina.kvl.dk/pub/mosml/linux-mos20bin.tar.gz
 \item The MS Windows executables are in 
-        ftp://ftp.dina.kvl.dk/pub/mosml/win32-mos14bin.zip
+        ftp://ftp.dina.kvl.dk/pub/mosml/win32-mos20bin.zip
 \item The MS DOS executables are in 
-        ftp://ftp.dina.kvl.dk/pub/mosml/mos14bin.zip
+        ftp://ftp.dina.kvl.dk/pub/mosml/mos20bin.zip
 \item The Macintosh/MacOS (68k and PPC) executables are in\\
-        ftp://ftp.dina.kvl.dk/pub/mosml/mac-mos14bin.sea.hqx
+        ftp://ftp.dina.kvl.dk/pub/mosml/mac-mos20bin.sea.hqx
 \item The DOS source files are in 
-        ftp://ftp.dina.kvl.dk/pub/mosml/mos14src.zip
+        ftp://ftp.dina.kvl.dk/pub/mosml/mos20src.zip
 \item The Unix and MS Windows source files are in 
-        ftp://ftp.dina.kvl.dk/pub/mosml/mos14src.tar.gz
+        ftp://ftp.dina.kvl.dk/pub/mosml/mos20src.tar.gz
 \item The MacOS modified source files (relative to Unix) are in\\
-        ftp://ftp.dina.kvl.dk/pub/mosml/mac-mos14src.sea.hqx
-\item The MkLinux executables and binaries are available at \\
-        http://www.ibg.uu.se/mkarchive/dev/lang
+        ftp://ftp.dina.kvl.dk/pub/mosml/mac-mos20src.sea.hqx
 \end{itemize}
 
 %You will need gcc, make, and perl to recompile Moscow ML for Unix.
