@@ -10,6 +10,8 @@ INSTALL_SCRIPT=cp
 INSTALL_DATA=cp
 PERL=perl
 
+BASELIBS=-lm
+
 # To compile the runtime system camlrunm with support for
 # dynamically loadable libraries (DDLs), uncomment these:
 
@@ -22,10 +24,10 @@ ADDDYNLIBCFLAGS=
 # To compile the runtime system camlrunm under Cygwin with support for
 # dynamically loadable libraries (DDLs), uncomment these:
 
-ADDPRIMS=dynlib.c
-ADDOBJS=dynlib.o
-ADDRUNCFLAGS=
-ADDDYNLIBCFLAGS=
+# ADDPRIMS=dynlib.c
+# ADDOBJS=dynlib.o
+# ADDRUNCFLAGS=
+# ADDDYNLIBCFLAGS=
 
 # For Linux (x86 or Alpha), use:
 # ------------------------------
@@ -33,6 +35,14 @@ CPP=/lib/cpp -P -traditional -Dunix -Umsdos
 STRIP=strip
 LD=gcc -rdynamic
 DYNLD=ld -shared
+
+# For MacOS X, use:
+# -----------------
+# CPP=/usr/bin/cpp -P -traditional -Dunix -Umsdos
+# STRIP=strip
+# LD=gcc
+# DYNLD=ld -shared
+# BASELIBS=
 
 # For Cygwin 20.1, use:
 # ---------------------

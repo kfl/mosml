@@ -3,8 +3,6 @@
 OPTS=-fno-defer-pop -fomit-frame-pointer -DTHREADED
 BASECFLAGS= -Dunix -O2 $(OPTS)
 
-BASELIBS=-lm
-
 include ../Makefile.inc
 
 BASEOBJS=interp.o expand.o misc.o stacks.o fix_code.o main.o fail.o signals.o \
