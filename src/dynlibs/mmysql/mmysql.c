@@ -467,22 +467,30 @@ EXTERNML value db_exec(value conn, value query)
 /* The function below must agree with the order of the constructors in
    the ML datatype Mysql.dbresultstatus: */
 
+#define Bad_response    0 
+#define Command_ok      1 	
+#define Copy_in         2 
+#define Copy_out        3 
+#define Empty_query	4 
+#define Fatal_error     5 
+#define Nonfatal_error  6 
+#define Tuples_ok       7 
+
 /* ML type : dbconn_ -> dbresultstatus */
-EXTERNML value db_resultstatus(value conn) 
-{
+EXTERNML value db_resultstatus(value conn) {
   MYSQL *mysql = DBconn_val(conn);
   switch (mysql_errno(mysql)) {
   case ER_EMPTY_QUERY:  
-    return Atom(0);             /* ML: Empty_query */
+    return Atom(Empty_query);
   case 0:                       /* No error */
     {
       /* If mysql_num_fields==0, query was a command */
       if (mysql_num_fields(mysql) == 0)
-        return Atom(1);         /* ML: Command_ok */
+        return Atom(Command_ok);
       else
-        return Atom(2);         /* ML: Tuples_ok  */
+        return Atom(Tuples_ok);
     }
   default: 
-    return Atom(6);             /* ML: Nonfatal_error */
+    return Atom(Nonfatal_error);
   }
 }

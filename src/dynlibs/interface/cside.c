@@ -130,7 +130,7 @@ EXTERNML value cfrec(value v)
 long treesum(value v);		/* Forwards C declaration */
 
 /* SML type: t -> int where 
-   datatype t = Lf | Br of int * t * t | Brs of t list */
+   datatype t = Br of int * t * t | Brs of t list | Lf */
 
 EXTERNML value cfdat(value v)
 {
@@ -155,18 +155,18 @@ long listsum(value lst)
 }
 
 
-/* Auxiliary function demonstrating traversal of SML tree data structure: */
-/* Datatype constructors are numbered 0, 1, ... in order of appearance in 
-   the datatype declaration. */
+/* Auxiliary function demonstrating traversal of SML tree data structure. */
+/* Datatype constructors are sorted alphabetically (based on ASCII) and   */
+/* then numbered 0, 1, ...; the C code must use these numbers:            */
 
 long treesum(value v)
 {
   long sum = 0;
   int contag = Tag_val(v);	/* 0 = Lf, 1 = Br, 2 = Brs */
   switch (contag) {
-  case 0: /* Lf */
+  case 2: /* Lf */
     sum = 0; break;
-  case 1: /* Br(i, t1, t2) */
+  case 0: /* Br(i, t1, t2) */
     {
       long i   = Long_val(Field(v, 0));
       value t1 = Field(v, 1);	/* Left subtree */
@@ -174,7 +174,7 @@ long treesum(value v)
       sum = i + treesum(t1) + treesum(t2);
       break;
     }
-  case 2: /* Brs(tlist) */
+  case 1: /* Brs(tlist) */
     {
       value tlist = Field(v, 0); /* The list of subtrees */
       sum = listsum(tlist);

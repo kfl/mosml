@@ -184,26 +184,35 @@ EXTERNML value pq_exec(value conn, value query)
 /* The function below must agree with the order of the constructors in
    the ML datatype Postgres.pgresultstatus: */
 
+#define Bad_response    0 
+#define Command_ok      1 	
+#define Copy_in         2 
+#define Copy_out        3 
+#define Empty_query	4 
+#define Fatal_error     5 
+#define Nonfatal_error  6 
+#define Tuples_ok       7 
+
 /* ML type : pgresult_ -> pgresultstatus */
 EXTERNML value pq_resultstatus(value pgresval) 
 {
   switch (PQresultStatus(PGresult_val(pgresval))) {
   case PGRES_EMPTY_QUERY:	
-    return Atom(0);		/* ML: Empty_query */
+    return Atom(Empty_query);
   case PGRES_COMMAND_OK:
-    return Atom(1);		/* ML: Command_ok */
+    return Atom(Command_ok);
   case PGRES_TUPLES_OK:
-    return Atom(2);		/* ML: Tuples_ok */
+    return Atom(Tuples_ok);
   case PGRES_COPY_OUT:
-    return Atom(3);		/* ML: Copy_out */
+    return Atom(Copy_out);
   case PGRES_COPY_IN:
-    return Atom(4);		/* ML: Copy_in */
+    return Atom(Copy_in);
   case PGRES_BAD_RESPONSE:
-    return Atom(5);		/* ML: Bad_response */
+    return Atom(Bad_response);
   case PGRES_NONFATAL_ERROR:
-    return Atom(6);		/* ML: Nonfatal_error */
+    return Atom(Nonfatal_error);
   case PGRES_FATAL_ERROR:
-    return Atom(7);		/* ML: Fatal_error */
+    return Atom(Tuples_ok);
   default: 
     failwith("mpq:pg_resultstatus: internal error");
   }

@@ -1,4 +1,4 @@
-(* mosml/src/dynlibs/mmysql/Mysql.sml -- version 0.08 of 2000-02-24
+(* mosml/src/dynlibs/mmysql/Mysql.sml -- version 0.09 of 2000-04-28
    thomassi@dina.kvl.dk and sestoft@dina.kvl.dk *)
 
 open Dynlib;
@@ -22,19 +22,18 @@ prim_type dbresult_	(* a finalized object containing a MYSQL_RES pointer *)
 
 type dbresult = dbconn_ * dbresult_ 
 
-(* The order of constructors below must agree with function
-   db_resultstatus in file mmysql.c *)
+(* The alphabetical order of constructors below must agree with 
+   function db_resultstatus in file mmysql.c *)
 
 datatype dbresultstatus =
-    Empty_query
+    Bad_response        (* (not used by mysql)                    *)    
   | Command_ok          (* The query was a command                *)
-  | Tuples_ok           (* The query successfully returned tuples *)
-  | Copy_out            (* The query was "copy <table> to ..."    *)
-  | Copy_in             (* The query was "copy <table> from ..."  *)
-  | Bad_response        (* An unexpected response was received    *)
+  | Copy_in             (* (not used by mysql)                    *)
+  | Copy_out            (* (not used by mysql)                    *)
+  | Empty_query
+  | Fatal_error         (* (not used by mysql)                    *)
   | Nonfatal_error
-  | Fatal_error
-
+  | Tuples_ok           (* The query successfully returned tuples *)
 
 val db_setdb : { dbhost    : string option, (* 0  database server host *)
 	         dbname    : string option, (* 1  database name        *)

@@ -281,7 +281,7 @@ val _ = copytablefrom (pc, "t",
 val test10 = check'(fn _ => (copytableto (pc, "t", append6); 
 			    expected = return6 ()));
 
-end
+end;
 
 (*
 fun gettuplist dbres (getfields : int -> 'a) : 'a list =

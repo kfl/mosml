@@ -42,12 +42,16 @@ val ftup : int * char * real -> int =
 val frec : { surname : string, givenname : string, age : int } -> bool =
     app1 (dlsym dlh "cfrec")
 
-(* Passing a constructed value belonging to a datatype: *)
+(* Passing a constructed value belonging to a datatype:                 
+   It is advisable to declare the constructors in alphabetical order 
+   since Moscow ML 2.00 and later sorts them anyway, and the C side 
+   must use the tags (0, 1, ...) of the sorted constructors.
+*)
 
 datatype t = 
-    Lf 
-  | Br of int * t * t
+    Br of int * t * t
   | Brs of t list
+  | Lf 
 
 val fdat : t -> int = 
     app1 (dlsym dlh "cfdat")

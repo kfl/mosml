@@ -1,5 +1,5 @@
 (* mosml/src/dynlibs/mpq/Postgres.sml.  
- sestoft@dina.kvl.dk -- 1998 -- version 0.04 of 2000-02-24 *)
+   sestoft@dina.kvl.dk -- 1998 -- version 0.05 of 2000-04-28 *)
 
 open Dynlib;
 
@@ -17,18 +17,18 @@ type dbconn = { conn : pgconn_, closed : bool ref }
 
 prim_type dbresult	(* a finalized object containing a PGResult pointer *)
 
-(* The order of constructors below must agree with function
-   pq_resultstatus in file mpq.c *)
+(* The alphabetical order of constructors below must agree 
+   with function pq_resultstatus in file mpq.c *)
 
 datatype dbresultstatus =
-    Empty_query
-  | Command_ok		(* the query was a command *)
-  | Tuples_ok		(* the query successfully returned tuples *)
-  | Copy_out
-  | Copy_in
-  | Bad_response	(* an unexpected response was received *)
-  | Nonfatal_error
+    Bad_response            (* An unexpected response was received    *)
+  | Command_ok              (* The query was a command                *)
+  | Copy_in                 (* The query was "copy <table> from ..."  *)
+  | Copy_out                (* The query was "copy <table> to ..."    *)
+  | Empty_query
   | Fatal_error
+  | Nonfatal_error
+  | Tuples_ok               (* The query successfully returned tuples *)
 
 val pq_setdb : { dbhost    : string option, (* 0  database server host *)
 	         dbname    : string option, (* 1  database name        *)

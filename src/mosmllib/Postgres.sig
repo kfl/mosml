@@ -32,14 +32,14 @@ val errormessage : dbconn -> string option
 (* Query execution and result set information *)
 
 datatype dbresultstatus =
-    Empty_query
-  | Command_ok          (* The query was a command                *)
-  | Tuples_ok           (* The query successfully returned tuples *)
-  | Copy_out            (* The query was "copy <table> to ..."    *)
-  | Copy_in             (* The query was "copy <table> from ..."  *)
-  | Bad_response        (* An unexpected response was received    *)
-  | Nonfatal_error
+    Bad_response            (* An unexpected response was received    *)
+  | Command_ok              (* The query was a command                *)
+  | Copy_in                 (* The query was "copy <table> from ..."  *)
+  | Copy_out                (* The query was "copy <table> to ..."    *)
+  | Empty_query
   | Fatal_error
+  | Nonfatal_error
+  | Tuples_ok               (* The query successfully returned tuples *)
 
 val execute      : dbconn -> string -> dbresult
 val resultstatus : dbresult -> dbresultstatus

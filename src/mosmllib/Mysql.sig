@@ -31,14 +31,14 @@ val errormessage : dbconn -> string option
 (* Query execution and result set information *)
 
 datatype dbresultstatus =
-    Empty_query
-  | Command_ok          (* The query was a command                *)
-  | Tuples_ok           (* The query successfully returned tuples *)
-  | Copy_out            (* (not used by mysql)                    *)
-  | Copy_in             (* (not used by mysql)                    *)
-  | Bad_response        (* (not used by mysql)                    *)
+    Bad_response            (* (not used by mysql)                    *)
+  | Command_ok              (* The query was a command                *)
+  | Copy_in                 (* (not used by mysql)                    *)
+  | Copy_out                (* (not used by mysql)                    *)
+  | Empty_query
+  | Fatal_error             (* (not used by mysql)                    *)
   | Nonfatal_error
-  | Fatal_error         (* (not used by mysql)                    *)
+  | Tuples_ok               (* The query successfully returned tuples *)
 
 val execute      : dbconn -> string -> dbresult
 val resultstatus : dbresult -> dbresultstatus

@@ -24,7 +24,7 @@ Enter `quit();' to quit.
   val 'b var = fn : symHandle -> 'b
 > New type names: =t
   datatype t =
-  (t,{con Lf : t, con Br : int * t * t -> t, con Brs : t list -> t})
+  (t,{con Br : int * t * t -> t, con Brs : t list -> t, con Lf : t})
   val dlh = <dlHandle> : dlHandle
   val fu = fn : unit -> unit
   val fi = fn : int -> int
@@ -35,9 +35,9 @@ Enter `quit();' to quit.
   val fcur = fn : int -> char -> real -> string -> bool -> int
   val ftup = fn : int * char * real -> int
   val frec = fn : {age : int, givenname : string, surname : string} -> bool
-  con Lf = Lf : t
   con Br = fn : int * t * t -> t
   con Brs = fn : t list -> t
+  con Lf = Lf : t
   val fdat = fn : t -> int
   val ffun = fn : (int -> real) -> int -> string
 > val frtup = fn : int -> int * bool
@@ -147,10 +147,10 @@ Enter `quit();' to quit.
   type table = table
   datatype openmode =
   (openmode,
-   {con READER : openmode,
-    con WRITER : openmode,
+   {con NEWDB : openmode,
+    con READER : openmode,
     con WRCREAT : openmode,
-    con NEWDB : openmode})
+    con WRITER : openmode})
   con WRITER = WRITER : openmode
   val 'a withtable = fn : string * openmode -> (table -> 'a) -> 'a
   exn GdbmError = fn : string -> exn
@@ -249,34 +249,34 @@ Enter `quit();' to quit.
 > val it = () : unit
 > datatype dyntype =
   (dyntype,
-   {con IntTy : dyntype,
+   {con DateTimeTy : dyntype,
+    con DateTy : dyntype,
+    con IntTy : dyntype,
     con RealTy : dyntype,
     con StringTy : dyntype,
-    con DateTy : dyntype,
     con TimeTy : dyntype,
-    con DateTimeTy : dyntype,
     con UnknownTy : dyntype})
   type dbconn = dbconn
   datatype dbresultstatus =
   (dbresultstatus,
-   {con Empty_query : dbresultstatus,
+   {con Bad_response : dbresultstatus,
     con Command_ok : dbresultstatus,
-    con Tuples_ok : dbresultstatus,
-    con Copy_out : dbresultstatus,
     con Copy_in : dbresultstatus,
-    con Bad_response : dbresultstatus,
+    con Copy_out : dbresultstatus,
+    con Empty_query : dbresultstatus,
+    con Fatal_error : dbresultstatus,
     con Nonfatal_error : dbresultstatus,
-    con Fatal_error : dbresultstatus})
+    con Tuples_ok : dbresultstatus})
   type dbresult = dbresult
   datatype dynval =
   (dynval,
-   {con Int : int -> dynval,
+   {con Date : int * int * int -> dynval,
+    con DateTime : date -> dynval,
+    con Int : int -> dynval,
+    con NullVal : dynval,
     con Real : real -> dynval,
     con String : string -> dynval,
-    con Date : int * int * int -> dynval,
-    con Time : int * int * int -> dynval,
-    con DateTime : date -> dynval,
-    con NullVal : dynval})
+    con Time : int * int * int -> dynval})
   val getdynfield = fn : dbresult -> int -> int -> dynval
   val fname = fn : dbresult -> int -> string
   con NullVal = NullVal : dynval
@@ -385,6 +385,14 @@ Enter `quit();' to quit.
   val test3ha = ("OK", "OK") : string * string
   val test3hb = ("OK", "OK") : string * string
   val test3hc = ("OK", "OK") : string * string
+> val test4 = "OK" : string
+  val res5 = <dbresult> : dbresult
+  val test5a = "OK" : string
+  val test6 = "OK" : string
+  val test7 = "OK" : string
+  val test8 = "OK" : string
+  val test9 = "OK" : string
+  val test10 = "OK" : string
 make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/mmysql'
 cd mpq; make test 
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/mpq'
@@ -405,40 +413,40 @@ Enter `quit();' to quit.
 > datatype dyntype =
   (dyntype,
    {con BoolTy : dyntype,
+    con ByteArrTy : dyntype,
+    con DateTimeTy : dyntype,
+    con DateTy : dyntype,
     con IntTy : dyntype,
+    con OidTy : dyntype,
     con RealTy : dyntype,
     con StringTy : dyntype,
-    con DateTy : dyntype,
     con TimeTy : dyntype,
-    con DateTimeTy : dyntype,
-    con OidTy : dyntype,
-    con ByteArrTy : dyntype,
     con UnknownTy : oid -> dyntype})
   type dbconn = dbconn
   datatype dbresultstatus =
   (dbresultstatus,
-   {con Empty_query : dbresultstatus,
+   {con Bad_response : dbresultstatus,
     con Command_ok : dbresultstatus,
-    con Tuples_ok : dbresultstatus,
-    con Copy_out : dbresultstatus,
     con Copy_in : dbresultstatus,
-    con Bad_response : dbresultstatus,
+    con Copy_out : dbresultstatus,
+    con Empty_query : dbresultstatus,
+    con Fatal_error : dbresultstatus,
     con Nonfatal_error : dbresultstatus,
-    con Fatal_error : dbresultstatus})
+    con Tuples_ok : dbresultstatus})
   type oid = oid
   type dbresult = dbresult
   datatype dynval =
   (dynval,
    {con Bool : bool -> dynval,
+    con Bytea : array -> dynval,
+    con Date : int * int * int -> dynval,
+    con DateTime : date -> dynval,
     con Int : int -> dynval,
+    con NullVal : dynval,
+    con Oid : oid -> dynval,
     con Real : real -> dynval,
     con String : string -> dynval,
-    con Date : int * int * int -> dynval,
-    con Time : int * int * int -> dynval,
-    con DateTime : date -> dynval,
-    con Oid : oid -> dynval,
-    con Bytea : array -> dynval,
-    con NullVal : dynval})
+    con Time : int * int * int -> dynval})
   val getdynfield = fn : dbresult -> int -> int -> dynval
   val fname = fn : dbresult -> int -> string
   con NullVal = NullVal : dynval
@@ -630,25 +638,25 @@ User: 0.000  System: 0.000  GC: 0.000  Real: 0.000
 size(s) = 92; length(res) = 20
 User: 0.000  System: 0.000  GC: 0.000  Real: 0.000
 size(s) = 184; length(res) = 40
-User: 0.000  System: 0.000  GC: 0.000  Real: 0.002
+User: 0.000  System: 0.000  GC: 0.000  Real: 0.001
 size(s) = 368; length(res) = 80
 User: 0.000  System: 0.000  GC: 0.000  Real: 0.002
 size(s) = 736; length(res) = 160
-User: 0.020  System: 0.000  GC: 0.000  Real: 0.014
+User: 0.010  System: 0.000  GC: 0.010  Real: 0.010
 size(s) = 1472; length(res) = 320
-User: 0.010  System: 0.000  GC: 0.010  Real: 0.011
+User: 0.010  System: 0.000  GC: 0.000  Real: 0.009
 size(s) = 2944; length(res) = 640
-User: 0.010  System: 0.000  GC: 0.000  Real: 0.025
+User: 0.020  System: 0.000  GC: 0.000  Real: 0.020
 size(s) = 5888; length(res) = 1280
-User: 0.050  System: 0.000  GC: 0.010  Real: 0.042
+User: 0.040  System: 0.000  GC: 0.000  Real: 0.036
 size(s) = 11776; length(res) = 2560
-User: 0.060  System: 0.000  GC: 0.010  Real: 0.087
+User: 0.060  System: 0.000  GC: 0.000  Real: 0.064
 size(s) = 23552; length(res) = 5120
-User: 0.140  System: 0.010  GC: 0.030  Real: 0.185
+User: 0.140  System: 0.000  GC: 0.010  Real: 0.144
 size(s) = 47104; length(res) = 10240
-User: 0.290  System: 0.010  GC: 0.040  Real: 0.337
+User: 0.290  System: 0.000  GC: 0.060  Real: 0.287
 size(s) = 94208; length(res) = 20480
-User: 0.610  System: 0.000  GC: 0.150  Real: 0.715
+User: 0.570  System: 0.000  GC: 0.160  Real: 0.570
 size(s) = 188416; length(res) = 40960
 > val test1a = "OK" : string
   val test1b = "OK" : string

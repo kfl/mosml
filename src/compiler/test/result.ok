@@ -4640,38 +4640,38 @@ File "sample3.sml", line 381-387, characters 6-265:
   datatype person =
   (person,
    {con King : person,
-    con Peer : string * string * int -> person,
     con Knight : string -> person,
-    con Peasant : string -> person})
+    con Peasant : string -> person,
+    con Peer : string * string * int -> person})
   con King = King : person
-  con Peer = fn : string * string * int -> person
   con Knight = fn : string -> person
   con Peasant = fn : string -> person
+  con Peer = fn : string * string * int -> person
 > val title = fn : person -> string
 > val sirs = fn : person list -> string list
 > val superior = fn : person * person -> bool
 > New type names: =degree
   datatype degree =
   (degree,
-   {con Duke : degree,
-    con Marquis : degree,
+   {con Baron : degree,
+    con Duke : degree,
     con Earl : degree,
-    con Viscount : degree,
-    con Baron : degree})
-  con Duke = Duke : degree
-  con Marquis = Marquis : degree
-  con Earl = Earl : degree
-  con Viscount = Viscount : degree
+    con Marquis : degree,
+    con Viscount : degree})
   con Baron = Baron : degree
+  con Duke = Duke : degree
+  con Earl = Earl : degree
+  con Marquis = Marquis : degree
+  con Viscount = Viscount : degree
 > val lady = fn : degree -> string
 > exn Change = Change : exn
 > val backChange = fn : int list * int -> int list
 > New type names: =tree
   datatype 'a tree =
   ('a tree,
-   {con 'a Lf : 'a tree, con 'a Br : 'a * 'a tree * 'a tree -> 'a tree})
-  con 'a Lf = Lf : 'a tree
+   {con 'a Br : 'a * 'a tree * 'a tree -> 'a tree, con 'a Lf : 'a tree})
   con 'a Br = fn : 'a * 'a tree * 'a tree -> 'a tree
+  con 'a Lf = Lf : 'a tree
 File "sample4.sml", line 106, characters 9-14:
 ! 	    val y::ys = List.drop(xs,k)
 ! 	        ^^^^^
@@ -4796,13 +4796,13 @@ File "sample4.sml", line 303-307, characters 6-186:
   datatype prop =
   (prop,
    {con Atom : string -> prop,
-    con Neg : prop -> prop,
     con Conj : prop * prop -> prop,
-    con Disj : prop * prop -> prop})
+    con Disj : prop * prop -> prop,
+    con Neg : prop -> prop})
   con Atom = fn : string -> prop
-  con Neg = fn : prop -> prop
   con Conj = fn : prop * prop -> prop
   con Disj = fn : prop * prop -> prop
+  con Neg = fn : prop -> prop
 > val show = fn : prop -> string
 > val nnf = fn : prop -> prop
 > val nnfpos = fn : prop -> prop
@@ -4829,9 +4829,9 @@ File "sample4.sml", line 303-307, characters 6-186:
 > val 'a repeat = fn : ('a -> 'a) -> int -> 'a -> 'a
 > New type names: seq
   datatype 'a seq =
-  ('a seq,{con 'a Nil : 'a seq, con 'a Cons : 'a * (unit -> 'a seq) -> 'a seq})
-  con 'a Nil = Nil : 'a seq
+  ('a seq,{con 'a Cons : 'a * (unit -> 'a seq) -> 'a seq, con 'a Nil : 'a seq})
   con 'a Cons = fn : 'a * (unit -> 'a seq) -> 'a seq
+  con 'a Nil = Nil : 'a seq
 > signature SEQUENCE =
   {exn Empty : exn,
    val 'a cons : 'a * 'a seq -> 'a seq,
@@ -5122,10 +5122,10 @@ File "sample7.sml", line 265, characters 6-15:
   /\=tree'.
     {datatype 'a tree =
        ('a tree',
-        {con 'a Lf : 'a tree',
-         con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree'}),
-     con 'a Lf : 'a tree',
+        {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
+         con 'a Lf : 'a tree'}),
      con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
+     con 'a Lf : 'a tree',
      val 'a size : 'a tree' -> int,
      val 'a depth : 'a tree' -> int,
      val 'a reflect : 'a tree' -> 'a tree'}
@@ -5134,10 +5134,10 @@ File "sample7.sml", line 265, characters 6-15:
     {structure Tree :
        {datatype 'a tree =
           ('a tree',
-           {con 'a Lf : 'a tree',
-            con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree'}),
-        con 'a Lf : 'a tree',
+           {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
+            con 'a Lf : 'a tree'}),
         con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
+        con 'a Lf : 'a tree',
         val 'a size : 'a tree' -> int,
         val 'a depth : 'a tree' -> int,
         val 'a reflect : 'a tree' -> 'a tree'},
@@ -5172,10 +5172,10 @@ File "sample7.sml", line 454-458, characters 10-192:
     structure Tree :
       {datatype 'a tree =
          ('a tree',
-          {con 'a Lf : 'a tree',
-           con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree'}),
-       con 'a Lf : 'a tree',
+          {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
+           con 'a Lf : 'a tree'}),
        con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
+       con 'a Lf : 'a tree',
        val 'a size : 'a tree' -> int,
        val 'a depth : 'a tree' -> int,
        val 'a reflect : 'a tree' -> 'a tree'}}->
@@ -5196,10 +5196,10 @@ File "sample7.sml", line 454-458, characters 10-192:
    {structure Tree :
       {datatype 'a tree =
          ('a tree',
-          {con 'a Lf : 'a tree',
-           con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree'}),
-       con 'a Lf : 'a tree',
+          {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
+           con 'a Lf : 'a tree'}),
        con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
+       con 'a Lf : 'a tree',
        val 'a size : 'a tree' -> int,
        val 'a depth : 'a tree' -> int,
        val 'a reflect : 'a tree' -> 'a tree'},
@@ -5222,18 +5222,18 @@ File "sample7.sml", line 454-458, characters 10-192:
   !=tree'.
    {datatype 'a tree =
       ('a tree',
-       {con 'a Lf : 'a tree',
-        con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree'}),
-    con 'a Lf : 'a tree',
+       {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
+        con 'a Lf : 'a tree'}),
     con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
+    con 'a Lf : 'a tree',
     val 'a size : 'a tree' -> int,
     val 'a depth : 'a tree' -> int,
     val 'a reflect : 'a tree' -> 'a tree'}->
        {structure Tree :
           {datatype 'a tree =
              ('a tree',
-              {con 'a Lf : 'a tree',
-               con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree'}),
+              {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
+               con 'a Lf : 'a tree'}),
            con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
            con 'a Lf : 'a tree',
            val 'a depth : 'a tree' -> int,
@@ -5254,8 +5254,8 @@ File "sample7.sml", line 577, characters 9-14:
       ?=tree'.
        {datatype 'a tree =
           ('a tree',
-           {con 'a Lf : 'a tree',
-            con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree'}),
+           {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
+            con 'a Lf : 'a tree'}),
         con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
         con 'a Lf : 'a tree',
         val 'a depth : 'a tree' -> int,
@@ -5265,8 +5265,8 @@ File "sample7.sml", line 577, characters 9-14:
   structure Tree :
   {datatype 'a tree =
      ('a tree',
-      {con 'a Lf : 'a tree',
-       con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree'}),
+      {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
+       con 'a Lf : 'a tree'}),
    con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
    con 'a Lf : 'a tree',
    val 'a depth : 'a tree' -> int,
@@ -5276,8 +5276,8 @@ File "sample7.sml", line 577, characters 9-14:
   {structure Tree :
      {datatype 'a tree =
         ('a tree',
-         {con 'a Lf : 'a tree',
-          con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree'}),
+         {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
+          con 'a Lf : 'a tree'}),
       con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
       con 'a Lf : 'a tree',
       val 'a depth : 'a tree' -> int,
@@ -5537,15 +5537,15 @@ File "sample8.sml", line 319, characters 10-30:
 > signature LEXICAL =
   /\=token.
     {datatype token =
-       (token,{con Key : string -> token, con Id : string -> token}),
-     con Key : string -> token,
+       (token,{con Id : string -> token, con Key : string -> token}),
      con Id : string -> token,
+     con Key : string -> token,
      val scan : string -> token list}
 > functor Lexical :
   {val alphas : string list, val symbols : string list}->
       ?=token.
        {datatype token =
-          (token,{con Key : string -> token, con Id : string -> token}),
+          (token,{con Id : string -> token, con Key : string -> token}),
         con Id : string -> token,
         con Key : string -> token,
         val scan : string -> token list}
@@ -5575,9 +5575,9 @@ File "sample8.sml", line 319, characters 10-30:
 > functor Parsing :
   !=token.
    {datatype token =
-      (token,{con Key : string -> token, con Id : string -> token}),
-    con Key : string -> token,
+      (token,{con Id : string -> token, con Key : string -> token}),
     con Id : string -> token,
+    con Key : string -> token,
     val scan : string -> token list}->
        {type token = token,
         val ('a, 'b, 'c) !! : ('a -> 'b * 'c) -> 'a -> 'b * 'c,
@@ -5611,7 +5611,7 @@ File "sample8.sml", line 319, characters 10-30:
 > New type names: =token
   structure LamLex :
   {datatype token =
-     (token,{con Key : string -> token, con Id : string -> token}),
+     (token,{con Id : string -> token, con Key : string -> token}),
    con Id : string -> token,
    con Key : string -> token,
    val scan : string -> token list}
@@ -5655,14 +5655,14 @@ File "sample9.sml", line 212-216, characters 8-161:
   /\=t''''''''''.
     {datatype t =
        (t'''''''''',
-        {con Free : string -> t'''''''''',
+        {con Abs : string * t'''''''''' -> t'''''''''',
+         con Apply : t'''''''''' * t'''''''''' -> t'''''''''',
          con Bound : int -> t'''''''''',
-         con Abs : string * t'''''''''' -> t'''''''''',
-         con Apply : t'''''''''' * t'''''''''' -> t''''''''''}),
-     con Free : string -> t'''''''''',
-     con Bound : int -> t'''''''''',
+         con Free : string -> t''''''''''}),
      con Abs : string * t'''''''''' -> t'''''''''',
      con Apply : t'''''''''' * t'''''''''' -> t'''''''''',
+     con Bound : int -> t'''''''''',
+     con Free : string -> t'''''''''',
      val abstract : int -> string -> t'''''''''' -> t'''''''''',
      val absList : string list * t'''''''''' -> t'''''''''',
      val applyList : t'''''''''' * t'''''''''' list -> t'''''''''',
@@ -5672,10 +5672,10 @@ File "sample9.sml", line 212-216, characters 8-161:
   structure Lambda :
   {datatype t =
      (t'''''''''',
-      {con Free : string -> t'''''''''',
+      {con Abs : string * t'''''''''' -> t'''''''''',
+       con Apply : t'''''''''' * t'''''''''' -> t'''''''''',
        con Bound : int -> t'''''''''',
-       con Abs : string * t'''''''''' -> t'''''''''',
-       con Apply : t'''''''''' * t'''''''''' -> t''''''''''}),
+       con Free : string -> t''''''''''}),
    con Abs : string * t'''''''''' -> t'''''''''',
    con Apply : t'''''''''' * t'''''''''' -> t'''''''''',
    con Bound : int -> t'''''''''',
@@ -5721,21 +5721,21 @@ File "sample9.sml", line 352, characters 11-20:
   /\=term =form.
     {datatype term =
        (term,
-        {con Var : string -> term,
+        {con Bound : int -> term,
+         con Fun : string * term list -> term,
          con Param : string * string list -> term,
-         con Bound : int -> term,
-         con Fun : string * term list -> term}),
-     con Var : string -> term,
-     con Param : string * string list -> term,
+         con Var : string -> term}),
      con Bound : int -> term,
      con Fun : string * term list -> term,
+     con Param : string * string list -> term,
+     con Var : string -> term,
      datatype form =
        (form,
-        {con Pred : string * term list -> form,
-         con Conn : string * form list -> form,
+        {con Conn : string * form list -> form,
+         con Pred : string * term list -> form,
          con Quant : string * string * form -> form}),
-     con Pred : string * term list -> form,
      con Conn : string * form list -> form,
+     con Pred : string * term list -> form,
      con Quant : string * string * form -> form,
      type goal = form list * form list,
      val precOf : string -> int,
@@ -5752,14 +5752,14 @@ File "sample9.sml", line 352, characters 11-20:
   structure Fol :
   {datatype term =
      (term,
-      {con Var : string -> term,
+      {con Bound : int -> term,
+       con Fun : string * term list -> term,
        con Param : string * string list -> term,
-       con Bound : int -> term,
-       con Fun : string * term list -> term}),
+       con Var : string -> term}),
    datatype form =
      (form,
-      {con Pred : string * term list -> form,
-       con Conn : string * form list -> form,
+      {con Conn : string * form list -> form,
+       con Pred : string * term list -> form,
        con Quant : string * string * form -> form}),
    type goal = form list * form list,
    con Bound : int -> term,
@@ -5783,7 +5783,7 @@ File "sample9.sml", line 352, characters 11-20:
 > New type names: =token'
   structure FolLex :
   {datatype token =
-     (token',{con Key : string -> token', con Id : string -> token'}),
+     (token',{con Id : string -> token', con Key : string -> token'}),
    con Id : string -> token',
    con Key : string -> token',
    val scan : string -> token' list}
