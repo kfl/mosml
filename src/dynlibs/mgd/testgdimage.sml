@@ -87,7 +87,7 @@ drawCircle im (Brushed crayon) (170, 90) 20;
 
 drawLine im (Styled usualdash) ((10, 0), (190, 200));
 
-toGif im "try.gif"
+toPng im "try.png"
 
 end;
 
@@ -122,22 +122,22 @@ fun graphs () =
 
 	val tekster = ["Praise", "Annoyances", "Salary", "Boredom"]
     in 
-	Gdimage.toGif (Graphs.accugraph (550, 220) data tekster) "graph.gif"
+	Gdimage.toPng (Graphs.accugraph (550, 220) data tekster) "graph.png"
     end
 
 in
-    Gdimage.toGif (Graphs.histogram (500, 100) 
+    Gdimage.toPng (Graphs.histogram (500, 100) 
 	                   (Random.rangelist (0, 100) (100, Random.newgen()))) 
-    "hist.gif";
+    "hist.png";
 
-    Gdimage.toGif (Graphs.piechart (500, 300) (dice 100) 
+    Gdimage.toPng (Graphs.piechart (500, 300) (dice 100) 
 	   ["One", "Two", "Three", "Four", "Five", "Six"])
-    "pie.gif";
+    "pie.png";
 
     graphs ();
 
     print "Now try\n\
-              \       xv try.gif hist.gif pie.gif graph.gif\n\n";
+              \       xv try.png hist.png pie.png graph.png\n\n";
 
     quit()
 end

@@ -1,0 +1,13 @@
+# Generating ISO Latin 1 fonts for GD instead of the supplied ISO Latin 2 fonts
+# sestoft@dina.kvl.dk
+
+fstobdf -s localhost:7100 -fn -Misc-Fixed-Bold-R-Normal--15-140-75-75-C-90-ISO8859-1 | bdftogd FontGiant gdfontg
+
+fstobdf -s localhost:7100 -fn -Misc-Fixed-Medium-R-Normal--15-140-75-75-C-90-ISO8859-1 | bdftogd FontLarge gdfontl
+
+fstobdf -s localhost:7100 -fn -Misc-Fixed-Bold-R-Normal--13-120-75-75-C-70-ISO8859-1 | bdftogd FontMediumBold gdfontmb
+
+fstobdf -s localhost:7100 -fn -Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1 | bdftogd FontSmall gdfonts
+
+fstobdf -s localhost:7100 -fn -Misc-Fixed-Medium-R-Normal--8-80-75-75-C-50-ISO646.1991-IRV | bdftogd FontTiny gdfontt
+

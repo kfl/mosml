@@ -5,7 +5,7 @@
 
 # Where to find gd header file and compiled library
 
-GDDIR=${HOME}/c/gd1.3
+GDDIR=${HOME}/c/gd-1.7.3
 
 include ../../Makefile.inc
 
@@ -18,28 +18,25 @@ MOSMLL=mosmlc
 MOSMLLEX=mosmllex
 MOSMLYACC=mosmlyac
 
-all: libmgd.so Gdimage.uo Graphs.uo
+all: libmgd.so
 
 mgd.o: mgd.c
 	$(CC) $(CFLAGS) -c -o mgd.o mgd.c
 
 libmgd.so: mgd.o
-	$(DYNLD) -o libmgd.so mgd.o ${GDDIR}/libgd.a
+	$(DYNLD) -o libmgd.so mgd.o ${GDDIR}/libgd.a -lpng -lz
 
-test:
+test: Graphs.uo
 	mosml testgdimage.sml
 
 install:
 	cp libmgd.so $(BINDIR)
-	cp Gdimage.sig $(LIBDIR)
-	cp Gdimage.ui $(LIBDIR)
-	cp Gdimage.uo $(LIBDIR)
 
 clean:
 	rm -f *.o
 	rm -f *.so
-	rm -f *.ui *.uo
-	rm -f *.gif
+	rm -f *.uo *.ui
+	rm -f *.png
 	rm -f Makefile.bak
 
 depend: 
@@ -49,4 +46,4 @@ depend:
 	$(MOSMLTOOLS)/mosmldep >> Makefile
 
 ### DO NOT DELETE THIS LINE
-Gdimage.uo: Gdimage.ui 
+testgdimage.uo: Graphs.uo 

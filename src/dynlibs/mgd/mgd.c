@@ -1,5 +1,6 @@
 /* File mosml/src/dynlibs/mgd/mgd.c -- interface to Thomas Boutell's 
-   gd graphics package.  sestoft@dina.kvl.dk 1998-05-07 version 0.1
+   gd graphics package.  
+   sestoft@dina.kvl.dk 1998-05-07 for gd 1.3, 2000-02-04 for gd 1.7.3
  */
 
 #include <gd.h>			/* For gd                        */
@@ -85,41 +86,41 @@ EXTERNML value mgd_image(value xy, value background)
 
 /* SML type: string -> image */
 
-EXTERNML value mgd_fromgif(value filename)
+EXTERNML value mgd_frompng(value filename)
 {
   char *filenam = String_val(filename);
   gdImagePtr imgptr;
   FILE *in;
   in = fopen(filenam, "rb");
   if (in == NULL)
-    failwith("Cannot open GIF file for input");
-  imgptr = gdImageCreateFromGif(in);
+    failwith("Cannot open PNG file for input");
+  imgptr = gdImageCreateFromPng(in);
   fclose(in);
   if (imgptr == NULL)
-    failwith("Cannot read GIF image from file");
+    failwith("Cannot read PNG image from file");
   return finalize_image(imgptr);
 }
 
 /* SML type: image -> string -> unit */
 
-EXTERNML value mgd_togif(value im, value filename)
+EXTERNML value mgd_topng(value im, value filename)
 {
   char *filenam = String_val(filename);
   FILE *out;
   out = fopen(filenam, "wb");
   if (out == NULL)
-    failwith("Cannot open GIF file for output");
-  gdImageGif(Image_val(im), out);
+    failwith("Cannot open PNG file for output");
+  gdImagePng(Image_val(im), out);
   fclose(out);
   return Val_unit;
 }
 
 /* SML type: image -> unit */
 
-EXTERNML value mgd_tostdoutgif(value im)
+EXTERNML value mgd_tostdoutpng(value im)
 {
-  fprintf(stdout, "Content-type: image/gif\n\n");   
-  gdImageGif(Image_val(im), stdout);
+  fprintf(stdout, "Content-type: image/png\n\n");   
+  gdImagePng(Image_val(im), stdout);
 #ifdef WIN32
   fflush(stdout);
 #else

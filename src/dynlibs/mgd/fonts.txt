@@ -13,34 +13,27 @@ Note: Some X fonts are 7 bit although they have suffix -iso8859-1.
 
 2. Create the fonts
 
-This requires converting from X font server format to bdf format to gd
-font format.  
+This requires converting, for each of the five fonts, 
 
-Note: The font shown were available on my installation.  Your
-installation may have other and perhaps nicer fonts.
+     (a) from X font server format to bdf, and 
+     (b) from bdf format to gd font format.  
+
+This is accomplished by 
+
+     cp -p makefonts <GDDIR>
+     cd <GDDIR>
+     ./makefonts
+     make clean all
 
 
-2a. Make FontTiny:
+The list below shows some other choices:
 
 fstobdf -s localhost:7100 -fn -misc-fixed-medium-r-normal--7-70-75-75-c-50-iso8859-1 | bdftogd FontTiny gdfontt
 
-
-2b. Make FontSmall:
-
-fstobdf -s localhost:7100 -fn  -misc-fixed-medium-r-semicondensed--0-0-75-75-c-0-iso8859-1 | bdftogd FontSmall gdfonts
-
-
-2c. Make FontMediumBold:
+fstobdf -s localhost:7100 -fn -misc-fixed-medium-r-semicondensed--0-0-75-75-c-0-iso8859-1 | bdftogd FontSmall gdfonts
 
 fstobdf -s localhost:7100 -fn -misc-fixed-bold-r-normal--13-100-100-100-c-70-iso8859-1 | bdftogd FontMediumBold gdfontmb
 
-
-2d. Make FontLarge:
-
 fstobdf -s localhost:7100 -fn -misc-fixed-medium-r-normal--15-140-75-75-c-90-iso8859-1 | bdftogd FontLarge gdfontl
 
-
-2e. Make FontGiant:
-
 fstobdf -s localhost:7100 -fn -misc-fixed-bold-r-normal--15-140-75-75-c-90-iso8859-1 | bdftogd FontGiant gdfontg
-
