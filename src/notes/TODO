@@ -68,7 +68,7 @@
 
 * If we change constructor ordering, change also dynlibs/interface/cside.c 
 
-* Include runtime system *.h files in distribution (for the sake of
++ Include runtime system *.h files in distribution (for the sake of
   user-written C code and dynlibs)
 
 * Perhaps fix mgdbm to use new GDBM?
@@ -91,4 +91,59 @@
 + strange bug in dynlibs/interface/ for Solaris.  Crashes.  Fails
   test7, because it doesn't pass the fifth argument (a boolean)
   correctly.  test 7 works if the number of arguments is reduced to 4.
-  test10 fails as well, why?  
+  test10 fails as well, why?  NON-BUG.  A symbolic link had been
+  extended by corecursive file copying.
+
+* Non-blocking IO in TextIO.  input calls fast_input, which is
+  io.input in the runtime.  It calls getblock, which may call
+  really_read if necessary to obtain data not in the buffer; and
+  really_read calls Unix read.  This will raise sys_error in case Unix
+  read fails (cannot obtain any data).
+
+  Two solutions: (1) handle the SysError (and check that it is
+  EAGAIN), or (2) add an extra parameter to really_read so that it
+  avoids raising the SysError.
+
+  (1) is inefficient, 
+
+  (2) may be done as follows: Add a new boolean parameter to
+  really_read.  It must 
+
+  static int really_read(int fd, char * p, unsigned n, int blocking) {
+    if (blocking)
+      fcntl(...) // set non-blocking
+    ...
+
+    leave_blocking_section();
+    if (blocking) {
+      fcntl(...) // reset non-blocking
+      if (retcode == -1)
+         if (errno == EAGAIN)
+           return 0; // CHECK!!!
+         else
+           sys_error(NULL);
+    } else if (retcode == -1)
+      sys_error(NULL);
+    return retcode;
+  }
+
+  Add a new parameter to getblock 
+
+  unsigned getblock(struct channel * channel, char * p, unsigned n, 
+     int blocking)
+
+  which it just passes on to really_read.
+
+  Make really_getblock call getblock with this parameter FALSE.
+
+  Add a new function input_nonblocking, which will call getblock with non
+
+value input(value channel, value buff, value start, value length) /* ML */
+{
+  return Val_long(getblock((struct channel *) channel,
+                           &Byte(buff, Long_val(start)),
+                           (unsigned) Long_val(length),
+	                   TRUE));
+}
+
+  
