@@ -1,5 +1,5 @@
 (* test/vectorslice.sml -- some test cases for ArraySlice 
-   sestoft@dina.kvl.dk 2000-10-19 *)
+   sestoft@dina.kvl.dk 2000-10-20 *)
 
 use "auxil.sml";
 
@@ -237,6 +237,26 @@ val test12d =
            ((setv 0; app addv inp; !v = 7+9+13)
 	    andalso (app setv inp; !v = 13)));
 
+val test12f = 
+    check'(fn _ => 
+	   not (exists (fn i => i>13) inp)
+	   andalso exists (fn i => i>12) inp);
+val test12g = 
+    check'(fn _ => 
+	   (setv 117; exists (fn x => (setv x; false)) slice05; !v = 117)
+	   andalso (setv 0; exists (fn x => (addv x; false)) inp; !v = 7+9+13)
+	   andalso (exists (fn x => (setv x; false)) inp; !v = 13));
+val test12h = 
+    check'(fn _ => 
+	   not (all (fn i => i<13) inp)
+	   andalso all (fn i => i<14) inp);
+val test12i = 
+    check'(fn _ => 
+	   (setv 117; all (fn x => (setv x; true)) slice05; !v = 117)
+	   andalso (setv 0; all (fn x => (addv x; true)) inp; !v = 7+9+13)
+	   andalso (all (fn x => (setv x; true)) inp; !v = 13));
+
+
 val test13 =
     check'(fn _ =>
 	   foldli consi [] inp = [(6,13),(5,9),(4,7)]
@@ -283,12 +303,11 @@ val test17a =
 	       andalso coll "CCCA" "CCCB" = GREATER
 	   end)
 
-val sa = fromList(explode "AAAAaAbAABBBB");
-              (*           0123456789012   *)
-
 val test17b = 
     check'(fn _ =>
-  let fun invcompare (c1, c2) = Char.compare (c2, c1) 
+  let val sa = fromList(explode "AAAAaAbAABBBB");
+                              (* 0123456789012 *)
+      fun invcompare (c1, c2) = Char.compare (c2, c1) 
       fun coll s1 s2 = collate invcompare (s1, s2)
   in 
       coll (full sa) (slice(sa, 0, SOME 13)) = EQUAL
@@ -299,20 +318,6 @@ val test17b =
       andalso coll (slice(sa, 0, SOME 4)) (slice(sa, 1, SOME 4)) = GREATER
       andalso coll (slice(sa, 1, SOME 4)) (slice(sa, 0, SOME 4)) = LESS
   end)
-
-(*
-val test19 = 
-    check'(fn _ => 
-	   not (exists (fn i => i>61) a)
-	   andalso exists (fn i => i>41) a
-	   andalso not (exists (fn _ => true) array0));
-
-val test20 = 
-    check'(fn _ => 
-	   not (all (fn i => i<61) a)
-	   andalso all (fn i => i<62) a
-	   andalso all (fn _ => false) array0);
-*)
 end
 
 

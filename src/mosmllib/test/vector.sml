@@ -40,27 +40,9 @@ val test7 = check'(fn _ => length e = 203);
 
 val test8 = check'(fn _ => length (concat []) = 0);
 
-val f = extract (e, 100, SOME 3);
+val f = VectorSlice.vector(VectorSlice.slice(e, 100, SOME 3));
 
 val test9 = check'(fn _ => f = b);
-
-val test9a = check'(fn _ => e = extract(e, 0, SOME (length e)) 
-		    andalso e = extract(e, 0, NONE));
-val test9b = check'(fn _ => fromList [] = extract(e, 100, SOME 0));
-val test9c = (extract(e, ~1, SOME (length e))  seq "WRONG") 
-             handle Subscript => "OK" | _ => "WRONG"
-val test9d = (extract(e, length e + 1, SOME 0)  seq "WRONG") 
-             handle Subscript => "OK" | _ => "WRONG"
-val test9e = (extract(e, 0, SOME (length e+1)) seq "WRONG") 
-             handle Subscript => "OK" | _ => "WRONG"
-val test9f = (extract(e, 20, SOME ~1)        seq "WRONG") 
-             handle Subscript => "OK" | _ => "WRONG"
-val test9g = (extract(e, ~1, NONE)  seq "WRONG") 
-             handle Subscript => "OK" | _ => "WRONG"
-val test9h = (extract(e, length e + 1, NONE)  seq "WRONG") 
-             handle Subscript => "OK" | _ => "WRONG"
-val test9i = check'(fn _ => fromList [] = extract(e, length e, SOME 0)
-		    andalso fromList [] = extract(e, length e, NONE));
 
 fun chkiter iter f vec reslast =
     check'(fn _ =>
@@ -78,28 +60,7 @@ val test10a =
     chkiter map (fn x => 2*x) b (fromList [88,110,132], 66)
 
 val test11a = 
-    chkiteri mapi (fn x => 2*x) (b, 0, NONE) (fromList [88,110,132], 2)
-val test11b = 
-    chkiteri mapi (fn x => 2*x) (b, 1, NONE) (fromList [110,132], 2)
-val test11c = 
-    chkiteri mapi (fn x => 2*x) (b, 1, SOME 0) (fromList [], ~1)
-val test11d = 
-    chkiteri mapi (fn x => 2*x) (b, 1, SOME 1) (fromList [110], 1)
-val test11e = 
-    chkiteri mapi (fn x => 2*x) (b, 3, NONE) (fromList [], ~1)
-
-val test11f =
-    (mapi #2 (b, 0, SOME 4) seq "WRONG") 
-    handle Subscript => "OK" | _ => "WRONG";
-val test11g =
-    (mapi #2 (b, 3, SOME 1) seq "WRONG") 
-    handle Subscript => "OK" | _ => "WRONG";
-val test11h =
-    (mapi #2 (b, 4, SOME 0) seq "WRONG") 
-    handle Subscript => "OK" | _ => "WRONG";
-val test11i =
-    (mapi #2 (b, 4, NONE) seq "WRONG") 
-    handle Subscript => "OK" | _ => "WRONG";
+    chkiteri mapi (fn x => 2*x) b (fromList [88,110,132], 2)
 
 val test12a = 
     check'(fn _ => 

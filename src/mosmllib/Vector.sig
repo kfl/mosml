@@ -8,7 +8,6 @@ val tabulate : int * (int -> 'a) -> 'a vector
 
 val length   : 'a vector -> int
 val sub      : 'a vector * int -> 'a
-val extract  : 'a vector * int * int option -> 'a vector
 val update   : 'a vector * int * 'a -> 'a vector
 val concat   : 'a vector list -> 'a vector
 
@@ -22,10 +21,10 @@ val foldl    : ('a * 'b -> 'b) -> 'b -> 'a vector -> 'b
 val foldr    : ('a * 'b -> 'b) -> 'b -> 'a vector -> 'b
 
 val findi    : (int * 'a -> bool) -> 'a vector -> (int * 'a) option
-val appi     : (int * 'a -> unit) -> 'a vector * int * int option -> unit
-val mapi     : (int * 'a -> 'b) -> 'a vector * int * int option -> 'b vector
-val foldli   : (int * 'a * 'b -> 'b) -> 'b -> 'a vector*int*int option -> 'b
-val foldri   : (int * 'a * 'b -> 'b) -> 'b -> 'a vector*int*int option -> 'b
+val appi     : (int * 'a -> unit) -> 'a vector -> unit
+val mapi     : (int * 'a -> 'b) -> 'a vector -> 'b vector
+val foldli   : (int * 'a * 'b -> 'b) -> 'b -> 'a vector -> 'b
+val foldri   : (int * 'a * 'b -> 'b) -> 'b -> 'a vector -> 'b
 
 val collate  : ('a * 'a -> order) -> 'a vector * 'a vector -> order
 
@@ -48,12 +47,6 @@ val collate  : ('a * 'a -> order) -> 'a vector * 'a vector -> order
 
    [sub(v, i)] returns the i'th element of v, counting from 0.
    Raises Subscript if i<0 or i>=length v.
-
-   [extract(v, i, NONE)] returns a vector of the elements v[i..length v-1]
-   of v.  Raises Subscript if i<0 or i>length v.
-
-   [extract(v, i, SOME n)] returns a vector of the elements v[i..i+n-1]
-   of v.  Raises Subscript if i<0 or n<0 or i+n>length v.
 
    [update(v, i, x)] creates a copy of v, sets position i to x, and
    returns the new vector.  Raises Subscript if i<0 or i>=length v.
@@ -87,66 +80,27 @@ val collate  : ('a * 'a -> order) -> 'a vector * 'a vector -> order
    [map f v] applies f to v[j] for j=0,1,...,length v-1 and returns a 
    new vector containing the results.
    
-
-   The following iterators generalize the above ones in two ways:
-
-    * the index j is also being passed to the function being iterated;
-    * the iterators work on a slice (subvector) of a vector.
-
-   The slice (v, i, SOME n) denotes the subvector v[i..i+n-1].  That is,
-   v[i] is the first element of the slice, and n is the length of the
-   slice.  Valid only if 0 <= i <= i+n <= length v.
-
-   The slice (v, i, NONE) denotes the subvector v[i..length v-1].  That
-   is, the slice denotes the suffix of the vector starting at i.  Valid
-   only if 0 <= i <= length v.  Equivalent to (v, i, SOME(length v - i)).
-
-       slice             meaning 
-       ----------------------------------------------------------
-       (v, 0, NONE)      the whole vector             v[0..len-1]   
-       (v, 0, SOME n)    a left subvector (prefix)    v[0..n-1]
-       (v, i, NONE)      a right subvector (suffix)   v[i..len-1]
-       (v, i, SOME n)    a general slice              v[i..i+n-1] 
+   The following iterators generalize the above ones by passing also
+   the vector element index j to the function being iterated.
 
    [findi p a] applies f to successive pairs (j, a[j]) for j=0,1,...,n-1, 
    until p(j, a[j]) evaluates to true; returns SOME (j, a[j]) if such
    a pair exists, otherwise NONE.
 
-   [foldli f e (v, i, SOME n)] folds function f over the subvector
-   v[i..i+n-1] from left to right.  That is, computes 
-   f(i+n-1, v[i+n-1], f(..., f(i+1, v[i+1], f(i, v[i], e)) ...)).  
-   Raises Subscript if i<0 or n<0 or i+n > length v.
+   [foldli f e v] folds function f over the vector from left to right.
+   That is, computes f(n-1, v[n-1], f(..., f(1, v[1], f(0, v[0], e)) ...))  
+   where n = length v.
 
-   [foldli f e (v, i, NONE)] folds function f over the subvector
-   v[i..len-1] from left to right, where len =  length v.  That is, 
-   computes f(len-1, v[len-1], f(..., f(i+1, v[i+1], f(i, v[i], e)) ...)).  
-   Raises Subscript if i<0 or i > length v.
+   [foldri f e v] folds function f over the vector from right to left.  
+   That is, computes f(0, v[0], f(1, v[1], ..., f(n-1, v[n-1], e) ...))
+   where n = length v.
 
-   [foldri f e (v, i, SOME n)] folds function f over the subvector
-   v[i..i+n-1] from right to left.  That is, computes 
-   f(i, v[i], f(i+1, v[i+1], ..., f(i+n-1, v[i+n-1], e) ...)).
-   Raises Subscript if i<0 or n<0 or i+n > length v.
+   [appi f v] applies f to successive pairs (j, v[j]) for j=0,1,...,n-1
+   where n = length v.
 
-   [foldri f e (v, i, NONE)] folds function f over the subvector
-   v[i..len-1] from right to left, where len = length v.  That is, 
-   computes f(i, v[i], f(i+1, v[i+1], ..., f(len-1, v[len-1], e) ...)).
-   Raises Subscript if i<0 or i > length v.
-
-   [appi f (v, i, SOME n)] applies f to successive pairs (j, v[j]) for
-   j=i,i+1,...,i+n-1.  Raises Subscript if i<0 or n<0 or i+n > length v.
-
-   [appi f (v, i, NONE)] applies f to successive pairs (j, v[j]) for
-   j=i,i+1,...,len-1, where len = length v.  Raises Subscript if i<0
-   or i > length v.
-
-   [mapi f (v, i, SOME n)] applies f to successive pairs (j, v[j]) for 
-   j=i,i+1,...,i+n-1 and returns a new vector (of length n) containing 
-   the results.  Raises Subscript if i<0 or n<0 or i+n > length v.
-
-   [mapi f (v, i, NONE)] applies f to successive pairs (j, v[j]) for 
-   j=i,i+1,...,len-1, where len = length v, and returns a new vector
-   (of length len-i) containing the results.  Raises Subscript if i<0
-   or i > length v.
+   [mapi f v] applies f to successive pairs (j, v[j]) for
+   j=0,1,...,n-1 where n = length v and returns a new vector
+   containing the results.  
 
    [collate cmp (xs, ys)] returns LESS, EQUAL or GREATER according as
    xs precedes, equals or follows ys in the lexicographic ordering on

@@ -81,7 +81,8 @@ jumptbl.h : instruct.h
 .SUFFIXES: .d.o
 
 .c.d.o:
-	cd .debugobj; $(CC) -c -g -I.. -I.. -DDEBUG $(OPTS) ../$<
+	sh -c 'if  [ ! -d .debugobj ] ; then mkdir .debugobj; fi'
+	cd .debugobj; $(CC) -Dunix -c -g -I.. -I.. -DDEBUG $(OPTS) ../$<
 	mv .debugobj/$*.o $*.d.o
 
 depend : prims.c opnames.h jumptbl.h

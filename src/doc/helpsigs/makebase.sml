@@ -4,7 +4,7 @@
 
 (* The version number inserted in generated files: *)
 val version = "<A HREF=\"http://www.dina.kvl.dk/~sestoft/mosml.html\">\
-    \Moscow ML</A> 2.00";
+    \Moscow ML</A> 2.00.1";
 
 (* Default directory containing the signature files: *)
 val libdirDef = "../../../lib/"

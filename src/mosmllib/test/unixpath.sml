@@ -1,4 +1,4 @@
-(* test/unixpath.sml 6 -- for Unix, 1995-05-23 *)
+(* test/unixpath.sml 6 -- for Unix, 1995-05-23, 2000-10-20 *)
 
 use "auxil.sml";
 
@@ -124,35 +124,38 @@ val test6a =
 val test6b = (concat ("a", "/b") seq "WRONG")
              handle Path => "OK" | _ => "WRONG";
 
+fun mka(p1,p2) = mkAbsolute{path=p1, relativeTo=p2};
+
 val test7a = 
     check'(fn _ => 
-	   mkAbsolute("/a/b", "/c/d") = "/a/b"
-	   andalso mkAbsolute("/", "/c/d") = "/"
-	   andalso mkAbsolute("a/b", "/c/d") = "/c/d/a/b");
-val test7b = (mkAbsolute("a", "c/d") seq "WRONG")
+	   mka("/a/b", "/c/d") = "/a/b"
+	   andalso mka("/", "/c/d") = "/"
+	   andalso mka("a/b", "/c/d") = "/c/d/a/b");
+val test7b = (mka("a", "c/d") seq "WRONG")
              handle Path => "OK" | _ => "WRONG";
-val test7c = (mkAbsolute("/a", "c/d") seq "WRONG")
+val test7c = (mka("/a", "c/d") seq "WRONG")
               handle Path => "OK" | _ => "WRONG";
 
+fun mkr(p1, p2) = mkRelative{path=p1, relativeTo=p2}
 val test8a = 
     check'(fn _ => 
-	   mkRelative("a/b", "/c/d") = "a/b"
-	   andalso mkRelative("/", "/a/b/c")	   = "../../.." 
-	   andalso mkRelative("/a/", "/a/b/c")	   = "../../" 
-	   andalso mkRelative("/a/b/", "/a/c")	   = "../b/"     
-	   andalso mkRelative("/a/b", "/a/c/")	   = "../b"      
-	   andalso mkRelative("/a/b/", "/a/c/")	   = "../b/"     
-	   andalso mkRelative("/", "/")		   = "."	      
-	   andalso mkRelative("/", "/.")	   = "."	      
-	   andalso mkRelative("/", "/..")	   = "."	      
-	   andalso mkRelative("/", "/a")	   = ".."	      
-	   andalso mkRelative("/a/b/../c", "/a/d") = "../b/../c" 
-	   andalso mkRelative("/a/b", "/c/d")      = "../../a/b"
-	   andalso mkRelative("/c/a/b", "/c/d")    = "../a/b"
-	   andalso mkRelative("/c/d/a/b", "/c/d")  = "a/b");
-val test8b = (mkRelative("/a", "c/d") seq "WRONG")
+	           mkr("a/b", "/c/d")       = "a/b"
+	   andalso mkr("/", "/a/b/c")	    = "../../.." 
+	   andalso mkr("/a/", "/a/b/c")	    = "../../" 
+	   andalso mkr("/a/b/", "/a/c")	    = "../b/"     
+	   andalso mkr("/a/b", "/a/c/")	    = "../b"      
+	   andalso mkr("/a/b/", "/a/c/")    = "../b/"     
+	   andalso mkr("/", "/")	    = "."	      
+	   andalso mkr("/", "/.")	    = "."	      
+	   andalso mkr("/", "/..")	    = "."	      
+	   andalso mkr("/", "/a")	    = ".."	      
+	   andalso mkr("/a/b/../c", "/a/d") = "../b/../c" 
+	   andalso mkr("/a/b", "/c/d")      = "../../a/b"
+	   andalso mkr("/c/a/b", "/c/d")    = "../a/b"
+	   andalso mkr("/c/d/a/b", "/c/d")  = "a/b");
+val test8b = (mkr("/a", "c/d") seq "WRONG")
               handle Path => "OK" | _ => "WRONG";
-val test8c = (mkRelative("a", "c/d") seq "WRONG")
+val test8c = (mkr("a", "c/d") seq "WRONG")
               handle Path => "OK" | _ => "WRONG";
 
 val test9a = let

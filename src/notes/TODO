@@ -609,3 +609,42 @@ If so, could the fact be mentioned in the documentation?
 to anything in x.sml or any other unit that x depends on,
 which is very difficult to diagnose).
 
+* 2000-10-04 Jakob Lichtenberg:
+
+Output fra mosmlc -standalone kan ikke meningsfuldt strippes, idet
+strip fjerner al bytekoden, saa kun camlrunm bliver tilbage!
+
+Find ud af hvordan ELF-formatet er opbygget, og saet stoerrelsen
+korrekt, saa strip ikke mutilerer den linkede fil.  See GNU binutils in info.
+
+Maaske 
+	objcopy --add-section BYTECODE=<bytecodefile> camlrunm mosmlout
+
+Nej, duer ikke, for der ligger noget indeksinformation i enden af en
+ELF fil...
+
+Maaske der findes en C-funktion til at laese et navngivet segment fra
+en linket fil, f.eks. et segment kaldet BYTECODE.
+
+size -A mlsexe kan fortaelle hvor store de enkelte sektioner er.
+
+* 2000-10-20:  SML Basis Library 
+
++ zillions of changes already made
+* Word8Array, CharArray   -- remove and simplify
+* Word8Vector, CharVector -- remove and simplify
+* test/vector.sml -- many missing cases
+* Word8ArraySlice, CharArraySlice -- add
+* Word8VectorSlice, CharVectorSlice -- adda
+* Negative Time values -- how?
+* Extended date offset range?
+* ~ (ones-complement) in Word, Word8
+* Timer -- do not include GC time, add new function
+* Process.status not equality type
+* Unix structure -- various changes
+
+
+* 2000-10-20: Mosml library
+
+Further unify Mysql and Postgres signatures; must match a common Db
+signature.

@@ -37,13 +37,13 @@ fun tabulate RowMajor (m, n, f) =
 	let val f00 = f(0, 0)
 	    val arr = Vector.tabulate(m, fn i => Array.array(n, f00))
 	    (* Column 0: do not apply f to (0,0) again: *)
-	    val _ = Vector.appi (fn (r, a) => Array.update(a, 0, f(r, 0))) 
-		                (arr, 1, NONE); 		
+	    val _ = VectorSlice.appi (fn (r, a) => Array.update(a, 0, f(r, 0))) 
+		                (VectorSlice.slice(arr, 1, NONE));
 	    (* Remaining columns: loop, updating all rows: *)
 	    fun loop c = 
 		if c < n then  
 		    (Vector.appi (fn (r, a) => Array.update(a, c, f(r, c))) 
-		                 (arr, 0, NONE); 
+		                 arr;
 		     loop (c+1))
 		else ()
 	in loop 1; ref (arr, m, n) end

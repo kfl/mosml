@@ -245,3 +245,13 @@ Moscow ML release history
   * Bugs fixed:
     * The generated HTML for mosmllib now has valid URLs
     * Substring.app more efficient
+    * Recursive structure compilation (elabRecSigExp) fixed
+  * SML Basis Library changes:
+    * String and Substring: concatWith, isSuffix, isSubstring, full
+    * ListPair: added zipEq, appEq, mapEq, foldlEq, foldreq, allEq
+    * Added ArraySlice and VectorSlice structures
+    * Added find, findi, all, exists, collate to vector, array and 
+      slice structures
+    * Added collate to List
+    * Added update to vector structures
+    * Path.{mkRelative,mkAbsolute} now take record arguments

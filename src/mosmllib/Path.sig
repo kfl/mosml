@@ -14,8 +14,8 @@ val getParent    : string -> string
 
 val isAbsolute   : string -> bool
 val isRelative   : string -> bool
-val mkAbsolute   : string * string -> string
-val mkRelative   : string * string -> string
+val mkAbsolute   : { path : string, relativeTo : string } -> string
+val mkRelative   : { path : string, relativeTo : string } -> string
 
 val concat       : string * string -> string
 
@@ -119,16 +119,17 @@ val ext          : string -> string option
    equivalent in the presence of symbolic links.  Raises Path if p2 is
    not a relative path.
 
-   [mkAbsolute(p1, p2)] returns the absolute path made by taking path
-   p2, then p1.  That is, returns p1 if p1 is absolute; otherwise
-   returns the canonicalized concatenation of p2 and p1.  Raises Path
-   if p2 is not absolute (even if p1 is absolute).
+   [mkAbsolute { path=p1, relativeTo=p2 }] returns the absolute path
+   made by taking path p2, then p1.  That is, returns p1 if p1 is
+   absolute; otherwise returns the canonicalized concatenation of p2
+   and p1.  Raises Path if p2 is not absolute (even if p1 is
+   absolute).
 
-   [mkRelative(p1, p2)] returns p1 relative to p2.  That is, returns
-   p1 if p1 is already relative; otherwise returns the relative path
-   leading from p2 to p1.  Raises Path if p2 is not absolute (and even
-   if p1 is relative), or if p1 and p2 are both absolute but have
-   different roots.
+   [mkRelative { path=p1, relativeTo=p2 }] returns p1 relative to p2.
+   That is, returns p1 if p1 is already relative; otherwise returns
+   the relative path leading from p2 to p1.  Raises Path if p2 is not
+   absolute (and even if p1 is relative), or if p1 and p2 are both
+   absolute but have different roots.
 
    [mkCanonical p] returns a canonical path which is equivalent to p.
    Redundant occurrences of the parent arc, the current arc, and the
