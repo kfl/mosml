@@ -26,7 +26,7 @@ fun processSig db out sigfile =
 
 	(* Replace SML comment brackets; assume only one comment per line *)
 	(* Assume that if a opening or closing bracket appears unbalanced
-	   is a line, then there's nothing else on that line.
+	   in a line, then there's nothing else on that line.
 	   TODO: check this *)
 
 	fun outSubstr sus1 = 
@@ -54,6 +54,7 @@ fun processSig db out sigfile =
     
 	fun index' id comp extra = 
 	    let fun encode #"!" = "\"!"
+		  | encode #"@" = "\"@"
 		  | encode c    = str c
 		fun tt id = (out "\\verb,"; 
 			     out (String.translate encode id); 
@@ -139,6 +140,7 @@ fun processSig db out sigfile =
 		      | Str    => indexif "structure" comp
 		      | Term _ => index id comp
 	    in
+		out "\n";
 		outSubstr susline;
 		List.app indexcomp comps
 	    end
@@ -149,6 +151,7 @@ fun processSig db out sigfile =
 		val (kind, rest) = splitl isKind decl
 		val id           = scanident rest
 	    in 
+		out "\n";
 		outSubstr space1;
 		outSubstr kind;
 		outSubstr rest;
@@ -161,34 +164,35 @@ fun processSig db out sigfile =
 	fun pass2 susline = 
 	    let open Substring
 	    in 
-		(if isPrefix "   [" susline then 		    
-		     definition susline
-		 else 
-		     let val (space, suff) = splitl Char.isSpace susline
-		     in
-			 if isPrefix "val " suff then 
-			     declaration space suff Val 
-			 else if isPrefix "type " suff then
-			     declaration space suff Typ 
-			 else if isPrefix "eqtype " suff then 
-			     declaration space suff Typ 
-			 else if isPrefix "prim_EQtype " suff then 
-			     declaration space suff Typ 
-  		         else if isPrefix "datatype " suff then 
-			     declaration space suff Typ 
-			 else if isPrefix "structure " suff then
-			     declaration space suff (fn _ => Str)
-			 else if isPrefix "exception " suff then 
-			     declaration space suff Exc 
-			 else 
-			     outSubstr susline
-		     end);
-		 out "\n"		   
+		if isPrefix "   [" susline then 		    
+		    definition susline
+		else 
+		    let val (space, suff) = splitl Char.isSpace susline
+		    in
+			if isPrefix "val " suff then 
+			    declaration space suff Val 
+			else if isPrefix "type " suff then
+			    declaration space suff Typ 
+			else if isPrefix "eqtype " suff then 
+			    declaration space suff Typ 
+			else if isPrefix "prim_EQtype " suff then 
+			    declaration space suff Typ 
+  		        else if isPrefix "datatype " suff then 
+		            declaration space suff Typ 
+			else if isPrefix "structure " suff then
+			    declaration space suff (fn _ => Str)
+			else if isPrefix "exception " suff then 
+			    declaration space suff Exc 
+			else if isPrefix "*)" suff then 
+			    ()
+			else
+			    (out "\n"; outSubstr susline)
+		    end
 	    end
     in
 	print "Generating LaTeX code for "; print sigfile; print "\n"; 
 	beginsection strName;
-	out "\\begin{longprogram}\n";
+	out "\\begin{longprogram}";
 	app pass2 lines;
 	out "\\end{longprogram}\n";
 	endsection strName 

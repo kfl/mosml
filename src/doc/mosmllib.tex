@@ -26,7 +26,12 @@
 
 {\huge\bf Moscow ML Library Documentation}\\[0.5cm]
 
-{Version 2.00 of May 2000\\ Draft 2000-04-22}\\[1cm]
+{Version 2.00 of June 2000\\ Draft 2000-06-01}\\[0.5cm]
+
+Sergei Romanenko, Russian Academy of Sciences, Moscow, Russia\\
+Claudio Russo, Cambridge University, Cambridge, United Kingdom\\
+Peter Sestoft, Royal Veterinary and Agricultural University, 
+Copenhagen, Denmark
 
 % \begin{tabular}{ccc}
 % \large Sergei Romanenko && \large Peter Sestoft\\[0.1cm]
@@ -37,31 +42,30 @@
 
 \vspace{1cm}
 
-\noindent 
+\subsection*{This document}
+
 This manual describes the Moscow ML library, which includes parts of
-the SML Basis Library\@.  The manual has been generated automatically
-from the commented signature files.
+the SML Basis Library and several extensions.  The manual has been
+generated automatically from the commented signature files.
 
 
+\subsection*{Alternative formats of this document}
 
-\subsection*{Hypertext on the World-Wide Web}
-
-The manual is available also in HTML format at
-\verb$http://www.dina.kvl.dk/~sestoft/mosmllib/$ on the World Wide
-Web.
-
-
-\subsection*{Hypertext in the Moscow ML distribution}
-
-The manual is available also in HTML format at
-\verb$mosml/doc/mosmllib/index.html$ in the Moscow ML distribution.
+\subsubsection*{Hypertext on the World-Wide Web}
+  
+The manual is available at
+\verb$http://www.dina.kvl.dk/~sestoft/mosmllib/$ for online browsing.
 
 
-\subsection*{On-line help in the Moscow ML interactive system}
+\subsubsection*{Hypertext in the Moscow ML distribution}
+  
+The manual is available for offline browsing at
+\verb$mosml/doc/mosmllib/index.html$ in the distribution.
+
+\subsubsection*{On-line help in the Moscow ML interactive system}
 
 The manual is available also in interactive {\tt mosml} sessions.
 Type {\tt help "lib";} for an overview of built-in function libraries.
-
 Type {\tt help "fromstring";} for help on a particular identifier,
 such as {\tt fromString}.  This will produce a menu of all library
 structures which contain the identifier {\tt fromstring} (disregarding
@@ -110,6 +114,8 @@ browser on the desired structure, e.g.\ {\tt Int}.
 \input{texsigsigs.tex}
 
 \newpage
+
+\markboth{\MakeUppercase{Index}}{\MakeUppercase{Index}}
 \addcontentsline{toc}{section}{Index}
 \input{mosmllib.ind}
 
