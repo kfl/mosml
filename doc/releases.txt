@@ -252,6 +252,7 @@ Moscow ML release history
     * Exception Option wasn't available at top-level
     * Linker did not check stamps of linked-in units
     * Hash function now much faster on very long strings
+    * Double alignment constraints now correct with gcc-3.2 and Solaris
   * SML Basis Library changes:
     * String and Substring: added concatWith, isSuffix, isSubstring, full
     * ListPair: added zipEq, appEq, mapEq, foldlEq, foldrEq, allEq

@@ -416,7 +416,6 @@ value sml_ord(value s)          /* ML */
 
 value sml_float_of_string(value s)        /* ML */
 {
-
   char buff[64];
   mlsize_t len;
   int i, e_len;

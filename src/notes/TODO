@@ -1355,4 +1355,6 @@ test10 w/o share User: 1048.470  System: 1.090  GC: 904.220 59736 KB
 were not correctly detected by config/auto-aux/dblalign.c, leading to
 crashes (Andreas Jonasson, Gothenburg).  
 
-* The dblalign.c script seems to have become too conservative now.
+The dblalign.c script must be compiled with option -O2 to behave like
+the production system, and has been made more complicated to provoke
+gcc-3.2 to fail.

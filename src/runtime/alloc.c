@@ -57,7 +57,6 @@ value alloc_final (mlsize_t len, final_fun fun, mlsize_t mem, mlsize_t max)
 value copy_double(double d)
 {
   value res;
-
   Alloc_small(res, Double_wosize, Double_tag);
   Store_double_val(res, d);
   return res;
