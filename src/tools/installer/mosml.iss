@@ -85,6 +85,8 @@ Name : "{userdesktop}\Moscow ML" ; FileName : "{app}\bin\mosml.exe" ; Parameters
 [Registry]
 ; Set environment variables on Windows NT, Windows 2000
 Root: HKCU ; Subkey : "Environment"; ValueType : string ; ValueName : "MOSMLLIB"; ValueData : "{app}\lib"; Flags: uninsdeletevalue; MinVersion : 0,3.51
+Root: HKCU ; Subkey : "Environment"; ValueType : string ; ValueName : "MOSMLBIN"; ValueData : "{app}\bin"; Flags: uninsdeletevalue; MinVersion : 0,3.51
+; Use MOSMLBIN instead of {app}\bin
 Root: HKCU ; Subkey : "Environment"; ValueType : expandsz ; ValueName : "Path"; ValueData : "{olddata};{app}\bin"; MinVersion : 0,3.51
 
 ; The following two lines are system-wide installation
