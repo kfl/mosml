@@ -407,9 +407,10 @@ val htmlencode : string -> string
    HTML encoding functions:
 
    [urlencode s] returns the url-encoding of s.  That is, space (ASCII 32) 
-   is replaced by `+' and every non-alphanumeric character c except 
-   the characters - _ . is replaced by %hh, where hh is the hexadecimal 
-   representation of the ASCII code of c.
+   is replaced by `+' and every non-alphanumeric character c except
+   the three characters hyphen (-), underscore (_) and full stop (.)
+   is replaced by %hh, where hh is the hexadecimal representation of
+   the ASCII code of c.
 
    [htmlencode s] returns the html-encoding of s.  That is, < and >
    are replaced by &lt; and &gt; respectively, and & is replaced by 

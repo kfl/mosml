@@ -578,3 +578,30 @@ quote (") and the asterisk (*) in the closing comment bracket.
    SML/NJ: yes (but this makes lexing 
 
 ?2 Should a #line directive inside a comment be ignored?  In SML/NJ: yes.
+
+
+* 2000-09-22 Jeremy Dawson:
+
+- datatype thing = / of int * int ;
+datatype thing = / of int * int
+- infix / ; 
+infix /
+- 1 / 2;
+val it = 1 / 2 : thing
+
+I find the SML/NJ output easier.
+Would it be worth considering for MosML?
+
+
+* 2000-09-22 Jeremy Dawson:
+
+The command 
+mosmlc -c a.sml b.sml c.sml d.sml e.sml f.sml g.sml h.sml i.sml j.sml
+compiles all these files, in such a way that
+load "j" ; 
+loads all the others even though it doesn't depend on them.
+Is there a reason for this?
+If so, could the fact be mentioned in the documentation?
+(At present, when load "x" can cause behaviour that bears no relation
+to anything in x.sml or any other unit that x depends on,
+which is very difficult to diagnose).

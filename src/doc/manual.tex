@@ -1,4 +1,4 @@
-% manual.tex v. 2.00.4 Copyright (C) Peter Sestoft 1994, 2000-07-20
+% manual.tex v. 2.00.5 Copyright (C) Peter Sestoft 1994, 2000-09-22
 %
 % You may edit for lay-out, or leave out irrelevant sections (if
 % such omissions are marked somehow), but you may not redistribute the
@@ -640,7 +640,7 @@ compilation units; see Section~\ref{sec-compilation-units}.
   listed in $opnunits$ are added to the compilation context in
   which the specifications in U.sig are compiled.
   
-  Evaluating \texttt{compileStructure $opnunits$ "{\rm U.sml}"
+  Evaluating \texttt{compileToplevel $opnunits$ "{\rm U.sml}"
     } will elaborate and compile the declarations in file U.sig in
   toplevel mode, producing a bytecode file U.uo.  The contents of the
   units listed in $opnunits$ are added to the compilation
@@ -781,14 +781,6 @@ compilation units; see Section~\ref{sec-compilation-units}.
     quotation} is {\tt true}, the backquote character is illegal in
   symbolic identifiers, and a quotation {\tt `a b c`} will be
   evaluated to an object of type {\tt 'a frag list}.
-
-\item[{\tt system :\ string -> int}]\mbox{ }
-
-  Evaluating {\tt system "$com$"} causes the command $com$ to be
-  executed by the operating system.  If a non-zero integer is
-  returned, this must indicate that the operating system has failed to
-  execute the command.  Under MS DOS, the integer returned always
-  equals 0.
 
 \item[{\tt use :\ string -> unit}]\mbox{ }
 

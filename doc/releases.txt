@@ -241,3 +241,7 @@ Moscow ML release history
     * Socket.select timeout was wrong
     * Moved exnName and exnMessage to General (where they belong)
 
+2.01 (?)
+  * Bugs fixed:
+    * The generated HTML for mosmllib now has valid URLs
+    * Substring.app more efficient

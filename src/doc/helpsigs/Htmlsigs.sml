@@ -118,17 +118,6 @@ fun processSig db version bgcolor sigfile htmlfile =
 	fun name anchor target = 
 	    (out "<A NAME=\""; out target; out "\">"; out anchor; out "</A>")
 
-(*	fun definition susline =
-	    let open Substring
-		val (id, rest) = splitl smlIdChar (triml 4 susline)
-	    in
-		if isEmpty id then (* no identifier defined here *)
-		    outSubstr susline
-		else
-		    (out "   ["; nameSubstr id id; outSubstr rest)
-	    end
-*)
-
 	fun idhref link id = 
 	    (out "<A HREF=\"#"; out link; out "\">"; out id; out"</A>")
 
@@ -146,7 +135,7 @@ fun processSig db version bgcolor sigfile htmlfile =
 		if id="" then () 
 		else if Polyhash.peek anchors link = NONE then 
 		    out id
-		else idhref link id;
+		else idhref (Msp.urlencode link) id;
 		outSubstr after
 	    end
 
@@ -155,7 +144,7 @@ fun processSig db version bgcolor sigfile htmlfile =
 	fun outisdef susline id after comp = 
 	    let open Substring 
 		fun namebold id s =
-		    (out "<A NAME=\""; out id; out "-"; out s; 
+		    (out "<A NAME=\""; out (Msp.urlencode (id ^ "-" ^ s)); 
 		     out "\"><B>"; out id; out "</B></A>")
 		val preflen = size susline - size after - String.size id
 		val pref = slice(susline, 0, SOME preflen)
@@ -200,7 +189,7 @@ fun processSig db version bgcolor sigfile htmlfile =
 	    let fun loop []        lineno = ()
 		  | loop (ln::lnr) lineno = 
 		    (process ln lineno; loop lnr (lineno+1))
-	    in loop lines 1 end
+	    in loop lines 0 end
     in
 	print "Creating "; print htmlfile; print " from "; 
 	print sigfile; print "\n"; 
@@ -293,7 +282,7 @@ fun printHTMLBase version bgcolor (sigfile, outfile) =
 	    let val key = Database.getname e1
 	    in 
 		separator (String.sub(key, 0));
-		out "<LI><B>"; out key; out "</B> (";
+		out "<LI><B>"; out (Msp.htmlencode key); out "</B> (";
 		(case comp of
 		     Str    => strhref key "structure"
 		   | Val id => (out "value; ";       
