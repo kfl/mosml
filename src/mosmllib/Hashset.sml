@@ -135,7 +135,7 @@ fun all p (HT{table, ...}) =
     end
 
 fun exists p (HT{table, ...}) = 
-    let fun existsF NIL               = true
+    let fun existsF NIL               = false
 	  | existsF (B(_, key, rest)) = p key orelse existsF rest
     in
 	Array.exists existsF (!table)

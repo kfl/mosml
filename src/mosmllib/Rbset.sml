@@ -327,8 +327,13 @@ struct
 
   fun mapMono (f, compare) s =
       let val fxs = foldl (fn (x, res) => f x :: res) [] s
+	  fun sorted []         = true
+	    | sorted (y1 :: yr) = 
+	      let fun h x0 []       = true
+		    | h x0 (x1::xr) = compare(x0, x1) = LESS andalso h x1 xr
+	      in h y1 yr end
       in 
-	  if Listsort.sorted compare fxs then
+	  if sorted fxs then
 	      fromSortedList (compare, fxs)
 	  else
 	      raise NonMonotonic

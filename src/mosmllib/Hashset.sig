@@ -81,10 +81,10 @@ end
    hashcodes of its elements, as computed by the hash function given
    when the set was created.  
 
-   [polyHash v] returns a systemdefined hashcode for the value v.
+   [polyHash v] returns a system-defined hashcode for the value v.
    This pseudo-polymorphic hash function can be used together with the
-   standard equality function (=) to create a Hashset for any equality
-   type, as follows:
+   standard equality function (=) to create a Hashset for any type that 
+   admits equality, as follows:
 
        val set = Hashset.empty (Hashset.hash, op =);
 *)
