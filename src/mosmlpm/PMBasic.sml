@@ -19,7 +19,7 @@ struct
 	infix 0 ||
 
 	fun fileChar c = Char.isAlphaNum c 
-			 orelse c = #"_" orelse c = #"/" orelse c = #"."
+			 orelse c = #"_" orelse c = #"/" orelse c = #"-" orelse c = #"."
 
 	val fileName = getChars1 fileChar 
     

@@ -28,42 +28,33 @@ Note about the PM prototype
 
 * All filenames are transformed to be fullpath'ed
 
-* Changes made to the kit 
-  + Parsing/Topdec.grm.sig renamed to Parsing/Topdec.grm.sig.sml (also
-    in Common/common.pm) 
-  + Order of constructures changed in Common/SCon.sml 
-  + Order of constructures changed in Common/PrettyPrint.sml 
-  + changed substring to String.substring in Parsing/Topdec.lex.sml
-  + Changed Word32 to Word in Compiler/Backend/
-    {CLOS_EXP.sig,ClosExp.sml,LINE_STMT.sml,LineStmt.sml,BACKEND_INFO.sml,
-     CalcOffset.sml,HpPaRisc/BackendInfo.sml,HpPaRisc/CodeGen.sml}
-    can easy be reverted by replaceing (*Word32*)Word with Word32
-  + Order of constructures changed in Compiler/Lambda/CompilerEnv.sml
-  + Order of constructures changed in Compiler/Kam/CompLambEnv.sml
-  + Order of constructures changed in Compiler/Cfg/CfgInst.sml
-  + Changed `Int.toString status' to `"0"' on line 128 in
+* 5/5 - 2000: Changes made to the kit so as it can be compiled with mosml 1.99
+  + Made a mosmlhacks.pm file.  The only thing in there now is the
+    Word32 hack.
+  + Added Compiler/compilerx86.pm
+  + Used mosmlhack.pm in Compiler/compilerx86.pm
+  + Changed sources.pm to use Compiler/compilerx86.pm and 
+    Compiler/Backend/X86/ExecutionX86.sml
+  + Changes from Martin in basislib/Initial.sml
+  + Changed 
+	    val garbage_collection = ref true
+    to
+	    val garbage_collection = ref false
+    in src/Common/Flags.sml
+  + Changed substring to String.substring in Parsing/Topdec.lex.sml
+  + Changed `status' to `~1' on line 128 in
     Manager/ManagerObjects.sml
-  + Renamed Edlib/List.uo Edlib/edList.uo
-  + Renamed Edlib/ListPair.uo Edlib/edListPair.uo
-  + Renamed Common/BasicIO.sml Common/comBasicIO.sml
+  + Renamed Edlib/List.sml Edlib/edList.sml
+    and Edlib/ListPair.sml Edlib/edListPair.sml
+    (cvs rm List.sml ListPair.sml; cvs add edList.sml edListPair.sml)
+  + Parsing/Topdec.grm.sig renamed to Parsing/Topdec.grm-sig.sml (also
+    in Common/common.pm) 
+    (cvs rm Topdec.grm.sig; cvs add Topdec.grm-sig.sml)
+  + Renamed Common/BasicIO.sml Common/commonBasicIO.sml
+  + Corrected a sharing spec bug (not decteded by sml/nj) in
+    Compiler/Backend/X86/CodeGenX86.sml
 
-  Changed back these (and changed mosml instead)
-  * Lots of "IO." commented out in Common/Flags.sml 
-  * Changed IO.Io to Io in Compiler/Backend/HpPaRisc/CodeGen.sml
-  * Changed IO.Io to Io in Manager/{IntModules.sml,ParserElab.sml,
-    Manager.sml}
-  * Commented out lots of "OS." in
-    Common/EfficientElab/ModuleEnvironment.sml
-  * Commented out lots of "OS." in Common/KitCompiler.sml
-  * Commented out "OS." in Manager/{IntModules.sml,ManagerObjects.sml,
-    Manager.sml}
-
-  
-  Most of these errors can be boiled down to:
-  + Mosml's basic library should be updated now that nested structures
-    are allowed. For the Kit especially the OS structure sould be
-    extended, and the Io exception should be in the IO structure.
-  + The order of constructures in datatype declarations matters. 
+  Many of these errors can be boiled down to:
   + We need a way to rename a compilation unit
 
 
