@@ -1,4 +1,4 @@
-% manual.tex v. 2.00.0 Copyright (C) Peter Sestoft 1994, 2000-06-26
+% manual.tex v. 2.00.0 Copyright (C) Peter Sestoft 1994, 2000-06-28
 %
 % You may edit for lay-out, or leave out irrelevant sections (if
 % such omissions are marked somehow), but you may not redistribute the
@@ -27,7 +27,7 @@
 
   {\huge\bf Moscow ML Owner's Manual}\\[0.5cm]
 
-Version 2.00 of June 2000 --- draft 2000-06-26\\[0.5cm]
+Version 2.00 of June 2000\\[0.5cm]
 
 Sergei Romanenko, Russian Academy of Sciences, Moscow, Russia\\
 Claudio Russo, Cambridge University, Cambridge, United Kingdom\\
@@ -607,16 +607,16 @@ compilation units; see Section~\ref{sec-compilation-units}.
 
 \item[{\tt compileStructure :\ string list -> string -> unit}]\mbox{ }
   
-  Evaluating \texttt{compileStructure \textit{opnunits} "{\rm U.sig}"
+  Evaluating \texttt{compileStructure $opnunits$ "{\rm U.sig}"
     } will elaborate and compile the specifications in file U.sig in
   structure mode, producing a compiled signature U in file U.ui.  The
-  units listed in \textit{opnunits} are added to the compilation
+  units listed in $opnunits$ are added to the compilation
   context in which the specifications in U.sig are compiled.  
   
-  Evaluating \texttt{compileStructure \textit{opnunits} "{\rm U.sml}"
+  Evaluating \texttt{compileStructure $opnunits$ "{\rm U.sml}"
     } will elaborate and compile the declarations in file U.sig in
   structure mode, producing a compiled structure U in bytecode file
-  U.uo.  The contents of the units listed in \textit{opnunits} are
+  U.uo.  The contents of the units listed in $opnunits$ are
   added to the compilation context in which the declarations in U.sml
   are compiled.  If there is an explicit signature U.sig, then file
   U.ui must exist, and the structure must match the signature.  If
@@ -626,16 +626,16 @@ compilation units; see Section~\ref{sec-compilation-units}.
 
 \item[{\tt compileToplevel :\ string list -> string -> unit}]\mbox{ }
   
-  Evaluating \texttt{compileToplevel \textit{opnunits} "{\rm U.sig}" }
+  Evaluating \texttt{compileToplevel $opnunits$ "{\rm U.sig}" }
   will elaborate and compile the specifications in file U.sig in
   toplevel mode, producing a compiled interface file U.ui.  The units
-  listed in \textit{opnunits} are added to the compilation context in
+  listed in $opnunits$ are added to the compilation context in
   which the specifications in U.sig are compiled.
   
-  Evaluating \texttt{compileStructure \textit{opnunits} "{\rm U.sml}"
+  Evaluating \texttt{compileStructure $opnunits$ "{\rm U.sml}"
     } will elaborate and compile the declarations in file U.sig in
   toplevel mode, producing a bytecode file U.uo.  The contents of the
-  units listed in \textit{opnunits} are added to the compilation
+  units listed in $opnunits$ are added to the compilation
   context in which the declarations in U.sml are compiled.  If there
   is an explicit signature U.sig, then file U.ui must exist, and
   declarations must match the interface.  If there is no U.sig, then
@@ -1371,9 +1371,10 @@ access to the internals of U.sml, only to the signature U.sig.
 \section{Toplevel-mode compilation units}
 \label{sec-toplevel-mode}
 
-A toplevel-mode compilation unit may contain arbitrary Moscow ML toplevel declarations,
-and consequently, arbitrary Standard ML toplevel declarations (including functor, 
-signature and fixity declarations). 
+A toplevel-mode compilation unit may contain arbitrary Moscow ML
+toplevel declarations, and consequently, arbitrary Standard ML
+toplevel declarations (including functor, signature and fixity
+declarations).
 
 
 \subsection{Basic concepts}
@@ -1417,7 +1418,7 @@ mosml
 \noindent In contrast to a structure-mode unit, the
 unit interface \texttt{unitid.sig} should not be loaded in the
 interactive system, as it declares nothing.  If there is no
-\texttt{unitid.sig}, then leave it out on the \texttt{mosmlc} command
+\texttt{unitid.sig}, then leave it out in the \texttt{mosmlc} command
 above.
 
 More generally, when a toplevel compilation unit depends on a number
@@ -1441,6 +1442,11 @@ mosml
 > load "unitid";
 \end{program}
 
+\noindent 
+Again, if there is no \texttt{unitid.sig}, then leave it out in the
+\texttt{mosmlc} command above.
+
+
 \newpage
 \section{An example program consisting of four mixed-mode units}
 \label{sec-example-mixed-units}
@@ -1450,11 +1456,11 @@ with arithmetic expressions.  It consists of two structure-mode units, {\tt Expr
 and {\tt Reduce} and two toplevel-mode units, {\tt Evaluate} and {\tt Test}.  This example is in {\tt
   mosml/examples/units}.
 
-File {\tt Expr.sml} below, is a structure-mode implementation that 
-contains structure {\tt Expr} which defines
-a datatype {\tt expr} for representing expressions and a function {\tt
- show} to display them.  It has no signature constraint and therefore
-exports both the datatype and the function:
+File {\tt Expr.sml} below is a structure-mode unit implementation that
+contains structure {\tt Expr} which defines a datatype {\tt expr} for
+representing expressions and a function {\tt show} to display them.
+It has no signature constraint and therefore exports both the datatype
+and the function:
 
 \begin{program}
 structure Expr = struct
@@ -1466,8 +1472,8 @@ structure Expr = struct
 end
 \end{program}
 
-\noindent File {\tt Reduce.sig} below is a structure-mode interface 
-  that contains the signature  {\tt Reduce}:
+\noindent File {\tt Reduce.sig} below is a structure-mode unit interface 
+that contains the signature {\tt Reduce}:
 
 \begin{program}
 signature Reduce = sig
@@ -1475,10 +1481,11 @@ signature Reduce = sig
 end
 \end{program}
 
-\noindent File {\tt Reduce.sml} below is a structure-mode implementation 
-  that declares the structure {\tt  Reduce}, 
-  with the explicit signature shown above, and therefore
-  exports only the function {\tt reduce} specified in that signature:
+\noindent 
+File {\tt Reduce.sml} below is a structure-mode unit implementation
+that declares the structure {\tt Reduce}, with the explicit signature
+shown above, and therefore exports only the function {\tt reduce}
+specified in that signature:
 
 \begin{program}
 structure Reduce :> Reduce = struct 
@@ -1497,7 +1504,7 @@ end
 \end{program}
 
 \noindent 
-File {\tt Evaluate.sig} below is a toplevel-mode interface that
+File {\tt Evaluate.sig} below is a toplevel-mode unit interface that
 contains the specification of a functor {\tt Eval}, which maps any
 structure {\tt R} matching the signature {\tt Reduce} to a structure
 with a function {\tt eval} for evaluating expressions, and a function
@@ -1510,8 +1517,10 @@ functor Eval : functor(R:Reduce) ->
                  end
 \end{program}
 
-\noindent File {\tt Evaluate.sml} below is a toplevel mode-implementation that contains the actual functor {\tt
-  Eval}, which mentions the unit {\tt Expr} as well as well as the unit interface {\tt Reduce}:
+\noindent
+File {\tt Evaluate.sml} below is a toplevel-mode unit implementation
+that contains the actual functor {\tt Eval}, which mentions the unit
+{\tt Expr} as well as well as the unit interface {\tt Reduce}:
 
 \begin{program}
 functor Eval(R:Reduce) =
@@ -1525,10 +1534,11 @@ struct
 end
 \end{program}
 
-\noindent File {\tt Test.sml} (a toplevel unit implementation)
-  which mentions the unit {\tt Expr}, the unit {\tt Reduce}, and the functor {\tt Eval}
-  defined in the unit {\tt Evaluate},
-  applies the functor to {\tt Reduce} and carries out two tests.
+\noindent 
+File {\tt Test.sml} is a toplevel-mode unit implementation which
+mentions the unit {\tt Expr}, the unit {\tt Reduce}, and the functor
+{\tt Eval} defined in the unit {\tt Evaluate}, applies the functor to
+{\tt Reduce} and carries out two tests:
 
 \begin{program}
 structure T = Eval(Reduce)
@@ -1540,11 +1550,11 @@ val t2 = T.test (Neg (Plus (Neg (Cst 140), Cst 0)))
 \noindent The simplest way to compile this example is to enter:
 
 \begin{program}
-mosmlc -structure Expr.sml Reduce.sig Reduce.sml -toplevel Evaluate.sig Evaluate.sml Test.sml
+mosmlc -c -structure Expr.sml Reduce.sig Reduce.sml -toplevel Evaluate.sig Evaluate.sml Test.sml
 \end{program}
 
 \noindent
-which is equivalent to issuing the individual commands:
+which is equivalent to issuing the following individual commands:
 \begin{program}
 mosmlc -c -structure Expr.sml 
 mosmlc -c -structure Expr.ui Reduce.sig 
@@ -1554,10 +1564,27 @@ mosmlc -c -toplevel Expr.ui Reduce.ui Evaluate.sml
 mosmlc -c -toplevel Expr.ui Reduce.ui Evaluate.ui Test.sml 
 \end{program}
 
-\noindent and, therefore, does not avoid unnecessary recompilation steps.
+\noindent 
+The above command (re)compiles all files unconditionally.  However,
+when modifying a program consisting of several units, it suffices to
+recompile just those units that have changed, and those units that
+depend on units that have changed.  Moreover, compilation uses only
+the \emph{interfaces} of other units, so it suffices to recompile just
+those units that depend on unit interfaces that have changed.
+
+Thus if \texttt{Expr.sml} but not \texttt{Expr.sig} changes, it
+suffices to recompile just \texttt{Expr.sml}, not the units
+\texttt{Reduce}, \texttt{Evaluate}, or \texttt{Test}\@.  Similarly, if
+\texttt{Reduce.sml} but not \texttt{Reduce.sig} changes, it suffices
+to recompile just \texttt{Reduce.sml}, not the units \texttt{Evaluate}
+or \texttt{Test}\@.
+
+The next section explains recompilation management using
+\texttt{mosmldep} and \texttt{make}.
+
 
 \newpage
-\section{Recompilation management using {\tt mosmldep} and {\tt make}}
+\section{Recompilation management using mosmldep and make}
 \label{sec-mixed-mode-recompilation}
 
 Recompilation management helps the programmer recompile only what is
@@ -1583,9 +1610,10 @@ that directory.
 UNITS=-structure Expr Reduce -toplevel Evaluate Test
 \end{program}
 
-\item\label{one} Edit the Makefile so that the names of the bytecode files
-  {\tt Expr.uo}, {\tt Evaluate.uo} and {\tt Reduce.uo} and {\tt Test.uo} appear on the line beginning
-  with `{\tt all:}':
+\item\label{one} Edit the Makefile so that the names of the compiled
+  unit implementation files {\tt Expr.uo}, {\tt Evaluate.uo}, {\tt
+    Reduce.uo} and {\tt Test.uo} appear on the line beginning with
+  `{\tt all:}':
 
 \begin{program}
 all: Expr.uo Reduce.uo Evaluate.uo Test.uo
@@ -1632,12 +1660,13 @@ their compilation mode):
 UNITS= -structure Expr Evaluate -toplevel Reduce Test
 \end{program}
 
-\noindent {\tt mosmldep} merely constructs a dependency file on the
-assumption that units to the right depend on all preceding units,
-taking into account the presence of explicit interfaces ({\tt .sig}
-files).  Unfortunately, this means that {\tt mosmldep} will generally
-create an inefficient Makefile, containing more dependencies than are
-actually in your source files.  However, it still saves some
+\noindent 
+then {\tt mosmldep} merely constructs a dependency file on the
+assumption that a unit may depend on all preceding units (to the
+left), taking into account the presence of explicit interfaces ({\tt
+  .sig} files).  Unfortunately, this means that {\tt mosmldep} will
+generally create an inefficient Makefile, containing more dependencies
+than are actually in your source files.  However, it still saves some
 recompilation (which is cheap in Moscow ML anyway) and is more
 convenient than hand-crafting the Makefile.  We hope to improve on
 this situation in the future, but computing dependencies for full
@@ -1840,16 +1869,36 @@ executable).
 \noindent 
 The output of the linking phase is a file containing compiled code
 that can be executed by the runtime system {\tt camlrunm}.  If {\tt
-  mosmlout} is the name of the file produced by the linking phase, the
-command
+  mosmlout} is the name of the file produced by the linking phase
+(with option \texttt{-o mosmlout}), the command
 
 \begin{program}
-camlrunm mosmlout arg\sub{1} arg\sub{2} \ldots\ arg\sub{n}
+mosmlout arg\sub{1} arg\sub{2} \ldots\ arg\sub{n}
 \end{program}
 
-\noindent executes the compiled code contained in {\tt mosml.out}.
-The list of arguments can be obtained in a program by evaluating the
-expression {\tt CommandLine.arguments ()}.
+\noindent executes the compiled code contained in {\tt mosmlout}.
+Executing the code means executing the toplevel declarations of all
+the bytecode files involved, in the order in which they were linked.
+The list of command-line arguments \texttt{arg\sub{1} \ldots\ 
+  arg\sub{n}} can be obtained in a program by {\tt
+  CommandLine.arguments ()}.
+
+There is no distinguished function which is automatically invoked when
+the program is executed, but it is common to define a \texttt{main}
+function and invoke it using the toplevel declaration \texttt{val \_ =
+  main()}, like this:
+
+\begin{program}
+fun main () = 
+    case CommandLine.arguments () of 
+        [arg] => print ("The argument is " ^ arg ^ "\verb+\+n")
+      | _     => print "Usage: mosmlout arg\verb+\+n\verb+\+n"
+
+val _ = main ();
+\end{program}
+
+
+
 
 \begin{description}
 \item[MS Windows and DOS:] If the output file produced by the linking
@@ -2186,11 +2235,11 @@ structure R3 = F3(functor(X:sig type t=int val x:t end)=>
 \noindent 
 In the definition of {\tt R3}, the argument to {\tt F3} happens to be an anonymous functor.
 
-
-Wherever a functor of a certain type is expected, a
-functor that has more a general type, ie.\  that is more polymorphic, 
-expects a less general argument or produces a more general result, 
-may be supplied instead:
+\noindent 
+Wherever a functor of a certain type is expected, one may supply
+instead a functor that has more a general type, that is, one which is
+more polymorphic, expects a less general argument, or produces a more
+general result:
 
 \begin{program}
 (* F3  is applied to a more general functor than it specifically requires *)
@@ -2199,7 +2248,6 @@ structure R4 = F3(functor(X:sig type t end)=>
 \end{program}
 
 \noindent 
-
 As in Standard ML, functors and structures reside in separate name spaces,
 so it is perfectly legal to re-use the same name for both a structure and a functor, without
 one hiding the other:
@@ -2219,7 +2267,7 @@ functor P () = M
 \end{program}
 
 \noindent
-it is not clear whether {\tt M} refers to the structure {\tt M} or the functor {\tt M}. 
+it is not clear whether {\tt M} refers to the structure {\tt M} or the functor {\tt M}\@. 
 In this ambiguous case, Moscow ML always interprets 
 {\tt M}, on its own, as a structure, but you can write {\tt op M}
 to refer to the functor {\tt M} instead:
@@ -2228,7 +2276,7 @@ functor P () = M      (* P returns the structure M *)
 functor Q () = op M   (* Q returns the functor M *) 
 \end{program}
 
-
+\noindent 
 The files {\tt mosml/examples/modules/\{poly.sml,bootstrap.sml\}} contain
 examples that use higher-order functors.
 
@@ -2289,7 +2337,7 @@ type expression, which is useful for expressing sharing constraints:
 
 \begin{program}
 signature S = sig functor F: functor X:sig type t end -> sig type u end
-                  type v = X.u where X = F(type t = int)           (* X is local to X.u*)
+                  type v = X.u where X = F(type t = int)          (* X is local to X.u *)
               end
 \end{program}
 
@@ -2635,7 +2683,7 @@ is, an expression in normal form.  For example, the right-hand side
 {\tt length} below is an identifier, and so is non-expansive.  Hence
 the free type variable {\tt 'a} in the type {\tt 'a list -> int} of
 {\tt x} becomes generalized, as shown by the occurrence of \texttt{'a}
-right after \texttt{val}:
+between \texttt{val} and \texttt{x}:
 
 \begin{program}
 - val x = length;
@@ -3482,9 +3530,9 @@ copyrght/copyrght.cl.\\[2ex]
 \item Inspiration from the SML/NJ compiler developed at Princeton
   University and AT\&T/Lucent Bell Laboratories, New Jersey,
   USA.
-\item Feedback, contributions, or proposals for new features from
-  Jonas Barklund, Mike Gordon, Ken Friis Larsen, Michael Norrish,
-  Konrad Slind, and numerous other people.
+\item Feedback, contributions, and useful suggestions, in particular
+  from Ken Friis Larsen, but also from Jonas Barklund, Mike Gordon,
+  Michael Norrish, Konrad Slind, and numerous other people.
 \end{itemize}
 \end{description}
 

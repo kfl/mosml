@@ -1,4 +1,4 @@
-% mosmlref.tex v. 2.00.0 Copyright (C) Peter Sestoft 1994, 2000-06-15
+% mosmlref.tex v. 2.00.0 Copyright (C) Peter Sestoft 1994, 2000-06-28
 %
 % You may edit for lay-out, or leave out irrelevant sections (if
 % such omissions are marked somehow), but you may not redistribute the
@@ -52,7 +52,10 @@ Copenhagen, Denmark
 \noindent This is a compact reference to the language implemented by
 Moscow ML, a superset of Standard ML\@.  For reference material on
 Standard ML, see Milner, Tofte, Harper and MacQueen: {\em The
-  Definition of Standard ML\/}, The MIT Press 1997. 
+  Definition of Standard ML\/}, The MIT Press 1997.  For a guide to
+the practical use of Moscow ML, see the \emph{Moscow ML Owner's
+  Manual}.  For a detailed description of all Moscow ML library
+modules, see the \emph{Moscow ML Library Documentation}.
 
 
 % {\bf Acknowledgements:} The present document owes a lot to the {\em
@@ -84,14 +87,16 @@ Moscow ML program, and Moscow ML may be used as if it were simply
 a Standard ML compiler. Any deviation from this behaviour should be reported
 as a bug.
 
-To facilitate the production of code that complies with Standard ML,
-both the batch compiler {\tt mosmlc} and the interactive system {\tt mosml}
-accept the command line options {\tt -orthodox}, {\tt -conservative}
-and {\tt -liberal}, which cause the compiler and interactive system to respectively reject, deprecate with a warning, or silently accept any Moscow ML  specific 
-extensions of Standard ML. The default compliance level
-is {\tt -conservative}. In the interactive system,
-the compliance level may be set interactively using the functions 
-{\tt orthodox}, {\tt conservative} and {\tt liberal} of type {\tt unit -> unit}. 
+% To facilitate the production of code that complies with Standard ML,
+% both the batch compiler {\tt mosmlc} and the interactive system {\tt
+%   mosml} accept the command line options {\tt -orthodox}, {\tt
+%   -conservative} and {\tt -liberal}, which cause the compiler and
+% interactive system to respectively reject, deprecate with a warning,
+% or silently accept any Moscow ML specific extensions of Standard ML.
+% The default compliance level is {\tt -conservative}. In the
+% interactive system, the compliance level may be set interactively
+% using the functions {\tt orthodox}, {\tt conservative} and {\tt
+%   liberal} of type {\tt unit -> unit}.
 
 \section{Reserved words}
 \label{sec-reserved-words}
@@ -302,6 +307,7 @@ mode from an explicit interface {\tt unitid.sig}.
 
 \end{itemize}
 
+\newpage
 \section{Infixed operators}
 \label{sec-infixed-operators}
 
@@ -1477,9 +1483,10 @@ indicated as follows:
     mosml/doc/mosmllib/index.html
 \end{verbatim}
 
-\item On the World Wide Web the same pages are online at\\
-    \url{http://www.dina.kvl.dk/~sestoft/mosmllib/index.html}
-
+\item On the World Wide Web the same pages are online at
+\begin{alltt}
+    \url{http://www.dina.kvl.dk/~sestoft/mosmllib/index.html}    
+\end{alltt}
   
   If you do not have the HTML pages, you may download them from the
   Moscow ML home page.
@@ -1780,7 +1787,7 @@ and concatenate\\\hline
 \end{itemize}
 
 
-\subsection*{Vector manipulation functions (module {\tt Vector})}
+\newpage\subsection*{Vector manipulation functions (module {\tt Vector})}
 
 Type {\tt 'a vector} is the type of one-dimensional, immutable,
 zero-based constant time access vectors with elements of type {\tt
