@@ -1358,3 +1358,9 @@ crashes (Andreas Jonasson, Gothenburg).
 The dblalign.c script must be compiled with option -O2 to behave like
 the production system, and has been made more complicated to provoke
 gcc-3.2 to fail.
+
+* 2003-02-26
+
+Random.newgenseed 0.0
+ 
+creates a generator which causes Random.random to always return 0.0
