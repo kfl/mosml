@@ -1620,10 +1620,14 @@ value sml_sleep(value vtime)	/* ML */
   double time = Double_val(vtime);
   unsigned long sec = (long)(time/1000000.0);
   unsigned long usec = (long)(time - 1000000.0 * sec);
+#ifdef Win32
+/* cvr: how do you do this on win32 */
+#else
   if (time > 0) {
     sleep(sec);
     usleep(usec);
-  }        
+  } 
+#endif       
   return Val_unit;
 }
 
