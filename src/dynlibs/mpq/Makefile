@@ -4,14 +4,14 @@
 # The PostgreSQL C library interface must be installed.
 
 # Where to find the PostgreSQL header file and compiled library
+# Note: Linux distributions vary widely in the PGSQLLIBDIR and PGSQLINCDIR
 
-PGSQLLIBDIR=/usr/lib/mysql
-PGSQLINCDIR=/usr/include/mysql
-PGSQLDIR=/usr/local/pgsql
+PGSQLLIBDIR=/usr/lib
+PGSQLINCDIR=/usr/include/pgsql
 include ../../Makefile.inc
 
 OPTS=-fno-defer-pop
-CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I../../runtime -I ${PGSQLDIR}/include
+CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I../../runtime -I ${PGSQLINCDIR}
 
 MOSMLHOME=${HOME}/mosml
 MOSMLTOOLS=camlrunm $(MOSMLHOME)/tools
@@ -28,8 +28,8 @@ mpq.o: mpq.c
 
 libmpq.so: mpq.o
 # Some recent Linux distributions need this:
-	$(DYNLD) -lcrypt -o libmpq.so mpq.o ${PGSQLDIR}/lib/libpq.a
-#	$(DYNLD) -o libmpq.so mpq.o ${PGSQLDIR}/lib/libpq.a
+	$(DYNLD) -lcrypt -o libmpq.so mpq.o ${PGSQLLIBDIR}/libpq.a
+#	$(DYNLD) -o libmpq.so mpq.o ${PGSQLLIBDIR}/libpq.a
 
 install:
 	cp libmpq.so $(BINDIR)
