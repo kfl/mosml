@@ -1,5 +1,5 @@
 (* test/array.sml -- some test cases for Array 
-   PS 1994-12-10, 1995-06-14, 1995-11-07 *)
+   PS 1994-12-10, 1995-06-14, 1995-11-07, 2000-10-18 *)
 
 use "auxil.sml";
 
@@ -349,4 +349,42 @@ val test16g = (modifyi (op+) (inp, 2, SOME ~1) seq "WRONG")
            handle Subscript => "OK" | _ => "WRONG";
 end
 
+val test17 = 
+    check'(fn _ =>
+	   let fun invcompare (c1, c2) = Char.compare (c2, c1) 
+	       fun coll s1 s2 = 
+		   collate invcompare (fromList (explode s1), 
+				       fromList (explode s2))
+	   in 
+	       coll "" "" = EQUAL
+	       andalso coll "" " " = LESS
+	       andalso coll " " "" = GREATER
+	       andalso coll "ABCD" "ABCD" = EQUAL
+	       andalso coll "ABCD" "ABCD " = LESS
+	       andalso coll "ABCD " "ABCD" = GREATER
+	       andalso coll "B" "ABCD" = LESS
+	       andalso coll "ABCD" "B" = GREATER
+	       andalso coll "CCCB" "CCCABCD" = LESS
+	       andalso coll "CCCABCD" "CCCB" = GREATER
+	       andalso coll "CCCB" "CCCA" = LESS
+	       andalso coll "CCCA" "CCCB" = GREATER
+	   end)
+
+val test18 = 
+    check'(fn _ => 
+	   NONE = find (fn i => i>61) a
+	   andalso SOME 51 = find (fn i => i>41) a
+	   andalso NONE = find (fn _ => true) array0);
+
+val test19 = 
+    check'(fn _ => 
+	   not (exists (fn i => i>61) a)
+	   andalso exists (fn i => i>41) a
+	   andalso not (exists (fn _ => true) array0));
+
+val test20 = 
+    check'(fn _ => 
+	   not (all (fn i => i<61) a)
+	   andalso all (fn i => i<62) a
+	   andalso all (fn _ => false) array0);
 end

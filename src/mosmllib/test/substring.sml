@@ -1,4 +1,4 @@
-(* test/substring.sml 1995-04-27, 1997-06-03, 1999-03-02 *)
+(* test/substring.sml 1995-04-27, 1997-06-03, 1999-03-02, 2000-10-17 *)
 
 use "auxil.sml";
 
@@ -8,8 +8,8 @@ local
 
     val s1 = ""				(* String.size s1 =  0 *)
     and s2 = "ABCDE\tFGHI";		(* String.size s2 = 10 *)
-    val ss1 = all s1			(* size s1 =  0 *)
-    and ss2 = all s2;			(* size s2 = 10 *)
+    val ss1 = full s1			(* size s1 =  0 *)
+    and ss2 = full s2;			(* size s2 = 10 *)
 
     val sa = "AAAAaAbAABBBB";		(* String.size sa = 14 *)
     (*            45678      *)
@@ -51,8 +51,8 @@ val test1h =
     check'(fn _ =>
 	   string ssa1 = ""
 	   andalso string ssa2 = "aAbAA"
-	   andalso s1 = string (all s1) 
-	   andalso s2 = string (all s2));
+	   andalso s1 = string (full s1) 
+	   andalso s2 = string (full s2));
 
 val test2a = 
     check'(fn _ => 
@@ -180,8 +180,8 @@ val test14 =
 	   andalso GREATER = compare(ssa2, triml 1 ssa2)
 	   andalso LESS = compare(trimr 1 ssa2, ssa2)
 	   andalso GREATER = compare(ssa2, trimr 1 ssa2)
-	   andalso LESS = compare(all "AB", ssa2)
-	   andalso GREATER = compare(ssa2, all "AB"));
+	   andalso LESS = compare(full "AB", ssa2)
+	   andalso GREATER = compare(ssa2, full "AB"));
 
 fun finda c = c <> #"A";
 fun findb c = c <> #"B";
@@ -274,8 +274,8 @@ val test24 =
 val test25 = 
     check'(fn _ => 
 	   null(tokens (fn _ => true) ss3)
-	   andalso null(tokens (fn _ => false) (all ""))
-	   andalso null(tokens (contains " ()") (all "(()())(( ()"))
+	   andalso null(tokens (fn _ => false) (full ""))
+	   andalso null(tokens (contains " ()") (full "(()())(( ()"))
 	   andalso ["this","is","a","clear","text"] = 
                            map string (tokens (contains " ()") ss3));
 
@@ -349,7 +349,7 @@ val test30f =
        | _ => "OK";
 
 (* val sa = "AAAAaAbAABBBB"; *)
-val test31 = 
+val test31a = 
     check'(fn _ => 
 	   isPrefix "" (substring(sa, 0, 0))
 	   andalso isPrefix "" (substring(sa, 13, 0))
@@ -357,21 +357,53 @@ val test31 =
 	   andalso isPrefix "aAbAA" ssa2
 	   andalso isPrefix "aAbA" ssa2
 	   andalso not (isPrefix "aAbAAB" ssa2)
-	   andalso not (isPrefix "aAbAAB" ssa1))
+	   andalso not (isPrefix "aAbAAB" ssa1)
+	   andalso not (isPrefix "AAA" ssa2)
+	   andalso not (isPrefix "AaA" ssa2)
+	   andalso not (isPrefix "AAB" ssa2))
+
+(* val sa = "AAAAaAbAABBBB"; *)
+val test31b = 
+    check'(fn _ => 
+	   isSuffix "" (substring(sa, 0, 0))
+	   andalso isSuffix "" (substring(sa, 13, 0))
+	   andalso isSuffix "" ssa1
+	   andalso isSuffix "aAbAA" ssa2
+	   andalso isSuffix "AbAA" ssa2
+	   andalso not (isSuffix "baAbAA" ssa2)
+	   andalso not (isSuffix "baAbAA" ssa1)
+	   andalso not (isSuffix "AAA" ssa2)
+	   andalso not (isSuffix "AaA" ssa2)
+	   andalso not (isSuffix "AAB" ssa2))
+
+(* val sa = "AAAAaAbAABBBB"; *)
+val test31c = 
+    check'(fn _ => 
+	   isSubstring "" (substring(sa, 0, 0))
+	   andalso isSubstring "" (substring(sa, 13, 0))
+	   andalso isSubstring "" ssa1
+	   andalso isSubstring "aAbAA" ssa2
+	   andalso isSubstring "AbAA" ssa2
+	   andalso isSubstring "aAbA" ssa2
+	   andalso not (isSubstring "baAbAA" ssa2)
+	   andalso not (isSubstring "baAbAA" ssa1)
+	   andalso not (isSubstring "AAA" ssa2)
+	   andalso not (isSubstring "AaA" ssa2)
+	   andalso not (isSubstring "AAB" ssa2))
 
 fun eqspan(sus1, sus2, res) = base(span(sus1, sus2)) = base res
 
 val test32a = check'(fn _ =>
-   eqspan(substring(sa, 0, 0), substring(sa, 0, 13), all sa)
-   andalso eqspan(substring(sa, 0, 13), substring(sa, 13, 0), all sa)
+   eqspan(substring(sa, 0, 0), substring(sa, 0, 13), full sa)
+   andalso eqspan(substring(sa, 0, 13), substring(sa, 13, 0), full sa)
    andalso eqspan(substring(sa, 5, 0), substring(sa, 5, 0), substring(sa, 5,0))
-   andalso eqspan(substring(sa, 0, 5), substring(sa, 5, 8), all sa)
-   andalso eqspan(substring(sa, 0, 13), substring(sa, 0, 13), all sa)
+   andalso eqspan(substring(sa, 0, 5), substring(sa, 5, 8), full sa)
+   andalso eqspan(substring(sa, 0, 13), substring(sa, 0, 13), full sa)
    andalso eqspan(substring(sa, 5, 4), substring(sa, 2, 4), substring(sa,5,1))
    andalso eqspan(substring(sa, 2, 5), substring(sa, 6, 3), substring(sa, 2,7))
    andalso eqspan(substring("abcd", 1, 0), substring("abcd", 1, 2), 
 		  substring("abcd", 1, 2))
-   andalso eqspan(substring("", 0, 0), substring("", 0, 0), all ""))
+   andalso eqspan(substring("", 0, 0), substring("", 0, 0), full ""))
 
 val test32b = (span(substring("a", 0, 0), substring("b", 0, 0)) seq "WRONG") 
               handle Span => "OK" | _ => "WRONG";
@@ -385,4 +417,52 @@ val test32d = (span(substring(sa, 3, 2), substring("abcd", 2, 1)) seq "WRONG")
 val test32b = (span(substring("a", 0, 0), substring("b", 0, 0)) seq "WRONG") 
               handle Span => "OK" | _ => "WRONG";
 
+val test33a = 
+    check'(fn _ =>
+	   let fun invcompare (c1, c2) = Char.compare (c2, c1) 
+	       fun coll s1 s2 = collate invcompare (full s1, full s2)
+	   in 
+	       coll "" "" = EQUAL
+	       andalso coll "" " " = LESS
+	       andalso coll " " "" = GREATER
+	       andalso coll "ABCD" "ABCD" = EQUAL
+	       andalso coll "ABCD" "ABCD " = LESS
+	       andalso coll "ABCD " "ABCD" = GREATER
+	       andalso coll "B" "ABCD" = LESS
+	       andalso coll "ABCD" "B" = GREATER
+	       andalso coll "CCCB" "CCCABCD" = LESS
+	       andalso coll "CCCABCD" "CCCB" = GREATER
+	       andalso coll "CCCB" "CCCA" = LESS
+	       andalso coll "CCCA" "CCCB" = GREATER
+	   end)
+
+(* val sa = "AAAAaAbAABBBB"; *)
+(*           0123456789012   *)
+val test33b = 
+    check'(fn _ =>
+  let fun invcompare (c1, c2) = Char.compare (c2, c1) 
+      fun coll s1 s2 = collate invcompare (s1, s2)
+  in 
+      coll (full sa) (substring(sa, 0, 13)) = EQUAL
+      andalso coll (substring(sa, 0, 0)) (substring(sa, 13, 0)) = EQUAL
+      andalso coll (substring(sa, 0, 0)) (substring(sa, 0, 13)) = LESS
+      andalso coll (substring(sa, 0, 13)) (substring(sa, 0, 0)) = GREATER
+      andalso coll (substring(sa, 0, 3)) (substring(sa, 1, 3)) = EQUAL
+      andalso coll (substring(sa, 0, 4)) (substring(sa, 1, 4)) = GREATER
+      andalso coll (substring(sa, 1, 4)) (substring(sa, 0, 4)) = LESS
+  end)
+
+val test34 = 
+    check'(fn _ =>
+	   concatWith "+" [] = ""
+	   andalso concatWith "" [] = ""
+	   andalso concatWith "+" [full "abc"] = "abc"
+	   andalso concatWith "+" [full "h3", full "h2", full "h1"] = "h3+h2+h1"
+	   andalso concatWith "+-" [full "h3", full "h2", full "h1"]="h3+-h2+-h1"
+	   andalso concatWith "+-" [full "", full "", full ""]="+-+-"
+	   andalso concatWith "" [full "h3", full "h2", full "h1"] = "h3h2h1"
+	   andalso concatWith "678" [ssa1, ssa1, ssa1]="678678"
+	   andalso concatWith "678" [ssa2, ssa2, ssa2]="aAbAA678aAbAA678aAbAA"
+	   andalso concatWith "678" [ssa2, ssa1, ss2, ss1] = 
+	   "aAbAA678678ABCDE\tFGHI678")
 end; 

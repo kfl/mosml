@@ -93,6 +93,16 @@ fun exists p []      = false
 fun all p []      = true
   | all p (x::xr) = p x andalso all p xr;
 
+fun collate cmp (xs, ys) =
+    let fun h []       []       = EQUAL
+	  | h []       (y1::yr) = LESS
+	  | h (x1::xr) []       = GREATER
+	  | h (x1::xr) (y1::yr) = 
+	    case cmp(x1, y1) of
+		EQUAL => h xr yr
+	      | res   => res
+    in h xs ys end
+
 fun tabulate (n, f) =
     let fun h i = if i<n then f i :: h (i+1) else []
     in if n<0 then raise Size else h 0 end;

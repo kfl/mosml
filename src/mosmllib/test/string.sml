@@ -1,5 +1,5 @@
 (* test/string.sml 
-   PS 1994-12-10, 1995-06-14, 1996-05-16 *)
+   PS 1994-12-10, 1995-06-14, 1996-05-16, 2000-10-18 *)
 
 use "auxil.sml";
 
@@ -362,4 +362,59 @@ val test25 =
 	   andalso not (isPrefix "Abcde"  "abcde")
 	   andalso not (isPrefix "abcdE"  "abcde"))
 
+val test26 = 
+    check'(fn _ => 
+	   isSuffix "" ""
+	   andalso isSuffix ""  "abcde"
+	   andalso isSuffix "e"  "abcde"
+	   andalso isSuffix "bcde"  "abcde"
+	   andalso isSuffix "abcde"  "abcde"
+	   andalso not (isSuffix "abcde"  "")
+	   andalso not (isSuffix "abcdef"  "abcde")
+	   andalso not (isSuffix "Abcde"  "abcde")
+	   andalso not (isSuffix "abcdE"  "abcde"))
+
+val test27 = 
+    check'(fn _ => 
+	   isSubstring "" ""
+	   andalso isSubstring ""  "abcde"
+	   andalso isSubstring "a"  "abcde"
+	   andalso isSubstring "e"  "abcde"
+	   andalso isSubstring "bcde"  "abcde"
+	   andalso isSubstring "abcde" "abcde"
+	   andalso isSubstring "b"     "abcde"
+	   andalso isSubstring "bcd"   "abcde"
+	   andalso not (isSubstring "abcde"  "")
+	   andalso not (isSubstring "abcdef"  "abcde")
+	   andalso not (isSubstring "Abcde"  "abcde")
+	   andalso not (isSubstring "abcdE"  "abcde"))
+
+val test28 = 
+    check'(fn _ =>
+	   let fun invcompare (c1, c2) = Char.compare (c2, c1) 
+	       fun coll s1 s2 = collate invcompare (s1, s2)
+	   in 
+	       coll "" "" = EQUAL
+	       andalso coll "" " " = LESS
+	       andalso coll " " "" = GREATER
+	       andalso coll "ABCD" "ABCD" = EQUAL
+	       andalso coll "ABCD" "ABCD " = LESS
+	       andalso coll "ABCD " "ABCD" = GREATER
+	       andalso coll "B" "ABCD" = LESS
+	       andalso coll "ABCD" "B" = GREATER
+	       andalso coll "CCCB" "CCCABCD" = LESS
+	       andalso coll "CCCABCD" "CCCB" = GREATER
+	       andalso coll "CCCB" "CCCA" = LESS
+	       andalso coll "CCCA" "CCCB" = GREATER
+	   end)
+
+val test29 = 
+    check'(fn _ =>
+	   concatWith "+" [] = ""
+	   andalso concatWith "" [] = ""
+	   andalso concatWith "+" ["abc"] = "abc"
+	   andalso concatWith "+" ["h3", "h2", "h1"] = "h3+h2+h1"
+	   andalso concatWith "+-" ["h3", "h2", "h1"] = "h3+-h2+-h1"
+	   andalso concatWith "+-" ["", "", ""]="+-+-"
+	   andalso concatWith "" ["h3", "h2", "h1"] = "h3h2h1")
 end

@@ -52,6 +52,14 @@ fun extract (vec : 'a vector, i, sliceend) =
 		     else ()
     in copy 0; newvec end;
 
+fun update (v : 'a vector, i : int, x : 'a) : 'a vector = 
+    let val _ = if i < 0 orelse i >= length v then raise Subscript else ()
+	val stop = length v
+	val newvec = vector_ stop () 
+	fun lr j = if j < stop then (update_ newvec j (sub_ v j); lr (j+1))
+		   else ()
+    in lr 0; update_ newvec i x; newvec end
+
 fun concat vecs =
     let fun acc [] len       = len
 	  | acc (v1::vr) len = acc vr (length v1 + len)
@@ -68,6 +76,23 @@ fun concat vecs =
 	    in copy 0; copyall (to+len1) vr end
     in copyall 0 vecs; newvec end;
 
+fun find (p : 'a -> bool) (a : 'a vector) : 'a option = 
+    let val stop = length a
+	fun lr j = 
+	    if j < stop then 
+		if p (sub_ a j) then SOME (sub_ a j) else lr (j+1)
+	    else NONE
+    in lr 0 end
+
+fun exists (p : 'a -> bool) (a : 'a vector) : bool = 
+    let val stop = length a
+	fun lr j = j < stop andalso (p (sub_ a j) orelse lr (j+1))
+    in lr 0 end
+
+fun all (p : 'a -> bool) (a : 'a vector) : bool = 
+    let val stop = length a
+	fun lr j = j >= stop orelse (p (sub_ a j) andalso lr (j+1))
+    in lr 0 end
 
 fun foldl f e a = 
     let	val stop = length a
@@ -137,4 +162,17 @@ fun mapi (f : int * 'a -> 'b) (slice as (a : 'a vector, i, _)) : 'b vector =
 	    in lr i end
     in loop stop; newvec end;
 
+fun collate cmp (v1, v2) =
+    let val n1 = length v1 
+	and n2 = length v2
+	val stop = if n1 < n2 then n1 else n2
+	fun h j = (* At this point v1[0..j-1] = v2[0..j-1] *)
+	    if j = stop then if      n1 < n2 then LESS
+                             else if n1 > n2 then GREATER
+                             else                 EQUAL
+	    else
+		case cmp(sub_ v1 j, sub_ v2 j) of
+		    EQUAL => h (j+1)
+		  | res   => res
+    in h 0 end;
 end

@@ -1,4 +1,4 @@
-(* String -- 1994-12-10, 1995-11-07, 1999-04-22 *)
+(* String -- 1994-12-10, 1995-11-07, 1999-04-22, 2000-10-18 *)
 
 local 
     type char = Char.char;
@@ -30,6 +30,28 @@ fun concat strs =
             let val len1 = size v1
             in blit_ v1 0 newstr to len1; copyall (to+len1) vr end
     in copyall 0 strs; newstr end;
+
+fun concatWith sep []       = ""
+  | concatWith sep (s1::sr) =
+    let val seplen = size sep
+	val s1len  = size s1
+	fun acc []       len = len
+          | acc (v1::vr) len = acc vr (size v1 + seplen + len)
+        val len = acc sr s1len
+        val newstr = if len > maxSize then raise Size else mkstring_ len 
+        fun copyall to []       = ()
+          | copyall to (v1::vr) = 
+            let val len1 = size v1
+            in 
+		blit_ sep 0 newstr to seplen; 
+		blit_ v1 0 newstr (to+seplen) len1; 
+		copyall (to+seplen+len1) vr
+	    end
+    in 
+	blit_ s1 0 newstr 0 s1len;
+	copyall s1len sr; 
+	newstr 
+    end;
 
 val op ^ = op ^;
 
@@ -105,6 +127,34 @@ fun isPrefix s1 s2 =
 	fun h j = (* At this point s1[0..j-1] = s2[0..j-1] *)
 	    j = stop orelse sub_ s1 j = sub_ s2 j andalso h (j+1)
     in n1 <= n2 andalso h 0 end;
+
+fun isSuffix s1 s2 = 
+    let val n1 = size s1 
+	and n2 = size s2
+	val offset = n2-n1
+	fun h j = 
+	    (* At this point s1[0..j-1] = s2[offset..offset+j-1] *)
+	    j = n1 orelse sub_ s1 j = sub_ s2 (j+offset) andalso h (j+1)
+    in n1 <= n2 andalso h 0 end;
+
+fun isSubstring "" s2 = true
+  | isSubstring s1 s2 =
+    let val n1 = size s1 
+	and n2 = size s2
+	val stop1 = n1-1
+	val stop2 = n2-n1
+	fun cmp offset =
+	    let fun h j = 
+		(* At this point s1[0..j-1] = s2[offset..j+offset-1] *)
+		j >= stop1 
+		orelse sub_ s1 j = sub_ s2 (j+offset) andalso h (j+1)
+	    in h 0 end
+	(* Comparison at end of s1 good if s1 begins with identical chars: *)
+	fun issub offset = 
+	    offset <= stop2 andalso 
+	    (sub_ s1 stop1 = sub_ s2 (stop1+offset) andalso cmp offset 
+	     orelse issub (offset+1))
+    in issub 0 end;
 
 fun foldl f e s = 
     let val stop = size s

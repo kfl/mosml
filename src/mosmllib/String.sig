@@ -4,25 +4,29 @@ local
     type char = Char.char
 in
     type string = string
-    val maxSize   : int
-    val size      : string -> int
-    val sub       : string * int -> char
-    val substring : string * int * int -> string
-    val extract   : string * int * int option -> string
-    val concat    : string list -> string
-    val ^         : string * string -> string
-    val str       : char -> string
-    val implode   : char list -> string 
-    val explode   : string -> char list
+    val maxSize     : int
+    val size        : string -> int
+    val sub         : string * int -> char
+    val substring   : string * int * int -> string
+    val extract     : string * int * int option -> string
+    val ^           : string * string -> string
+    val concat      : string list -> string
+    val concatWith  : string -> string list -> string
+    val str         : char -> string
+    val implode     : char list -> string 
+    val explode     : string -> char list
 
-    val map       : (char -> char) -> string -> string 
-    val translate : (char -> string) -> string -> string
-    val tokens    : (char -> bool) -> string -> string list
-    val fields    : (char -> bool) -> string -> string list
-    val isPrefix  : string -> string -> bool
+    val map         : (char -> char) -> string -> string 
+    val translate   : (char -> string) -> string -> string
+    val tokens      : (char -> bool) -> string -> string list
+    val fields      : (char -> bool) -> string -> string list
 
-    val compare   : string * string -> order
-    val collate   : (char * char -> order) -> string * string -> order
+    val compare     : string * string -> order
+    val collate     : (char * char -> order) -> string * string -> order
+
+    val isPrefix    : string -> string -> bool
+    val isSuffix    : string -> string -> bool
+    val isSubstring : string -> string -> bool
 
     val fromString  : string -> string option     (* ML escape sequences *)
     val toString    : string -> string            (* ML escape sequences *)
@@ -55,10 +59,18 @@ end
    [extract (s, i, SOME n)] is the string s[i..i+n-1].
    Raises Subscript if i<0 or n<0 or i+n>size s. 
 
+   [s1 ^ s2] is the concatenation of strings s1 and s2.
+
    [concat ss] is the concatenation of all the strings in ss.
    Raises Size if the sum of their sizes is greater than maxSize.
 
-   [s1 ^ s2] is the concatenation of strings s1 and s2.
+   [concatWith sep ss] is the concatenation of all the strings in ss,
+   using sep as a separator.  Thus 
+      concatWith sep ss             is  the empty string ""
+      concatWith sep [s]            is  s
+      concatWith sep [s1, ..., sn]  is  concat[s1, sep, ..., sep, sn].
+   Raises Size if the resulting string would have more than maxSize 
+   characters.
 
    [str c] is the string of size one which contains the character c.
 
@@ -92,7 +104,13 @@ end
         "abc||def" contains three fields: "abc" and "" and "def"
 
    [isPrefix s1 s2] is true if s1 is a prefix of s2.  
-   That is, if there exists a string t such that s1 ^ t = s2.
+   That is, if there exists a string u such that s1 ^ u = s2.
+
+   [isSuffix s1 s2] is true if s1 is a suffix of s2.  
+   That is, if there exists a string t such that t ^ s1 = s2.
+
+   [isSubstring s1 s2] is true if s1 is a substring of s2.  
+   That is, if there exist strings t and u such that t ^ s1 ^ u = s2.
 
    [fromString s] scans the string s as an ML source program string,
    converting escape sequences into the appropriate characters.  Does

@@ -20,6 +20,10 @@ val copy     : {src: array,  si: int, len: int option,
 val copyVec  : {src: vector, si: int, len: int option, 
                 dst: array, di: int} -> unit
 
+val find     : (elem -> bool) -> array -> elem option
+val exists   : (elem -> bool) -> array -> bool
+val all      : (elem -> bool) -> array -> bool
+
 val app      : (elem -> unit) -> array -> unit
 val foldl    : (elem * 'b -> 'b) -> 'b -> array -> 'b
 val foldr    : (elem * 'b -> 'b) -> 'b -> array -> 'b
@@ -29,6 +33,8 @@ val appi     : (int * elem -> unit) -> array * int * int option -> unit
 val foldli   : (int * elem * 'b -> 'b) -> 'b -> array * int * int option -> 'b
 val foldri   : (int * elem * 'b -> 'b) -> 'b -> array * int * int option -> 'b
 val modifyi  : (int * elem -> elem) -> array * int * int option -> unit
+
+val collate  : (elem * elem -> order) -> array * array -> order
 
 (* 
    [array] is the type of one-dimensional, mutable, zero-based

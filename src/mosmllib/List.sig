@@ -35,6 +35,8 @@ val foldl      : ('a * 'b -> 'b) -> 'b -> 'a list -> 'b
 val exists     : ('a -> bool) -> 'a list -> bool
 val all        : ('a -> bool) -> 'a list -> bool
 
+val collate    : ('a * 'a -> order) -> 'a list * 'a list -> order
+
 val tabulate   : int * (int -> 'a) -> 'a list           (* Size      *)
 
 val getItem    : 'a list -> ('a * 'a list) option
@@ -81,9 +83,9 @@ val getItem    : 'a list -> ('a * 'a list) option
    to right, and returns the list of those y's for which f(x)
    evaluated to SOME y.
 
-   [find p xs] applies f to each element x of xs, from left to
-   right until p(x) evaluates to true; returns SOME x if such an x
-   exists otherwise NONE.
+   [find p xs] applies p to each element x of xs, from left to right,
+   until p(x) evaluates to true; returns SOME x if such an x exists,
+   otherwise NONE.
 
    [filter p xs] applies p to each element x of xs, from left to
    right, and returns the sublist of those x for which p(x) evaluated
@@ -107,6 +109,10 @@ val getItem    : 'a list -> ('a * 'a list) option
    [all p xs] applies p to each element x of xs, from left to
    right until p(x) evaluates to false; returns false if such an x
    exists, otherwise true.
+
+   [collate cmp (xs, ys)] returns LESS, EQUAL or GREATER according as
+   xs precedes, equals or follows ys in the lexicographic ordering on
+   lists induced by the ordering cmp on elements.
 
    [tabulate(n, f)] returns a list of length n whose elements are
    f(0), f(1), ..., f(n-1), created from left to right.  Raises Size

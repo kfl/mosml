@@ -47,7 +47,9 @@ end;
 
 val test14 = (reset (); app incrv v16; checkv);
 
-val test15 = check([2,4,6,8,10,12] = map (fn i=>i*2) v16);
+val test15a = check([2,4,6,8,10,12] = map (fn i=>i*2) v16);
+
+val test15b = (reset (); map incrv v16; checkv);
 
 val test16 = 
     check([3,9,15] = 
@@ -110,4 +112,23 @@ val test37a =
     check'(fn _ => getItem [] = NONE
 	   andalso getItem [#"A"] = SOME(#"A", [])
 	   andalso getItem [#"B", #"C"] = SOME(#"B", [#"C"]));
+
+val test38 = 
+    check'(fn _ =>
+	   let fun invcompare (c1, c2) = Char.compare (c2, c1) 
+	       fun coll s1 s2 = collate invcompare (explode s1, explode s2)
+	   in 
+	       coll "" "" = EQUAL
+	       andalso coll "" " " = LESS
+	       andalso coll " " "" = GREATER
+	       andalso coll "ABCD" "ABCD" = EQUAL
+	       andalso coll "ABCD" "ABCD " = LESS
+	       andalso coll "ABCD " "ABCD" = GREATER
+	       andalso coll "B" "ABCD" = LESS
+	       andalso coll "ABCD" "B" = GREATER
+	       andalso coll "CCCB" "CCCABCD" = LESS
+	       andalso coll "CCCABCD" "CCCB" = GREATER
+	       andalso coll "CCCB" "CCCA" = LESS
+	       andalso coll "CCCA" "CCCB" = GREATER
+	   end)
 end;

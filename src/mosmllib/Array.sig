@@ -18,6 +18,10 @@ val copy     : {src: 'a array,  si: int, len: int option,
 val copyVec  : {src: 'a vector, si: int, len: int option, 
                 dst: 'a array, di: int} -> unit
 
+val find     : ('a -> bool) -> 'a array -> 'a option
+val exists   : ('a -> bool) -> 'a array -> bool
+val all      : ('a -> bool) -> 'a array -> bool
+
 val app      : ('a -> unit) -> 'a array -> unit
 val foldl    : ('a * 'b -> 'b) -> 'b -> 'a array -> 'b
 val foldr    : ('a * 'b -> 'b) -> 'b -> 'a array -> 'b
@@ -27,6 +31,8 @@ val appi     : (int * 'a -> unit) -> 'a array * int * int option -> unit
 val foldli   : (int * 'a * 'b -> 'b) -> 'b -> 'a array * int * int option -> 'b
 val foldri   : (int * 'a * 'b -> 'b) -> 'b -> 'a array * int * int option -> 'b
 val modifyi  : (int * 'a -> 'a) -> 'a array * int * int option -> unit
+
+val collate  : ('a * 'a -> order) -> 'a array * 'a array -> order
 
 (* 
    ['ty array] is the type of one-dimensional, mutable, zero-based
@@ -99,6 +105,18 @@ val modifyi  : (int * 'a -> 'a) -> 'a array * int * int option -> unit
    or if len=NONE and di + length src - si > length dst,
    or if len=SOME k and k < 0 or si + k > length src or di + k > length dst.
 
+   [find p a] applies p to each element x of a, from left to right,
+   until p(x) evaluates to true; returns SOME x if such an x exists,
+   otherwise NONE.
+
+   [exists p a] applies p to each element x of a, from left to right,
+   until p(x) evaluates to true; returns true if such an x exists,
+   otherwise false.
+
+   [all p a] applies p to each element x of a, from left to right,
+   until p(x) evaluates to false; returns false if such an x exists,
+   otherwise true.
+
    [foldl f e a] folds function f over a from left to right.  That is,
    computes f(a[len-1], f(a[len-2], ..., f(a[1], f(a[0], e)) ...)),
    where len is the length of a.
@@ -151,4 +169,8 @@ val modifyi  : (int * 'a -> 'a) -> 'a array * int * int option -> unit
    [modifyi f (a, i, NONE)] applies f to (j, a[j]) and updates a[j]
    with the result f(j, a[j]) for j=i,i+1,...,len-1.  Raises Subscript
    if i<0 or i > length a.
+
+   [collate cmp (xs, ys)] returns LESS, EQUAL or GREATER according as
+   xs precedes, equals or follows ys in the lexicographic ordering on
+   arrays induced by the ordering cmp on elements.  
 *)

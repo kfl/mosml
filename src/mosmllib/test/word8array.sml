@@ -1,5 +1,5 @@
 (* test/word8array.sml -- some test cases for Word8Array 
-   PS 1994-12-21, 1995-05-11 *)
+   PS 1994-12-21, 1995-05-11, 2000-10-17 *)
 
 use "auxil.sml";
 
@@ -140,5 +140,45 @@ val test11j = (copy{src=g, si=0, dst=g, di=0, len=SOME (length g+1)}; "WRONG")
               handle Subscript => "OK" | _ => "WRONG"
 val test11k = (copy{src=g, si=203, dst=g, di=0, len=SOME 1}; "WRONG") 
               handle Subscript => "OK" | _ => "WRONG"
+
+val test12 = 
+    check'(fn _ =>
+	   let fun invcompare (c1, c2) = Word8.compare(c2, c1)
+	       val fromString = 
+		   fromList o List.map (Word8.fromInt o ord) o explode 
+	       fun coll s1 s2 = 
+		   collate invcompare (fromString s1, fromString s2)
+	   in 
+	       coll "" "" = EQUAL
+	       andalso coll "" " " = LESS
+	       andalso coll " " "" = GREATER
+	       andalso coll "ABCD" "ABCD" = EQUAL
+	       andalso coll "ABCD" "ABCD " = LESS
+	       andalso coll "ABCD " "ABCD" = GREATER
+	       andalso coll "B" "ABCD" = LESS
+	       andalso coll "ABCD" "B" = GREATER
+	       andalso coll "CCCB" "CCCABCD" = LESS
+	       andalso coll "CCCABCD" "CCCB" = GREATER
+	       andalso coll "CCCB" "CCCA" = LESS
+	       andalso coll "CCCA" "CCCB" = GREATER
+	   end)
+
+val test13 = 
+    check'(fn _ => 
+	   NONE = find (fn i => i > 0w7) a
+	   andalso SOME 0w5 = find (fn i => i > 0w4) a
+	   andalso NONE = find (fn _ => true) (fromList []));
+
+val test14 = 
+    check'(fn _ => 
+	   not (exists (fn i => i > 0w7) a)
+	   andalso exists (fn i => i > 0w4) a
+	   andalso not (exists (fn _ => true) (fromList [])));
+
+val test15 = 
+    check'(fn _ => 
+	   not (all (fn i => i < 0w6) a)
+	   andalso all (fn i => i < 0w7) a
+	   andalso all (fn _ => false) (fromList []));
 
 end;

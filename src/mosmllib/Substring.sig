@@ -2,47 +2,51 @@
 
 type substring
 
-val substring : string * int * int -> substring
-val extract   : string * int * int option -> substring
-val all       : string -> substring
-val string    : substring -> string
-val base      : substring -> (string * int * int)
+val substring   : string * int * int -> substring
+val extract     : string * int * int option -> substring
+val full        : string -> substring
+val all         : string -> substring
+val string      : substring -> string
+val base        : substring -> (string * int * int)
 
-val isEmpty   : substring -> bool
-val getc      : substring -> (char * substring) option
-val first     : substring -> char option
-val triml     : int -> substring -> substring
-val trimr     : int -> substring -> substring
-val sub       : substring * int -> char
-val size      : substring -> int
-val slice     : substring * int * int option -> substring
-val concat    : substring list -> string
-val explode   : substring -> char list
-val isPrefix  : string -> substring -> bool
-val compare   : substring * substring -> order
-val collate   : (char * char -> order) -> substring * substring -> order
+val isEmpty     : substring -> bool
+val getc        : substring -> (char * substring) option
+val first       : substring -> char option
+val triml       : int -> substring -> substring
+val trimr       : int -> substring -> substring
+val sub         : substring * int -> char
+val size        : substring -> int
+val slice       : substring * int * int option -> substring
+val concat      : substring list -> string
+val concatWith  : string -> substring list -> string
+val explode     : substring -> char list
+val compare     : substring * substring -> order
+val collate     : (char * char -> order) -> substring * substring -> order
 
-val dropl     : (char -> bool) -> substring -> substring
-val dropr     : (char -> bool) -> substring -> substring
-val takel     : (char -> bool) -> substring -> substring
-val taker     : (char -> bool) -> substring -> substring
-val splitl    : (char -> bool) -> substring -> substring * substring
-val splitr    : (char -> bool) -> substring -> substring * substring
-val splitAt   : substring * int -> substring * substring
+val dropl       : (char -> bool) -> substring -> substring
+val dropr       : (char -> bool) -> substring -> substring
+val takel       : (char -> bool) -> substring -> substring
+val taker       : (char -> bool) -> substring -> substring
+val splitl      : (char -> bool) -> substring -> substring * substring
+val splitr      : (char -> bool) -> substring -> substring * substring
+val splitAt     : substring * int -> substring * substring
 
-val position  : string -> substring -> substring * substring
+val position    : string -> substring -> substring * substring
+val isPrefix    : string -> substring -> bool
+val isSuffix    : string -> substring -> bool
+val isSubstring : string -> substring -> bool
 
 exception Span
-val span      : substring * substring -> substring
+val span        : substring * substring -> substring
 
-val translate : (char -> string) -> substring -> string
+val translate   : (char -> string) -> substring -> string
 
-val tokens    : (char -> bool) -> substring -> substring list
-val fields    : (char -> bool) -> substring -> substring list
+val tokens      : (char -> bool) -> substring -> substring list
+val fields      : (char -> bool) -> substring -> substring list
 
-val foldl     : (char * 'a -> 'a) -> 'a -> substring -> 'a
-val foldr     : (char * 'a -> 'a) -> 'a -> substring -> 'a
-val app       : (char -> unit) -> substring -> unit
+val foldl       : (char * 'a -> 'a) -> 'a -> substring -> 'a
+val foldr       : (char * 'a -> 'a) -> 'a -> substring -> 'a
+val app         : (char -> unit) -> substring -> unit
 
 (* 
    [substring] is the type of substrings of a basestring, an efficient 
@@ -64,7 +68,9 @@ val app       : (char -> unit) -> substring -> unit
    consisting of the substring of s with length n starting at i.
    Raises Subscript if i<0 or n<0 or i+n > size s.
 
-   [all s] is the substring (s, 0, size s).
+   [full s] is the substring (s, 0, size s).
+
+   [all s] is the same as full(s).  Its use is deprecated.
 
    [string sus] is the string s[i..i+n-1] represented by sus = (s, i, n).
 
@@ -102,14 +108,17 @@ val app       : (char -> unit) -> substring -> unit
    sus = (s, i, n).  Raises Subscript if i' < 0 or n' < 0 or i'+n' >= n.
 
    [concat suss] returns a string consisting of the concatenation of
-   the substrings.  Equivalent to String.concat (List.map string suss).
+   the substrings.  Equivalent to String.concat (List.map string suss).  
+   Raises Size if the resulting string would be longer than String.maxSize.
+
+   [concatWith sep suss] returns a string consisting of the
+   concatenation of the substrings in suss, using sep as a separator.
+   Equivalent to String.concatWith sep (List.map string suss).  Raises
+   Size if the resulting string would be longer than String.maxSize.
 
    [explode sus] returns the list of characters of sus, that is,
         [s(i), s(i+1), ..., s(i+n-1)]
    where sus = (s, i, n).  Equivalent to String.explode(string ss).
-
-   [isPrefix s1 s2] is true if s1 is a prefix of s2. That is, if there 
-   exists a string t such that string s1 ^ t = string s2.
 
    [compare (sus1, sus2)] performs lexicographic comparison, using the
    standard ordering Char.compare on the characters.  Returns LESS,
@@ -171,6 +180,15 @@ val app       : (char -> unit) -> substring -> unit
    [splitAt (sus, k)] returns the pair (sus1, sus2) of substrings,
    where sus1 contains the first k characters of sus, and sus2
    contains the rest.  Raises Subscript if k < 0 or k > size sus.
+
+   [isPrefix s1 s2] is true if s1 is a prefix of s2. That is, if there 
+   exists a string u such that  s1 ^ u = string s2.
+
+   [isSuffix s1 s2] is true if s1 is a suffix of s2. That is, if there
+   exists a string t such that  t ^ s1 = string s2.
+
+   [isSubstring s1 s2] is true if s1 is a substring of s2. That is, if
+   there exist strings t and u such that  t ^ s1 ^ u = string s2.
 
    [position s (s',i,n)] splits the substring into a pair (pref, suff)
    of substrings, where suff is the longest suffix of (s', i, n) which

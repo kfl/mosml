@@ -15,8 +15,18 @@ in
     val sub      : vector * int -> elem         = magic Word8Vector.sub
     val extract  : vector * int * int option -> vector 
 						= magic Word8Vector.extract
+    val update   : vector * int * elem -> vector 
+						= magic Word8Vector.update
     val concat   : vector list -> vector        = magic Word8Vector.concat
+    val find     : (elem -> bool) -> vector -> elem option 
+	                                        =  magic Word8Vector.find
+    val exists   : (elem -> bool) -> vector -> bool
+	                                        =  magic Word8Vector.exists
+    val all      : (elem -> bool) -> vector -> bool
+	                                        =  magic Word8Vector.all
 
+    val collate  : (elem * elem -> order) -> vector * vector -> order 
+                                                = magic String.collate
 
     val app      : (elem -> unit) -> vector -> unit
 						= magic Word8Vector.app

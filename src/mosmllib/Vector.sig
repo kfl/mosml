@@ -9,7 +9,12 @@ val tabulate : int * (int -> 'a) -> 'a vector
 val length   : 'a vector -> int
 val sub      : 'a vector * int -> 'a
 val extract  : 'a vector * int * int option -> 'a vector
+val update   : 'a vector * int * 'a -> 'a vector
 val concat   : 'a vector list -> 'a vector
+
+val find     : ('a -> bool) -> 'a vector -> 'a option
+val exists   : ('a -> bool) -> 'a vector -> bool
+val all      : ('a -> bool) -> 'a vector -> bool
 
 val app      : ('a -> unit) -> 'a vector -> unit
 val map      : ('a -> 'b) -> 'a vector -> 'b vector
@@ -20,6 +25,8 @@ val appi     : (int * 'a -> unit) -> 'a vector * int * int option -> unit
 val mapi     : (int * 'a -> 'b) -> 'a vector * int * int option -> 'b vector
 val foldli   : (int * 'a * 'b -> 'b) -> 'b -> 'a vector*int*int option -> 'b
 val foldri   : (int * 'a * 'b -> 'b) -> 'b -> 'a vector*int*int option -> 'b
+
+val collate  : ('a * 'a -> order) -> 'a vector * 'a vector -> order
 
 (* 
    ['ty vector] is the type of one-dimensional, immutable, zero-based
@@ -47,9 +54,24 @@ val foldri   : (int * 'a * 'b -> 'b) -> 'b -> 'a vector*int*int option -> 'b
    [extract(v, i, SOME n)] returns a vector of the elements v[i..i+n-1]
    of v.  Raises Subscript if i<0 or n<0 or i+n>length v.
 
+   [update(v, i, x)] creates a copy of v, sets position i to x, and
+   returns the new vector.  Raises Subscript if i<0 or i>=length v.
+
    [concat vs] returns a vector which is the concatenation from left
    to right og the vectors in vs.  Raises Size if the sum of the
    sizes of the vectors in vs is larger than maxLen.
+
+   [find p v] applies p to each element x of v, from left to right,
+   until p(x) evaluates to true; returns SOME x if such an x exists,
+   otherwise NONE.
+
+   [exists p v] applies p to each element x of v, from left to right,
+   until p(x) evaluates to true; returns true if such an x exists,
+   otherwise false.
+
+   [all p v] applies p to each element x of v, from left to right,
+   until p(x) evaluates to false; returns false if such an x exists,
+   otherwise true.
 
    [foldl f e v] folds function f over v from left to right.  That is,
    computes f(v[len-1], f(v[len-2], ..., f(v[1], f(v[0], e)) ...)),
@@ -120,4 +142,8 @@ val foldri   : (int * 'a * 'b -> 'b) -> 'b -> 'a vector*int*int option -> 'b
    j=i,i+1,...,len-1, where len = length v, and returns a new vector
    (of length len-i) containing the results.  Raises Subscript if i<0
    or i > length v.
+
+   [collate cmp (xs, ys)] returns LESS, EQUAL or GREATER according as
+   xs precedes, equals or follows ys in the lexicographic ordering on
+   vectors induced by the ordering cmp on elements.
 *)

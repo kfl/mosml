@@ -1,5 +1,5 @@
 (* test/vector.sml -- some test cases for Vector 
-   PS 1994-12-10, 1995-06-14, 1997-03-07 *)
+   PS 1994-12-10, 1995-06-14, 1997-03-07, 2000-10-17 *)
 
 use "auxil.sml";
 
@@ -99,6 +99,60 @@ val test11h =
 val test11i =
     (mapi #2 (b, 4, NONE) seq "WRONG") 
     handle Subscript => "OK" | _ => "WRONG";
-end;
 
+val test12a = 
+    check'(fn _ => 
+	   a = update(a, 0, 0) 
+	   andalso a = update(a, 6, 6)
+	   andalso #[78,1,2,3,4,5,6] = update(a, 0, 78)
+	   andalso #[0,1,2,333,4,5,6] = update(a, 3, 333))
+val test12b =
+    (update(b, ~1, 17) seq "WRONG") 
+    handle Subscript => "OK" | _ => "WRONG";
+val test12c =
+    (update(b, 7, 17) seq "WRONG") 
+    handle Subscript => "OK" | _ => "WRONG";
+val test12d =
+    (update(#[], 0, 17) seq "WRONG") 
+    handle Subscript => "OK" | _ => "WRONG";
+
+val test13 = 
+    check'(fn _ =>
+	   let fun invcompare (c1, c2) = Char.compare (c2, c1) 
+	       fun coll s1 s2 = 
+		   collate invcompare (fromList (explode s1), 
+				       fromList (explode s2))
+	   in 
+	       coll "" "" = EQUAL
+	       andalso coll "" " " = LESS
+	       andalso coll " " "" = GREATER
+	       andalso coll "ABCD" "ABCD" = EQUAL
+	       andalso coll "ABCD" "ABCD " = LESS
+	       andalso coll "ABCD " "ABCD" = GREATER
+	       andalso coll "B" "ABCD" = LESS
+	       andalso coll "ABCD" "B" = GREATER
+	       andalso coll "CCCB" "CCCABCD" = LESS
+	       andalso coll "CCCABCD" "CCCB" = GREATER
+	       andalso coll "CCCB" "CCCA" = LESS
+	       andalso coll "CCCA" "CCCB" = GREATER
+	   end)
+
+val test14 = 
+    check'(fn _ => 
+	   NONE = find (fn i => i>7) a
+	   andalso SOME 5 = find (fn i => i>4) a
+	   andalso NONE = find (fn _ => true) #[]);
+
+val test15 = 
+    check'(fn _ => 
+	   not (exists (fn i => i>7) a)
+	   andalso exists (fn i => i>4) a
+	   andalso not (exists (fn _ => true) #[]));
+
+val test16 = 
+    check'(fn _ => 
+	   not (all (fn i => i<6) a)
+	   andalso all (fn i => i<7) a
+	   andalso all (fn _ => false) #[]);
+end;
 

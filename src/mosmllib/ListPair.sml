@@ -40,6 +40,50 @@ fun foldl f e (xs, ys) =
 	  | h e _       _       = e
     in h e xs ys end;
 
+exception UnequalLengths;
+
+fun zipEq (xs, ys) = 
+    let fun h (x::xr) (y::yr) res = h xr yr ((x, y) :: res)
+	  | h []      []      res = List.rev res
+	  | h _       _       res = raise UnequalLengths
+    in h xs ys [] end;
+
+fun mapEq f (xs, ys) = 
+    let fun h (x::xr) (y::yr) res = h xr yr (f(x, y) :: res)
+	  | h []      []      res = List.rev res
+	  | h _       _       res = raise UnequalLengths
+    in h xs ys [] end;
+
+fun appEq f (xs, ys) = 
+    let fun h (x::xr) (y::yr) = (f (x, y); h xr yr)
+	  | h []      []      = ()
+	  | h _       _       = raise UnequalLengths
+    in h xs ys end;
+
+fun allEq p (xs, ys) = 
+    let fun h (x::xr) (y::yr) = p(x, y) andalso h xr yr
+	  | h []      []      = true
+	  | h _       _       = raise UnequalLengths
+    in h xs ys end;
+
+fun existsEq p (xs, ys) = 
+    let fun h (x::xr) (y::yr) = p(x, y) orelse h xr yr	
+	  | h []      []      = false
+	  | h _       _       = raise UnequalLengths
+    in h xs ys end;
+
+fun foldrEq f e (xs, ys) = 
+    let fun h (x::xr) (y::yr) = f(x, y, h xr yr) 
+	  | h []      []      = e
+	  | h _       _       = raise UnequalLengths
+    in h xs ys end;
+
+fun foldlEq f e (xs, ys) = 
+    let fun h e (x::xr) (y::yr) = h (f(x, y, e)) xr yr
+	  | h e []      []      = e
+	  | h e _       _       = raise UnequalLengths
+    in h e xs ys end;
+
 (* The following is not a member of the Basis Library:
 
 fun find p (xs, ys) = 

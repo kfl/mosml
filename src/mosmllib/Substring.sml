@@ -1,4 +1,4 @@
-(* Substring -- 1995-06-15, 1997-06-03 *)
+(* Substring -- 1995-06-15, 1997-06-03, 2000-10-18 *)
 
 local 
     prim_val sub_      : string -> int -> char         = 2 "get_nth_char";
@@ -28,7 +28,9 @@ fun extract (s, i, NONE) =
 
 fun substring (s, i, n) = extract(s, i, SOME n);
 
-fun all s = (s, 0, size s)
+fun full s = (s, 0, size s)
+
+fun all s = (s, 0, size s)		(* deprecated *)
 
 fun getc (s, i, 0) = NONE
   | getc (s, i, n) = SOME(sub_ s i, (s, i+1, n-1))
@@ -80,6 +82,25 @@ fun concat strs =
 	    (blit_ s1 i1 newstr to len1; copyall (to+len1) vr)
     in copyall 0 strs; newstr end;
 
+fun concatWith sep []       = ""
+  | concatWith sep ((s1s, s1i, s1len)::sr) =
+    let val seplen = String.size sep
+	fun acc []       len = len
+          | acc (v1::vr) len = acc vr (size v1 + seplen + len)
+        val len = acc sr s1len
+        val newstr = if len > String.maxSize then raise Size 
+		     else mkstring_ len 
+        fun copyall to []       = ()
+          | copyall to ((v1, i1, len1)::vr) = 
+	    (blit_ sep 0 newstr to seplen; 
+	     blit_ v1 i1 newstr (to+seplen) len1; 
+	     copyall (to+seplen+len1) vr)
+    in 
+	blit_ s1s s1i newstr 0 s1len;
+	copyall s1len sr; 
+	newstr 
+    end;
+
 fun compare ((s1, i1, n1), (s2, i2, n2)) =
     let val stop = if n1 < n2 then n1 else n2
 	fun h j = (* At this point (s1, i1, j) = (s2, i2, j) *)
@@ -96,10 +117,37 @@ fun compare ((s1, i1, n1), (s2, i2, n2)) =
     in h 0 end;
 
 fun isPrefix s1 (s2, i2, n2) =
-    let val stop = if n2 < String.size s1 then n2 else String.size s1
-	fun h j = (* At this point (s1, 0, j) = (s2, i2, j) *)
+    let val n1 = String.size s1
+	val stop = if n1 < n2 then n1 else n2
+	fun h j = (* At this point string (s1, 0, j) = string (s2, i2, j) *)
 	    j = stop orelse sub_ s1 j = sub_ s2 (i2+j) andalso h (j+1)
-    in String.size s1 <= n2 andalso h 0 end;
+    in n1 <= n2 andalso h 0 end;
+
+fun isSuffix s1 (s2, i2, n2) = 
+    let val n1 = String.size s1 
+	val offset = i2+n2-n1
+	fun h j = 
+	    (* At this point string (s1, 0, j) = string (s2, offset, j) *)
+	    j = n1 orelse sub_ s1 j = sub_ s2 (j+offset) andalso h (j+1)
+    in n1 <= n2 andalso h 0 end;
+
+fun isSubstring "" (ss as (s2, i2, n2)) = true
+  | isSubstring s1 (ss as (s2, i2, n2)) =             
+    let val n1 = String.size s1 
+	val stop1 = n1-1
+	val stop2 = i2+n2-n1
+	fun cmp offset =
+	    let fun h j = 
+		(* At this point string (s1, 0, j) = string(s2, offset, j) *)
+		j >= stop1 
+		orelse sub_ s1 j = sub_ s2 (j+offset) andalso h (j+1)
+	    in h 0 end
+	(* Comparison at end of s1 good if s1 begins with identical chars: *)
+	fun issub offset = 
+	    offset <= stop2 andalso 
+	    (sub_ s1 stop1 = sub_ s2 (stop1+offset) andalso cmp offset 
+	     orelse issub (offset+1))
+    in issub i2 end;
 
 fun collate cmp ((s1, i1, n1), (s2, i2, n2)) =
     let val stop = if n1 < n2 then n1 else n2

@@ -23,6 +23,13 @@ in
     val app      : (elem -> unit) -> array -> unit
 						= magic Word8Array.app
 
+    val find     : (elem -> bool) -> array -> elem option
+						= magic Word8Array.find
+    val exists   : (elem -> bool) -> array -> bool
+						= magic Word8Array.exists
+    val all      : (elem -> bool) -> array -> bool
+						= magic Word8Array.all
+
     fun foldl (f : elem * 'b -> 'b) (e : 'b) (a : array) : 'b
 	= Word8Array.foldl (magic f) e (magic a)
 
@@ -45,6 +52,9 @@ in
 
     fun modifyi (f : int * elem -> elem) (a : array*int*int option) : unit
 	= Word8Array.modifyi (magic f) (magic a)
+
+    val collate  : (elem * elem -> order) -> array * array -> order
+						= magic Word8Array.collate
 
 (*
     val foldl    : (elem * 'b -> 'b) -> 'b -> array -> 'b

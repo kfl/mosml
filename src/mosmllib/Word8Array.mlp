@@ -92,6 +92,24 @@ fun copyVec {src = a1: vector, si=i1, len, dst = ref a2: array, di=i2} =
 	else blitva_ a1 i1 a2 i2 n
     end
 
+fun find (p : elem -> bool) (ref a) : elem option = 
+    let val stop = length_ a
+	fun lr j = 
+	    if j < stop then 
+		if p (sub_ a j) then SOME (sub_ a j) else lr (j+1)
+	    else NONE
+    in lr 0 end
+
+fun exists (p : elem -> bool) (ref a) : bool = 
+    let val stop = length_ a
+	fun lr j = j < stop andalso (p (sub_ a j) orelse lr (j+1))
+    in lr 0 end
+
+fun all (p : elem -> bool) (ref a) : bool = 
+    let val stop = length_ a
+	fun lr j = j >= stop orelse (p (sub_ a j) andalso lr (j+1))
+    in lr 0 end
+
 fun foldl f e (ref a) = 
     let val stop = length_ a
 	fun lr j res = if j < stop then lr (j+1) (f(sub_ a j, res))
@@ -153,4 +171,19 @@ fun appi f (slice as (ref a, i, _)) =
 		    else ()
 	    in lr i end
     in loop (sliceend slice) end;
+
+fun collate cmp (ref a1, ref a2) =
+    let val n1 = length_ a1 
+	and n2 = length_ a2
+	val stop = if n1 < n2 then n1 else n2
+	fun h j = (* At this point a1[0..j-1] = a2[0..j-1] *)
+	    if j = stop then if      n1 < n2 then LESS
+                             else if n1 > n2 then GREATER
+                             else                 EQUAL
+	    else
+		case cmp(sub_ a1 j, sub_ a2 j) of
+		    EQUAL => h (j+1)
+		  | res   => res
+    in h 0 end;
+
 end
