@@ -691,3 +691,37 @@ As you can see, all four possibilities are achieved.
 Of the five compilers, only the ML Kit gets both programs right,
 Moscow ML and SML/NJ get one right (and disagree with each other), and
 MLton and PolyML get both wrong.
+
++ Exception Option should be available in the top-level by default.
+  Should go in src/compiler/Smlperv.sml and in runtime/globals.h
+  Fixed Jan 2001.
+
+* 2001-02-16: Dynamic linking under MacOS X.  See man ld, man dyld.
+
+  cc -dynamiclib?
+
+  #include <mach-o/dyld.h>
+  
+  Documentation/DeveloperTools/Compiler
+
+  man 3 dyld
+
++ 2001-02-27: Ken: Jeg mener at foelgende funktion er hale rekursiv,
+men Mosml er ikke enig med mig (den oversaetter iht det rekursive kald
+til fitting til et apply):
+
+--------
+fun fitting [] left          = true
+  | fitting (s :: rest) left = 
+    left >= 0 andalso
+    (case s of
+         "\n" => true
+       | _    => fitting rest (left - size s))
+--------
+(og ligeledes med orelse)
+
+Årsag: I kodegenereringen for Landalso og Lorelse i Back.sml mangler
+der det tilfælde hvor oversættelsestids-continuation starter med
+Kreturn _ :: ... 
+
+Fixed by updating addPop to handle the case where C is Klabel :: Kreturn.

@@ -126,14 +126,14 @@ fun bindEnv (fv,va) n z =
 (* *)
 
 fun addPop n C =
-  if n = 0
-  then C
+  if n = 0 then C
   else
     case C of
-      Kpop m :: C    => addPop (n + m) C
-    | Kreturn m :: C => Kreturn (n + m) :: C
-    | Kraise :: _    => C
-    | _              => Kpop n :: C
+      Kpop m :: C1                => addPop (n + m) C1
+    | Kreturn m :: C1             => Kreturn (n + m) :: C1
+    | Klabel _ :: Kreturn m :: C1 => Kreturn (n + m) :: C
+    | Kraise :: _                 => C
+    | _                           => Kpop n :: C
 ;
 
 (* Generate a jump through table, unless unnecessary. *)

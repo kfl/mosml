@@ -21,13 +21,6 @@ ADDRUNLIBS=-ldl
 ADDRUNCFLAGS=
 ADDDYNLIBCFLAGS=
 
-# To compile the runtime system camlrunm under Cygwin with support for
-# dynamically loadable libraries (DDLs), uncomment these:
-
-# ADDPRIMS=dynlib.c
-# ADDOBJS=dynlib.o
-# ADDRUNCFLAGS=
-# ADDDYNLIBCFLAGS=
 
 # For Linux (x86 or Alpha), use:
 # ------------------------------
@@ -52,6 +45,11 @@ DYNLD=ld -shared
 # LD=gcc -Wl,--export-dynamic
 # DYNLD=ld -shared
 # EXE=.exe
+# # For dynamically loadable libraries (DDLs) under Cygwin:
+# ADDPRIMS=dynlib.c
+# ADDOBJS=dynlib.o
+# ADDRUNCFLAGS=
+# ADDDYNLIBCFLAGS=
 
 # For NetBSD, use:
 # ------------------------
