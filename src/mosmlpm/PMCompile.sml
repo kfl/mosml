@@ -235,7 +235,7 @@ struct
 	    val uofiles  = List.map smlToUo smlfiles
 	    val args = String.concat("mosmlc -toplevel "::
 				     options @ (insertSep " " uofiles))
-	in  (*chat [args]*)
+	in  (*chat [args];*)
             chat ["Linking: ", outfile]
           ; Process.system args = Process.success
 	end

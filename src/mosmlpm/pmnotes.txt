@@ -6,7 +6,7 @@ Note about the PM prototype
 * Getting started.
   Compile the source with the command 
     mosmlc -toplevel Parsercomb-sig.sml Parsercomb.sml PMBasic.sml\
-                     PMCompile.sml mospm.sml -o mosmlpm
+                     PMCompile.sml mosmlpm.sml -o mosmlpm
   Now from the toplevel invoke the function 
   PMCompile.compile "sources.pm"
 
