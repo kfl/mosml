@@ -4,9 +4,9 @@ struct
 
     fun error msg = raise Fail msg
     val verbose = true
-    fun say msg = if verbose then
+    fun chat msg = if verbose then
 		      (app print msg; print "\n")
-		  else ()
+		   else ()
 
     fun insertSep sep []      = []
       | insertSep sep (x::xs) = x :: sep :: insertSep sep xs     
@@ -23,26 +23,46 @@ struct
 
     fun normalizeName filename = FileSys.fullPath filename
 		  
-    fun mosmlc context files = 
-	let open Process
-	    val cont = List.concat (files::context)
-	    val cont = rev(insertSep " " cont)
-	    val args = String.concat("mosmlc -c -toplevel ":: cont)
-	in  say ["Compiling: "]
-          ; app say [files]
-	  ; system args = success
-	end
+    (* Functions fo manipulating context *)
+    type context = bool * filename list list
+
+    val initCont = (false, [[]])
+    fun scope (dirty, cont)           = (dirty, [] :: cont)
+    fun dropLocal (dirty, (x::_::xs)) = (dirty, x::xs)
+    fun dropImports (dirty, files)    = (dirty, List.hd files)
+    fun files (_,fs)                  = fs
+    fun setDirty dirty (_, files)     = (dirty, files)
+    fun addImport (d1, fs1) (d2, fs2) = (d1 orelse d2, fs1 :: fs2)
+
+    fun uptodate (dirty,_) file =
+	not dirty andalso (FileSys.access (smlToUo file,[]) andalso
+			   let val t1 = FileSys.modTime file
+			       val t2 = FileSys.modTime (smlToUo file)
+			   in  Time.<(t1,t2)
+			   end)
+
+    fun addUI file (dirty, x::xs) = (dirty, (smlToUi file :: x) :: xs)
+
+
+    (* context and files sould be given in reverse order *)
+    fun mosmlc context file = 
+	if uptodate context file then 
+	    (chat ["Reusing: ", file];
+	     (false, true))
+	else
+	    let open Process
+		val cont = List.concat ([file] :: files context)
+		val cont = rev(insertSep " " cont)
+		val args = String.concat("mosmlc -c -toplevel ":: cont)
+	    in  chat ["Compiling: ", file]
+	      ; (true, system args = success)
+	    end
 
     fun srcSeq (SRC(file,b)) acc = srcSeq b (file::acc)
       | srcSeq b             acc = (b, List.rev acc)  
 
-    fun scope cont = [] :: cont
-    fun dropLocal (x::_::xs) = x::xs
-
-
-    fun addUI file (x::xs) = (smlToUi file :: x) :: xs
-
-    fun compileBodyOpt path b context =
+    (* not ready for context with dirty bit *)
+    (*fun compileBodyOpt path b context =
 	case b of
 	    SRC _ =>
 	        let val (b,seq) = srcSeq b [] 
@@ -60,13 +80,16 @@ struct
 		in  compileBodyOpt path b3 context
 		end 
 	  | NULL => context 
+		*)
 
     fun compileBody path b context =
 	case b of
 	    SRC (file,b) =>
 	        let val name = Path.mkAbsolute(file,path)
-	        in  if mosmlc context [name] then 
-			compileBody path b (addUI name context)
+		    val (dirty, status) = mosmlc context name
+		    val context = addUI name (setDirty dirty context)
+	        in  if status then 
+		         compileBody path b context
 		    else error ("Could not compile: "^file)
 		end
 	  | LOCAL(b1,b2,b3) =>
@@ -88,28 +111,27 @@ struct
 		let fun oneImport (imp,cont) =
 			let val name = normalizeName imp 
 			in case peek name of
-			       SOME fs => fs::cont
+			       SOME fs => addImport fs cont
 			     | NONE    => 
 			       let val res = compileFile name
 			       in  update (name,res)
-			       ; res::cont
+			         ; addImport res cont
 			       end
 			end
 		in  List.foldl oneImport context imps
 		end
 		    
 	    and compilePM prefix (PM{imports,body}) =
-		let val context = scope(compileImports imports [[]])
-		in  hd(compileBody prefix body context)
+		let val context = scope(compileImports imports initCont)
+		in  dropImports(compileBody prefix body context)
 		end
 		    
 	    and compileFile filename = 
 		let val name    = normalizeName filename
 		    val path    = Path.dir name
 		    val current = FileSys.getDir() before FileSys.chDir path 
-		in  compilePM path (parseFile name)
-		                                  before  FileSys.chDir current
-		    handle e => (FileSys.chDir current; raise e)
+		in compilePM path (parseFile name) before FileSys.chDir current
+		   handle e => (FileSys.chDir current; raise e)
 		end
 	in  compileFile filename
 	end
@@ -163,7 +185,7 @@ struct
 	    val uofiles  = List.map smlToUo smlfiles
 	    val args = String.concat("mosmlc -toplevel "::
 				     options @ (insertSep " " uofiles))
-	in  say [args]
+	in  chat [args]
           ; Process.system args = Process.success
 	end
 
