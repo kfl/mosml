@@ -1,0 +1,10 @@
+This directory contains some Standard ML examples from the book:
+
+Lawrence C. Paulson
+ML for the Working Programmer
+Second edition.  Cambridge University Press 1996, ISBN
+0-521-56543-X.  
+
+To use these examples, simply type
+
+mosml -P full sample.sml
