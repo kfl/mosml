@@ -3751,6 +3751,78 @@ Enter `quit();' to quit.
    con ('a, 'b) C : ('a, 'b) a/13 -> ('a, 'b) a/13,
    con ('a, 'b) D : 'a -> ('a, 'b) a/13,
    con ('a, 'b) E : 'b -> ('a, 'b) a/13}
+- > signature S = /\t.{type t = t}
+- > signature Ok =
+  /\t.rec ({type t = t},{datatype t = (t,{con C : t -> t}), con C : t -> t})
+- > signature Ok = rec ({type t = int},{type t = int})
+- > signature Ok = rec ({type t = int -> int},{type t = int -> int})
+- ! Toplevel input:
+! signature Wrong = rec (X : S) sig type t = X.t end;
+!                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Illegal recursive signature: the body does not match the forward specification...
+! Circularity: type constructor t has specification:
+!   type t = t
+! in the forward specification
+! but is implemented by the declaration: 
+!   type t = t
+! in the body
+! The declaration violates the specification because 
+! of the circular occurrence of t
+- ! Toplevel input:
+! signature Wrong = rec (X : S) sig type t = unit -> X.t end;
+!                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Illegal recursive signature: the body does not match the forward specification...
+! Circularity: type constructor t has specification:
+!   type t = t
+! in the forward specification
+! but is implemented by the declaration: 
+!   type t = unit -> t
+! in the body
+! The declaration violates the specification because 
+! of the circular occurrence of t
+- > signature S = {type t = int}
+- > signature Ok = rec ({type t = int},{type t = int})
+- ! Toplevel input:
+! signature Wrong = rec (X : S) sig datatype t = C of X.t end;  
+!                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Illegal recursive signature: the body does not match the forward specification...
+! Type mismatch: type constructor t
+! is specified as one abbreviation in the forward specification
+!   type t = int
+! but declared as a different abbreviation in the body
+!   datatype t = (t,{con C : int -> t})
+! The abbreviations should be equivalent
+- > signature Ok = rec ({type t = int},{type t = int})
+- ! Toplevel input:
+! signature Wrong = rec (X : S) sig type t = unit -> X.t end;
+!                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Illegal recursive signature: the body does not match the forward specification...
+! Equality type mismatch: type constructor t
+! is specified as admitting equality in the forward specification
+!   type t = int
+! but its declaration does not admit equality in the body
+!   type t = unit -> int
+- > signature S = /\t.{type 'a t = 'a t}
+- > signature Ok = rec ({type 'a t = 'a list},{type 'a t = 'a list})
+- > signature Ok = rec ({type 'a t = 'a list},{type 'a t = 'a list})
+- > signature S = {type 'a t = 'a list}
+- > signature Ok = rec ({type 'a t = 'a list},{type 'a t = 'a list})
+- ! Toplevel input:
+! signature Wrong = rec (X : S) sig type 'a t = 'a  end;
+!                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Illegal recursive signature: the body does not match the forward specification...
+! Type mismatch: type constructor t
+! is specified as one abbreviation in the forward specification
+!   type 'a t = 'a list
+! but declared as a different abbreviation in the body
+!   type 'a t = 'a
+! The abbreviations should be equivalent
+- ! Toplevel input:
+! signature Wrong = rec (X : S) S where type 'a t = 'a list;
+!                                       ^^^^^^^^^^^^^^^^^^^
+! Illegal where constraint: the type constructor t
+! refers to a transparent type specification
+! but should refer to an opaque type or datatype specification
 - 
 Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.

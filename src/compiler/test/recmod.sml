@@ -212,6 +212,54 @@ structure B = A :> S;
 
 structure C = B :> S;
 
+(* misc unsystematic tests *)
+
+(* nullary opaque constructor *)
+signature S = sig type t end;
+
+signature Ok = rec (X : S) sig datatype t = C of X.t end;  
+
+signature Ok = rec (X : S) sig type t = int end;
+
+signature Ok = rec (X : S) sig type t = int -> int end;
+
+signature Wrong = rec (X : S) sig type t = X.t end;
+
+signature Wrong = rec (X : S) sig type t = unit -> X.t end;
+
+(* nullary transparent constructor *)
+
+signature S = sig type t = int end;
+
+signature Ok = rec (X : S) sig type t = int end;
+
+signature Wrong = rec (X : S) sig datatype t = C of X.t end;  
+
+signature Ok = rec (X : S) sig type t = X.t end;
+
+signature Wrong = rec (X : S) sig type t = unit -> X.t end;
+
+(* unary opaque constructor *)
+
+signature S = sig type 'a t end;
+
+signature Ok = rec (X : S) sig type 'a t = 'a list end;
+
+signature Ok = rec (X : S) S where type 'a t = 'a list;
+
+(* unary transparent constructor *)
+
+signature S = sig type 'a t = 'a list end;
+
+signature Ok = rec (X : S) sig type 'a t = 'a list end;
+
+signature Wrong = rec (X : S) sig type 'a t = 'a  end;
+
+signature Wrong = rec (X : S) S where type 'a t = 'a list;
+
+
+
+
 
 
 
