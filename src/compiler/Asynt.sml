@@ -66,7 +66,7 @@ and Pat' =
   | CONSpat of LongVId * Pat
   | EXNILpat of LongVId
   | EXCONSpat of LongVId * Pat
-  | EXNAMEpat of LongVId         (* This is a hack to be used in match(.sml) *)
+  | EXNAMEpat of Lambda.Lambda		(* The exnname rep used in Match.sml *)
   | REFpat of Pat
   | RECpat of RecPat ref
   | VECpat of Pat list
