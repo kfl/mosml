@@ -1,4 +1,4 @@
-% manual.tex v. 2.00.0 Copyright (C) Peter Sestoft 1994, 2000-06-16
+% manual.tex v. 2.00.0 Copyright (C) Peter Sestoft 1994, 2000-06-20
 %
 % You may edit for lay-out, or leave out irrelevant sections (if
 % such omissions are marked somehow), but you may not redistribute the
@@ -20,7 +20,7 @@
 
   {\huge\bf Moscow ML Owner's Manual}\\[0.5cm]
 
-Version 2.00 of June 2000 --- draft 2000-06-16\\[0.5cm]
+Version 2.00 of June 2000 --- draft 2000-06-17\\[0.5cm]
 
 Sergei Romanenko, Russian Academy of Sciences, Moscow, Russia\\
 Claudio Russo, Cambridge University, Cambridge, United Kingdom\\
@@ -145,7 +145,7 @@ compilation; see Section~\ref{sec-structure-mode}.
     then handled as Core language values, which may then be unpacked
     as structures or functors again; see
     Section~\ref{sec-firstclass-modules}
-  \item recursive modules: signatures, structures, and functors may be
+  \item recursive modules: signatures and structures may be
     recursively defined; see Section~\ref{sec-rec-modules}
   \end{itemize}
 \item Value polymorphism has become friendlier: non-generalizable free
@@ -165,6 +165,7 @@ compilation; see Section~\ref{sec-structure-mode}.
   have been removed; the runtime system and bytecode format now
   accommodate much larger programs; the representation of exceptions
   has been simplified; literals are now shared inside topdecs; etc.
+\item A project manager \texttt{mosmlpm} for recompilation management.
 \end{itemize}
 
 % \subsection{What is new in release 1.44}
@@ -918,13 +919,13 @@ file \texttt{unitid.sig}.  A unit must be compiled in one of two modes:
 
 \begin{itemize}
 \item \textbf{Structure mode:} File \texttt{unitid.sml} declares a
-  single Standard ML structure \texttt{unitid}, and file
+  single Standard ML structure \texttt{unitid}, and file\\
   \texttt{unitid.sig}, if present, declares an explicit signature
   constraint for that structure.  
   
   A structure-mode unit has a restricted syntax: it can declare only a
-  single non-nested structure, and therefore admits simple
-  recompilation management using \texttt{mosmldep} and makefiles; see
+  single structure, and therefore admits simple recompilation
+  management using \texttt{mosmldep} and makefiles; see
   Section~\ref{sec-structure-mode-recompilation}.
   
   Structure-mode units are backwards compatible with Moscow ML version
@@ -1238,7 +1239,8 @@ directory, and change to that directory.
 \begin{enumerate}
 \item Edit the Makefile so that the names of the bytecode files
   Evaluate.uo, Expr.uo, and Reduce.uo appear on the line beginning
-  with `{\tt all:}' (see the example makefile below).
+  with `{\tt all:}' (see the example makefile in
+  \texttt{mosml/examples/manual/Makefile}).
 
 \item Compute the dependencies among the files by executing:
 \begin{program}
@@ -1306,7 +1308,7 @@ mosml
 before \texttt{unitid.sml}.
 
 More generally, when a compilation unit depends on a number of other
-compilation units \texttt{"unitid\et"},\ldots,\texttt{"unitid\n"},
+compilation units \texttt{"unitid\et"}, \ldots, \texttt{"unitid\n"},
 then compilation inside the interactive toplevel system:
 
 \begin{program}
@@ -1338,7 +1340,8 @@ compiler \texttt{mosmlc} to actually compile the source files.
 The current \texttt{mosmlpm} implementation has the following
 limitations: (1) source files must be have extension .sml --- it
 cannot handle files with extension .sig; (2) it does not resolve
-filename conflicts in different (sub)projects.
+filename conflicts in different (sub)projects; (3) error checking and
+error messages should be improved.
 
 
 \subsubsection{Project files}
@@ -1403,11 +1406,11 @@ Evaluate-sig.sml
 Evaluate.sml
 \end{program}
 
-\noindent This file can then be compiled and linked ????
-with the command:
+\noindent 
+This file can then be compiled and linked with the command:
 
 \begin{program}
-mosmlpm -c evaluator.pm
+mosmlpm evaluator.pm
 \end{program}
 
 \noindent For a more advanced example, see file
@@ -1432,6 +1435,8 @@ The following command--line options are recognized by
 \item[-c] Compile only; do not link the compiled files.  Source code
   files are turned into compiled files (.ui and .uo), but no
   executable file is produced.
+  
+\item[-quiet] Do not report the progress of compilation, linking, etc.
   
 \item[-o \textrm{exec-file}] Specifies the name of the output file
   produced by the linker.  In the absence of this option the name of
@@ -1748,8 +1753,8 @@ language in several ways:
   then handled as Core language values, which may then be unpacked as
   structures or functors again; see
   Section~\ref{sec-firstclass-modules}
-\item recursive modules: signatures, structures, and functors may be
-  recursively defined; see Section~\ref{sec-rec-modules}
+\item recursive modules: signatures and structures may be recursively
+  defined; see Section~\ref{sec-rec-modules}
 \item applicative as well as (the usual) generative functors; see
   Section~\ref{sec-applicative-functors}.
 \end{itemize}
@@ -1829,8 +1834,8 @@ val x = g [structure Bundle as BUNDLE]                  (* packing   *)
 
 The Standard ML Modules language does not permit recursively defined
 modules.  For instance, two structures \texttt{A} and \texttt{B}
-depend on each other.  In the Moscow ML Modules language, a signature,
-structure, or functor may be defined recursively:
+depend on each other.  In the Moscow ML Modules language, a signature
+or structure may be defined recursively:
 
 \begin{program}
 signature SIG = rec(X: sig structure A: sig type a end;
@@ -2845,10 +2850,14 @@ Definition.
 \subsubsection*{Texts available on the net}
 
 \begin{itemize}
+\item Andrew Cumming, \emph{A Gentle Introduction to ML}, Napier
+  University.  At
+  \url{http://www.dcs.napier.ac.uk/course-notes/sml/manual.html}
+
 \item Emden Gansner and John Reppy (editors): Standard ML Basis
   Library, hypertext version:\\ 
   \url{http://www.cs.bell-labs.com/~jhr/sml/basis/index.html} \\
-  \url{http://www.dina.kvl.dk/~sestoft/sml/sml-std-basis.html}
+and  \url{http://www.dina.kvl.dk/~sestoft/sml/sml-std-basis.html}
   (mirror site)
   
 \item Stephen Gilmore, \emph{Programming in Standard ML'97}, report
@@ -2859,6 +2868,10 @@ Definition.
   ECS-LFCS-86-14, University of Edinburgh, November 1986 (revised
   1989).  At
   \url{ftp://ftp.cs.cmu.edu/afs/cs/project/fox/mosaic/intro-notes.ps}
+
+\item Robert Harper, \emph{Programming in Standard ML}, Carnegie
+        Mellon University.  At
+        \url{http://www.cs.cmu.edu/~rwh/introsml}
 
 \item Mads Tofte, {\em Tutorial on Standard ML\/}, Technical Report
   91/18, DIKU, University of Copenhagen, December 1991.  At 
