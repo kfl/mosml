@@ -19,7 +19,7 @@ makebase : Database.uo Htmlsigs.uo Lexer.uo Parser.uo Parsspec.uo \
 	$(MOSMLL) -o makebase makebase.uo
 
 base:
-	makebase $(LIBDIR)
+	./makebase $(LIBDIR)
 
 install:
 	cp helpsigs.val $(LIBDIR)

@@ -458,11 +458,13 @@ sort tokens in grammar specifications.
 
 * Size of .ui files: sharing?
 
-* Problem compiling on LinuxPPC
++ Problem compiling on LinuxPPC
 
 2000-07-01:
 
-* There is no snprintf on HPUX (it is a GNU-libc-extension),
++ (Don't do, this is a gcc macro extension)
+ 
+  There is no snprintf on HPUX (it is a GNU-libc-extension),
   so I said in mosml.h
 
 #define snprintf(dest, n, format, args...) sprintf(dest, format , ##
@@ -485,3 +487,53 @@ args)
    but this is in (5). I think the upper items were renumbered
    without incrementing the reference.
    [Not a mistake, but unclarity]
+
+2000-08-07: 
+
+* Binarymap (and Binaryset etc) based on Doug's Bin234map.
+  Should admit interval queries a la sml/besked/Datemap:
+
+   datatype 'key interval =
+       All
+     | From of 'key
+     | To of 'key
+     | FromTo of 'key * 'key
+
+   val itemInterval : ('key, 'a) dict * 'key interval -> ('key * 'a) list
+
+  such that  itemInterval dict all  is  equivalent to  listItems dict
+
+  Should have a function 
+   val peekMap : ('key, 'a) dict * 'key * ('a option -> 'a option) -> unit
+  such that 
+
+	peekMap(d, k, f) computes res = f(SOME v) if k is in dict with
+        value v, and computes res = f(NONE) otherwise.  Subsequently, if 
+	res = SOME r, it inserts/updates k in dict to r, and if res = NONE, 
+	removes k from dict.
+
+* Httpclient module
+
+* Inet name queries etc
+
+* 2000-08-10 #line comments for machine-generated mosml code:
+
+From: Norman Ramsey <nr@eecs.harvard.edu>
+
+I wonder if there's any chance of supporting some form of #line numbering.
+Objective Caml supports the C style, i.e., 
+
+# 27 "bits.nw"
+
+ 
+Here is the style we have used in STandard ML of New Jersey:
+
+(*#line 182 "mlscheme.nw"*)type name = string
+type 'value simplemap = (name * 'value ref) list
+val emptyMap : 'a simplemap = []
+
+
+I'd be delighted if there were some way to get one of these
+conventions, or a similar convention, into Moscow ML.
+Do let me know what you think.
+
