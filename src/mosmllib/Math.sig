@@ -27,7 +27,7 @@ val tanh  : real -> real
 
    [e] is the base of the natural logarithm: 2.7182818284590452354.
 
-   [sqrt x] is the square root of x.  Raises Domain is x < 0.0.
+   [sqrt x] is the square root of x.  Raises Domain if x < 0.0.
 
    [sin r] is the sine of r, where r is in radians.
 

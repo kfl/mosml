@@ -63,6 +63,9 @@ val reorganize : ('key, 'data) table -> unit
    [find(db, k)] returns v if the pair (k, v) is in db; otherwise
    raises NotFound.
 
+   [peek db k] returns SOME v if the pair (k, v) is in db; otherwise
+   returns NONE.
+
    [hasKey(db, k)] returns true if there is a pair (k, _) in db;
    otherwise returns false.
 

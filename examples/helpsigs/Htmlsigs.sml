@@ -95,7 +95,9 @@ fun processSig version bgcolor sigfile htmlfile =
 			  if isPrefix "val " suff 
 			      orelse isPrefix "type " suff
 			      orelse isPrefix "eqtype " suff
-			      orelse isPrefix "datatype " suff then 
+			      orelse isPrefix "datatype " suff 
+			      orelse isPrefix "structure " suff 
+			      orelse isPrefix "exception " suff then 
 			      declaration lineno space suff
 			  else 
 			      outSubstr susline

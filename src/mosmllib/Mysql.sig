@@ -105,9 +105,9 @@ val showquery   : dbconn -> string -> Msp.wseq
 
 
 (*
-   Type [dbconn] is the type of connections to a MySQL database.
+   [dbconn] is the type of connections to a MySQL database.
 
-   Type [dbresult] is the type of result sets from MySQL queries.
+   [dbresult] is the type of result sets from MySQL queries.
 
    [openbase { dbhost, dbport, dboptions, dbtty, dbname, dbuser, dbpwd }] 
    opens a connection to a MySQL database server on the given host

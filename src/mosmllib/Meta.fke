@@ -21,7 +21,9 @@ val valuepoly   : bool ref
 val quit        : unit -> 'a
 val system      : string -> int
 
-(* 
+(* These values and functions are available in the Moscow ML
+   interactive system only.
+ 
    [printVal e] prints the value of expression e to standard output
    exactly as it would be printed at top-level, and returns the value
    of e.  Output is flushed immediately.  This function is provided as

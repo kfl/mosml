@@ -64,7 +64,7 @@ val foldi      : traversal -> (int * int * 'a * 'b -> 'b) -> 'b
    [array(m, n, x)] returns a new m * n matrix whose elements are all x.  
    Raises Size if n<0 or m<0.
 
-   [fromlist xss] returns a new array whose first row has elements
+   [fromList xss] returns a new array whose first row has elements
    xs1, second row has elements xs2, ..., where xss = [xs1,xs2,...,xsm].  
    Raises Size if the lists in xss do not all have the same length.
 

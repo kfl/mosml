@@ -54,7 +54,7 @@ open Location Asynt;
 %type <Asynt.Sig> SigFile
 
 %type <string> Ident EqIdent UnitName
-%type <Location.Location * string> LocUnitName
+%type <Location.Location * string> IdentWithLoc LocUnitName ModId SigId
 %type <Asynt.IdInfo> OpIdent OpEqIdent TypeIdent LongTypeIdent
 %type <Asynt.TyVar> TyVar
 %type <string list> UnitName_seq1
@@ -77,6 +77,8 @@ open Location Asynt;
 %type <Asynt.Spec> Spec KWSpec
 %type <Asynt.Spec list> KWSpec_seq
 %type <Asynt.ValDesc list> ValDesc AndValDesc_opt
+%type <Asynt.ModDesc list> ModDesc_seq1 AndModDesc_opt
+%type <Asynt.SigExp> SigExp
 
 %%
 
@@ -84,6 +86,9 @@ Ident :
     ID          { $1 }
   | STAR        { "*" }
 ;
+
+IdentWithLoc :
+    Ident       { mkLoc($1) }
 
 OpIdent :
     Ident       { mkIdInfo (mkLoc { qual="", id=$1 }) false }
@@ -101,7 +106,7 @@ EqIdent :
 ;
 
 LocUnitName :
-    UnitName    { mkLoc($1) }
+    IdentWithLoc { $1 }
 ;
 
 UnitName :
@@ -290,6 +295,7 @@ KWSpec :
   | EXCEPTION ExDesc            { mkLoc(EXCEPTIONspec $2) }
   | LOCAL Spec IN Spec END      { mkLoc(LOCALspec($2,$4)) }
   | OPEN UnitName_seq1          { mkLoc(OPENspec $2) }
+  | STRUCTURE ModDesc_seq1      { mkLoc(STRUCTUREspec $2)}
 ;
 
 ValDesc :
@@ -310,4 +316,26 @@ TypDesc :
 AndTypDesc_opt :
     AND TypDesc         { $2 }
   | /* */               { [] }
+;
+
+ModDesc_seq1 :
+    ModId COLON SigExp AndModDesc_opt
+                        { (MODDESCmoddesc($1, $3 )) :: $4 }
+;
+
+AndModDesc_opt :
+    AND ModDesc_seq1     { $2 }
+  | /* */                { [] }
+;
+
+SigExp : 
+     SigId          {mkLoc(SIGIDsigexp $1)}
+;
+
+ModId :
+    IdentWithLoc       { $1 }
+;
+
+SigId :
+    IdentWithLoc       { $1 }
 ;

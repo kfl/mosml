@@ -69,6 +69,10 @@ and PrimValBind = IdInfo * Ty * int * string
 type ValDesc = IdInfo * Ty;
 type ExDesc = IdInfo * Ty option;
 
+type LocString = Location * string;
+type ModId = LocString;
+type SigId = LocString;
+
 datatype Spec' =
     VALspec of ValDesc list
   | PRIM_VALspec of PrimValBind list
@@ -80,9 +84,11 @@ datatype Spec' =
   | OPENspec of string list
   | EMPTYspec
   | SEQspec of Spec * Spec
-withtype Spec = Location * Spec';
-
-type LocString = Location * string;
+  | STRUCTUREspec of ModDesc list
+and ModDesc = MODDESCmoddesc of ModId * SigExp
+and SigExp' = SIGIDsigexp of SigId
+withtype Spec = Location * Spec'
+and SigExp = Location * SigExp';
 
 datatype Sig = 
     NamedSig of {locsigid : LocString, specs : Spec list}

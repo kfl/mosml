@@ -111,11 +111,11 @@ val showquery   : dbconn -> string -> Msp.wseq
 
 
 (*
-   Type [dbconn] is the type of connections to a PostgreSQL database.
+   [dbconn] is the type of connections to a PostgreSQL database.
 
-   Type [dbresult] is the type of result sets from SQL queries.
+   [dbresult] is the type of result sets from SQL queries.
 
-   Type [oid] is the type of PostgreSQL internal object ids.
+   [oid] is the type of PostgreSQL internal object ids.
 
    [openbase { dbhost, dbport, dboptions, dbtty, dbname, dbuser, dbpwd  }] 
    opens a connection to a PostgreSQL database server on the given

@@ -33,25 +33,24 @@ end
    be updated. Use the Push_roots and Pop_roots macroes to achieve
    this.
 
-   Type [dlHandle] is the type of dynamic library handles.  A dynamic
+   [dlHandle] is the type of dynamic library handles.  A dynamic
    library handle is created by opening a dynamic library using
    dlopen.  This will load the library into the runtime system.  The
    dynamic library handle is used for accessing symbols in that
    library.  The library may be closed and removed from the runtime
-   system using dlclose.  
+   system using dlclose.
 
    The same library may be opened more than once, resulting in
    different library handles.  The physical library will be loaded
    only once, though, and will remain in the runtime system until all
    handles to the library have been closed.
 
-   Type [symHandle] is the type of symbol handles.  A symbol handle is
-   used to access a symbol (variable or function) in the dynamic
-   library, using the functions var, app1, app2, ..., app5.  Type
-   safety is the responsibility of the programmer; the runtime system
-   performs no type checking.  Hence you are advised to add explicit
-   types whenever you define an ML function in terms of var, app1,
-   ..., app5.
+   [symHandle] is the type of symbol handles.  A symbol handle is used
+   to access a symbol (variable or function) in the dynamic library,
+   using the functions var, app1, app2, ..., app5.  Type safety is the
+   responsibility of the programmer; the runtime system performs no
+   type checking.  Hence you are advised to add explicit types
+   whenever you define an ML function in terms of var, app1, ..., app5.
 
    How to create a dynamically loadable library
    --------------------------------------------

@@ -26,7 +26,11 @@ val ttou : signal
 val toWord   : signal -> Word.word 
 val fromWord : Word.word -> signal 
 
-(* Posix signals
+(* Posix signals.
+
+   [toWord sig] returns the signal number as an unsigned word.
+
+   [fromWord w] returns the signal whose number is w.
 
    [abrt] is SIGABRT, the abort signal from abort(3).
 

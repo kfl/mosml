@@ -39,7 +39,9 @@ val fromString : string -> real option
 val scan       : (char, 'a) StringCvt.reader -> (real, 'a) StringCvt.reader
 val fmt        : StringCvt.realfmt -> real -> string
 
-(* [~, *, /, +, -, >, >=, <, <=, abs] are the usual operations on reals.
+(* [~, *, /, +, -, >, >=, <, <=] are the usual operations on reals.
+
+   [abs x] is x if x >= 0, and ~x if x < 0, that is, the absolute value of x.
 
    [min(x, y)] is the smaller of x and y.
 
