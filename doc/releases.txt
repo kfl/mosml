@@ -250,7 +250,7 @@ Moscow ML release history
     * Several errors in Mosmlcookie
     * Misplaced double quote in Msp.ahrefa 
     * Exception Option wasn't available at top-level
-    * Listsort: added eqclasses, merge, mergeUniq
+    * Linker did not check stamps of linked-in units
   * SML Basis Library changes:
     * String and Substring: added concatWith, isSuffix, isSubstring, full
     * ListPair: added zipEq, appEq, mapEq, foldlEq, foldrEq, allEq
@@ -262,3 +262,4 @@ Moscow ML release history
     * Path.{mkRelative,mkAbsolute} now take record arguments
     * Negative Time.time values allowed
     * OS.Process: new functions sleep and isSuccess; status not eqtype
+    * Listsort: added eqclasses, merge, mergeUniq

@@ -6,8 +6,9 @@
 
 static unsigned long hash_accu;
 static long hash_univ_limit, hash_univ_count;
+static char safe;		/* Fail on refs and exceeded limits */
 
-static void hash_aux();
+static void hash_aux(value obj);
 
 value hash_univ_param(count, limit, obj) /* ML */
      value obj, count, limit;
@@ -15,6 +16,20 @@ value hash_univ_param(count, limit, obj) /* ML */
   hash_univ_limit = Long_val(limit);
   hash_univ_count = Long_val(count);
   hash_accu = 0;
+  safe = 0;
+  hash_aux(obj);
+  return Val_long(hash_accu & 0x3FFFFFFF);
+  /* The & has two purposes: ensure that the return value is positive
+     and give the same result on 32 bit and 64 bit architectures. */
+}
+
+value hash_univ_safe_param(count, limit, obj) /* ML */
+     value obj, count, limit;
+{
+  hash_univ_limit = Long_val(limit);
+  hash_univ_count = Long_val(count);
+  hash_accu = 0;
+  safe = 1;
   hash_aux(obj);
   return Val_long(hash_accu & 0x3FFFFFFF);
   /* The & has two purposes: ensure that the return value is positive
@@ -26,16 +41,19 @@ value hash_univ_param(count, limit, obj) /* ML */
 #define Combine(new)  (hash_accu = hash_accu * Alpha + (new))
 #define Combine_small(new) (hash_accu = hash_accu * Beta + (new))
 
-static void hash_aux(obj)
-     value obj;
+static void hash_aux(value obj)
 {
   unsigned char * p;
   mlsize_t i;
   tag_t tag;
 
   hash_univ_limit--;
-  if (hash_univ_count < 0 || hash_univ_limit < 0) return;
-
+  if (hash_univ_count < 0 || hash_univ_limit < 0) {
+    if (safe) 
+      fatal_error("hash: count limit exceeded\n");
+    else
+      return;
+  }
   if (Is_long(obj)) {
     hash_univ_count--;
     Combine(Long_val(obj));
@@ -61,6 +79,8 @@ static void hash_aux(obj)
     case String_tag:
       hash_univ_count--;
       i = string_length(obj);
+      if (i>128) 
+	i = 128;
       for (p = &Byte_u(obj, 0); i > 0; i--, p++)
         Combine_small(*p);
       break;
@@ -92,6 +112,8 @@ static void hash_aux(obj)
       /* Poor idea to hash on the pointed-to structure, even so: it may change,
 	 and hence the hash value of the value changes, although the ref doesn't.
 	 This breaks most hash table implementations.  sestoft 2000-02-20. */
+      if (safe) 
+	fatal_error("hash: ref encountered\n");
       Combine_small(tag);
       hash_univ_count--;
       /* hash_aux(Field(obj, 0)); */
