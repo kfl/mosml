@@ -44,7 +44,7 @@ INSTALLING MOSCOW ML (BINARIES ONLY) UNDER LINUX
     Alternatively, if you are doing a systemwide installation, 
     as needed for CGI scripts, do
 	- log in as root
-	- execute  cp -p ~/mosml/lib /usr/local/lib
+	- execute  cp -p ~/mosml/lib/lib*.so /usr/local/lib
         - edit /etc/ld.so.conf to list /usr/local/lib on a separate line
 	- execute  ldconfig
 
