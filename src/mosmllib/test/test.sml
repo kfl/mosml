@@ -19,6 +19,7 @@ app use
  "listsort.sml",			(* MOSML *)
  "math.sml",
  "mosml.sml",				(* MOSML *)
+ "polyhash.sml",			(* MOSML *)
  "process.sml",
  "real.sml",
  "string.sml",

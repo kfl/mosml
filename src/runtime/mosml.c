@@ -68,7 +68,19 @@ static int sml_equal_aux(value v1, value v2)
   if (Tag_val(v1) != Tag_val(v2)) return 0;
   switch(Tag_val(v1)) {
   case String_tag:
-    return (compare_strings(v1, v2) == Val_long(0));
+    { // Faster string comparison 2002-12-03
+      register int len = string_length(v1);
+      register unsigned char * p1, * p2;
+      if (len != string_length(v2))
+	return 0;
+      for (p1 = (unsigned char *) String_val(v1),
+	   p2 = (unsigned char *) String_val(v2);
+	   len > 0;
+	   len--, p1++, p2++)
+	if (*p1 != *p2)
+	  return 0;
+      return 1;
+    }
   case Double_tag:
     return (Double_val(v1) == Double_val(v2));
   case Reference_tag:  /* Different reference cells are not equal! */

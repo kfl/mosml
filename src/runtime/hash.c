@@ -78,12 +78,17 @@ static void hash_aux(value obj)
     switch (tag) {
     case String_tag:
       hash_univ_count--;
-      i = string_length(obj);
-      if (i>128) 
-	i = 128;
-      for (p = &Byte_u(obj, 0); i > 0; i--, p++)
-        Combine_small(*p);
-      break;
+      { 
+	mlsize_t len = string_length(obj);
+	i = len <= 128 ? len : 128;
+	// Hash on 128 first characters
+	for (p = &Byte_u(obj, 0); i > 0; i--, p++)
+	  Combine_small(*p);
+	// Hash on logarithmically many additional characters beyound 128
+	for (i=1; i+127 < len; i*=2)
+	  Combine_small(Byte_u(obj, 127+i));
+	break;
+      }
     case Double_tag:
       /* For doubles, we inspect their binary representation, LSB first.
          The results are consistent among all platforms with IEEE floats. */
