@@ -734,6 +734,14 @@ Fixed by updating addPop to handle the case where C is Klabel :: Kreturn.
   produce the test output.  Rename check' to check, and give it
   one more argument: a string indicating the name of the test.
 
+* 2001-05-11: Ken 
+
+  I've made a new mosml windows installer it is available from:
+        http://www.it.edu/~kfl/tmp/mosml-setup-2_00.exe
+ 
+ I've tested it on my laptop with windows 2000 where it seems to work
+ fine, and I would like if you could help me testing it like last time.  
+
 * 2001-05-22: Date: 21 May 2001 14:28:31 +0200
               From: Martin Elsman <mael@dina.kvl.dk>
 Subject: Int overflow
@@ -875,7 +883,28 @@ mosmlc -c A.sml
 mosmlc -c B.sml
 mosmlc -c C.sml
 but in fact fake dependencies were introduced there also.    
-I wonder if this issue warrants a mention in the documentation.                 
+I wonder if this issue warrants a mention in the documentation.
+
+* 2001-06-11: Michael Norrish <Michael.Norrish@cl.cam.ac.uk>   
+
+The system-administrators here dislike the fact that the mosml2.0 RPM
+ 
+  "installs files into /usr/bin and /usr/mosml and is not
+  relocatable."
+ 
+Rather than use this, they then installed the binary version, without
+then setting things up as per the instructions, and what they've
+installed doesn't work well.
+ 
+Also, the instructions at
+ 
+  ftp://ftp.dina.kvl.dk/pub/mosml/install-linux.txt
+ 
+don't say anything about the symbolic link at <mosmldir>/lib/camlrunm,
+which seems to be used when linking.                 
+
+[The latter is an RPM-problem / Peter]
+
 * 2001-06-21: Martin Elsman <mael@dina.kvl.dk>
 
 Det ser ud som om Moscow ML ikke binder Option og Span som exception
@@ -894,6 +923,7 @@ and rec x = fn () => ()
 * 2001-08-02: PS to check up on Buffer.{sig, sml} from Ken.
 
 * 2001-08-02: PS to check up on Ken's red-black tree implementation.
+              Compare with Doug's 2-3-4 maps.
   2001-10-15:
  
    Add interval operations (done, but not tested).
@@ -909,6 +939,11 @@ and rec x = fn () => ()
   Bugs found:
    isSubset was wrong for empty first arg and non-empty second arg
 
+* 2001-08-14: Michael Norrish, email
+
+  There doesn't seem to be any nice way of finding the key of a
+  Binary map that maps to the least value (say the range is int).
+  
 * 2001-10-18: Michael Norrish: 
 
   * enable call to system prettyprinter from installed prettyprinters,
@@ -939,3 +974,31 @@ and rec x = fn () => ()
 
 * 2001-12-26: Stanislaw Skowron, see skowron-bug.sml: excess
   polymorphism leads to segmentation fault.
+
+* 2002-01-15: Binarymap desiderata.  
+
+  * Benchmark Ken's red-black vs Doug's 234-trees.
+ 
+  * Konrad wants a way to map a map to something else by a function f,
+    while preserving the key order.  A function such as 
+      remap : ('a -> 'c) * ('b -> 'd) -> ('a,'b)dict -> ('c,'d)dict 
+    which must be applied only to functions f that satisfy
+      compare1 k1 k2 = compare2 (f k1) (f k2)
+    where compare1 : 'a * 'a -> order and compare2 : 'b * 'b -> order
+    This should be done in linear time, not using inserts all over the 
+    place again.
+
+  * Ken suggests: The new key ('c) might depend on the data ('b).
+    Actually the type should be:
+ 
+        val genmap : ('c * 'c -> order) -> ('a * 'b -> 'c * 'd)
+                                        -> ('a,'b)dict -> ('c,'d)dict
+ 
+    because we need the new compare function to construct the result
+    dist.  If I should implement genmap for RB trees then I'd first
+    genrate a list of the mapped elements, check that the list is
+    sorted and then use fromSortedList.  But then I can be over
+    defensive in my (SML) programming.
+
+
+              

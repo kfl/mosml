@@ -56,4 +56,7 @@ val run : string -> string list -> string -> runresult
    is the program's (standard and error) output as a string, if it
    executed successfully; otherwise returns Failure s where s is its
    (standard and error) output as a string.
+       Extreme care should be taken when calling this function in web
+   scripts and similar, since the cmd is executed by the shell, so
+   even the args can be abused for attacks.
 *)

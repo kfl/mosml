@@ -970,11 +970,21 @@ value sml_access(value path, value permarg)          /* ML */
 
 value sml_tmpnam(value v)          /* ML */
 { char *res;
-
+#ifdef WIN32
+  value value_res;
+ 
+  res = _tempnam(NULL, "mosml");
+  if (res == NULL)
+    failwith("tmpnam");
+  value_res = copy_string(res);
+  free(res);
+  return value_res;
+#else
   res = tmpnam(NULL);
   if (res == NULL) 
     failwith("tmpnam");  
   return copy_string(res);
+#endif
 }
 
 value sml_errormsg(value err)   /* ML */
