@@ -53,7 +53,7 @@ DYNLD=ld -shared
 # For Solaris 2 (not SunOS 4), use instead:
 # CPP=/usr/ccs/lib/cpp -P -Dunix -Umsdos
 # STRIP=/usr/ccs/bin/strip
-# LD=gcc
+# LD=gcc -Wl,--export-dynamic
 # DYNLD=ld -G -B symbolic -z nodefs
 # ADDRUNCFLAGS=
 # ADDDYNLIBCFLAGS=

@@ -284,6 +284,7 @@ Enter `quit();' to quit.
   val db = fn : dbconn -> string
   val getreal = fn : dbresult -> int -> int -> real
   con Real = fn : real -> dynval
+  val showquery = fn : dbconn -> string -> wseq
   con Nonfatal_error = Nonfatal_error : dbresultstatus
   exn Null = Null : exn
   con Fatal_error = Fatal_error : dbresultstatus
@@ -319,6 +320,7 @@ Enter `quit();' to quit.
   val host = fn : dbconn -> string option
   val gettime = fn : dbresult -> int -> int -> int * int * int
   con Time = fn : int * int * int -> dynval
+  val formattable = fn : dbresult -> wseq
   con Bad_response = Bad_response : dbresultstatus
   val errormessage = fn : dbconn -> string option
   val copytableto = fn : dbconn * string * (string -> unit) -> unit
@@ -444,6 +446,7 @@ Enter `quit();' to quit.
   val db = fn : dbconn -> string
   val getreal = fn : dbresult -> int -> int -> real
   con Real = fn : real -> dynval
+  val showquery = fn : dbconn -> string -> wseq
   con Nonfatal_error = Nonfatal_error : dbresultstatus
   exn Null = Null : exn
   con Fatal_error = Fatal_error : dbresultstatus
@@ -482,6 +485,7 @@ Enter `quit();' to quit.
   val host = fn : dbconn -> string option
   val gettime = fn : dbresult -> int -> int -> int * int * int
   con Time = fn : int * int * int -> dynval
+  val formattable = fn : dbresult -> wseq
   con Oid = fn : oid -> dynval
   con Bad_response = Bad_response : dbresultstatus
   val errormessage = fn : dbconn -> string option
@@ -532,6 +536,31 @@ Enter `quit();' to quit.
   val test1l = "OK" : string
 > val res2 = <dbresult> : dbresult
   val res3 = <dbresult> : dbresult
+> val test3a = "OK" : string
+  val test3b = "OK" : string
+  val test3c = "OK" : string
+  val test3d = "OK" : string
+  val test3e = "OK" : string
+  val test3f = "OK" : string
+  val test3ga = ("OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK") :
+  string * string * string * string * string * string * string * string
+  val test3gb = ("OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK") :
+  string * string * string * string * string * string * string * string
+  val test3gc = ("OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK") :
+  string * string * string * string * string * string * string * string
+  val test3gd = ("OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK") :
+  string * string * string * string * string * string * string * string
+  val test3ha = ("OK", "OK") : string * string
+  val test3hb = ("OK", "OK") : string * string
+  val test3hc = ("OK", "OK") : string * string
+  val test4 = "OK" : string
+  val res5 = <dbresult> : dbresult
+  val test5a = "OK" : string
+  val test6 = "OK" : string
+  val test7 = "OK" : string
+  val test8 = "OK" : string
+  val test9 = "OK" : string
+  val test10 = "OK" : string
 make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/mpq'
 cd mregex; make test 
 make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/mregex'
@@ -601,25 +630,25 @@ User: 0.000  System: 0.000  GC: 0.000  Real: 0.000
 size(s) = 92; length(res) = 20
 User: 0.000  System: 0.000  GC: 0.000  Real: 0.000
 size(s) = 184; length(res) = 40
-User: 0.000  System: 0.000  GC: 0.000  Real: 0.001
+User: 0.000  System: 0.000  GC: 0.000  Real: 0.002
 size(s) = 368; length(res) = 80
 User: 0.000  System: 0.000  GC: 0.000  Real: 0.002
 size(s) = 736; length(res) = 160
-User: 0.010  System: 0.000  GC: 0.010  Real: 0.010
+User: 0.020  System: 0.000  GC: 0.000  Real: 0.014
 size(s) = 1472; length(res) = 320
-User: 0.010  System: 0.000  GC: 0.000  Real: 0.009
+User: 0.010  System: 0.000  GC: 0.010  Real: 0.011
 size(s) = 2944; length(res) = 640
-User: 0.020  System: 0.000  GC: 0.000  Real: 0.020
+User: 0.010  System: 0.000  GC: 0.000  Real: 0.025
 size(s) = 5888; length(res) = 1280
-User: 0.040  System: 0.000  GC: 0.030  Real: 0.035
+User: 0.050  System: 0.000  GC: 0.010  Real: 0.042
 size(s) = 11776; length(res) = 2560
-User: 0.060  System: 0.010  GC: 0.030  Real: 0.067
+User: 0.060  System: 0.000  GC: 0.010  Real: 0.087
 size(s) = 23552; length(res) = 5120
-User: 0.160  System: 0.000  GC: 0.020  Real: 0.154
+User: 0.140  System: 0.010  GC: 0.030  Real: 0.185
 size(s) = 47104; length(res) = 10240
-User: 0.280  System: 0.000  GC: 0.010  Real: 0.278
+User: 0.290  System: 0.010  GC: 0.040  Real: 0.337
 size(s) = 94208; length(res) = 20480
-User: 0.580  System: 0.000  GC: 0.070  Real: 0.584
+User: 0.610  System: 0.000  GC: 0.150  Real: 0.715
 size(s) = 188416; length(res) = 40960
 > val test1a = "OK" : string
   val test1b = "OK" : string
