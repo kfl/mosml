@@ -39,11 +39,10 @@ Reduce.ui: Reduce.sig Expr.uo
 	$(MOSMLC) -structure Expr.ui Reduce.sig 
 Reduce.uo: Reduce.sml Reduce.ui Expr.uo 
 	$(MOSMLC) -structure Expr.ui Reduce.sml 
-Evaluate.ui: Evaluate.sig Expr.uo Reduce.ui 
-	$(MOSMLC) -toplevel Expr.ui Reduce.ui Evaluate.sig 
-Evaluate.uo: Evaluate.sml Evaluate.ui Expr.uo Reduce.ui 
-	$(MOSMLC) -toplevel Expr.ui Reduce.ui \
+Evaluate.ui: Evaluate.sig Reduce.ui 
+	$(MOSMLC) -toplevel Reduce.ui Expr.ui Evaluate.sig 
+Evaluate.uo: Evaluate.sml Evaluate.ui Reduce.ui 
+	$(MOSMLC) -toplevel Reduce.ui Expr.ui \
     Evaluate.sml 
-Test.uo: Test.sml Expr.uo Reduce.ui Evaluate.ui 
-	$(MOSMLC) -toplevel Expr.ui Reduce.ui \
-    Evaluate.ui Test.sml 
+Test.uo: Test.sml Evaluate.ui 
+	$(MOSMLC) -toplevel Evaluate.ui Reduce.ui Expr.ui Test.sml 
