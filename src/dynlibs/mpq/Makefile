@@ -8,6 +8,8 @@
 
 PGSQLLIBDIR=/usr/lib
 PGSQLINCDIR=/usr/include/pgsql
+PGSQLLIBDIR=/usr/local/pgsql/lib
+PGSQLINCDIR=/usr/local/pgsql/include
 include ../../Makefile.inc
 
 OPTS=-fno-defer-pop
