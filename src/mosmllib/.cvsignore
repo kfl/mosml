@@ -1,0 +1,15 @@
+*.ui *.uo
+# Files derivved from .mlp versions
+Array.sml
+FileSys.sml
+Help.sml
+Int.sml
+Mosml.sml
+Path.sml
+Process.sml
+Strbase.sml
+Weak.sml
+Vector.sml
+Word.sml
+Word8Array.sml
+Word8Vector.sml
