@@ -86,7 +86,12 @@ fun discardDeadCode C =
    va is vararray, an array mapping positive ids to stack index
 *)
 
-val nullEnv = ([],Array.array(65000,(~1))) : int list * int Array.array;
+(* The nullEnv is used for compiling the initialization code of a
+   unit.  A size of 4000 seems generous; the required number rarely
+   exceeds 200.  The compiler reports Internal error: bindEnv if this
+   table is too small. *)
+
+val nullEnv = ([],Array.array(4000,(~1))) : int list * int Array.array;
 
 fun makeEnv fv maxstk = (fv, Array.array(maxstk,(~1)));
 

@@ -86,6 +86,11 @@ DYNLD=ld -shared
 # ADDRUNCFLAGS=
 # ADDDYNLIBCFLAGS=
 
+# For Irix, use instead
+# CPP=/lib/cpp -P -Dunix -Umsdos
+# STRIP=/usr/bin/strip
+# LD=gcc -rdynamic
+# DYNLD=ld -shared
 
 SHELL=/bin/sh
 

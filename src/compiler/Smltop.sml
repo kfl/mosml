@@ -255,10 +255,6 @@ val smltop_con_basis =
              { qualid={qual="Meta", id=["quotation"]}, info=VARname REGULARo}),
   ("valuepoly",
              { qualid={qual="Meta", id=["valuepoly"]}, info=VARname REGULARo}),
-  ("exnName",
-             { qualid={qual="Meta", id=["exnName"]},   info=VARname REGULARo}),
-  ("exnMessage",
-             { qualid={qual="Meta", id=["exnMessage"]},info=VARname REGULARo}),
   ("printVal", { qualid={qual="Meta", id=["printVal"]},info=VARname OVL1TXXo}),
   ("printDepth",
              { qualid={qual="Meta", id=["printDepth"]},info=VARname REGULARo}),
@@ -284,8 +280,6 @@ val smltop_VE =
    ("loadPath",    trivial_scheme(type_ref (type_list type_string))),
    ("quotation",   trivial_scheme(type_ref type_bool)),
    ("valuepoly",   trivial_scheme(type_ref type_bool)),
-   ("exnName",     trivial_scheme(type_arrow type_exn type_string)),
-   ("exnMessage",  trivial_scheme(type_arrow type_exn type_string)),
    ("printVal",    sc_bogus),  
    ("printDepth",  trivial_scheme(type_ref type_int)),
    ("printLength", trivial_scheme(type_ref type_int)),
@@ -296,13 +290,6 @@ val smltop_VE =
 
 val unit_smltop = newSig "Meta";
 
-(*
-val () =
-  app
-    (fn (id, status) => Hasht.insert (#uConBasis unit_smltop) id status)
-    smltop_con_basis
-;
-*)
 val () =
     app
     (fn (id, sc) => let val {qualid,info} = lookup id smltop_con_basis
@@ -327,8 +314,6 @@ fun resetSMLTopDynEnv() =
     ("quotation",   repr Lexer.quotation),
     ("valuepoly",   repr Mixture.value_polymorphism),
     ("printVal",    repr evalPrint),
-    ("exnName",     repr Smlexc.exnName),
-    ("exnMessage",  repr Smlexc.exnMessage),
     ("printDepth",  repr printDepth),
     ("printLength", repr printLength),
     ("quit",        repr (fn () => (msgFlush(); BasicIO.exit 0))),

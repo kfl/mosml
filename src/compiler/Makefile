@@ -111,6 +111,7 @@ clean:
 	rm -f Opcodes.sml
 	rm -f Parser.sml
 	rm -f Parser.sig
+	rm -f Parser.output
 	rm -f Lexer.sml
 	rm -f Config.sml
 	rm -f Filename.sml
@@ -188,7 +189,7 @@ Smltop.uo: Smltop.ui Compiler.ui Const.uo Fnlib.ui Patch.uo Emit_phr.uo \
 Smlprim.uo: Const.uo Prim.uo 
 Smlperv.uo: Smlperv.ui Const.uo Fnlib.ui Prim.uo Types.ui Globals.uo \
     Smlprim.uo Smlexc.uo Units.ui Hasht.ui 
-Smlexc.uo: Const.uo Fnlib.ui Config.uo Types.ui Mixture.ui Memory.uo 
+Smlexc.uo: Const.uo Fnlib.ui Config.uo Types.ui Mixture.ui 
 Sigmtch.uo: Sigmtch.ui Front.ui Const.uo Back.ui Fnlib.ui Emit_phr.uo \
     Prim.uo Types.ui Globals.uo Mixture.ui Units.ui Hasht.ui Lambda.uo 
 Sigmtch.ui: Units.ui 
@@ -196,7 +197,7 @@ Rtvals.uo: Rtvals.ui Const.uo Fnlib.ui Config.uo Types.ui Globals.uo \
     Smlexc.uo Symtable.ui Mixture.ui Units.ui Miscsys.ui Memory.uo 
 Rtvals.ui: Const.uo Types.ui Globals.uo 
 Reloc.uo: Const.uo Buffcode.uo Code_dec.uo 
-Printexc.uo: Printexc.ui Smlexc.uo 
+Printexc.uo: Printexc.ui 
 Primdec.uo: Const.uo Fnlib.ui Prim.uo Smlprim.uo 
 Prim_opc.uo: Fnlib.ui Prim.uo Opcodes.uo 
 Prim.uo: Const.uo 

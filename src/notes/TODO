@@ -32,6 +32,14 @@
  
   Problem: open of 
 
-* Back.sml -- array size 65000 -> ??
++ Back.sml -- array size 65000 -> 4000
 
-* Size of mosmllex and mosmllnk
++ Size of mosmllex and mosmllnk: avoid linking in Types
+
++ exnName and exnMessage -> runtime
+
+  prim_val exnname : exn -> string = 1 "sml_exnname";
+
+  prim_val exnMessage : exn -> string = 1 "sml_exnmessage";
+
+* Add documentation to General.fke

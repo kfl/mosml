@@ -21,7 +21,7 @@ fun f fct arg =
            (errString "I/O failure: "; errString msg)
        | x =>
 	   (errString "Uncaught exception: ";
-	    errString (Smlexc.exnMessage (repr x)); 
+	    errString (exnMessage x); 
 	    flush_out std_err)
     );
     errString "\n"; flush_out std_err;

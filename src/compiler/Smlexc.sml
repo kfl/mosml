@@ -42,31 +42,5 @@ in
 	    magic_obj (obj_field v 0) : string ref
 	else
 	    fatalError "getExnName"
-
-    fun exnName (v : obj) : string = !(getExnStrref v)
-
-    fun exnMessage (v : obj) : string = 
-	let val strref = getExnStrref v
-	    val arg    = obj_field v 1
-	    val msgs =
-		!strref :: 
-		(if strref = syserr_ref then 
-		     let val (msg : string, _) = magic_obj arg 
-		     in [": ", msg] end
-		 else if strref = io_ref then 
-		     let val { cause, function, name } = magic_obj arg 
-		     in 
-			 [": ", function, " failed on `", name, 
-			  "'; ", exnMessage cause]
-		     end
-		 else if is_block arg then
-		     if obj_tag arg = stringTag then 
-			 [": ", decode_string arg]
-		     else if obj_tag arg = realTag then 
-			 [": ", sml_string_of_float (decode_real arg)]
-		     else 
-			 []
-		 else [])
-	in String.concat msgs end
 end
 

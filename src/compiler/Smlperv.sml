@@ -41,54 +41,6 @@ and infoQUOTE      = hd(deConEnv initial_frag_CE)
 and infoANTIQUOTE  = hd(tl (deConEnv initial_frag_CE))
 ;
 
-val initial_prim_basis =
-[
-   ("/",       (1, MLPdiv_real)),
-   ("floor",   (1, MLPccall(1, "sml_floor"))),
-   ("ceil",    (1, MLPccall(1, "sml_ceil"))),
-   ("trunc",   (1, MLPccall(1, "sml_trunc"))),
-   ("round",   (1, MLPccall(1, "sml_round"))),
-   ("real",    (1, MLPprim(1, Pfloatprim Pfloatofint))),
-   ("^",       (1, MLPconcat)),
-   ("size",    (1, MLPprim(1, Pstringlength))),
-   ("!",       (1, MLPprim(1, Pfield 0))),
-   (":=",      (1, MLPsetref)),
-   ("not",     (1, MLPprim(1, Pnot))),
-   ("ignore",  (1, MLPprim(1, Patom 0)))
-];
-
-val initial_con_basis =
-[
-   (* --- Constructors --- *)
-   ("false",     CONname (#info infoFalse)),
-   ("true",      CONname (#info infoTrue)),
-   ("nil",       CONname (#info infoNil)),
-   ("::",        CONname (#info infoCons)),
-   ("NONE",      CONname (#info infoNONE)),
-   ("SOME",      CONname (#info infoSOME)),
-   ("LESS",      CONname (#info infoLESS)),
-   ("EQUAL",     CONname (#info infoEQUAL)),
-   ("GREATER",   CONname (#info infoGREATER)),
-   ("QUOTE",     CONname (#info infoQUOTE)),
-   ("ANTIQUOTE", CONname (#info infoANTIQUOTE)),
-   ("ref",   REFname),
-   (* --- Overloaded operators --- *)
-   ("=",     VARname OVL2EEBo),
-   ("<>",    VARname OVL2EEBo),
-   ("~",     VARname OVL1NNo),
-   ("abs",   VARname OVL1NNo),
-   ("+",     VARname OVL2NNNo),
-   ("-",     VARname OVL2NNNo),
-   ("*",     VARname OVL2NNNo),
-   ("div",   VARname OVL2NNNo),
-   ("mod",   VARname OVL2NNNo),
-   ("<",     VARname OVL2NNBo),
-   (">",     VARname OVL2NNBo),
-   ("<=",    VARname OVL2NNBo),
-   (">=",    VARname OVL2NNBo),
-   ("makestring", VARname OVL1NSo)
-];
-
 (* *** Initial static environments *** *)
 
 (* Typing variable environment *)
@@ -103,6 +55,8 @@ and sc_s_i = trivial_scheme
   (type_arrow type_string type_int)
 and sc_ss_s = trivial_scheme
   (type_arrow (type_pair type_string type_string) type_string)
+and sc_s_exn = trivial_scheme
+  (type_arrow type_exn type_string)
 and sc_exn =
   trivial_scheme type_exn
 ;
@@ -185,10 +139,14 @@ val initial_real_VE =
 
 val initial_string_VE =
 [
-  ("^",    (sc_ss_s, 
-            PRIMname (mkPrimInfo 1 (MLPconcat)))),
-  ("size", (sc_s_i,
-            PRIMname (mkPrimInfo 1 (MLPprim(1, Pstringlength)))))
+  ("^",          (sc_ss_s, 
+		  PRIMname (mkPrimInfo 1 (MLPconcat)))),
+  ("size",       (sc_s_i,
+		  PRIMname (mkPrimInfo 1 (MLPprim(1, Pstringlength))))),
+  ("exnName",    (sc_s_exn,
+		  PRIMname (mkPrimInfo 1  (MLPccall(1, "sml_exnname"))))),
+  ("exnMessage", (sc_s_exn,
+		  PRIMname (mkPrimInfo 1  (MLPccall(1, "sml_exnmessage")))))
 ];
 
 val initial_ref_VE =
