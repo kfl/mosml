@@ -68,6 +68,7 @@ val blockquote  : wseq -> wseq
 val blockquotea : string -> wseq -> wseq
 val center      : wseq -> wseq
 val address     : wseq -> wseq
+val pre         : wseq -> wseq
 
 (* HTML anchors and hyperlinks *)
 
@@ -268,6 +269,8 @@ val htmlencode : string -> string
    [center ws] generates <CENTER>ws</CENTER>.
 
    [address ws] generates <ADDRESS>ws</ADDRESS>.
+
+   [pre ws] generates <PRE>ws</PRE>.
 
 
    HTML anchors and hyperlinks:

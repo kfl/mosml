@@ -101,6 +101,7 @@ fun blockquotea attr seq =
     $$["<BLOCKQUOTE ", attr, ">"] && seq && $"</BLOCKQUOTE>"
 fun center seq = $"<CENTER>" && seq && $"</CENTER>"
 fun address seq = $"<ADDRESS>" && seq && $"</ADDRESS>"
+fun pre seq = $"<PRE>" && seq && $"</PRE>"
 
 val br = $"<BR>"
 fun bra attr = $$["<BR ", attr, ">"]
