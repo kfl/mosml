@@ -150,7 +150,7 @@ in
 
     fun fullPath p =
 	let open Path 
-	    val realp = mkCanonical(mkAbsolute(p, getDir()))
+	    val realp = mkCanonical(mkAbsolute{path=p, relativeTo=getDir()})
 	in 
 	    if access (realp, []) then realp 
 	    else raise raiseSys "fullPath" (SOME realp) 
