@@ -33,13 +33,13 @@ val foldl  : ('a * 'b * 'c -> 'c) -> 'c -> 'a list * 'b list -> 'c
    elements of xs and ys until p evaluates to false or one or both
    lists is exhausted; returns true if p is true of all such pairs;
    otherwise false.  Hence all p (xs, ys) has the same result and
-   effect as Lisp.all p (zip (xs, ys)).
+   effect as List.all p (zip (xs, ys)).
 
    [exists p (xs, ys)] applies predicate p to the pairs of corresponding
    elements of xs and ys until p evaluates to true or one or both
    lists is exhausted; returns true if p is true of any such pair;
    otherwise false.  Hence exists p (xs, ys) has the same result and
-   effect as Lisp.exists p (zip (xs, ys)).
+   effect as List.exists p (zip (xs, ys)).
 
    [foldr f e (xs, ys)] evaluates f(x1, y1, f(x2, y2, f(..., f(xn, yn, e))))
    where xs = [x1, x2, ..., x(n-1), xn, ...],
