@@ -1417,7 +1417,7 @@ Enter `quit();' to quit.
 Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
 Enter `quit();' to quit.
 - > functor ok :
-  !u.(!t.{type t = t'}->{type u = (u t')})->!t.{type t = t}->?u'.{type u = u'}
+  !u.(!t.{type t = t}->{type u = (u t)})->!t.{type t = t}->?u'.{type u = u'}
 - ! Toplevel input:
 !     op F:functor X:sig type t end -> sig type u end;
 !     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1824,19 +1824,19 @@ Enter `quit();' to quit.
 - > val ok = fn : (u''' (unit -> unit) unit) * (u''' (unit -> unit) unit) -> bool
 - > functor ok :
   !=u''''.
-   (!t.{type t = t'}->{type u = (u'''' t')})->
+   (!t.{type t = t}->{type u = (u'''' t)})->
        !t.{type t = t}->{type u = (u'''' t)}
 - > functor ok :
   !=u''''.
-   (!t.{type t = t'}->{type u = (u'''' t')})->
+   (!t.{type t = t}->{type u = (u'''' t)})->
        !=t.{type t = t}->{type u = (u'''' t)}
 - > functor ok :
   !=u''''.
-   (!t.{type t = t'}->{type u = (u'''' t')})->
+   (!t.{type t = t}->{type u = (u'''' t)})->
        !t.{type t = t}->{type u = (u'''' t)}
 - > functor ok :
   !=u''''.
-   (!t.{type t = t'}->{type u = (u'''' t')})->
+   (!t.{type t = t}->{type u = (u'''' t)})->
        !=t.{type t = t}->{type u = (u'''' t)}
 - ! Toplevel input:
 !     op F:functor X:sig type t end -> sig type u end;
