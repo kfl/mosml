@@ -41,15 +41,12 @@ Note about the PM prototype
     to
 	    val garbage_collection = ref false
     in src/Common/Flags.sml
-  + Changed substring to String.substring in Parsing/Topdec.lex.sml
   + Changed `status' to `~1' on line 128 in
     Manager/ManagerObjects.sml
   + Renamed Edlib/List.sml Edlib/edList.sml
     and Edlib/ListPair.sml Edlib/edListPair.sml
-    (cvs rm List.sml ListPair.sml; cvs add edList.sml edListPair.sml)
-  + Parsing/Topdec.grm.sig renamed to Parsing/Topdec.grm-sig.sml (also
+  + Renamed Parsing/Topdec.grm.sig to Parsing/Topdec.grm-sig.sml (also
     in Common/common.pm) 
-    (cvs rm Topdec.grm.sig; cvs add Topdec.grm-sig.sml)
   + Renamed Common/BasicIO.sml Common/commonBasicIO.sml
   + Corrected a sharing spec bug (not decteded by sml/nj) in
     Compiler/Backend/X86/CodeGenX86.sml
