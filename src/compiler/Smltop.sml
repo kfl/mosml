@@ -215,7 +215,7 @@ fun evalUse filename =
 (* Compile a file *)
 
 fun tryEvalCompile mode context s =
-  protect_current_input (fn () => protectCurrentUnit (fn () =>
+  protect_current_input (fn () => protectCurrentTypes (fn () => protectCurrentUnit (fn () =>
     if Filename.check_suffix s ".sig" then
       let val filename = Filename.chop_suffix s ".sig" in
         compileSignature context
@@ -231,7 +231,7 @@ fun tryEvalCompile mode context s =
           filename
       end
     else
-      raise Fail "compile: unknown file name extension"))
+      raise Fail "compile: unknown file name extension")))
 ;
 
 fun evalCompile mode context s =
@@ -343,4 +343,5 @@ fun resetSMLTopDynEnv() =
     ("liberal",     repr (fn () => (currentCompliance := Liberal))),
     ("installPP",   repr evalInstallPP)
 ];
+
 

@@ -1820,6 +1820,74 @@ Enter `quit();' to quit.
 !   type u = (u/4 t)
 ! but its declaration does not admit equality in the module
 !   type u = (u/5 t)
+- > val 'a f = fn : [{type t = 'a}] -> [{type t = 'a}]
+- > val g = fn : [{type t = int -> int}] -> [{type t = int -> int}]
+- > val p = [structure ...] : [{type t = int -> int}]
+- > val ok = [structure ...] : [{type t = int -> int}]
+- > val ok = [structure ...] : [{type t = int -> int}]
+- > val ''a f = fn : [{type t = ''a}] -> [{type t = ''a}]
+- > val g = fn : [{type t = int * int}] -> [{type t = int * int}]
+- > val p = [structure ...] : [{type t = int * int}]
+- ! Warning: Value polymorphism:
+! Free type variable(s) at top level in value identifier q
+> val q = [structure ...] : [{type t = ''a * ''a}]
+- ! Warning: Value polymorphism:
+! Free type variable(s) at top level in value identifier r
+> val r = [structure ...] : [{type t = ''b * 'c}]
+- > val t = [structure ...] : [{type t = int -> int}]
+- > val ok = [structure ...] : [{type t = int * int}]
+- > val ok = [structure ...] : [{type t = int * int}]
+- > val ok = [structure ...] : [{type t = ''a * ''a}]
+- ! Warning: the free type variable 'c has been instantiated to ''c
+> val ok = [structure ...] : [{type t = ''b * ''c}]
+- ! Toplevel input:
+! val fail = f t;
+!              ^
+! Type clash: expression of type
+!   [{type t = int -> int}]
+! cannot have type
+!   [{type t = ''d}]
+! because the first module type does not match the second module type ...
+! Type mismatch: type constructor t
+! is specified as one abbreviation in the second module type
+!   type t = ''d
+! but declared as a different abbreviation in the first module type
+!   type t = int -> int
+! The abbreviations should be equivalent (or unifiable) 
+- > val ''a' ok = fn : [{type t = ''a'}] -> [{type t = ''a'}]
+- > val (''a', ''b') ok = fn :
+  [{type t = ''a' * ''b'}] -> [{type t = ''a' * ''b'}]
+- > val ''a' ok = fn : [{type 'b' t = ''a' * 'b'}] -> [{type 'b' t = ''a' * 'b'}]
+- ! Toplevel input:
+! fun fail x = let structure X as sig eqtype t end where type t = 'a = x in x end;
+!                                                        ^^^^^^^^^^^
+! Illegal where constraint: the type constructor t
+! cannot be constrained in this way because ...
+! Equality type mismatch: type constructor t
+! is specified as admitting equality in the signature
+!   type t = t
+! but its declaration does not admit equality in the constraint
+!   type t = 'a'
+- ! Toplevel input:
+! fun fail x = let structure X as sig eqtype t end where type t = ''a -> ''b  = x in x end;
+!                                                        ^^^^^^^^^^^^^^^^^^^
+! Illegal where constraint: the type constructor t
+! cannot be constrained in this way because ...
+! Equality type mismatch: type constructor t
+! is specified as admitting equality in the signature
+!   type t = t
+! but its declaration does not admit equality in the constraint
+!   type t = ''a' -> ''b'
+- ! Toplevel input:
+! fun fail x = let structure X as sig eqtype 'b t end where type 'b t = 'a -> 'b = x in x end;
+!                                                           ^^^^^^^^^^^^^^^^^^^^
+! Illegal where constraint: the type constructor t
+! cannot be constrained in this way because ...
+! Equality type mismatch: type constructor t
+! is specified as admitting equality in the signature
+!   type 'd t = 'd t
+! but its declaration does not admit equality in the constraint
+!   type 'b' t = 'a' -> 'b'
 - 
 Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
@@ -1904,6 +1972,254 @@ Enter `quit();' to quit.
 ! The declaration violates the specification because 
 ! the type constructor u/1 is a parameter 
 ! that is declared within the scope of u.
+- ! Warning: Value polymorphism:
+! Free type variable(s) at top level in value identifier y1
+! Warning: Value polymorphism:
+! Free type variable(s) at top level in value identifier y2
+> val y1 = ref [] : 'a list ref
+  val y2 = ref [] : 'b list ref
+- ! Toplevel input:
+! val fail : 'a list ref = y1;
+!                          ^^
+! Type clash: expression of type
+!   'a list ref
+! cannot have type
+!   'a' list ref
+! because of a scope violation:
+! the type variable 'a' is a parameter 
+! that is declared within the scope of 'a
+- ! Toplevel input:
+! val fail : 'a list ref = y2;
+!                          ^^
+! Type clash: expression of type
+!   'b list ref
+! cannot have type
+!   'a' list ref
+! because of a scope violation:
+! the type variable 'a' is a parameter 
+! that is declared within the scope of 'b
+- ! Toplevel input:
+! structure R : sig val r: 'a list ref end = S;
+!             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Scheme mismatch: value identifier r
+! is specified with type scheme 
+!   val 'a' r : 'a' list ref
+! in the signature
+! but its declaration has the unrelated type scheme 
+!   val r : 'c list ref
+! in the module
+! The declared type scheme should be at least as general as the specified type scheme
+- ! Toplevel input:
+! structure Fail : sig val r: 'a list ref end = S;
+!                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Scheme mismatch: value identifier r
+! is specified with type scheme 
+!   val 'a' r : 'a' list ref
+! in the signature
+! but its declaration has the unrelated type scheme 
+!   val r : 'c list ref
+! in the module
+! The declared type scheme should be at least as general as the specified type scheme
+- ! Warning: Value polymorphism:
+! Free type variable(s) at top level in structure identifier U
+> structure U : {val r : 'c list ref, val x : int}
+- ! Toplevel input:
+! structure Fail : sig val r: 'a list ref end = U;
+!                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Scheme mismatch: value identifier r
+! is specified with type scheme 
+!   val 'a' r : 'a' list ref
+! in the signature
+! but its declaration has the unrelated type scheme 
+!   val r : 'c list ref
+! in the module
+! The declared type scheme should be at least as general as the specified type scheme
+- ! Warning: Value polymorphism:
+! Free type variable(s) at top level in structure identifier W
+> structure W : {val r : 'd list ref}
+- ! Toplevel input:
+! structure Fail : sig val  r: 'a list ref end = W;
+!                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Scheme mismatch: value identifier r
+! is specified with type scheme 
+!   val 'a' r : 'a' list ref
+! in the signature
+! but its declaration has the unrelated type scheme 
+!   val r : 'd list ref
+! in the module
+! The declared type scheme should be at least as general as the specified type scheme
+- ! Toplevel input:
+! 	    structure Fail : sig val 'a r: 'a list ref end = S;
+! 	                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Scheme mismatch: value identifier r
+! is specified with type scheme 
+!   val 'a' r : 'a' list ref
+! in the signature
+! but its declaration has the unrelated type scheme 
+!   val r : 'e list ref
+! in the module
+! The declared type scheme should be at least as general as the specified type scheme
+- ! Toplevel input:
+! val fail = x:=[C];
+!                ^
+! Type clash: expression of type
+!   t/5
+! cannot have type
+!   'e
+! because of a scope violation:
+! the type constructor t/5 is a parameter 
+! that is declared within the scope of 'e
+- ! Warning: Value polymorphism:
+! Free type variable(s) at top level in value identifier x
+> val x = ref [] : 'e list ref
+- > New type names: =t/5
+  datatype t = (t/5,{con C : t/5})
+  con C = C : t/5
+- ! Toplevel input:
+! val fail = x:=[C];
+!                ^
+! Type clash: expression of type
+!   t/5
+! cannot have type
+!   'f
+! because of a scope violation:
+! the type constructor t/5 is a parameter 
+! that is declared within the scope of 'f
+- ! Toplevel input:
+! 	val fail = x:=[C];
+! 	               ^
+! Type clash: expression of type
+!   t/6
+! cannot have type
+!   'f
+! because of a scope violation:
+! the type constructor t/6 is a parameter 
+! that is declared within the scope of 'f
+- > New type names: =t/6
+  structure Ok :
+  {datatype t = (t/6,{con C : t/6}),
+   con C : t/6,
+   val ok : unit,
+   val x : t/6 list ref}
+- ! Warning: Value polymorphism:
+! Free type variable(s) at top level in structure identifier N
+> New type names: =t/7
+  structure N :
+  {datatype t = (t/7,{con C : t/7}), con C : t/7, val x : 'f list ref}
+- ! Toplevel input:
+! val fail = N.x := [N.C];
+!                    ^^^
+! Type clash: expression of type
+!   t/7
+! cannot have type
+!   'g
+! because of a scope violation:
+! the type constructor t/7 is a parameter 
+! that is declared within the scope of 'g
+- ! Toplevel input:
+! 	val fail = X.x:=[C];
+! 	                 ^
+! Type clash: expression of type
+!   t/8
+! cannot have type
+!   'g
+! because of a scope violation:
+! the type constructor t/8 is a parameter 
+! that is declared within the scope of 'g
+- ! Toplevel input:
+! 	val fail = X.x:=[C];
+! 	                 ^
+! Type clash: expression of type
+!   t/8
+! cannot have type
+!   'g
+! because of a scope violation:
+! the type constructor t/8 is a parameter 
+! that is declared within the scope of 'g
+- ! Warning: Value polymorphism:
+! Free type variable(s) at top level in value identifier y
+! Warning: Value polymorphism:
+! Free type variable(s) at top level in value identifier z
+> val y = ref [] : 'g list ref
+  val z = ref [] : 'h list ref
+- ! Toplevel input:
+! val fail : 'a list ref = x;
+!                          ^
+! Type clash: expression of type
+!   'e list ref
+! cannot have type
+!   'a' list ref
+! because of a scope violation:
+! the type variable 'a' is a parameter 
+! that is declared within the scope of 'e
+- ! Toplevel input:
+! val fail : 'a list ref = z;
+!                          ^
+! Type clash: expression of type
+!   'h list ref
+! cannot have type
+!   'a' list ref
+! because of a scope violation:
+! the type variable 'a' is a parameter 
+! that is declared within the scope of 'h
+- ! Toplevel input:
+! val fail : 'a list ref = X.x;
+!                          ^^^
+! Cannot access unit X before it has been loaded.
+- ! Warning: Value polymorphism:
+! Free type variable(s) at top level in value identifier ok
+> val ok = ref [] : 'i list ref
+- ! Warning: Value polymorphism:
+! Free type variable(s) at top level in value identifier ok
+> val ok = ref [] : 'j list ref
+- ! Toplevel input:
+!       val ('b) fail : 'b list ref = x
+!                                     ^
+! Type clash: expression of type
+!   'k list ref
+! cannot have type
+!   'b' list ref
+! because of a scope violation:
+! the type variable 'b' is a parameter 
+! that is declared within the scope of 'k
+- ! Toplevel input:
+!       val ('b) fail : 'b list ref = x
+!                                     ^
+! Type clash: expression of type
+!   'k list ref
+! cannot have type
+!   'b' list ref
+! because of a scope violation:
+! the type variable 'b' is a parameter 
+! that is declared within the scope of 'k
+- ! Toplevel input:
+!       val ('b) fail : 'b list ref = (fn y => y) x
+!                                                 ^
+! Type clash: expression of type
+!   'k list ref
+! cannot have type
+!   'b' list ref
+! because of a scope violation:
+! the type variable 'b' is a parameter 
+! that is declared within the scope of 'k
+- > val ok = ref [] : int list ref
+- > val 'b' ok = fn : 'b' -> 'b' list ref
+- ! Toplevel input:
+! 	val fail = fn _ :'b => x : 'b list ref
+! 	                       ^
+! Type clash: expression of type
+!   'k list ref
+! cannot have type
+!   'b' list ref
+! because of a scope violation:
+! the type variable 'b' is a parameter 
+! that is declared within the scope of 'k
+- > val 'b' ok = fn : 'b' -> 'b' list ref
 - 
 Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
@@ -2777,74 +3093,82 @@ Enter `quit();' to quit.
 !   L:G;
 !   ^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor myref
-! is specified as a `prim_EQtype' in the signature
+! Type mismatch: type constructor myref
+! is specified as one abbreviation in the signature
 !   type 'a myref = 'a ref
-! but is not declared as a `prim_EQtype' in the module
+! but declared as a different abbreviation in the module
 !   type 'a myref = 'a
+! The abbreviations should be equivalent (or unifiable) 
 - ! Toplevel input:
 !   LL:functor(L:L)->G;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor myref of the range
-! is specified as a `prim_EQtype' in the signature
+! Type mismatch: type constructor myref of the range
+! is specified as one abbreviation in the signature
 !   type 'a myref = 'a ref
-! but is not declared as a `prim_EQtype' in the module
+! but declared as a different abbreviation in the module
 !   type 'a myref = 'a
+! The abbreviations should be equivalent (or unifiable) 
 - ! Toplevel input:
 !   GL:functor(L:L)->L;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor myref of the domain
-! is specified as a `prim_EQtype' in the module
+! Type mismatch: type constructor myref of the domain
+! is specified as one abbreviation in the module
 !   type 'a myref = 'a ref
-! but is not declared as a `prim_EQtype' in the signature
+! but declared as a different abbreviation in the signature
 !   type 'a myref = 'a
+! The abbreviations should be equivalent (or unifiable) 
 - ! Toplevel input:
 !   YL:sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.myref
-! is specified as a `prim_EQtype' in the signature
+! Type mismatch: type constructor Y.myref
+! is specified as one abbreviation in the signature
 !   type 'a myref = 'a ref
-! but is not declared as a `prim_EQtype' in the module
+! but declared as a different abbreviation in the module
 !   type 'a myref = 'a
+! The abbreviations should be equivalent (or unifiable) 
 - ! Toplevel input:
 !   L_YL:functor(L:L)->sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.myref of the range
-! is specified as a `prim_EQtype' in the signature
+! Type mismatch: type constructor Y.myref of the range
+! is specified as one abbreviation in the signature
 !   type 'a myref = 'a ref
-! but is not declared as a `prim_EQtype' in the module
+! but declared as a different abbreviation in the module
 !   type 'a myref = 'a
+! The abbreviations should be equivalent (or unifiable) 
 - ! Toplevel input:
 !   YG_L:functor(YL:sig structure Y: L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.myref of the domain
-! is specified as a `prim_EQtype' in the module
+! Type mismatch: type constructor Y.myref of the domain
+! is specified as one abbreviation in the module
 !   type 'a myref = 'a ref
-! but is not declared as a `prim_EQtype' in the signature
+! but declared as a different abbreviation in the signature
 !   type 'a myref = 'a
+! The abbreviations should be equivalent (or unifiable) 
 - ! Toplevel input:
 !   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.myref of the domain of the range
-! is specified as a `prim_EQtype' in the module
+! Type mismatch: type constructor Y.myref of the domain of the range
+! is specified as one abbreviation in the module
 !   type 'a myref = 'a ref
-! but is not declared as a `prim_EQtype' in the signature
+! but declared as a different abbreviation in the signature
 !   type 'a myref = 'a
+! The abbreviations should be equivalent (or unifiable) 
 - ! Toplevel input:
 !   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.myref of the domain of the range of F
-! is specified as a `prim_EQtype' in the module
+! Type mismatch: type constructor Y.myref of the domain of the range of F
+! is specified as one abbreviation in the module
 !   type 'a myref = 'a ref
-! but is not declared as a `prim_EQtype' in the signature
+! but declared as a different abbreviation in the signature
 !   type 'a myref = 'a
+! The abbreviations should be equivalent (or unifiable) 
 - > signature G = /\=t.{type t = t}
 - > signature L = /\t.{type t = t}
 - ! Toplevel input:
@@ -2999,74 +3323,82 @@ Enter `quit();' to quit.
 !   L:G;
 !   ^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor t
-! is specified as admitting equality in the signature
+! Type mismatch: type constructor t
+! is specified as one abbreviation in the signature
 !   type t = unit
-! but its declaration does not admit equality in the module
+! but declared as a different abbreviation in the module
 !   type t = unit -> unit
+! The abbreviations should be equivalent (or unifiable) 
 - ! Toplevel input:
 !   LL:functor(L:L)->G;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor t of the range
-! is specified as admitting equality in the signature
+! Type mismatch: type constructor t of the range
+! is specified as one abbreviation in the signature
 !   type t = unit
-! but its declaration does not admit equality in the module
+! but declared as a different abbreviation in the module
 !   type t = unit -> unit
+! The abbreviations should be equivalent (or unifiable) 
 - ! Toplevel input:
 !   GL:functor(L:L)->L;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor t of the domain
-! is specified as admitting equality in the module
+! Type mismatch: type constructor t of the domain
+! is specified as one abbreviation in the module
 !   type t = unit
-! but its declaration does not admit equality in the signature
+! but declared as a different abbreviation in the signature
 !   type t = unit -> unit
+! The abbreviations should be equivalent (or unifiable) 
 - ! Toplevel input:
 !   YL:sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t
-! is specified as admitting equality in the signature
+! Type mismatch: type constructor Y.t
+! is specified as one abbreviation in the signature
 !   type t = unit
-! but its declaration does not admit equality in the module
+! but declared as a different abbreviation in the module
 !   type t = unit -> unit
+! The abbreviations should be equivalent (or unifiable) 
 - ! Toplevel input:
 !   L_YL:functor(L:L)->sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t of the range
-! is specified as admitting equality in the signature
+! Type mismatch: type constructor Y.t of the range
+! is specified as one abbreviation in the signature
 !   type t = unit
-! but its declaration does not admit equality in the module
+! but declared as a different abbreviation in the module
 !   type t = unit -> unit
+! The abbreviations should be equivalent (or unifiable) 
 - ! Toplevel input:
 !   YG_L:functor(YL:sig structure Y: L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t of the domain
-! is specified as admitting equality in the module
+! Type mismatch: type constructor Y.t of the domain
+! is specified as one abbreviation in the module
 !   type t = unit
-! but its declaration does not admit equality in the signature
+! but declared as a different abbreviation in the signature
 !   type t = unit -> unit
+! The abbreviations should be equivalent (or unifiable) 
 - ! Toplevel input:
 !   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t of the domain of the range
-! is specified as admitting equality in the module
+! Type mismatch: type constructor Y.t of the domain of the range
+! is specified as one abbreviation in the module
 !   type t = unit
-! but its declaration does not admit equality in the signature
+! but declared as a different abbreviation in the signature
 !   type t = unit -> unit
+! The abbreviations should be equivalent (or unifiable) 
 - ! Toplevel input:
 !   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t of the domain of the range of F
-! is specified as admitting equality in the module
+! Type mismatch: type constructor Y.t of the domain of the range of F
+! is specified as one abbreviation in the module
 !   type t = unit
-! but its declaration does not admit equality in the signature
+! but declared as a different abbreviation in the signature
 !   type t = unit -> unit
+! The abbreviations should be equivalent (or unifiable) 
 - > signature G = /\=t.{datatype t = (t,{con C : t}), con C : t}
 - > signature L = {type t = unit}
 - ! Toplevel input:
@@ -3791,17 +4123,18 @@ Enter `quit();' to quit.
 !   type t = int
 ! but declared as a different abbreviation in the body
 !   datatype t = (t,{con C : int -> t})
-! The abbreviations should be equivalent
+! The abbreviations should be equivalent (or unifiable) 
 - > signature Ok = rec ({type t = int},{type t = int})
 - ! Toplevel input:
 ! signature Wrong = rec (X : S) sig type t = unit -> X.t end;
 !                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Illegal recursive signature: the body does not match the forward specification...
-! Equality type mismatch: type constructor t
-! is specified as admitting equality in the forward specification
+! Type mismatch: type constructor t
+! is specified as one abbreviation in the forward specification
 !   type t = int
-! but its declaration does not admit equality in the body
+! but declared as a different abbreviation in the body
 !   type t = unit -> int
+! The abbreviations should be equivalent (or unifiable) 
 - > signature S = /\t.{type 'a t = 'a t}
 - > signature Ok = rec ({type 'a t = 'a list},{type 'a t = 'a list})
 - > signature Ok = rec ({type 'a t = 'a list},{type 'a t = 'a list})
@@ -3816,7 +4149,7 @@ Enter `quit();' to quit.
 !   type 'a t = 'a list
 ! but declared as a different abbreviation in the body
 !   type 'a t = 'a
-! The abbreviations should be equivalent
+! The abbreviations should be equivalent (or unifiable) 
 - ! Toplevel input:
 ! signature Wrong = rec (X : S) S where type 'a t = 'a list;
 !                                       ^^^^^^^^^^^^^^^^^^^

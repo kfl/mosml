@@ -145,7 +145,7 @@ fun main () =
     app evalLoad (!preloadedUnits);
     initInitialEnvironments [];
     execToplevelOpen nilLocation "Meta";
-    resetTypePrinter(); (* cvr *)
+    resetTypes(); 
     Miscsys.catch_interrupt true;
     input_lexbuf := Compiler.createLexerStream std_in;
     (initial_loop() handle EndOfFile => ());

@@ -86,11 +86,132 @@ functor fail =
     (functor(X:sig type t end)=>struct datatype u = C of X.t end)
     :functor X:sig type t end -> sig type u end;
 
+(* tricky scope tests that check levels are maintained correctly *)
+
+local val z = 1;val l = 2 ; val x1 = ref []  val x2: 'a list ref = ref [] in val y1 = x1 val y2 = x2 end;  
+val fail : 'a list ref = y1;
+val fail : 'a list ref = y2;
+
+(* ok: the single topdec is correctly rejected *)
+structure S = struct val x = 1; val r = ref [] end (* NB: no semicolon! *)
+structure R : sig val r: 'a list ref end = S;
+
+structure S = struct val x = 1; val y  = 2; val r = ref [] end 
+structure Fail : sig val r: 'a list ref end = S;
+
+structure U = struct val x = 1; val r = ref [] end; 
+structure Fail : sig val r: 'a list ref end = U;
+
+structure W = struct val r = ref [] end; 
+structure Fail : sig val  r: 'a list ref end = W;
+
+structure Y =
+    struct  structure S = struct val x = 1; val r = ref [] end 
+	    structure Fail : sig val 'a r: 'a list ref end = S;
+    end;
+
+
+(* a single topdec *)
+val x = ref [] 
+datatype t = C
+val fail = x:=[C];
+
+(* a sequence of topdecs *)
+val x = ref [];
+datatype t = C;
+val fail = x:=[C];
+
+
+structure Z = 
+ struct val x = ref [];
+        datatype t = C;
+	val fail = x:=[C];
+ end;
+
+structure Ok = 
+ struct datatype t = C;
+        val x = ref [];
+	val ok = x:=[C];
+ end;
+
+structure N = struct val x = ref [];
+		     datatype t = C;
+	       end;
+val fail = N.x := [N.C];
+
+
+structure M = 
+ struct structure X = struct val a = 1; val b = 2; val x = ref [] end;
+        datatype t = C;
+	val fail = X.x:=[C];
+ end;
+
+structure O = 
+ struct structure X = struct val x = ref [] end;
+        datatype t = C;
+	val fail = X.x:=[C];
+ end;
+
+local val x = ref [] in val y =  x val z = ref [] end;
+val fail : 'a list ref = x;
+val fail : 'a list ref = z;
+
+(* fail should be rejected since X.x must be monomorphic *)
+structure P = let val x = ref [] in struct val x = x end end 
+val fail : 'a list ref = X.x;
+
+
+(* Unlike the Definition, Mosml treats non-generalizable explicit variables arising from 
+   non-expansive definitions as unification variables *)
+
+val ok = let val x : 'a list ref = ref [] in x end;
+val ok = let val a =1 val b = 2 val c = 3 val x : 'a list ref = ref [] in x end;
+
+local val x : 'a list ref = ref [] in 
+      val ('b) fail : 'b list ref = x
+end;
 
 
 
+local val a =1 val b = 2 val c = 3 val x : 'a list ref = ref []
+in
+      val ('b) fail : 'b list ref = x
+end;
+
+local val a =1 val b = 2 val c = 3 val x : 'a list ref = ref []
+in
+      val ('b) fail : 'b list ref = (fn y => y) x
+end;
+
+local 
+      val a = 1 val b = 2 val c = 3 val x : 'a list ref = ref []
+in
+      val  ok : int list ref = (fn y => y) x
+end;
 
 
+val ok = 
+    fn _ :'b =>
+    let 
+	val a = 1 val b = 2 val c = 3 val x : 'a list ref = ref []
+    in
+	x  : 'b list ref
+    end;
+
+local 
+	val a = 1 val b = 2 val c = 3 val x : 'a list ref = ref []
+in
+	val fail = fn _ :'b => x : 'b list ref
+end;
+
+val ok = 
+    fn _ :'b =>
+    let 
+	val a = 1 val b = 2 val c = 3 val x : 'a list ref = ref []
+	val f = fn _ :'b => x : 'b list ref
+    in
+	x
+    end;
 
 
 

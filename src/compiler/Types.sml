@@ -197,11 +197,20 @@ fun normalizeRecType (r: RecType) =
 (* Binding levels *)
 
 val binding_level = ref 0;
-
 fun resetBindingLevel() = binding_level := 0;
 fun incrBindingLevel() = incr binding_level;
 fun decrBindingLevel() = decr binding_level;
 fun currentBindingLevel() = !binding_level; (* cvr: added *)
+fun protectCurrentBindingLevel fct =
+    let val savedLevel = !binding_level
+    in
+	(fct();
+	 binding_level := savedLevel)
+         handle x => (binding_level := savedLevel;
+		      raise x)
+    end 
+;
+
 
 fun setCurrentBindingLevel isOverloaded = fn
     VARt var =>
@@ -1181,6 +1190,27 @@ fun prune_level max_level (fns,fvs,frvs) =
         else ()) frvs)
 ;
 
+(* refresh the levels of free unification vars in Obj after a decrease in current binding level *)
+local     
+  fun refreshVars freeVarsObj Obj = 
+   let val (_,fvs,frvs) = freeVarsObj [] [] ([],[],[]) Obj
+       val max_level = !binding_level
+   in
+    app (fn (tv:TypeVar) =>
+         if #tvLevel(!tv) > max_level then
+	     (if isExplicit tv then () (* cvr: TODO review this shouldn't even be possible, should it? *)
+	      else setTvLevel tv max_level)
+          else ()) fvs;
+    app (fn (rv:RowVar) =>
+        if #rvLevel(!rv) > max_level then
+          setRvLevel rv max_level
+        else ()) frvs
+   end
+in 
+    fun refreshExEnv E = (refreshVars freeVarsExEnv E;E)
+end
+;
+
 
 fun assumingEqualityTypeVars tvs f a =
     let val tvRecords = 
@@ -1527,7 +1557,7 @@ fun generalization isExpansive tau =
   let val (_,fvs,_)= freeVarsType [] [] ([],[],[]) tau
       val parameters = 
 	  foldL (fn var => fn parameters => 
-		 let val {tvImp, tvOvl, tvLevel, ...} = !var in
+		 let val {tvImp, tvOvl, tvLevel, tvKind, ...} = !var in
 		     if member var parameters then parameters
 		     else if tvLevel <= !binding_level then
 			 parameters
@@ -1536,9 +1566,17 @@ fun generalization isExpansive tau =
 			  parameters)
 		     else if tvImp andalso isExpansive then
 			 (setTvLevel var (!binding_level);
+			  (case tvKind of 
+ 			     Explicit _ => setTvKind var NoLink
+			                   (* cvr: TODO review
+					      although this deviates from the Definition,
+					      we choose to replace non-generalizable 
+					      (and hence meaningless)
+					      explicit type variables by fresh 
+					      unification variables *)		 
+                           | _ => ());
 			  parameters)
-		     else
-			 var :: parameters 
+		     else var :: parameters 
 		 end)
 	  []
 	  fvs
@@ -2011,39 +2049,41 @@ and patternOfTyApp (NAMEtyapp (tn as {info = ref {tnSort = VARIABLEts,...},...})
     patternOfTyApp (tyapp,tn::tns)
   | patternOfTyApp _ = raise NotAPattern;
 
+
+
 fun realizeTyStr path id (infTyStr : TyFun * ConEnv) (specTyStr : TyFun * ConEnv) =
-(*cvr: modified   case (#1 infTyStr, #1 specTyStr) of *)
+(* cvr: modified   case (#1 infTyStr, #1 specTyStr) of *)
  case (normTyFun (#1 infTyStr), normTyFun (#1 specTyStr)) of (* cvr: inserted call to normTyFun *)
     (infTyFun, specTyFun) =>
- (let      
-  in
-    (case (kindTyFun infTyFun, kindTyFun specTyFun) of
+ ((case (kindTyFun infTyFun, kindTyFun specTyFun) of
       (ARITYkind infArity, ARITYkind specArity) =>
       if specArity  <> infArity then 
 	   raise MatchError (ArityMismatch (path,id,infTyStr,specTyStr,infArity,specArity))
       else ()
-    | (_,_) => fatalError "realizeTyStr:1" (* cvr: TODO *));
-    (case EqualityOfTyFun specTyFun of 
-	       (* cvr: TODO revise - it should be sufficient 
-                  (and more efficient) to do this 
-                  check only once we've determined that specTyFun 
-		  is a pattern *)
-        REFequ =>
-          if (EqualityOfTyFun infTyFun) <> REFequ then 
-	      raise MatchError (RefEqualityMismatch (path,id,infTyStr,specTyStr))
-          else ()
-      | TRUEequ =>
-          if (EqualityOfTyFun infTyFun) = FALSEequ then 
-	      raise MatchError (EqualityMismatch (path,id,infTyStr,specTyStr))
-          else ()
-      | FALSEequ =>
-          ()
-      | _ => fatalError "realizeTyStr:2");
-    ((case patternOfTyFun specTyFun of
+    | (_,_) => fatalError "realizeTyStr:1");
+  ((case patternOfTyFun specTyFun of
 	   (tn,tns) =>
-	       let val tnLevel = #tnLevel(!(#info tn))
+	       let val _ = 
+                     (* cvr: its important that we match equality *only* 
+    		             when specTyFun is a pattern (ie. opaque), since
+			     specTyFun may otherwise contain unification variables
+			     whose equality status is determined only *after*
+			     unification. *)
+		     (case EqualityOfTyFun specTyFun of 
+			REFequ =>
+			    if (EqualityOfTyFun infTyFun) <> REFequ then 
+				raise MatchError (RefEqualityMismatch (path,id,infTyStr,specTyStr))
+			    else ()
+		      | TRUEequ =>
+			    if (EqualityOfTyFun infTyFun) = FALSEequ then 
+				raise MatchError (EqualityMismatch (path,id,infTyStr,specTyStr))
+			    else ()
+		      | FALSEequ =>
+				()
+		      | _ => fatalError "realizeTyStr:2") 
+		   val tnLevel = #tnLevel(!(#info tn))
 		   val (fns,fvs,frvs) = freeVarsTyFun tns [] ([],[],[]) infTyFun 
-		   val _ = (* occur check *)
+		   val _ = (* occur check, required for recursive modules *)
 		       app (fn tn' => 
 			    if tn = tn' 
 			    then raise MatchError (CircularMismatch(path,
@@ -2065,8 +2105,7 @@ fun realizeTyStr path id (infTyStr : TyFun * ConEnv) (specTyStr : TyFun * ConEnv
 		   setTnSort (#info tn) (REAts (foldR (fn tn => fn tyfun => LAMtyfun(tn,tyfun)) (normTyFun infTyFun) tns))
                end)
 	   handle  NotAPattern => ())
-      (* cvr: *)
-  end)
+  );
 
 fun checkRealization (* (inferredSig : CSig) (specSig : CSig)*)
                 path id (infTyStr : TyFun * ConEnv) (specTyStr : TyFun * ConEnv) =
@@ -2075,7 +2114,7 @@ fun checkRealization (* (inferredSig : CSig) (specSig : CSig)*)
           let  val infTyFun = normTyFun (#1 infTyStr) 
           in
 	      unifyTyFun infTyFun specTyFun (* cvr: CHECK THIS *)
-	      handle Unify _ => 
+	      handle Unify _ => (* cvr: TODO improve error message *)
 		  raise MatchError (TransparentMismatch (path,id,infTyStr,specTyStr))
 	  end
     | (specTyFun, specCE) => 
@@ -2281,23 +2320,13 @@ val free_tyname_counter = ref 0;
 val free_variable_names = ref ([] : (TypeVar * string) list);
 val free_variable_counter = ref 0;
 
-val savePrState = fn () =>
-    (let val temp_freetyname_names = !free_tyname_names
-         val temp_freetyname_counter = !free_tyname_counter
-	 val temp_free_variable_names = !free_variable_names
-	 val temp_free_variable_counter = !free_variable_counter
-     in fn () => (free_tyname_names := temp_freetyname_names;
-           	  free_tyname_counter := temp_freetyname_counter;
-		  free_variable_names := temp_free_variable_names;
-		  free_variable_counter := temp_free_variable_counter)
-     end);
 
 fun under_binder f a = 
     (let val temp_freetyname_names = !free_tyname_names
          val temp_freetyname_counter = !free_tyname_counter
 	 val temp_free_variable_names = !free_variable_names
 	 val temp_free_variable_counter = !free_variable_counter
-         val r = f a
+         val r = f a 
      in  free_tyname_names := temp_freetyname_names;
 	 free_tyname_counter := temp_freetyname_counter;
 	 free_variable_names := temp_free_variable_names;
@@ -2372,6 +2401,54 @@ in
 						      | rest => rest))
 end
 
+
+(* reset the current printer state *)
+fun resetPrinter () =
+( free_tyname_names := []; 
+  free_tyname_counter := 0;
+  free_variable_names := [];
+  free_variable_counter := 0;
+  app (fn tn as {qualid,...} =>
+       if isGlobalName qualid andalso 
+	  not (member (#qual qualid) (!preopenedPreloadedUnits)) andalso
+	  not (member (#qual qualid) (pervasiveOpenedUnits))
+	   then free_tyname_names := (tn,(showQualId qualid,0)) :: !free_tyname_names  (* cvr: TODO revise *)
+	else
+	    (case #id(qualid) of
+		 [""] => free_tyname_names := ((tn,choose_arbitrary_tyname())
+					       :: !free_tyname_names)
+	       | [name] =>
+		     let val newname = choose_derived_tyname name
+		     in
+			 free_tyname_names := ((tn, newname)
+					       :: !free_tyname_names)
+		     end
+	       | _ => free_tyname_names := ((tn,choose_arbitrary_tyname()) :: !free_tyname_names)))
+   (mkGlobalT ())
+);
+
+(* protect the current printer state *)
+
+fun protectCurrentPrinter fct =
+    let val saved_freetyname_names = !free_tyname_names
+        val saved_freetyname_counter = !free_tyname_counter
+	val saved_free_variable_names = !free_variable_names
+	val saved_free_variable_counter = !free_variable_counter
+    in
+	(fct();
+	 free_tyname_names := saved_freetyname_names;
+	 free_tyname_counter := saved_freetyname_counter;
+	 free_variable_names := saved_free_variable_names;
+	 free_variable_counter := saved_free_variable_counter)
+         handle x => (free_tyname_names := saved_freetyname_names;
+		      free_tyname_counter := saved_freetyname_counter;
+		      free_variable_names := saved_free_variable_names;
+		      free_variable_counter := saved_free_variable_counter;
+		      raise x)
+    end 
+;
+
+
 (* cvr: TODO  rationalise *)
 fun collectExplicitVarsInObj freeVarsObj obj =
   let val (fns,fvs,_) = 
@@ -2388,7 +2465,7 @@ fun collectExplicitVarsInObj freeVarsObj obj =
 	       free_variable_names := ((var, newname) :: !free_variable_names)
 	  end)
           fvs;
-      revApp (fn tn as {qualid={id = id,...},...} =>
+     revApp (fn tn as {qualid={id = id,...},...} =>
 	       (case id of
 		    [""] => free_tyname_names := ((tn,choose_arbitrary_tyname()) :: !free_tyname_names)
 		  | [name] =>
@@ -2853,31 +2930,6 @@ val prMod = prMod 0;
 val prTyFun = prTyFun 0;
 val prType = prType 0;
 
-fun resetTypePrinter () =
-( free_tyname_names := []; 
-  free_tyname_counter := 0;
-  free_variable_names := [];
-  free_variable_counter := 0;
-  app (fn tn as {qualid,...} =>
-       if isGlobalName qualid andalso 
-	  not (member (#qual qualid) (!preopenedPreloadedUnits)) andalso
-	  not (member (#qual qualid) (pervasiveOpenedUnits))
-	    then
-(*		free_tyname_names := (tn,showQualId qualid) :: !free_tyname_names *)
-		free_tyname_names := (tn,(showQualId qualid,0)) :: !free_tyname_names  (* cvr: TODO revise *)
-	else
-	    (case #id(qualid) of
-		 [""] => free_tyname_names := ((tn,choose_arbitrary_tyname())
-					       :: !free_tyname_names)
-	       | [name] =>
-		     let val newname = choose_derived_tyname name
-		     in
-			 free_tyname_names := ((tn, newname)
-					       :: !free_tyname_names)
-		     end
-	       | _ => free_tyname_names := ((tn,choose_arbitrary_tyname()) :: !free_tyname_names)))
-   (mkGlobalT ())
-);
 
 local val checkpointed_free_variable_names = ref [] 
 in
@@ -3396,7 +3448,7 @@ in
 	     errPrompt "but declared as a different abbreviation in the ";
 	     prInf path;msgEOL();              
  	     errPrompt "  ";prTyInfo id infTyStr;msgEOL();
-	     errPrompt "The abbreviations should be equivalent";msgEOL();
+	     errPrompt "The abbreviations should be equivalent (or unifiable) ";msgEOL();
 	     msgEBlock()))
             ()
   | PatternMismatch (path,id,infTyStr, specTyStr, tn,sv) => 
@@ -3739,4 +3791,8 @@ fun checkClosedExEnvironment  (EXISTS(T,(ME,FE,GE,VE,TE))) =
   end
 end;
 
+(* reset the current type state *)
+fun resetTypes fct = (resetBindingLevel ();resetPrinter ());
 
+(* protect, then restore the current type state *)
+fun protectCurrentTypes fct = protectCurrentBindingLevel (fn () => protectCurrentPrinter fct);

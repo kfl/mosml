@@ -49,6 +49,36 @@ functor fail(F:functor X:sig eqtype t end -> sig type u end) =
     op F:functor X:sig eqtype t end -> sig eqtype u end;
 
 
+(* test equality attribute matching of type abbreviations with free variables *)
+
+fun f x = let structure X as sig type t = 'a end = x in x end;
+val g = f : [sig type t = int -> int end] -> [sig type t = int -> int end];
+val p = [structure struct type t = int -> int end as sig type t = int -> int end];
+val ok = f p;
+val ok = g p;
+
+(* test equality attribute matching of type abbreviations with free equality type variables *)
+fun f x = let structure X as sig type t = ''a end = x in x end;
+val g = f : [sig type t = int * int end] -> [sig type t = int * int end];
+val p = [structure struct type t = int * int end as sig type t = int * int end];
+val q = [structure struct type t = ''b * ''b end as sig type t = ''b * ''b end];
+val r = [structure struct type t = ''b * 'c  end as sig type t = ''b * 'c end];
+val t = [structure struct type t = int -> int end as sig type t = int -> int end];
+val ok = f p;
+val ok = g p;
+val ok = f q;
+val ok = f r;
+val fail = f t;
+
+(* ok to realise equality type constructor by equality type *)
+fun ok x = let structure X as sig eqtype t end where type t = ''a = x in x end;
+fun ok x = let structure X as sig eqtype t end where type t = ''a * ''b = x in x end;
+fun ok x = let structure X as sig eqtype 'b t end where type 'b t = ''a * 'b = x in x end;
+
+(* wrong to realise equality type constructor by nonequality type *)
+fun fail x = let structure X as sig eqtype t end where type t = 'a = x in x end;
+fun fail x = let structure X as sig eqtype t end where type t = ''a -> ''b  = x in x end;
+fun fail x = let structure X as sig eqtype 'b t end where type 'b t = 'a -> 'b = x in x end;
 
 
 

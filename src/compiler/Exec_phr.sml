@@ -89,6 +89,8 @@ end
 fun updateCurrentState ((iBas, (Env as EXISTS(T,(ME,FE,GE,VE, TE)))), RE) =
 (
   catch_interrupt false;
+  incrBindingLevel(); 
+  refreshTyNameSet PARAMETERts T;
   updateCurrentInfixBasis iBas;
   updateCurrentStaticT T;
   updateCurrentStaticME ME;

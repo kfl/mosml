@@ -1,5 +1,8 @@
 Hi Mom!
 
+excRenList seems obsolete now --- can we remove it?
+----------------------------------------------
+
 mosmldep's Lexer really needs to be updated to Modules, though it's fine
 for the recommended use.
 ----------------------------
