@@ -1,7 +1,7 @@
 local open Fnlib in
 
 (* version string *)
-val version = "1.44cvr3 (internal release) (16th January 2000)";
+val version = "1.99 (internal release)";
 
 (* Integer ranges *)
 
