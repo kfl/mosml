@@ -1,5 +1,5 @@
 (* mosml/src/dynlibs/mpq/Postgres.sml.  
-   sestoft@dina.kvl.dk -- 1998 -- version 0.05 of 2000-04-28 *)
+   sestoft@dina.kvl.dk -- 1998 -- version 0.06 of 2001-02-03 *)
 
 open Dynlib;
 
@@ -194,10 +194,57 @@ fun getstring dbres fno tupno =
     else
 	pq_getstring dbres tupno fno 
 
+(* Scanning dates and times in ISO format (Postgres 7) *)
+
+local					
+    open Substring (* for getc, all *)
+    fun getint src = Option.valOf (Int.scan StringCvt.DEC getc src)
+    fun drop p     = StringCvt.dropl p getc
+in
+    fun scandate (src : Substring.substring)  =
+	let fun isSep c  = (c = #"-")
+	    val (year,  src1) = getint src
+	    val (month, src2) = getint (drop isSep src1)
+	    val (day,   src3) = getint (drop isSep src2)
+	in ((year, month, day), src3) end
+
+    fun scantime (src : Substring.substring) =
+	let fun isSep c  = (c = #":")
+	    val (hour, src1) = getint src
+	    val (min,  src2) = getint (drop isSep src1)
+	    val (sec,  src3) = getint (drop isSep src2)
+	in ((hour, min, sec), src3) end
+
+    fun pq_getdatetime dbres fno tupno : Date.date =
+	let val src = Substring.all (pq_getstring dbres fno tupno) 
+	    val ((yr,mo,da), src1) = scandate src
+	    val src2 = drop (fn c => c = #" ") src1
+	    val ((hr,mi,se), _   ) = scantime src2
+	    open Date
+	    val tomonth = 
+		fn 1 => Jan | 2 => Feb |  3 => Mar |  4 => Apr
+		 | 5 => May | 6 => Jun |  7 => Jul |  8 => Aug
+		 | 9 => Sep | 10 => Oct | 11 => Nov | 12 => Dec
+		 | _ => raise Fail "Mysql.db_getdatetime 1";
+	in date {year=yr, month=tomonth mo, day=da, 
+		 hour=hr, minute=mi, second=se, offset=NONE} end
+        handle Option.Option => raise Fail "Mysql.db_getdatetime 2"
+
+    fun pq_gettime dbres fno tupno : int * int * int =
+	#1(scantime(Substring.all(pq_getstring dbres fno tupno)))
+	handle Option.Option => raise Fail "Mysql.db_gettime"
+
+    fun pq_getdate dbres fno tupno : int * int * int =
+	#1(scandate (Substring.all (pq_getstring dbres fno tupno)))
+	handle Option.Option => raise Fail "Mysql.db_getdate"
+end
+
+(*
 fun pq_getdatetime dbres fno tupno : Date.date =
     case Date.fromString (pq_getstring dbres fno tupno) of
 	NONE    => raise Fail "Postgres.pq_getdatetime"
       | SOME dt => dt
+*)
 
 fun getdatetime dbres fno tupno =
     if pq_isnull dbres tupno fno then
@@ -205,6 +252,7 @@ fun getdatetime dbres fno tupno =
     else
 	pq_getdatetime dbres tupno fno
 
+(*
 fun pq_gettime dbres fno tupno : int * int * int =
     let val s = pq_getstring dbres fno tupno 
 	open Substring (* for getc, all *)
@@ -218,6 +266,7 @@ fun pq_gettime dbres fno tupno : int * int * int =
 	(hour, min, sec)
     end
     handle Option.Option => raise Fail "Postgres.pq_gettime"
+*)
 
 fun gettime dbres fno tupno =
     if pq_isnull dbres tupno fno then
@@ -225,6 +274,7 @@ fun gettime dbres fno tupno =
     else
 	pq_gettime dbres tupno fno
 
+(*
 fun pq_getdate dbres fno tupno : int * int * int =
     let val s = pq_getstring dbres fno tupno 
 	open Substring (* for getc, all *)
@@ -238,6 +288,7 @@ fun pq_getdate dbres fno tupno : int * int * int =
 	(year, month, day)
     end
     handle Option.Option => raise Fail "Postgres.pq_getdate"
+*)
 
 fun getdate dbres fno tupno =
     if pq_isnull dbres tupno fno then
@@ -282,6 +333,7 @@ fun totag "bool"     = SOME BoolTy
   | totag "varchar"  = SOME StringTy
   | totag "date"     = SOME DateTy
   | totag "datetime" = SOME DateTimeTy
+  | totag "timestamp" = SOME DateTimeTy
   | totag "abstime"  = SOME DateTimeTy
   | totag "time"     = SOME TimeTy
   | totag "oid"      = SOME OidTy
