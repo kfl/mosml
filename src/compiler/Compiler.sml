@@ -393,6 +393,8 @@ fun compileSignature context uname umode filename =
 
 fun updateCurrentCompState ((iBas, ExEnv as EXISTS(T,(ME,FE,GE,VE, TE))), RE) =
 ( updateCurrentInfixBasis iBas;
+  incrBindingLevel(); 
+  refreshTyNameSet PARAMETERts T;
   updateCurrentStaticT T;
   updateCurrentStaticME ME;
   updateCurrentStaticFE FE;
