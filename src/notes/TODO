@@ -1364,3 +1364,46 @@ gcc-3.2 to fail.
 Random.newgenseed 0.0
  
 creates a generator which causes Random.random to always return 0.0
+
+* 2004-01-12: Time trouble.  
+
+In Moscow ML 2.00 time is represented as a pair of ints.  This
+representation was carefully offset by -(2^30) so that it would work
+until year 2038 despite the fact that ints are 31 bit only.  (The
+unreleased CVS version of Moscow ML uses reals to represent time,
+giving microsecond resolution until 2112 and millisecond resolution or
+better until year 143970).
+
+But the Moscow ML 2.00 implementation was not careful enough, it turns
+out.  After January 10, 2004, the number of seconds since January 1,
+1970 exceeds 2^30:
+
+- Date.toString(Date.fromTimeUniv(Time.fromReal(Math.pow(2.0, 30.0)-1.0)));
+> val it = "Sat Jan 10 13:37:03 2004" : string
+
+This causes two problems:
+
+(1) On all 32-bit platforms (except Moscow ML.Net) Time.toSeconds will
+raise Overflow.  This is unavoidable...
+
+(2) On all platforms, Time.fromReal(Math.pow(2.0, 30.0)) or
+Time.toString(Time.fromReal(Math.pow(2.0, 30.0))) raises Overflow.
+
+(3) Under Moscow ML 2.00 for Windows, loading the Timer structure (or
+invoking Moscow ML with mosml -P full, which loads the Timer
+structure), will fail.  The reason is that function getrutime in
+mosml/src/runtime/mosml.c takes both usr time and real time from the
+system time, but neglects to apply the -(2^30) offset:
+
+  Field (res, 2) = Val_long (t.time);
+  Field (res, 3) = Val_long (((long) t.millitm) * 1000);
+  Field (res, 4) = Val_long (t.time);
+  Field (res, 5) = Val_long (((long) t.millitm) * 1000);
+
+This code ought to be fixed as follows:
+
+  Field (res, 2) = Val_long (t.time + TIMEBASE);
+  Field (res, 3) = Val_long (((long) t.millitm) * 1000);
+  Field (res, 4) = Val_long (t.time + TIMEBASE);
+  Field (res, 5) = Val_long (((long) t.millitm) * 1000);
+
