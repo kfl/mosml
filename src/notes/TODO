@@ -813,6 +813,30 @@ something I said in a supervision:
 [Presumably wrong according to the Definition's appendix on derived
 forms]
 
+ * 2001-05-17: jeremy@discus.anu.edu.au
+
+ON page 8, (sec 3.4), under description of loadPath,
+it says (2nd sentence)
+This variable affects the load, loadOne and use functions.
+ 
+It seems from my experiments that it also affects the
+compile, compileStructure and compileToplevel functions.      
+
+
+ * 2001-05-25: Ken Friis Larsen <kfl@it.edu>
+ 
+I've found a small bug in mosml's handling of signatures.  This should
+be correct SML:
+ 
+------------
+signature COL = sig type elem type col end
+signature INTCOL1 = COL where type col = int list
+                       where type elem = int
+signature INTCOL2 = COL where type elem = int
+                        where type col = int list
+signature INTERM = COL where type elem = int
+signature INTCOL3 = INTERM where type col = int list    
+
  * 2000-06-05: Henning Makholm:
 
 Could future versions of mosmlyac please take a consistent stance
@@ -840,6 +864,32 @@ $ cat bar.sml
 val _ = foo.S (fn _ => foo.FOO) (Lexing.createLexerString "")
 $ mosmlyac -v foo.grm
 $ mosmlc foo.sig foo.sml bar.sml
+
+* 2001-06-08:jeremy@discus.anu.edu.au   
+
+Last year I emailed you about what turns out to be a related
+problem - I'd assumed that
+mosmlc -c A.sml B.sml C.sml
+would do the same as
+mosmlc -c A.sml
+mosmlc -c B.sml
+mosmlc -c C.sml
+but in fact fake dependencies were introduced there also.    
+I wonder if this issue warrants a mention in the documentation.                 
+* 2001-06-21: Martin Elsman <mael@dina.kvl.dk>
+
+Det ser ud som om Moscow ML ikke binder Option og Span som exception
+konstruktører på top-niveau, som foreskrevet i
+ 
+  http://www.dina.kvl.dk/%7Esestoft/sml/top-level-chapter.html
+
+* 2001-07-17:  Stephen Weeks <sweeks@intertrust.com>
+ 
+Mosml accepts the following program.  It should report an error because x is
+bound twice in the same valbind.
+ 
+val x = 13
+and rec x = fn () => ()     
 
 * 2001-08-02: PS to check up on Buffer.{sig, sml} from Ken.
 
@@ -884,3 +934,8 @@ $ mosmlc foo.sig foo.sml bar.sml
     doesn't, that just means there will be excess parentheses in some
     cases.  The prior precedece logic of prVal would need to be fixed
     to fit the precendece actually use in SML.
+
+* 2001-12-17: Mosmlcgi and Mosmlcookie suggestions from Hans Molin.
+
+* 2001-12-26: Stanislaw Skowron, see skowron-bug.sml: excess
+  polymorphism leads to segmentation fault.
