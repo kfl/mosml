@@ -58,10 +58,6 @@ fun tryEvalLoad name =
         (* current table of unit signatures, if not already there:     *)
         val sign = (Hasht.find (!currentSigTable) uname
                    handle Subscript => readSig uname)
-        (* cvr: 144 merge 
-	 prim_val set_nth_char_ : string -> int -> char -> unit
-                                                 = 3 "set_nth_char"
-	*)
         prim_val create_string_ : int -> string = 1 "create_string";
         prim_val set_nth_char_  : string -> int -> char -> unit
                                                 = 3 "set_nth_char"
@@ -71,15 +67,8 @@ fun tryEvalLoad name =
                        " is incompatible with its compiled signature")
         else ();
         seek_in is start;
-        (* cvr: 144 merge
-	   code := static_alloc (!block_len); *)
         code := create_string_ (!block_len);
         fast_really_input is (!code) 0 code_len;
-
-        (* cvr: 144 merge
-           (* `set_nth_char' must not check the length of buff, *)
-           (* because `code' is allocated outside the heap! *)
-         *)
         set_nth_char_ (!code) code_len (Char.chr Opcodes.STOP);
         app
           (fn phr =>
@@ -151,7 +140,6 @@ fun smartEvalLoad s =
     in tryload s [] end
 ;
 
-(* cvr: 144 merge *)
 fun evalLoaded () : string list =
     Hasht.fold (fn k => fn _ => fn res => k :: res) [] (!watchDog) 
 
@@ -247,12 +235,17 @@ fun evalCompile s =
      | SysErr _      => raise Fail "compile: file not found"
 ;
 
+(* cvr: TODO
+   it would be better if smltop_con_basis, sml_VE and the global dynamic
+   env were initialised from a single association list instead of three
+   possibly inconsistent ones 
+*)
+
 val smltop_con_basis =
 [
   ("use",    { qualid={qual="Meta", id=["use"]},       info=VARname REGULARo}),
   ("load",   { qualid={qual="Meta", id=["load"]},      info=VARname REGULARo}),
   ("loadOne",{ qualid={qual="Meta", id=["loadOne"]},   info=VARname REGULARo}),
-  (* cvr: 144 merge *)
   ("loaded", { qualid={qual="Meta", id=["loaded"]},    info=VARname REGULARo}),
   ("compile",{ qualid={qual="Meta", id=["compile"]},   info=VARname REGULARo}),
   ("verbose",{ qualid={qual="Meta", id=["verbose"]},   info=VARname REGULARo}),
@@ -283,7 +276,6 @@ val smltop_VE =
    ("use",         trivial_scheme(type_arrow type_string type_unit)),
    ("load",        trivial_scheme(type_arrow type_string type_unit)),
    ("loadOne",     trivial_scheme(type_arrow type_string type_unit)),
-   (* cvr: 144 merge *)
    ("loaded",      trivial_scheme(type_arrow type_unit 
 				             (type_list type_string))),
    ("compile",     trivial_scheme(type_arrow type_string type_unit)),
@@ -294,12 +286,12 @@ val smltop_VE =
    ("valuepoly",   trivial_scheme(type_ref type_bool)),
    ("exnName",     trivial_scheme(type_arrow type_exn type_string)),
    ("exnMessage",  trivial_scheme(type_arrow type_exn type_string)),
-   ("printVal",    sc_bogus),  (* cvr: added TODO cleanup*)
+   ("printVal",    sc_bogus),  
    ("printDepth",  trivial_scheme(type_ref type_int)),
    ("printLength", trivial_scheme(type_ref type_int)),
    ("system",      trivial_scheme(type_arrow type_string type_int)),
    ("quit",        trivial_scheme(type_arrow type_unit type_unit)),
-   ("printVal",    sc_bogus)  (* cvr: added TODO cleanup *)
+   ("installPP",    sc_bogus)  
 ];
 
 val unit_smltop = newSig "Meta";
@@ -328,7 +320,6 @@ fun resetSMLTopDynEnv() =
   loadGlobalDynEnv "Meta" [
     ("use",         repr (evalUse: string -> unit)),
     ("loadOne",     repr evalLoad),
-    (* cvr: 144 merge *)
     ("loaded",      repr evalLoaded),
     ("load",        repr smartEvalLoad),
     ("compile",     repr evalCompile),
