@@ -1236,7 +1236,7 @@ end
 \end{program}
 
 \noindent File {\tt Reduce.sig} below contains the signature  {\tt
-  Reduce}, which 
+  Reduce}:
 
 \begin{program}
 signature Reduce = sig
@@ -1424,6 +1424,220 @@ mosml
 > load "unitid";
 \end{program}
 
+\subsection{An example program consisting of four mixed-mode units}
+\label{sec-example-units}
+
+To illustrate units, we present a tiny program working
+with arithmetic expressions.  It consists of two structure mode units {\tt Expr},
+{\tt Reduce} and two toplevel mode units {\tt Evaluate} and {\tt Test}.  This example is in {\tt
+  mosml/examples/units}.
+
+File {\tt Expr.sml} below, is a structure mode implementation that 
+contains structure {\tt Expr} which defines
+a datatype {\tt expr} for representing expressions and a function {\tt
+ show} to display them.  It has no signature constraint and therefore
+exports both the datatype and the function:
+
+\begin{program}
+structure Expr = struct
+   datatype expr = Cst of int | Neg of expr | Plus of expr * expr
+
+   fun show (Cst n)         = makestring n
+     | show (Neg e)         = "(-" ^ show e ^ ")"
+     | show (Plus (e1, e2)) = "(" ^ show e1 ^ "+" ^ show e2 ^ ")"
+end
+\end{program}
+
+\noindent File {\tt Reduce.sig} below is a structure mode interface 
+  that contains the signature  {\tt Reduce}:
+
+\begin{program}
+signature Reduce = sig
+   val reduce : Expr.expr -> Expr.expr
+end
+\end{program}
+
+\noindent File {\tt Reduce.sml} below is a structure mode implementation 
+  that declares the structure {\tt  Reduce}, 
+  with the explicit signature shown above, and therefore
+  exports only the function {\tt reduce} specified in that signature:
+
+\begin{program}
+structure Reduce :> Reduce = struct 
+   local open Expr
+   in
+       fun negate (Neg e) = e
+         | negate e       = Neg e
+       fun reduce (Neg (Neg e))      = e
+         | reduce (Neg e)            = negate (reduce e)
+         | reduce (Plus (Cst 0, e2)) = reduce e2
+         | reduce (Plus (e1, Cst 0)) = reduce e1
+         | reduce (Plus (e1, e2))    = Plus (reduce e1, reduce e2)
+         | reduce e                  = e
+   end
+end
+\end{program}
+
+\noindent File {\tt Evaluate.sig}  below is a toplevel mode interface that contains the specification of
+  a functor {\tt  Eval}, which maps any structure {\tt R} matching the signature
+  {\tt Reduce}  to a structure with a function {\tt eval} for evaluating
+  expressions, and a function {\tt test} for testing {\tt R}.  Note the use of `{\tt open
+  Expr}' to make the type {\tt expr} refer to {\tt Expr.expr}:
+
+\begin{program}
+functor Eval : functor(R:Reduce) ->
+                 sig val eval: Expr.expr -> int 
+                       val test: Expr.expr -> bool
+                 end
+\end{program}
+
+\noindent File {\tt Evaluate.sml} below is a toplevel mode implementation that contains the actual functor {\tt
+  Eval}, which mentions the unit {\tt Expr} as well as well as the unit interface {\tt Reduce}:
+
+\begin{program}
+functor Eval(R:Reduce) =
+struct
+  local open Expr in
+  fun eval (Cst n)         = n
+    | eval (Neg e)         = ~ (eval e)
+    | eval (Plus (e1, e2)) = eval e1 + eval e2;
+  fun test e = (eval e = eval (R.reduce e)) 
+  end
+end
+\end{program}
+
+\noindent File {\tt Test.sml} (a toplevel unit implementation)
+  which mentions the unit {\tt Expr}, the unit {\tt Reduce}, and the functor {\tt Eval}
+  defined in the unit {\tt Evaluate},
+  applies the functor to {\tt Reduce} and carries out two tests.
+
+\begin{program}
+structure T = Eval(Reduce)
+open Expr 
+val t1 = T.test (Plus (Cst 244, Cst 0))
+val t2 = T.test (Neg (Plus (Neg (Cst 140), Cst 0)))
+\end{program}
+
+The simplest way to compile this example is to enter:
+
+\begin{program}
+mosmlc -structure Expr.sml Reduce.sig Reduce.sml -toplevel Evaluate.sig Evaluate.sml Test.sml
+\end{program}
+
+which is equivalent to the individual compilations (and does not avoid unnecassary recompilations):
+\begin{program}
+mosmlc -c -structure Expr.sml 
+mosmlc -c -structure Expr.ui Reduce.sig 
+mosmlc -c -structure Expr.ui Reduce.sml 
+mosmlc -c -toplevel Expr.ui Reduce.ui Evaluate.sig 
+mosmlc -c -toplevel Expr.ui Reduce.ui Evaluate.sml 
+mosmlc -c -toplevel Expr.ui Reduce.ui Evaluate.ui Test.sml 
+\end{program}
+
+\subsection{Recompilation management using {\tt make} and {\tt mosmldep}}
+\label{sec-recompilation}
+
+Recompilation management helps the programmer recompile only what is
+necessary after a change to a unit interface or unit implementation.  
+
+Type-safe linking prevents the programmer from creating unsafe or
+meaningless programs.  The {\tt load} function and the batch linker in
+Moscow ML ensure probabilistically type-safe linking, so it is
+virtually impossible to cause the system to create a type-unsafe
+program.
+
+% Recompilation management for structure-mode units (that declare only
+% flat structures)\footnote{For managing the recompilation of full
+%   Standard ML programs, see Section~\ref{sec-project-manager}.} may be
+% performed using the standard `make' tool in conjunction with the
+% Moscow ML program \texttt{mosmldep}.
+
+Consider the example program in Section~\ref{sec-example-mixed-units}
+consisting of the four units {\tt Expr},  {\tt Reduce}, {\tt Evaluate} and {\tt Test}.  Assume
+their source files {\tt *.sig} and {\tt *.sml} reside in a particular directory (or
+look in the \texttt{mosml/examples/units}.
+Copy the Makefile stub from \texttt{mosml/tools/Makefile.stub} to that
+directory, and change to that directory.
+
+\begin{enumerate}
+\item\label{zero} Edit the Makefile so that the names of the units
+  {\tt Expr}, {\tt Reduce}, {\tt Evaluate},  and {\tt Test} appear on the line beginning
+  with `{\tt UNITS:}', with each unit preceding by an option indicatings its mode
+  (see the example makefile in \texttt{mosml/examples/manual/Makefile}):
+
+  \begin{program}
+  UNITS=-structure Expr Reduce -toplevel Evaluate Test
+  \end{program}
+
+\item\label{one} Edit the Makefile so that the names of the bytecode files
+  {\tt Expr.uo}, {\tt Evaluate.uo} and {\tt Reduce.uo} and {\tt Test.uo} appear on the line beginning
+  with `{\tt all:}':
+
+  \begin{program}
+  all: Expr.uo Reduce.uo Evaluate.uo Test.uo
+  \end{program}
+
+\item\label{two} Compute the dependencies among the files by executing:
+
+  \begin{program}
+  make depend
+  \end{program}
+
+\item\label{three} Recompile all those files which have not yet been compiled, or
+  which have been modified but not yet recompiled, or which depend on
+  modified files, by executing:
+        
+\begin{program}
+make    
+\end{program}
+\end{enumerate}
+
+\noindent Step (\ref{three}) must be repeated whenever you have modified a
+component of the program system.  Step (\ref{two}) need only be repeated if
+the inter-dependencies of some components change, or if you add or
+remove an explicit signature file.  Steps (\ref{one} and \ref{zero}) need only be repeated
+when you add or delete an entire unit of the program system.
+
+The compiled {\tt *.ui} and {\tt *.uo} files can be removed by executing:
+
+\begin{program}
+make clean  
+\end{program}
+
+The unit dependencies are computed by the ML program
+{\tt mosmldep}, called with
+
+\begin{program}
+mosmldep \$(UNITS)
+\end{program}
+
+When you explictly supply the units,
+\begin{program}
+UNITS= -structure Expr Evaluate -toplevel Reduce Test
+\end{program}
+(together with the indication of their compilation
+mode), {\tt mosmldep} merely 
+constructs a dependency file on 
+the assumption that units to the right depend on all preceding units, taking
+into account the presence of explicit interfaces {\\tt .sig} files.
+Unfortunately, this means that {\tt mosmldep} will generally create an inefficient Makefile,
+containing more dependencies than are actually in your source files.
+However, it still saves some recompilation (which is cheap in Moscow ML anyway) and
+is more convenient than hand-crafting the Makefile.
+We hope to improve  on this situation in the future, but computing dependencies
+for full Standard ML programs is known to be difficult.
+
+If you omit step (\ref{zero}) and leave {\tt \$(UNITS)} undefined, ie.:
+\begin{program}
+UNITS=
+\end{program}
+then {\tt mosmldep} will accurately {\emph infer} the dependencies between
+all the {\tt .sig} and {\tt .sml} source files in the directory by inspecting
+their contents.
+Unfortunately, this process only works with programs containing only
+structure mode units, that themselves contain only flat structures, 
+but no functors or nested structures. This is the behaviour of {\tt mosmldep}
+in releases of Moscow ML prior to 2.00, and is provided for backwards compatibility.
 
 \subsection{Toplevel-mode recompilation management: mosmlpm}
 \label{sec-project-manager}
@@ -1963,7 +2177,7 @@ val res = if true then SG1.C else SG2.C;                (* ill-typed   *)
 \noindent
 (A conditional expression requires both branches to have equivalent types,
  so \texttt{res} simply tests that
- the type \texttt{S11.t} is equivalent to \texttt{S12.t}.)
+ the type \texttt{SG1.t} is equivalent to \texttt{SG2.t}.)
 
 \noindent 
 If functors had an applicative, not generative,
