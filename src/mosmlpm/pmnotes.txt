@@ -79,6 +79,9 @@ Note about the PM prototype
   doing this, but who cares.
   BUG: .pm files are not considered in the uptodate check.
 
+* 4/5 - 2000: Even smarter recompilation scheme implemented thanks to
+  Martin.  Now .ui is checked for equality.
+
 TODO ( - : not implemented, + : implemented, * : droped ) 
   - Implement compilation unit renaming when mosmlc supports it
   - Figure out how to handle .sig files
