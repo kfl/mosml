@@ -1882,6 +1882,8 @@ and \texttt{use}.  The compilation mode can be set by the functions
 
 See the \emph{Moscow ML Language Overview} for the precise syntax of
 the extensions.
+The directory {\tt mosml/examples/modules} contains simple examples of
+these extensions (see the {\tt README file}).
 
 \subsection{Higher-order modules}
 
@@ -1938,6 +1940,9 @@ may be supplied instead:
 structure R4 = F3(functor(X:sig type t end)=> 
                   struct type u = X.t val y = 1 val z = [] end)
 \end{program}
+
+The files {\tt mosml/examples/modules/poly.sml,bootstrap.sml}
+contain examples that use higher-order functors.
 
 \subsection{Applicative functors}
 \label{sec-applicative-functors}
@@ -2003,8 +2008,12 @@ signature S = sig functor F: functor X:sig type t end -> sig type u end
 \end{program}
 
 \noindent
+
 The local binding has no run-time effect and is only evaluated at 
 compile-time, for its type information.
+
+The file {\tt mosml/examples/modules/collect.sml,bootstrap.sml}
+contains examples applicative functors.
 
 \subsection{Opaque and transparent functor signatures}
 \label{sec-functor-signatures}
@@ -2115,6 +2124,7 @@ while \texttt{HT}'s formal argument has an
 applicative specification.
 
 \subsection{First-class modules}
+
 \label{sec-firstclass-modules}
 
 In the Moscow ML Modules language, a structure or functor can be
@@ -2182,6 +2192,8 @@ functor Ok (val nat : [ NAT ]) =
   struct val x = let structure Nat as NAT = nat in nat end end (* legal *)
 \end{program}
 
+The files {\tt mosml/examples/modules/sieve.sml,array.sml,choice.sml,matrix.sml}
+contain more examples.
 
 \subsection{Recursive modules}
 \label{sec-rec-modules}
@@ -2259,11 +2271,11 @@ declared  within the forward specification.
 
 \noindent
 Once this recursive signature has been defined, it can then 
-be used to implement a recursive structure 
+be used to implement the recursive structure \texttt{T}
 with datatypes that span module boundaries.
 
 \begin{program}
-structure S = rec(X:REC)
+structure T = rec(X:REC)
               struct structure Even = struct datatype t = datatype X.Even.t 
                                              fun succ Zero = X.Odd.One 
                                                | succ E = X.Odd.Succ E
@@ -2273,6 +2285,9 @@ structure S = rec(X:REC)
                                       end
               end
 \end{program}
+
+The files {\tt mosml/examples/modules/recursion.sml,bootstrap.sml}
+contain examples of using recursive structures and signatures.
 
 \subsection{Miscellaneous relaxations of Standard ML restrictions}
 \label{sec-misc-relaxations}
