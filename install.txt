@@ -18,12 +18,12 @@ INSTALLING MOSCOW ML (BINARIES ONLY) UNDER LINUX
 
     mosml/              readme, install.txt
           bin/          mosml, mosmlc, mosmllex, mosmlyac, camlrunm,
-                        and the dynamically loadable libraries
           copyrght/     copyright notices
-          doc/          manual.pdf, mosmlref.pdf, ...
+          doc/          manual.pdf, mosmlref.pdf, mosmllib.pdf, ...
               mosmllib/ HTML-documentation of the Moscow ML library 
           examples/     a few example programs
-          lib/          bytecode files and basis library units
+          lib/          bytecode files, basis library units, 
+                        and the dynamically loadable libraries
           tools/        mosmldep, Makefile.stub
 
 (2) Edit the variables `stdlib' and `mosmlbin' in the scripts
@@ -38,8 +38,8 @@ INSTALLING MOSCOW ML (BINARIES ONLY) UNDER LINUX
 (4*) If you intend to use libraries that use dynamic linking, such as
     Gdbm, Mysql, Polygdbm, Postgres, Regex, or Socket, define 
 
-        export LD_LIBRARY_PATH=${HOME}/mosml/bin        (for bash)
-        setenv LD_LIBRARY_PATH ${HOME}/mosml/bin        (for csh, tcsh)
+        export LD_LIBRARY_PATH=${HOME}/mosml/lib        (for bash)
+        setenv LD_LIBRARY_PATH ${HOME}/mosml/lib        (for csh, tcsh)
 
     Alternatively, if you are doing a systemwide installation, 
     as needed for CGI scripts, do
@@ -54,7 +54,7 @@ INSTALLING MOSCOW ML (BINARIES ONLY) UNDER LINUX
 (6*) To check that dynamic linking works, do
         fun myload u =
             (load u; print ("\nLoaded " ^ u ^ "\n")) handle Fail _ => ();
-        app myload ["Gdbm", "Mysql", "Postgres", "Regex", "Socket"];
+        app myload ["Gdbm", "Mysql", "Postgres", "Regex", "Socket", "Unix"];
 
 To quit Moscow ML, type `quit();' or control-D.
 

@@ -7,6 +7,7 @@ use "auxil.sml";
 local
     open Math
     val MAXDOUBLE = 8.98846567431157E307;
+    (* This is too much for Linux/Alpha for some reason: *)
     val MINDOUBLE = 4.94065645841246544E~324
     val PI = 3.14159265358979323846;
     val E = 2.7182818284590452354;
