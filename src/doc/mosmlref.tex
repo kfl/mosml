@@ -6,6 +6,21 @@
 
 \documentclass[fleqn]{article}
 
+
+% cvr:  we use color's to highlight insertions/deletions
+
+\usepackage{color}
+\def\insert#1{{\color{blue}{#1}}}
+\def\delete#1{{\color{red}{#1}}}
+\def\revise#1{{\color{green}{#1}}}
+\def\replace#1#2{\delete{#1} \insert{#2}}
+\def\x{\color{magenta}\bf{*}}
+\newenvironment{insertion}{\color{blue}}{}
+\newenvironment{deletion}{\color{red}}{}
+
+\nonstopmode
+\usepackage{alltt}
+
 \usepackage{isolatin1,notesart,a4wide,pslatex}
 \usepackage[T1]{fontenc}
 
@@ -14,6 +29,9 @@
 \newcommand{\la}{$\langle$}
 \newcommand{\ra}{$\rangle$}
 \newcommand{\opop}{\la{\tt op}\ra}
+
+\newcommand{\op}{{\tt op}}
+\newcommand{\longmodid}{{\it longmodid}}
 
 \begin{document}
 
@@ -35,7 +53,7 @@ Moscow, Russia && Copenhagen, Denmark
 \vspace{1cm}
 
 \noindent This is a compact reference to the language implemented by
-Moscow ML, a subset of Standard ML\@.  For reference material on
+Moscow ML, a \replace{subset}{superset} of Standard ML\@.  For reference material on
 Standard ML, see Milner, Tofte, Harper and MacQueen: {\em The
   Definition of Standard ML\/}, The MIT Press 1997.  Moscow ML
 implements parts of the SML Basis Library.  Section~\ref{sec-libindex}
@@ -64,12 +82,19 @@ function, and exception identifiers defined by Moscow ML.
 \section{Reserved words}
 \label{sec-reserved-words}
 
-{\small\begin{verbatim} 
-      abstype  and  andalso  as  case  do  datatype  else  end  exception  fn  fun  
-      handle  if  in  infix  infixr  let  local  nonfix  of  op  open  orelse  raise  rec  
-      sig  signature  struct  structure  then  type  val  with  withtype  while  
+% {\small\begin{verbatim} 
+%       abstype  and  andalso  as  case  do  datatype  else  end  exception  fn  fun  
+%       handle  if  in  infix  infixr  let  local  nonfix  of  op  open  orelse  raise  rec  
+%       sig  signature  struct  structure  then  type  val  with  withtype  while  
+%       (  )  [  ]  {  }  ,  :  :>  ;  ...    _  |  =  =>  ->  #
+% \end{verbatim}}
+
+{\small\begin{alltt} 
+      abstype  and  andalso  as  case  do  datatype  else  end \insert{eqtype} exception  fn  fun  \insert{functor} 
+      handle  if  in  \insert{include}  infix  infixr  let  local  nonfix  of  op  open  orelse  raise  rec  
+      \insert{sharing}  sig  signature  struct  structure  then  type  val  \insert{where}  with  withtype  while  
       (  )  [  ]  {  }  ,  :  :>  ;  ...    _  |  =  =>  ->  #
-\end{verbatim}}
+\end{alltt}}
 
 
 \section{Comments}
@@ -196,7 +221,7 @@ excluded.  This means that for example \verb$#$ and \verb#|# are not
 identifiers, but \verb$##$ and \verb#|=|# are identifiers.  There are
 several classes of identifiers:
 
-\begin{center}
+\replace{\begin{center}
 \begin{tabular}{@{}lll}
     var       &  (value variables)           &    long\\
     con       &  (value constructors)        &    long\\
@@ -206,7 +231,20 @@ several classes of identifiers:
     lab       &  (record labels)\\
     unitid    &  (unit identifiers)
 \end{tabular}
-\end{center}
+\end{center}}
+{\begin{center}
+\begin{tabular}{@{}lll}
+    vid       &  (value identifiers)           &    long\\
+    tyvar     &  (type variables)\\
+    tycon     &  (type constructors)         &    long\\
+    lab       &  (record labels)\\
+    strid     &  (structure identifiers)         &    long\\
+    funid     &  (functor identifiers)         &    long\\
+    modid     &  (module identifiers)         &    long\\
+    sigid     &  (signature identifiers)\\
+  \revise{unitid}    &  \revise{(unit identifiers)}
+\end{tabular}
+\end{center}}
 
 
 \begin{itemize}
@@ -223,24 +261,73 @@ several classes of identifiers:
 \item A label lab is an identifier, or a positive integral numeral
   \verb#1 2 3 #\ldots\ not starting with \verb#0#.  
 
-\item For each identifier class X marked `long' above there is a class
+\replace{\item For each identifier class X marked `long' above there is a class
   longX of long identifiers, which may have a qualifier consisting of
-  a unit identifier followed by a dot `\verb#.#' :
+  a long structure identifier followed by a dot `\texttt{.}' :
   \begin{center}
       \begin{tabular}{llll}
     {\it longx\/} & ::= &  {\it x\/}         & identifier\\
-          &     &  {\it unitid\/}\verb#.#{\it x\/}  & qualified identifier
+          &     &  {\it unitid\/}\texttt{.}{\it x\/}  & qualified identifier
+  \end{tabular}
+  \end{center}}{
+\item For each identifier class X marked `long' above there is a class
+  longX of long identifiers, which may have a qualifier consisting of
+  a unit identifier followed by a dot `\texttt{.}' :
+  \begin{center}
+      \begin{tabular}{llll}
+    {\it longx\/} & ::= &  {\it x\/}         & identifier\\
+          &     &  {\it longstrid\/}\texttt{.}{\it x\/}  & qualified identifier
   \end{tabular}
   \end{center}
+}
+\insert{%
+\item 
+Although structure and functor identifiers reside in separate name-spaces,
+the syntax of structure and functor identifiers is identical.
+In the grammar, a module identifier \opop{\it longmodid} may stand for either a structure identifier
+\opop{\it longstrid} or a functor identifier \opop{\it longfunid} (\opop is an optional prefix of the keyword \op).
+Thus, {\sl a priori}, the module expression \opop\longmodid\
+may refer to a either a functor or a structure and the compiler
+must resolve this ambiguity. Fortunately,
+the context of the phrase often rules out one
+alternative, on the grounds that choosing that alternative 
+would force type checking to fail. In particular,
+if \opop\longmodid\ occurs as the right hand side of a structure
+(functor) binding, then \longmodid\ must be interpreted as a
+structure identifier if
+\opop\longmodid\ occurs in the functor position of an application, then
+\longmodid\ must be interpreted as a functor identifier; if
+\opop\longmodid\ is constrained by a signature
+then the signature 
+forces a unique interpretation 
+on \longmodid\ (depending on whether the signature specificies a structure or functor).
+Similarly, if \opop\longmodid\ occurs as the argument of a functor application,
+then the functor's domain forces a unique interpretation 
+on \longmodid.
+Indeed, the only ambiguity that remains occurs when \opop\longmodid\ is the body of a functor. In this case, the optional prefix \opop\ is used to resolve
+the ambiguity:  the {\sl absence} of \op\ signals
+that \longmodid\ refers to structure; the {\sl presence} of \op\ signals that
+\op~\longmodid\ refers to a functor. 
+When the interpretation of \opop\longmodid\ is already
+determined by the context, the optional prefix \opop\ has {\sl no} effect.
+(This method of disambiguation relies on type information and is performed during
+type checking.)
+}
+\revise{\item 
+An occurrence of a structure identifier that is not bound in the current context is assumed
+to refer to the structure defined in the unit of the same name.
+The unit's implementation (and interface, if any) must have been compiled in \emph{structure} mode.}
+\revise{\item An occurrence of a signature identifier
+that is not bound in the current context is assumed
+to refer to the signature defined in the interface of the unit with the same name. 
+The interface of the unit must exist and have been compiled in \emph{structure} mode.}
 \end{itemize}
-
-
 
 \section{Infixed operators}
 \label{sec-infixed-operators}
 
 An identifier may be given infix status by the {\tt infix} or {\tt
-  infixr} directive, which may occur as a declaration.  If identifier
+  infixr} directive, which may occur as a declaration \insert{or specification}.  If identifier
 {\it id\/} has infix status, then {\it exp\/}$_1$ {\it id\/} {\it
   exp\/}$_2$ may occur, in parentheses if necessary, wherever the
 application {\it id\/}\verb#(#{\it exp\/}\et\verb#,# {\it
@@ -263,7 +350,9 @@ is as follows ($n\geq 1$):
 indicating binding precedence.  A higher value of $d$ indicates
 tighter binding; the default is \verb#0#.  Fixity directives are
 subject to the usual scope rules governing visibility of identifiers
-declared inside {\tt let} and {\tt local}.
+declared inside {\tt let} and {\tt local}. 
+\insert{Fixity directives occurring within {\it spec} in a signature 
+{\tt sig {\it spec\/} end} are local to {\it spec}.}
 
 Mixed left-associative operators of the same precedence associate to
 the left, mixed right-associative operators of the same precedence
@@ -302,12 +391,12 @@ right-associative operators of the same precedence.
 \end{itemize}
 
 
-\section{Grammar for the Standard ML Core language}
+\section{Grammar for the \replace{Standard ML}{Moscow ML} Core language}
 \label{sec-grammar-core}
 
 \subsubsection*{Expressions and matches}
 
-\begin{tabular}{@{}llll}
+\begin{tabular}{@{}lllll}
 {\it exp\/} & ::= & {\it infexp\/}\\
 & & {\tt {\it exp\/} :\ {\it ty\/}} & type constraint (L)\\
 & & {\tt {\it exp\/}\et\ andalso {\it exp\/}\to} & sequential conjunction\\
@@ -329,9 +418,10 @@ application\\[2ex]
 
 {\it atexp\/} & ::= & {\it scon\/} &  special constant 
 (see Section~\ref{sec-special-constants})\\
-& & \la{\tt op}\ra\ {\it longvar\/} & value variable\\
-& & \la{\tt op}\ra\ {\it longcon\/} & value constructor\\
-& & \la{\tt op}\ra\ {\it longexcon\/} &exception constructor\\
+& & \delete{\la{\tt op}\ra\ {\it longvar\/}} & \delete{value variable}\\
+& & \delete{\la{\tt op}\ra\ {\it longcon\/}} & \delete{value constructor}\\
+& & \delete{\la{\tt op}\ra\ {\it longexcon\/}} &\delete{exception constructor}\\
+& & \insert{\la{\tt op}\ra\ {\it longvid\/}} &\insert{value identifier}\\
 & & \verb#{# \la\ {\it exprow\/} \ra\ \verb#}# & record\\
 & & \verb$#$ {\it lab\/} & record selector\\
 & & \verb#()# &           0-tuple\\
@@ -345,6 +435,8 @@ application\\[2ex]
 & sequence, $n\geq 2$\\
 & & {\tt let {\it dec\/} in {\it exp\/}\et; $\cdots$ ; {\it exp\/}\n\
   end} & local declaration, $n\geq 1$\\
+& & \insert{{\tt [ structure {\it modexp\/} as {\it sigexp\/} ]}} &\insert{structure package} & \x \\
+& &\insert{{\tt [ functor {\it modexp\/} as {\it sigexp\/} ]}} & \insert{functor package} & \x\\
 & & {\tt  ( {\it exp\/} ) }\\[2ex]
 
 {\it exprow\/} & ::= & {\tt {\it lab\/} = {\it exp\/} \la\ , {\it
@@ -364,14 +456,24 @@ application\\[2ex]
 & & {\tt type {\it typbind\/}} & type declaration\\
 & & {\tt datatype {\it datbind\/} \la\ withtype {\it typbind\/} \ra} 
 & datatype declaration\\
+& & \insert{{\tt datatype {\it tycon\/} = datatype {\it tyconpath\/}}}
+& \insert{datatype replication}\\
 & & {\tt abstype {\it datbind\/} \la\ withtype {\it typbind\/} \ra}
 & abstype declaration\\
 & & \hspace{1.5cm}{\tt with {\it dec\/} end}\\
 & & {\tt exception {\it exbind\/}} & exception declaration\\
 & & {\tt local {\it dec\/}\et\ in {\it dec\/}\to\ end} 
 & local declaration\\
-& & {\tt open {\it unitid\/}\et\ $\cdots$ {\it unitid\/}\n} 
-& open declaration, $n\geq 1$\\
+& & \delete{{\tt open {\it unitid\/}\et\ $\cdots$ {\it unitid\/}\n}}
+& \delete{open declaration, $n\geq 1$}\\
+& & \insert{{\tt open {\it longstrid\/}\et\ $\cdots$ {\it longstrid\/}\n}}
+& \insert{open declaration, $n\geq 1$}\\
+& & \insert{structure {\it strbind}}
+& \insert{structure declaration}\\
+& & \insert{functor {\it funbind}}
+& \insert{functor declaration}\\
+& & \insert{signature {\it sigbind}}
+& \insert{signature declaration}\\
 & & & empty declaration\\
 & & {\tt {\it dec\/}\et\ \la;\ra\ {\it dec\/}\to} 
 & sequential declaration\\
@@ -404,12 +506,11 @@ application\\[2ex]
 {\it datbind\/} & ::= & {\tt {\it tyvarseq\/} {\it tycon\/} = {\it
     conbind\/} \la\ and {\it datbind\/} \ra}\\[2ex]
 
-{\it conbind\/} & ::= & {\tt \opop\ {\it con\/} \la{of} {\it ty\/}\ra\ \la\ | {\it conbind\/} \ra}\\[2ex]
+{\it conbind\/} & ::= & {\tt \opop\ {\it \replace{con}{vid}\/} \la{of} {\it ty\/}\ra\ \la\ | {\it conbind\/} \ra}\\[2ex]
 
-{\it exbind\/} & ::= & {\tt \opop\ {\it excon\/} \la{of} 
+{\it exbind\/} & ::= & {\tt \opop\ {\it \replace{excon}{vid}\/} \la{of} 
 {\it ty\/}\ra\ \la\ and {\it exbind\/} \ra}\\
-
-& & {\tt \opop\ {\it excon\/} = \opop\ {\it longexcon\/} \la\ and {\it
+& & {\tt \opop\ {\it \replace{excon}{vid}\/} = \opop\ {\it \replace{longexcon}{longvid}\/} \la\ and {\it
   exbind\/} \ra}\\[2ex]
 \end{tabular}
 
@@ -422,13 +523,17 @@ dropped if `{\tt :{\it ty\/}}' or `{\tt =}' follows immediately.
 
 \subsubsection*{Type expressions}
 
-\begin{tabular}{@{}llll}
+\begin{tabular}{@{}lllll}
+\insert{{\it tyconpath\/}} & \insert{::=} & \insert{{\it longtycon\/}} &\insert{long type constructor}\\
+& & \insert{{\tt {\it longtycon\/} where {\it strid\/} = {\it modexp\/}}}& \insert{type constructor projection}\\[2ex]
+
 {\it ty\/} & ::= & {\it tyvar\/} & type variable\\
 & & {\tt \{ \la\ {\it tyrow\/} \ra\ \}} & record type expression\\
-& & {\tt {\it tyseq\/} {\it longtycon\/}} & type construction\\
+& & {\tt {\it tyseq\/} \replace{{\it longtycon\/}}{{\it longtycon\/}}} & type construction\\
 & & {\tt {\it ty\/}\et\ * $\cdots$ * {\it ty\/}\n} & tuple type,
 $n\geq 2$\\
 & & {\tt {\it ty\/}\et\ -> {\it ty\/}\to} & function type expression\\
+& & \insert{{\tt [{\it sigexp}]}} & \insert{package type expression} & \x\\
 & & {\tt ( {\it ty\/} )}\\[2ex]
 
 {\it tyrow\/} & ::= & {\tt {\it lab\/} :\ {\it ty\/} \la\ , {\it
@@ -441,9 +546,10 @@ $n\geq 2$\\
 \begin{tabular}{@{}llll}
 {\it atpat\/} & ::= & \verb#_# & wildcard\\
 & & {\it scon\/} & special constant (see Section~\ref{sec-special-constants})\\
-& & {\tt \opop\ {\it var\/}} & variable\\
-& & {\tt \opop\ {\it longcon\/}} & constructor \\
-& & {\tt \opop\ {\it longexcon\/}} & exception constructor\\
+& & \delete{{\tt \opop\ {\it var\/}}} & \delete{variable}\\
+& & \delete{{\tt \opop\ {\it longcon\/}}} & \delete{constructor} \\
+& & \delete{{\tt \opop\ {\it longexcon\/}}} & \delete{exception constructor}\\
+& & \insert{{\tt \opop\ {\it longvid\/}}} & \insert{value identifier}\\
 & & {\tt \{ \la\ {\it patrow\/} \ra\ \}} & record\\
 & & {\tt ()} & 0-tuple\\
 & & {\tt ({\it pat\/}\et, $\cdots$ , {\it pat\/}\n)} & $n$-tuple,
@@ -459,12 +565,15 @@ pattern row\\
 \la\ , {\it patrow\/} \ra} &  label as variable\\[2ex]
 
 {\it pat\/} & ::= & {\it atpat\/} & atomic pattern\\
-& & {\tt \opop\ {\it longcon\/} {\it atpat\/}} & value construction\\
-& & {\tt \opop\ {\it longexcon\/} {\it atpat\/}} & exception construction\\
-& & {\tt {\it pat\/}\et\ {\it con\/} {\it pat\/}\to} & 
-infixed value construction\\
-& & {\tt {\it pat\/}\et\ {\it excon\/} {\it pat\/}\to} & 
-infixed exception construction\\
+& &\delete{\tt \opop\ {\it longcon\/} {\it atpat\/}} & \delete{value construction}\\
+& & \delete{{\tt \opop\ {\it longexcon\/} {\it atpat\/}}} & \delete{exception construction}\\
+& & {\tt \opop\ {\it longvid\/} {\it atpat\/}} & constructed value\\
+& & \delete{{\tt {\it pat\/}\et\ {\it con\/} {\it pat\/}\to}} & 
+\delete{infixed value construction}\\
+& & \delete{{\tt {\it pat\/}\et\ {\it excon\/} {\it pat\/}\to}} & 
+\delete{infixed exception construction}\\
+& & \insert{{\tt {\it pat\/}\et\ {\it vid\/} {\it pat\/}\to}} & 
+\insert{infixed value construction}\\
 & & {\tt {\it pat\/} :\ {\it ty\/}} & typed\\
 & & {\tt \opop\ {\it var\/} \la{:}{\it ty\/}\ra\ as {\it pat\/}} & layered
 \end{tabular}
@@ -482,8 +591,14 @@ infixed exception construction\\
         
 \item In the left side {\it tyvarseq tycon\/} of any {\it typbind\/}
   or {\it datbind\/}, {\it tyvarseq\/} must not contain the same {\it
-    tyvar\/} twice.  Any {\it tyvar\/} occurring within the right side
-  must occur in {\it tyvarseq\/}.
+    tyvar\/} twice.  
+  \replace{Any {\it tyvar\/} occurring within the right side
+  must occur in {\it tyvarseq\/}.}{
+   For Standard ML compliance (enforced by in Moscow ML's \emph{orthodox} mode),
+   any {\it tyvar\/} occurring within the right side
+   must occur in {\it tyvarseq\/}. Otherwise, Moscow ML merely
+   requires that   any {\it tyvar\/} occurring within the right side
+   must be in scope (either explictly or implicitly)}.
 
 \item For each value binding {\tt {\it pat\/} = {\it exp\/}} within
   {\tt rec}, {\it exp\/} must be of the form {\tt fn {\it match\/}},
@@ -513,61 +628,119 @@ batch-compiled unit, write {\tt val it = {\tt exp}} or {\tt val \verb#_# =
 \newpage
 
 
-\section{Grammar for the Moscow ML module language}
+\section{Grammar for the Moscow ML \replace{module}{Modules} language}
 
-The Moscow ML module language is a simplified form of the full
-Standard ML Modules language.
+The Moscow ML \replace{module}{Modules} language is a \replace{simplified form}{superset} of the full Standard ML Modules language.
 
-The equivalent of a Standard ML structure is a unit.  A unit U
-consists of a unit interface in file U.sig (corresponding to an SML
-signature) and a unit body in file U.sml (corresponding to an SML
-structure).  The unit signature can be left out.
+\subsubsection*{Module Expressions}
 
+\begin{tabular}{@{}lllll}
+{\it modexp\/} & ::= & {\it appmodexp\/}\\
+& & {\tt {\it modexp\/} :\ {\it sigexp\/}} & transparent constraint (L)\\
+& & {\tt {\it modexp\/} :> {\it sigexp\/}} & opaque constraint (L)\\
+& & {\tt functor ( {\it modid\/} :\ {\it sigexp} ) => {\it modexp}}  & generative functor & \x \\
+& & {\tt functor {\it modid\/} :\ {\it sigexp\/} => {\it modexp}}  & applicative functor & \x \\
+& & {\tt rec ( {\it strid\/} :\ {\it sigexp} ) {\it modexp}}  & recursive structure& \x \\[2ex]
 
-\subsubsection*{Unit Body (in file unitid.sml)}
+{\it appmodexp\/} & ::= & {\it atmodexp\/}\\
+& & {\tt {\it appmodexp\/} {\it atmodexp\/}} & functor application\\[2ex]
 
-\begin{tabular}{llll}
-{\it unitbody\/} & ::= 
-  & {\tt structure} {\it unitid} {\tt = struct {\it dec\/} end} 
-                                                & structure \\
-& & {\tt structure {\it unitid\/} :> {\it unitid\/} = struct {\it dec\/} end}
-                                                & structure with
-                                                signature \\
-& & {\it dec\/}                                 & structure (old syntax)\\[2ex]
+{\it atmodexp\/} & ::= & {\it appexp\/}\\
+& & {\tt struct {\it dec\/} end}& basic\\
+& & {\tt \opop\ {\it longmodid\/}}& module identifier\\
+& & {\tt let {\it dec\/} in {\it modexp\/} end} & local declaration\\
+& & {\tt ( {\it dec \/} )} & abbreviated structure & \x \\
+& & {\tt ( {\it modexp\/} )} \\
 \end{tabular}
 
-\subsubsection*{Unit Signature (in file unitid.sig)}
+\subsubsection*{Module Bindings}
 
-\begin{tabular}{llll}
-{\it unitsig\/} & ::= 
-  & {\tt signature} {\it unitid} {\tt = sig {\it uspec\/} end} 
-                                                & named signature \\
-& & {\it uspec\/}                               & signature (old syntax)\\[2ex]
+\begin{tabular}{@{}lllll}
+{\it strbind\/} & ::= & {\tt {\it strid\/} \la\ {\it con} \ra\ = {\it modexp} \la\ and {\it strbind} \ra} 
+& structure binding\\
+& & {\tt {\it strid\/} as {\it sigexp} = {\it exp} \la\ and {\it strbind} \ra} 
+& package binding & \x \\[2ex]
 
-{\it uspec} & ::= & {\tt val} {\it valdesc}     & value specification\\
+%{\it funbind\/} & ::= & {\tt {\it funid\/} = {\it modexp} \la\ and {\it funbind} \ra} 
+{\it funbind\/} & ::= & {\tt {\it funid\/} {\it arg}\et\ $\cdots$\ {\it arg}\n\ \la\ {\it con\/} \ra\ = {\it modexp}} & \\
+                &     & \quad {\tt \la\ and {\it funbind} \ra} & functor binding, $n \geq 1$ & \x\\
+                & &  {\tt {\it funid\/} ( {\it spec} ) \la\ {\it con\/} \ra\ = {\it modexp}} & \\
+                &  & \quad {\tt \la\ and {\it funbind} \ra} & abbreviated generative binding\\
+
+& & {\tt {\it funid\/} as {\it sigexp} = {\it exp} \la\ and {\it funbind} \ra} 
+& package binding & \x\\[2ex]
+
+{\it sigbind\/} & ::= & {\tt {\it sigid\/} = {\it sigexp} \la\ and {\it sigbind} \ra} 
+& signature binding\\[2ex]
+
+{\it con\/} & ::= & {\tt :} {\it sigexp} & transparent constraint \\
+	    &     & {\tt :>} {\it sigexp} & opaque constraint \\
+
+{\it arg\/} & ::= & {\tt ( {\it modid\/} :\ {\it sigexp} )} & argument of generative functor \\
+	    &     & {\tt  {\it modid\/} :\ {\it sigexp} } & argument of applicative functor & \x \\\
+
+\end{tabular}
+
+\subsubsection*{Signature Expressions}
+
+\begin{tabular}{@{}lllll}
+{\it sigexp\/} & ::= & {\tt sig {\it spec\/} end}& basic\\
+& & {\tt {\it sigid\/}} & signature identifier \\ 
+%& & {\tt {\it sigexp\/} where type {\it tyvarseq\/} {\it longtycon} = {\it ty}} & type realisation \\ 
+& & {\tt {\it sigexp\/} where  {\it typreal\/}}& type realisation \\ 
+& & {\tt functor ( {\it modid\/} :\ {\it sigexp} ) -> {\it sigexp}}  & opaque functor signature & \x \\
+& & {\tt functor {\it modid\/} :\ {\it sigexp\/} -> {\it sigexp}}  & transparent functor signature & \x \\
+& & {\tt rec ( {\it strid\/} :\ {\it sigexp} ) {\it sigexp}}  & recursive structure signature & \x \\[2ex]
+
+{\it typreal\/} & ::= & {\tt type {\it tyvarseq\/} {\it longtycon\/} = {\it ty\/}
+\la\ and {\it typreal\/} \ra} & type realisation
+\end{tabular}
+
+\subsubsection*{Specifications and Descriptions}
+
+\begin{tabular}{lllll}
+{\it spec} & ::= & {\tt val} {\it valdesc}     & value specification\\
+& & {\tt val} {\it tyvarseq} {\it valdesc}     & value specification & \x \\
 & & {\tt type} {\it typdesc}                    & abstract type \\
 & & {\tt type} {\it typbind}            & type abbreviation \\
 & & {\tt eqtype} {\it typdesc}          & abstract equality type\\
 & & {\tt datatype} {\it datdesc}        & datatype\\
 & & {\tt datatype} {\it datdesc} {\tt withtype} {\it typbind\/} &
                                          datatype with typbind\\
+& & {\tt datatype {\it tycon\/} = datatype {\it tyconpath\/}}
+& datatype replication\\
 & & {\tt exception} {\it exdesc}        & exception\\
-& & {\tt local} {\it lspec} {\tt in} {\it uspec} {\tt end}
-                                        & local specifications\\
+& & {\tt structure} {\it strdesc}        & structure\\
+& & {\tt functor} {\it fundesc}        & functor & \x \\
+& & {\tt signature} {\it sigbind}        & signature & \x \\
+& & {\tt include} {\it sigid\/}\et\ $\cdots$\ {\it strid\/}\n	& include,
+ $n \geq 1$ \\
+& & {\tt local} {\it lspec} {\tt in} {\it spec} {\tt end}
+                                        & local specifications & \x\\
 & &                                     & empty\\
-& & {\tt {\it uspec} $\langle${;}$\rangle$ {\it uspec}} & sequential 
-\\[2ex]
+& & {\tt {\it spec} $\langle${;}$\rangle$ {\it spec}} & sequential\\
+%& & {\tt {\it spec} sharing type {\it longtycon}\et\ =\ $\cdots$\ =\ {\it longtycon}\n} & type sharing, $n \geq 2$\\
+& & {\tt {\it spec} sharing type }& type sharing, $n \geq 2$\\
+& & {\tt \quad {\it longtycon}\et\ =\ $\cdots$\ =\ {\it longtycon}\n} \\
+%& & {\tt {\it spec} sharing {\it longstrid}\et =\ $\cdots$\ = {\it longstrid}\n} & structure sharing, $n \geq 2$\\
+& & {\tt {\it spec} sharing} & structure sharing, $n \geq 2$\\
+& & {\tt \quad {\it longstrid}\et\ =\ $\cdots$\ =\ {\it longstrid}\n} \\
+& & {\tt infix \la{\it d\/}\ra\ $id_1 \cdots\ id_n$} & infix (left)
+  directive, $n\geq 1$ & \x \\
+& & {\tt infixr \la{\it d\/}\ra\ $id_1 \cdots\ id_n$} & infix (right)
+  directive, $n\geq 1$ & \x \\
+& & {\tt nonfix $id_1 \cdots id_n$} & nonfix directive, $n\geq 1$ & \x \\[2ex]
 
-{\it lspec} & ::= & {\tt open} {\it unitid$_1$\/} $\cdots$\ {\it
-  unitid$_n$\/}
-                                        & open other units\\
-& & {\tt type} {\it typbind}            & type abbreviation \\
+{\it lspec} & ::= & {\tt open} {\it longstrid$_1$\/} $\cdots$\ {\it
+  longstrid$_n$\/}
+                                        & (local) open & \x \\
+& & {\tt type} {\it typbind}            & type abbreviation & \x \\
 & & {\tt local} {\it lspec\/} {\tt in} {\it lspec} {\tt end}
-        & local specifications\\
-& &                                             & empty\\
-& & {\tt {\it lspec\/} $\langle${;}$\rangle$ {\it lspec\/}} & sequential\\[2ex]
+        & local specifications & \x \\
+& &                                             & empty & \x\\
+& & {\tt {\it lspec\/} $\langle${;}$\rangle$ {\it lspec\/}} & sequential& \x\\[2ex]
 
-{\it valdesc\/} & ::= & {\tt {\it var\/} :\ {\it ty\/} \la\ and {\it
+{\it valdesc\/} & ::= & {\tt {\it vid\/} :\ {\it ty\/} \la\ and {\it
     valdesc\/} \ra} & value description\\[2ex]
 
 {\it typdesc\/} & ::= & {\tt {\it tyvarseq\/} {\it tycon\/} \la\ and
@@ -576,40 +749,214 @@ structure).  The unit signature can be left out.
 {\it datdesc\/} & ::= & {\tt {\it tyvarseq\/} {\it tycon\/} = {\it
     condesc\/} \la\ and {\it datdesc\/} \ra} & datatype description\\[2ex]
 
-{\it condesc\/} & ::= & {\tt {\it con\/} \la{of} {\it ty\/}\ra\ 
+{\it condesc\/} & ::= & {\tt {\it vid\/} \la{of} {\it ty\/}\ra\ 
 \la\ | {\it condesc\/} \ra} & constructor description\\[2ex]
 
-{\it exdesc\/} & ::= & {\tt {\it excon\/} \la{of} {\it ty\/}\ra\ \la\
-  and {\it exdesc\/} \ra} & exception constructor description
+{\it exdesc\/} & ::= & {\tt {\it vid\/} \la{of} {\it ty\/}\ra\ \la\
+  and {\it exdesc\/} \ra} & exception constructor description\\[2ex]
+
+{\it strdesc\/} & ::= & {\tt {\it strid\/} :\ {\it sigexp\/} 
+\la\ and {\it strdesc\/} \ra} & structure description\\[2ex]
+
+{\it fundesc\/} & ::= & {\tt {\it funid\/} :\ {\it sigexp\/} 
+\la\ and {\it fundesc\/} \ra} & functor description\\[2ex]
 \end{tabular}
 
 
 \subsubsection*{Syntactic restrictions}
 
 \begin{itemize}
-\item In Moscow ML, the {\tt unitid}, if specified in a unit signature
-  or unit body file, must agree with the filename.  The name of the
-  constraining signature, if any, must equal that of the structure.
+\item No binding {\it strbind\/}, {\it funbind\/}, or {\it sigbind \/} may bind
+      the same identifier twice.
 
 \item No specification {\it valdesc\/}, {\it typdesc\/}, {\it
-    typbind\/}, {\it datdesc\/}, or {\it exdesc\/} may describe the
-  same identifier twice; this applies also to value constructors
+    typbind\/}, {\it datdesc\/}, {\it exdesc\/}, {\it strdesc} or {\it fundesc} may describe the same identifier twice; this applies also to value constructors
   within a {\it datdesc\/}.
 
 \item In the left side {\it tyvarseq tycon\/} in any {\it typdesc\/},
   {\it typbind\/}, or {\it datdesc\/}, {\it tyvarseq\/} must not
-  contain the same {\it tyvar\/} twice.  Any {\it tyvar\/} occurring
-  within the right side of a {\it typbind\/} or {\it datdesc\/} must
-  occur in {\it tyvarseq\/}.
+  contain the same {\it tyvar\/} twice. 
+ \replace{ Any {\it tyvar\/} occurring
+  within the right side of a {\it typbind\/}, {\it datdesc\/} or {\it typreal} 
+  must
+  occur in {\it tyvarseq\/.}}{
+  For Standard ML compliance (enforced by in Moscow ML's \emph{orthodox} mode),
+  any {\it tyvar\/} occurring within the right side
+  of a {\it typbind\/}, {\it datdesc\/} or {\it typreal} must occur in {\it tyvarseq\/}. 
+  Otherwise, Moscow ML merely
+  requires that   any {\it tyvar\/} occurring within the right side
+  must be in scope (either explictly or implicitly)
+  .}
 
-\item No type, value, or exception may be specified twice at top-level
-  in a signature.
+ 
+\item \replace{No type, value, or exception may be specified twice at top-level
+  in a signature.}{No sequential specification 
+  may specify the same {\it tycon}, {\it vid}, {\it strid}, {\it funid}, {\it  sigid} or {\it id} (in a fixity specification) twice.}
   
 \item No {\it valdesc}, {\it datdesc}, or {\it exdesc} may specify
   {\tt true}, {\tt false}, {\tt nil}, {\tt ::}, or {\tt ref}.  No {\it
     datdesc\/} or {\it exdesc} may specify {\tt it}.
 \end{itemize}
 
+%\newpage
+
+\section{Grammar for the Moscow ML Unit language}
+
+\replace{The Moscow ML module language is a simplified form of the full
+Standard ML Modules language.}{
+The Moscow ML Unit language is a simplified form of the full
+Moscow ML Modules language.}
+
+
+\replace{The equivalent of a Standard ML structure is a unit.  A unit U
+consists of a unit interface in file U.sig (corresponding to an SML
+signature) and a unit body in file U.sml (corresponding to an SML
+structure).  The unit signature can be left out.}
+{The equivalent of a Moscow ML \emph{unit} is \emph{either} a structure or
+ \emph{or} a toplevel declaration. 
+  A unit U
+  consists of a unit interface in file U.sig \delete{(corresponding to an SML
+  signature)} and a unit implementation in file U.sml \delete{(corresponding to an SML
+  structure)}.  The unit interface may be omitted.
+}
+
+\begin{insertion}
+Units can be compiled in one of two modes: \emph{structure} mode and \emph{toplevel} mode.
+A unit's implementation and interface files must be compiled in the 
+\emph{same} mode. 
+
+In \emph{structure} mode, the unit interface in file U.sig is a single Moscow ML signature declaration, and the unit implementation of file U.sml is a single Moscow ML structure binding.
+
+In \emph{toplevel} mode, the unit interface in file U.sig is a Moscow ML specification, and the unit implementation of file U.sml is a Moscow ML declaration.
+
+The files U.sig and U.sml are compiled in \emph{structure} mode if their filenames are preceded by the command line argument {\tt -structure}, eg:
+
+\begin{alltt}
+mosmlc -structure \mbox{U.sig} \mbox{U.sml} 
+\end{alltt}
+
+The files U.sig and U.sml are compiled in \emph{toplevel} mode if their filenames are preceded by the command line argument {\tt -toplevel}.
+
+\begin{alltt}
+mosmlc -toplevel \mbox{U.sig} \mbox{U.sml} 
+\end{alltt}
+
+If there is no command line argument {\tt -structure} or {\tt -toplevel} preceding U.sig or U.sml on the command line, 
+then the mode defaults to  \emph{structure} mode.
+
+\subsection{Syntax for Units Compiled in \emph{Structure} Mode}
+
+\subsubsection*{Unit Implementation (in file unitid.sml)}
+
+\begin{tabular}{llll}
+{\it unitimp\/} & ::= 
+  & {\tt structure {\it unitid\/} = {\it modexp\/}} & structure \\
+& & {\tt structure {\it unitid\/} :> {\it unitid\/} = {\it modexp}}
+                                                & structure with
+                                                signature \\
+& & {\it cdec\/}                                 & core declaration (old syntax)\\[2ex]
+{\it cdec\/} & ::= & {\tt val {\it tyvarseq\/} {\it valbind\/}} & value declaration\\
+& & {\tt fun {\it tyvarseq\/} {\it fvalbind\/}} & function declaration\\
+& & {\tt type {\it typbind\/}} & type declaration\\
+& & {\tt datatype {\it datbind\/} \la\ withtype {\it typbind\/} \ra} 
+& datatype declaration\\
+& & \insert{{\tt datatype {\it tycon\/} = datatype {\it tyconpath\/}}}
+& \insert{datatype replication}\\
+& & {\tt abstype {\it datbind\/} \la\ withtype {\it typbind\/} \ra}
+& abstype declaration\\
+& & \hspace{1.5cm}{\tt with {\it dec\/} end}\\
+& & {\tt exception {\it exbind\/}} & exception declaration\\
+& & {\tt local {\it dec\/}\et\ in {\it dec\/}\to\ end} 
+& local declaration\\
+& & \delete{{\tt open {\it unitid\/}\et\ $\cdots$ {\it unitid\/}\n}}
+& \delete{open declaration, $n\geq 1$}\\
+& & \insert{{\tt open {\it longstrid\/}\et\ $\cdots$ {\it longstrid\/}\n}}
+& \insert{open declaration, $n\geq 1$}\\
+& & & empty declaration\\
+& & {\tt {\it cdec\/}\et\ \la;\ra\ {\it cdec\/}\to} 
+& sequential declaration\\
+& & {\tt infix \la{\it d\/}\ra\ $id_1 \cdots id_n$} & infix (left)
+  directive, $n\geq 1$\\
+& & {\tt infixr \la{\it d\/}\ra\ $id_1 \cdots id_n$} & infix (right)
+  directive, $n\geq 1$\\
+& & {\tt nonfix $id_1 \cdots id_n$} & nonfix directive, $n\geq
+  1$\\[2ex]
+\end{tabular}
+
+\subsubsection*{Unit Interface (in file unitid.sig)}
+
+\begin{tabular}{lllll}
+{\it unitint\/} & ::= 
+  & {\tt signature} {\it unitid} {\tt =}  {\it sigexp\/} 
+                                                & signature binding \\
+& & {\it cspec\/}                               & Core specification (old syntax, deprecated)\\[2ex]
+
+{\it cspec} & ::= & {\tt val} {\it valdesc}    & value specification\\ 
+& & {\tt val} {\it tyvarseq} {\it valdesc}     & value specification & \x \\
+& & {\tt type} {\it typdesc}                    & abstract type \\
+& & {\tt type} {\it typbind}            & type abbreviation \\
+& & {\tt eqtype} {\it typdesc}          & abstract equality type\\
+& & {\tt datatype} {\it datdesc}        & datatype\\
+& & {\tt datatype} {\it datdesc} {\tt withtype} {\it typbind\/} &
+                                         datatype with typbind\\
+& & {\tt datatype {\it tycon\/} = datatype {\it tyconpath\/}}
+& datatype replication\\
+& & {\tt exception} {\it exdesc}        & exception\\
+& & {\tt local} {\it lspec} {\tt in} {\it spec} {\tt end}
+                                        & local specifications & \x\\
+& &                                     & empty\\
+& & {\tt {\it cspec} $\langle${;}$\rangle$ {\it cspec}} & sequential\\
+& & {\tt infix \la{\it d\/}\ra\ $id_1 \cdots\ id_n$} & infix (left)
+  directive, $n\geq 1$ & \x \\
+& & {\tt infixr \la{\it d\/}\ra\ $id_1 \cdots\ id_n$} & infix (right)
+  directive, $n\geq 1$ & \x \\
+& & {\tt nonfix $id_1 \cdots id_n$} & nonfix directive, $n\geq 1$ & \x \\[2ex]
+\end{tabular}
+
+\subsubsection*{Syntactic restrictions}
+
+\begin{itemize}
+\item In Moscow ML, the {\tt unitid}, if specified in the unit interface
+  or unit implementation, must agree with the filename. 
+  In the unit implementation, the name of the
+  constraining signature, if any, must equal that of the structure.
+
+\item The unit implementation syntax {\it cdec} is deprecated and is provided only 
+to support code written for earlier versions of Moscow ML  (versions prior 
+to $2.xx$). The phrase class
+{\it cdec} is a proper subset of {\it dec} and is subject to the same restrictions as {\it dec}. The class {\it cdec} excludes
+  declarations beginning with {\tt structure}, {\tt functor}, or
+  {\tt signature}.
+
+\item The unit implementation syntax {\it cdec}  abbreviates {\tt structure {\it unitid\/} :> {\it unitid\/} = struct {\it cdec} end } thus any fixity directives in {\it cdec} are
+local to the structure {\it unitid}.
+
+\item The unit interface syntax {\it cspec} is deprecated and is provided only 
+to support code written for earlier versions of Moscow ML  (versions prior 
+to $2.xx$). The phrase class
+{\it cspec} is a proper subset of {\it spec} and is subject to the same restrictions as {\it spec}. The class {\it cspec} excludes
+  specifications beginning with {\tt structure}, {\tt functor}, {\tt signature}  or {\tt include} and {\it sharing} specifications.
+
+\item The unit interface syntax {\it cspec}  abbreviates {\tt signature {\it unitid\/} = sig {\it cspec} end } thus any fixity directives in {\it cdec} are
+local to the signature {\it unitid}.
+
+\end{itemize}
+
+\subsection{Syntax for Units Compiled in \emph{Toplevel} Mode}
+
+\subsubsection*{Unit Implementation (in file unitid.sml)}
+
+\begin{tabular}{llll}
+{\it unitimp\/} & ::= & dec & declaration \\
+\end{tabular}
+
+\subsubsection*{Unit Interface (in file unitid.sig)}
+
+\begin{tabular}{lllll}
+{\it unitint\/} & ::=   & {\tt spec} & specification & \x
+\end{tabular}
+
+\end{insertion}
 %\newpage
 
 \section{Built-in types, constructors and exceptions}
@@ -813,11 +1160,24 @@ before & {\tt 'a * 'b -> 'a} & return first argument\\\hline
   (unit {\tt Meta})}
 
 \begin{tabular}{@{\tt\ \ }llll}\hline
-{\it id\/}  &  \makebox[5cm][l]{type} &     effect & exception \\\hline
+%{\it id\/}  &  \makebox[5cm][l]{type} &     effect & exception \\\hline
+{\it id\/}  &  type &     effect & exception \\\hline
 compile        & {\tt string -> unit} & compile unit (U.sig or U.sml)
 & {\tt Fail}\\
-installPP      & {\tt (ppstream->'a->unit)->unit} & install prettyprinter
-\\
+& & (in \emph{structure} mode) \\
+%\insert{compileStructure} & {\tt string list -> string -> unit} & compile unit (U.sig or U.sml) in context
+\insert{compileStructure} & {\tt string list ->} & In context U\et, $\ldots$, U\n, & {\tt Fail}\\
+& {\tt string -> unit} & compile unit (U.sig or U.sml) \\
+& & (in \emph{structure} mode) \\
+%%\insert{compileToplevel} & {\tt string list -> string -> unit} & compile unit (U.sig or U.sml) in context & {\tt Fail}\\
+\insert{compileToplevel} & {\tt string list ->} & In context U\et, $\ldots$, U\n, & {\tt Fail}\\
+& {\tt string -> unit} & compile unit (U.sig or U.sml) \\
+& & (in \emph{toplevel} mode) \\
+\insert{conservative} & {\tt unit -> unit} & deprecate all Moscow ML extensions\\
+%installPP      & {\tt (ppstream->'a->unit)->unit} & install prettyprinter \\
+installPP      & {\tt (ppstream->'a->unit)} & install prettyprinter\\
+            & {\tt -> unit} & \\
+\insert{liberal} & {\tt unit -> unit} & accept all Moscow ML extensions\\
 load        & {\tt string -> unit} & load unit U and any units it needs
                & {\tt Fail}\\
 loaded        & {\tt unit -> string list} & return list of loaded units
@@ -826,6 +1186,7 @@ loadOne        & {\tt string -> unit} & load unit U (only)
                & {\tt Fail}\\
 loadPath       & {\tt string list ref} & search path for {\tt load}, 
                 {\tt loadOne}, {\tt use}\\ 
+\insert{orthodox} & {\tt unit -> unit} & reject any Moscow ML extensions\\
 printVal       & {\tt 'a -> 'a}  & print value on \verb#stdOut#\\
 printDepth     & {\tt int ref}   & limit printed data depth\\
 printLength    & {\tt int ref}   & limit printed list and vector length\\
@@ -841,15 +1202,17 @@ verbose        & {\tt bool ref}   & permit feedback from {\tt
 
 \begin{itemize}
 % \item These functions are not part of the SML Basis Library.
-\item The Moscow ML Owner's Manual describes how to use {\tt compile}
+\item The Moscow ML Owner's Manual describes how to use {\tt compile},
+  \insert{{\tt compileStructure}}, \newline \insert{{\tt compileToplevel}}
   and {\tt load} to perform separate compilation, and how to use
   quotations.  Evaluating {\tt load {\rm U}} automatically loads any
   units needed by U, and does nothing if U is already loaded; whereas
   {\tt loadOne {\rm U}} fails if any unit needed by U is not loaded,
   or if U is already loaded.  The {\tt loadPath} variable determines
   where {\tt load}, {\tt loadOne}, and {\tt use} will look for files.
+  \insert{The commands {\tt orthodox}, {\tt conservative} and {\tt liberal}
+  cause Moscow ML to enforce, monitor or ignore compliance to Standard ML.}
 \end{itemize}
-
 
 \section{List of all library units}
 
@@ -1416,14 +1779,22 @@ toUpper    & {\tt char -> char} & convert to upper case (ASCII) \\\hline
 \section{Moscow ML library index}
 \label{sec-libindex}
 
-For each identifier, we list its kind (constructor, exception,
-structure, type, or value) and the structure in which it is defined.
+\revise{For each identifier, we list its kind (constructor, exception,
+structure, type, or value) and the structure in which it is defined.}
 
 Help on any identifier {\em id\/} can be obtained by typing {\tt help
   "{\em id\/}";} in a {\tt mosml} session.
 
 \flushleft
 
-\input{index.tex}
+%\input{index.tex}
 
 \end{document}
+
+
+
+
+
+
+
+
