@@ -1,4 +1,4 @@
-				Ken Friis Larsen 31/3, 1/4, 2/4 - 2000
+			   Ken Friis Larsen 31/3, 1/4, 2/4, 3/4 - 2000
 
 Note about the PM prototype
 ---------------------------
@@ -8,6 +8,12 @@ Note about the PM prototype
   mosmlc -c -toplevel Parser-sig.sml Parser.sml PMBasic.sml PMCompile.sml
   Now from the toplevel invoke the function 
   PMCompile.compile "sources.pm"
+
+  (app load ["Mosml", "PMCompile"]; 
+   FileSys.chDir "/home/kfl/programming/ml/mlkit.mosml/kit/src";
+   PMCompile.compile "sources.pm";
+   PMCompile.link ["-o moskit "] "sources.pm";
+
 
 * Everything managed by pm is compiled with the command
 	mosmlc -c -toplevel context1 ... contextM file1 ... fileN
@@ -24,13 +30,9 @@ Note about the PM prototype
 * Changes made to the kit 
   + Parsing/Topdec.grm.sig renamed to Parsing/Topdec.grm.sig.sml (also
     in Common/common.pm) 
-  + Lots of "IO." commented out in Common/Flags.sml 
   + Order of constructures changed in Common/SCon.sml 
   + Order of constructures changed in Common/PrettyPrint.sml 
   + changed substring to String.substring in Parsing/Topdec.lex.sml
-  + Commented out lots of "OS." in
-    Common/EfficientElab/ModuleEnvironment.sml
-  + Commented out lots of "OS." in Common/KitCompiler.sml
   + Changed Word32 to Word in Compiler/Backend/
     {CLOS_EXP.sig,ClosExp.sml,LINE_STMT.sml,LineStmt.sml,BACKEND_INFO.sml,
      CalcOffset.sml,HpPaRisc/BackendInfo.sml,HpPaRisc/CodeGen.sml}
@@ -38,16 +40,23 @@ Note about the PM prototype
   + Order of constructures changed in Compiler/Lambda/CompilerEnv.sml
   + Order of constructures changed in Compiler/Kam/CompLambEnv.sml
   + Order of constructures changed in Compiler/Cfg/CfgInst.sml
-  + Changed IO.Io to Io in Compiler/Backend/HpPaRisc/CodeGen.sml
-  + Commented out "OS." in Manager/{IntModules.sml,ManagerObjects.sml,
-    Manager.sml}
-  + Changed IO.Io to Io in Manager/{IntModules.sml,ParserElab.sml,
-    Manager.sml}
   + Changed `Int.toString status' to `"0"' on line 128 in
     Manager/ManagerObjects.sml
   + Renamed Edlib/List.uo Edlib/edList.uo
   + Renamed Edlib/ListPair.uo Edlib/edListPair.uo
   + Renamed Common/BasicIO.sml Common/comBasicIO.sml
+
+  Changed back these (and changed mosml instead)
+  * Lots of "IO." commented out in Common/Flags.sml 
+  * Changed IO.Io to Io in Compiler/Backend/HpPaRisc/CodeGen.sml
+  * Changed IO.Io to Io in Manager/{IntModules.sml,ParserElab.sml,
+    Manager.sml}
+  * Commented out lots of "OS." in
+    Common/EfficientElab/ModuleEnvironment.sml
+  * Commented out lots of "OS." in Common/KitCompiler.sml
+  * Commented out "OS." in Manager/{IntModules.sml,ManagerObjects.sml,
+    Manager.sml}
+
   
   Most of these errors can be boiled down to:
   + Mosml's basic library should be updated now that nested structures
@@ -65,13 +74,17 @@ Note about the PM prototype
 * Locals might be handled wrong when things are linked, because
   compilation unit renaming is not supported.
 
+* 3/4- 2000: Smarter recompilation implemented.  Broke compileBodyOpt
+  doing this, but who cares.
+  BUG: .pm files are not considered in the uptodate check.
+
 TODO ( - : not implemented, + : implemented, * : droped ) 
   - Implement compilation unit renaming when mosmlc supports it
   - Figure out how to handle .sig files
   - Reimplement using graph data structure
-  - Implement smart recompilation.  That is, don't recompile if the
+  + Implement smart recompilation.  That is, don't recompile if the
     context and the .u? files are up to date. (This might also be
-    easier, if we had a graph.  But on the other hand HOlmake seems to
+    easier, if we had a graph.  But on the other hand Holmake seems to
     do fine without one)
   - Make everything robust wrt missing files, syntax errors in pm
     files, etc.
