@@ -125,6 +125,7 @@ fun exportVar os valRenList id {info = (_,infInfo),qualid = infQualid}
                  else valRenList
              | EXNname ei' => errorImplMismatch id
              | REFname => errorImplMismatch id)
+(*cvr: TODO remove  
       | EXNname ei =>
           (case infInfo of
                VARname ovltype' => errorImplMismatch id
@@ -133,6 +134,22 @@ fun exportVar os valRenList id {info = (_,infInfo),qualid = infQualid}
              | EXNname ei' =>
                  if #exconArity(!ei) <> #exconArity(!ei')
                  then errorExConImplMismatch id
+                 else valRenList
+             | REFname => errorImplMismatch id)
+*)
+(*cvr: TODO review
+       since even top-level exceptions are dynamic, 
+       we have to re-export the stamp carrying values 02/07/2001 *)
+      | EXNname ei =>
+          (case infInfo of
+               VARname ovltype' => errorImplMismatch id
+             | PRIMname pi' => errorImplMismatch id
+             | CONname ci' => errorImplMismatch id
+             | EXNname ei' =>
+                 if #exconArity(!ei) <> #exconArity(!ei')
+                 then errorExConImplMismatch id
+                 else if specQual <> infQual then
+                    exportValAsVal os valRenList id infStatus specStatus
                  else valRenList
              | REFname => errorImplMismatch id)
       | REFname =>
