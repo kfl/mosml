@@ -1,5 +1,5 @@
 (* Parsercomb -- Hutton/Paulson-style parser combinators for Moscow ML.
-   Fritz Henglein, Ken Larsen, Peter Sestoft.
+   Fritz Henglein, Ken Friis Larsen, Peter Sestoft.
    Documentation by sestoft@dina.kvl.dk.  Version 0.4 of 2000-04-30 *)
 
 structure Parsercomb :> Parsercomb =
