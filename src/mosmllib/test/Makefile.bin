@@ -1,0 +1,24 @@
+# Makefile for mosmllib test cases
+
+SHELL=tcsh
+
+all:
+	mosml -P full test.sml >& result
+	diff result result.ok
+
+libtest:
+	mosml -I .. -P full test.sml >& result
+	diff result result.ok
+
+newtest:
+	../../camlrunm ../../compiler/mosmltop -stdlib .. -P full test.sml >& result
+	diff result result.ok
+
+cmdline: 
+	mosmlc -o cmdline cmdline.sml 
+	cmdline arg1 arg2 arg3
+
+clean:
+	rm -f result 
+	rm -f cmdline cmdline.ui cmdline.uo
+	rm -f empty.dat   medium.dat  small1.dat  small2.dat  text.dat 

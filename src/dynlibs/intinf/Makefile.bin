@@ -1,0 +1,70 @@
+# This make file is NOT usable yet!
+# The problem is to recompile gmp for Win32...
+
+# Win32 Makefile for Moscow ML 1.43 dynamically loadable gmp library
+
+# The runtime system must be compiled with support for dynamic libraries.
+# The GNU GMP persistent hashtables must be installed.
+
+# Where to find GMP header file and compiled library
+
+GMPDIR=..\gmp-2.0.2.w32
+
+CC=cl
+OPTS= /nologo /Za /LD /MT /W1 /GB /O2 /Oy- /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"
+#OPTS= /nologo /Za /LD /MTd /W1 /GB /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS"
+
+CFLAGS= -Dunix $(OPTS) /I ..\..\runtime /I $(GMPDIR)
+LIBS= $(GMPDIR)\libgmp.lib ..\..\runtime\camlrt.lib
+
+!include ..\..\Makedefs.w32
+
+MOSMLHOME=$(HOME)\mosml
+MOSMLTOOLS=camlrunm $(MOSMLHOME)\tools
+MOSMLC=mosmlc -c
+MOSMLL=mosmlc
+MOSMLLEX=mosmllex
+MOSMLYACC=mosmlyac
+
+all: libmgmp.so IntInf.uo
+	@echo "Now execute 'mosml fac.sml' to try the IntInf functions"
+
+libmgmp.so: $(GMPDIR)\libgmp.lib intinf.obj
+    $(CC) $(CFLAGS) /Felibmgmp.so intinf.obj $(LIBS) /link /subsystem:console
+
+$(GMPDIR)\libgmp.lib:
+    cd $(GMPDIR)
+    nmake -f libgmp.mak CFG="gmp - Win32 Release"
+    cd $(MOSMLHOME)\src\dynlibs\intinf
+
+test:
+    mosml testintinf.sml
+
+clean:
+    cd $(GMPDIR)
+    nmake -f gmp.mak CFG="gmp - Win32 Release" CLEAN
+    cd $(MOSMLHOME)\src\dynlibs\intinf
+    del *.obj
+    del *.so
+    del *.exp
+    del *.lib
+    del *.ui
+    del *.uo
+
+.sig.ui:
+    $(MOSMLC) $<
+
+.sml.uo:
+    $(MOSMLC) $<
+
+depend: 
+    del Makefile.bak
+    copy Makefile Makefile.bak
+    $(MOSMLTOOLS)\cutdeps < Makefile.bak > Makefile
+    $(MOSMLTOOLS)\mosmldep >> Makefile
+
+intinf.obj: intinf.c
+
+### EVERYTHING THAT GOES BEYOND THIS COMMENT WILL BE ERASED WITHOUT WARNING
+### DO NOT DELETE THIS LINE
+IntInf.uo: IntInf.ui 
