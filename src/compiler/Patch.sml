@@ -20,16 +20,21 @@ in
 
 (* To relocate a block of object bytecode *)
 
-fun patch_object buff offset =
-  List.app (fn
-    (Reloc_literal sc, pos) =>
-      patch_short buff (pos + offset) (get_slot_for_literal sc)
-  | (Reloc_getglobal uid, pos) =>
-      patch_short buff (pos + offset) (get_slot_for_variable uid)
-  | (Reloc_setglobal uid, pos) =>
-      patch_short buff (pos + offset) (get_slot_for_defined_variable uid)
-  | (Reloc_primitive name, pos) =>
-      patch_short buff (pos + offset) (get_num_of_prim name))
-;
-
+fun patch_object buff offset (stringlist, otherlist) =
+    let fun relliteral (lit, poss) =
+	    let val slot = get_slot_for_literal lit
+		fun patchlit pos = patch_short buff (pos + offset) slot
+	    in List.app patchlit poss end
+	fun relother (Reloc_literal sc, pos) =
+	    patch_short buff (pos + offset) (get_slot_for_literal sc)
+	  | relother (Reloc_getglobal uid, pos) =
+	    patch_short buff (pos + offset) (get_slot_for_variable uid)
+	  | relother (Reloc_setglobal uid, pos) =
+	    patch_short buff (pos + offset) (get_slot_for_defined_variable uid)
+	  | relother (Reloc_primitive name, pos) =
+	    patch_short buff (pos + offset) (get_num_of_prim name)
+    in
+	List.app relliteral stringlist;
+	List.app relother  otherlist
+    end
 end;

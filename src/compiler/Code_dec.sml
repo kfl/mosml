@@ -15,7 +15,8 @@ type compiled_phrase =
 {
   cph_pos: int,                        (* Position of start of code *)
   cph_len: int,                        (* Length of code *)
-  cph_reloc: (reloc_info * int) list,  (* What to patch *)
+				       (* What to patch *)
+  cph_reloc: (StructConstant * int list) list * (reloc_info * int) list, 
   cph_pure: bool                       (* Can be omitted or not *)
 };
 

@@ -124,15 +124,15 @@ fun scan_val uname (id, stamp) tolink =
   end;
 
 fun scan_phrase (phr : compiled_phrase) tolink =
-  if not(#cph_pure phr) orelse
-     List.exists is_required (#cph_reloc phr)
-  then
-    (List.app remove_required (#cph_reloc phr);
-     List.app add_required (#cph_reloc phr);
-     phr :: tolink)
-  else
-    tolink
-;
+    let val (_, otherlist) = #cph_reloc phr
+    in 
+	if not (#cph_pure phr) orelse List.exists is_required otherlist then
+	    (List.app remove_required otherlist;
+	     List.app add_required otherlist;
+	     phr :: tolink)
+	else
+	    tolink
+    end;
 
 fun scan_file (uname, truename, (tables : compiled_unit_tables)) tolink =
   let val exportedE = #cu_exc_ren_list tables
