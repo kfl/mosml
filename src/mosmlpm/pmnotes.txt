@@ -1,0 +1,45 @@
+				     Ken Friis Larsen 31/3, 1/4 - 2000
+
+Note about the PM prototype
+---------------------------
+
+* Getting started.
+  Compile the source with the command
+  mosmlc -c -toplevel Parser-sig.sml Parser.sml PMBasic.sml PMCompile.sml
+  Now from the toplevel invoke the function 
+  PMCompile.compile "sources.pm"
+
+* Everything managed by pm is compiled with the command
+	mosmlc -c -toplevel context1 context2 ... contextn file
+  where file is a .sml file and context1 ... contextn are .ui files.
+
+* PMCompile.compilePM returns the context obtained from a pmfile
+  data structure.
+
+* All filenames are transformed to be fullpath'ed
+
+* changed made to the kit 
+  + Parsing/Topdec.grm.sig renamed to Parsing/Topdec.grm.sig.sml (also
+    in Common/common.pm) 
+  + Lots of "IO." commented out in Common/Flags.sml 
+  + Order of constructures changed in Common/SCon.sml 
+  + Order of constructures changed in Common/PrettyPrint.sml 
+  + changed substring to String.substring in Parsing/Topdec.lex.sml
+  + Commented out lots of "OS." in
+    Common/EfficientElab/ModuleEnvironment.sml
+  + Commented out lots of "OS." in Common/KitCompiler.sml
+  + Changed Word32 to Word in Compiler/Backend/
+    {CLOS_EXP.sig,ClosExp.sml,LINE_STMT.sml,LineStmt.sml,BACKEND_INFO.sml,
+     CalcOffset.sml,HpPaRisc/BackendInfo.sml,HpPaRisc/CodeGen.sml}
+    can easy be reverted by replaceing (*Word32*)Word with Word32
+  + Order of constructures changed in Compiler/Lambda/CompilerEnv.sml
+  + Order of constructures changed in Compiler/Kam/CompLambEnv.sml
+  + Order of constructures changed in Compiler/Cfg/CfgInst.sml
+  + Changed IO.Io to Io in Compiler/Backend/HpPaRisc/CodeGen.sml
+  + Commented out "OS." in Manager/{IntModules.sml,ManagerObjects.sml,
+    Manager.sml}
+  + Changed IO.Io to Io in Manager/{IntModules.sml,ParserElab.sml,
+    Manager.sml}
+  + Changed Int.toString status to "0" on line 128 in
+    Manager/ManagerObjects.sml
+  +
