@@ -1,5 +1,17 @@
-functor PMCompile (Comp : COMPILER_INTERFACE) =
+signature PM_COMPILE =
+sig
+    type filename = string
+    val quiet : bool ref
+    val debugFlag : bool ref
+
+    val compile   : filename -> bool
+    val link      : string list -> filename -> filename -> bool
+    val linkFiles : filename -> filename list
+end
+
+functor PMCompile (Comp : COMPILER_INTERFACE) :> PM_COMPILE =
 struct
+    type filename = string
     local open PMBasic in
 
     fun error msg = raise Fail msg
@@ -11,10 +23,6 @@ struct
     val debugFlag = ref false
     fun debug msg = if !debugFlag then (app print msg; print "\n")
 		    else ()
-
-
-    fun insertSep sep []      = []
-      | insertSep sep (x::xs) = x :: sep :: insertSep sep xs     
 
     local structure P = OS.Path
     in
@@ -41,20 +49,6 @@ struct
 	end
 
     fun normalizeName filename = OS.FileSys.fullPath filename
-		  
-    (* Functions fo manipulating context *)
-    type context = bool * filename list list
-
-    val initCont = (false, [[]])
-    fun scope (dirty, cont)           = (dirty, [] :: cont)
-    fun dropLocal (dirty, (x::_::xs)) = (dirty, x::xs)
-    fun dropImports (dirty, files)    = (dirty, List.hd files)
-    fun files (_,fs)                  = fs
-    fun dirty (d,_)                   = d
-    fun setDirty dirty (_, files)     = (dirty, files)
-    fun addImport (d1, fs1) (d2, fs2) = (d1 orelse d2, fs1 :: fs2)
-    fun addUI file (dirty, x::xs)     = (dirty, (toUi file :: x) :: xs)
-
 
     (* returns true if file exists *)					
     fun exists file = OS.FileSys.access (file,[])
@@ -68,10 +62,34 @@ struct
 
     fun isNewer2 file (f1, f2) = isNewer file f1 orelse isNewer file f2
 
+		  
+    (* Functions fo manipulating context *)
+    type context = Time.time          (* the newest ui encountered *) 
+                 * filename list list (* the set of ui files to pass to the 
+                                         compiler.*)
+
+    val initCont = (Time.zeroTime, [[]])
+
+    fun scope (dirty, cont)           = (dirty, [] :: cont)
+    fun dropLocal (dirty, (x::_::xs)) = (dirty, x::xs)
+    fun dropImports (dirty, files)    = (dirty, List.hd files)
+    fun files (_,fs)                  = fs
+    fun setDirty dirty (_, files)     = (dirty, files)
+    
+    fun dirty (d,_) ui = exists ui andalso Time.>(d, OS.FileSys.modTime ui)
+
+    local fun max (arg as (t1, t2)) = if Time.> arg then t1 else t2
+    in
+    fun addImport (d1, fs1) (d2, fs2) = (max(d1,d2), fs1 :: fs2)
+    fun addUI file (dirty, f::fs)     = 
+	let val ui = toUi file
+	    val stamp = OS.FileSys.modTime ui
+	in  (max(dirty, stamp), (ui :: f) :: fs)
+	end
+    end
+
     fun isNewerList file []        = false
       | isNewerList file (f :: fs) = isNewer file f orelse isNewerList file fs 
-
-
 
     (* recompile returns a dirty flag for the following context and a
        list of files to recompile.  
@@ -84,21 +102,20 @@ struct
 			   then [sigfile, smlfile]
 			   else [smlfile]
 	in 
-	    if dirty context 
+	    if dirty context ui
 	       orelse (if sigExist 
 		       then isNewer sigfile ui
 		       else isNewer2 smlfile binfiles)
 	       orelse exists ui andalso isNewer pmfile ui
 	       orelse exists uo andalso isNewer pmfile uo
-	    then (true,  allfiles)
-	    else (false, if sigExist andalso isNewer smlfile uo 	       
-			 then ( chat ["Reusing: ", ui]
-                              ; [smlfile]
-                              )
-			 else ( chat ["Reusing:\n   ", ui,
-                                      "\n   ", uo]
-                              ; []
-                              ))
+	    then allfiles
+	    else if sigExist andalso isNewer smlfile uo 	       
+	         then ( chat ["Reusing: ", ui]
+		      ; [smlfile]
+		      )
+	         else ( chat ["Reusing: ", newExt "{ui,uo}" smlfile]
+		      ; []
+	              )
 	end
 
 (*
@@ -182,11 +199,9 @@ struct
 			    ( chat ["Compiling: ", file] 
 			    ; Comp.compile debug options (rev(List.concat(files context))) file
 			    )
-			val (dirty, files) = recompile pmfile context name
-			val status = check compile files 
-			val context = addUI name (setDirty dirty context)
-		    in  if status then 
-			    compileBody path pmfile next context
+			val files = recompile pmfile context name
+		    in  if check compile files then 
+			    compileBody path pmfile next (addUI name context)
 			else error ("Could not compile: "^name)
 		    end
 		else error ("Cannot handle "^file^" in "^pmfile^
@@ -204,14 +219,15 @@ struct
 	      | NULL => context 
 	end
 
+    fun isIn name = List.exists (fn n => n = name)
+    fun indent files =
+	String.concat(foldl (fn(n,r) => "   "::n::"\n"::r) [] files)
+
+    
     fun compile filename =
 	let val table  = Polyhash.mkPolyTable(37, Subscript)
 	    val peek   = Polyhash.peek table
 	    val update = Polyhash.insert table
-
-	    fun isIn name = List.exists (fn n => n = name)
-	    fun indent files =
-		String.concat(foldl (fn(n,r) => "   "::n::"\n"::r) [] files)
 
 	    fun compileImports openFiles imps context = 
 		let fun oneImport (imp,cont) =
@@ -244,6 +260,7 @@ struct
 			
 		end
 	in  compileFile [] filename
+          ; true
 	end
 
     
@@ -270,34 +287,42 @@ struct
 	    fun isIncluded file = Option.isSome(Polyhash.peek table file)
 	    fun mark file = Polyhash.insert table (file,())
     
-	    fun findFilesImports imports accu =
+	    fun findFilesImports pmfiles imports accu =
 		let fun oneImport (file, accu) =
 			let val name = normalizeName file
 			in  if isIncluded name then accu
-			    else ifindFiles name accu before mark name
+			    else ifindFiles pmfiles name accu 
+				 before mark name
 			end
 		in  List.foldl oneImport accu imports
 		end
 		    
-	    and findFilesPM path (PM{imports,body}) =
-		(findFilesBody path body) o (findFilesImports imports)
+	    and findFilesPM pmfiles path (PM{imports,body}) =
+		(findFilesBody path body) o (findFilesImports pmfiles imports)
 		
-	    and ifindFiles filename accu =
+	    and ifindFiles pmfiles filename accu =
 		let val name    = normalizeName filename
 		    val path    = OS.Path.dir name
-		in  unwindChDir path (fn() =>
-	       	    findFilesPM path (parseFile name) accu)
+		in  if isIn name pmfiles then
+		       error ("Cycle dectected:\n"^
+			      indent (name :: pmfiles))
+		    else unwindChDir path (fn() =>
+	                 findFilesPM (name::pmfiles) path (parseFile name) accu)
 		end
-	in  List.rev(ifindFiles filename [])
+	in  List.rev(ifindFiles [] filename [])
 	end
+
+    fun linkFiles filename =
+        let val smlfiles = findFiles filename
+            fun makeUo file = if isSML file then SOME(toUo file)
+                              else NONE
+        in List.mapPartial makeUo smlfiles
+        end
+
 
     (* For now assume that everything is compiled and upto date *)
     fun link options filename outfile =
-	let val smlfiles = findFiles filename
-	    fun makeUo file = if isSML file then SOME(toUo file)
-			      else NONE
-	    val uofiles  = List.mapPartial makeUo smlfiles
-	  
+	let val uofiles  = linkFiles filename
 	in  chat ["Linking: ", outfile]
           ; Comp.link debug options uofiles outfile
 	end
