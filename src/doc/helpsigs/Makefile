@@ -37,7 +37,7 @@ depend: Lexer.sml Parser.sml
 
 clean:
 	rm -f Parser.sig Parser.sml Lexer.sml
-	rm -f makebase helpsigs.val index.txt index.tex texsigsigs.tex
+	rm -f makebase index.txt index.tex texsigsigs.tex
 	rm -f *.ui
 	rm -f *.uo
 	rm -f Makefile.bak
