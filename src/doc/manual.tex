@@ -1,4 +1,4 @@
-% manual.tex v. 2.00.3 Copyright (C) Peter Sestoft 1994, 2000-07-18
+% manual.tex v. 2.00.4 Copyright (C) Peter Sestoft 1994, 2000-07-20
 %
 % You may edit for lay-out, or leave out irrelevant sections (if
 % such omissions are marked somehow), but you may not redistribute the
@@ -1614,7 +1614,7 @@ that directory.
   (see the example makefile in \texttt{mosml/examples/units/Makefile}):
 
 \begin{program}
-UNITS=-structure Expr Reduce -toplevel Evaluate Test
+UNITS= -structure Expr Reduce -toplevel Evaluate Test
 \end{program}
 
 \item\label{one} Edit the Makefile so that the names of the compiled
@@ -1664,7 +1664,7 @@ mosmldep \$(UNITS)
 their compilation mode):
 
 \begin{program}
-UNITS= -structure Expr Evaluate -toplevel Reduce Test
+UNITS= -structure Expr Reduce -toplevel Evaluate Test
 \end{program}
 
 \noindent 
