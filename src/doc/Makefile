@@ -55,7 +55,7 @@ install:
 	cd helpsigs; make install
 
 clean:
-	rm -f *.aux *.dvi *.blg *.ps *.pdf *.bbl *.blg *.log
+	rm -f *.aux *.dvi *.blg *.bbl *.blg *.log
 	rm -f *.ind *.idx *.ilg *.toc
 	rm -f index.tex texsigsigs.tex
 	cd helpsigs; make clean

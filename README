@@ -6,6 +6,7 @@ The current version 2.00 of Moscow ML
 
     * implements the full Standard ML language, as revised 1997, 
       including Modules and some extensions
+    * yet is backwards compatible with versions prior to 2.00
     * implements large parts of the new SML Basis Library
     * implements separate compilation 
     * can produce compact stand-alone executables (a la Caml Light)

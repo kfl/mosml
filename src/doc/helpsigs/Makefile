@@ -41,7 +41,6 @@ clean:
 	rm -f *.ui
 	rm -f *.uo
 	rm -f Makefile.bak
-	rm -rf htmlsigs
 
 ### DO NOT DELETE THIS LINE
 Texsigs.uo: Texsigs.ui Database.ui 

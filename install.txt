@@ -3,7 +3,7 @@ This is file install.txt for Moscow ML 2.00 for Linux/Unix (June 2000)
 
 SYSTEM REQUIREMENTS
 
-A binary installation requires 5 MB disk space; a source installation
+A binary installation requires 8 MB disk space; a source installation
 requires 25 MB disk space.
 
 
@@ -90,9 +90,15 @@ systems, then you can install Moscow ML as follows:
 
 (6) Execute (in mosml/src)
 
-        make clean
         make world
         make install
+
+    Doing `make install' will also install the documentation from
+    mosml/src/doc, which is supplied precompiled.  It is also
+    available from the Moscow ML homepage.  If you want to rebuild the
+    documents (e.g. for a different papersize), then do it later, as a
+    separate step 9.  Due to variances in LaTeX installations, you may
+    run into some problems.
 
 (7) To check that the installation went well, you can try 
      (7.1) * change directory to mosml/src/test 
@@ -128,6 +134,9 @@ systems, then you can install Moscow ML as follows:
 
     - to install support for Thomas Boutell's gd GIF image
     package, consult mosml/src/dynlibs/mgd/README
+
+    - to install support for process manipulation under Unix,
+    consult mosml/src/dynlibs/munix/README
 
 
 AUTHOR AND CREDITS
