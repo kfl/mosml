@@ -1115,4 +1115,5 @@ of course only works interatively. Hmm, I've got to go now, but will try
 to write more coherently tomorrow.
 
 2002-07-25: The Postgres interface now works with PostgreSQL 7.2
-provided databases are created with LATIN1 or another 8-bit encoding.
+provided databases are created with LATIN1 or another 8-bit encoding,
+and recognizes the int8 type (returned by COUNT).

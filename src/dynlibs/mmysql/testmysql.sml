@@ -236,19 +236,19 @@ local
 in
 
 val test4 = check'(fn _ => (copytableto (pc, "t", append1); 
-			    expected = return1 ()))
+			    expected = return1 ()));
 
 val res5 = execute pc "delete from t";
  
 val test5a = check' 
     (fn _ => errormessage pc = NONE
-     (* MYSQLCMDTUPLES: andalso cmdtuples res5 = 2 *))
+     (* MYSQLCMDTUPLES: andalso cmdtuples res5 = 2 *));
 
 val test6 = check'(fn _ => (copytableto (pc, "t", append2); 
-			    [] = return2 ()))
+			    [] = return2 ()));
 
 val _ = copytablefrom (pc, "t", 
-		       fn put => app (fn s => (put s; put "\n"))  expected)
+		       fn put => app (fn s => (put s; put "\n"))  expected);
 
 val test7 = check'(fn _ => (copytableto (pc, "t", append3); 
 			    expected = return3 ()));
@@ -257,7 +257,7 @@ val _ = execute pc "delete from t";
 
 val _ = copytablefrom (pc, "t", 
 		       fn put => app (fn s => (app (put o str) (explode s); 
-					       put "\n")) expected)
+					       put "\n")) expected);
 
 val test8 = check'(fn _ => (copytableto (pc, "t", append4); 
 			    expected = return4 ()));

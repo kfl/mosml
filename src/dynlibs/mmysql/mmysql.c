@@ -1,6 +1,6 @@
 /* mmysql.c -- Moscow ML interface interface to the mysql library.
    thomassi@dina.kvl.dk 1999-07-06  
-   sestoft@dina.kvl.dk 1999-08-07, 2000-05-30 */
+   sestoft@dina.kvl.dk 1999-08-07, 2000-05-30, 2002-07-25 */
 
 #include <stdlib.h>
 
@@ -497,8 +497,9 @@ EXTERNML value db_resultstatus(value conn) {
     return Atom(Empty_query);
   case 0:                       /* No error */
     {
-      /* If mysql_num_fields==0, query was a command */
-      if (mysql_num_fields(mysql) == 0)
+      /* If mysql_field_count==0, query was a command */
+      /* 2002-07-25: In MySQL 3.23 and later, must use mysql_field_count */
+      if (mysql_field_count(mysql) == 0)
         return Atom(Command_ok);
       else
         return Atom(Tuples_ok);

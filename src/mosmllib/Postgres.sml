@@ -309,7 +309,7 @@ type oid = int (* In reality, a 32 bit quantity *)
 
 datatype dynval =
     Bool of bool			(* psql bool            *)
-  | Int of int				(* psql int4            *)
+  | Int of int				(* psql int4, int8      *)
   | Real of real			(* psql float8, float4  *)
   | String of string			(* psql text, varchar   *)
   | Date of int * int * int		(* psql date yyyy-mm-dd *)
@@ -327,6 +327,7 @@ datatype dyntype =
 
 fun totag "bool"     = SOME BoolTy
   | totag "int4"     = SOME IntTy
+  | totag "int8"     = SOME IntTy
   | totag "float8"   = SOME RealTy
   | totag "float4"   = SOME RealTy
   | totag "text"     = SOME StringTy
