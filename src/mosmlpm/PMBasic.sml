@@ -21,7 +21,7 @@ struct
 	fun fileChar c = Char.isAlphaNum c 
 			 orelse c = #"_" orelse c = #"/" orelse c = #"-" orelse c = #"."
 
-	val fileName = getChars1 fileChar 
+	val ident = getChars1 fileChar 
     
 				   
 	datatype token =
@@ -41,15 +41,21 @@ struct
 			       
 	infix 7 |>
 	fun (pf |> res) = pf >> (fn _ => res)
-			  
+			
+	fun keyword "local"  = LOCAL_T
+	  | keyword "in"     = IN_T
+	  | keyword "end"    = END_T
+	  | keyword "import" = IMPORT_T
+	  | keyword file     = FILENAME_T file
+  
 	fun token stream =
-	    (   $ "local"  |> LOCAL_T 
+	    ((*   $ "local"  |> LOCAL_T 
              || $ "in"     |> IN_T
 	     || $ "end"    |> END_T
 	     || $ "import" |> IMPORT_T
-	     || fileName   >> FILENAME_T
-	     || $ "(*"     #-- comment 1
-	     || eof           EOF_T
+	     ||*) ident  >>  keyword
+	     || $ "(*" #-- comment 1
+	     || eof        EOF_T
             ) (StringCvt.skipWS split stream) 
 
 	(* FIXME: write the third clause without recursion *)
