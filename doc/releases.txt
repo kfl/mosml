@@ -243,15 +243,20 @@ Moscow ML release history
 
 2.01 (?)
   * Bugs fixed:
-    * The generated HTML for mosmllib now has valid URLs
+    * The HTML files generated for mosmllib now have valid URLs
     * Substring.app more efficient
     * Recursive structure compilation (elabRecSigExp) fixed
+    * Several errors in Mosmlcookie
+    * Misplaced double quote in Msp.ahrefa 
+    * Exception Option wasn't available at top-level
   * SML Basis Library changes:
-    * String and Substring: concatWith, isSuffix, isSubstring, full
+    * String and Substring: added concatWith, isSuffix, isSubstring, full
     * ListPair: added zipEq, appEq, mapEq, foldlEq, foldreq, allEq
-    * Added ArraySlice and VectorSlice structures
+    * Added ArraySlice and VectorSlice structures, also for Char and Word8
     * Added find, findi, all, exists, collate to vector, array and 
       slice structures
     * Added collate to List
     * Added update to vector structures
     * Path.{mkRelative,mkAbsolute} now take record arguments
+    * Negative Time.time values allowed
+    * OS.Process: new functions sleep and isSuccess; status not eqtype

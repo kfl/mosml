@@ -28,8 +28,9 @@ extern value global_data;
 #define SYS__MAX_STRING_LENGTH 17 /* "sys","max_string_length" */
 #define SYS__MAX_VECT_LENGTH 18   /* "sys","max_vect_length" */
 
-/* Exn indexes names for pervasive dynamic exceptions.  The
-   corresponding exn names (string refs) are allocated by sys_init */
+/* Exn indexes names for pervasive dynamic exceptions.  
+   The table globalexn in sys.c must correspond to this list.
+   The actual exn names (string refs) are allocated by sys_init in sys.c */
 
 #define SYS__EXN_MEMORY     19   /* "sys","exn_memory" */
 #define SYS__EXN_ARGUMENT   20   /* "sys","exn_argument" */
@@ -47,14 +48,15 @@ extern value global_data;
 #define SYS__EXN_BIND       32   /* "sys","exn_bind" */
 #define SYS__EXN_MATCH      33   /* "sys","exn_match" */
 #define SYS__EXN_IO         34   /* "sys","exn_io" */
+#define SYS__EXN_OPTION     35   /* "sys","exn_option" */
 
 /* Frequently used exception values (NOT exn indexes); alloc by sys_init */
 
-#define EXN_INTERRUPT       35   /* "sys","val_exn_interrupt" */
-#define EXN_DIV             36   /* "sys","val_exn_div" */
-#define EXN_OVERFLOW        37   /* "sys","val_exn_overflow" */
+#define EXN_INTERRUPT       36   /* "sys","val_exn_interrupt" */
+#define EXN_DIV             37   /* "sys","val_exn_div" */
+#define EXN_OVERFLOW        38   /* "sys","val_exn_overflow" */
 
 #define SYS__FIRST_EXN 19
-#define SYS__LAST_EXN 34
+#define SYS__LAST_EXN 35
 
 #endif /* _globals_ */

@@ -35,3 +35,19 @@ fun sorted ordr []         = true
     let fun h x0 []       = true
 	  | h x0 (x1::xr) = ordr(x0, x1) <> GREATER andalso h x1 xr
     in h y1 yr end;
+
+fun eqclasses ordr xs =
+    let val xs = List.rev (sort ordr xs)
+	fun group last rest cs1 css =
+	    case rest of 
+		[]     => cs1 :: css
+	      | r1::rr => 
+		    if ordr(r1, last) = EQUAL then 
+			group r1 rr (r1 :: cs1) css
+		    else
+			group r1 rr [r1] (cs1 :: css)
+    in 
+	case xs of 
+	    []     => []
+	  | x1::xr => group x1 xr [x1] []
+    end

@@ -33,6 +33,7 @@ exception Domain
 exception Fail of string
 exception Match
 exception Overflow
+exception Option
 exception Subscript
 exception Size
 
@@ -158,6 +159,8 @@ val mod : wordint * wordint -> wordint  (* raises Div                   *)
 
    [Match] signals the failure to match a value against the patterns
    in a case, handle, or function application.
+
+   [Option] is raised by Option.valOf when applied to NONE.
 
    [Overflow] signals the attempt to compute an unrepresentable number.
 

@@ -1,5 +1,5 @@
 (* Msp.sml -- prelude for ML Server Pages
-   sestoft@dina.kvl.dk 2000-02-24 version 0.7
+   sestoft@dina.kvl.dk 2000-11-06 version 0.8
  *)
 
 (* Efficiently concatenable word sequences *)
@@ -112,7 +112,7 @@ fun hra attr = $$["<HR ", attr, ">"]
 
 fun ahref link seq = $$["<A HREF=\"", link, "\">"] && seq && $"</A>"
 fun ahrefa link attr seq = 
-    $$["<A HREF=\"", link, " ", attr, "\">"] && seq && $"</A>"
+    $$["<A HREF=\"", link, "\" ", attr, ">"] && seq && $"</A>"
 fun aname name seq = $$["<A NAME=\"", name, "\">"] && seq && $"</A>"
 
 (* HTML text formats and style *)

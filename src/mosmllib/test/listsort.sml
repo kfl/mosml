@@ -26,4 +26,19 @@ in
 	andalso sortedsort [3.0, 2.0, 1.0]
 	andalso sortedsort [2.0, 3.0, 1.0]
 	andalso sortedsort [2.0, 1.0, 3.0]
+
+    fun inteqccheck ordr arg res = 
+	List.map (Listsort.sort Int.compare) (Listsort.eqclasses ordr arg)
+	= List.map (Listsort.sort Int.compare) res;
+
+    fun f (arg, res) = 
+	inteqccheck (fn (x, y) => Int.compare(Int.abs x, Int.abs y)) arg res;
+
+    val test4 = 
+	f([], [])
+	andalso f([1], [[1]])
+	andalso f([1, ~1], [[1,~1]])
+	andalso f([1, 2, ~1], [[1,~1],[2]])
+	andalso f([5, 1, 2, ~1, ~1, 3, ~0, 7, 1, 5, 5, ~2,0],
+		  [[~0,0],[1,~1,~1,1],[2,~2],[3],[5,5,5],[7]])
 end

@@ -1,6 +1,6 @@
 (* Option *)
 
-exception Option
+exception Option = Option
 
 datatype option = datatype option
 

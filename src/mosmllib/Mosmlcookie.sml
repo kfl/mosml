@@ -96,4 +96,4 @@ fun setCookie cookie = setCookies [cookie]
 fun deleteCookie { name : string, path : string option } : string =
     String.concat["Set-cookie: ", name, "=deleted;",
 		  "expires=Friday, 11-Feb-77 12:00:00 GMT",
-		  concatOpt "; path=" path]
+		  concatOpt "; path=" path, "\n"]
