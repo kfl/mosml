@@ -37,6 +37,8 @@ val hash         : ('item -> word) -> 'item set -> word
 val equal        : 'item set * 'item set -> bool
 val compare      : 'item set * 'item set -> order 
 
+val depth        : 'item set -> int
+
 datatype 'item intv = 
     All
   | From of 'item

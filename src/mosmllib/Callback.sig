@@ -96,7 +96,7 @@ val app5    : cptr -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
 
    This example shows how to register the C function 
 
-      value silly_cfun(value v) 
+      value sillycfun(value v) 
       { return copy_double(42.42 * Double_val(v)); }
 
    so that it may be called from ML.
@@ -115,6 +115,7 @@ val app5    : cptr -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
           val result = sillyfun(3.4)
 
    The C function (in mosml/src/runtime/callback.c)
+
         void registercptr(char* nam, void* cptr);
 
    is used to register C pointers for access from ML.  Only pointers

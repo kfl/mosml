@@ -91,10 +91,20 @@ struct
   fun push LEAF stack = stack
     | push tree stack = tree :: stack
 
-  fun pushNode left x right stack = 
-      left :: (BLACK(x, LEAF, LEAF) :: (push right stack))
+  fun pushNode x right stack = BLACK(x, LEAF, LEAF) :: push right stack
 
   fun getMin []             some none = none
+    | getMin (tree :: rest) some none = 
+      let fun descend tree stack =
+	  case tree of
+	      LEAF                  => getMin stack some none
+	    | RED  (x, LEAF, right) => some x (push right stack)
+	    | BLACK(x, LEAF, right) => some x (push right stack)
+	    | RED  (x, left, right) => descend left (pushNode x right stack) 
+	    | BLACK(x, left, right) => descend left (pushNode x right stack) 
+      in descend tree rest end
+
+(*   fun getMin []             some none = none
     | getMin (tree :: rest) some none = 
       case tree of
           LEAF                  => getMin rest some none
@@ -102,8 +112,20 @@ struct
         | BLACK(x, LEAF, right) => some x (push right rest)
         | RED  (x, left, right) => getMin(pushNode left x right rest) some none
         | BLACK(x, left, right) => getMin(pushNode left x right rest) some none
+ *)
 
   fun getMax []             some none = none
+    | getMax (tree :: rest) some none = 
+      let fun descend tree stack =
+	  case tree of
+	      LEAF                  => getMax stack some none
+	    | RED  (x, left, LEAF)  => some x (push left stack)
+	    | BLACK(x, left, LEAF)  => some x (push left stack)
+	    | RED  (x, left, right) => descend right (pushNode x left stack) 
+	    | BLACK(x, left, right) => descend right (pushNode x left stack) 
+      in descend tree rest end
+
+(*   fun getMax []             some none = none
     | getMax (tree :: rest) some none = 
       case tree of
           LEAF                  => getMax rest some none
@@ -111,11 +133,11 @@ struct
         | BLACK(x, left, LEAF)  => some x (push left rest)
         | RED  (x, left, right) => getMax(pushNode right x left rest) some none
         | BLACK(x, left, right) => getMax(pushNode right x left rest) some none
-
+ *)
   fun fold get f e (compare, tree, n) =
       let fun loop stack acc =
               get stack (fn x => fn stack => loop stack (f(x, acc))) acc
-      in  loop [tree] e end
+      in  loop (push tree []) e end
 
   fun foldl f = fold getMin f
 
@@ -135,7 +157,7 @@ struct
       let fun loop stack = 
               getMin stack (fn x => fn stack => 
                                        if p x then SOME x else loop stack) NONE
-      in  loop [tree] end
+      in  loop (push tree []) end
 
   fun map (f, compare) s =
       foldl (fn (k, res) => add(res, f k)) (empty compare) s 
@@ -504,4 +526,11 @@ struct
     fun subset (s as (cmp, t, _), intv) = 
 	fromSortedList(cmp, sublist(s, intv))
 
+    (* For debugging only *)
+
+    fun depth LEAF = 0
+      | depth (RED  (_, t1, t2)) = 1 + Int.max(depth t1, depth t2)
+      | depth (BLACK(_, t1, t2)) = 1 + Int.max(depth t1, depth t2)
+
+    val depth = fn (_, t, _) => depth t
 end

@@ -128,7 +128,7 @@ val test18 = (register "temp1" (fn x => x);
 	      app1 (getcptr "using_unreg") ()) : bool;
 
 fun mkfun extra = 
-    let fun f r = r + extra
+    let fun f (r : real) = r + extra
     in f end
 
 (* On a 266 MHz Pentium II notebook this does 1.25 million callbacks/sec: *)

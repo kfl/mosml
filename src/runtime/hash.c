@@ -91,7 +91,7 @@ static void hash_aux(obj)
 	 terminate because the hash_univ_count gets decremented. */
       /* Poor idea to hash on the pointed-to structure, even so: it may change,
 	 and hence the hash value of the value changes, although the ref doesn't.
-	 This breaks most hash table implementations.  sestoft 2000-02-20.
+	 This breaks most hash table implementations.  sestoft 2000-02-20. */
       Combine_small(tag);
       hash_univ_count--;
       /* hash_aux(Field(obj, 0)); */

@@ -242,4 +242,15 @@ in
 
     (* subset, subList *)
 
+    val i5000 = List.tabulate(5000, fn i => i);
+
+    val i4000 = List.rev(List.tabulate(1000, fn i => i+4000));
+	
+    val set1 = addList(empty Int.compare, i5000);
+
+    val _ = print (Int.toString (depth set1) ^ "\n");
+
+    val set2 = List.foldr (delete o swap) set1 i4000;
+
+    val _ = print (Int.toString (depth set2) ^ "\n");
 end; 

@@ -23,7 +23,7 @@
 <A NAME="line14"></A>val <A HREF="#listItems-val">listItems</A> : ('key, 'a) dict -&gt; ('key * 'a) list
 <A NAME="line15"></A>val <A HREF="#app-val">app</A>       : ('key * 'a -&gt; unit) -&gt; ('key,'a) dict -&gt; unit
 <A NAME="line16"></A>val <A HREF="#revapp-val">revapp</A>    : ('key * 'a -&gt; unit) -&gt; ('key,'a) dict -&gt; unit
-<A NAME="line17"></A>val <A HREF="#foldr-val">foldr</A>     : ('key * 'a * 'b -&gt; 'b)-&gt; 'b -&gt; ('key,'a) dict -&gt; 'b
+<A NAME="line17"></A>val <A HREF="#foldr-val">foldr</A>     : ('key * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; ('key,'a) dict -&gt; 'b
 <A NAME="line18"></A>val <A HREF="#foldl-val">foldl</A>     : ('key * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; ('key,'a) dict -&gt; 'b
 <A NAME="line19"></A>val <A HREF="#map-val">map</A>       : ('key * 'a -&gt; 'b) -&gt; ('key,'a) dict -&gt; ('key, 'b) dict
 <A NAME="line20"></A>val <A HREF="#transform-val">transform</A> : ('a -&gt; 'b) -&gt; ('key,'a) dict -&gt; ('key, 'b) dict
@@ -39,7 +39,7 @@
 
    [<A NAME="insert-val"><B>insert</B></A>(m, i, v)] extends (or modifies) map m to map i to v.
 
-   [<A NAME="find-val"><B>find</B></A> (m, k)] returns v if m maps k to v; otherwise raises NotFound.
+   [<A NAME="find-val"><B>find</B></A>(m, k)] returns v if m maps k to v; otherwise raises NotFound.
    
    [<A NAME="peek-val"><B>peek</B></A>(m, k)] returns SOME v if m maps k to v; otherwise returns NONE.
 

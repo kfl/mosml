@@ -836,7 +836,6 @@ compile, compileStructure and compileToplevel functions.
 I've found a small bug in mosml's handling of signatures.  This should
 be correct SML:
  
-------------
 signature COL = sig type elem type col end
 signature INTCOL1 = COL where type col = int list
                        where type elem = int
@@ -969,6 +968,48 @@ and rec x = fn () => ()
     doesn't, that just means there will be excess parentheses in some
     cases.  The prior precedece logic of prVal would need to be fixed
     to fit the precendece actually use in SML.
+
+* 2001-10-29 Don Sanella:
+
+> According to the Moscow ML library documentation, various functions
+> in TextIO may raise the exception Io.Io.  According to the SML Basic
+> Library that is supposed to be IO.Io.  There appears to be a library
+> module called IO, since    load "IO"    doesn't complain, and it
+> contains an exception IO.Io, but there is no section about the IO
+> module in the Moscow ML library documentation.
+   
+* 2001-10-29 Michael Norrish:
+
+It would be very nice to have a time-out function available.
+Something like
+ 
+  timeout : time -> ('a -> 'b) -> 'a -> 'b
+ 
+which raises an exception if the time allotted expires.
+ 
+This would make proof strategies that combined black-box components a
+positive pleasure to write.  It would need to work both interactively
+and in compiled code.
+ 
+Also, it would be nice to have the magic (involving prim_val) that
+makes the Interrupt exception "work" in executables (i.e., catches       
+Ctl-C) properly documented.
+ 
+Currently I just copy
+ 
+  prim_val catch_interrupt : bool -> unit = 1 "sys_catch_break";
+  val _ = catch_interrupt true;
+ 
+from file to file without understanding what I'm doing.       
+
+* 2001-11-05 Nils Andersen: integer Overflow when computing ~32768*32768.
+
+* 2001-11-05 Konrad Slind: Is Splaymap.transform tail-recursive?  No.
+  Is the problem that the trees get very unbalanced?  Probably.
+
+* 2001-11-13: Delete Closure_wosize from mlvalues.h and from signals.h
+  (where an empty `env' is allocated; strictly speaking an
+  always-ignored () : unit, which is a mistake).
 
 * 2001-12-17: Mosmlcgi and Mosmlcookie suggestions from Hans Molin.
 
@@ -1117,3 +1158,4 @@ to write more coherently tomorrow.
 2002-07-25: The Postgres interface now works with PostgreSQL 7.2
 provided databases are created with LATIN1 or another 8-bit encoding,
 and recognizes the int8 type (returned by COUNT).
+

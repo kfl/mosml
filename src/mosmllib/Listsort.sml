@@ -2,7 +2,12 @@
 
 (* Smooth Applicative Merge Sort, Richard O'Keefe 1982        *)
 (* From L.C. Paulson: ML for the Working Programmer, CUP 1991 *)
-(* Optimized for Moscow ML **)
+(* Optimized for Moscow ML *)
+
+(* Should be made stable; this requires more than a change to nextrun;
+   for inspiration, see 
+   http://www.dcs.gla.ac.uk/mail-www/haskell/msg00207.html
+ *)
 
 fun sort ordr []          = []
   | sort ordr (xs as [_]) = xs

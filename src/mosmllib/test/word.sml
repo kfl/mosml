@@ -79,7 +79,7 @@ val test9h = checkrange (1,65)
 
 val test10a = checkrange (1,65)
     (fn k => 0 = w2i (~>> (i2w 1, i2w k)));
-val test10b = checkrange (1,65)
+val test10b = checkrange (0,65)
     (fn k => ~1 = toIntX (~>> (i2w ~1, i2w k)));
 val test10c = checkrange (~513, 513)
     (fn i => i div 2 = toIntX (~>> (i2w i, i2w 1)));

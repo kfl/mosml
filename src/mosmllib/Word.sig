@@ -137,12 +137,22 @@ val fromLargeInt  : int -> word
       DEC     (0w)?[0-9]+
       HEX     (0wx|0wX|0x|0X)?[0-9a-fA-F]+
 
-   [toInt w] returns the (signed) integer represented by bit-pattern w.
-   [toIntX w] returns the (signed) integer represented by bit-pattern w.
-   [fromInt i] returns the word representing integer i.
+   [toInt w] returns the (non-negative) default size int represented
+   by bit-pattern w.  Raises Overflow in case w is not representable
+   as an integer.
 
-   [toLargeInt w] returns the (signed) integer represented by bit-pattern w.
-   [toLargeIntX w] returns the (signed) integer represented by bit-pattern w.
+   [toIntX w] returns the (signed) default size int represented by
+   twos's complement bit-pattern w.
+
+   [fromInt i] returns the word (bit-pattern) representing integer i.
+
+   [toLargeInt w] returns the (non-negative) largest size int
+   represented by bit-pattern w.  Raises Overflow in case w is not
+   representable as an integer.
+
+   [toLargeIntX w] returns the (signed) largest size int represented
+   by two's complement bit-pattern w.  
+
    [fromLargeInt i] returns the word representing integer i.
 
    [toLargeWord w] returns w.
