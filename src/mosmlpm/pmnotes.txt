@@ -62,6 +62,8 @@ Note about the PM prototype
   from them.  This will also make it easy to check that the pm files
   don't contains cycles (we just check that the graph is a DAG).
 
+* Locals might be handled wrong when things are linked, because
+  compilation unit renaming is not supported.
 
 TODO ( - : not implemented, + : implemented, * : droped ) 
   - Implement compilation unit renaming when mosmlc supports it
