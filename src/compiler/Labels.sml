@@ -21,7 +21,7 @@ fun extend_label_table needed =
       val new_table = 
         Array.array((needed div old + 1) * old, Label_undefined [])
   in
-    Array.copy { src= !label_table, si=0, len = NONE, dst= new_table, di=0 };
+    Array.copy { src= !label_table, dst= new_table, di=0 };
     label_table := new_table
   end;
 

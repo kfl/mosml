@@ -23,6 +23,7 @@ val map      : (elem -> elem) -> vector -> vector
 val foldl    : (elem * 'b -> 'b) -> 'b -> vector -> 'b
 val foldr    : (elem * 'b -> 'b) -> 'b -> vector -> 'b
 
+val findi    : (int * elem -> bool) -> vector -> (int * elem) option
 val appi     : (int * elem -> unit) -> vector * int * int option -> unit
 val mapi     : (int * elem -> elem) -> vector * int * int option -> vector
 val foldli   : (int * elem * 'b -> 'b) -> 'b -> vector*int*int option -> 'b

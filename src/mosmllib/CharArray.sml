@@ -39,6 +39,9 @@ in
     fun modify (f : elem -> elem) (a : array) : unit
 	= Word8Array.modify (magic f) (magic a)
 
+    val findi : (int * elem -> bool) -> array -> (int * elem) option
+	                                        = magic Word8Array.findi
+
     fun appi (f : int * elem -> unit) (a : array*int*int option) : unit
 	= Word8Array.appi (magic f) (magic a)
 

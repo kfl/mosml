@@ -2,7 +2,6 @@
    sestoft@dina.kvl.dk 2000-10-19 *)
 
 use "auxil.sml";
-load "VectorSlice";
 
 local 
     open Vector VectorSlice 
@@ -59,8 +58,6 @@ val test1a =
 	    andalso foldli consi [] sli = []
 	    andalso foldr cons [1,2] sli = [1,2]
 	    andalso foldri consi [] sli = []
-	    andalso (modify ~ sli; vector sli = #[])
-	    andalso (modifyi (fn (_, x) => ~x) sli; vector sli = #[])
 	    andalso collate Int.compare (sli, slice00) = EQUAL)
 	   slice0s);
 
@@ -147,25 +144,14 @@ val test5 =
 		       andalso not (Option.isSome (getItem r3))
 		   end);
 
-val test6a = (update(slicea23, ~1, 99) seq "WRONG")
-             handle Subscript => "OK" | _ => "WRONG";
-val test6b = (update(slicea23, 3, 99) seq "WRONG")
-             handle Subscript => "OK" | _ => "WRONG";
-
-val test6c = 
-    check'(fn _ => 
-	   (update(slicea23, 0, 99); Array.sub(a, 2) = 99)
-	   andalso (update(slicea23, 2, 199); Array.sub(a, 4) = 199)
-	   andalso (update(slicea23, 0, 21);  Array.sub(a, 2) = 21)
-	   andalso (update(slicea23, 2, 41);  Array.sub(a, 4) = 41));
-
 val sliced = full (tabulate(100, fn i => i mod 7 * 10 + 1));
 val sliceb = full b;
 
 val e = Array.array(203, 0);
-val _ = (copy{src=sliced, dst=e, di=0}; 
-	 copy{src=sliceb, dst=e, di=length sliced};
-	 copy{src=sliced, dst=e, di=length sliced + length sliceb});
+val _ = (ArraySlice.copyVec{src=sliced, dst=e, di=0}; 
+	 ArraySlice.copyVec{src=sliceb, dst=e, di=length sliced};
+	 ArraySlice.copyVec{src=sliced, dst=e, 
+			    di=length sliced + length sliceb});
 
 val ev = Vector.concat [vector sliced, vector sliceb, vector sliced]; 
 (* length e = 203 *)
@@ -189,18 +175,22 @@ val test10a =
 	   check'(fn () => ev = Array.vector e
 		  andalso ev = Array.vector g);
 
-val sliceg0 = slice(g, 0, SOME (Array.length g - 1));
+val sliceg0 = slice(Array.vector g, 0, SOME (Array.length g - 1));
 val _ = ArraySlice.copyVec{src=sliceg0, dst=g, di=1};
-val test10b = check'(fn () => vector sliceb = vector (slice(g, 101, SOME 3)));
+val test10b = 
+    check'(fn () => 
+	   vector sliceb = vector (slice(Array.vector g, 101, SOME 3)));
 
-val sliceg1 = slice(g, 1, SOME (Array.length g - 1));
+val sliceg1 = slice(Array.vector g, 1, SOME (Array.length g - 1));
 val _ = ArraySlice.copyVec{src=sliceg1, dst=g, di=0};
-val test10c = check'(fn () => vector sliceb = vector (slice(g, 100, SOME 3)));
+val test10c = 
+    check'(fn () => 
+	   vector sliceb = vector (slice(Array.vector g, 100, SOME 3)));
 
-val sliceg202 = slice(g, 202, SOME 1);
+val sliceg202 = slice(Array.vector g, 202, SOME 1);
 val _ = ArraySlice.copyVec{src=sliceg202, dst=g, di=202};
 val test10d = 
-    check'(fn () => sliceg sub 202 = 10 * (202-1-103) mod 7 + 1);
+    check'(fn () => Array.sub(g, 202) = 10 * (202-1-103) mod 7 + 1);
 
 val test11a = (ArraySlice.copyVec{src=sliceg, dst=g, di= ~1}; "WRONG") 
               handle Subscript => "OK" | _ => "WRONG"

@@ -2,7 +2,6 @@
    sestoft@dina.kvl.dk 2000-10-18 *)
 
 use "auxil.sml";
-load "ArraySlice";
 
 local 
     open Array ArraySlice 

@@ -4,7 +4,7 @@
 
 use "auxil.sml";
 
-local 
+local
     open ListPair
     val a = [1, 2, 3, 4, 5, 6]
     val b = [10, 40, 50, 50]
@@ -14,7 +14,7 @@ local
     fun take 0 xs        = []
       | take n []        = []
       | take n (x :: xr) = x :: take (n-1) xr
-in 
+in
 
 val test1 = check(zip([], []) = [] 
 		  andalso zip ([], a) = [] 
@@ -132,8 +132,8 @@ val test11a =
 	   andalso allEq (fn (x, y) => x <> 77) (b6, a));
 val test11b = 
     (reset(); 
-     (allEq (fn (x,y) => (incrv x; true)) (a, b); "WRONG")
-     handle UnequalLengths => checkv() | _ => "WRONG")
+     allEq (fn (x,y) => (incrv x; true)) (a, b);
+     checkv());
 val test11c = 
     (reset(); 
      allEq (fn (x,y) => (incrv x; true)) (a, b6); 
@@ -150,31 +150,24 @@ in
 val test12a = check'(fn _ => 
     foldrEqchk (fn (x, y, (r1, r2)) => (x-r1, y div r2)) (0, 10) a b6
     andalso 
-    foldrEqchk (fn (x, y, (r1, r2)) => (x div r1, y div r2)) (0, 0) b6 a
+    foldrEqchk (fn (x, y, (r1, r2)) => (x div r1, y div r2)) (2, 3) b6 a
     andalso 
     foldrEqchk (fn (x, y, (r1, r2)) => (x div r1, y div r2)) (0, 0) [] []);
 val test12b = 
     (reset();
-     foldrEq (fn (x, _, _) => incrv x) () (a, b); 
-     checkv0());
-val test12c = 
-    (reset();
-     foldrEq (fn (x, _, _) => incrv x) () (b, a); 
-     checkv0());
-val test12d = 
-    (reset();
-     foldrEq (fn (x, _, _) => incrv x) () (a, b6); 
+     foldrEq (fn (x, _, _) => incrv x) () (rev a, b6); 
      checkv6());
 
 val test13a = check'(fn _ => 
     foldlEqchk (fn (x, y, (r1, r2)) => (x-r1, y div r2)) (0, 10) a b6
     andalso 
-    foldlEqchk (fn (x, y, (r1, r2)) => (x-r1, y div r2)) (0, 10) b6 a
+    foldlEqchk (fn (x, y, (r1, r2)) => (x div r1, y-r2)) (10, 0) b6 a
     andalso 
     foldlEqchk (fn (x, y, (r1, r2)) => (x div r1, y div r2)) (0, 0) [] []);
 val test13b = 
     (reset();
-     foldlEq (fn (x, _, _) => incrv x) () (a, b); 
+     (foldlEq (fn (x, _, _) => incrv x) () (a, b); "WRONG") 
+     handle UnequalLengths => "OK" | _ => "WRONG";
      checkv());
 val test13c = 
     (reset();

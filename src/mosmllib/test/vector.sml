@@ -11,6 +11,7 @@ in
 val a = fromList [0,1,2,3,4,5,6];
 val b = fromList [44,55,66];
 val c = fromList [0,1,2,3,4,5,6];
+val vec0 = fromList [];
 
 val test1 = check'(fn _ => a<>b);
 val test2 = check'(fn _ => a=c);

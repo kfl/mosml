@@ -29,6 +29,7 @@ val foldl    : (elem * 'b -> 'b) -> 'b -> array -> 'b
 val foldr    : (elem * 'b -> 'b) -> 'b -> array -> 'b
 val modify   : (elem -> elem) -> array -> unit
 
+val findi    : (int * elem -> bool) -> array -> (int * elem) option
 val appi     : (int * elem -> unit) -> array * int * int option -> unit
 val foldli   : (int * elem * 'b -> 'b) -> 'b -> array * int * int option -> 'b
 val foldri   : (int * elem * 'b -> 'b) -> 'b -> array * int * int option -> 'b

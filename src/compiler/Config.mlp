@@ -52,7 +52,7 @@ val pervasiveOpenedUnits = ["General"];
 
 val fulllib = ["Option", "List", "ListPair", "Strbase", "Char", "String",
 	       "StringCvt", "TextIO", "BasicIO", "Vector",
-	       "Array", "Misc", "Substring",
+	       "Array", "VectorSlice", "ArraySlice", "Misc", "Substring",
 	       "Bool", "Int", "Real", "Math",
 	       "Word", "Word8", "Word8Vector", "Word8Array", "Byte",
 	       "BinIO", "CharVector", "CharArray",
@@ -83,6 +83,7 @@ val preopenedPreloadedUnitSets = [
 #ifdef msdos
 
 val kosherUnitNames = [
+  ("Arraysli", "ArraySlice"),
   ("Basicio",  "BasicIO"),
   ("Binio",    "BinIO"),
   ("Chararra", "CharArray"),
@@ -97,6 +98,7 @@ val kosherUnitNames = [
   ("Stringcv", "StringCvt"),
   ("Substrin", "Substring"),
   ("Textio",   "TextIO"),
+  ("Vectorsl", "VectorSlice"),
   ("Word8arr", "Word8Array"),
   ("Word8vec", "Word8Vector")
 ];

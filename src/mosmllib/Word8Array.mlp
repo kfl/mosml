@@ -140,6 +140,14 @@ fun sliceend (a, i, NONE) =
 	if i<0 orelse n<0 orelse i+n>length a then raise Subscript
 	else i+n;
 
+fun findi (p : int * elem -> bool) (ref a) : (int * elem) option = 
+    let val stop = length_ a
+	fun lr j = 
+	    if j < stop then 
+		if p (j, sub_ a j) then SOME (j, sub_ a j) else lr (j+1)
+	    else NONE
+    in lr 0 end
+
 fun foldli f e (slice as (ref a, i, _)) = 
     let fun loop stop =
 	    let fun lr j res = 

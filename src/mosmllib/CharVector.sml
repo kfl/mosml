@@ -32,6 +32,9 @@ in
 						= magic Word8Vector.app
     val map      : (elem -> elem) -> vector -> vector
 						= magic Word8Vector.map
+    val findi    : (int * elem -> bool) -> vector -> (int * elem) option
+	                                        =  magic Word8Vector.findi
+
     fun foldl (f : elem * 'b -> 'b) (e : 'b) v : 'b
 	= Word8Vector.foldl (magic f) e (magic v)
 

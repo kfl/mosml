@@ -95,5 +95,5 @@ Mosml.time loop2 5000000;
 local
    fun f(i,a,(ind,max)) = if a > max then (i,a) else (ind,max) 
 in
-   fun maxi ar = Array.foldli f (0,Array.sub(ar,0)) (ar,0,NONE)
+   fun maxi ar = Array.foldli f (0,Array.sub(ar,0)) ar
 end;

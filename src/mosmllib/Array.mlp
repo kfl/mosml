@@ -91,54 +91,32 @@ fun vector (a : 'a array) =
 		()
     in copy 0; newvec end;
 
-fun extract (a : 'a array, i, slicelen) =
-    let val a = from_array a : 'a array_ 
-	val n = case slicelen of NONE => length_ a - i | SOME n => n
-	val newvec = if i<0 orelse n<0 orelse i+n > length_ a 
-			 then raise Subscript
-		     else vector_ n () : 'a vector
-	fun copy j = 
-	    if j<n then
-		(updatev newvec j (sub_ a (i+j)); copy (j+1))
-	    else
-		()
-    in copy 0; newvec end;
-
-fun copy {src=a1: 'a array, si=i1, len, dst=a2: 'a array, di=i2} =
+fun copy {src=a1: 'a array, dst=a2: 'a array, di=i2} =
     let val a1 = from_array a1
 	and a2 = from_array a2
-	val n = case len of NONE => length_ a1 - i1 | SOME k => k
+	val n = length_ a1
     in
-	if n<0 orelse i1<0 orelse i1+n > length_ a1
-	    orelse i2<0 orelse i2+n > length_ a2
-	then 
+	if i2<0 orelse i2+n > length_ a2 then 
 	    raise Subscript
-	else if i1 < i2 then		(* copy from high to low *)
-	         let fun hi2lo j = 
-		     if j >= 0 then
-			 (update_ a2 (i2+j) (sub_ a1 (i1+j)); hi2lo (j-1))
-		     else ()
-		 in hi2lo (n-1) end
-	     else                       (* i1 >= i2, copy from low to high *)
-		 let fun lo2hi j = 
-		     if j < n then
-			 (update_ a2 (i2+j) (sub_ a1 (i1+j)); lo2hi (j+1))
-		     else ()
-		 in lo2hi 0 end
+	else		(* copy from high to low *)
+	    let fun hi2lo j = 
+		    if j >= 0 then
+			(update_ a2 (i2+j) (sub_ a1 j); hi2lo (j-1))
+		    else ()
+	    in hi2lo (n-1) end
     end
 
-fun copyVec {src=a1: 'a vector, si=i1, len, dst=a2: 'a array, di=i2} =
+fun copyVec {src=a1: 'a vector, dst=a2: 'a array, di=i2} =
     let val a2 = from_array a2
-	val n = case len of NONE => lengthv_ a1 - i1 | SOME k => k
+	val n = lengthv_ a1
     in
-	if n<0 orelse i1<0 orelse i1+n > lengthv_ a1
-	       orelse i2<0 orelse i2+n > length_ a2
-	    then 
-		raise Subscript
+	if i2<0 orelse i2+n > length_ a2 then 
+	    raise Subscript
 	else 
-	    let fun lo2hi j = if j < n then
-		(update_ a2 (i2+j) (subv_ a1 (i1+j)); lo2hi (j+1))
-			      else ()
+	    let fun lo2hi j = 
+		    if j < n then
+			(update_ a2 (i2+j) (subv_ a1 j); lo2hi (j+1))
+		    else ()
 	    in lo2hi 0 end
     end;
 
@@ -190,48 +168,45 @@ fun app f a =
 		   else ()
     in lr 0 end
 
-fun sliceend (a, i, NONE) = 
-        if i<0 orelse i>length a then raise Subscript
-	else length a
-  | sliceend (a, i, SOME n) = 
-	if i<0 orelse n<0 orelse i+n>length a then raise Subscript
-	else i+n;
-
-fun foldli f e (slice as (a, i, _)) = 
+fun findi (p : int * 'a -> bool) (a : 'a array) : (int * 'a) option = 
     let val a = from_array a
-	fun loop stop =
-	    let fun lr j res = 
-		if j < stop then lr (j+1) (f(j, sub_ a j, res))
-		else res
-	    in lr i e end
-    in loop (sliceend slice) end;
+	val stop = length_ a
+	fun lr j = 
+	    if j < stop then 
+		if p (j, sub_ a j) then SOME (j, sub_ a j) else lr (j+1)
+	    else NONE
+    in lr 0 end
 
-fun foldri f e (slice as (a, i, _)) = 
+fun foldli f e a = 
     let val a = from_array a
-	fun loop start =
-	    let fun rl j res = 
-		    if j >= i then rl (j-1) (f(j, sub_ a j, res))
-		    else res
-	    in rl start e end;
-    in loop (sliceend slice - 1) end
+	val stop = length_ a
+	fun lr j res = 
+	    if j < stop then lr (j+1) (f(j, sub_ a j, res))
+	    else res
+    in lr 0 e end;
 
-fun modifyi f (slice as (a, i, _)) = 
+fun foldri f e a = 
     let val a = from_array a
-	fun loop stop =
-	    let fun lr j = 
-		if j < stop then (update_ a j (f(j, sub_ a j)); lr (j+1))
-		else ()
-	    in lr i end
-    in loop (sliceend slice) end;
+	fun rl j res = 
+	    if j >= 0 then rl (j-1) (f(j, sub_ a j, res))
+	    else res
+    in rl (length_ a - 1) e end;
 
-fun appi f (slice as (a, i, _)) = 
+fun modifyi f a = 
     let val a = from_array a
-	fun loop stop = 
-	    let	fun lr j = 
-		    if j < stop then (f(j, sub_ a j); lr (j+1)) 
-		    else ()
-	    in lr i end
-    in loop (sliceend slice) end;
+	val stop = length_ a
+	fun lr j = 
+	    if j < stop then (update_ a j (f(j, sub_ a j)); lr (j+1))
+	    else ()
+    in lr 0 end;
+
+fun appi f a = 
+    let val a = from_array a
+	val stop = length_ a
+	fun lr j = 
+	    if j < stop then (f(j, sub_ a j); lr (j+1)) 
+	    else ()
+    in lr 0 end;
 
 fun collate cmp (a1, a2) =
     let val a1 = from_array a1
