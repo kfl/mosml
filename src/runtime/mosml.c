@@ -1618,11 +1618,15 @@ value sml_exnmessage(value exn)	/* ML */
 value sml_sleep(value vtime)	/* ML */
 {
   double time = Double_val(vtime);
+#ifdef WIN32
+/* cvr: is this correct for win32? */
+  unsigned long msec = (long)(time/1000.0);
+  if (time > 0) {
+    Sleep(msec);
+  }
+#else
   unsigned long sec = (long)(time/1000000.0);
   unsigned long usec = (long)(time - 1000000.0 * sec);
-#ifdef Win32
-/* cvr: how do you do this on win32 */
-#else
   if (time > 0) {
     sleep(sec);
     usleep(usec);
@@ -1630,4 +1634,3 @@ value sml_sleep(value vtime)	/* ML */
 #endif       
   return Val_unit;
 }
-
