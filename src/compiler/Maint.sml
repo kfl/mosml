@@ -102,13 +102,6 @@ fun liberal () = currentCompliance := Liberal;
 
 fun main () =
 (
-  msgIBlock 0;
-  msgString ("Moscow ML version "^Config.version);
-  msgEOL();
-  msgString "Enter `quit();' to quit.";
-  msgEOL();
-  msgEBlock();
-  msgFlush();
   let in
     perv_set "default";
     load_path := [];
@@ -125,7 +118,6 @@ fun main () =
                ("-imptypes",  Arg.Unit (set_value_polymorphism false)),
                ("-valuepoly", Arg.Unit (set_value_polymorphism true)),
                ("-quietdec",  Arg.Unit (set_quietdec true)),
-	       (* cvr: 144 merge *)
                ("-msgstyle",  Arg.String set_msgstyle),
                ("-m",         Arg.String set_msgstyle),
 	       ("-orthodox",  Arg.Unit orthodox),
@@ -133,6 +125,15 @@ fun main () =
 	       ("-liberal",  Arg.Unit liberal)
 	       ]
       anonymous;
+    if !Exec_phr.quietdec then ()
+    else
+	(msgIBlock 0;
+	 msgString ("Moscow ML version "^Config.version);
+	 msgEOL();
+	 msgString "Enter `quit();' to quit.";
+	 msgEOL();
+	 msgEBlock();
+	 msgFlush());
     if !path_library <> "" then
       load_path := !load_path @ [!path_library]
     else ();

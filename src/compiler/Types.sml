@@ -4272,7 +4272,10 @@ local fun warnToplevelImperativeVar desc id =
 (
   msgIBlock 0;
   if !value_polymorphism then
-      errPrompt ("Warning: Value polymorphism: Free type variable(s) at top level in "^desc^" identifier "^id)
+      (errPrompt "Warning: Value polymorphism:";
+       msgEOL();
+       errPrompt ("Free type variable(s) at top level in "
+		  ^desc^" identifier "^id))
   else
       errPrompt ("Warning: Free imperative type variable(s) at top level in "^desc^" identifier "^id);
   msgEOL();

@@ -79,6 +79,7 @@
   produce equal string refs...
 
 * Add an Odbc interface to unixODBC.
+  Later; possibly Thomas Iversen, DIKU/KVL.
 
 + .h files in mosml/include
 
@@ -235,7 +236,7 @@ value input_nonblocking(value channel, value buff, value start, value length) /*
 
   for at kunne lave en rent funktionel lexing af indlejrede kommentarer.
 
-* 2000-03-28: Add a parser combinator module called Parse.
++ 2000-03-28: Add a parser combinator module called Parse.
   Reimplement to use NONE/SOME instead of exceptions.  
 
   Add a formatting (unparsing) module called Format, using Olivier's
@@ -243,9 +244,12 @@ value input_nonblocking(value channel, value buff, value start, value length) /*
   wseq-like structure) and having also a prsep style
   iterator-with-separator plus an prmap style iterator.
 
+  May 2000: Decided to create mosml/example/parsercomb instead, as the
+  parser combinator stuff seems too volatile.
+
 + Meta.fke;  remove Meta.system
 
-* Meta.fke; documentation
++ Meta.fke; documentation
 
 + Lexing.sig
 
@@ -334,7 +338,7 @@ that if some branch of a switch evaluates to () : unit, then all
 branches do, and they are evaluated only for their side effects.  Not
 so.  
 
-* 2000-04-26: Constructor ordering.  Constructors should be sorted
++ 2000-04-26: Constructor ordering.  Constructors should be sorted
 alphabetically so that the ordering in datatype declarations doesn't
 matter.  That is, this should elaborate:
 
@@ -445,3 +449,12 @@ identical.
 sort tokens in grammar specifications.
 (5) Fix Mysql, Postgres, and their C code.
 (6) Fix dynlibs/interface
+
+* Change runtime bytecode version to 0.9e and tag to ML09
+
+* Check that it compiles with Solaris, HP-UX, Linux/Alpha, ...
+
+* Change version to 2.00 (June 2000)
+
++ Make -quietdec more quiet; drop the welcome greeting.
+

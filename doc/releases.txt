@@ -66,7 +66,7 @@ Moscow ML release history
   * Supports a large part of the new SML Standard Library, but not yet 
     the new I/O primitives.
   * Fixed bugs found in version 1.20:
-    * The Match exception wasn't handled properly
+    * The Match exception wasn't handled properly.
     * Static argumentless exception constructors in data structures at 
       top-level caused evaluation to crash.
     * Now considers ctrl-Z to mean end of file when reading source programs
@@ -78,7 +78,7 @@ Moscow ML release history
 
   * Added prettyprinter library PP (from SML/NJ library version 0.2)
   * Added installable prettyprinters
-  * Now works for the Macinstosh, thanks to Doug Currie (e@flavors.com)
+  * Now works for the Macintosh, thanks to Doug Currie (e@flavors.com)
   * The timer functions now report garbage-collection time
   * Avoid excess flushing: output to std_out no longer flushes immediately; 
     function BasicIO.say still does.
@@ -215,11 +215,29 @@ Moscow ML release history
     * Mosml.run didn't work on e.g. Solaris (pointed out by Anders Öhrt)
     * Date.offset was wrong
 
-1.45 (? 2000)
+2.00 (June 2000)
+  * Full SML'97 Modules language (thanks to Claudio Russo)
+  * First-order, higher-order, and recursive modules (thanks to Claudio Russo)
+  * Improved memory handling in Intinf (by Doug Currie)
+  * Improved prettyprinting of record and function types
+  * Identical literals inside a topdec are shared (in RAM and .uo files)
+  * Runtime system now permits longer bytecode jumps and more local variables
+  * Constructor ordering in datatype specifications no longer matters
+  * The exception representation has become simpler and more uniform
+  * The Gdimage library now creates PNG files (not proprietary GIF files)
+  * New SML Basis Library structures Unix and Signal for using subprocesses
+  * New structure Msp for efficient functional generation of HTML code
+  * New structure Mosmlcookie for using cookies in CGI scripts (by Hans Molin)
+  * Experimental ML Server Pages implementation in mosml/examples/msp
+  * Experimental parser combinator library in mosml/examples/parsercomb
+  * More print-friendly documentation of the Moscow ML Library
   * Bugs fixed:
     * Binding a static excon in a local exbind failed
     * More sensible failure value from Mosml.run under MS Windows
     * A failing installed prettyprinter no longer terminates the system
-  * Improved memory handling in Intinf (by Doug Currie)
-  * Improved prettyprinting of record and function types
-  
+    * A case returning an empty tuple () was implemented wrongly
+    * More redundant excon matches are discovered by the compiler
+    * Removed severe inefficiency in Mysql.getdyntuples 
+    * Socket.select timeout was wrong
+    * Moved exnName and exnMessage to General (where they belong)
+

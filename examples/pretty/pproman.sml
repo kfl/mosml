@@ -19,7 +19,7 @@ fun ppint pps d =
 	    if n >= s then name :: choose(n - s, romans) else choose(n, romanr)
 	fun roman 0 = "nullus"
 	  | roman n =
-	    concat ((if n < 0 then "-" else "") :: choose (n, romannum))
+	    concat ((if n < 0 then "-" else "") :: choose (abs n, romannum))
     in
 	begin_block pps INCONSISTENT 6; 
 	add_string pps (roman d);
