@@ -220,7 +220,7 @@ end;
 	  fun filterP NIL = NIL
 	    | filterP (B(hash, key, item, rest)) = if (pred(key, item))
 		then B(hash, key, item, filterP rest)
-		else filterP rest
+		else (n_items := !n_items - 1; filterP rest)
 	  val arr = !table
 	  val sz = Array.length arr
 	  fun filterTbl i = if (i < sz)

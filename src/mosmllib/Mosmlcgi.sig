@@ -110,7 +110,7 @@ val cgi_is_subreq             : string option
    [part_type prt] is SOME(typ) if the part prt contains a specification
    `Context-Type: typ'; otherwise NONE.
 
-   [part_data prt] is the data contain in part prt; for instance, the
+   [part_data prt] is the data contained in part prt; for instance, the
    contents of a file uploaded via form-based file upload.
 
    [part_field_strings prt fnm] is a (possibly empty) list of the

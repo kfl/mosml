@@ -1,5 +1,5 @@
 (* test/polyhash.sml
-   PS 1998-04-03
+   PS 1998-04-03, 2003-05-24
 *)
 
 load "Polyhash";
@@ -52,4 +52,20 @@ in
 
     val test7 = 
 	check'(fn _ => List.all (unequal blank128) [1,2,3,4,5,6,7]); 
+
+    val t = mkPolyTable (10, Fail "hash") : (int, string) hash_table
+	
+    val test8 = 
+	check'(fn _ => (insert t (7, "foo"); 
+			insert t (5, "goo");
+			numItems t = 2));
+
+    val test9 = 
+	check'(fn _ => (filter (fn _ => true);
+			numItems t = 2));
+
+    val test10 = 
+	check'(fn _ => (filter (fn (i, s) => i > 6) t;
+			numItems t = 1
+			andalso listItems t = [(7, "foo")]));
 end

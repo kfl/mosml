@@ -13,7 +13,9 @@ val rangelist  : int * int -> int * generator -> int list
    [generator] is the type of random number generators, here the
    linear congruential generators from Paulson 1991, 1996.
 
-   [newgenseed seed] returns a random number generator with the given seed.
+   [newgenseed seed] returns a random number generator with the given
+   seed.  Throws exception Fail on seed 0.0 (which gives rise to a
+   degenerate sequence of random numbers).
 
    [newgen ()] returns a random number generator, taking the seed from
    the system clock.
