@@ -39,7 +39,7 @@ local
     fun raiseSys mlOp operand reason =
 	let prim_val errno_    : unit -> int        = 1 "sml_errno";
 	    prim_val errormsg_ : int -> string      = 1 "sml_errormsg"; 
-	    prim_val mkerrno_  : int -> OS.syserror = 1 "identity";
+	    prim_val mkerrno_  : int -> syserror    = 1 "identity";
             val errno = errno_ ()
 	in
 	    if errno = 0 then raiseSysML mlOp operand reason

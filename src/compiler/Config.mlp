@@ -57,7 +57,7 @@ val fulllib = ["Option", "List", "ListPair", "Strbase", "Char", "String",
 	       "Word", "Word8", "Word8Vector", "Word8Array", "Byte",
 	       "BinIO", "CharVector", "CharArray",
 	       "Time", "Timer", "Date", "Path",
-	       "OS", "FileSys", "Process",
+	       "FileSys", "Process", "OS", 
 	       "Mosml", "PP", "CommandLine"]
 
 val preloadedUnitSets = [

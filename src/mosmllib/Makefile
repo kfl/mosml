@@ -9,18 +9,21 @@ include ../Makefile.inc
 
 all: Array.uo Array2.uo Arraysort.uo \
      BasicIO.uo Binaryset.uo Binarymap.uo BinIO.uo Bool.uo Byte.uo \
-     Callback.uo Char.uo CharArray.uo CharVector.uo CommandLine.uo Date.uo \
-     Dynarray.uo Dynlib.uo FileSys.uo Help.uo Int.uo Intmap.uo Intset.uo \
-     List.uo ListPair.uo Listsort.uo Location.uo \
-     Math.uo Misc.uo Mosml.uo NJ93.uo Option.uo \
-     OS.uo Path.uo Polyhash.uo PP.uo Process.uo Random.uo Real.uo \
-     SML90.uo Splaymap.uo Splayset.uo Splaytree.uo \
+     Callback.uo Char.uo CharArray.uo CharVector.uo CommandLine.uo \
+     Date.uo Dynarray.uo Dynlib.uo \
+     FileSys.uo Gdbm.uo Gdimage.uo Help.uo \
+     Int.uo Intmap.uo Intset.uo IO.uo \
+     Lexing.uo List.uo ListPair.uo Listsort.uo Location.uo \
+     Math.uo Misc.uo Mosml.uo Mosmlcgi.uo Mosmlcookie.uo Msp.uo Mysql.uo \
+     NJ93.uo Nonstdio.uo \
+     Obj.uo Option.uo OS.uo \
+     Parsing.uo Path.uo Polygdbm.uo Polyhash.uo Postgres.uo PP.uo Process.uo \
+     Random.uo Real.uo Regex.uo \
+     Signal.uo SML90.uo Socket.uo Splaymap.uo Splayset.uo Splaytree.uo \
      Strbase.uo String.uo StringCvt.uo Substring.uo Susp.uo \
-     TextIO.uo Time.uo Timer.uo Vector.uo \
-     Weak.uo Word.uo Word8.uo Word8Array.uo Word8Vector.uo \
-     Obj.uo Nonstdio.uo Lexing.uo Parsing.uo Mosmlcgi.uo Gdbm.uo Polygdbm.uo \
-     Mosmlcookie.uo Msp.uo Mysql.uo Postgres.uo Regex.uo Socket.uo \
-     Signal.uo Unix.uo Gdimage.uo
+     TextIO.uo Time.uo Timer.uo \
+     Unix.uo Vector.uo \
+     Weak.uo Word.uo Word8.uo Word8Array.uo Word8Vector.uo
 
 # Make with the current compiler
 current:
@@ -32,7 +35,7 @@ clean:
 	rm -f *.uo
 	rm -f Makefile.bak
 	rm -f Array.sml FileSys.sml Help.sml Int.sml Mosml.sml
-	rm -f OS.sml Path.sml Process.sml Strbase.sml 
+	rm -f Path.sml Process.sml Strbase.sml 
 	rm -f Vector.sml Word.sml Word8Array.sml Word8Vector.sml Weak.sml
 
 install:
@@ -42,17 +45,20 @@ install:
 	${INSTALL_DATA} *.sig $(LIBDIR)
 	${INSTALL_DATA} General.fke $(LIBDIR)/General.sig
 	${INSTALL_DATA} Meta.fke $(LIBDIR)/Meta.sig
-	${INSTALL_DATA} OS.fke $(LIBDIR)/OS.sig
 	${INSTALL_DATA} helpsigs.val $(LIBDIR)
 	ln -fs $(BINDIR)/camlrunm $(LIBDIR)/camlrunm
 
-depend: Array.sml FileSys.sml Help.sml Int.sml Mosml.sml OS.sml Path.sml \
+depend: Array.sml FileSys.sml Help.sml Int.sml Mosml.sml Path.sml \
     Process.sml Strbase.sml Vector.sml Word.sml Word8Array.sml \
     Word8Vector.sml Weak.sml
 	rm -f Makefile.bak
 	mv Makefile Makefile.bak
 	$(MOSMLCUT) < Makefile.bak > Makefile
 	$(MOSMLDEP) >> Makefile
+
+# mosmldep does not see that OS depends on FileSys, Path, Process:
+
+OS.ui: FileSys.ui Path.ui Process.ui
 
 ### DO NOT DELETE THIS LINE
 Word8Vector.uo: Word8Vector.ui List.ui Word8.ui 
@@ -68,7 +74,8 @@ Mosml.uo: Mosml.ui Timer.ui FileSys.ui BinIO.ui String.ui List.ui Vector.ui \
 Int.uo: Int.ui String.ui StringCvt.ui Char.ui 
 Help.uo: Help.ui String.ui StringCvt.ui List.ui BasicIO.ui Vector.ui \
     TextIO.ui Char.ui 
-FileSys.uo: FileSys.ui Path.ui List.ui OS.uo Time.ui 
+OS.uo: OS.ui 
+FileSys.uo: FileSys.ui Path.ui List.ui OS.ui Time.ui 
 Array.uo: Array.ui List.ui Vector.ui 
 Gdimage.uo: Gdimage.ui Dynlib.ui Vector.ui 
 Signal.uo: Signal.ui Word.ui 
