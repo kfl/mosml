@@ -1,5 +1,5 @@
 *.ui *.uo
-# Files derivved from .mlp versions
+# Files derived from .mlp versions
 Array.sml
 FileSys.sml
 Help.sml
