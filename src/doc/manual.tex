@@ -4,13 +4,16 @@
 % such omissions are marked somehow), but you may not redistribute the
 % sources.  The authors' names and the Moscow ML URL must be left in place.
 
-\documentclass[fleqn]{article}
+\documentclass[fleqn,a4paper]{article}
 
-\usepackage{a4,isolatin1,mosml,a4wide,pslatex}
+\usepackage{isolatin1,mosml,pslatex}
+\usepackage{geometry}
 \usepackage[T1]{fontenc}
 
 %\pdfcompresslevel=9
 
+% hyperref should be the *last* package loaded
+\usepackage[pdfpagemode=None,colorlinks,urlcolor=blue]{hyperref} 
 \begin{document}
 
 \begin{center}
@@ -59,7 +62,7 @@ Moscow ML library modules \cite{MoscowML:2000:MoscowMLLibrary}.
 \begin{center}
 \begin{tabular}{|c|}\hline
 \rule[-0.4cm]{0cm}{1cm}The Moscow ML home page is\ \
-    \verb$http://www.dina.kvl.dk/~sestoft/mosml.html$\\\hline
+    \url{http://www.dina.kvl.dk/~sestoft/mosml.html}\\\hline
 \end{tabular}
 \end{center}
 
@@ -2771,17 +2774,17 @@ copyrght/copyrght.cl.\\[2ex]
 
 \begin{itemize}
 \item The Moscow ML home page is
-        http://www.dina.kvl.dk/\verb#~#sestoft/mosml.html
+        \url{http://www.dina.kvl.dk/~sestoft/mosml.html}
 \item The Linux executables are in
-        ftp://ftp.dina.kvl.dk/pub/mosml/linux-mos20bin.tar.gz
+        \url{ftp://ftp.dina.kvl.dk/pub/mosml/linux-mos20bin.tar.gz}
 \item The MS Windows executables are in 
-        ftp://ftp.dina.kvl.dk/pub/mosml/win32-mos20bin.zip
+        \url{ftp://ftp.dina.kvl.dk/pub/mosml/win32-mos20bin.zip}
 \item The Macintosh/MacOS (68k and PPC) executables are in\\
-        ftp://ftp.dina.kvl.dk/pub/mosml/mac-mos20bin.sea.hqx
+        \url{ftp://ftp.dina.kvl.dk/pub/mosml/mac-mos20bin.sea.hqx}
 \item The Unix and MS Windows source files are in 
-        ftp://ftp.dina.kvl.dk/pub/mosml/mos20src.tar.gz
+        \url{ftp://ftp.dina.kvl.dk/pub/mosml/mos20src.tar.gz}
 \item The MacOS modified source files (relative to Unix) are in\\
-        ftp://ftp.dina.kvl.dk/pub/mosml/mac-mos20src.sea.hqx
+        \url{ftp://ftp.dina.kvl.dk/pub/mosml/mac-mos20src.sea.hqx}
 \end{itemize}
 
 %You will need gcc, make, and perl to recompile Moscow ML for Unix.
@@ -2844,22 +2847,22 @@ Definition.
 \begin{itemize}
 \item Emden Gansner and John Reppy (editors): Standard ML Basis
   Library, hypertext version:\\ 
-  \verb#http://www.cs.bell-labs.com/~jhr/sml/basis/index.html# \\
-  \verb#http://www.dina.kvl.dk/~sestoft/sml/sml-std-basis.html#
+  \url{http://www.cs.bell-labs.com/~jhr/sml/basis/index.html} \\
+  \url{http://www.dina.kvl.dk/~sestoft/sml/sml-std-basis.html}
   (mirror site)
   
 \item Stephen Gilmore, \emph{Programming in Standard ML'97}, report
   ECS-LFCS-97-364, University of Edinburgh.  At
-  http://www.dcs.ed.ac.uk/lfcsreps/EXPORT/97/ECS-LFCS-97-364/
+  \url{http://www.dcs.ed.ac.uk/lfcsreps/EXPORT/97/ECS-LFCS-97-364}
   
 \item Robert Harper, {\em Introduction to Standard ML\/}, report
   ECS-LFCS-86-14, University of Edinburgh, November 1986 (revised
   1989).  At
-  ftp://ftp.cs.cmu.edu/afs/cs/project/fox/mosaic/intro-notes.ps.
+  \url{ftp://ftp.cs.cmu.edu/afs/cs/project/fox/mosaic/intro-notes.ps}
 
 \item Mads Tofte, {\em Tutorial on Standard ML\/}, Technical Report
   91/18, DIKU, University of Copenhagen, December 1991.  At 
-  ftp://ftp.diku.dk/pub/diku/users/tofte/FPCA-Tutorial/
+  \url{ftp://ftp.diku.dk/pub/diku/users/tofte/FPCA-Tutorial}
 \end{itemize}
 
 \bibliographystyle{plain}

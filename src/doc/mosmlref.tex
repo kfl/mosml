@@ -4,7 +4,7 @@
 % such omissions are marked somehow), but you may not redistribute the
 % sources.  The authors' names and the Moscow ML URL must be left in place.
 
-\documentclass[fleqn]{article}
+\documentclass[fleqn,a4paper]{article}
 
 \def\allttcdots{\ensuremath{\cdots}}
 \newcommand{\x}[1][]{{\bf{*}#1}}
@@ -12,8 +12,9 @@
 \nonstopmode
 \usepackage{alltt}
 
-\usepackage{isolatin1,mosml,a4wide,pslatex}
+\usepackage{isolatin1,mosml,pslatex}
 \usepackage[T1]{fontenc}
+\usepackage{geometry}
 
 % \documentstyle[A4,fleqn,notesart]{article}
 
@@ -24,6 +25,8 @@
 \newcommand{\op}{{\tt op}}
 \newcommand{\longmodid}{{\it longmodid}}
 
+% hyperref should be the *last* package loaded
+\usepackage[pdfpagemode=None,colorlinks,urlcolor=blue]{hyperref}
 \begin{document}
 
 \begin{center}
@@ -58,7 +61,7 @@ Standard ML, see Milner, Tofte, Harper and MacQueen: {\em The
 \begin{center}
 \begin{tabular}{|c|}\hline
 \rule[-0.4cm]{0cm}{1cm}The Moscow ML home page is\ \
-    \verb$http://www.dina.kvl.dk/~sestoft/mosml.html$\\\hline
+    \url{http://www.dina.kvl.dk/~sestoft/mosml.html}\\\hline
 \end{tabular}
 \end{center}
 
@@ -1448,11 +1451,9 @@ indicated as follows:
     mosml/doc/mosmllib/index.html
 \end{verbatim}
 
-\item On the World Wide Web the same pages are online at
+\item On the World Wide Web the same pages are online at\\
+    \url{http://www.dina.kvl.dk/~sestoft/mosmllib/index.html}
 
-\begin{verbatim}
-    http://www.dina.kvl.dk/~sestoft/mosmllib/index.html
-\end{verbatim}
   
   If you do not have the HTML pages, you may download them from the
   Moscow ML home page.
