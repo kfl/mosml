@@ -271,4 +271,23 @@ Suggested approach:
 
 2. The predefined (global) exceptions are simply bound as globalvars
    instead of localvars.  They could be declared in Smlperv by a
-   mechanism similar to initial_prim_basis.
+   mechanism similar to Smltop.sml_initial_VE, which is processed
+   twice in Smltop to build uVarEnv and uTyEnv of General,
+   respectively.  Actually, General.Io is already added this way.
+
+   The dynamic semantics of an exception should be to access an
+   appropriate global:
+
+   Perhaps just replace the exConInfo field by exConAccess, which, for
+   Fail might be
+      SOME (Lprim (Pget_global { qual = "sys", id = ["exn_fail"] }))
+
+
+   The global dynenv should be set using Symtable.reset_linker_tables
+   (for linking) and Rtvals.loadGlobalDynEnv (for the interactive
+   top-level).  It is enough to specify the names in
+   Predef.predef_variables, which is generated automatically (by a
+   script) from runtime/globals.h
+
+
+3. 
