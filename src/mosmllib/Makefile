@@ -19,7 +19,7 @@ all: Array.uo Array2.uo ArraySlice.uo Arraysort.uo \
      NJ93.uo Nonstdio.uo \
      Obj.uo Option.uo OS.uo \
      Parsing.uo Path.uo Polygdbm.uo Polyhash.uo Postgres.uo PP.uo Process.uo \
-     Random.uo Rbset.uo Real.uo Regex.uo \
+     Random.uo Rbset.uo Real.uo Redblackmap.uo Regex.uo \
      Signal.uo SML90.uo Socket.uo Splaymap.uo Splayset.uo Splaytree.uo \
      Strbase.uo String.uo StringCvt.uo Substring.uo Susp.uo \
      TextIO.uo Time.uo Timer.uo \
