@@ -51,11 +51,7 @@ struct
 	  | keyword file     = FILENAME_T file
   
 	fun token stream =
-	    ((*   $ "local"  |> LOCAL_T 
-             || $ "in"     |> IN_T
-	     || $ "end"    |> END_T
-	     || $ "import" |> IMPORT_T
-	     ||*) ident  >>  keyword
+	    (   ident  >>  keyword
 	     || $ "(*" #-- comment 1
 	     || eof        EOF_T
             ) (StringCvt.skipWS getItem stream) 
