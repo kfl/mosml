@@ -579,6 +579,9 @@ quote (") and the asterisk (*) in the closing comment bracket.
 
 ?2 Should a #line directive inside a comment be ignored?  In SML/NJ: yes.
 
+* IntInt.int should be an equality type
+
+* mosmlyac generates non-sml compliant signatures (local in end)
 
 * 2000-09-22 Jeremy Dawson:
 
@@ -605,3 +608,4 @@ If so, could the fact be mentioned in the documentation?
 (At present, when load "x" can cause behaviour that bears no relation
 to anything in x.sml or any other unit that x depends on,
 which is very difficult to diagnose).
+
