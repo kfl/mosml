@@ -21,14 +21,15 @@ helpsigs        Generation of the signature database
 lexyacc         Lexer and parser for a small functional language.
                 A larger example of the use of mosmllex and mosmlyac.
 
-manual          A variant of the small batch compiler example from the manual, 
-                but implemented using structure-mode units only.
-                Illustrates the use of Makefiles and mosmldep dependency inference for
-	        programs consiting of flat, structure-mode units.
+manual          A variant of the small batch compilation example from 
+                the manual, implemented using structure-mode units only.
+                Illustrates the use of Makefiles and mosmldep dependency 
+                inference for programs consisting only of flat 
+                structure-mode units.
 
 modules         Various toy examples illustrating Moscow ML's Modules language,
                 an extension of Standard ML's Modules language.
-		These are small examples without Makefiles.
+                These are small examples without Makefiles.
                
 mls             A simple utility for producing a sorted directory listing
                 (like `ls' in Unix and `dir' in DOS).
@@ -39,17 +40,16 @@ paulson         Sample Standard ML programs (both Core and Modules)
                 Lawrence C. Paulson, ML for the Working Programmer,
                 Second edition.  Cambridge University Press 1996, ISBN
                 0-521-56543-X.  
-		These are large examples without a Makefile.
+                These are large examples without a Makefile.
 
 pretty          Prettyprinting of simple arithmetic expressions.
                 Illustrates the use of installable prettyprinters.
 
 small           Various smaller examples without Makefiles.
 
-units           The small batch compiler example from the manual.
-                Illustrates the use of Makefiles and mosmldep for constructing
-	        dependencies for a program with mixed-mode compilation units. 
+units           The small batch compilation example from the manual.
+                Illustrates the use of Makefiles and mosmldep for 
+                constructing dependencies for a program with mixed-mode 
+                compilation units. 
 
 weak            An example application of weak pointers.
-
-
