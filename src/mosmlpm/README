@@ -1,0 +1,26 @@
+
+This is the first implementation of mosmlpm, thus it probably contains
+lot small bugs.  mosmlpm is modeled after the project manager
+distributed with the ML Kit(http://www.it.edu/research/mlkit) designed
+by Martin Elsman.  But mosmlpm does not share any code with the ML Kit
+implementation.
+
+
+Future plans:
+-------------
+* Make proper documentation together with Martin Elsman.  It is
+  planed that mosmlpm and the project manager for the ML Kit should
+  merge into one in a near future.
+
+* Generalize the grammar for project files:
+  + Allow more that just one toplevel import
+  + Introduce an visibleimport form that exposes the identifiers for
+    imported project files.
+
+* Handle .sig files and resolve unitname conflicts (require support in
+  mosmlc).
+
+* Make a library so as project can be managed in a mosml session.
+
+
+Ken Friis Larsen, June 2000.

@@ -1,4 +1,4 @@
-			   Ken Friis Larsen 31/3, 1/4, 2/4, 3/4 - 2000
+					       Ken Friis Larsen, 2000
 
 Note about the PM prototype
 ---------------------------
@@ -6,14 +6,15 @@ Note about the PM prototype
 * Getting started.
   Compile the source with the command 
     mosmlc -toplevel Parsercomb-sig.sml Parsercomb.sml PMBasic.sml\
-                     PMCompile.sml mosmlpm.sml -o mosmlpm
+                     PMCompile.sml ArgParse-sig.sml ArgParse.sml\
+                     mosmlpm.sml -o mosmlpm
   Now from the toplevel invoke the function 
   PMCompile.compile "sources.pm"
 
   (app load ["Mosml", "PMCompile"]; 
    FileSys.chDir "/home/kfl/programming/ml/mlkit.mosml/kit/src";
    PMCompile.compile "sources.pm";
-   PMCompile.link ["-o moskit "] "sources.pm";
+   PMCompile.link ["-o moskit "] "sources.pm";)
 
 
 * Everything managed by pm is compiled with the command

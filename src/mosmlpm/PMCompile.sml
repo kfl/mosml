@@ -3,10 +3,10 @@ struct
     local open PMBasic in
 
     fun error msg = raise Fail msg
-    val verbose = true
-    fun chat msg = if verbose then
-		      (app print msg; print "\n")
-		   else ()
+    val quiet = ref false
+    fun chat msg = if !quiet then ()
+		   else (app print msg; print "\n")
+
 
     fun insertSep sep []      = []
       | insertSep sep (x::xs) = x :: sep :: insertSep sep xs     
