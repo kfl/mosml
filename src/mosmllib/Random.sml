@@ -1,6 +1,9 @@
 (* Random -- Moscow ML library 1995-04-23, 1999-02-24, 2000-10-24, 
    2004-01-12 *)
 
+(* Perhaps replace with one of Marsaglia's multi-seed generators; see
+   CACM 46, 5 (May 2003) 90-93 or http://home.attbi.com/~glynnec1/random.c *)
+
 type generator = {seedref : real ref}
 
 (* Generating random numbers.  Paulson, page 96 *)

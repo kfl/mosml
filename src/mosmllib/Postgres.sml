@@ -1,5 +1,5 @@
 (* mosml/src/dynlibs/mpq/Postgres.sml.  
-   sestoft@dina.kvl.dk -- 1998 -- version 0.06 of 2001-02-03 *)
+   sestoft@dina.kvl.dk -- 1998 -- version 0.07 of 2004-01-12 *)
 
 open Dynlib;
 
@@ -225,18 +225,18 @@ in
 		fn 1 => Jan | 2 => Feb |  3 => Mar |  4 => Apr
 		 | 5 => May | 6 => Jun |  7 => Jul |  8 => Aug
 		 | 9 => Sep | 10 => Oct | 11 => Nov | 12 => Dec
-		 | _ => raise Fail "Mysql.db_getdatetime 1";
+		 | _ => raise Fail "Postgres.db_getdatetime 1";
 	in date {year=yr, month=tomonth mo, day=da, 
 		 hour=hr, minute=mi, second=se, offset=NONE} end
-        handle Option.Option => raise Fail "Mysql.db_getdatetime 2"
+        handle Option.Option => raise Fail "Postgres.db_getdatetime 2"
 
     fun pq_gettime dbres fno tupno : int * int * int =
 	#1(scantime(Substring.all(pq_getstring dbres fno tupno)))
-	handle Option.Option => raise Fail "Mysql.db_gettime"
+	handle Option.Option => raise Fail "Postgres.db_gettime"
 
     fun pq_getdate dbres fno tupno : int * int * int =
 	#1(scandate (Substring.all (pq_getstring dbres fno tupno)))
-	handle Option.Option => raise Fail "Mysql.db_getdate"
+	handle Option.Option => raise Fail "Postgres.db_getdate"
 end
 
 (*
@@ -314,7 +314,7 @@ datatype dynval =
   | String of string			(* psql text, varchar   *)
   | Date of int * int * int		(* psql date yyyy-mm-dd *)
   | Time of int * int * int             (* psql time hh:mm:ss   *)
-  | DateTime of Date.date		(* psql datetime        *)
+  | DateTime of Date.date		(* psql timestamp        *)
   | Oid of oid				(* psql oid             *)
   | Bytea of Word8Array.array		(* psql bytea           *)
   | NullVal				(* psql NULL            *)
@@ -325,21 +325,21 @@ datatype dyntype =
 
 (* A translation from Postgres types to Moscow ML types: *)
 
-fun totag "bool"     = SOME BoolTy
-  | totag "int4"     = SOME IntTy
-  | totag "int8"     = SOME IntTy
-  | totag "float8"   = SOME RealTy
-  | totag "float4"   = SOME RealTy
-  | totag "text"     = SOME StringTy
-  | totag "varchar"  = SOME StringTy
-  | totag "date"     = SOME DateTy
-  | totag "datetime" = SOME DateTimeTy
+fun totag "bool"      = SOME BoolTy
+  | totag "int4"      = SOME IntTy
+  | totag "int8"      = SOME IntTy
+  | totag "float8"    = SOME RealTy
+  | totag "float4"    = SOME RealTy
+  | totag "text"      = SOME StringTy
+  | totag "varchar"   = SOME StringTy
+  | totag "date"      = SOME DateTy
   | totag "timestamp" = SOME DateTimeTy
-  | totag "abstime"  = SOME DateTimeTy
-  | totag "time"     = SOME TimeTy
-  | totag "oid"      = SOME OidTy
-  | totag "bytea"    = SOME ByteArrTy
-  | totag _          = NONE
+  | totag "abstime"   = SOME DateTimeTy
+  | totag "datetime"  = SOME DateTimeTy (* obsoleted in Postgres 7.3 *)
+  | totag "time"      = SOME TimeTy
+  | totag "oid"       = SOME OidTy
+  | totag "bytea"     = SOME ByteArrTy
+  | totag _           = NONE
     
 (* Translation from Moscow ML types to Postgres types: *)
 
@@ -349,7 +349,7 @@ fun fromtag BoolTy     = "bool"
   | fromtag StringTy   = "text"
   | fromtag TimeTy     = "time"
   | fromtag DateTy     = "date"
-  | fromtag DateTimeTy = "datetime"
+  | fromtag DateTimeTy = "timestamp"
   | fromtag OidTy      = "oid"
   | fromtag ByteArrTy  = "bytea"
   | fromtag (UnknownTy _) = raise Fail "Postgres.fromtag"

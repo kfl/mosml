@@ -1,5 +1,5 @@
 (* Testing the Postgres interface -- 1998-10-29, 1998-11-07,
-   1999-08-08, 1999-09-14, 2000-05-30, 2001-02-03 *)
+   1999-08-08, 1999-09-14, 2000-05-30, 2001-02-03, 2004-01-12 *)
 
 app load ["Int", "Postgres", "Mosml"];
 
@@ -25,7 +25,7 @@ val info = (db pc, host pc, options pc, port pc, tty pc)
 val _ = (execute pc "drop table t"; ()) handle Fail _ => ();
 
 val _ = execute pc "create table t (fb bool, fi int4, ff8 float8,\
-        \ ff4 float4, ftx text, fv varchar, fd date, ftm time, fdt datetime)";
+        \ ff4 float4, ftx text, fv varchar, fd date, ftm time, fdt timestamp)";
 
 fun inst tup = execute pc ("insert into t values " ^ tup)
 
@@ -197,7 +197,7 @@ val test3ha = checkallbounds1 false ~1
 val test3hb = checkallbounds1 false 9
 val test3hc = checkallbounds1 true 8
 
-end             
+end
 
 local
     fun collector () =
