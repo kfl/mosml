@@ -105,7 +105,7 @@ val app         : (char -> unit) -> substring -> unit
    sus = (s, i, n).  Raises Subscript if i' < 0 or i' > n.
 
    [slice (sus, i', SOME n')] returns the substring (s, i+i', n'), where
-   sus = (s, i, n).  Raises Subscript if i' < 0 or n' < 0 or i'+n' >= n.
+   sus = (s, i, n).  Raises Subscript if i' < 0 or n' < 0 or i'+n' > n.
 
    [concat suss] returns a string consisting of the concatenation of
    the substrings.  Equivalent to String.concat (List.map string suss).  

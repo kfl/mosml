@@ -7,7 +7,7 @@ include ../Makefile.inc
 
 # Make with the supplied compiler
 
-all: Array.uo Array2.uo Arraysort.uo \
+all: Array.uo Array2.uo ArraySlice.uo Arraysort.uo \
      BasicIO.uo Binaryset.uo Binarymap.uo BinIO.uo Bool.uo Byte.uo \
      Callback.uo Char.uo CharArray.uo CharVector.uo CommandLine.uo \
      Date.uo Dynarray.uo Dynlib.uo \
@@ -22,7 +22,7 @@ all: Array.uo Array2.uo Arraysort.uo \
      Signal.uo SML90.uo Socket.uo Splaymap.uo Splayset.uo Splaytree.uo \
      Strbase.uo String.uo StringCvt.uo Substring.uo Susp.uo \
      TextIO.uo Time.uo Timer.uo \
-     Unix.uo Vector.uo \
+     Unix.uo Vector.uo VectorSlice.uo \
      Weak.uo Word.uo Word8.uo Word8Array.uo Word8Vector.uo
 
 # Make with the current compiler
@@ -61,7 +61,11 @@ depend: Array.sml FileSys.sml Help.sml Int.sml Mosml.sml Path.sml \
 OS.ui: FileSys.ui Path.ui Process.ui
 
 ### DO NOT DELETE THIS LINE
-Word8Vector.uo: Word8Vector.ui List.ui Word8.ui 
+VectorSlice.uo: VectorSlice.ui Vector.ui 
+VectorSlice.ui: Vector.ui 
+ArraySlice.uo: ArraySlice.ui Vector.ui Array.ui VectorSlice.ui 
+ArraySlice.ui: Vector.ui Array.ui VectorSlice.ui 
+Word8Vector.uo: Word8Vector.ui String.ui List.ui Word8.ui 
 Word8Array.uo: Word8Array.ui List.ui Word8.ui Word8Vector.ui 
 Word.uo: Word.ui String.ui StringCvt.ui Char.ui 
 Weak.uo: Weak.ui 
@@ -75,8 +79,7 @@ Int.uo: Int.ui String.ui StringCvt.ui Char.ui
 Help.uo: Help.ui String.ui StringCvt.ui List.ui BasicIO.ui Vector.ui \
     TextIO.ui Char.ui 
 OS.uo: OS.ui 
-FileSys.uo: FileSys.ui Path.ui List.ui OS.ui Time.ui 
-Array.uo: Array.ui List.ui Vector.ui 
+FileSys.uo: FileSys.ui Path.ui List.ui Time.ui 
 Gdimage.uo: Gdimage.ui Dynlib.ui Vector.ui 
 Signal.uo: Signal.ui Word.ui 
 Signal.ui: Word.ui 
@@ -129,6 +132,7 @@ Parsing.uo: Parsing.ui Lexing.ui Vector.ui Obj.uo
 Parsing.ui: Lexing.ui Vector.ui Obj.uo 
 PP.uo: PP.ui String.ui List.ui Vector.ui Array.ui TextIO.ui 
 Option.uo: Option.ui 
+Array.uo: Array.ui List.ui Vector.ui 
 Nonstdio.uo: Nonstdio.ui BasicIO.ui CharArray.ui 
 Nonstdio.ui: BasicIO.ui CharArray.ui Char.ui 
 NJ93.uo: NJ93.ui String.ui List.ui BasicIO.ui TextIO.ui 
@@ -158,7 +162,7 @@ Date.uo: Date.ui String.ui Real.ui StringCvt.ui Option.ui Vector.ui Int.ui \
     Time.ui Char.ui 
 Date.ui: StringCvt.ui Time.ui 
 CommandLine.uo: CommandLine.ui Vector.ui 
-CharVector.uo: CharVector.ui Word8Vector.ui Char.ui 
+CharVector.uo: CharVector.ui String.ui Word8Vector.ui Char.ui 
 CharVector.ui: Char.ui 
 CharArray.uo: CharArray.ui CharVector.ui Word8Array.ui Char.ui 
 CharArray.ui: CharVector.ui Char.ui 
