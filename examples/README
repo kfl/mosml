@@ -21,8 +21,10 @@ helpsigs        Generation of the signature database
 lexyacc         Lexer and parser for a small functional language.
                 A larger example of the use of mosmllex and mosmlyac.
 
-manual          The small batch compiler example from the manual.
-                Illustrates the use of Makefiles.
+manual          A variant of the small batch compiler example from the manual, 
+                but implemented using structure-mode units only.
+                Illustrates the use of Makefiles and mosmldep dependency inference for
+	        programs consiting of flat, structure-mode units.
 
 modules         Various toy examples illustrating Moscow ML's Modules language,
                 an extension of Standard ML's Modules language.
@@ -44,5 +46,10 @@ pretty          Prettyprinting of simple arithmetic expressions.
 
 small           Various smaller examples without Makefiles.
 
+units           The small batch compiler example from the manual.
+                Illustrates the use of Makefiles and mosmldep for constructing
+	        dependencies for a program with mixed-mode compilation units. 
+
 weak            An example application of weak pointers.
+
 
