@@ -192,7 +192,8 @@ val copyMod : (TyName * TyApp) list -> (TypeVar * Type) list -> Mod -> Mod;
 val copyRecStr : (TyName * TyApp) list -> (TypeVar * Type) list -> RecStr -> RecStr; 
 val copyStr : (TyName * TyApp) list -> (TypeVar * Type) list -> Str -> Str; 
 val copyGenFun : (TyName * TyApp) list -> (TypeVar * Type) list -> GenFun -> GenFun; 
-
+val copyTypeScheme : (TyName * TyApp) list -> (TypeVar * Type) list 
+                     -> TypeScheme -> TypeScheme
 val parameteriseTyNameSet: TyNameSet -> TyNameSet -> (TyNameSet * (TyName * TyApp) list);
 
 val conEnvOfTyApp: TyApp -> ConEnv option;
@@ -231,8 +232,5 @@ val lookupVEofEnv : Environment -> string -> (int*  (TypeScheme *
 (* First protect, then restore the current type state (current binding level + printer state)  after applying f *)
 val protectCurrentTypes: (unit -> 'a) -> unit;
 val resetTypes: unit -> unit;
-
-val copyTypeScheme : (TyName * TyApp) list -> (TypeVar * Type) list 
-                     -> TypeScheme -> TypeScheme
 
 end;
