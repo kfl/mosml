@@ -129,9 +129,9 @@ promote:
 	test -f ../mosmllnk.orig || cp ../mosmllnk ../mosmllnk.orig
 	test -f ../mosmllex.orig || cp ../mosmllex ../mosmllex.orig
 	test -f ../mosmllib/Callback.sml.orig || (echo "patching Callback.sml";mv ../mosmllib/Callback.sml ../mosmllib/Callback.sml.orig;cp patch/Callback.sml ../mosmllib/Callback.sml)
-	$(MOSMLL) $(LINKFLAGS) -o mosmlcmp $(C_LIBOBJS) $(COMP_OBJS) $(C_OBJS)
-	$(MOSMLL) $(LINKFLAGS) -o mosmllnk $(L_LIBOBJS) $(L_OBJS) 
-	$(MOSMLL) $(LINKFLAGS) -o mosmltop $(T_LIBOBJS) $(T_OBJS) 
+	#$(MOSMLL) $(LINKFLAGS) -o mosmlcmp $(C_LIBOBJS) $(COMP_OBJS) $(C_OBJS)
+	#$(MOSMLL) $(LINKFLAGS) -o mosmllnk $(L_LIBOBJS) $(L_OBJS) 
+	#$(MOSMLL) $(LINKFLAGS) -o mosmltop $(T_LIBOBJS) $(T_OBJS) 
 	test -f mosmllnk && cp mosmllnk ../mosmllnk
 	test -f mosmlcmp && cp mosmlcmp ../mosmlcmp
 	test -f ../lex/mosmllex && cp ../lex/mosmllex ../mosmllex

@@ -25,7 +25,7 @@ val mkValIt : Exp -> Dec;
 val domPat : Pat -> string list;
 val domPatAcc : Pat -> string list -> string list;
 val varsOfPatAcc : Pat -> IdInfo list -> IdInfo list;
-val varsOfTy : Ty -> IdInfo list; (* cvr: TODO remove *)
+(* val varsOfTy : Ty -> IdInfo list; (* cvr: TODO remove *)*)
 val curriedness : Match -> int;
 
 val printExp : Exp -> unit;

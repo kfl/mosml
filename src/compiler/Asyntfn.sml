@@ -174,6 +174,7 @@ fun varsOfPatAcc (_, pat') iis =
   | LAYEREDpat(p1,p2) => varsOfPatAcc p2 (varsOfPatAcc p1 iis)
 ;
 
+(*
 (* cvr: TODO remove varsOfTyAcc fns *) 
 fun varsOfTyAcc (_, ty') iis =
   case ty' of
@@ -191,6 +192,7 @@ fun varsOfTyAcc (_, ty') iis =
 ;
 (* cvr: TODO remove *)
 fun varsOfTy ty = varsOfTyAcc ty [];
+*)
 
 fun curriedness (MRule(ref pats,_) :: _) = List.length pats
   | curriedness _ = fatalError "curriedness"

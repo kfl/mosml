@@ -480,8 +480,43 @@ fun scopedTyVars UE pars unguardedTyVars =
 ;
 *)
 (* cvr: REVIEW I think the correct definitions should be: *)
-fun scopedTyVars UE pars unguardedTyVars =
-  pars U (list_subtract unguardedTyVars (map fst UE))
+fun scopedTyVars loc UE pars unguardedTyVars =
+   let val scopedtyvars = map fst UE
+   in
+       if (!currentCompliance) <> Liberal 
+	   then (app (fn v =>
+		      if member v scopedtyvars
+			  then case !currentCompliance of
+			      Orthodox => 
+				  (msgIBlock 0;
+				   errLocation loc;
+				   errPrompt "Compliance Error: ";msgEOL();
+				   errPrompt "The phrase, although accepted as a Moscow ML extension,";msgEOL();
+				   errPrompt "is not supported by the Definition of Standard ML:"; msgEOL();
+				   errPrompt "the explicit type variable ";msgEOL();
+				   errPrompt "  "; msgString v;msgEOL();
+				   errPrompt "is already in scope and should not be redeclared";
+				   msgEOL();
+				   msgEBlock();
+				   raise Toplevel)
+			    |  Conservative => 
+				  (msgIBlock 0;
+				   errLocation loc;
+				   errPrompt "Compliance Warning: ";msgEOL();
+				   errPrompt "The phrase, although accepted as a Moscow ML extension,";msgEOL();
+				   errPrompt "is not supported by the Definition of Standard ML:"; msgEOL();
+				   errPrompt "the explicit type variable ";msgEOL();
+				   errPrompt "  "; msgString v;msgEOL();
+				   errPrompt "is already in scope and should not be redeclared";
+				   msgEOL();
+				   msgEBlock())
+			    | _  => ()
+		      else ())
+	       pars)
+       else ();
+       (pars U (list_subtract unguardedTyVars scopedtyvars))
+   end
+
 ;
 
 fun incrUE tyvars =
@@ -921,7 +956,7 @@ fun checkRecTy (loc, fs) =
 
 fun checkRecPat (loc, fs) =
        if duplicates (map fst fs) then
-         errorMsg loc "The same label is bound twice in a record type"
+         errorMsg loc "The same label is bound twice in a record pattern"
        else ()
 ;
 
@@ -959,26 +994,62 @@ fun checkAllIdsIn xs ys msg =
 ;
 *)
 
-fun checkAllIdsIn xs ys msg = (); (* cvr: TODO remove *)
+fun checkAllIdsIn loc [] iis desc = ()
+|   checkAllIdsIn loc (v::vs) iis desc = 
+    (if exists (fn (ii':IdInfo) => [v] = #id(#qualid ii'))  iis
+     then ()
+     else (case (!currentCompliance) of
+	       Orthodox => 
+		(msgIBlock 0;
+		 errLocation loc;
+		 errPrompt "Compliance Error: ";msgEOL();
+		 errPrompt "The phrase, although accepted as a Moscow ML extension,";msgEOL();
+		 errPrompt "is not supported by the Definition of Standard ML:"; msgEOL();
+		 errPrompt "the type variable";msgEOL();
+		 errPrompt "  "; msgString v;msgEOL();
+		 errPrompt "should be a parameter of the ";
+		 msgString desc;msgEOL();
+		 msgEBlock();
+		 raise Toplevel)
+	  |  Conservative => 
+		(msgIBlock 0;
+		 errLocation loc;
+		 errPrompt "Compliance Warning: ";msgEOL();
+		 errPrompt "The phrase, although accepted as a Moscow ML extension,";msgEOL();
+		 errPrompt "is not supported by the Definition of Standard ML:"; msgEOL();
+		 errPrompt "the type variable";msgEOL();
+		 errPrompt "  "; msgString v;msgEOL();
+		 errPrompt "should be a parameter of the ";
+		 msgString desc;msgEOL();
+		 msgEBlock();
+		 checkAllIdsIn loc (drop (fn v' => v = v') vs) iis desc)
+	  | _  => ()))
+;
 
-fun checkTypBind (tyvars, tycon, ty) =
+fun checkTypBind (tyvars, tycon, ty as (loc,_)) =
 (
   (* checkTy ty; *) (* cvr: revise *)
   checkDuplIds tyvars
     "Duplicate parameter in a type binding";
-  checkAllIdsIn (varsOfTy ty) tyvars
-    "Unbound parameter in the rhs of a type binding" 
+(*  checkAllIdsIn loc (varsOfTy ty) tyvars
+    "Unbound parameter in the rhs of a type binding"  *)
+  if (!currentCompliance) <> Liberal 
+      then checkAllIdsIn loc (unguardedTy ty) tyvars "type binding"  
+  else ()
 );
 
 fun checkDatBind (tyvars, tycon, cbs) =
 (
-  app (fn ConBind(ii, SOME ty) =>
-                ((* checkRebinding illegalCon ii; *)
+  app (fn ConBind(ii, SOME (ty as (loc,_))) =>
+             ((* checkRebinding illegalCon ii; *)
 	(*	 checkTy ty; *)
-                 checkAllIdsIn (varsOfTy ty) tyvars
-                   "Unbound parameter in the rhs of a datatype binding")
+(*                 checkAllIdsIn (varsOfTy ty) tyvars 
+                   "Unbound parameter in the rhs of a datatype binding" *)
+	      if (!currentCompliance)<> Liberal 
+		  then checkAllIdsIn loc (unguardedTy ty) tyvars "datatype binding"  
+	      else ())
         | ConBind(ii, NONE) => (* checkRebinding illegalCon ii *) ()) 
-          cbs;
+       cbs;
   checkDuplIds tyvars
     "Duplicate parameter in a datatype binding"
 );
@@ -1568,8 +1639,9 @@ fun makeTyName tyvar_list tycon =
 
 fun initialDatBindTE (dbs : DatBind list)=
   foldL
-    (fn (tyvar_list, loctycon as (loc,tycon), _) => fn (LAMBDA(T,env)) =>
-       let val tyname = makeTyName tyvar_list tycon 
+    (fn (datbind as (tyvar_list, loctycon as (loc,tycon), _)) => fn (LAMBDA(T,env)) =>
+       let val _ = checkDatBind datbind
+	   val tyname = makeTyName tyvar_list tycon 
        in
         LAMBDA(tyname::T,
               bindOnceInEnv env loctycon 
@@ -1596,7 +1668,7 @@ fun absTE (TE : TyEnv) =
 
 fun elabTypBind (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv)
   (TE : TyEnv) (tb as (tyvars, loctycon, ty) : TypBind) =
-  let val _ = checkTypBind tb;
+  let val _ = checkTypBind tb 
       val (_,id) = loctycon
       val pars = map (fn tyvar => hd(#id(#qualid tyvar))) tyvars
       val _ = incrBindingLevel();
@@ -1626,8 +1698,9 @@ fun elabTypBindList_opt (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv
   | NONE => NILenv
 ;
 
-fun elabPrimTypBind equ ((tyvars, loctycon) : TypDesc) =
-  let val (_,id) = loctycon
+fun elabPrimTypBind equ (typdesc as (tyvars, loctycon) : TypDesc) =
+  let val _ = checkTypDesc typdesc
+      val (_,id) = loctycon
       val tyname = makeTyName tyvars id
       val tyfun = APPtyfun (NAMEtyapp(tyname))
   in
@@ -1777,7 +1850,8 @@ fun setTags (cbs : ConBind list) =
 
 fun cons x xs = x :: xs;
 
-fun elabDatBind (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE:TyEnv) ((tyvars, loctycon as (loc,tycon), conbind_list) : DatBind) =
+fun elabDatBind (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE:TyEnv) 
+     (datbind as (tyvars, loctycon as (loc,tycon), conbind_list) : DatBind) =
   let val pars = map (fn ii => hd(#id(#qualid ii))) tyvars
 
 (* cvr: TODO The following, commented line should be enough to ensure that
@@ -2046,6 +2120,9 @@ fun elabExp (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (TE : 
       end
   | RECexp(ref (RECre fs)) =>
       let val ls = map fst fs
+	  val _ = if duplicates ls then
+	             errorMsg loc "The same label is bound twice in a record expression"
+		  else ()
           val es = map snd fs
           val ts = map (fn _ => newUnknown()) es
           val fs_t = zip2 ls ts
@@ -2220,8 +2297,9 @@ and elabDec (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv)
   (TE : TyEnv) (onTop : bool)  (loc, dec') =
   case dec' of
     VALdec (tvs, (pvbs, rvbs)) =>
-      let val pars = map (fn ii => hd(#id(#qualid ii))) tvs
-	  val tyvars = scopedTyVars UE pars (unguardedValDec (pvbs, rvbs))
+      let val _ = checkDuplIds tvs "Duplicate explicit type variable"
+	  val pars = map (fn ii => hd(#id(#qualid ii))) tvs
+	  val tyvars = scopedTyVars loc UE pars (unguardedValDec (pvbs, rvbs))
           val ()   = incrBindingLevel()
           val UE'  = incrUE tyvars @ UE
           val VE'  = elabValBind ME FE GE UE' VE TE  pvbs
@@ -2231,8 +2309,9 @@ and elabDec (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv)
         EXISTS([],(NILenv,NILenv,NILenv,closeValBindVE loc pvbs (plusEnv VE' VE''), NILenv))
       end
   | PRIM_VALdec (tyvarseq,pbs) => 
-       let val pars = map (fn ii => hd(#id(#qualid ii))) tyvarseq
-	   val tyvars = scopedTyVars UE pars (unguardedPrimValBindList pbs)
+       let val _ = checkDuplIds tyvarseq "Duplicate explicit type variable"
+	   val pars = map (fn ii => hd(#id(#qualid ii))) tyvarseq
+	   val tyvars = scopedTyVars loc UE pars (unguardedPrimValBindList pbs)
 	   val () = incrBindingLevel()
            val tvs = map (fn tv => newExplicitTypeVar tv) tyvars
 	   val UE' = (zip2 tyvars (map TypeOfTypeVar tvs)) @ UE
@@ -2249,21 +2328,18 @@ and elabDec (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv)
   | FUNdec (ref (UNRESfundec _)) => fatalError "elabDec"
   | FUNdec (ref (RESfundec dec)) => elabDec ME FE GE UE VE TE onTop dec
   | TYPEdec tbs =>
-      let val _ = app checkTypBind tbs;
-	  val tbsTE = elabTypBindList ME FE GE UE VE TE tbs in
+      let val tbsTE = elabTypBindList ME FE GE UE VE TE tbs 
+      in
         setEquality tbsTE;
         EXISTS([],(NILenv,NILenv,NILenv,NILenv, tbsTE))
       end
   | PRIM_TYPEdec(equ, tbs) =>
-      let val _ = app checkTypDesc tbs;
-	  val LAMBDA(T',TE') = elabPrimTypBindList equ tbs
+      let val LAMBDA(T',TE') = elabPrimTypBindList equ tbs
       in
       EXISTS(T',(NILenv,NILenv,NILenv,NILenv,TE'))
       end
   | DATATYPEdec(dbs, tbs_opt) =>
-      let val _ = app checkDatBind dbs;
-	  val _ = appOpt (app checkTypBind) () tbs_opt;
-	  val LAMBDA(T,dbsTE) = initialDatBindTE dbs
+      let val LAMBDA(T,dbsTE) = initialDatBindTE dbs
           val _ = incrBindingLevel();
           val _ = refreshTyNameSet PARAMETERts T;
           val tbsTE = elabTypBindList_opt ME FE GE UE VE (plusEnv TE dbsTE) tbs_opt
@@ -2285,9 +2361,7 @@ and elabDec (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv)
        EXISTS([],(NILenv,NILenv,NILenv,VE,TE))
     end    
   | ABSTYPEdec(dbs, tbs_opt, dec2) =>
-      let val _ = app checkDatBind dbs;
-          val _ = appOpt (app checkTypBind) () tbs_opt;
-          val LAMBDA(T1,dbsTE) = initialDatBindTE dbs
+    let   val LAMBDA(T1,dbsTE) = initialDatBindTE dbs
           val _ = incrBindingLevel();
           val _ = refreshTyNameSet PARAMETERts T1;
           val tbsTE = elabTypBindList_opt ME FE GE UE VE (plusEnv TE dbsTE) tbs_opt
@@ -2920,6 +2994,7 @@ and elabSigExp (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE:TyE
 	      let val S = SofRecStr RS
 		  val _ = incrBindingLevel();
 		  val _ = refreshTyNameSet PARAMETERts T;
+		  val _ = checkDuplIds tyvarseq "Duplicate type parameter"
                   val pars = map (fn tyvar => hd(#id(#qualid tyvar))) tyvarseq
 		  val vs = map (fn tv => newExplicitTypeVar tv) pars
 		  val us = map TypeOfTypeVar vs
@@ -3060,8 +3135,9 @@ and elabSpec  (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (TE 
       in LAMBDA([],STRstr (NILenv, NILenv, NILenv, VE')) end
 *)
     VALspec (tyvarseq,vds) => 
-       let val pars = map (fn ii => hd(#id(#qualid ii))) tyvarseq
-	   val tyvars = scopedTyVars UE pars (unguardedValDescList vds)
+       let val _ = checkDuplIds tyvarseq "Duplicate explicit type variable"
+	   val pars = map (fn ii => hd(#id(#qualid ii))) tyvarseq
+	   val tyvars = scopedTyVars loc UE pars (unguardedValDescList vds)
 	   val ()   = incrBindingLevel()
            val tvs = map (fn tv => newExplicitTypeVar tv) tyvars
 	   val UE'  = (zip2 tyvars (map TypeOfTypeVar tvs)) @ UE
@@ -3076,8 +3152,9 @@ and elabSpec  (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (TE 
  	  LAMBDA([],STRstr (NILenv, NILenv,NILenv, NILenv, VE'))
        end
  | PRIM_VALspec (tyvarseq,pbs) => 
-       let val pars = map (fn ii => hd(#id(#qualid ii))) tyvarseq
-	   val tyvars = scopedTyVars UE pars (unguardedPrimValBindList pbs)
+       let val _ = checkDuplIds tyvarseq "Duplicate explicit type variable"
+	   val pars = map (fn ii => hd(#id(#qualid ii))) tyvarseq
+	   val tyvars = scopedTyVars loc UE pars (unguardedPrimValBindList pbs)
 	   val () = incrBindingLevel()
            val tvs = map (fn tv => newExplicitTypeVar tv) tyvars
 	   val UE' = (zip2 tyvars (map TypeOfTypeVar tvs)) @ UE
@@ -3097,15 +3174,13 @@ and elabSpec  (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (TE 
          LAMBDA(T',STRstr(NILenv, NILenv, NILenv, TE',NILenv)) (* cvr: TODO handle T'*)
       end
   | TYPEspec tbs =>
-      let val _ = app checkTypBind tbs;
-           val tbsTE = elabTypBindList ME FE GE UE VE TE tbs in
+      let val tbsTE = elabTypBindList ME FE GE UE VE TE tbs 
+      in
         setEquality tbsTE;
         LAMBDA([],STRstr(NILenv, NILenv, NILenv, tbsTE, NILenv))
       end
   | DATATYPEspec(dbs, tbs_opt) =>
-      let val _ = app checkDatBind dbs;
-          val _ = appOpt (app checkTypBind) () tbs_opt;
-	  val LAMBDA(T,dbsTE) = initialDatBindTE dbs (* cvr: TODO handle T *)
+      let val LAMBDA(T,dbsTE) = initialDatBindTE dbs (* cvr: TODO handle T *)
           val _ = incrBindingLevel();
           val _ = refreshTyNameSet PARAMETERts T;
           val tbsTE = elabTypBindList_opt ME FE GE UE VE (plusEnv TE dbsTE) tbs_opt
@@ -3129,7 +3204,7 @@ and elabSpec  (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (TE 
   | EXCEPTIONspec eds =>
       (if U_map unguardedExDesc eds <> [] then
          errorMsg loc "Type variables in an exception description"
-       else (); (*cvr: should be removed? *)
+       else (); (* cvr: TODO can be relaxed? *)
        LAMBDA([],STRstr(NILenv, NILenv, NILenv, NILenv,elabExDescList ME FE GE [] VE TE onTop eds)))
   | STRUCTUREspec mds =>
       let val LAMBDA(T,ME') = elabModDescList ME FE GE UE VE TE mds
