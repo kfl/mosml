@@ -51,7 +51,7 @@
 
 + Cleanup of the dynlibs; moved stable structures to src/mosmllib
 
-* Fix mgd dynlib to use new GD package and PNG format.
++ Fix mgd dynlib to use new GD package and PNG format.
 
 + Fix mosmllib/test/Makefile to create sym- and hardlinks as needed
 
@@ -74,3 +74,5 @@
 * Perhaps fix mgdbm to use new GDBM?
 
 * Inexhaustive and redundant excon matches -- why not reported correctly?
+
+* Add Odbc interface til unixODBC.
