@@ -218,7 +218,7 @@ end
 %type <Asynt.ModDesc list> ModDesc_seq1 AndModDesc_opt
 %type <Asynt.FunDesc list> FunDesc_seq1 AndFunDesc_opt
 %type <Asynt.SigExp> SigExp FunDescBody 
-%type <Asynt.SigExp list> SigExp_seq
+%type <Asynt.SigId list> SigId_seq2
 %type <Asynt.LongTyCon list> LongTyConEqn LongTyConEqnTail
 %type <Asynt.LongModId list> LongModIdEqnTail  LongModIdEqn 
 %type <Location * (Asynt.LongModId list)> LongModIdEqnWithLoc 
@@ -956,20 +956,24 @@ KWCoreSpec :
                                 { mkLoc(FIXITYspec(NONFIXst, $2)) }
 ;
 
+SigId_seq2 : 
+    SigId SigId_seq2          {$1::$2}
+  | SigId SigId               {[$1,$2]}
+;
+
 KWModuleSpec :
     STRUCTURE ModDesc_seq1      { mkLoc(STRUCTUREspec $2)}
-  | FUNCTOR FunDesc_seq1         { mkLoc(FUNCTORspec $2)}
-  | INCLUDE SigExp_seq   { mkLoc(foldR (fn sigexp => fn spec => (SEQspec(mkLoc(INCLUDEspec sigexp),mkLoc(spec))))
-	                               (EMPTYspec)
-                                       ($2))} 
-  | SIGNATURE SigBind_seq1         { mkLoc(SIGNATUREspec $2)}
+  | FUNCTOR FunDesc_seq1        { mkLoc(FUNCTORspec $2)}
+  | INCLUDE SigExp   		{ mkLoc(INCLUDEspec $2)}
+  | INCLUDE SigId_seq2          /* derived form */
+	{ mkLoc(foldR (fn locsigid => fn spec => 
+		       (SEQspec(mkLoc(INCLUDEspec (xLR(locsigid),
+						   SIGIDsigexp locsigid)),
+				mkLoc(spec))))
+		      (EMPTYspec)
+		      ($2))} 
+  | SIGNATURE SigBind_seq1      { mkLoc(SIGNATUREspec $2)}
 ;
-
-SigExp_seq :
-    SigExp SigExp_seq {$1 :: $2}
-  | SigExp {[$1]}
-;
-
 
 ValDesc :
     OpIdent COLON Ty AndValDesc_opt
