@@ -66,17 +66,24 @@
   unnecessarily slow). The matching function may return an `envelope'
   of let-bindings?
 
-* If we change constructor ordering, change also dynslib/interface/cside.c 
+* If we change constructor ordering, change also dynlibs/interface/cside.c 
 
 * Include runtime system *.h files in distribution (for the sake of
   user-written C code and dynlibs)
 
 * Perhaps fix mgdbm to use new GDBM?
 
-* Inexhaustive and redundant excon matches -- why not reported correctly?
++ Inexhaustive and redundant excon matches -- why not reported correctly?
+  Because EExn carries IdInfo as argument, and that includes the location 
+  of the identifier.  Of course no two identifier occurrences have the same 
+  location.  How fix it?  Translate the exnname accesses early, and
+  compare the access paths (the lambda code): equal access paths must
+  produce equal string refs...
 
 * Add Odbc interface til unixODBC.
 
-* .h files
++ .h files in mosml/include
 
-+ move .so files to lib
++ make dynlibs/* refer to mosml/include
+
++ move .so files from mosml/bin to mosml/lib

@@ -497,10 +497,10 @@ ba> val it = CONSab{a = "a", b = "b"} : (string, string) AB
 > val eew1 = true : bool
 > val eec1 = true : bool
 > val eeg1 = true : bool
-User: 0.570  System: 0.000  GC: 0.000  Real: 0.571
+User: 1.190  System: 0.010  GC: 0.000  Real: 1.217
 > val it = 7 : int
 > val loop2 = fn : int -> int
-User: 0.530  System: 0.000  GC: 0.000  Real: 0.529
+User: 1.240  System: 0.010  GC: 0.000  Real: 1.245
 > val it = 7 : int
 > val maxi = fn : int array -> int * int
 [closing file "ovlsucc.sml"]
@@ -747,6 +747,13 @@ File "testmatc.sml", line 225-228, characters 4-63:
 !   | fexc1 B = 2
 !   | fexc1 A = 3
 !   | fexc1 C = 4.
+! Warning: some cases are unused in this match.
+
+File "testmatc.sml", line 225-228, characters 4-63:
+! ....fexc1 A = 1
+!   | fexc1 B = 2
+!   | fexc1 A = 3
+!   | fexc1 C = 4.
 ! Warning: pattern matching is not exhaustive
 
 > val fexc1 = fn : exn -> int
@@ -760,6 +767,13 @@ File "testmatc.sml", line 225-228, characters 4-63:
   exn Z = fn : int -> exn
 > val fexc2 = fn : exn -> int
 > val test41a = "OK" : string
+File "testmatc.sml", line 265-268, characters 5-71:
+! 	....fexc11 A = 1
+! 	  | fexc11 B = 2
+! 	  | fexc11 A = 3
+! 	  | fexc11 C = 4.
+! Warning: some cases are unused in this match.
+
 File "testmatc.sml", line 265-268, characters 5-71:
 ! 	....fexc11 A = 1
 ! 	  | fexc11 B = 2
