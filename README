@@ -121,6 +121,8 @@ AVAILABILITY
 
     * The Moscow ML home page is at  
         http://www.dina.kvl.dk/~sestoft/mosml.html
+    * Moscow ML library documentation
+        http://www.dina.kvl.dk/~sestoft/mosmllib/
     * The Linux executables (and documentation) are in
         ftp://ftp.dina.kvl.dk/pub/mosml/linux-mos20bin.tar.gz
     * The MS Windows executables are in 
@@ -129,7 +131,7 @@ AVAILABILITY
         ftp://ftp.dina.kvl.dk/pub/mosml/mos20bin.zip
     * The Macintosh/MacOS (68k and PPC) executables are in
         ftp://ftp.dina.kvl.dk/pub/mosml/mac-mos20bin.sea.hqx
-    * The Unix source files (no documentation) are in
+    * The Unix source files (and documentation) are in
         ftp://ftp.dina.kvl.dk/pub/mosml/mos20src.tar.gz
     * The MacOS modified source files (relative to Unix) are in
         ftp://ftp.dina.kvl.dk/pub/mosml/mac-mos20src.sea.hqx
