@@ -763,7 +763,7 @@ WhereModBind_opt :
 	
 
 TyConPath : 
-      LongTypeIdent  WhereModBind_opt     {(case $2 of 
+      LongTypeIdent WhereModBind_opt     {(case $2 of 
 	                             NONE => mkLoc(LONGtyconpath $1)
 	                           | SOME (modid,modexp) => 
 	                             mkLoc(WHEREtyconpath($1,modid,modexp))) }
