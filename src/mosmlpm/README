@@ -26,7 +26,8 @@ Future plans:
 How to bootstrap:
 -----------------
 1. make
-2. camlrunm mosmlpm mosmlpm.pm
+2. mv mosmlpm pm
+3. camlrunm pm mosmlpm.pm
 
 
 Known Bugs:

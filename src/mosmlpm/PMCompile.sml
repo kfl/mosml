@@ -1,4 +1,4 @@
-structure PMCompile =
+functor PMCompile (Comp : COMPILER_INTERFACE) =
 struct
     local open PMBasic in
 
@@ -101,21 +101,6 @@ struct
                               ))
 	end
 
-
-    local structure P = OS.Process
-    in
-    fun mosmlc debug options files file =
-	let val cont  = options @ (files @ [file])
-	    val args  = insertSep " " cont
-	    val sargs = String.concat ("mosmlc -c "::args)
-	in  
-	    debug [sargs] 
-	  ; P.system sargs = P.success
-	end
-    end
-
-
-
 (*
     fun makeTempName file =
 	let val {base,ext} = OS.Path.splitBaseExt file
@@ -195,7 +180,7 @@ struct
 				      else ["-structure"]
 			fun compile file =
 			    ( chat ["Compiling: ", file] 
-			    ; mosmlc debug options (rev(List.concat(files context))) file
+			    ; Comp.compile debug options (rev(List.concat(files context))) file
 			    )
 			val (dirty, files) = recompile pmfile context name
 			val status = check compile files 
@@ -312,12 +297,9 @@ struct
 	    fun makeUo file = if isSML file then SOME(toUo file)
 			      else NONE
 	    val uofiles  = List.mapPartial makeUo smlfiles
-	    val args = 
-		String.concat("mosmlc -toplevel -o ":: outfile :: " " ::
-				     options @ (insertSep " " uofiles))
+	  
 	in  chat ["Linking: ", outfile]
-          ; debug [args]
-          ; Process.system args = Process.success
+          ; Comp.link debug options uofiles outfile
 	end
 
     end

@@ -6,6 +6,7 @@ val usage =
      \  -quiet          Make mosmlpm less chatty\n\
      \  -standalone     Pass the option -standalone on to mosmlc\n"
 
+structure PMCompile = PMCompile (Compiler)
 
 local
     val compileOnly = ref false
