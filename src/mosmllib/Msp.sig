@@ -1,4 +1,4 @@
-(* Msp -- utilities for ML Server Pages and CGI scripts 2000-01-22 v 0.6 *)
+(* Msp -- utilities for ML Server Pages and CGI scripts 2000-02-04 v 0.7 *)
 
 (* Efficiently concatenable word sequences *)
 
@@ -409,10 +409,10 @@ val myshowquery   : Mysql.dbconn -> string -> wseq
 
    HTML encoding functions:
 
-   [urlencode s] returns the url-encoding of s.  That is, space (ASCII
-   32) is replaced by `+' and every non-alphanumeric character c except 
-   -_.  is replaced by %hh where hh is the hexadecimal representation 
-   of the ASCII code of c.
+   [urlencode s] returns the url-encoding of s.  That is, space (ASCII 32) 
+   is replaced by `+' and every non-alphanumeric character c except 
+   the characters - _ . is replaced by %hh, where hh is the hexadecimal 
+   representation of the ASCII code of c.
 
    [htmlencode s] returns the html-encoding of s.  That is, < and >
    are replaced by &lt; and &gt; respectively, and & is replaced by 
