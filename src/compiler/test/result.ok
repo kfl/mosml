@@ -2080,56 +2080,64 @@ Enter `quit();' to quit.
 !   L:G;
 !   ^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: type t is specified in the signature as 
+! Missing declaration: type constructor t
+! is specified in the signature as 
 !   type t = unit
 ! but not declared in the module
 - ! Toplevel input:
 !   LL:functor(L:L)->G;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: type t of the range is specified in the signature as 
+! Missing declaration: type constructor t of the range
+! is specified in the signature as 
 !   type t = unit
 ! but not declared in the module
 - ! Toplevel input:
 !   GL:functor(L:L)->L;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: type t of the domain is specified in the module as 
+! Missing declaration: type constructor t of the domain
+! is specified in the module as 
 !   type t = unit
 ! but not declared in the signature
 - ! Toplevel input:
 !   YL:sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: type Y.t is specified in the signature as 
+! Missing declaration: type constructor Y.t
+! is specified in the signature as 
 !   type t = unit
 ! but not declared in the module
 - ! Toplevel input:
 !   L_YL:functor(L:L)->sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: type Y.t of the range is specified in the signature as 
+! Missing declaration: type constructor Y.t of the range
+! is specified in the signature as 
 !   type t = unit
 ! but not declared in the module
 - ! Toplevel input:
 !   YG_L:functor(YL:sig structure Y: L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: type Y.t of the domain is specified in the module as 
+! Missing declaration: type constructor Y.t of the domain
+! is specified in the module as 
 !   type t = unit
 ! but not declared in the signature
 - ! Toplevel input:
 !   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: type Y.t of the domain of the range is specified in the module as 
+! Missing declaration: type constructor Y.t of the domain of the range
+! is specified in the module as 
 !   type t = unit
 ! but not declared in the signature
 - ! Toplevel input:
 !   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: type Y.t of the domain of the range of F is specified in the module as 
+! Missing declaration: type constructor Y.t of the domain of the range of F
+! is specified in the module as 
 !   type t = unit
 ! but not declared in the signature
 - > signature G = {val x : unit}
@@ -2138,56 +2146,64 @@ Enter `quit();' to quit.
 !   L:G;
 !   ^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: value x is specified in the signature as 
+! Missing declaration: value x
+! is specified in the signature as 
 !   val x : unit
 ! but not declared in the module
 - ! Toplevel input:
 !   LL:functor(L:L)->G;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: value x of the range is specified in the signature as 
+! Missing declaration: value x of the range
+! is specified in the signature as 
 !   val x : unit
 ! but not declared in the module
 - ! Toplevel input:
 !   GL:functor(L:L)->L;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: value x of the domain is specified in the module as 
+! Missing declaration: value x of the domain
+! is specified in the module as 
 !   val x : unit
 ! but not declared in the signature
 - ! Toplevel input:
 !   YL:sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: value Y.x is specified in the signature as 
+! Missing declaration: value Y.x
+! is specified in the signature as 
 !   val x : unit
 ! but not declared in the module
 - ! Toplevel input:
 !   L_YL:functor(L:L)->sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: value Y.x of the range is specified in the signature as 
+! Missing declaration: value Y.x of the range
+! is specified in the signature as 
 !   val x : unit
 ! but not declared in the module
 - ! Toplevel input:
 !   YG_L:functor(YL:sig structure Y: L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: value Y.x of the domain is specified in the module as 
+! Missing declaration: value Y.x of the domain
+! is specified in the module as 
 !   val x : unit
 ! but not declared in the signature
 - ! Toplevel input:
 !   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: value Y.x of the domain of the range is specified in the module as 
+! Missing declaration: value Y.x of the domain of the range
+! is specified in the module as 
 !   val x : unit
 ! but not declared in the signature
 - ! Toplevel input:
 !   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: value Y.x of the domain of the range of F is specified in the module as 
+! Missing declaration: value Y.x of the domain of the range of F
+! is specified in the module as 
 !   val x : unit
 ! but not declared in the signature
 - > signature G = {structure X : {}}
@@ -2196,56 +2212,64 @@ Enter `quit();' to quit.
 !   L:G;
 !   ^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: structure X is specified in the signature as 
+! Missing declaration: structure X
+! is specified in the signature as 
 !   structure X : {}
 ! but not declared in the module
 - ! Toplevel input:
 !   LL:functor(L:L)->G;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: structure X of the range is specified in the signature as 
+! Missing declaration: structure X of the range
+! is specified in the signature as 
 !   structure X : {}
 ! but not declared in the module
 - ! Toplevel input:
 !   GL:functor(L:L)->L;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: structure X of the domain is specified in the module as 
+! Missing declaration: structure X of the domain
+! is specified in the module as 
 !   structure X : {}
 ! but not declared in the signature
 - ! Toplevel input:
 !   YL:sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: structure Y.X is specified in the signature as 
+! Missing declaration: structure Y.X
+! is specified in the signature as 
 !   structure X : {}
 ! but not declared in the module
 - ! Toplevel input:
 !   L_YL:functor(L:L)->sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: structure Y.X of the range is specified in the signature as 
+! Missing declaration: structure Y.X of the range
+! is specified in the signature as 
 !   structure X : {}
 ! but not declared in the module
 - ! Toplevel input:
 !   YG_L:functor(YL:sig structure Y: L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: structure Y.X of the domain is specified in the module as 
+! Missing declaration: structure Y.X of the domain
+! is specified in the module as 
 !   structure X : {}
 ! but not declared in the signature
 - ! Toplevel input:
 !   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: structure Y.X of the domain of the range is specified in the module as 
+! Missing declaration: structure Y.X of the domain of the range
+! is specified in the module as 
 !   structure X : {}
 ! but not declared in the signature
 - ! Toplevel input:
 !   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: structure Y.X of the domain of the range of F is specified in the module as 
+! Missing declaration: structure Y.X of the domain of the range of F
+! is specified in the module as 
 !   structure X : {}
 ! but not declared in the signature
 - > signature G = {functor F : {}->{}}
@@ -2254,56 +2278,64 @@ Enter `quit();' to quit.
 !   L:G;
 !   ^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: functor F is specified in the signature as 
+! Missing declaration: functor F
+! is specified in the signature as 
 !   functor F : {}->{}
 ! but not declared in the module
 - ! Toplevel input:
 !   LL:functor(L:L)->G;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: functor F of the range is specified in the signature as 
+! Missing declaration: functor F of the range
+! is specified in the signature as 
 !   functor F : {}->{}
 ! but not declared in the module
 - ! Toplevel input:
 !   GL:functor(L:L)->L;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: functor F of the domain is specified in the module as 
+! Missing declaration: functor F of the domain
+! is specified in the module as 
 !   functor F : {}->{}
 ! but not declared in the signature
 - ! Toplevel input:
 !   YL:sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: functor Y.F is specified in the signature as 
+! Missing declaration: functor Y.F
+! is specified in the signature as 
 !   functor F : {}->{}
 ! but not declared in the module
 - ! Toplevel input:
 !   L_YL:functor(L:L)->sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: functor Y.F of the range is specified in the signature as 
+! Missing declaration: functor Y.F of the range
+! is specified in the signature as 
 !   functor F : {}->{}
 ! but not declared in the module
 - ! Toplevel input:
 !   YG_L:functor(YL:sig structure Y: L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: functor Y.F of the domain is specified in the module as 
+! Missing declaration: functor Y.F of the domain
+! is specified in the module as 
 !   functor F : {}->{}
 ! but not declared in the signature
 - ! Toplevel input:
 !   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: functor Y.F of the domain of the range is specified in the module as 
+! Missing declaration: functor Y.F of the domain of the range
+! is specified in the module as 
 !   functor F : {}->{}
 ! but not declared in the signature
 - ! Toplevel input:
 !   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Missing declaration: functor Y.F of the domain of the range of F is specified in the module as 
+! Missing declaration: functor Y.F of the domain of the range of F
+! is specified in the module as 
 !   functor F : {}->{}
 ! but not declared in the signature
 - > signature G = {val 'a x : 'a -> 'a}
@@ -3342,7 +3374,8 @@ Enter `quit();' to quit.
 !     sig 
 !     end.
 ! Illegal recursive signature: the body does not match the forward specification...
-! Missing declaration: type a is specified in the forward specification as 
+! Missing declaration: type constructor a
+! is specified in the forward specification as 
 !   type a = a
 ! but not declared in the body
 - ! Toplevel input:
