@@ -66,8 +66,6 @@
   unnecessarily slow). The matching function may return an `envelope'
   of let-bindings?
 
-* If we change constructor ordering, change also dynlibs/interface/cside.c 
-
 + Include runtime system *.h files in distribution (for the sake of
   user-written C code and dynlibs)
 
@@ -242,4 +240,13 @@ value input_nonblocking(value channel, value buff, value start, value length) /*
 
   Add a formatting (unparsing) module called Format, using Olivier's
   ideas but avoiding repeated string concatenation (e.g. using a
-  wseq-like structure) and having also a prsep style iterator-with-separator. 
+  wseq-like structure) and having also a prsep style
+  iterator-with-separator plus an prmap style iterator.
+
+* If we change constructor ordering, change also dynlibs/interface/cside.c  
+
+  Some change in runtime/sys.c and/or runtime/alloc.c wrt TextIO,
+  BasicIO, BinIO, Nonstdio.
+
+  Others?
+
