@@ -2,7 +2,7 @@
 
 # Where to install stuff
 
-MOSMLHOME=${HOME}/mosml
+MOSMLHOME=${HOME}/utils/mosml2.0
 
 # Various utility programs
 INSTALL_PROGRAM=cp
@@ -28,6 +28,14 @@ CPP=/lib/cpp -P -traditional -Dunix -Umsdos
 STRIP=strip
 LD=gcc -rdynamic
 DYNLD=ld -shared
+
+# For FreeBSD, use:
+# -----------------
+# CPP=/usr/bin/cpp -P -traditional -Dunix -Umsdos
+# STRIP=strip
+# LD=gcc -export-dynamic
+# DYNLD=ld -shared
+# ADDRUNLIBS=
 
 # For MacOS X, use:
 # -----------------
