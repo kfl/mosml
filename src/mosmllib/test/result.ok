@@ -437,15 +437,15 @@ Enter `quit();' to quit.
 > val checkrange = fn : int * int -> (int -> bool) -> string
 [closing file "auxil.sml"]
 > val it = () : unit
-This is (local time) now:        Tue Oct 31 09:26:25 2000
-This is UTC now:                 Tue Oct 31 08:26:25 2000
-This is an hour from now:        Tue Oct 31 10:26:25 2000
-This is a day from now:          Wed Nov  1 09:26:25 2000
-This is a week from now:         Tue Nov  7 09:26:25 2000
-This is 120 days from now:       Wed Feb 28 09:26:25 2001
-This is 160 days from now:       Mon Apr  9 10:26:25 2001
-This is 200 days from now:       Sat May 19 10:26:25 2001
-This is 240 days from now:       Thu Jun 28 10:26:25 2001
+This is (local time) now:        Wed Nov  1 19:58:37 2000
+This is UTC now:                 Wed Nov  1 18:58:37 2000
+This is an hour from now:        Wed Nov  1 20:58:37 2000
+This is a day from now:          Thu Nov  2 19:58:37 2000
+This is a week from now:         Wed Nov  8 19:58:37 2000
+This is 120 days from now:       Thu Mar  1 19:58:37 2001
+This is 160 days from now:       Tue Apr 10 20:58:37 2001
+This is 200 days from now:       Sun May 20 20:58:37 2001
+This is 240 days from now:       Fri Jun 29 20:58:37 2001
 This is the epoch (UTC):         Thu Jan  1 00:00:00 1970
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
@@ -454,10 +454,10 @@ The UTC millenium (local time):  Sat Jan  1 01:00:00 2000
 The local millenium (UTC time):  Fri Dec 31 23:00:00 1999
 The UTC+01 millenium (UTC):      Fri Dec 31 23:00:00 1999
 The UTC-01 millenium (UTC):      Sat Jan  1 01:00:00 2000
-This is today's number:          305 (internally: 304)
-This is today's weekday:         Tuesday
-This is the name of this month:  October
-Today's ISO date:                2000-10-31
+This is today's number:          306 (internally: 305)
+This is today's weekday:         Wednesday
+This is the name of this month:  November
+Today's ISO date:                2000-11-01
 > val test1 = "OK" : string
   val test2 = "OK" : string
   val test3 = "OK" : string
@@ -890,6 +890,24 @@ Should be `Io':
   val test5a = "OK" : string
   val test5b = "OK" : string
 [closing file "mosml.sml"]
+[opening file "process.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val ('a, 'b) seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> (int -> bool) -> string
+[closing file "auxil.sml"]
+> val it = () : unit
+sh: nonsuchprogramexists: command not found
+> val test1 = "OK" : string
+  val test2 = "OK" : string
+  val test3a = "OK" : string
+  val test3b = "OK" : string
+  val test3c = "OK" : string
+  val test4 = "OK" : string
+[closing file "process.sml"]
 [opening file "real.sml"]
 [opening file "auxil.sml"]
 > infix 1 seq
@@ -1221,14 +1239,14 @@ abcde <--- this should read abcde
 > val it = () : unit
 
 Each line below should show roughly the same User, System, and Gc times:
-User: 0.160  System: 0.000  Gc: 0.000  Real: 0.156
-User: 0.160  System: 0.000  Gc: 0.000  Real: 0.158
-User: 0.160  System: 0.000  Gc: 0.000  Real: 0.159
-User: 0.150  System: 0.000  Gc: 0.000  Real: 0.155
-User: 0.160  System: 0.000  Gc: 0.000  Real: 0.159
-User: 0.150  System: 0.000  Gc: 0.000  Real: 0.152
-User: 0.160  System: 0.000  Gc: 0.000  Real: 0.157
-User: 0.150  System: 0.000  Gc: 0.000  Real: 0.158
+User: 0.150  System: 0.000  Gc: 0.000  Real: 0.151
+User: 0.150  System: 0.000  Gc: 0.000  Real: 0.151
+User: 0.160  System: 0.000  Gc: 0.000  Real: 0.151
+User: 0.150  System: 0.000  Gc: 0.000  Real: 0.150
+User: 0.150  System: 0.000  Gc: 0.000  Real: 0.150
+User: 0.150  System: 0.000  Gc: 0.000  Real: 0.150
+User: 0.150  System: 0.000  Gc: 0.000  Real: 0.150
+User: 0.150  System: 0.000  Gc: 0.000  Real: 0.150
 > val test1 = "OK" : string
   val test2 = "OK" : string
   val test3 = "OK" : string
@@ -1494,7 +1512,7 @@ test5:
 test6:
 test7:
 test8:
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 > val a = <array> : int list array
   val test1 = "OK" : string
   val test2 = "OK" : string
