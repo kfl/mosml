@@ -1,0 +1,42 @@
+This is an -*- indented-text -*- document describing some of the
+technical details behind mosmlpm.
+
+Last mosdified by ken Friis Larsen <kfl@it.edu> July 15, 2000.
+
+
+Filenames
+---------
+All filenames are transformed to be fullpath'ed so as they have a
+cannonical name.
+
+Source files handled by mosmlpm should have extension ".sml".
+
+
+Recompilation and cut-off
+-------------------------
+We have tow cases for a <name>.sml file:
+
+1. When no <name>.sig exists:
+   Then <name>.sml sould be recompiled if 
+      the context is dirty 
+   or <name>.sml is newer than <name>.uo or <name>.ui
+   or the pm file that contains <name>.sml is newer than <name>.uo or
+      <name>.ui and <name>.{ui,uo} exists.
+   If recompilation occurs then the following context is dirty.
+
+2. When a <name>.sig exists:
+   Then <name>.sig should be recompiled if
+      the context is dirty
+   or <name>.sig is newer than <name>.ui.
+   And <name>.sml sould be recompiled if
+      the context is dirty
+   or <name>.sig is recompiled
+   or <name>.sml is newer than <name>.uo
+   Both <name>.{sig,sml} should be recompiled if
+      the pm file that contains <name>.sml is newer than <name>.uo or
+      <name>.ui and <name>.{ui,uo} exists.
+
+   The context is dirty if <name>.sig is recompiled.
+
+A file f1 is newer than a file f2 if f2 don't exists or f1 has a
+newer/higher modification time than f2.  (Assuming f1 exists).
