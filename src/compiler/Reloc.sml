@@ -26,10 +26,6 @@ fun slot_for_set_global uid =
   (enter (Reloc_setglobal uid); out_short 0)
 ;
 
-fun slot_for_tag id stamp =
-  (enter(Reloc_tag(id, stamp)); out 0)
-;
-
 fun slot_for_c_prim name =
   (enter (Reloc_primitive name); out_short 0)
 ;

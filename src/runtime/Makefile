@@ -109,7 +109,7 @@ externcp.o: externcp.c debugger.h misc.h config.h ../config/m.h \
  major_gc.h freelist.h minor_gc.h reverse.h str.h
 fail.o: fail.c alloc.h misc.h config.h ../config/m.h ../config/s.h \
  mlvalues.h fail.h memory.h gc.h major_gc.h freelist.h minor_gc.h \
- signals.h
+ signals.h globals.h
 fix_code.o: fix_code.c config.h ../config/m.h ../config/s.h misc.h \
  mlvalues.h instruct.h reverse.h
 floats.o: floats.c alloc.h misc.h config.h ../config/m.h ../config/s.h \
@@ -133,7 +133,7 @@ interncp.o: interncp.c debugger.h misc.h config.h ../config/m.h \
 interp.o: interp.c alloc.h misc.h config.h ../config/m.h ../config/s.h \
  mlvalues.h debugger.h fail.h instruct.h memory.h gc.h major_gc.h \
  freelist.h minor_gc.h prims.h signals.h stacks.h str.h unalignd.h \
- interp.h jumptbl.h
+ interp.h jumptbl.h globals.h
 ints.o: ints.c alloc.h misc.h config.h ../config/m.h ../config/s.h \
  mlvalues.h fail.h memory.h gc.h major_gc.h freelist.h minor_gc.h
 io.o: io.c alloc.h misc.h config.h ../config/m.h ../config/s.h \
@@ -164,7 +164,7 @@ misc.o: misc.c config.h ../config/m.h ../config/s.h debugger.h misc.h \
  mlvalues.h io.h
 mosml.o: mosml.c fail.h misc.h config.h ../config/m.h ../config/s.h \
  mlvalues.h memory.h gc.h major_gc.h freelist.h minor_gc.h str.h \
- runtime.h alloc.h intext.h io.h debugger.h
+ runtime.h alloc.h intext.h io.h debugger.h globals.h
 msdos.o: msdos.c mlvalues.h config.h ../config/m.h ../config/s.h \
  misc.h signals.h instruct.h fail.h
 parsing.o: parsing.c config.h ../config/m.h ../config/s.h mlvalues.h \

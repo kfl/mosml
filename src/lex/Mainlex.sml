@@ -1,9 +1,11 @@
 (* The lexer generator. Command-line parsing and expansion of abbreviations *)
 
+local
+
 open Lexing Parsing Miscsys;
 open Syntax Scanner Grammar Lexgen Output;
 open Fnlib
-
+in
 (* Lexer of stream *)
 
 fun createLexerStream (is : BasicIO.instream) =
@@ -77,3 +79,4 @@ fun main () =
 ;
 
 val () = Printexc.f main ();
+end

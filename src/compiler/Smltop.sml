@@ -304,13 +304,11 @@ val () =
 ;
 *)
 val () =
-  app
-    (fn (id, sc) => let val {qualid,info} = 
-                         (lookup id smltop_con_basis)
-                    in
-                    Hasht.insert (#uVarEnv unit_smltop) id 
-                           {qualid = qualid, info = (sc,info)}
-                   end)
+    app
+    (fn (id, sc) => let val {qualid,info} = lookup id smltop_con_basis
+                    in Hasht.insert (#uVarEnv unit_smltop) id 
+                                    {qualid = qualid, info = (sc, info)}
+		    end)
     smltop_VE
 ;
 
@@ -329,8 +327,8 @@ fun resetSMLTopDynEnv() =
     ("quotation",   repr Lexer.quotation),
     ("valuepoly",   repr Mixture.value_polymorphism),
     ("printVal",    repr evalPrint),
-    ("exnName",     repr Rtvals.getExnName),
-    ("exnMessage",  repr Rtvals.getExnMessage),
+    ("exnName",     repr Smlexc.exnName),
+    ("exnMessage",  repr Smlexc.exnMessage),
     ("printDepth",  repr printDepth),
     ("printLength", repr printLength),
     ("quit",        repr (fn () => (msgFlush(); BasicIO.exit 0))),

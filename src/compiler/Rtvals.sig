@@ -8,8 +8,6 @@ in
 
 val getGlobalVal : int -> obj;
 val setGlobalVal : int -> obj -> unit;
-val getExnName : obj -> string
-val getExnMessage : obj -> string
 val printLiteralConst : obj -> unit;
 val printDepth : int ref;
 val printLength : int ref;

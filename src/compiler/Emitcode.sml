@@ -84,10 +84,7 @@ fun out_push_word_const w =
     let prim_val w2i : word -> int = 1 "identity"
     in out_push_int_const (w2i w) end;
 
-fun out_tag (CONtag(t,_)) = out t
-  | out_tag (EXNtag(name, stamp)) =
-      slot_for_tag name stamp
-;
+fun out_tag (CONtag(t,_)) = out t;
 
 fun out_header (n, tag) =
 (
@@ -102,13 +99,8 @@ fun emit_zam zam =
       Kquote(ATOMsc(INTscon i)) => out_int_const i
     | Kquote(ATOMsc(WORDscon w)) => out_word_const w
     | Kquote(ATOMsc(CHARscon c)) => out_int_const (Char.ord c)
-    | Kquote(BLOCKsc(tag, [])) =>
-        (case tag of
-             CONtag(t,_) =>
-               if t < 10 then out (ATOM0 + t) else (out ATOM; out t)
-           | EXNtag(name, stamp) =>
-               (out ATOM; slot_for_tag name stamp)
-        )
+    | Kquote(BLOCKsc(CONtag(t,_), [])) =>
+	  if t < 10 then out (ATOM0 + t) else (out ATOM; out t)
     | Kquote sc =>       (out GETGLOBAL; slot_for_literal sc)
     | Kget_global uid => (out GETGLOBAL; slot_for_get_global uid)
     | Kset_global uid => (out SETGLOBAL; slot_for_set_global uid)
@@ -257,14 +249,9 @@ fun emit zams =
         (out_push_word_const w; emit C)
     | Kpush :: Kquote(ATOMsc(CHARscon c)) :: C =>
         (out_push_int_const (Char.ord c); emit C)
-    | Kpush :: Kquote(BLOCKsc(tag, [])) :: C =>
-        (case tag of
-             CONtag(t,_) =>
-               if t = 0 then out PUSHATOM0 else (out PUSHATOM; out t)
-           | EXNtag(name, stamp) =>
-               (out PUSHATOM; slot_for_tag name stamp);
-         emit C
-        )
+    | Kpush :: Kquote(BLOCKsc(CONtag(t,_), [])) :: C =>
+	((if t = 0 then out PUSHATOM0 else (out PUSHATOM; out t));
+	 emit C)
     | Kpush :: Kquote sc :: C => (out PUSH_GETGLOBAL; slot_for_literal sc; emit C)
     | Kpush :: Kaccess n :: C =>
         (checkAccessIndex16 n;

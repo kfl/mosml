@@ -19,18 +19,19 @@
 #include "memory.h"
 #include "mlvalues.h"
 #include "signals.h"
+#include "globals.h"
 
 
-/* The exception (Fail "floating point error") will be raised if
-   smlexn has not been initialized before a floating point error
-   occurs.  */
+/* float_exn is an exception index from globals.h.  The exception
+   (Fail "floating point error") will be raised if float_exn has not
+   been initialized before a floating point error occurs.  */
 
-volatile unsigned char float_exn = FAILURE_EXN;
+volatile int float_exn = SYS__EXN_FAIL;
 
 double maxdouble = MAXDOUBLE/2;
 
 struct longjmp_buffer * external_raise;
-value exn_bucket;
+value exn_bucket;		/* ML type: string ref * 'a */
 
 EXTERN void mlraise(value v)
 {
@@ -39,34 +40,51 @@ EXTERN void mlraise(value v)
   longjmp(external_raise->buf, 1);
 }
 
-EXTERN void raise_with_arg(tag_t tag, value arg)
-{
-  value bucket;
-  Push_roots (a, 1);
-  a[0] = arg;
+/* Raise a unary pervasive exception with the given argument */
 
-  bucket = alloc (1, tag);
-  Field(bucket, 0) = a[0];
-  Pop_roots ();
-  mlraise(bucket);
+void raiseprimitive1(int exnindex, value arg) {
+  value exn;
+  Push_roots(r, 1);  
+  r[0] = arg;  
+  exn = alloc_tuple(2);
+  modify(&Field(exn, 0), Field(global_data, exnindex));
+  modify(&Field(exn, 1), r[0]);
+  Pop_roots();
+  mlraise(exn);
 }
 
-EXTERN void raise_with_string(tag_t tag, char * msg)
-{
-  raise_with_arg(tag, copy_string(msg));
+void raiseprimitive0(int exnindex) {
+  raiseprimitive1(exnindex, Val_unit);
 }
 
-EXTERN void failwith (char* msg)
-{
-  raise_with_string(FAILURE_EXN, msg);
+/*  EXTERN void raise_with_arg(tag_t tag, value arg) */
+/*  { */
+/*    value bucket; */
+/*    Push_roots (a, 1); */
+/*    a[0] = arg; */
+
+/*    bucket = alloc (1, tag); */
+/*    Field(bucket, 0) = a[0]; */
+/*    Pop_roots (); */
+/*    mlraise(bucket); */
+/*  } */
+
+EXTERN void raise_with_string(int exnindex, char * msg) {
+  raiseprimitive1(exnindex, copy_string(msg));
 }
 
-void invalid_argument (char * msg)
-{
-  raise_with_string(INVALID_EXN, msg);
+EXTERN void failwith (char* msg) {
+  raise_with_string(SYS__EXN_FAIL, msg);
 }
 
-void raise_out_of_memory()
-{
-  mlraise(Atom(OUT_OF_MEMORY_EXN));
+void invalid_argument (char * msg) {
+  raise_with_string(SYS__EXN_ARGUMENT, msg);
+}
+
+void raise_out_of_memory() {
+  raiseprimitive0(SYS__EXN_MEMORY);
+}
+
+void raise_overflow() {
+  raiseprimitive0(SYS__EXN_OVERFLOW);
 }

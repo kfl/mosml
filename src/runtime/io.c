@@ -21,6 +21,7 @@
 #include "mlvalues.h"
 #include "signals.h"
 #include "sys.h"
+#include "globals.h"
 #ifdef HAS_UI
 #include "ui.h"
 #endif
@@ -289,7 +290,7 @@ unsigned char refill(struct channel * channel)
   int n;
 
   n = really_read(channel->fd, channel->buff, IO_BUFFER_SIZE);
-  if (n == 0) mlraise(Atom(END_OF_FILE_EXN));
+  if (n == 0) raiseprimitive0(SYS__EXN_SIZE);
   channel->offset += n;
   channel->max = channel->buff + n;
   channel->curr = channel->buff + 1;

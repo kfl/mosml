@@ -194,7 +194,7 @@ in
 
 fun findPrimitive arity name =
   if arity = 0 then
-    MLPgv { qual="(global)", id=[name] }
+    MLPgv { qual="General", id=[name] }
   else
     (* cvr: 144 merge   
     (MLPprim(arity, Fnlib.lookup name primitive_names)

@@ -35,6 +35,7 @@
 #include "intext.h"
 #include "debugger.h"
 #include "interp.h"
+#include "globals.h"
 
 /* SunOS 4 appears not to have mktime: */
 #if defined(sun) && !defined(__svr4__)
@@ -45,7 +46,7 @@
 
 #define Raise_float_if(cond) \
    if( cond ) \
-      { mlraise(Atom(float_exn)); }
+      { raiseprimitive0(float_exn); }
 
 #define Check_float(dval) \
    Raise_float_if( (dval > maxdouble) || (dval < -maxdouble) )
@@ -109,7 +110,7 @@ value sml_abs_int(value x)          /* ML */
   if( tmp < 0 ) tmp = -tmp;
   v = Val_long(tmp);
   if( Long_val(v) != tmp )
-    mlraise(Atom(SMLEXN_OVF));
+    raise_overflow();
   return v;
 }
 
@@ -133,7 +134,7 @@ value sml_floor(value f)              /* ML */
   return v;
 
 raise_floor:
-    mlraise(Atom(SMLEXN_OVF));
+    raise_overflow();
     return Val_unit;		/* Can't reach return */
 }
 
@@ -156,7 +157,7 @@ value sml_ceil(value f)              /* ML */
   return v;
 
 raise_ceil:
-    mlraise(Atom(SMLEXN_OVF));
+    raise_overflow();
     return Val_unit;		/* Can't reach return */
 }
 
@@ -195,7 +196,7 @@ value sml_round(value f)              /* ML */
   return v;
 
 raise_round:
-    mlraise(Atom(SMLEXN_OVF));
+    raise_overflow();
     return Val_unit;		/* Can't reach return */
 }
 
@@ -211,25 +212,25 @@ value sml_trunc(value f)              /* ML */
   return v;
 
 raise_trunc:
-    mlraise(Atom(SMLEXN_OVF));
-    return Val_unit;		/* Can't reach return */
+  raise_overflow();
+  return Val_unit;		/* Can't reach return */
 }
 
 value sml_abs_real(value f)              /* ML */
 { double r;
-  float_exn = SMLEXN_OVF;
+  float_exn = SYS__EXN_OVERFLOW;
   r = Double_val(f);
   if( r >= 0.0 )
     return f;
   else
     r = -r;
-    Check_float(r);
-    return copy_double(r);
+  Check_float(r);
+  return copy_double(r);
 }
 
 value sml_sqrt(value f)         /* ML */
 { double r;
-  float_exn = SMLEXN_DOMAIN;
+  float_exn = SYS__EXN_DOMAIN;
   r = Double_val(f);
   Raise_float_if( r < 0.0 );
   r = sqrt(r);
@@ -257,7 +258,7 @@ value sml_cos(value f)         /* ML */
 
 value sml_exp(value f)           /* ML */
 { double r;
-  float_exn = SMLEXN_OVF;
+  float_exn = SYS__EXN_OVERFLOW;
   r = exp(Double_val(f));
   Check_float(r);
   return copy_double(r);
@@ -265,7 +266,7 @@ value sml_exp(value f)           /* ML */
 
 value sml_ln(value f)           /* ML */
 { double r;
-  float_exn = SMLEXN_DOMAIN;
+  float_exn = SYS__EXN_DOMAIN;
   r = Double_val(f);
   Raise_float_if( r <= 0.0 );
   r = log(r);
@@ -364,8 +365,7 @@ value sml_concat(value s1, value s2)        /* ML */
     r[1] = s2;
     len = len1 + len2;
     if( (len + sizeof (value)) / sizeof (value) > Max_wosize )
-      mlraise(Atom(END_OF_FILE_EXN)); /* This translates to exn Size! 
-					 See src/compiler/Smlexc.sml */
+      raiseprimitive0(SYS__EXN_SIZE); 
     s = alloc_string(len);
     bcopy(&Byte(r[0],0), &Byte(s,0), len1);
     bcopy(&Byte(r[1],0), &Byte(s,len1), len2);
@@ -380,7 +380,7 @@ value sml_chr(value v)          /* ML */
   value s;
   i = Long_val(v);
   if( i < 0 || i > 255 )
-    mlraise(Atom(SMLEXN_CHR));
+    raiseprimitive0(SYS__EXN_CHR);
   s = alloc_string(1);
   *(&Byte(s,0)) = (unsigned char) i;
   return s;
@@ -390,7 +390,7 @@ value sml_ord(value s)          /* ML */
 {
   long i;
   if( string_length(s) == 0 )
-    mlraise(Atom(SMLEXN_ORD));
+    raiseprimitive0(SYS__EXN_ORD);
   i = (unsigned char) *(&Byte(s,0));
   return Val_long(i);
 }
@@ -989,7 +989,7 @@ value sml_errormsg(value err)   /* ML */
 
 value sml_asin(value f)           /* ML */
 { double r = Double_val(f);
-  float_exn = SMLEXN_DOMAIN;
+  float_exn = SYS__EXN_DOMAIN;
   Raise_float_if( r < -1.0 || r > 1.0 );  
   r = asin(r);
   Raise_float_if( r != r );
@@ -998,7 +998,7 @@ value sml_asin(value f)           /* ML */
 
 value sml_acos(value f)           /* ML */
 { double r = Double_val(f);
-  float_exn = SMLEXN_DOMAIN;
+  float_exn = SYS__EXN_DOMAIN;
   Raise_float_if( r < -1.0 || r > 1.0 );  
   r = acos(r);
   Raise_float_if( r != r );
@@ -1007,7 +1007,7 @@ value sml_acos(value f)           /* ML */
 
 value sml_atan2(value f1, value f2)           /* ML */
 { double r, r1, r2;
-  float_exn = SMLEXN_DOMAIN;
+  float_exn = SYS__EXN_DOMAIN;
   r1 = Double_val(f1);
   r2 = Double_val(f2);
   if (r1 == 0.0 && r2 == 0.0) 
@@ -1020,7 +1020,7 @@ value sml_atan2(value f1, value f2)           /* ML */
 
 value sml_pow(value f1, value f2)           /* ML */
 { double r, r1, r2;
-  float_exn = SMLEXN_DOMAIN;
+  float_exn = SYS__EXN_DOMAIN;
   r1 = Double_val(f1);
   r2 = Double_val(f2);
   if (r1 == 0.0 && r2 == 0.0) 
@@ -1028,11 +1028,11 @@ value sml_pow(value f1, value f2)           /* ML */
   if (   (r1 == 0.0 && r2 < 0.0) 
       || (r1 < 0.0 && (   fabs(r2) > (double) (Max_long) 
 		       || r2 != (double)(long)r2)))
-    mlraise(Atom(float_exn));
+    raiseprimitive0(float_exn);
   r = pow(r1, r2);
-  float_exn = SMLEXN_OVF;
+  float_exn = SYS__EXN_OVERFLOW;
   Check_float(r);
-  float_exn = SMLEXN_DOMAIN;
+  float_exn = SYS__EXN_DOMAIN;
   Raise_float_if( r != r );
   return copy_double(r);
 }
@@ -1234,7 +1234,7 @@ value sml_hexstring_of_word(value arg)      /* ML */
 
 value sml_sinh(value f)         /* ML */
 { double r;
-  float_exn = SMLEXN_OVF;  
+  float_exn = SYS__EXN_OVERFLOW;  
   r = Double_val(f);
   r = sinh(r);
   Check_float(r);
@@ -1243,7 +1243,7 @@ value sml_sinh(value f)         /* ML */
 
 value sml_cosh(value f)         /* ML */
 { double r;
-  float_exn = SMLEXN_OVF;
+  float_exn = SYS__EXN_OVERFLOW;
   r = Double_val(f);
   r = cosh(r);
   Check_float(r);
@@ -1252,7 +1252,7 @@ value sml_cosh(value f)         /* ML */
 
 value sml_tanh(value f)         /* ML */
 { double r;
-  float_exn = SMLEXN_DOMAIN;
+  float_exn = SYS__EXN_DOMAIN;
   r = Double_val(f);
   r = tanh(r);
   Check_float(r);

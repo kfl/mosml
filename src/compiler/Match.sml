@@ -1,5 +1,5 @@
 (* Match.sml : Compile matches to decision trees, then to lambda code
-   1996-07-09, 1997-02-03
+   1996-07-09, 1997-02-03, 2000-01-24
 
    See P. Sestoft: ML pattern match compilation and partial
    evaluation.  In Danvy, Glück, and Thiemann (editors): Dagstuhl
@@ -7,9 +7,9 @@
    Computer Science 1110, pages 446-464.  Springer-Verlag 1996.
    ftp://ftp.dina.kvl.dk/pub/Staff/Peter.Sestoft/papers/match.ps.gz
 
-   Some day the distinction between static and dynamic excons should be
-   eradicated from mosml; this would lead to some simplification in
-   the match compiler and the back-end.  
+   Some day (January 2000) the distinction between static and dynamic
+   excons should be eradicated from mosml; this would lead to some
+   simplification in the match compiler and the back-end.
 *)
 
 open Asynt Lambda
@@ -20,36 +20,7 @@ fun splitPath n obj =
             loop (i-1) (Lprim(Prim.Pfield i, [obj]) :: oargs)
   in loop (n-1) [] end;
   
-(* cvr:  
-val smlExnEi =
-{ qualid = { qual = "General", id = "Exception" },
-  info = ref{ exconArity = 2,
-              exconIsGreedy = true,
-              exconTag   = SOME Smlexc.exnTagName }
-};
-*)
-val smlExnEi =
-{ qualid = { qual = "General", id = ["Exception"] },
-  info = ref{ exconArity = 2,
-              exconIsGreedy = true,
-              exconTag   = SOME Smlexc.exnTagName }
-};
-
-fun mkPairPat p1 p2 =
-  let val loc = Location.xxLR p1 p2 in
-    (loc, RECpat(ref (TUPLErp [p1, p2])))
-  end;
-
-fun mkExnPat (ii : IdInfo) arg =
-  let val {qualid, info} = ii
-      val {idLoc, withOp, ...} = info
-      val ii' = Asyntfn.mkIdInfo (idLoc, qualid) withOp
-  in
-    #idKind(#info ii') :=
-      { qualid= #qualid smlExnEi, info=EXCONik (#info smlExnEi) };
-    EXCONSpat(ii', arg)
-  end
-;
+fun mkPairPat p1 p2 = RECpat(ref (TUPLErp [p1, p2]))
 
 (* To skip type constraints and aliases, and encode dynamic excons *)
 
@@ -60,25 +31,9 @@ fun simplifyPat (loc, pat') =
       | PARpat p         => simplifyPat p
       | TYPEDpat(p,_)    => simplifyPat p
       | LAYEREDpat(_, p) => simplifyPat p
-      | EXNILpat ii      =>
-	if Types.isExConStatic(Asyntfn.getExConInfo ii) then
-	    pat'
-	else
-	    let val arg = mkPairPat (loc, EXNAMEpat ii) (loc, WILDCARDpat) 
-                                    (* cvr: TODO I don't see why the wildcard is needed *)
-	    in mkExnPat ii arg end
-      | EXCONSpat(ii, p) =>
-	if Types.isExConStatic(Asyntfn.getExConInfo ii) then
-	    pat'
-	else
-	    let val arg = mkPairPat (loc, EXNAMEpat ii) p 
-	    in mkExnPat ii arg end
+      | EXNILpat ii      => mkPairPat (loc, EXNAMEpat ii) (loc, WILDCARDpat) 
+      | EXCONSpat(ii, p) => mkPairPat (loc, EXNAMEpat ii) p 
       | _                => pat';
-
-fun getExConTag (ei : Globals.ExConInfo) =
-    case #exconTag(!ei) of
-	NONE     => Fnlib.fatalError "getExConTag"
-      | SOME tag => tag;
 
 (* Constructors *)
 
@@ -94,7 +49,6 @@ fun span (SCon (Const.CHARscon _))         = 256
   | span (Tup _)                           = 1
   | span (Vec _)                           = 0	   (* infinity *)
   | span (CCon (Const.CONtag(_, span), _)) = span
-  | span (CCon (Const.EXNtag _, _))        = 0	   (* infinity *)
   | span (EExn _)                          = 0	   (* infinity *)
 
 fun arity (SCon _)          = 0
@@ -272,26 +226,8 @@ and match pat obj dsc ctx work rhs rules =
 			    rhs rules
 	    in mktest pcon obj dsc ctx work rhs rules conequal end
 
-      | EXNILpat ii =>
-	    let val ei = Asyntfn.getExConInfo ii
-		val pcon = CCon(Const.EXNtag (getExConTag ei), 0)
-		fun conequal newdsc = 
-		    succeed (apply ctx newdsc) work rhs rules
-	    in mktest pcon obj dsc ctx work rhs rules conequal end
-
-      | EXCONSpat (ii, pat) =>
-	    let val ei = Asyntfn.getExConInfo ii
-		val pcon = CCon(Const.EXNtag (getExConTag ei), 1)
-		val oarg = if #exconIsGreedy (!ei) then obj
-			   else Lprim(Prim.Pfield 0, [obj])
-		fun getsargs (Neg _)           = [ Bot ]
-		  | getsargs (Pos(con, sargs)) = sargs
-		fun conequal newdsc =
-		    succeed ((pcon, []) :: ctx) 
-		            (([pat], [oarg], getsargs dsc) :: work)
-			    rhs rules
-	    in mktest pcon obj dsc ctx work rhs rules conequal end
-
+      | EXNILpat ii         => Fnlib.fatalError "match EXNILpat"
+      | EXCONSpat (ii, pat) => Fnlib.fatalError "match EXCONSpat"
       | EXNAMEpat ii =>
 	    let fun conequal newdsc = 
 		    succeed (apply ctx newdsc) work rhs rules

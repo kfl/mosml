@@ -1771,17 +1771,19 @@ fun elabExBind  (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (T
           val q = (* mkName onTop *) mkLocalName  id
           val _ = idKind := { qualid=q, info=EXCONik ei };
           val _ = setExConArity ei 1
-          val _ = if onTop then
+(* ps:    val _ = if onTop then
                     setExConTag ei (SOME (q, newExcStamp()))
                   else ()
+*)
           val arg_t = (elabTy ME FE GE UE VE TE ty)
       in
         if typeIsImperative arg_t then ()
         else errorMsg (xLR ty) "Non-imperative exception type";
-        if isExConStatic ei andalso isRecTy ty then
+(* ps:        if isExConStatic ei andalso isRecTy ty then
           (setExConArity ei (arityOfRecTy ty);
            setExConIsGreedy ei true)
         else ();
+*)
         ((idLoc,id), {qualid = q,info = (type_arrow arg_t type_exn, EXNname ei)})
       end
   | EXDECexbind(ii, NONE) =>
@@ -1792,9 +1794,10 @@ fun elabExBind  (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (T
           val q = (* mkName onTop *) mkLocalName id
           val _ = idKind := { qualid=q, info=EXCONik ei };
           val _ = setExConArity ei 0
-          val _ = if onTop then
+(* ps:          val _ = if onTop then
                     setExConTag ei (SOME (q, newExcStamp()))
                   else ()
+*)
       in 
             ((idLoc,id), {qualid = q, info = (type_exn, EXNname ei)})
       end
@@ -2753,7 +2756,7 @@ and elabExDesc (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (TE
     (case ty_opt of
           SOME _ => setExConArity ei 1
         | NONE   => setExConArity ei 0);
-    if onTop then setExConTag ei (SOME (q, 0)) else (); 
+(* ps:    if onTop then setExConTag ei (SOME (q, 0)) else (); *)
         (* cvr: TODO revise in light of allowing unit names as signatures *)
     case ty_opt of
       SOME ty =>
@@ -2762,10 +2765,11 @@ and elabExDesc (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (TE
         in
           if typeIsImperative arg_t then ()
           else errorMsg (xLR ty) "Non-imperative exception type";
-          if isExConStatic ei andalso isRecTy ty then
+(* ps:    if isExConStatic ei andalso isRecTy ty then
             (setExConArity ei (arityOfRecTy ty);
              setExConIsGreedy ei true)
           else ();
+*)
           ((idLoc,eid), {qualid = q, info =(type_arrow arg_t type_exn, EXNname ei)})
         end
     | NONE =>
@@ -3170,7 +3174,7 @@ fun elabToplevelDec (dec : Dec) =
   resetBindingLevel();
   let val EXISTS(T',(ME',FE',GE',VE',TE')) =
      elabDec (mkGlobalME()) (mkGlobalFE()) (mkGlobalGE()) [] 
-             (mkGlobalVE()) (mkGlobalTE()) true dec  
+             (mkGlobalVE()) (mkGlobalTE()) (* ps: true *) false dec  
   in EXISTS(T',(cleanEnv ME', 
                 cleanEnv FE', 
                 cleanEnv GE', 
@@ -3184,7 +3188,7 @@ fun elabToplevelSpec (spec : Spec) =
      elabSpec (mkGlobalME()) (mkGlobalFE()) 
               (mkGlobalGE()) [] 
 	      (mkGlobalVE()) (mkGlobalTE()) 
-	      true spec);
+	      (* ps: true *) false spec);
 
 
 (* tie the knot *)

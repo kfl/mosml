@@ -46,6 +46,24 @@ char * error_message(void)
 
 #endif /* HAS_STRERROR */
 
+char* globalexn[] = { 
+       "Out_of_memory",
+       "Invalid_argument",
+       "Graphic_failure",
+       "SysErr",
+       "Fail",
+       "Size",
+       "Interrupt",
+       "Subscript",
+       "Chr",
+       "Div",
+       "Domain",
+       "Ord",
+       "Overflow",
+       "Bind",
+       "Match",
+       "Io" };
+
 void sys_error(char * arg)
 {
   char * err = error_message();
@@ -64,7 +82,7 @@ void sys_error(char * arg)
   Field(exnarg, 1) = r[1];
   Pop_roots();
 
-  raise_with_arg(SYS_ERROR_EXN, exnarg);
+  raiseprimitive1(SYS__EXN_SYSERR, exnarg);
 }
 
 void sys_exit(value retcode)          /* ML */
@@ -157,7 +175,7 @@ value sys_getenv(value var)           /* ML */
 
   res = getenv(String_val(var));
   if (res == 0) {
-    mlraise(Atom(NOT_FOUND_EXN));
+    raiseprimitive0(SYS__EXN_ARGUMENT);
   }
   return copy_string(res);
 }
@@ -177,6 +195,28 @@ static int sys_var_init[] = {
   0444, 0222, 0111
 };
 
+/* Create an exn name = a string ref, from a null-terminated string,
+   possibly in C malloc space */
+
+value mkexnname(char* name) {
+  value ref;
+  Push_roots(r, 1);
+  r[0] = copy_string(name);
+  ref = alloc_shr(1, Reference_tag);
+  modify(&Field(ref, 0), r[0]);
+  Pop_roots();
+  return ref;
+}
+
+/* Create an exn value = a pair of a string ref and () : unit */
+
+value mkexn0val(value exnname) {
+  value exnval = alloc_tuple(2);
+  modify(&Field(exnval, 0), Field(global_data, exnname));
+  modify(&Field(exnval, 1), Val_unit);
+  return exnval;
+}
+
 void sys_init(char ** argv)
 {
   value v;
@@ -195,6 +235,16 @@ void sys_init(char ** argv)
   Field(global_data, SYS__MAX_VECT_LENGTH) = Val_long(Max_wosize);
   Field(global_data, SYS__MAX_STRING_LENGTH) =
     Val_long(Max_wosize * sizeof(value) - 2);
+
+  /* Allocate the exn names for pervasize dynamic exceptions */
+  for (i = SYS__FIRST_EXN; i <= SYS__LAST_EXN ; i++) {
+    value exn = mkexnname(globalexn[i - SYS__FIRST_EXN]);
+    modify(&Field(global_data, i), exn);
+  }
+  /* Allocate some exn values for use in interprete */
+  modify(&Field(global_data, EXN_INTERRUPT), mkexn0val(SYS__EXN_INTERRUPT));
+  modify(&Field(global_data, EXN_DIV),       mkexn0val(SYS__EXN_DIV));
+  modify(&Field(global_data, EXN_OVERFLOW),  mkexn0val(SYS__EXN_OVERFLOW));
 }
 
 /* Handling of user interrupts and floating-point errors */
@@ -266,10 +316,10 @@ sighandler_return_type float_handler(int sig)
 #ifndef BSD_SIGNALS
   mysignal (SIGFPE, float_handler);
 #endif
-  if (float_exn == FAILURE_EXN)
+  if (float_exn == Field(global_data, SYS__EXN_FAIL))
     failwith("floating point error");
   else
-    mlraise(Atom(float_exn));
+    raiseprimitive0(float_exn);
 }
 
 void init_float_handler(void)

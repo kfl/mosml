@@ -117,62 +117,14 @@ val sc_OVL1NSo = sc_bogus;
 val sc_OVL2NNBo = sc_bogus; 
 val sc_OVL2NNNo = sc_bogus;
 
-
-
-(* cvr: removed 
-fun VEofCE (ConEnv CE) =
-  map (fn ci => (#id(#qualid ci), #conType(! (#info ci)))) CE
-;
-*)
-(* cvr: added *)
 fun VEofCE (ConEnv CE) =
   map (fn ci => 
           let val coninfo =  #info(ci) 
           in
           (hd (#id(#qualid ci)), ((#conType(! coninfo)),CONname coninfo))
           end)
-      CE
-;
-(* cvr: removed 
-val initial_eq_VE =
-[
-  ("=", scheme_1u_eq (fn a =>
-     type_arrow (type_pair a a) type_bool)),
-  ("<>", scheme_1u_eq (fn a =>
-     type_arrow (type_pair a a) type_bool))
-];
+      CE;
 
-val initial_int_VE =
-[
-];
-
-val initial_real_VE =
-[
-  ("/",      trivial_scheme
-               (type_arrow (type_pair type_real type_real) type_real)),
-  ("floor",  trivial_scheme (type_arrow type_real type_int)),
-  ("ceil",   trivial_scheme (type_arrow type_real type_int)),
-  ("trunc",  trivial_scheme (type_arrow type_real type_int)),
-  ("round",  trivial_scheme (type_arrow type_real type_int)),
-  ("real",   trivial_scheme (type_arrow type_int type_real))
-];
-
-val initial_string_VE =
-[
-  ("^",    sc_ss_s),
-  ("size", sc_s_i)
-];
-
-val initial_ref_VE =
-[
-  ("ref", scheme_1u_imp (fn a =>
-     type_arrow a (type_ref a))),
-  ("!", scheme_1u (fn a =>
-     type_arrow (type_ref a) a)),
-  (":=", scheme_1u (fn a =>
-     type_arrow (type_pair (type_ref a) a) type_unit))
-];
-*)
 (* cvr: added *)
 val initial_eq_VE =
 [
@@ -303,35 +255,6 @@ val sml_initial_T =
          | _ => fatalError "sml_initial_T")
         sml_initial_TE;
 
-val generalExceptions =
-[ ("Io", 1, trivial_scheme(type_arrow type_of_io_exn type_exn))
-];
-
-(* cvr: removed (this doesn't appear to ever be used?)
-fun mkEmptyInfixBasis() =
-    (Hasht.new 23 : (string, InfixStatus) Hasht.t)
-;
-*)
-
-(* cvr: removed (now redundant)
-val () =
-  app (fn (id, (arity,prim)) =>
-         Hasht.insert
-           (#uConBasis unit_General) id
-           { qualid={qual="General", id=[id]},
-             info=PRIMname (mkPrimInfo arity prim) })
-      initial_prim_basis
-;
-
-val () =
-  app (fn (id, ci) =>
-         Hasht.insert
-           (#uConBasis unit_General) id
-           { qualid={qual="General", id=[id]}, info=ci })
-      initial_con_basis
-;
-*)
-
 val () =
   app (fn (id, scis) =>
          Hasht.insert (#uVarEnv unit_General) id 
@@ -347,104 +270,44 @@ val () =
 
 val () = (#uTyNameSet unit_General) := sml_initial_T;
 
-fun mkEi q arity =
+fun mkEi arity =
   let val ei = mkExConInfo() in
     setExConArity ei arity;
-    setExConTag ei (SOME (q, 0));
     ei
   end;
 
-(* cvr: removed (now redundant)
-val () =
-  app (fn (id, ((q, stamp), arity)) =>
-         let val q = {qual="General", id=[id]} in
-           Hasht.insert
-             (#uConBasis unit_General) id
-             { qualid=q, info=EXNname(mkEi q arity)}
-         end)
-      predefExceptions
-;
-
-val () =
-  app (fn (id, arity, sc) =>
-         let val q = {qual="General", id=[id]} in
-           Hasht.insert
-             (#uConBasis unit_General) id
-             { qualid=q, info=EXNname(mkEi q arity)}
-         end)
-      generalExceptions
-
-;
-*)
-
 val sc_str_exn = trivial_scheme (type_arrow type_string type_exn);
 
-(* cvr: removed 
-val () =
-  app (fn (id, sc) => Hasht.insert (#uVarEnv unit_General) id sc)
-      (map (fn (id,             (_, 0)) => (id, sc_exn)
-             | (id as "SysErr", (_, 1)) => (id, trivial_scheme
-			         (type_arrow type_of_syserror_exn type_exn))
-             | (id,             (_, 1)) => (id, sc_str_exn)
-             | (_, _) => fatalError "smlperv: ill-defined exception")
-       predefExceptions)
+(* The exn names for these are defined as globals by the runtime system *)
 
-;
-
-val () =
-  app (fn (id, arity, sc) => Hasht.insert (#uVarEnv unit_General) id sc)
-      generalExceptions
-;
-*)
-(* cvr: added *)
-
-val () =
-  app (fn (id, sc) => Hasht.insert (#uVarEnv unit_General) id sc)
-      (map (fn (id,             (_, 0)) => 
-                 (id,  { qualid={qual="General", id=[id]}, 
-                       info=(sc_exn,
-                             EXNname(mkEi {qual="General", id=[id]} 0))})
-             | (id as "SysErr", (_, 1)) => 
-                 (id,   { qualid={qual="General", id=[id]}, 
-                          info = (trivial_scheme
-	 		          (type_arrow type_of_syserror_exn 
-                                              type_exn),
-                                  EXNname(mkEi {qual="General", id=[id]} 1))})
-             | (id,             (_, 1)) => 
-                 (id, { qualid={qual="General", id=[id]}, 
-                         info = (sc_str_exn,
-                                 EXNname(mkEi {qual="General", id=[id]} 1))
-                       })
-             | (_, _) => fatalError "smlperv: ill-defined exception")
-       predefExceptions)
-
-;
-
-
+val predefExceptions = [
+  ("Out_of_memory",    ("exn_memory",    0, sc_exn)),
+  ("Invalid_argument", ("exn_argument",  1, sc_str_exn)),
+  ("Graphic",          ("exn_graphic",   1, sc_str_exn)),
+  ("SysErr",           ("exn_syserr",    1, 
+                        trivial_scheme (type_arrow type_of_syserror_exn 
+                                        type_exn))),
+  ("Io",               ("exn_io",        1, 
+			trivial_scheme(type_arrow type_of_io_exn type_exn))),
+  ("Fail",             ("exn_fail",      1, sc_str_exn)),
+  ("Size",             ("exn_size",      0, sc_exn)),
+  ("Interrupt",        ("exn_interrupt", 0, sc_exn)),
+  ("Subscript",        ("exn_subscript", 0, sc_exn)),
+  ("Chr",              ("exn_chr",       0, sc_exn)),
+  ("Div",              ("exn_div",       0, sc_exn)),
+  ("Domain",           ("exn_domain",    0, sc_exn)),
+  ("Ord",              ("exn_ord",       0, sc_exn)),
+  ("Overflow",         ("exn_overflow",  0, sc_exn)),
+  ("Bind",             ("exn_bind",      0, sc_exn)),
+  ("Match",            ("exn_match",     0, sc_exn))
+];
 
 val () =
-  app (fn (id, arity, sc) => 
-         Hasht.insert (#uVarEnv unit_General) id 
-               { qualid={qual="General", id=[id]}, 
-                 info=(sc,
-                       EXNname(mkEi {qual="General", id=[id]} arity))})
-      generalExceptions
-;
+  app (fn (smlid, (globid, arity, sc)) => 
+          let val sc = { qualid={qual="General", id=[globid]}, 
+			 info=(sc, EXNname(mkEi arity)) }
+	  in Hasht.insert (#uVarEnv unit_General) smlid sc end)
+       predefExceptions
 
 val () =
-  Hasht.insert pervSigTable "General" unit_General
-;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  Hasht.insert pervSigTable "General" unit_General;

@@ -2,7 +2,7 @@
 
 INCLUDES=-I ../compiler
 COMPFLAGS=$(INCLUDES)
-LINKFLAGS=-g $(INCLUDES)
+LINKFLAGS=$(INCLUDES)
 
 include ../Makefile.inc
 

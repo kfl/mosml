@@ -28,10 +28,6 @@ fun patch_object buff offset =
       patch_short buff (pos + offset) (get_slot_for_variable uid)
   | (Reloc_setglobal uid, pos) =>
       patch_short buff (pos + offset) (get_slot_for_defined_variable uid)
-  | (Reloc_tag(id, stamp), pos) =>
-      (* `buff' is not a true string! *)
-      set_nth_char_ buff (pos + offset)
-        (Char.chr (get_num_of_exn(id,stamp)))
   | (Reloc_primitive name, pos) =>
       patch_short buff (pos + offset) (get_num_of_prim name))
 ;

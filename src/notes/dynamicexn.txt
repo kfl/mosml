@@ -1,11 +1,22 @@
 Getting rid of static exceptions in the Moscow ML implementation
 ----------------------------------------------------------------
 
-sestoft@dina.kvl.dk 1999-10-28, 1999-10-29
+sestoft@dina.kvl.dk 1999-10-28, 1999-10-29, 2000-01-23
 
 The problem: both the runtime system and the ML bytecode need to raise
-certain built-in exceptions, which must be handlable from the
-bytecode and the interactive system.
+certain built-in exceptions, which must be handlable from the bytecode
+and the interactive system.
+
+
+Current representation of exceptions
+------------------------------------
+
+A static exception is identified by a static exception stamp (or tag).
+
+A dynamic exception is represented as a special static exception
+(called smlExnEi in compiler/Match.sml) which takes as argument a pair
+containing a string ref (the exn name) and an argument (of type unit
+if the dynamic excon is nullary).
 
 
 Desirable runtime representation of an exception
@@ -13,15 +24,23 @@ Desirable runtime representation of an exception
 
 An exception name (in the sense of the Definition) is a string ref.
 
-An nullary exception value is a 1-tuple holding an exception name.
+A nullary exception value is a pair holding an exception name and () :
+unit, that is, Atom(0).
 
-A unary exception is a 2-tuple holding an exception name and the
-argument (a value).
+A unary exception is a pair holding an exception name and the argument
+(a value).
 
-An exception value matches an exception pattern if the exception names
-are equal, according to reference equality.
+A nullary exception value matches an exception pattern if the
+exception names are equal, according to reference equality.
 
-The referred-to string is used for printing the exception.  
+A unary exception value matches an exception pattern if the exception
+names are equal, and the arguments match, according to reference
+equality.
+
+The referred-to string is used for printing the exception.  It may
+even be used by runtime/main.c to print the exception's string name:
+
+	printf("Uncaught exception: %s\n", String_val(Field(exn_bucket, 0)))
 
 The exception binding 
 
@@ -42,6 +61,8 @@ Possible implementations
     There already is a mechanism for communication values between the
     runtime system and the ML bytecode (including the interactive
     system): globals.h, sys.c, Memory.sml, Rtvals.sml
+
+    * We'll do this.
 
 (2) Let the bytecode linker allocate these exceptions and bind them in
     the global_data table.  
@@ -103,13 +124,14 @@ How to create the exceptions in the runtime system?
 Allocation of the strings may cause the garbage collector to run, but
 global_data is always in the old (shared) generation, whether
 allocated by intern_val() or by realloc_global().  Hence there's no
-need to register the global_data pointer:
+need to register the global_data pointer.  Better put the refs in the
+old heap so they don't move (they'll never be deallocated anyway).
 
 value mkexnname(char* name) {
   value ref;
   Push_roots(r, 1);
   r[0] = copy_string(name);
-  ref = alloc(1, Reference_tag);
+  ref = alloc_shr(1, Reference_tag);
   modify(&Field(ref, 0), r[0]);
   Pop_roots();
   return ref;
@@ -130,11 +152,15 @@ in globals.h:
 #define SYS__EXN_DOMAIN     29   /* "sys","exn_domain" */
 #define SYS__EXN_ORD        30   /* "sys","exn_ord" */
 #define SYS__EXN_OVERFLOW   31   /* "sys","exn_overflow" */
+#define SYS__EXN_BIND       32   /* "sys","exn_bind" */
+#define SYS__EXN_MATCH      33   /* "sys","exn_match" */
 
 #define SYS__FIRST_EXN 19
-#define SYS__LAST_EXN 31
+#define SYS__LAST_EXN 33
 
-char** globalexn = { 
+in sys_init:
+
+char* globalexn[] = { 
        "Out_of_memory",
        "Invalid_argument",
        "Graphic_failure",
@@ -149,17 +175,14 @@ char** globalexn = {
        "Ord",
        "Overflow" }
 
-in sys_init:
-
-for (i = SYS__FIRST_EXN; i < SYS__LAST_EXN ; i++) {
+for (i = SYS__FIRST_EXN; i <= SYS__LAST_EXN ; i++) {
    value exn = mkexn(globalexn[i - SYS__FIRST_EXN]);
    modify(&Field(global_data, i), exn);
 }
 
 
 Also in the new system, exn_bucket should hold the exception value (a
-1-tuple or 2-tuple), and fail.mlraise should take as argument an
-exception value.
+2-tuple), and fail.mlraise should take as argument an exception value.
 
 The actual raising of a nullary run-time exception, such as Overflow,
 should be done as follows:
@@ -172,8 +195,8 @@ void raiseprimitive0(int exnindex) {
   mlraise(exn);
 }
 
-The actual raising of a nullary run-time exception, such as Overflow,
-should be done as follows:
+The actual raising of a unary run-time exception, such as Fail, should
+be done as follows:
 
 raiseprimitive1(SYS__EXN_FAIL, copy_string("uf"));
 
@@ -192,7 +215,7 @@ void raiseprimitive1(int exnindex, value arg) {
 Match compilation:
 
 A nullary exception pattern is translated to an EXNAME pattern, which
-in turns is translated to a reference comparison.
+in turn is translated to a reference comparison.
 
 A unary exception pattern is translated to a pair of an EXNAME pattern
 and a pattern for the argument.
@@ -291,3 +314,68 @@ Suggested approach:
 
 
 3. 
+
+Undo the translation from END_OF_FILE_EXN to exn Size in see
+src/compiler/Smlexc.sml */
+
+
+How to raise INTERRUPT in the bytecode interpreter?
+
+A BREAK exn value must be created and put into the global_vars or
+similar.  Let's put it into the globals as well.
+
+In fact we need to do the same for SMLEXN_OVF, SMLEXN_DIV, SML_EXN_DOMAIN
+
+
+
+The pervasize exceptions are those defined in runtime/globals.h and
+hence compiler/Predef.
+
+Dynamic semantics (namely, exn name bindings) for pervasive excons.
+For each, we list its name in the global_vars table and its arity (0
+or 1).  This is used in Smlperv.
+
+
+val predefExceptions = [
+  ("Out_of_memory",    ("exn_memory",    0, sc_exn)),
+  ("Invalid_argument", ("exn_argument",  0, sc_exn)),
+  ("Graphic",          ("exn_graphic",   1, sc_str_exn)),
+  ("SysErr",           ("exn_syserr",    1, 
+                        trivial_scheme (type_arrow type_of_syserror_exn 
+                                        type_exn))),
+  ("Fail",             ("exn_fail",      1, sc_str_exn)),
+  ("Size",             ("exn_size",      0, sc_exn)),
+  ("Interrupt",        ("exn_interrupt", 0, sc_exn)),
+  ("Subscript",        ("exn_subscript", 0, sc_exn)),
+  ("Chr",              ("exn_chr",       0, sc_exn)),
+  ("Div",              ("exn_div",       0, sc_exn)),
+  ("Domain",           ("exn_domain",    0, sc_exn)),
+  ("Ord",              ("exn_ord",       0, sc_exn)),
+  ("Overflow",         ("exn_overflow",  0, sc_exn)),
+  ("Bind",             ("exn_bind",      0, sc_exn)),
+  ("Match",            ("exn_match",     0, sc_exn))
+];
+
+In Smlperv, do
+
+fun mkEi arity =
+  let val ei = mkExConInfo() in
+    setExConArity ei arity;
+    (* ps: setExConTag ei (SOME (q, 0)); *)
+    ei
+  end;
+
+val () =
+  app (fn (id, arity, sc) => 
+          let val sc = { qualid={qual="General", id=[id]}, 
+			 info=(sc, EXNname(mkEi arity)) }
+	  in Hasht.insert (#uVarEnv unit_General) id sc end)
+       predefExceptions)
+
+
+Raising Bind and Match, in Front.sml:
+
+val bindExn  = Lprim(Pget_global { qual = "General", id = ["exn_bind"] });
+val matchExn = Lprim(Pget_global { qual = "General", id = ["exn_match"] });
+val bindRaiser  = Lprim(Praise, [bindExn]);
+val matchRaiser = Lprim(Praise, [matchExn]);

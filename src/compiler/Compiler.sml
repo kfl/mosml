@@ -358,7 +358,7 @@ fun compLamPhrase os state (RE, lams) =
 (
   app
     (fn (is_pure, lam) =>
-       ((* msgIBlock 0; printLam lam; msgEOL(); msgEBlock(); *)
+       ((* msgIBlock 0; Pr_lam.printLam lam; msgEOL(); msgEBlock(); *)
        emit_phrase os
          let val zam = compileLambda is_pure lam in
            (* printZamPhrase zam; msgFlush(); *) 

@@ -19,70 +19,13 @@ fun decode_string (v : obj) = (magic_obj v : string);
 
 (* Exceptions *)
 
-(* type ExnName = QualifiedIdent ref;  cvr: removed*)
-(* cvr: TODO revise *)
-type ExnName = {id : string, qual: string} ref; (* cvr: added *)
-fun fromShortQualifiedIdent {id, qual} = {id= [id],qual=qual}; (* cvr: added *)
-
-fun remapExnName num_tag =
-  let val (qualid, stamp) = Symtable.get_exn_of_num num_tag
-  in Symtable.normalizeExnName qualid end
-;
-
-fun getExnNameArg (v : obj) (f : Const.QualifiedIdent -> obj option -> 'a) =
-    let val () = if not(is_block v) then fatalError "getExnNameArg 1"
-		 else ()
-	val num_tag = obj_tag v
-    in
-	if num_tag = exnTag then
-	    let val exnPrName = fromShortQualifiedIdent (!(magic_obj (obj_field v 0) : ExnName) )
-	    in 
-		case obj_size v of
-		    1 => f exnPrName NONE
-		  | 2 => f exnPrName (SOME (obj_field v 1))
-		  | _ => fatalError "getExnNameArg 2"
-	    end
-	else
-	    let val exnPrName = remapExnName num_tag 
-	    in 
-		case obj_size v of
-		    0 => f exnPrName NONE
-		  | 1 => f exnPrName (SOME (obj_field v 0))
-		  | _ => f exnPrName (SOME v)
-	    end
-    end;
-
 fun decode_exn (v : obj) (c0 : QualifiedIdent -> unit) 
                          (c1 : QualifiedIdent -> obj -> Type option -> unit) =
-    let fun prExn exnPrName NONE       = 
-	    c0 exnPrName
-	  | prExn exnPrName (SOME arg) = 
-	    c1 exnPrName arg (Smlexc.exnArgType exnPrName)
-    in getExnNameArg v prExn end;
-
-fun mkExnName {qual, id= [id]} = if qual = "Top" then id else qual ^ "." ^ id
-
-fun getExnName (v : obj) = 
-    getExnNameArg v (fn exnPrName => fn _ => mkExnName exnPrName)
-
-fun exnArgFmt {qual="General", id=["SysErr"]} (arg : obj) = 
-    decode_string (obj_field arg 0)
-  | exnArgFmt {qual="General", id=["Io"]} (arg : obj) = 
-    decode_string (obj_field arg 1) ^ " failed on `" (* function = idx 1 *)
-    ^ decode_string (obj_field arg 2) ^ "'; "        (* name     = idx 2 *)
-    ^ getExnMessage (obj_field arg 0)	             (* cause    = idx 0 *)
-  | exnArgFmt _                        (arg : obj) = 
-    if not(is_block arg) then "<poly>"
-    else let val tag = obj_tag arg
-	 in 
-	     if tag = stringTag then decode_string arg
-	     else "<poly>"
-	 end
-and getExnMessage (v : obj) =
-    let fun fmtExn exnPrName NONE       = mkExnName exnPrName
-	  | fmtExn exnPrName (SOME arg) = 
-  	    mkExnName exnPrName ^ ": " ^ (exnArgFmt exnPrName arg)
-    in getExnNameArg v fmtExn end
+    let val strref = getExnStrref v 
+	val arg = obj_field v 1
+	fun prExn exnPrName NONE         = c0 exnPrName
+	  | prExn exnPrName (SOME argTy) = c1 exnPrName arg (SOME argTy)
+    in prExn { qual = "", id = [!strref] } (Smlexc.exnArgType strref arg) end
 
 (* Run-time environments *)
 
@@ -459,7 +402,8 @@ fun prVal (depth: int) (prior: int) (tau: Type) (v: obj) =
                                        else prVal (depth-1) 1 a_t (obj_field v 0);
                                      prP ")"))))
                             | _ => fatalError "prVal"
-                      end)))
+                      end)
+	 | _ => fatalError "prVal 1"))
 (*  | CONt (ts, APPtyapp _) => fatalError "prVal: unimplemented CONt(ts, APPtyapp _)" *)
  (* cvr: TODO revise *)
  | PACKt (EXISTSexmod(T,STRmod S)) =>  (prP " "; msgString "[structure ...]")
@@ -653,7 +597,7 @@ fun loadGlobalDynEnv uname env =
              ignore (get_slot_for_defined_variable ({qual=uname, id=[id]}, 0)))
     env;
   if number_of_globals() >= Vector.length global_data then
-    realloc_global_data(number_of_globals())
+      realloc_global_data(number_of_globals())
   else ();
   app (fn(id,v) =>
             let val slot = get_slot_for_variable ({qual=uname, id=[id]}, 0)
@@ -661,35 +605,4 @@ fun loadGlobalDynEnv uname env =
           env
 );
 
-fun resetGlobalDynEnv() =
-(
-  init_linker_tables();
-  if exnTag <> get_num_of_exn ({qual="General", id=["(Exception)"]}, 0)
-    then fatalError "resetGlobalDynEnv: Corrupted linker tables"
-  else ()
-  (* ;
-  app
-    (fn (id, ((q, stamp), arity)) =>
-       defineGlobalExceptionAlias ({qual="General", id=id}, (q, stamp)))
-    predefExceptions
-*)
-);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+fun resetGlobalDynEnv() = init_linker_tables();

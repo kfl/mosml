@@ -602,12 +602,11 @@ fun startCompilingUnit name =
   currentRenEnv := mkRenEnv()
 );
 
-
 fun rectifyVarEnv VE =
   let
     val excRen = ref( [] : (QualifiedIdent * (QualifiedIdent * int)) list )
   in
-      Hasht.apply (fn id => fn {qualid, info = (sc,status)} => 
+  (* Hasht.apply (fn id => fn {qualid, info = (sc,status)} => 
           case status of 
             EXNname ei =>
               (case #exconTag(!ei) of
@@ -618,9 +617,10 @@ fun rectifyVarEnv VE =
                      else ()
                      )
           | _ => ())
-      VE;
+      VE; *)
     (!excRen)
   end;
+
 
 fun rectifySignature() =
   let 

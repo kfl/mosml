@@ -118,9 +118,7 @@ and ConInfo =
 } ref
 and ExConInfo =
 {
-  exconArity: int,
-  exconIsGreedy: bool,
-  exconTag : (QualifiedIdent * int) option
+  exconArity: int
 } ref
 and TypeVar =
 {
@@ -312,22 +310,24 @@ fun setConType (r : ConInfo) new_typ =
   end;
 
 fun setExConArity r new_arity =
-  let val { exconArity=arity, exconIsGreedy=isGreedy, exconTag=tag } = !r
-  in r :=
-    { exconArity=new_arity, exconIsGreedy=isGreedy, exconTag=tag }
-  end;
+    r := { exconArity=new_arity }
+
+(* ps: remove 
 
 fun setExConIsGreedy r new_isGreedy =
-  let val { exconArity=arity, exconIsGreedy=isGreedy, exconTag=tag } = !r
+  let val { exconArity=arity, exconIsGreedy=isGreedy } = !r
   in r :=
-    { exconArity=arity, exconIsGreedy=new_isGreedy, exconTag=tag }
+    { exconArity=arity, exconIsGreedy=new_isGreedy }
   end;
+*)
 
+(* ps: remove
 fun setExConTag r new_tag =
-  let val { exconArity=arity, exconIsGreedy=isGreedy, exconTag=tag } = !r
-  in r :=
+  let val { exconArity=arity, exconIsGreedy=isGreedy } = !r
+  in  r :=
     { exconArity=arity, exconIsGreedy=isGreedy, exconTag=new_tag }
   end;
+*)
 
 fun setTvKind r new_kind =
   let val { tvKind=kind, tvLevel=level, tvEqu=equ, tvImp=imp, tvOvl=ovl }

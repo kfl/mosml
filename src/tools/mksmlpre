@@ -6,25 +6,11 @@ $first = 1;
 while(<VARS>) {
   if (m|/\* (".*"),(".*") \*/|) {
     print ",\n" unless $first;
-    print "  {qual=\"(global)\", id=$2}";
+    print "  {qual=\"General\", id=$2}";
     $first = 0;
   }
 }
 close(VAR);
-
-print "\n];\n";
-print "val predef_exn = [\n";
-
-open(EXC, $ARGV[1]) || die("cannot open $ARGV[1]");
-$first = 1;
-while(<EXC>) {
-  if (m|/\* (".*"),(".*"),([0-9]+) \*/|) {
-    print ",\n" unless $first;
-    print "  ({qual=$1, id=$2}, $3)";
-    $first = 0;
-  }
-}
-close(EXC);
 
 print "\n];\nend;\n";
 

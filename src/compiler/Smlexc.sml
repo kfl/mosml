@@ -1,95 +1,17 @@
 (* Predefined SML exceptions *)
 
 local
-    open Obj Const;
+    open Obj Const Fnlib Config Mixture Types
 in
+    (* The exn names and types of SML Basis Library exceptions *)
 
-(* SML exceptions *)
-(* cvr:
-val exnTag = obj_tag(repr (let exception DUMMY in DUMMY end));
-val exnTagName   = ({qual="General", id="(Exception)"}, 0);
-val bindTagName  = ({qual="General", id="Bind"}, 0);
-val matchTagName = ({qual="General", id="Match"}, 0);
+    prim_val syserr_ref : string ref = 0 "exn_syserr"
+    prim_val io_ref     : string ref = 0 "exn_io"
 
-val predefExceptions = [
-  ("Bind",     (({qual="general", id="Bind"},      2), 0)),
-  ("Chr",      (({qual="general", id="Chr"},       3), 0)),
-  ("Div",      (({qual="general", id="Div"},       4), 0)),
-  ("Domain",   (({qual="general", id="Domain"},    5), 0)),
-  ("Match",    (({qual="general", id="Match"},     6), 0)),
-  ("Ord",      (({qual="general", id="Ord"},       7), 0)),
-  ("Overflow", (({qual="general", id="Overflow"},  8), 0)),
-  ("Out_of_memory",
-            (({qual="exc",     id="Out_of_memory"}, 1), 0)),
-  ("Invalid_argument",
-            (({qual="exc",     id="Invalid_argument"}, 2), 1)),
-  ("Fail",  (({qual="exc",     id="Failure"},     3), 1)),
-  ("Subscript",
-            (({qual="exc",     id="Not_found"},   4), 0)),
-  ("Size",  (({qual="io",      id="End_of_file"}, 1), 0)),
-  ("SysErr",(({qual="sys",     id="Sys_error"},   1), 1)),
-  ("Interrupt",
-            (({qual="sys",    id="Break"},     2), 0)),
-  ("Graphic_failure",
-            (({qual="graphics", id="Graphic_failure"}, 1), 1))
-];
-
-local 
-    open Config Mixture Types
-
-    fun decode_string (v : obj) = (magic_obj v : string);
-in
-    val type_of_syserror_exn = (* Must match actual type of OS.SysErr *)
-	type_pair type_string (type_option type_syserror);
-
-    val type_of_io_exn =       (* Must match actual type of IO.Io     *)
-	type_rigid_record 
-	[(STRINGlab "cause",    type_exn), 
-	 (STRINGlab "function", type_string),
-	 (STRINGlab "name",     type_string)];
-
-    fun exnArgType {qual="General", id="SysErr"} = SOME type_of_syserror_exn
-      | exnArgType {qual="OS",      id="SysErr"} = SOME type_of_syserror_exn
-      | exnArgType {qual="General", id="Io"}     = SOME type_of_io_exn
-      | exnArgType _                             = NONE
-
-end
-end;
+(* ps: temporary fix when bootstrapping:
+    val syserr_ref = ref "Fix1";
+    val io_ref = ref "Fix2";
 *)
-
-val exnTag = obj_tag(repr (let exception DUMMY in DUMMY end));
-val exnTagName   = ({qual="General", id=["(Exception)"]}, 0);
-val bindTagName  = ({qual="General", id=["Bind"]}, 0);
-val matchTagName = ({qual="General", id=["Match"]}, 0);
-
-val predefExceptions = [
-  ("Bind",     (({qual="general", id=["Bind"]},      2), 0)),
-  ("Chr",      (({qual="general", id=["Chr"]},       3), 0)),
-  ("Div",      (({qual="general", id=["Div"]},       4), 0)),
-  ("Domain",   (({qual="general", id=["Domain"]},    5), 0)),
-  ("Match",    (({qual="general", id=["Match"]},     6), 0)),
-  ("Ord",      (({qual="general", id=["Ord"]},       7), 0)),
-  ("Overflow", (({qual="general", id=["Overflow"]},  8), 0)),
-  ("Out_of_memory",
-            (({qual="exc",     id=["Out_of_memory"]}, 1), 0)),
-  ("Invalid_argument",
-            (({qual="exc",     id=["Invalid_argument"]}, 2), 1)),
-  ("Fail",  (({qual="exc",     id=["Failure"]},     3), 1)),
-  ("Subscript",
-            (({qual="exc",     id=["Not_found"]},   4), 0)),
-  ("Size",  (({qual="io",      id=["End_of_file"]}, 1), 0)),
-  ("SysErr",(({qual="sys",     id=["Sys_error"]},   1), 1)),
-  ("Interrupt",
-            (({qual="sys",    id=["Break"]},     2), 0)),
-  ("Graphic_failure",
-            (({qual="graphics", id=["Graphic_failure"]}, 1), 1))
-];
-
-local 
-    open Config Mixture Types
-
-    fun decode_string (v : obj) = (magic_obj v : string);
-in
     val type_of_syserror_exn = (* Must match actual type of OS.SysErr *)
 	type_pair type_string (type_option type_syserror);
 
@@ -99,12 +21,52 @@ in
 	 (STRINGlab "function", type_string),
 	 (STRINGlab "name",     type_string)];
 
-    fun exnArgType {qual="General", id=["SysErr"]} = SOME type_of_syserror_exn
-      | exnArgType {qual="OS",      id=["SysErr"]} = SOME type_of_syserror_exn
-      | exnArgType {qual="General", id=["Io"]}     = SOME type_of_io_exn
-      | exnArgType _                             = NONE
+    fun decode_string (v : obj) = (magic_obj v : string)
+    fun decode_real (v : obj) = (magic_obj v : real);
+    prim_val sml_string_of_float : real -> string = 1 "sml_string_of_float";
 
+    fun exnArgType (strref : string ref) (arg : obj) =
+	if strref = syserr_ref then 
+	    SOME type_of_syserror_exn
+	else if strref = io_ref then 
+	    SOME type_of_io_exn
+	else if is_block arg then 
+	    if obj_tag arg = stringTag then SOME type_string
+	    else if obj_tag arg = realTag then SOME type_real
+	    else NONE
+	else (* may be int, char, bool, word8, ...  *)
+	    NONE
+
+    fun getExnStrref (v : obj) : string ref = 
+	if is_block v andalso is_block(obj_field v 0) then 
+	    magic_obj (obj_field v 0) : string ref
+	else
+	    fatalError "getExnName"
+
+    fun exnName (v : obj) : string = !(getExnStrref v)
+
+    fun exnMessage (v : obj) : string = 
+	let val strref = getExnStrref v
+	    val arg    = obj_field v 1
+	    val msgs =
+		!strref :: 
+		(if strref = syserr_ref then 
+		     let val (msg : string, _) = magic_obj arg 
+		     in [": ", msg] end
+		 else if strref = io_ref then 
+		     let val { cause, function, name } = magic_obj arg 
+		     in 
+			 [": ", function, " failed on `", name, 
+			  "'; ", exnMessage cause]
+		     end
+		 else if is_block arg then
+		     if obj_tag arg = stringTag then 
+			 [": ", decode_string arg]
+		     else if obj_tag arg = realTag then 
+			 [": ", sml_string_of_float (decode_real arg)]
+		     else 
+			 []
+		 else [])
+	in String.concat msgs end
 end
-end;
-
 

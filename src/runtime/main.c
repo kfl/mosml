@@ -253,11 +253,16 @@ int main(int argc, char * argv[])
     sys_exit(Val_int(0));
 
   } else {
-
-    if (exn_bucket == Atom(OUT_OF_MEMORY_EXN))
+    if (Field(exn_bucket, 0) == Field(global_data, SYS__EXN_MEMORY))
       fatal_error ("Fatal error: out of memory.\n");
-    else
-      fatal_error ("Fatal error: uncaught exception.\n");
+    else {
+      /* Field 0 of exn_bucket is a ref, whose field 0 is a string */
+      value str = Field(Field(exn_bucket, 0), 0);
+      char* buf = (char*)malloc(201);
+      snprintf(buf, 200, "(mainc) Uncaught exception: %s\n", 
+	       String_val(str));
+      fatal_error(buf);
+    }
   }
   return 0;			/* Can't get here */
 }

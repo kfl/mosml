@@ -22,7 +22,6 @@ datatype SCon =
 
 datatype BlockTag =
     CONtag of int * int             (* tag number & span *)
-  | EXNtag of QualifiedIdent * int  (* constructor name & stamp *)
 ;
 
 datatype StructConstant =
@@ -42,7 +41,6 @@ fun intOfAtom (INTscon i) = i
 ;
 
 fun intOfAbsoluteTag (CONtag(i,_)) = i
-  | intOfAbsoluteTag (EXNtag _) = fatalError "intOfAbsoluteTag"
 ;
 
 (* Id is used distinguish between name spaces 
@@ -111,9 +109,7 @@ fun printSCon (INTscon i) =
 ;
 
 fun printCTag (CONtag(tag, span)) =
-      (msgInt tag; msgString ":"; msgInt span)
-  | printCTag (EXNtag(q, stamp)) =
-      (printQualId q; msgString "/"; msgInt stamp)
+    (msgInt tag; msgString ":"; msgInt span)
 ;
 
 fun printStrConst (ATOMsc scon) =

@@ -8,7 +8,6 @@ datatype reloc_info =
     Reloc_literal of StructConstant            (* structured constant *)
   | Reloc_getglobal of (QualifiedIdent * int)  (* reference to a global *)
   | Reloc_setglobal of (QualifiedIdent * int)  (* definition of a global *)
-  | Reloc_tag of QualifiedIdent * int          (* exception tag *)
   | Reloc_primitive of string                  (* C primitive number *)
 ;
 

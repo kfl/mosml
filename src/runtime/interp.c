@@ -19,6 +19,7 @@
 #include "unalignd.h"
 #include "interp.h"
 #include "expand.h"
+#include "globals.h"
 #ifdef HAS_UI
 #include "ui.h"
 #endif
@@ -47,12 +48,13 @@ sp is a local copy of the global variable extern_sp. */
 
 typedef unsigned char opcode_t;
 
-/* Code for raising the Interrupt exception */
+/* Code for raising the Interrupt exception (GETGLOBAL takes a short arg) */
 
-static opcode_t byte_raise_break_exn[] = { ATOM, BREAK_EXN, RAISE };
-#define RAISE_CODE_LEN 3
+static opcode_t byte_raise_break_exn[] = 
+       { GETGLOBAL, EXN_INTERRUPT, 0, RAISE };
+#define RAISE_CODE_LEN 4
 
-/* Code for callbacks from C to ML code */
+/* Code for callbacks from C to ML code: POP, 1, 0 means pop(1) */
 
 static opcode_t byte_callback1_code[] = { ACC1, APPLY1, POP, 1, 0, STOP };
 static opcode_t byte_callback2_code[] = { ACC2, APPLY2, POP, 1, 0, STOP };
@@ -1213,7 +1215,7 @@ EXTERN value interprete(int mode, bytecode_t bprog, int code_size, CODE* rprog)
     Instruct(DIVINT):		/* unsigned */
       tmp = accu - 1;
       if (tmp == 0) {
-        accu = Atom(SMLEXN_DIV);
+        accu = Field(global_data, EXN_DIV);
         goto raise_exception;
       }
       accu = Val_long((unsigned long) ((unsigned long) (*sp++ - 1) 
@@ -1223,7 +1225,7 @@ EXTERN value interprete(int mode, bytecode_t bprog, int code_size, CODE* rprog)
     Instruct(MODINT):
       tmp = accu - 1;
       if (tmp == 0) {
-        accu = Atom(SMLEXN_DIV);
+        accu = Field(global_data, EXN_DIV);
         goto raise_exception;
       }
       accu = (unsigned long) (1 + (unsigned long) (*sp++ - 1) 
@@ -1297,36 +1299,31 @@ EXTERN value interprete(int mode, bytecode_t bprog, int code_size, CODE* rprog)
 
 #define Check_float(dval) \
    if ((dval > maxdouble) || (dval < -maxdouble)) \
-      { accu = Atom(float_exn); goto raise_exception; }
+      { accu = Field(global_data, EXN_OVERFLOW); goto raise_exception; }
 
     Instruct(FLOATOFINT):
 	dtmp = (double) Long_val(accu); goto float_done;
 
     Instruct(SMLNEGFLOAT):
-	float_exn = SMLEXN_OVF;
 	dtmp = -Double_val(accu);
 	Check_float(dtmp); goto float_done;
 
     Instruct(SMLADDFLOAT):
-	float_exn = SMLEXN_OVF;
 	dtmp = Double_val(*sp++) + Double_val(accu);
 	Check_float(dtmp); goto float_done;
 
     Instruct(SMLSUBFLOAT):
-	float_exn = SMLEXN_OVF;
 	dtmp = Double_val(*sp++) - Double_val(accu);
 	Check_float(dtmp); goto float_done;
 
     Instruct(SMLMULFLOAT):
-	float_exn = SMLEXN_OVF;
 	dtmp = Double_val(*sp++) * Double_val(accu);
 	Check_float(dtmp); goto float_done;
 
     Instruct(SMLDIVFLOAT):
-	float_exn = SMLEXN_OVF;
 	dtmp = Double_val(accu);
 	if (dtmp == 0) {
-	    accu = Atom(SMLEXN_DIV);
+	    accu = Field(global_data, EXN_DIV);
 	    goto raise_exception;
 	}
 	dtmp = Double_val(*sp++) / dtmp;
@@ -1402,43 +1399,37 @@ EXTERN value interprete(int mode, bytecode_t bprog, int code_size, CODE* rprog)
     Instruct(SMLNEGINT):
       tmp =  - Long_val(accu);
       accu = Val_long(tmp);
-      if( Long_val(accu) != tmp ) {
-        accu = Atom(SMLEXN_OVF);
-        goto raise_exception;
-      }
+      if( Long_val(accu) != tmp ) 
+	goto raise_overflow;
       Next;
+    raise_overflow:
+      accu = Field(global_data, EXN_OVERFLOW);
+      goto raise_exception;
+
     Instruct(SMLSUCCINT):
       tmp =  Long_val(accu) + 1;
       accu = Val_long(tmp);
-      if( Long_val(accu) != tmp ) {
-        accu = Atom(SMLEXN_OVF);
-        goto raise_exception;
-      }
+      if( Long_val(accu) != tmp ) 
+	goto raise_overflow;
       Next;
     Instruct(SMLPREDINT):
       tmp =  Long_val(accu) - 1;
       accu = Val_long(tmp);
-      if( Long_val(accu) != tmp ) {
-        accu = Atom(SMLEXN_OVF);
-        goto raise_exception;
-      }
+      if( Long_val(accu) != tmp ) 
+        goto raise_overflow;
       Next;
     Instruct(SMLADDINT):
       tmp = Long_val(*sp++) + Long_val(accu);
       accu = Val_long(tmp);
-      if( Long_val(accu) != tmp ) goto raise_sum;
+      if( Long_val(accu) != tmp ) 
+	goto raise_overflow;
       Next;
-      raise_sum:
-        accu = Atom(SMLEXN_OVF);
-        goto raise_exception;
     Instruct(SMLSUBINT):
       tmp = Long_val(*sp++) - Long_val(accu);
       accu = Val_long(tmp);
-      if( Long_val(accu) != tmp ) goto raise_diff;
+      if( Long_val(accu) != tmp ) 
+	goto raise_overflow;
       Next;
-      raise_diff:
-        accu = Atom(SMLEXN_OVF);
-        goto raise_exception;
 
 #define ChunkLen (4 * sizeof(value) - 1)
 #define MaxChunk ((1L << ChunkLen) - 1)
@@ -1451,28 +1442,28 @@ EXTERN value interprete(int mode, bytecode_t bprog, int code_size, CODE* rprog)
         if( x < 0 ) { x = -x; isNegative = 1; }
         if( y < 0 ) { y = -y; isNegative = !isNegative; }
         if( y > x ) { tmp = y; y = x; x = tmp; }
-        if( y > MaxChunk ) goto raise_prod;
+        if( y > MaxChunk ) 
+	  goto raise_overflow;
         if( x <= MaxChunk )
           { accu = Val_long(isNegative?(-(x * y)):(x * y)); }
         else /* x > MaxChunk */
           { tmp = (x >> ChunkLen) * y;
-            if( tmp > MaxChunk + 1) goto raise_prod;
+            if( tmp > MaxChunk + 1) 
+	      goto raise_overflow;
             tmp = (tmp << ChunkLen) + (x & MaxChunk) * y;
             if( isNegative ) tmp = - tmp;
             accu = Val_long(tmp);
-            if( Long_val(accu) != tmp ) goto raise_prod;
+            if( Long_val(accu) != tmp ) 
+	      goto raise_overflow;
           }
       }
       Next;
-      raise_prod :
-        accu = Atom(SMLEXN_OVF);
-        goto raise_exception;
-
+      
     Instruct(SMLDIVINT):
       tmp = Long_val(accu);
       accu = Long_val(*sp++);
       if (tmp == 0) 
-	{ accu = Atom(SMLEXN_DIV);
+	{ accu = Field(global_data, EXN_DIV);
 	  goto raise_exception;
 	}
       if( tmp < 0 ) { accu = - accu; tmp = -tmp; }
@@ -1487,9 +1478,7 @@ EXTERN value interprete(int mode, bytecode_t bprog, int code_size, CODE* rprog)
         }
       accu = Val_long(tmp);
       if( Long_val(accu) != tmp ) 
-	{ accu = Atom(SMLEXN_OVF);
-	  goto raise_exception;
-	}
+	goto raise_overflow;
       Next;
 
     Instruct(SMLMODINT):
@@ -1497,7 +1486,7 @@ EXTERN value interprete(int mode, bytecode_t bprog, int code_size, CODE* rprog)
       y = tmp = Long_val(accu);
       accu = Long_val(*sp++);
       if (tmp == 0) 
-	{ accu = Atom(SMLEXN_DIV);
+	{ accu = Field(global_data, EXN_DIV);
 	  goto raise_exception;
 	}
       if( tmp < 0 ) { accu = -accu; tmp = -tmp; }
@@ -1510,9 +1499,7 @@ EXTERN value interprete(int mode, bytecode_t bprog, int code_size, CODE* rprog)
       if( y < 0 ) tmp = -tmp;
       accu = Val_long(tmp);
       if( Long_val(accu) != tmp ) 
-	{ accu = Atom(SMLEXN_OVF);
-	  goto raise_exception;
-	}
+	goto raise_overflow;
       }
       Next;
 
@@ -1545,20 +1532,18 @@ EXTERN value interprete(int mode, bytecode_t bprog, int code_size, CODE* rprog)
     Instruct(SMLQUOTINT):
       tmp = accu - 1;
       if (tmp == 0) 
-	{ accu = Atom(SMLEXN_DIV);
+	{ accu = Field(global_data, EXN_DIV);
 	  goto raise_exception;
 	}
       tmp = (*sp++ - 1) / tmp;
       accu = Val_long(tmp);
       if( Long_val(accu) != tmp ) 
-	{ accu = Atom(SMLEXN_OVF);
-	  goto raise_exception;
-	}
+	goto raise_overflow;
       Next;
     Instruct(SMLREMINT):
       tmp = accu - 1;
       if (tmp == 0) {
-        accu = Atom(SMLEXN_DIV);
+        accu = Field(global_data, EXN_DIV);
         goto raise_exception;
       }
       accu = 1 + (*sp++ - 1) % tmp;

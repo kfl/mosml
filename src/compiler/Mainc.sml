@@ -139,6 +139,7 @@ handle
        BasicIO.exit 2)
   | Fail msg =>
       (msgIBlock 0;
+       errPrompt "Compilation failed: "; msgEOL();
        errPrompt msg; msgEOL();
        msgEBlock();
        msgFlush();

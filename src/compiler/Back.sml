@@ -219,13 +219,6 @@ fun compileNBranch int_of_key clauses =
   in make_tree 0 (length part - 1) end
 ;
 
-(* To check if a switch construct contains tags that are unknown at
-   compile-time (i.e. exception tags). *)
-
-fun switch_contains_exception_tags clauses =
-  exists (fn (EXNtag _, _) => true | _ => false) clauses
-;
-
 (* Inversion of a boolean test ( < becomes >= and so on) *)
 
 val invertPrimTest = fn
@@ -681,10 +674,7 @@ fun compileExp env staticfail =
           compTest2 sz dp arg exp1 exp0 C
       | Lswitch(size, arg, clauses) =>
           let val C1 =
-            if switch_contains_exception_tags clauses then
-              compTests sz dp
-                (map (fn (tag,act) => (Pnoteqtag_test tag, act)) clauses) C
-            else if List.length clauses >= size - 5 then
+	    if List.length clauses >= size - 5 then
               Kprim Ptag_of :: compDirectSwitch sz dp size clauses C
             else
               Kprim Ptag_of ::

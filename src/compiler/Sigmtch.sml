@@ -68,26 +68,14 @@ fun exportConAsVal os valRenList id (ci : ConInfo) (specStatus : ConStatus) =
 ;
 
 fun exportExConAsVal os valRenList id (ei : ExConInfo) (infStatus : ConStatus) (specStatus : ConStatus) =
-  let val vid =  Const.mangle (Const.ValId id) 
-  in
-      case #exconTag(!ei) of
-	  SOME _ =>
-	      let val lam = Lprim(Pset_global (#qualid specStatus, 0), 
-				  [trTopExConVar ei])
-	      in emit_phrase os (compileLambda true lam);
-		 drop (fn (name,stamp) => name = vid) valRenList
-	      end
-	|  NONE => 
-	      let val en = Lprim(Pget_global(#qualid infStatus,lookup vid valRenList),[])
-		  val lam = Lprim(Pset_global (#qualid specStatus, 0),
-				  [trTopDynExConVar ei en])
-	      in
-		  emit_phrase os (compileLambda true lam);
-		  drop (fn (name,stamp) => name = vid) valRenList
-	      end
-  end
-;	      
-
+    let val vid =  Const.mangle (Const.ValId id) 
+	val en = Lprim(Pget_global(#qualid infStatus,lookup vid valRenList),[])
+	val lam = Lprim(Pset_global (#qualid specStatus, 0), 
+			[trTopDynExConVar ei en])
+    in
+	emit_phrase os (compileLambda true lam);
+	drop (fn (name,stamp) => name = vid) valRenList
+    end;
 
 fun checkHomeUnits infQual specQual id thing =
   if specQual <> infQual then (
@@ -165,7 +153,6 @@ fun exportVar os valRenList id {info = (_,infInfo),qualid = infQualid}
              | CONname ci' => errorImplMismatch id
              | EXNname ei' =>
                  if #exconArity(!ei) <> #exconArity(!ei')
-                 orelse #exconIsGreedy(!ei) <> #exconIsGreedy(!ei')
                  then errorExConImplMismatch id
                  else valRenList
              | REFname => errorImplMismatch id)

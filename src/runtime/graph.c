@@ -22,7 +22,7 @@ int cc;
 static void graphic_failure(msg)
      char * msg;
 {
-  raise_with_string(GRAPHIC_FAILURE_EXN, msg);
+  raise_with_string(SYS__EXN_GRAPHIC, msg);
 }
 
 value gr_open_graph(mode)       /* ML */

@@ -12,7 +12,7 @@ type 'a numtable =
   num_tbl: ('a, int) Hasht.t     (* The table *)
 };
 
-(* cvr: added TODO remove *)    
+(* cvr: added TODO remove 
 fun fromShortExnTagTable {num_cnt, num_tbl} = 
  {num_cnt = ref (!num_cnt), 
   num_tbl = let val nt = (Hasht.new 57) 
@@ -33,7 +33,7 @@ fun toShortExnTagTable {num_cnt, num_tbl} =
                          num_tbl
             in nt 
             end};
-
+*)
 
 fun new_numtable size =
   { num_cnt = ref 0, num_tbl = Hasht.new size }
@@ -109,11 +109,13 @@ fun defineGlobalValueAlias uid uid' =
 
 (* The exception tags *)
 
-val unknown_exn_name = ({qual="?", id=["?"]}, 0);
+(* ps: val unknown_exn_name = ({qual="?", id=["?"]}, 0);
 val exn_tag_table = ref(new_numtable 1 : (QualifiedIdent * int) numtable);
 val tag_exn_table = ref(Array.fromList [] : (QualifiedIdent * int) Array.array );
 
-(* cvr: *)
+*)
+
+(* cvr: 
 fun fromShortTagExnTable a = Array.tabulate 
      ((Array.length a),
       (fn i => case Array.sub (a, i) of
@@ -152,9 +154,10 @@ fun defineGlobalExceptionAlias (q, (q', stamp')) =
   let val tag = get_num_of_exn (q', stamp') in
     Hasht.insert (#num_tbl (!exn_tag_table)) (q, 0) tag
   end;
+*)
 
 fun intOfTag (CONtag(n,_)) = n
-  | intOfTag (EXNtag(id, stamp)) = get_num_of_exn(id, stamp)
+(*  | intOfTag (EXNtag(id, stamp)) = fatalError "intOfTag" (* ps: get_num_of_exn(id, stamp) *) *)
 ;
 
 (* The C primitives *)
@@ -185,7 +188,7 @@ fun get_num_of_prim name =
 ;
 
 fun exportPublicNames uname excRenList valRenList =
-  (List.app defineGlobalExceptionAlias excRenList;
+  ((* ps: List.app defineGlobalExceptionAlias excRenList; *)
    List.app
      (fn (id, stamp) =>
          defineGlobalValueAlias
@@ -195,6 +198,8 @@ fun exportPublicNames uname excRenList valRenList =
 ;
 
 (* Initialization *)
+
+(* ps:
 
 val normalizeExnName = fn
     {qual="sys", id=["Break"]}     => {qual="General", id=["Interrupt"]}
@@ -212,34 +217,39 @@ val normalizeExnName = fn
   | qualid => qualid
 ;
 
+*)
+
 fun reset_linker_tables () =
 (
   global_table := new_numtable 263;
   literal_table := [];
   List.app
     (fn {qual, id} =>
-       ignore( get_slot_for_defined_variable ({qual="(global)", id=[id]}, 0) ))
+       ignore( get_slot_for_defined_variable
+	      (* ps: ({qual="(global)", id=[id]}, 0) *)
+	      ({qual=qual, id=[id]}, 0) ))
     Predef.predef_variables;
-  exn_tag_table := new_numtable 31;
+(* ps: exn_tag_table := new_numtable 31;
   tag_exn_table := Array.array(50, unknown_exn_name);
   List.app
     (fn ({qual,id}, stamp) => 
         ignore(get_num_of_exn (normalizeExnName {qual=qual,id = [id]}, 0)))
     Predef.predef_exn;
+*)
   set_c_primitives Prim_c.primitives_table
 );
 
 fun save_linker_tables outstream =
 (
-  output_binary_int outstream (! (#num_cnt(!global_table)));
+  output_binary_int outstream (! (#num_cnt(!global_table)))
 (* cvr: removed
   output_value outstream (!exn_tag_table);
   output_value outstream (!tag_exn_table)
 *)
 (* cvr: added: *)
-  output_value outstream (toShortExnTagTable(!exn_tag_table));
+(* ps:  ; output_value outstream (toShortExnTagTable(!exn_tag_table));
   output_value outstream (toShortTagExnTable(!tag_exn_table))
-(* cvr: *)
+(* cvr: *) *)
 );
 
 (* To read linker tables from the executable file *)
@@ -259,13 +269,14 @@ fun load_linker_tables () =
       (* We don't need information about the internals *)
       (* of Moscow ML system! *)
       global_table := new_numtable 263;
-      #num_cnt (!global_table) := input_binary_int is;
+      #num_cnt (!global_table) := input_binary_int is
 (*
       exn_tag_table := input_value is;
       tag_exn_table := input_value is
 *)
-      exn_tag_table := fromShortExnTagTable (input_value is);
+(* ps:      ; exn_tag_table := fromShortExnTagTable (input_value is);
       tag_exn_table := fromShortTagExnTable (input_value is)
+*)
     end
   ) handle _ => fatalError "Unable to read linker tables from bytecode"
 ;
@@ -292,22 +303,25 @@ fun init_linker_tables () =
 fun protect_linker_tables fct =
   let val saved_global_table     = !global_table
       and saved_literal_table    = !literal_table
-      and saved_exn_tag_table    = !exn_tag_table
+(* ps:      and saved_exn_tag_table    = !exn_tag_table
       and saved_tag_exn_table    = !tag_exn_table
+*)
       and saved_c_prim_table     = !c_prim_table
   in
     (fct();
      global_table            := saved_global_table;
      literal_table           := saved_literal_table;
-     exn_tag_table           := saved_exn_tag_table;
+(* ps:     exn_tag_table           := saved_exn_tag_table;
      tag_exn_table           := saved_tag_exn_table;
+*)
      c_prim_table            := saved_c_prim_table
      )
     handle x =>
       (global_table            := saved_global_table;
        literal_table           := saved_literal_table;
-       exn_tag_table           := saved_exn_tag_table;
+(* ps:       exn_tag_table           := saved_exn_tag_table;
        tag_exn_table           := saved_tag_exn_table;
+*)
        c_prim_table            := saved_c_prim_table;
        raise x)
   end

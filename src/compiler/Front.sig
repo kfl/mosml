@@ -3,7 +3,6 @@ local
 in
 
 val trConVar : ConInfo -> Lambda;
-val trTopExConVar : ExConInfo -> Lambda;
 val trTopDynExConVar : ExConInfo -> Lambda -> Lambda;
 val trPrimVar : SMLPrim -> Lambda;
 val coerceMod : Lambda -> Mod -> Mod -> Lambda;

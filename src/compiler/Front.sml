@@ -143,23 +143,24 @@ val curriedPrimVersion = fn
   | _            =>   NONE
 ;
 
-
-
-
-
 (* Translation of expressions *)
 
 exception Not_constant;
 
 fun extractConstant (Lconst cst) = cst
-  | extractConstant _ = raise Not_constant
-;
+  | extractConstant _ = raise Not_constant;
 
-val bindConst  = Lconst(BLOCKsc(EXNtag bindTagName,  []));
-val matchConst = Lconst(BLOCKsc(EXNtag matchTagName, []));
-val bindRaiser  = Lprim(Praise, [bindConst]);
-val matchRaiser = Lprim(Praise, [matchConst]);
+fun mkDynexn1 exnname arg = Lprim(Pmakeblock (CONtag(0,1)), [exnname, arg])
+fun mkDynexn0 exnname     = mkDynexn1 exnname (Lconst constUnit)
 
+(* ps: TODO perhaps share the code for raising Bind and Match *)
+
+val bindExn  = 
+    mkDynexn0 (Lprim(Pget_global ({qual="General", id=["exn_bind"]}, 0), []));
+val matchExn = 
+    mkDynexn0 (Lprim(Pget_global ({qual="General", id=["exn_match"]}, 0), []))
+val bindRaiser  = Lprim(Praise, [bindExn]);
+val matchRaiser = Lprim(Praise, [matchExn]);
 
 fun partial_fun (loc as Loc(start,stop)) () =
     (msgIBlock 0;
@@ -179,10 +180,7 @@ fun partial_let (onTop : bool) (loc as Loc(start,stop)) () =
      else ();
      bindRaiser);
 
-fun partial_try () =
-    Lprim(Praise, [Lvar 0]);
-
-val smlExnTag = EXNtag exnTagName;
+fun partial_try () = Lprim(Praise, [Lvar 0]);
 
 fun extract_fields arity =
   let fun loop i =
@@ -291,47 +289,20 @@ fun trConVar (ci : ConInfo) =
           Lfn(Lprim(Pmakeblock(CONtag(conTag,conSpan)), [(Lvar 0)]))
   end;
 
-fun trStaticExConVar isGreedy arity tag =
-  case (isGreedy, arity) of
-      (true,  _) =>
-        Lfn(Lprim(Pmakeblock(EXNtag tag), extract_fields arity))
-    | (false, 0) =>
-        Lconst(BLOCKsc(EXNtag tag, []))
-    | (false, _) =>
-        Lfn(Lprim(Pmakeblock (EXNtag tag), [Lvar 0]))
-;
-
 fun trExConVar (env as (rho, depth))  (ii : IdInfo) (ei:ExConInfo) =
-  let val {exconArity, exconIsGreedy, exconTag, ...} = !ei
-  in
-    case exconTag of
-        NONE =>
-          if exconArity = 0 then
-            let val en = translateLongAccess ValId env ii
-            in Lprim(Pmakeblock smlExnTag, [en]) end
-          else
-	    let val en = translateLongAccess ValId env ii
-	    in Llet([en],Lfn(Lprim(Pmakeblock smlExnTag, [Lvar 1, Lvar 0]))) 
-	    end 
-     | SOME tag =>
-         trStaticExConVar exconIsGreedy exconArity tag
-  end;
-
-
-fun trTopExConVar (ei : ExConInfo) =
-  let val {exconArity, exconIsGreedy, exconTag, ...} = !ei in
-    case exconTag of
-        NONE => fatalError "trTopExConVar"
-      | SOME tag =>
-         trStaticExConVar exconIsGreedy exconArity tag
-  end;
+  let val {exconArity, ...} = !ei
+      val en = translateLongAccess ValId env ii
+  in 
+      if exconArity = 0 then mkDynexn0 en
+      else Llet([en], Lfn(mkDynexn1 (Lvar 1) (Lvar 0)))
+  end 
 
 fun trTopDynExConVar (ei : ExConInfo) (en:Lambda) =
   let val {exconArity,...} = !ei
   in if exconArity = 0 then 
-         Lprim(Pmakeblock smlExnTag, [en])
+         mkDynexn0 en
      else
-	 Llet([en],Lfn(Lprim(Pmakeblock smlExnTag, [Lvar 1, Lvar 0])))
+	 Llet([en], Lfn(mkDynexn1 (Lvar 1) (Lvar 0)))
   end;
 
 fun trPrimVar prim =
@@ -398,49 +369,32 @@ fun coerceVarEnv S VE' =
 	       |  PRIMname pi => (trPrimVar (#primOp pi))::tr_VE
 	       |  CONname ci => (trConVar ci)::tr_VE
 	       |  EXNname ei => 
-			   (let val {exconArity, exconIsGreedy, exconTag, ...} = !ei
-			    in
-				case exconTag of
-				    NONE =>
-					if exconArity = 0 then
-					    let val en = 
-						if isGlobalName qualid 
-						    then getGlobal ValId qualid
-						else Lprim(Pfield field,[Lvar 0])
-					  in Lprim(Pmakeblock smlExnTag, [en]) end
-					else
-					    let val en = 
-						if isGlobalName qualid 
-						    then getGlobal ValId qualid
-						else Lprim(Pfield field,[Lvar 0])
-					    in Llet([en],Lfn(Lprim(Pmakeblock smlExnTag, [Lvar 1, Lvar 0]))) 
-					    end
-				  | SOME tag =>
-						trStaticExConVar exconIsGreedy exconArity tag
-			    end 
-				:: tr_VE)
+		     (let val {exconArity, ...} = !ei
+			  val en = 
+			      if isGlobalName qualid then
+				  getGlobal ValId qualid
+			      else Lprim(Pfield field,[Lvar 0])
+		      in
+			  if exconArity = 0 then
+			      mkDynexn0 en 
+			  else
+			      Llet([en], Lfn(mkDynexn1 (Lvar 1) (Lvar 0)))
+		      end 
+		      :: tr_VE)
 	       | REFname => fatalError "coerceVarEnv:1"
 	     end)
 	| EXNname ei' => 
-	    if isExConStatic ei'
-		then tr_VE 
-	    else 
-		(let val (field,{qualid,info = (_,cs)}) = lookupVEofS id 
-		 in case cs of
-		     EXNname ei => 
-			 ((let val {exconArity, exconIsGreedy, exconTag, ...} = !ei
-			   in
-			       case exconTag of
-				   NONE => 
-				       if isGlobalName qualid 
-					   then (getGlobal ValId qualid)
-				       else Lprim(Pfield field, [Lvar 0])
-				 | SOME tag =>
-					   fatalError "coerceVarEnv:2"  (* cvr: TODO *)
-			   end) 
-			       :: tr_VE)
-		   | _  => fatalError "coerceVarEnv:3"
-			end)
+	     let val (field,{qualid,info = (_,cs)}) = lookupVEofS id 
+	     in case cs of
+		 EXNname ei => 
+		     (let val {exconArity, ...} = !ei
+		      in
+			  if isGlobalName qualid then getGlobal ValId qualid
+			  else Lprim(Pfield field, [Lvar 0])
+		      end 
+		     :: tr_VE)
+	       | _  => fatalError "coerceVarEnv:3"
+	     end
 	| _ (* PRIMname pi' | CONname ci' | REFname *) => 
 	     tr_VE)
      [] 
@@ -527,49 +481,34 @@ fun coerceDecVarEnv (env as (rho,depth)) VE VE' =
 	       |  PRIMname pi => (trPrimVar (#primOp pi))::tr_VE
 	       |  CONname ci => (trConVar ci)::tr_VE
 	       |  EXNname ei => 
-			   (let val {exconArity, exconIsGreedy, exconTag, ...} = !ei
-			    in
-				case exconTag of
-				    NONE =>
-					if exconArity = 0 then
-					    let val en = 
-						if isGlobalName qualid 
-						    then getGlobal ValId qualid
-						else translateLocalAccess ValId env id
-					  in Lprim(Pmakeblock smlExnTag, [en]) end
-					else
-					    let val en = 
-						if isGlobalName qualid 
-						    then getGlobal ValId qualid
-						else translateLocalAccess ValId env id
-					    in Llet([en],Lfn(Lprim(Pmakeblock smlExnTag, [Lvar 1, Lvar 0])))
-			                    end
-				  | SOME tag =>
-						trStaticExConVar exconIsGreedy exconArity tag
-			    end 
-				:: tr_VE)
+		     (let val {exconArity, ...} = !ei
+			  val en = 
+			      if isGlobalName qualid then 
+				  getGlobal ValId qualid
+			      else
+				  translateLocalAccess ValId env id
+		      in
+			  if exconArity = 0 then
+			      mkDynexn0 en 
+			  else
+			      Llet([en],Lfn(mkDynexn1 (Lvar 1) (Lvar 0)))
+		      end
+		      :: tr_VE)
 	       | REFname => fatalError "coerceDecVarEnv:1"
 	     end)
 	| EXNname ei' => 
-	    if isExConStatic ei'
-		then tr_VE 
-	    else 
-		(let val {qualid,info = (_,cs)} = lookupEnv VE id 
-		 in case cs of
-		     EXNname ei => 
-			 ((let val {exconArity, exconIsGreedy, exconTag, ...} = !ei
-			   in
-			       case exconTag of
-				   NONE => 
-				       if isGlobalName qualid 
-					   then (getGlobal ValId qualid)
-				       else translateLocalAccess ValId env id
-				 | SOME tag =>
-					   fatalError "coerceDecVarEnv:2"  (* cvr: TODO *)
-			   end) 
-			       :: tr_VE)
-		   | _  => fatalError "coerceDecVarEnv:3"
-			end)
+	     let val {qualid,info = (_,cs)} = lookupEnv VE id 
+	     in 
+	        case cs of
+		   EXNname ei => 
+		     (let val {exconArity, ...} = !ei
+		      in
+			  if isGlobalName qualid then getGlobal ValId qualid
+			  else translateLocalAccess ValId env id
+		      end
+		      :: tr_VE)
+		 | _  => fatalError "coerceDecVarEnv:3"
+	     end
 	| _ (* PRIMname pi' | CONname ci' | REFname *) => 
 	     tr_VE)
      [] 
@@ -715,36 +654,17 @@ and trVarApp env (ii : IdInfo) args =
                   end
           end
       | EXCONik ei =>
-          let val {exconArity, exconIsGreedy, exconTag, ...} = !ei in
-            if List.length args <> 1 then
-              fatalError "trVarApp: unary excon requires 1 arg"
-            else ();
-            case exconTag of
-                NONE =>
-                  let val () =
-                        if exconArity = 0 then
-                          fatalError "trVarApp: nullary excon in app"
-                        else ();
-                      val en = translateLongAccess ValId env ii
-                      val tr_arg = trExp env (hd args)
-                  in Lprim(Pmakeblock smlExnTag, [en, tr_arg]) end
-              | SOME tag =>
-                 (case (exconIsGreedy, exconArity) of
-                    (true,  _) =>
-                      (case (hd args) of
-                          (_, RECexp(ref (RECre fs))) =>
-                            trRec env (EXNtag tag) fs
-                        | (_, RECexp(ref (TUPLEre es))) =>
-                            trTuple env (EXNtag tag) es
-                        | _ =>
-                            Llet([trExp env (hd args)],
-                                  Lprim(Pmakeblock(EXNtag tag),
-                                        extract_fields exconArity)))
-                  | (false, 0) =>
-                      fatalError "trVarApp: nullary excon in app"
-                  | (false, _) =>
-                      let val tr_arg = trExp env (hd args)
-                      in Lprim(Pmakeblock (EXNtag tag), [tr_arg]) end)
+          let val {exconArity, ...} = !ei 
+	  in
+	      if List.length args <> 1 then
+		  fatalError "trVarApp: unary excon requires 1 arg"
+	      else ();
+	      if exconArity = 0 then
+		  fatalError "trVarApp: nullary excon in app"
+	      else ();
+	      let val en = translateLongAccess ValId env ii
+		  val tr_arg = trExp env (hd args)
+	      in mkDynexn1 en tr_arg end
           end
   end
 
@@ -783,17 +703,14 @@ and trRec env tag fs =
       val (env', tr_es, envelope) = trArgs env es
       val tr_es' = map snd (sortRow (zip2 labs tr_es))
   in
-    (case tag of CONtag _ => () | EXNtag _ => raise Not_constant;
-     envelope(Lconst(BLOCKsc(tag, map extractConstant tr_es'))))
-    handle Not_constant =>
-           envelope(Lprim(Pmakeblock tag, tr_es'))
+      (envelope(Lconst(BLOCKsc(tag, map extractConstant tr_es'))))
+      handle Not_constant => envelope(Lprim(Pmakeblock tag, tr_es'))
   end
 
 and trTuple env tag es =
   let val tr_es = map (trExp env) es in
-    (case tag of CONtag _ => () | EXNtag _ => raise Not_constant;
-     Lconst(BLOCKsc(tag, map extractConstant tr_es)))
-    handle Not_constant => Lprim(Pmakeblock tag, tr_es)
+      (Lconst(BLOCKsc(tag, map extractConstant tr_es)))
+      handle Not_constant => Lprim(Pmakeblock tag, tr_es)
   end
 
 (* We recognize constant arguments only upon translating them, *)
@@ -893,8 +810,7 @@ and trOpenLongStrIdInfo depth ((_,ref NONE):LongModIdInfo) =
 					    posMEFEVE)
 				       end
 			     | EXNname ei => 
-				       if isExConStatic ei orelse isGlobalName qualid
-					   then cont pos
+				       if isGlobalName qualid then cont pos
 				       else 
 					   let val (rhoMEFEVE,posMEFEVE) = cont (pos + 1) 
 					   in
@@ -1023,8 +939,7 @@ and trModExp (env as (rho,depth)) (_, (modexp,r)) =
 				    then tr_VE
 				else (translateLocalAccess ValId env id) :: tr_VE 
 			  | EXNname ei => 
-				    if isExConStatic ei orelse isGlobalName qualid
-					then tr_VE 
+				    if isGlobalName qualid then tr_VE 
 				    else (translateLocalAccess ValId env id) :: tr_VE
 			  | _  => tr_VE (* PRIMname,CONname & REFname cases *) )
 	               [] 
@@ -1134,10 +1049,7 @@ and trBindings (env as (rho, depth)) = fn
       trExp env exp :: trBindings (rho, depth+1) rest
 
 and trExBindList (env as (rho, depth)) ebs =
-  let val ebs = drop (fn (EXDECexbind(ii, _)) => isExConStatic(getExConInfo ii)                          
-                      | (EXEQUALexbind(ii, _)) => isExConStatic(getExConInfo ii)) ebs 
-      (* cvr: ignore the static exbinds *)                        
-      val id_path_list =
+  let val id_path_list =
         mapFrom (fn depth =>
                  fn
                     (EXDECexbind(ii, _))   =>
@@ -1153,18 +1065,12 @@ and trExBindList (env as (rho, depth)) ebs =
 
 and trExBind env = fn
     EXDECexbind(ii, _) =>
-      let val () =
-            if isExConStatic(getExConInfo ii) then fatalError "trExBind:1"
-            else ()
-          val uname = ATOMsc(STRINGscon(currentUnitName()))
+      let val uname = ATOMsc(STRINGscon(currentUnitName()))
           val exid  = ATOMsc(STRINGscon (hd(#id (#qualid ii))))
-          val en = BLOCKsc(CONtag(0,1), [exid, uname])
+          val en = exid (* ps: TODO: BLOCKsc(CONtag(0,1), [exid, uname]) *)
       in Lprim(Pmakeblock(CONtag(refTag, 1)), [Lconst en]) end
   | EXEQUALexbind(ii, ii') =>
-      (if isExConStatic(getExConInfo ii') then fatalError "trExBind:2"
-       else ();
-       translateExName env ii')
-;
+      translateExName env ii';
 
 (* Translation of toplevel declarations *)
 
@@ -1375,11 +1281,4 @@ fun translateToplevelDec dec =
   let val (rho, tlam) = trToplevelDec NILenv dec
   in (REofRho rho, flattenTLam tlam []) end
 ;
-
-
-
-
-
-
-
 

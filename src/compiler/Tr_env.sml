@@ -169,21 +169,10 @@ fun pathsOfPatAcc path ((loc, pat') : Pat) acc =
         else
           pathsOfPatAcc (Path_son(0, path)) p acc
       end
-  | EXNILpat _ => acc
-  | EXCONSpat(ii, p) =>
-      let val ei = getExConInfo ii in
-        case (isExConStatic ei, #exconIsGreedy(!ei)) of
-             (true,  true ) =>
-               pathsOfPatAcc (Path_virtual_son(#exconArity(!ei), path))
-                             p acc
-           | (true,  false) =>
-               pathsOfPatAcc (Path_son(0, path)) p acc
-           | (false, _    ) =>
-               pathsOfPatAcc (Path_son(1, path)) p acc
-      end
-  | EXNAMEpat _ => fatalError "pathsOfPatAcc"
-  | REFpat p =>
-      pathsOfPatAcc (Path_son(0, path)) p acc
+  | EXNILpat _       => acc
+  | EXCONSpat(ii, p) => pathsOfPatAcc (Path_son(1, path)) p acc
+  | EXNAMEpat _      => fatalError "pathsOfPatAcc"
+  | REFpat p         => pathsOfPatAcc (Path_son(0, path)) p acc
   | RECpat(ref (TUPLErp ps)) =>
       foldR (fn(i,p) => fn acc => pathsOfPatAcc (Path_son(i,path)) p acc)
             acc (mapFrom pair 0 ps)
@@ -193,10 +182,8 @@ fun pathsOfPatAcc path ((loc, pat') : Pat) acc =
       foldR (fn(i,p) => fn acc => pathsOfPatAcc (Path_son(i,path)) p acc)
             acc (mapFrom pair 0 ps)
   | INFIXpat _ => fatalError "pathsOfPatAcc"
-  | PARpat p =>
-      pathsOfPatAcc path p acc
-  | TYPEDpat(p, _) =>
-      pathsOfPatAcc path p acc
+  | PARpat p         => pathsOfPatAcc path p acc
+  | TYPEDpat(p, _)   => pathsOfPatAcc path p acc
   | LAYEREDpat(p1, p2) =>
       pathsOfPatAcc path p1 (pathsOfPatAcc path p2 acc)
 ;

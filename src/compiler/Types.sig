@@ -50,7 +50,6 @@ val tyname_ppstream : TyName;
 val mkConInfo : unit -> ConInfo;
 val mkExConInfo : unit -> ExConInfo;
 val mkPrimInfo : int -> SMLPrim -> PrimInfo;
-val isExConStatic : ExConInfo -> bool;
 
 val normType: Type -> Type;
 val normTyApp: TyApp -> TyFun; (* cvr *)

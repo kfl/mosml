@@ -143,19 +143,18 @@ fun mkConInfo () =
        conTag=(~1), conType=sc_bogus }
 ;
 
-fun mkExConInfo () =
-  ref{ exconArity=(~1), exconIsGreedy=false, exconTag=NONE }
-;
+fun mkExConInfo () = ref{ exconArity=(~1) };
 
 fun mkPrimInfo arity prim =
   { primArity=arity, primOp=prim }
 ;
 
-fun isExConStatic (ei : ExConInfo) =
+(* ps: fun isExConStatic (ei : ExConInfo) =
   case #exconTag(!ei) of
       SOME _ => true
     | NONE => false
 ;
+*)
 
 fun isNilRowType rho =
   case !rho of
@@ -1999,11 +1998,14 @@ fun checkRealization (* (inferredSig : CSig) (specSig : CSig)*)
 
 ;
 
+(* ps: remove
+
 fun checkHomeUnits path id desc infQual specQual =
   if specQual <> infQual then 
       raise MatchError (GlobalMismatch (path,id, desc, infQual,specQual))
   else ();
 ;
+*)
 
 fun matchIdStatus (* os *) path id 
     (infInfo as {info = (_,infStatus),qualid = infQualid})
@@ -2045,10 +2047,11 @@ fun matchIdStatus (* os *) path id
              | _ => raise MatchError (StatusMismatch (path,id,infInfo,specInfo)))
       | EXNname ei =>
           (* cvr: TODO review whether call to checkHomeUnits still makes sense here *)
-          (checkHomeUnits path id "exception" infQual specQual; 
+          ((* ps: checkHomeUnits path id "exception" infQual specQual; *)
+	   
            case infStatus of
               EXNname ei' =>
-       	        ((case(#exconTag(!ei'),#exconTag(!ei)) of
+       	        ((* ps:  (case(#exconTag(!ei'),#exconTag(!ei)) of
 		     (NONE,NONE) => ()
  		 |   (SOME _, SOME _) =>  ()
 (* cvr: unfortunately, the following is meaningless since we allow rebinding of static excons ...
@@ -2059,9 +2062,8 @@ fun matchIdStatus (* os *) path id
                  |   (NONE,SOME _) => 
 			 raise MatchError (StatusMismatch (path,id,infInfo,specInfo))
 		 |   (SOME _,NONE) =>
-			 raise MatchError (StatusMismatch (path,id,infInfo,specInfo)));   
+			 raise MatchError (StatusMismatch (path,id,infInfo,specInfo)));   *)
                  if #exconArity(!ei) <> #exconArity(!ei')
-                 orelse #exconIsGreedy(!ei) <> #exconIsGreedy(!ei')
 		 then raise MatchError (StatusMismatch (path,id,infInfo,specInfo))
                  else ())
              | _ => raise MatchError (StatusMismatch (path,id,infInfo,specInfo)))
@@ -2928,10 +2930,11 @@ in
 			  | ( CONname _,CONname _) => "a constructor"
 			  | (_         ,CONname _) => "a constructor"
 			  | (EXNname infei,EXNname specei) => 
-				(case(#exconTag(!infei),#exconTag(!specei)) of
+				fatalError "errMatchReason 1"
+(* ps:				(case(#exconTag(!infei),#exconTag(!specei)) of
 				     (NONE,SOME _) => "a static exception"
 				   | (SOME _,NONE) => "a dynamic exception"
-				   | (_,_) => "an exception")
+				   | (_,_) => "an exception") *)
 			  | (_         ,EXNname _) => "an exception"
 			  | (_         ,REFname)    => "the `ref' constructor");
 	     msgString " in the ";prSpec path;msgEOL();
@@ -2945,10 +2948,12 @@ in
 			  | (CONname _,CONname _) => "a constructor with a different representation"
 			  | (CONname _,_) => "a constructor"
 			  | (EXNname infei,EXNname specei) => 
+				fatalError "errMatchReason 2"
+				(* ps:
 				(case(#exconTag(!infei),#exconTag(!specei)) of
 			             (NONE,SOME _) => "a dynamic exception"
 				   | (SOME _,NONE) => "a static exception"
-				   | (_,_) => "an exception with a different representation")
+				   | (_,_) => "an exception with a different representation") *)
 			  | (EXNname _,_) => "an exception"
 			  | (REFname,_) => "the `ref' constructor");
 	     msgString " in the ";prInf path;msgEOL();
@@ -3174,7 +3179,7 @@ fun sizeVarInfo {qualid,info = (_,cs)} =
          (case cs of
                VARname _ => 1
              | EXNname ei =>
-                   if isExConStatic ei then 0 else 1
+                   (* ps: if isExConStatic ei then 0 else *) 1
              | _ (* PRIMname _ | CONname _ | REFname *) => 0)
 
 
