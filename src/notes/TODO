@@ -649,3 +649,45 @@ size -A mlsexe kan fortaelle hvor store de enkelte sektioner er.
 
 Further unify Mysql and Postgres signatures; must match a common Db
 signature.
+
+* 2000-10-31: Stephen T Weeks (comp.lang.ml)
+Date: 30 Oct 2000 15:17:52 GMT
+
+There's definitely some differences amongst SML implementations
+regarding type specifications in signatures.  Consider the following
+two programs.
+
+(* program 1 *)
+signature S =
+   sig
+      type t
+      and u = int
+   end
+
+(* program 2 *)
+signature S =
+   sig
+      type t = int
+      and u = t
+   end
+
+According to the Definition (pages 14, 35 (rule 80), and 59 (figure
+19)), program 1 should be rejected as a syntax error and program 2
+should be accepted (because of the expansion explained in the previous
+post.  Here's a comparison of five different SML implementations on
+the two programs.
+
+The Definition		reject	accept
+
+ML Kit Version 3	reject	accept
+MLton 20000906		accept	reject
+Moscow ML 2.00		reject	reject
+Poly/ML 4.0		accept	reject
+SML/NJ 110.0.6		accept	accept
+SML/NJ 110.29		accept	accept
+
+As you can see, all four possibilities are achieved.
+
+Of the five compilers, only the ML Kit gets both programs right,
+Moscow ML and SML/NJ get one right (and disagree with each other), and
+MLton and PolyML get both wrong.

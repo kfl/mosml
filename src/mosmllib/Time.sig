@@ -76,7 +76,7 @@ val compare : time * time -> order
    by t, rounded to 3 decimal digits.  Equivalent to (fmt 3 t).  
 
    [fromString s] returns SOME t where t is the time value represented
-   by the string s of form [\n\t ]*[+~-]?([0-9]+(\.[0-9]+)?)|(\.[0-9]+); 
+   by the string s of form [\n\t ]*[+~-]?(([0-9]+(\.[0-9]+)?)|(\.[0-9]+)); 
    or returns NONE if s cannot be parsed as a time value.
 
    [scan getc src], where getc is a character accessor, returns SOME

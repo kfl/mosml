@@ -102,7 +102,13 @@ value sml_not_equal(value v1, value v2) /* ML */
 
 value sml_system(value cmd)        /* ML */
 {
-  return Val_int(system(String_val(cmd)));
+  value res;
+  errno = 0;
+  res = system(String_val(cmd));
+  if (errno == ENOENT)
+    return -1;
+  else
+    return Val_int(res);
 }
 
 value sml_abs_int(value x)          /* ML */
@@ -1596,3 +1602,18 @@ value sml_exnmessage(value exn)	/* ML */
   free(buf);
   return res;
 }
+
+/* Sleep for the number of usec indicated the Double val vtime */
+
+value sml_sleep(value vtime)	/* ML */
+{
+  double time = Double_val(vtime);
+  unsigned long sec = (long)(time/1000000.0);
+  unsigned long usec = (long)(time - 1000000.0 * sec);
+  if (time > 0) {
+    sleep(sec);
+    usleep(usec);
+  }        
+  return Val_unit;
+}
+

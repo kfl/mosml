@@ -108,22 +108,28 @@ val kosherUnitNames = [
 
 #ifdef win32
 val kosherUnitNames = [
-  ("Basicio",      "BasicIO"),
-  ("Binio",        "BinIO"),
-  ("Chararray",    "CharArray"),
-  ("Charvector",   "CharVector"),
-  ("Commandline",  "CommandLine"),
-  ("Filesys",      "FileSys"),
-  ("Listpair",     "ListPair"),
-  ("Nj93",         "NJ93"),
-  ("Os",           "OS"),
-  ("Pp",           "PP"),
-  ("Sml90",        "SML90"),
-  ("Stringcvt",    "StringCvt"),
-  ("Substring",    "Substring"),
-  ("Textio",       "TextIO"),
-  ("Word8array",   "Word8Array"),
-  ("Word8vector",  "Word8Vector")
+  ("Arrayslice",       "ArraySlice"),
+  ("Basicio",          "BasicIO"),
+  ("Binio",            "BinIO"),
+  ("Chararray",        "CharArray"),
+  ("Chararrayslice",   "CharArraySlice"),
+  ("Charvector",       "CharVector"),
+  ("Charvectorslice",  "CharVectorSlice")
+  ("Commandline",      "CommandLine"),
+  ("Filesys",          "FileSys"),
+  ("Listpair",         "ListPair"),
+  ("Nj93",             "NJ93"),
+  ("Os",               "OS"),
+  ("Pp",               "PP"),
+  ("Sml90",            "SML90"),
+  ("Stringcvt",        "StringCvt"),
+  ("Substring",        "Substring"),
+  ("Textio",           "TextIO"),
+  ("Vectorslice",      "VectorSlice"),
+  ("Word8array",       "Word8Array"),
+  ("Word8arrayslice",  "Word8ArraySlice"),
+  ("Word8vector",      "Word8Vector"),
+  ("Word8vectorslice", "Word8VectorSlice")
 ];
 #endif
 
