@@ -255,4 +255,20 @@ mosmlcmp0, mosmllib0, mosmllex0.
 9. Using camlrunm1, mosmlcmp2, mosmlcmp2, mosmllib1, mosmllex1,
    recompile everything.
 
+------------------------------------------------------------
 
+2000-01-21
+
+In 144 an excon is static if #exconTag(!ei) is SOME sexcon, where
+sexcon = (qualid, stamp) is a static excon, and stamp is the stamp of
+the static exception within the unit specified by qualid.
+
+
+Suggested approach: 
+
+1. Make the compiler generate dynamic exceptions only, but retain
+   the static exception machinery.
+
+2. The predefined (global) exceptions are simply bound as globalvars
+   instead of localvars.  They could be declared in Smlperv by a
+   mechanism similar to initial_prim_basis.
