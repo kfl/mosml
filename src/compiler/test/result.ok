@@ -1,4 +1,4 @@
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - linking values
 OK: a
@@ -272,7 +272,7 @@ functor OK: b
 functor OK: X.x
 functor OK: B.y- 
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > structure A :
   {structure a : {val v : string},
@@ -716,7 +716,7 @@ functor OK: b
 functor OK: X.x
 functor OK: B.y- 
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > val it = () : unit
 - > val it = () : unit
@@ -996,7 +996,7 @@ functor OK: X.x
 functor OK: B.y
 > val it = () : unit
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > signature Array =
   /\array.
@@ -1058,7 +1058,7 @@ Enter `quit();' to quit.
   int list
   val test2 = "OK" : string
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > signature Array =
   /\array.
@@ -1120,7 +1120,7 @@ Enter `quit();' to quit.
   int list
   val test2 = "OK" : string
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > val divides = fn : int -> int -> bool
 - > val succ = fn : int -> int
@@ -1157,23 +1157,23 @@ Enter `quit();' to quit.
       val start : int,
       val 'a value : 'a -> 'a},
    functor Next :
-     !state'.
-      {type state = state',
-       val start : state',
-       val next : state' -> state',
-       val value : state' -> int}->
-          {type state = state',
+     !state/1.
+      {type state = state/1,
+       val start : state/1,
+       val next : state/1 -> state/1,
+       val value : state/1 -> int}->
+          {type state = state/1,
            val divisor : int,
-           val filter : state' -> state',
-           val next : state' -> state',
-           val start : state',
-           val value : state' -> int},
+           val filter : state/1 -> state/1,
+           val next : state/1 -> state/1,
+           val start : state/1,
+           val value : state/1 -> int},
    functor Value :
-     !state'.
-      {type state = state',
-       val start : state',
-       val next : state' -> state',
-       val value : state' -> int}->{val value : int}}
+     !state/1.
+      {type state = state/1,
+       val start : state/1,
+       val next : state/1 -> state/1,
+       val value : state/1 -> int}->{val value : int}}
 - > val hundred_primes =
     [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67,
      71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149,
@@ -1184,7 +1184,7 @@ Enter `quit();' to quit.
      503, 509, 521, 523, 541] : int list
 - > val test = "OK" : string
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > signature POLY =
   /\nat.
@@ -1323,7 +1323,7 @@ Enter `quit();' to quit.
       val z : nat},
    val eval : nat -> nat list -> nat}
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > functor F : {val a : unit}->{val b : unit}->{val c : unit}->{}
 - > structure A : {val a : unit}
@@ -1339,8 +1339,8 @@ Enter `quit();' to quit.
 - > signature B = /\b.{type b = b, val b : b}
 - > signature C = /\c.{type c = c, val c : c}
 - > functor X : !a.{type a = a, val a : a}->{type a = a, val a : a}
-- > functor X : !a.{type a = a, val a : a}->?a'.{type a = a', val a : a'}
-- > functor X : !a.{type a = a, val a : a}->?a'.{type a = a', val a : a'}
+- > functor X : !a.{type a = a, val a : a}->?a/1.{type a = a/1, val a : a/1}
+- > functor X : !a.{type a = a, val a : a}->?a/1.{type a = a/1, val a : a/1}
 - > functor X :
   !a.
    {type a = a, val a : a}->
@@ -1352,13 +1352,13 @@ Enter `quit();' to quit.
    {type a = a, val a : a}->
        !b.
         {type b = b, val b : b}->
-            !c.{type c = c, val c : c}->?a'.{type a = a', val a : a'}
+            !c.{type c = c, val c : c}->?a/1.{type a = a/1, val a : a/1}
 - > functor X :
   !a.
    {type a = a, val a : a}->
        !b.
         {type b = b, val b : b}->
-            !c.{type c = c, val c : c}->?a'.{type a = a', val a : a'}
+            !c.{type c = c, val c : c}->?a/1.{type a = a/1, val a : a/1}
 - > signature F = !a.{type a = a, val a : a}->?b.{type b = b, val b : b}
 - > signature G =
   (!a.{type a = a, val a : a}->?b.{type b = b, val b : b})->
@@ -1385,15 +1385,15 @@ Enter `quit();' to quit.
 - > functor F : !a.{type a = a, val a : a}->{}
 - > structure FA : {}
 - > signature A = /\a.{type a = a, val a : a}
-- > signature B = /\b'.{type b = b', val b : b'}
+- > signature B = /\b/1.{type b = b/1, val b : b/1}
 - > signature C = /\c.{type c = c, val c : c}
 - > signature S =
-  {functor F1 : !a.{type a = a, val a : a}->?b'.{type b = b', val b : b'},
-   functor F2 : !a.{type a = a, val a : a}->?b'.{type b = b', val b : b'},
+  {functor F1 : !a.{type a = a, val a : a}->?b/1.{type b = b/1, val b : b/1},
+   functor F2 : !a.{type a = a, val a : a}->?b/1.{type b = b/1, val b : b/1},
    functor F3 :
      !a.
       {type a = a, val a : a}->
-          !b'.{type b = b', val b : b'}->?c.{type c = c, val c : c}}
+          !b/1.{type b = b/1, val b : b/1}->?c.{type c = c, val c : c}}
 - > signature F = !t.{type t = t}->{}
 - > signature F = /\u.{}->{type u = u}
 - > signature F = /\u.!t.{type t = t}->{type u = (u t)}
@@ -1405,19 +1405,19 @@ Enter `quit();' to quit.
         datatype v = ((v t w x),{con D : (v t w x)}),
         con C : (u t w x),
         con D : (v t w x)}
-- > New type names: =u', =v'
+- > New type names: =u/1, =v/1
   functor F :
   !t w x.
    {type t = t, type w = w, type x = x}->
-       {datatype 'a u = ('a (u' t w x),{con 'a C : 'a -> 'a (u' t w x)}),
-        datatype 'a v = ('a (v' t w x),{con 'b D : 'b -> 'b (v' t w x)}),
-        con 'a C : 'a -> 'a (u' t w x),
-        con 'b D : 'b -> 'b (v' t w x)}
+       {datatype 'a u = ('a (u/1 t w x),{con 'a C : 'a -> 'a (u/1 t w x)}),
+        datatype 'a v = ('a (v/1 t w x),{con 'b D : 'b -> 'b (v/1 t w x)}),
+        con 'a C : 'a -> 'a (u/1 t w x),
+        con 'b D : 'b -> 'b (v/1 t w x)}
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > functor ok :
-  !u.(!t.{type t = t}->{type u = (u t)})->!t.{type t = t}->?u'.{type u = u'}
+  !u.(!t.{type t = t}->{type u = (u t)})->!t.{type t = t}->?u/1.{type u = u/1}
 - ! Toplevel input:
 !     op F:functor X:sig type t end -> sig type u end;
 !     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1426,10 +1426,10 @@ Enter `quit();' to quit.
 !   type u = (u t)
 ! in the signature
 ! but is implemented by the declaration: 
-!   type u = u'
+!   type u = u/1
 ! in the module
 ! The declaration violates the specification because 
-! the type constructor u' is a parameter 
+! the type constructor u/1 is a parameter 
 ! that is declared within the scope of u.
 - > signature S = /\u.!w.{type w = w, type t = w}->{type u = (u w)}
 - > functor F : !w.{type w = w, type t = w}->{type u = w * w}
@@ -1442,10 +1442,10 @@ Enter `quit();' to quit.
 !   type u = (u w)
 ! in the signature
 ! but is implemented by the declaration: 
-!   datatype u = (u',{con C : w * w -> u'})
+!   datatype u = (u/1,{con C : w * w -> u/1})
 ! in the module
 ! The declaration violates the specification because 
-! the type constructor u' is a parameter 
+! the type constructor u/1 is a parameter 
 ! that is declared within the scope of u.
 - > New type names: u
   functor F :
@@ -1470,170 +1470,171 @@ Enter `quit();' to quit.
   con D = fn : (u string) -> (u string)
   val y = C "x" : (u string)
   val z = D(C "x") : (u string)
-- > New type names: u'
+- > New type names: u/1
   functor F :
   !s t.
    {type s = s, val w : s, type t = t, val x : t}->
        {datatype u =
-          ((u' s t),{con C : s * t -> (u' s t), con D : (u' s t) -> (u' s t)}),
-        con C : s * t -> (u' s t),
-        con D : (u' s t) -> (u' s t),
-        val y : (u' s t),
-        val z : (u' s t)}
+          ((u/1 s t),
+           {con C : s * t -> (u/1 s t), con D : (u/1 s t) -> (u/1 s t)}),
+        con C : s * t -> (u/1 s t),
+        con D : (u/1 s t) -> (u/1 s t),
+        val y : (u/1 s t),
+        val z : (u/1 s t)}
 - > structure X :
   {datatype u =
-     ((u' bool string),
-      {con C : bool * string -> (u' bool string),
-       con D : (u' bool string) -> (u' bool string)}),
-   con C : bool * string -> (u' bool string),
-   con D : (u' bool string) -> (u' bool string),
-   val y : (u' bool string),
-   val z : (u' bool string)}
+     ((u/1 bool string),
+      {con C : bool * string -> (u/1 bool string),
+       con D : (u/1 bool string) -> (u/1 bool string)}),
+   con C : bool * string -> (u/1 bool string),
+   con D : (u/1 bool string) -> (u/1 bool string),
+   val y : (u/1 bool string),
+   val z : (u/1 bool string)}
 - > datatype u =
-  ((u' bool string),
-   {con C : bool * string -> (u' bool string),
-    con D : (u' bool string) -> (u' bool string)})
-  con C = fn : bool * string -> (u' bool string)
-  con D = fn : (u' bool string) -> (u' bool string)
-  val y = C(true, "x") : (u' bool string)
-  val z = D(C(true, "x")) : (u' bool string)
-- > New type names: u''
+  ((u/1 bool string),
+   {con C : bool * string -> (u/1 bool string),
+    con D : (u/1 bool string) -> (u/1 bool string)})
+  con C = fn : bool * string -> (u/1 bool string)
+  con D = fn : (u/1 bool string) -> (u/1 bool string)
+  val y = C(true, "x") : (u/1 bool string)
+  val z = D(C(true, "x")) : (u/1 bool string)
+- > New type names: u/2
   functor F :
   !s t.
    {type s = s, val w : s, type t = t, val x : t}->
        {datatype 'a u =
-          ('a (u'' s t),
-           {con 'a C : s * t * 'a -> 'a (u'' s t),
-            con 'a D : ('a * 'a) (u'' s t) -> 'a (u'' s t)}),
-        con 'a C : s * t * 'a -> 'a (u'' s t),
-        con 'a D : ('a * 'a) (u'' s t) -> 'a (u'' s t),
-        val y : int (u'' s t),
-        val z : int (u'' s t)}
+          ('a (u/2 s t),
+           {con 'a C : s * t * 'a -> 'a (u/2 s t),
+            con 'a D : ('a * 'a) (u/2 s t) -> 'a (u/2 s t)}),
+        con 'a C : s * t * 'a -> 'a (u/2 s t),
+        con 'a D : ('a * 'a) (u/2 s t) -> 'a (u/2 s t),
+        val y : int (u/2 s t),
+        val z : int (u/2 s t)}
 - > structure X :
   {datatype 'a u =
-     ('a (u'' bool string),
-      {con 'a C : bool * string * 'a -> 'a (u'' bool string),
-       con 'a D : ('a * 'a) (u'' bool string) -> 'a (u'' bool string)}),
-   con 'a C : bool * string * 'a -> 'a (u'' bool string),
-   con 'a D : ('a * 'a) (u'' bool string) -> 'a (u'' bool string),
-   val y : int (u'' bool string),
-   val z : int (u'' bool string)}
+     ('a (u/2 bool string),
+      {con 'a C : bool * string * 'a -> 'a (u/2 bool string),
+       con 'a D : ('a * 'a) (u/2 bool string) -> 'a (u/2 bool string)}),
+   con 'a C : bool * string * 'a -> 'a (u/2 bool string),
+   con 'a D : ('a * 'a) (u/2 bool string) -> 'a (u/2 bool string),
+   val y : int (u/2 bool string),
+   val z : int (u/2 bool string)}
 - > datatype 'a u =
-  ('a (u'' bool string),
-   {con 'a C : bool * string * 'a -> 'a (u'' bool string),
-    con 'a D : ('a * 'a) (u'' bool string) -> 'a (u'' bool string)})
-  con 'a C = fn : bool * string * 'a -> 'a (u'' bool string)
-  con 'a D = fn : ('a * 'a) (u'' bool string) -> 'a (u'' bool string)
-  val y = C(true, "x", 1) : int (u'' bool string)
-  val z = D(C(true, "x", (1, 1))) : int (u'' bool string)
-- > New type names: u'''
+  ('a (u/2 bool string),
+   {con 'a C : bool * string * 'a -> 'a (u/2 bool string),
+    con 'a D : ('a * 'a) (u/2 bool string) -> 'a (u/2 bool string)})
+  con 'a C = fn : bool * string * 'a -> 'a (u/2 bool string)
+  con 'a D = fn : ('a * 'a) (u/2 bool string) -> 'a (u/2 bool string)
+  val y = C(true, "x", 1) : int (u/2 bool string)
+  val z = D(C(true, "x", (1, 1))) : int (u/2 bool string)
+- > New type names: u/3
   functor A :
-  !b a.
+  !a b.
    {type a = a, type b = b, val a : a, val b : b}->
-       {datatype u = ((u''' b a),{con C : a * b -> (u''' b a)}),
-        con C : a * b -> (u''' b a),
-        val y : (u''' b a)}
+       {datatype u = ((u/3 a b),{con C : a * b -> (u/3 a b)}),
+        con C : a * b -> (u/3 a b),
+        val y : (u/3 a b)}
 - > structure A :
-  {datatype u = ((u''' bool int),{con C : int * bool -> (u''' bool int)}),
-   con C : int * bool -> (u''' bool int),
-   val y : (u''' bool int)}
-- > datatype u = ((u''' bool int),{con C : int * bool -> (u''' bool int)})
-  con C = fn : int * bool -> (u''' bool int)
-  val y = C(1, false) : (u''' bool int)
-- > New type names: u'''', v, =w, x
+  {datatype u = ((u/3 int bool),{con C : int * bool -> (u/3 int bool)}),
+   con C : int * bool -> (u/3 int bool),
+   val y : (u/3 int bool)}
+- > datatype u = ((u/3 int bool),{con C : int * bool -> (u/3 int bool)})
+  con C = fn : int * bool -> (u/3 int bool)
+  val y = C(1, false) : (u/3 int bool)
+- > New type names: u/4, v, =w, x
   functor A :
-  !c b a.
+  !a b c.
    {type a = a,
     type b = b,
     type 'a c = 'a c,
     val 'a a : a,
     val 'a b : b,
     val 'a f : 'a -> 'a c}->
-       {datatype u = ((u'''' c b a),{con C : a * b -> (u'''' c b a)}),
+       {datatype u = ((u/4 a b c),{con C : a * b -> (u/4 a b c)}),
         datatype v =
-          ((v c b a),
-           {con B : (v c b a), con D : a * b * (v c b a) -> (v c b a)}),
+          ((v a b c),
+           {con B : (v a b c), con D : a * b * (v a b c) -> (v a b c)}),
         datatype 'a w =
-          ('a (w c b a),
-           {con 'a B : 'a -> 'a (w c b a),
-            con 'a D : ('a * 'a) (w c b a) -> 'a (w c b a)}),
+          ('a (w a b c),
+           {con 'a B : 'a -> 'a (w a b c),
+            con 'a D : ('a * 'a) (w a b c) -> 'a (w a b c)}),
         datatype 'a x =
-          ('a (x c b a),
-           {con 'a B : 'a -> 'a (x c b a),
-            con 'a D : 'a c (x c b a) -> 'a (x c b a)}),
-        con 'a B : 'a -> 'a (x c b a),
-        con C : a * b -> (u'''' c b a),
-        con 'a D : 'a c (x c b a) -> 'a (x c b a),
-        val u : (u'''' c b a),
-        val v : (v c b a),
-        val w : (a * b) (w c b a),
-        val x : (a * b) (x c b a)}
+          ('a (x a b c),
+           {con 'a B : 'a -> 'a (x a b c),
+            con 'a D : 'a c (x a b c) -> 'a (x a b c)}),
+        con 'a B : 'a -> 'a (x a b c),
+        con C : a * b -> (u/4 a b c),
+        con 'a D : 'a c (x a b c) -> 'a (x a b c),
+        val u : (u/4 a b c),
+        val v : (v a b c),
+        val w : (a * b) (w a b c),
+        val x : (a * b) (x a b c)}
 - > structure A :
   {datatype u =
-     ((u'''' (/\'a.{l : 'a, r : 'a}) bool int),
-      {con C : int * bool -> (u'''' (/\'a.{l : 'a, r : 'a}) bool int)}),
+     ((u/4 int bool (/\'a.{l : 'a, r : 'a})),
+      {con C : int * bool -> (u/4 int bool (/\'a.{l : 'a, r : 'a}))}),
    datatype v =
-     ((v (/\'a.{l : 'a, r : 'a}) bool int),
-      {con B : (v (/\'a.{l : 'a, r : 'a}) bool int),
+     ((v int bool (/\'a.{l : 'a, r : 'a})),
+      {con B : (v int bool (/\'a.{l : 'a, r : 'a})),
        con D :
-         int * bool * (v (/\'a.{l : 'a, r : 'a}) bool int) ->
-         (v (/\'a.{l : 'a, r : 'a}) bool int)}),
+         int * bool * (v int bool (/\'a.{l : 'a, r : 'a})) ->
+         (v int bool (/\'a.{l : 'a, r : 'a}))}),
    datatype 'a w =
-     ('a (w (/\'a'.{l : 'a', r : 'a'}) bool int),
-      {con 'a B : 'a -> 'a (w (/\'a'.{l : 'a', r : 'a'}) bool int),
+     ('a (w int bool (/\'a'.{l : 'a', r : 'a'})),
+      {con 'a B : 'a -> 'a (w int bool (/\'a'.{l : 'a', r : 'a'})),
        con 'a D :
-         ('a * 'a) (w (/\'a'.{l : 'a', r : 'a'}) bool int) ->
-         'a (w (/\'a'.{l : 'a', r : 'a'}) bool int)}),
+         ('a * 'a) (w int bool (/\'a'.{l : 'a', r : 'a'})) ->
+         'a (w int bool (/\'a'.{l : 'a', r : 'a'}))}),
    datatype 'a x =
-     ('a (x (/\'a'.{l : 'a', r : 'a'}) bool int),
-      {con 'a B : 'a -> 'a (x (/\'a'.{l : 'a', r : 'a'}) bool int),
+     ('a (x int bool (/\'a'.{l : 'a', r : 'a'})),
+      {con 'a B : 'a -> 'a (x int bool (/\'a'.{l : 'a', r : 'a'})),
        con 'a D :
-         {l : 'a, r : 'a} (x (/\'a'.{l : 'a', r : 'a'}) bool int) ->
-         'a (x (/\'a'.{l : 'a', r : 'a'}) bool int)}),
-   con 'a B : 'a -> 'a (x (/\'a'.{l : 'a', r : 'a'}) bool int),
-   con C : int * bool -> (u'''' (/\'a.{l : 'a, r : 'a}) bool int),
+         {l : 'a, r : 'a} (x int bool (/\'a'.{l : 'a', r : 'a'})) ->
+         'a (x int bool (/\'a'.{l : 'a', r : 'a'}))}),
+   con 'a B : 'a -> 'a (x int bool (/\'a'.{l : 'a', r : 'a'})),
+   con C : int * bool -> (u/4 int bool (/\'a.{l : 'a, r : 'a})),
    con 'a D :
-     {l : 'a, r : 'a} (x (/\'a'.{l : 'a', r : 'a'}) bool int) ->
-     'a (x (/\'a'.{l : 'a', r : 'a'}) bool int),
-   val u : (u'''' (/\'a.{l : 'a, r : 'a}) bool int),
-   val v : (v (/\'a.{l : 'a, r : 'a}) bool int),
-   val w : (int * bool) (w (/\'a.{l : 'a, r : 'a}) bool int),
-   val x : (int * bool) (x (/\'a.{l : 'a, r : 'a}) bool int)}
+     {l : 'a, r : 'a} (x int bool (/\'a'.{l : 'a', r : 'a'})) ->
+     'a (x int bool (/\'a'.{l : 'a', r : 'a'})),
+   val u : (u/4 int bool (/\'a.{l : 'a, r : 'a})),
+   val v : (v int bool (/\'a.{l : 'a, r : 'a})),
+   val w : (int * bool) (w int bool (/\'a.{l : 'a, r : 'a})),
+   val x : (int * bool) (x int bool (/\'a.{l : 'a, r : 'a}))}
 - > datatype u =
-  ((u'''' (/\'a.{l : 'a, r : 'a}) bool int),
-   {con C : int * bool -> (u'''' (/\'a.{l : 'a, r : 'a}) bool int)})
+  ((u/4 int bool (/\'a.{l : 'a, r : 'a})),
+   {con C : int * bool -> (u/4 int bool (/\'a.{l : 'a, r : 'a}))})
   datatype v =
-  ((v (/\'a.{l : 'a, r : 'a}) bool int),
-   {con B : (v (/\'a.{l : 'a, r : 'a}) bool int),
+  ((v int bool (/\'a.{l : 'a, r : 'a})),
+   {con B : (v int bool (/\'a.{l : 'a, r : 'a})),
     con D :
-      int * bool * (v (/\'a.{l : 'a, r : 'a}) bool int) ->
-      (v (/\'a.{l : 'a, r : 'a}) bool int)})
+      int * bool * (v int bool (/\'a.{l : 'a, r : 'a})) ->
+      (v int bool (/\'a.{l : 'a, r : 'a}))})
   datatype 'a w =
-  ('a (w (/\'a'.{l : 'a', r : 'a'}) bool int),
-   {con 'a B : 'a -> 'a (w (/\'a'.{l : 'a', r : 'a'}) bool int),
+  ('a (w int bool (/\'a'.{l : 'a', r : 'a'})),
+   {con 'a B : 'a -> 'a (w int bool (/\'a'.{l : 'a', r : 'a'})),
     con 'a D :
-      ('a * 'a) (w (/\'a'.{l : 'a', r : 'a'}) bool int) ->
-      'a (w (/\'a'.{l : 'a', r : 'a'}) bool int)})
+      ('a * 'a) (w int bool (/\'a'.{l : 'a', r : 'a'})) ->
+      'a (w int bool (/\'a'.{l : 'a', r : 'a'}))})
   datatype 'a x =
-  ('a (x (/\'a'.{l : 'a', r : 'a'}) bool int),
-   {con 'a B : 'a -> 'a (x (/\'a'.{l : 'a', r : 'a'}) bool int),
+  ('a (x int bool (/\'a'.{l : 'a', r : 'a'})),
+   {con 'a B : 'a -> 'a (x int bool (/\'a'.{l : 'a', r : 'a'})),
     con 'a D :
-      {l : 'a, r : 'a} (x (/\'a'.{l : 'a', r : 'a'}) bool int) ->
-      'a (x (/\'a'.{l : 'a', r : 'a'}) bool int)})
-  con 'a B = fn : 'a -> 'a (x (/\'a'.{l : 'a', r : 'a'}) bool int)
-  con C = fn : int * bool -> (u'''' (/\'a.{l : 'a, r : 'a}) bool int)
+      {l : 'a, r : 'a} (x int bool (/\'a'.{l : 'a', r : 'a'})) ->
+      'a (x int bool (/\'a'.{l : 'a', r : 'a'}))})
+  con 'a B = fn : 'a -> 'a (x int bool (/\'a'.{l : 'a', r : 'a'}))
+  con C = fn : int * bool -> (u/4 int bool (/\'a.{l : 'a, r : 'a}))
   con 'a D = fn :
-  {l : 'a, r : 'a} (x (/\'a'.{l : 'a', r : 'a'}) bool int) ->
-  'a (x (/\'a'.{l : 'a', r : 'a'}) bool int)
-  val u = C(1, false) : (u'''' (/\'a.{l : 'a, r : 'a}) bool int)
+  {l : 'a, r : 'a} (x int bool (/\'a'.{l : 'a', r : 'a'})) ->
+  'a (x int bool (/\'a'.{l : 'a', r : 'a'}))
+  val u = C(1, false) : (u/4 int bool (/\'a.{l : 'a, r : 'a}))
   val v = D(1, false, D(1, false, D(1, false, B))) :
-  (v (/\'a.{l : 'a, r : 'a}) bool int)
+  (v int bool (/\'a.{l : 'a, r : 'a}))
   val w = D(B((1, false), (1, false))) :
-  (int * bool) (w (/\'a.{l : 'a, r : 'a}) bool int)
+  (int * bool) (w int bool (/\'a.{l : 'a, r : 'a}))
   val x = D(B{l = (1, false), r = (1, false)}) :
-  (int * bool) (x (/\'a.{l : 'a, r : 'a}) bool int)
+  (int * bool) (x int bool (/\'a.{l : 'a, r : 'a}))
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > structure A :
   {structure B : {val b : bool, val c : string},
@@ -1656,13 +1657,13 @@ Enter `quit();' to quit.
 ! type fail = X.v where X = struct datatype t = C of t type v = t end;
 !             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Illegal projection: this projection causes an existential type constructor to escape its scope
-- > functor G : {}->?=v'.{datatype v = (v',{con C : v'}), con C : v'}
+- > functor G : {}->?=v/1.{datatype v = (v/1,{con C : v/1}), con C : v/1}
 - ! Toplevel input:
 ! type fail = X.v where X = G();
 !             ^^^^^^^^^^^^^^^^^
 ! Illegal projection: this projection causes an existential type constructor to escape its scope
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > signature Collection =
   /\e t.{type e = e, type t = t, val empty : t, val add : e -> t -> t}
@@ -1673,49 +1674,49 @@ Enter `quit();' to quit.
 - > New type names: t
   structure IncSet :
   {type e = int, type t = t, val add : int -> t -> t, val empty : t}
-- > New type names: t'
+- > New type names: t/1
   structure DecSet :
-  {type e = int, type t = t', val add : int -> t' -> t', val empty : t'}
+  {type e = int, type t = t/1, val add : int -> t/1 -> t/1, val empty : t/1}
 - ! Toplevel input:
 ! val fail =  DecSet.add 2 (IncSet.add 1 IncSet.empty);
 !                           ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Type clash: expression of type
 !   t
 ! cannot have type
-!   t'
-- > New type names: t''
+!   t/1
+- > New type names: t/2
   functor List :
   !e.
    {type e = e}->
        {type e = e,
-        type t = (t'' e),
-        val add : e -> (t'' e) -> (t'' e),
-        val empty : (t'' e)}
+        type t = (t/2 e),
+        val add : e -> (t/2 e) -> (t/2 e),
+        val empty : (t/2 e)}
 - > structure IncList :
   {type e = int,
-   type t = (t'' int),
-   val add : int -> (t'' int) -> (t'' int),
-   val empty : (t'' int)}
+   type t = (t/2 int),
+   val add : int -> (t/2 int) -> (t/2 int),
+   val empty : (t/2 int)}
 - > structure DecList :
   {type e = int,
-   type t = (t'' int),
-   val add : int -> (t'' int) -> (t'' int),
-   val empty : (t'' int)}
-- > val ok = <t'' int> : (t'' int)
+   type t = (t/2 int),
+   val add : int -> (t/2 int) -> (t/2 int),
+   val empty : (t/2 int)}
+- > val ok = <t/2 int> : (t/2 int)
 - > structure BoolList :
   {type e = bool,
-   type t = (t'' bool),
-   val add : bool -> (t'' bool) -> (t'' bool),
-   val empty : (t'' bool)}
+   type t = (t/2 bool),
+   val add : bool -> (t/2 bool) -> (t/2 bool),
+   val empty : (t/2 bool)}
 - ! Toplevel input:
 ! val fail = BoolList.add true (IncList.add 1 IncList.empty);
 !                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Type clash: expression of type
-!   (t'' int)
+!   (t/2 int)
 ! cannot have type
-!   (t'' bool)
+!   (t/2 bool)
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > structure X : {type 'a r = 'a ref}
 - > type 'a r = 'a ref
@@ -1723,7 +1724,7 @@ Enter `quit();' to quit.
 - > structure Z : {type 'a r = 'a ref}
   type 'a r = 'a ref
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > New type names: =u
   structure A :
@@ -1739,72 +1740,68 @@ Enter `quit();' to quit.
      ((u (unit -> unit)),{con C : (unit -> unit) ref -> (u (unit -> unit))}),
    con C : (unit -> unit) ref -> (u (unit -> unit))}
 - > val ok = fn : (u (unit -> unit)) * (u (unit -> unit)) -> bool
-- > New type names: u'
+- > New type names: u/1
   functor G :
   !t.
    {type t = t}->
-       {datatype u = ((u' t),{con C : t -> (u' t)}), con C : t -> (u' t)}
+       {datatype u = ((u/1 t),{con C : t -> (u/1 t)}), con C : t -> (u/1 t)}
 - > structure C :
-  {datatype u = ((u' unit),{con C : unit -> (u' unit)}),
-   con C : unit -> (u' unit)}
+  {datatype u = ((u/1 unit),{con C : unit -> (u/1 unit)}),
+   con C : unit -> (u/1 unit)}
 - ! Toplevel input:
 ! val fail = op = : C.u * C.u -> bool;
 !            ^^^^
 ! Type clash: expression of type
 !   ''a * ''a -> bool
 ! cannot have type
-!   (u' unit) * (u' unit) -> bool
+!   (u/1 unit) * (u/1 unit) -> bool
 - > structure D :
   {datatype u =
-     ((u' (unit -> unit)),{con C : (unit -> unit) -> (u' (unit -> unit))}),
-   con C : (unit -> unit) -> (u' (unit -> unit))}
+     ((u/1 (unit -> unit)),{con C : (unit -> unit) -> (u/1 (unit -> unit))}),
+   con C : (unit -> unit) -> (u/1 (unit -> unit))}
 - ! Toplevel input:
 ! val fail = op = : D.u * D.u -> bool;
 !            ^^^^
 ! Type clash: expression of type
 !   ''a * ''a -> bool
 ! cannot have type
-!   (u' (unit -> unit)) * (u' (unit -> unit)) -> bool
-- > New type names: =u''
+!   (u/1 (unit -> unit)) * (u/1 (unit -> unit)) -> bool
+- > New type names: =u/2
   functor H :
   !=t.
    {type t = t}->
-       {datatype u = ((u'' t),{con C : t -> (u'' t)}), con C : t -> (u'' t)}
+       {datatype u = ((u/2 t),{con C : t -> (u/2 t)}), con C : t -> (u/2 t)}
 - > structure E :
-  {datatype u = ((u'' unit),{con C : unit -> (u'' unit)}),
-   con C : unit -> (u'' unit)}
-- > val ok = fn : (u'' unit) * (u'' unit) -> bool
-- > New type names: =u'''
+  {datatype u = ((u/2 unit),{con C : unit -> (u/2 unit)}),
+   con C : unit -> (u/2 unit)}
+- > val ok = fn : (u/2 unit) * (u/2 unit) -> bool
+- > New type names: =u/3
   functor I :
   !s =t.
    {type s = s, type t = t}->
-       {datatype u = ((u''' s t),{con C : t -> (u''' s t)}),
-        con C : t -> (u''' s t)}
+       {datatype u = ((u/3 s t),{con C : t -> (u/3 s t)}),
+        con C : t -> (u/3 s t)}
 - > structure F :
-  {datatype u = ((u''' unit unit),{con C : unit -> (u''' unit unit)}),
-   con C : unit -> (u''' unit unit)}
-- > val ok = fn : (u''' unit unit) * (u''' unit unit) -> bool
+  {datatype u = ((u/3 unit unit),{con C : unit -> (u/3 unit unit)}),
+   con C : unit -> (u/3 unit unit)}
+- > val ok = fn : (u/3 unit unit) * (u/3 unit unit) -> bool
 - > structure G :
   {datatype u =
-     ((u''' (unit -> unit) unit),{con C : unit -> (u''' (unit -> unit) unit)}),
-   con C : unit -> (u''' (unit -> unit) unit)}
-- > val ok = fn : (u''' (unit -> unit) unit) * (u''' (unit -> unit) unit) -> bool
+     ((u/3 (unit -> unit) unit),{con C : unit -> (u/3 (unit -> unit) unit)}),
+   con C : unit -> (u/3 (unit -> unit) unit)}
+- > val ok = fn : (u/3 (unit -> unit) unit) * (u/3 (unit -> unit) unit) -> bool
 - > functor ok :
-  !=u''''.
-   (!t.{type t = t}->{type u = (u'''' t)})->
-       !t.{type t = t}->{type u = (u'''' t)}
+  !=u/4.
+   (!t.{type t = t}->{type u = (u/4 t)})->!t.{type t = t}->{type u = (u/4 t)}
 - > functor ok :
-  !=u''''.
-   (!t.{type t = t}->{type u = (u'''' t)})->
-       !=t.{type t = t}->{type u = (u'''' t)}
+  !=u/4.
+   (!t.{type t = t}->{type u = (u/4 t)})->!=t.{type t = t}->{type u = (u/4 t)}
 - > functor ok :
-  !=u''''.
-   (!t.{type t = t}->{type u = (u'''' t)})->
-       !t.{type t = t}->{type u = (u'''' t)}
+  !=u/4.
+   (!t.{type t = t}->{type u = (u/4 t)})->!t.{type t = t}->{type u = (u/4 t)}
 - > functor ok :
-  !=u''''.
-   (!t.{type t = t}->{type u = (u'''' t)})->
-       !=t.{type t = t}->{type u = (u'''' t)}
+  !=u/4.
+   (!t.{type t = t}->{type u = (u/4 t)})->!=t.{type t = t}->{type u = (u/4 t)}
 - ! Toplevel input:
 !     op F:functor X:sig type t end -> sig type u end;
 !     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1813,18 +1810,18 @@ Enter `quit();' to quit.
 ! is specified as admitting equality in the module
 !   type t = t
 ! but its declaration does not admit equality in the signature
-!   type t = t'
+!   type t = t/1
 - ! Toplevel input:
 !     op F:functor X:sig eqtype t end -> sig eqtype u end;
 !     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
 ! Equality type mismatch: type constructor u of the range
 ! is specified as admitting equality in the signature
-!   type u = (u'''' t)
+!   type u = (u/4 t)
 ! but its declaration does not admit equality in the module
-!   type u = (u''''' t)
+!   type u = (u/5 t)
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > val 'a ok = fn : 'a -> 'a
 - > val ('a, 'b) ok = fn : ('a -> 'b) -> 'a -> 'b
@@ -1847,21 +1844,21 @@ Enter `quit();' to quit.
 - > val 'a ok = fn : 'a -> 'a
 - > New type names: =t
   structure Ok : {datatype t = (t,{con c : int -> t}), con c : int -> t}
-- > New type names: t', t''
+- > New type names: t/1, t/2
   structure Ok' :
-  {datatype t = (t',{con c : (unit -> unit) -> t'}),
-   con c : (unit -> unit) -> t'}
+  {datatype t = (t/1,{con c : (unit -> unit) -> t/1}),
+   con c : (unit -> unit) -> t/1}
   structure Ok :
-  {datatype t = (t'',{con c : (bool -> bool) -> t''}),
-   con c : (bool -> bool) -> t''}
+  {datatype t = (t/2,{con c : (bool -> bool) -> t/2}),
+   con c : (bool -> bool) -> t/2}
 - > val it = () : unit
-- > New type names: t''', t''''
+- > New type names: t/3, t/4
   structure Ok' :
-  {datatype t = (t''',{con c : (unit -> unit) -> t'''}),
-   con c : (unit -> unit) -> t'''}
+  {datatype t = (t/3,{con c : (unit -> unit) -> t/3}),
+   con c : (unit -> unit) -> t/3}
   structure Ok :
-  {datatype t = (t'''',{con c : (bool -> bool) -> t''''}),
-   con c : (bool -> bool) -> t''''}
+  {datatype t = (t/4,{con c : (bool -> bool) -> t/4}),
+   con c : (bool -> bool) -> t/4}
 - > val it = () : unit
 - > val 'a ok = fn : 'a -> 'a
 - > val 'a ok = fn : 'a -> [{val x : 'a}]
@@ -1899,21 +1896,21 @@ Enter `quit();' to quit.
 !     :functor X:sig type t end -> sig type u end.
 ! Signature mismatch: the module does not match the signature ...
 ! Scope Violation: type constructor u of the range has specification:
-!   type u = (u t''''')
+!   type u = (u t/5)
 ! in the signature
 ! but is implemented by the declaration: 
-!   datatype u = (u',{con C : t''''' -> u'})
+!   datatype u = (u/1,{con C : t/5 -> u/1})
 ! in the module
 ! The declaration violates the specification because 
-! the type constructor u' is a parameter 
+! the type constructor u/1 is a parameter 
 ! that is declared within the scope of u.
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > New type names: =v, =u, =t
   val matchsuc = "OK" : string
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - ! Toplevel input:
 ! structure X = struct open General end: sig val + : (int * int) -> int end;
@@ -2858,7 +2855,7 @@ Enter `quit();' to quit.
 ! is specified as a `prim_EQtype' in the signature
 !   type t = t
 ! but is not declared as a `prim_EQtype' in the module
-!   type t = t'
+!   type t = t/1
 - ! Toplevel input:
 !   LL:functor(L:L)->G;
 !   ^^^^^^^^^^^^^^^^^^
@@ -2867,7 +2864,7 @@ Enter `quit();' to quit.
 ! is specified as a `prim_EQtype' in the signature
 !   type t = t
 ! but is not declared as a `prim_EQtype' in the module
-!   type t = t'
+!   type t = t/1
 - ! Toplevel input:
 !   GL:functor(L:L)->L;
 !   ^^^^^^^^^^^^^^^^^^
@@ -2876,7 +2873,7 @@ Enter `quit();' to quit.
 ! is specified as a `prim_EQtype' in the module
 !   type t = t
 ! but is not declared as a `prim_EQtype' in the signature
-!   type t = t'
+!   type t = t/1
 - ! Toplevel input:
 !   YL:sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2885,7 +2882,7 @@ Enter `quit();' to quit.
 ! is specified as a `prim_EQtype' in the signature
 !   type t = t
 ! but is not declared as a `prim_EQtype' in the module
-!   type t = t'
+!   type t = t/1
 - ! Toplevel input:
 !   L_YL:functor(L:L)->sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2894,7 +2891,7 @@ Enter `quit();' to quit.
 ! is specified as a `prim_EQtype' in the signature
 !   type t = t
 ! but is not declared as a `prim_EQtype' in the module
-!   type t = t'
+!   type t = t/1
 - ! Toplevel input:
 !   YG_L:functor(YL:sig structure Y: L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2903,7 +2900,7 @@ Enter `quit();' to quit.
 ! is specified as a `prim_EQtype' in the module
 !   type t = t
 ! but is not declared as a `prim_EQtype' in the signature
-!   type t = t'
+!   type t = t/1
 - ! Toplevel input:
 !   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2912,7 +2909,7 @@ Enter `quit();' to quit.
 ! is specified as a `prim_EQtype' in the module
 !   type t = t
 ! but is not declared as a `prim_EQtype' in the signature
-!   type t = t'
+!   type t = t/1
 - ! Toplevel input:
 !   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2921,7 +2918,7 @@ Enter `quit();' to quit.
 ! is specified as a `prim_EQtype' in the module
 !   type t = t
 ! but is not declared as a `prim_EQtype' in the signature
-!   type t = t'
+!   type t = t/1
 - > signature G = /\=t.{type t = t}
 - > signature L = {type t = unit -> unit}
 - ! Toplevel input:
@@ -3162,10 +3159,10 @@ Enter `quit();' to quit.
 !   type u = (u t)
 ! in the signature
 ! but is implemented by the declaration: 
-!   type u = u'
+!   type u = u/1
 ! in the module
 ! The declaration violates the specification because 
-! the type constructor u' is a parameter 
+! the type constructor u/1 is a parameter 
 ! that is declared within the scope of u.
 - ! Toplevel input:
 !   LL:functor(L:L)->G;
@@ -3175,10 +3172,10 @@ Enter `quit();' to quit.
 !   type u = (u t)
 ! in the signature
 ! but is implemented by the declaration: 
-!   type u = u'
+!   type u = u/1
 ! in the module
 ! The declaration violates the specification because 
-! the type constructor u' is a parameter 
+! the type constructor u/1 is a parameter 
 ! that is declared within the scope of u.
 - ! Toplevel input:
 !   GL:functor(L:L)->L;
@@ -3188,10 +3185,10 @@ Enter `quit();' to quit.
 !   type u = (u t)
 ! in the module
 ! but is implemented by the declaration: 
-!   type u = u'
+!   type u = u/1
 ! in the signature
 ! The declaration violates the specification because 
-! the type constructor u' is a parameter 
+! the type constructor u/1 is a parameter 
 ! that is declared within the scope of u.
 - > signature G = /\u.{functor F : !t.{type t = t}->{type u = (u t)}}
 - > signature L = {functor F : !t.{type t = t}->?u.{type u = u}}
@@ -3203,10 +3200,10 @@ Enter `quit();' to quit.
 !   type u = (u t)
 ! in the signature
 ! but is implemented by the declaration: 
-!   type u = u'
+!   type u = u/1
 ! in the module
 ! The declaration violates the specification because 
-! the type constructor u' is a parameter 
+! the type constructor u/1 is a parameter 
 ! that is declared within the scope of u.
 - ! Toplevel input:
 !   L_YL:functor(L:L)->sig structure Y: G end;
@@ -3216,10 +3213,10 @@ Enter `quit();' to quit.
 !   type u = (u t)
 ! in the signature
 ! but is implemented by the declaration: 
-!   type u = u'
+!   type u = u/1
 ! in the module
 ! The declaration violates the specification because 
-! the type constructor u' is a parameter 
+! the type constructor u/1 is a parameter 
 ! that is declared within the scope of u.
 - ! Toplevel input:
 !   YG_L:functor(YL:sig structure Y: L end)->L;
@@ -3229,10 +3226,10 @@ Enter `quit();' to quit.
 !   type u = (u t)
 ! in the module
 ! but is implemented by the declaration: 
-!   type u = u'
+!   type u = u/1
 ! in the signature
 ! The declaration violates the specification because 
-! the type constructor u' is a parameter 
+! the type constructor u/1 is a parameter 
 ! that is declared within the scope of u.
 - ! Toplevel input:
 !   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
@@ -3242,10 +3239,10 @@ Enter `quit();' to quit.
 !   type u = (u t)
 ! in the module
 ! but is implemented by the declaration: 
-!   type u = u'
+!   type u = u/1
 ! in the signature
 ! The declaration violates the specification because 
-! the type constructor u' is a parameter 
+! the type constructor u/1 is a parameter 
 ! that is declared within the scope of u.
 - ! Toplevel input:
 !   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
@@ -3255,13 +3252,13 @@ Enter `quit();' to quit.
 !   type u = (u t)
 ! in the module
 ! but is implemented by the declaration: 
-!   type u = u'
+!   type u = u/1
 ! in the signature
 ! The declaration violates the specification because 
-! the type constructor u' is a parameter 
+! the type constructor u/1 is a parameter 
 ! that is declared within the scope of u.
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > signature OK = {type t = int}
 - > signature OK = {structure X : {type t = int}}
@@ -3274,15 +3271,15 @@ Enter `quit();' to quit.
     {structure Y : {structure X : {type t = t, type u = t}, type u = t},
      type u = t}
 - > signature OK =
-  /\t u u' a v.
+  /\t u u/1 a v.
     {structure Y :
-       {structure X : {type t = t, type u = u}, type u = u', type a = a},
+       {structure X : {type t = t, type u = u}, type u = u/1, type a = a},
      structure Z :
        {structure Y :
-          {structure X : {type t = t, type u = u}, type u = u', type v = v}},
-     structure W : {type u = u', type v = v}}
+          {structure X : {type t = t, type u = u}, type u = u/1, type v = v}},
+     structure W : {type u = u/1, type v = v}}
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > structure X : {exn e : int -> exn}
 - > structure Y : {val e : int -> exn}
@@ -3295,7 +3292,7 @@ Enter `quit();' to quit.
 - > exn s = s : exn
 - > val it = (s, s) : exn * exn
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > signature S = {}
 - > signature F = {}->{}
@@ -3375,7 +3372,7 @@ Enter `quit();' to quit.
 - > functor Ok : ({}->{})->{}->{}
 - > functor OK : ({}->{})->{}->{}
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > val integer = fn : int -> int
 - > val ok = fn : int -> int
@@ -3404,7 +3401,7 @@ Enter `quit();' to quit.
 ! the type constructor b is a parameter 
 ! that is declared within the scope of 'a
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - ! Toplevel input:
 ! ..................rec(Fail: sig type a; type b end)
@@ -3461,7 +3458,7 @@ Enter `quit();' to quit.
 ! is specified as admitting equality in the forward specification
 !   type b = b
 ! but its declaration does not admit equality in the body
-!   datatype b = (b',{con Ab : b', con Bb : a -> b'})
+!   datatype b = (b/1,{con Ab : b/1, con Bb : a -> b/1})
 - > signature Ok1 =
   /\a b.
     rec ({type a = a, type b = b},
@@ -3556,215 +3553,206 @@ Enter `quit();' to quit.
       con Ab : b,
       con Bb : a -> b}}
 - > signature V =
-  /\a' b'.
-    rec ({structure A : {type a = a'}, structure B : {type b = b'}},
+  /\a/1 b/1.
+    rec ({structure A : {type a = a/1}, structure B : {type b = b/1}},
             {structure A :
-               {datatype a = (a',{con Aa : a', con Ba : b' -> a'}),
-                con Aa : a',
-                con Ba : b' -> a',
-                val height : a' -> int},
+               {datatype a = (a/1,{con Aa : a/1, con Ba : b/1 -> a/1}),
+                con Aa : a/1,
+                con Ba : b/1 -> a/1,
+                val height : a/1 -> int},
              structure B :
-               {datatype b = (b',{con Ab : b', con Bb : a' -> b'}),
-                con Ab : b',
-                con Bb : a' -> b',
-                val height : b' -> int}})
-- > New type names: a', b'
+               {datatype b = (b/1,{con Ab : b/1, con Bb : a/1 -> b/1}),
+                con Ab : b/1,
+                con Bb : a/1 -> b/1,
+                val height : b/1 -> int}})
+- > New type names: a/1, b/1
   structure V :
   {structure A :
-     {datatype a = (a',{con Aa : a', con Ba : b' -> a'}),
-      con Aa : a',
-      con Ba : b' -> a',
-      val height : a' -> int},
+     {datatype a = (a/1,{con Aa : a/1, con Ba : b/1 -> a/1}),
+      con Aa : a/1,
+      con Ba : b/1 -> a/1,
+      val height : a/1 -> int},
    structure B :
-     {datatype b = (b',{con Ab : b', con Bb : a' -> b'}),
-      con Ab : b',
-      con Bb : a' -> b',
-      val height : b' -> int}}
+     {datatype b = (b/1,{con Ab : b/1, con Bb : a/1 -> b/1}),
+      con Ab : b/1,
+      con Bb : a/1 -> b/1,
+      val height : b/1 -> int}}
 - > val test4 = 2 : int
 - > val test5 = 3 : int
 - > structure V1 :
   {structure A :
-     {datatype a = (a',{con Aa : a', con Ba : b' -> a'}),
-      con Aa : a',
-      con Ba : b' -> a',
-      val height : a' -> int},
+     {datatype a = (a/1,{con Aa : a/1, con Ba : b/1 -> a/1}),
+      con Aa : a/1,
+      con Ba : b/1 -> a/1,
+      val height : a/1 -> int},
    structure B :
-     {datatype b = (b',{con Ab : b', con Bb : a' -> b'}),
-      con Ab : b',
-      con Bb : a' -> b',
-      val height : b' -> int}}
-- > New type names: a'', b''
+     {datatype b = (b/1,{con Ab : b/1, con Bb : a/1 -> b/1}),
+      con Ab : b/1,
+      con Bb : a/1 -> b/1,
+      val height : b/1 -> int}}
+- > New type names: a/2, b/2
   structure V2 :
   {structure A :
-     {datatype a = (a'',{con Aa : a'', con Ba : b'' -> a''}),
-      con Aa : a'',
-      con Ba : b'' -> a'',
-      val height : a'' -> int},
+     {datatype a = (a/2,{con Aa : a/2, con Ba : b/2 -> a/2}),
+      con Aa : a/2,
+      con Ba : b/2 -> a/2,
+      val height : a/2 -> int},
    structure B :
-     {datatype b = (b'',{con Ab : b'', con Bb : a'' -> b''}),
-      con Ab : b'',
-      con Bb : a'' -> b'',
-      val height : b'' -> int}}
-- > New type names: a''', b'''
+     {datatype b = (b/2,{con Ab : b/2, con Bb : a/2 -> b/2}),
+      con Ab : b/2,
+      con Bb : a/2 -> b/2,
+      val height : b/2 -> int}}
+- > New type names: a/3, b/3
   structure Y :
   {structure A :
-     {datatype a = (a''',{con Aa : a''', con Ba : b''' -> a'''}),
-      con Aa : a''',
-      con Ba : b''' -> a''',
+     {datatype a = (a/3,{con Aa : a/3, con Ba : b/3 -> a/3}),
+      con Aa : a/3,
+      con Ba : b/3 -> a/3,
       val foo : int,
-      val height : a''' -> int},
+      val height : a/3 -> int},
    structure B :
-     {datatype b = (b''',{con Ab : b''', con Bb : a''' -> b'''}),
-      con Ab : b''',
-      con Bb : a''' -> b''',
+     {datatype b = (b/3,{con Ab : b/3, con Bb : a/3 -> b/3}),
+      con Ab : b/3,
+      con Bb : a/3 -> b/3,
       val bar : bool,
-      val height : b''' -> int}}
+      val height : b/3 -> int}}
 - > structure Y1 :
   {structure A :
-     {datatype a = (a''',{con Aa : a''', con Ba : b''' -> a'''}),
-      con Aa : a''',
-      con Ba : b''' -> a''',
-      val height : a''' -> int},
+     {datatype a = (a/3,{con Aa : a/3, con Ba : b/3 -> a/3}),
+      con Aa : a/3,
+      con Ba : b/3 -> a/3,
+      val height : a/3 -> int},
    structure B :
-     {datatype b = (b''',{con Ab : b''', con Bb : a''' -> b'''}),
-      con Ab : b''',
-      con Bb : a''' -> b''',
-      val height : b''' -> int}}
-- > New type names: a'''', b''''
+     {datatype b = (b/3,{con Ab : b/3, con Bb : a/3 -> b/3}),
+      con Ab : b/3,
+      con Bb : a/3 -> b/3,
+      val height : b/3 -> int}}
+- > New type names: a/4, b/4
   structure Y2 :
   {structure A :
-     {datatype a = (a'''',{con Aa : a'''', con Ba : b'''' -> a''''}),
-      con Aa : a'''',
-      con Ba : b'''' -> a'''',
-      val height : a'''' -> int},
+     {datatype a = (a/4,{con Aa : a/4, con Ba : b/4 -> a/4}),
+      con Aa : a/4,
+      con Ba : b/4 -> a/4,
+      val height : a/4 -> int},
    structure B :
-     {datatype b = (b'''',{con Ab : b'''', con Bb : a'''' -> b''''}),
-      con Ab : b'''',
-      con Bb : a'''' -> b'''',
-      val height : b'''' -> int}}
+     {datatype b = (b/4,{con Ab : b/4, con Bb : a/4 -> b/4}),
+      con Ab : b/4,
+      con Bb : a/4 -> b/4,
+      val height : b/4 -> int}}
 - > val test6 = [structure ...] :
-  [?a''''' b'''''.
-    rec ({structure A : {type a = a'''''}, structure B : {type b = b'''''}},
+  [?a/5 b/5.
+    rec ({structure A : {type a = a/5}, structure B : {type b = b/5}},
             {structure A :
-               {datatype a =
-                  (a''''',{con Aa : a''''', con Ba : b''''' -> a'''''}),
-                con Aa : a''''',
-                con Ba : b''''' -> a''''',
-                val height : a''''' -> int},
+               {datatype a = (a/5,{con Aa : a/5, con Ba : b/5 -> a/5}),
+                con Aa : a/5,
+                con Ba : b/5 -> a/5,
+                val height : a/5 -> int},
              structure B :
-               {datatype b =
-                  (b''''',{con Ab : b''''', con Bb : a''''' -> b'''''}),
-                con Ab : b''''',
-                con Bb : a''''' -> b''''',
-                val height : b''''' -> int}})]
+               {datatype b = (b/5,{con Ab : b/5, con Bb : a/5 -> b/5}),
+                con Ab : b/5,
+                con Bb : a/5 -> b/5,
+                val height : b/5 -> int}})]
 - > signature S =
-  /\a'''''.
-    rec ({type a = a'''''},
-            {datatype a = (a''''',{con C : a''''' -> a'''''}),
-             con C : a''''' -> a'''''})
-- > New type names: a'''''
-  structure A :
-  {datatype a = (a''''',{con C : a''''' -> a'''''}), con C : a''''' -> a'''''}
-- > New type names: a''''''
-  structure B :
-  {datatype a = (a'''''',{con C : a'''''' -> a''''''}),
-   con C : a'''''' -> a''''''}
-- > New type names: a'''''''
-  structure C :
-  {datatype a = (a''''''',{con C : a''''''' -> a'''''''}),
-   con C : a''''''' -> a'''''''}
+  /\a/5.
+    rec ({type a = a/5},
+            {datatype a = (a/5,{con C : a/5 -> a/5}), con C : a/5 -> a/5})
+- > New type names: a/5
+  structure A : {datatype a = (a/5,{con C : a/5 -> a/5}), con C : a/5 -> a/5}
+- > New type names: a/6
+  structure B : {datatype a = (a/6,{con C : a/6 -> a/6}), con C : a/6 -> a/6}
+- > New type names: a/7
+  structure C : {datatype a = (a/7,{con C : a/7 -> a/7}), con C : a/7 -> a/7}
 - > signature S =
-  /\a''''''''.
-    rec ({type ('a, 'b) a = ('a, 'b) a''''''''},
+  /\a/8.
+    rec ({type ('a, 'b) a = ('a, 'b) a/8},
             {datatype ('a, 'b) a =
-               (('a, 'b) a'''''''',
-                {con ('a, 'b) C : ('a, 'b) a'''''''' -> ('a, 'b) a'''''''',
-                 con ('a, 'b) D : 'a -> ('a, 'b) a'''''''',
-                 con ('a, 'b) E : 'b -> ('a, 'b) a''''''''}),
-             con ('a, 'b) C : ('a, 'b) a'''''''' -> ('a, 'b) a'''''''',
-             con ('a, 'b) D : 'a -> ('a, 'b) a'''''''',
-             con ('a, 'b) E : 'b -> ('a, 'b) a''''''''})
-- > New type names: a''''''''
+               (('a, 'b) a/8,
+                {con ('a, 'b) C : ('a, 'b) a/8 -> ('a, 'b) a/8,
+                 con ('a, 'b) D : 'a -> ('a, 'b) a/8,
+                 con ('a, 'b) E : 'b -> ('a, 'b) a/8}),
+             con ('a, 'b) C : ('a, 'b) a/8 -> ('a, 'b) a/8,
+             con ('a, 'b) D : 'a -> ('a, 'b) a/8,
+             con ('a, 'b) E : 'b -> ('a, 'b) a/8})
+- > New type names: a/8
   structure A :
   {datatype ('a, 'b) a =
-     (('a, 'b) a'''''''',
-      {con ('a, 'b) C : ('a, 'b) a'''''''' -> ('a, 'b) a'''''''',
-       con ('a, 'b) D : 'a -> ('a, 'b) a'''''''',
-       con ('a, 'b) E : 'b -> ('a, 'b) a''''''''}),
-   con ('a, 'b) C : ('a, 'b) a'''''''' -> ('a, 'b) a'''''''',
-   con ('a, 'b) D : 'a -> ('a, 'b) a'''''''',
-   con ('a, 'b) E : 'b -> ('a, 'b) a''''''''}
-- > New type names: a'''''''''
+     (('a, 'b) a/8,
+      {con ('a, 'b) C : ('a, 'b) a/8 -> ('a, 'b) a/8,
+       con ('a, 'b) D : 'a -> ('a, 'b) a/8,
+       con ('a, 'b) E : 'b -> ('a, 'b) a/8}),
+   con ('a, 'b) C : ('a, 'b) a/8 -> ('a, 'b) a/8,
+   con ('a, 'b) D : 'a -> ('a, 'b) a/8,
+   con ('a, 'b) E : 'b -> ('a, 'b) a/8}
+- > New type names: a/9
   structure B :
   {datatype ('a, 'b) a =
-     (('a, 'b) a''''''''',
-      {con ('a, 'b) C : ('a, 'b) a''''''''' -> ('a, 'b) a''''''''',
-       con ('a, 'b) D : 'a -> ('a, 'b) a''''''''',
-       con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''}),
-   con ('a, 'b) C : ('a, 'b) a''''''''' -> ('a, 'b) a''''''''',
-   con ('a, 'b) D : 'a -> ('a, 'b) a''''''''',
-   con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''}
-- > New type names: a''''''''''
+     (('a, 'b) a/9,
+      {con ('a, 'b) C : ('a, 'b) a/9 -> ('a, 'b) a/9,
+       con ('a, 'b) D : 'a -> ('a, 'b) a/9,
+       con ('a, 'b) E : 'b -> ('a, 'b) a/9}),
+   con ('a, 'b) C : ('a, 'b) a/9 -> ('a, 'b) a/9,
+   con ('a, 'b) D : 'a -> ('a, 'b) a/9,
+   con ('a, 'b) E : 'b -> ('a, 'b) a/9}
+- > New type names: a/10
   structure C :
   {datatype ('a, 'b) a =
-     (('a, 'b) a'''''''''',
-      {con ('a, 'b) C : ('a, 'b) a'''''''''' -> ('a, 'b) a'''''''''',
-       con ('a, 'b) D : 'a -> ('a, 'b) a'''''''''',
-       con ('a, 'b) E : 'b -> ('a, 'b) a''''''''''}),
-   con ('a, 'b) C : ('a, 'b) a'''''''''' -> ('a, 'b) a'''''''''',
-   con ('a, 'b) D : 'a -> ('a, 'b) a'''''''''',
-   con ('a, 'b) E : 'b -> ('a, 'b) a''''''''''}
+     (('a, 'b) a/10,
+      {con ('a, 'b) C : ('a, 'b) a/10 -> ('a, 'b) a/10,
+       con ('a, 'b) D : 'a -> ('a, 'b) a/10,
+       con ('a, 'b) E : 'b -> ('a, 'b) a/10}),
+   con ('a, 'b) C : ('a, 'b) a/10 -> ('a, 'b) a/10,
+   con ('a, 'b) D : 'a -> ('a, 'b) a/10,
+   con ('a, 'b) E : 'b -> ('a, 'b) a/10}
 - > signature S =
-  /\=a'''''''''''.
+  /\=a/11.
     rec ({datatype ('a, 'b) a =
-            (('a, 'b) a''''''''''',
-             {con ('a, 'b) C : ('a, 'b) a''''''''''' -> ('a, 'b) a''''''''''',
-              con ('a, 'b) D : 'a -> ('a, 'b) a''''''''''',
-              con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''''}),
-          con ('a, 'b) C : ('a, 'b) a''''''''''' -> ('a, 'b) a''''''''''',
-          con ('a, 'b) D : 'a -> ('a, 'b) a''''''''''',
-          con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''''},
+            (('a, 'b) a/11,
+             {con ('a, 'b) C : ('a, 'b) a/11 -> ('a, 'b) a/11,
+              con ('a, 'b) D : 'a -> ('a, 'b) a/11,
+              con ('a, 'b) E : 'b -> ('a, 'b) a/11}),
+          con ('a, 'b) C : ('a, 'b) a/11 -> ('a, 'b) a/11,
+          con ('a, 'b) D : 'a -> ('a, 'b) a/11,
+          con ('a, 'b) E : 'b -> ('a, 'b) a/11},
             {datatype ('a, 'b) a =
-               (('a, 'b) a''''''''''',
-                {con ('a, 'b) C :
-                   ('a, 'b) a''''''''''' -> ('a, 'b) a''''''''''',
-                 con ('a, 'b) D : 'a -> ('a, 'b) a''''''''''',
-                 con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''''}),
-             con ('a, 'b) C : ('a, 'b) a''''''''''' -> ('a, 'b) a''''''''''',
-             con ('a, 'b) D : 'a -> ('a, 'b) a''''''''''',
-             con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''''})
-- > New type names: =a'''''''''''
+               (('a, 'b) a/11,
+                {con ('a, 'b) C : ('a, 'b) a/11 -> ('a, 'b) a/11,
+                 con ('a, 'b) D : 'a -> ('a, 'b) a/11,
+                 con ('a, 'b) E : 'b -> ('a, 'b) a/11}),
+             con ('a, 'b) C : ('a, 'b) a/11 -> ('a, 'b) a/11,
+             con ('a, 'b) D : 'a -> ('a, 'b) a/11,
+             con ('a, 'b) E : 'b -> ('a, 'b) a/11})
+- > New type names: =a/11
   structure A :
   {datatype ('a, 'b) a =
-     (('a, 'b) a''''''''''',
-      {con ('a, 'b) C : ('a, 'b) a''''''''''' -> ('a, 'b) a''''''''''',
-       con ('a, 'b) D : 'a -> ('a, 'b) a''''''''''',
-       con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''''}),
-   con ('a, 'b) C : ('a, 'b) a''''''''''' -> ('a, 'b) a''''''''''',
-   con ('a, 'b) D : 'a -> ('a, 'b) a''''''''''',
-   con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''''}
-- > New type names: =a''''''''''''
+     (('a, 'b) a/11,
+      {con ('a, 'b) C : ('a, 'b) a/11 -> ('a, 'b) a/11,
+       con ('a, 'b) D : 'a -> ('a, 'b) a/11,
+       con ('a, 'b) E : 'b -> ('a, 'b) a/11}),
+   con ('a, 'b) C : ('a, 'b) a/11 -> ('a, 'b) a/11,
+   con ('a, 'b) D : 'a -> ('a, 'b) a/11,
+   con ('a, 'b) E : 'b -> ('a, 'b) a/11}
+- > New type names: =a/12
   structure B :
   {datatype ('a, 'b) a =
-     (('a, 'b) a'''''''''''',
-      {con ('a, 'b) C : ('a, 'b) a'''''''''''' -> ('a, 'b) a'''''''''''',
-       con ('a, 'b) D : 'a -> ('a, 'b) a'''''''''''',
-       con ('a, 'b) E : 'b -> ('a, 'b) a''''''''''''}),
-   con ('a, 'b) C : ('a, 'b) a'''''''''''' -> ('a, 'b) a'''''''''''',
-   con ('a, 'b) D : 'a -> ('a, 'b) a'''''''''''',
-   con ('a, 'b) E : 'b -> ('a, 'b) a''''''''''''}
-- > New type names: =a'''''''''''''
+     (('a, 'b) a/12,
+      {con ('a, 'b) C : ('a, 'b) a/12 -> ('a, 'b) a/12,
+       con ('a, 'b) D : 'a -> ('a, 'b) a/12,
+       con ('a, 'b) E : 'b -> ('a, 'b) a/12}),
+   con ('a, 'b) C : ('a, 'b) a/12 -> ('a, 'b) a/12,
+   con ('a, 'b) D : 'a -> ('a, 'b) a/12,
+   con ('a, 'b) E : 'b -> ('a, 'b) a/12}
+- > New type names: =a/13
   structure C :
   {datatype ('a, 'b) a =
-     (('a, 'b) a''''''''''''',
-      {con ('a, 'b) C : ('a, 'b) a''''''''''''' -> ('a, 'b) a''''''''''''',
-       con ('a, 'b) D : 'a -> ('a, 'b) a''''''''''''',
-       con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''''''}),
-   con ('a, 'b) C : ('a, 'b) a''''''''''''' -> ('a, 'b) a''''''''''''',
-   con ('a, 'b) D : 'a -> ('a, 'b) a''''''''''''',
-   con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''''''}
+     (('a, 'b) a/13,
+      {con ('a, 'b) C : ('a, 'b) a/13 -> ('a, 'b) a/13,
+       con ('a, 'b) D : 'a -> ('a, 'b) a/13,
+       con ('a, 'b) E : 'b -> ('a, 'b) a/13}),
+   con ('a, 'b) C : ('a, 'b) a/13 -> ('a, 'b) a/13,
+   con ('a, 'b) D : 'a -> ('a, 'b) a/13,
+   con ('a, 'b) E : 'b -> ('a, 'b) a/13}
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > signature ORDERED = /\T.{type T = T, val leq : T * T -> bool}
 - > signature HEAP =
@@ -3803,16 +3791,16 @@ Enter `quit();' to quit.
           val deleteMin : Heap -> Heap})->
       !T.
        {type T = T, val leq : T * T -> bool}->
-           ?Heap T'.
+           ?Heap T/1.
             {structure Elem : {type T = T, val leq : T * T -> bool},
-             type Heap = T',
+             type Heap = T/1,
              exn Empty : exn,
-             val deleteMin : T' -> T',
-             val empty : T',
-             val findMin : T' -> T,
-             val insert : T * T' -> T',
-             val isEmpty : T' -> bool,
-             val merge : T' * T' -> T'}
+             val deleteMin : T/1 -> T/1,
+             val empty : T/1,
+             val findMin : T/1 -> T,
+             val insert : T * T/1 -> T/1,
+             val isEmpty : T/1 -> bool,
+             val merge : T/1 * T/1 -> T/1}
 - > functor PairingHeap :
   !T.
    {type T = T, val leq : T * T -> bool}->
@@ -3842,36 +3830,36 @@ Enter `quit();' to quit.
 - > val heap = ?{H}(1, <Heap T>) : T
 - > val test1 = true : bool
 - > val test2 = true : bool
-- > New type names: Heap', T'
+- > New type names: Heap/1, T/1
   structure SkewHeap :
   {structure Elem : {type T = int, val leq : int * int -> bool},
-   type Heap = T',
+   type Heap = T/1,
    exn Empty : exn,
-   val deleteMin : T' -> T',
-   val empty : T',
-   val findMin : T' -> int,
-   val insert : int * T' -> T',
-   val isEmpty : T' -> bool,
-   val merge : T' * T' -> T'}
+   val deleteMin : T/1 -> T/1,
+   val empty : T/1,
+   val findMin : T/1 -> int,
+   val insert : int * T/1 -> T/1,
+   val isEmpty : T/1 -> bool,
+   val merge : T/1 * T/1 -> T/1}
   functor SkewBinomialHeap :
-  !T''.
-   {type T = T'', val leq : T'' * T'' -> bool}->
+  !T/2.
+   {type T = T/2, val leq : T/2 * T/2 -> bool}->
        ?Tree.
-        {structure Elem : {type T = T'', val leq : T'' * T'' -> bool},
+        {structure Elem : {type T = T/2, val leq : T/2 * T/2 -> bool},
          type Heap = Tree list,
          exn Empty : exn,
          val deleteMin : Tree list -> Tree list,
          val empty : Tree list,
-         val findMin : Tree list -> T'',
-         val insert : T'' * Tree list -> Tree list,
+         val findMin : Tree list -> T/2,
+         val insert : T/2 * Tree list -> Tree list,
          val isEmpty : Tree list -> bool,
          val merge : Tree list * Tree list -> Tree list}
-- > val mkHeap = fn : int list -> T'
-- > val heap = ?{H}(1, <Heap' T'>) : T'
+- > val mkHeap = fn : int list -> T/1
+- > val heap = ?{H}(1, <Heap/1 T/1>) : T/1
 - > val test1 = true : bool
 - > val test2 = true : bool
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > New type names: =a
   datatype a = (a,{con A : a})
@@ -4318,23 +4306,21 @@ Enter `quit();' to quit.
 !   change "C of <ty>"
 !   to     "C of {a : <ty_1>, b : <ty_2>}"
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > signature S = /\t.{type t = t, type v = t}
 - > New type names: t
   structure X : {type t = t, type v = t}
-- > New type names: t'
-  structure Y : {type t = t', type v = t'}
-- > New type names: t''
-  structure Z : {type t = t'', type v = t''}
+- > New type names: t/1
+  structure Y : {type t = t/1, type v = t/1}
+- > New type names: t/2
+  structure Z : {type t = t/2, type v = t/2}
 - > functor F :
-  !t'''.{type t = t''', type v = t'''}->?t''''.{type t = t'''', type v = t''''}
+  !t/3.{type t = t/3, type v = t/3}->?t/4.{type t = t/4, type v = t/4}
 - > functor G :
-  !t'''.
-   {type t = t''', type v = t'''}->
-       ?t'''' t''''' t''''''.{type t = t'''''', type v = t''''''}
+  !t/3.{type t = t/3, type v = t/3}->?t/4 t/5 t/6.{type t = t/6, type v = t/6}
 - > functor H :
-  !t'''.{type t = t''', type v = t'''}->?t''''.{type t = t'''', type v = t''''}
+  !t/3.{type t = t/3, type v = t/3}->?t/4.{type t = t/4, type v = t/4}
 - > signature LR_TABLE =
   /\=pairlist.
     {datatype ('a, 'b) pairlist =
@@ -4466,114 +4452,115 @@ Enter `quit();' to quit.
        con ('a, 'b) PAIR : 'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}),
    con ('a, 'b) EMPTY : ('a, 'b) pairlist,
    con ('a, 'b) PAIR : 'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}
-- > New type names: =pairlist'
+- > New type names: =pairlist/1
   structure LrParser :
   {structure LrTable :
      {datatype ('a, 'b) pairlist =
-        (('a, 'b) pairlist',
-         {con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+        (('a, 'b) pairlist/1,
+         {con ('a, 'b) EMPTY : ('a, 'b) pairlist/1,
           con ('a, 'b) PAIR :
-            'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'}),
-      con ('a, 'b) EMPTY : ('a, 'b) pairlist',
-      con ('a, 'b) PAIR : 'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'},
+            'a * 'b * ('a, 'b) pairlist/1 -> ('a, 'b) pairlist/1}),
+      con ('a, 'b) EMPTY : ('a, 'b) pairlist/1,
+      con ('a, 'b) PAIR :
+        'a * 'b * ('a, 'b) pairlist/1 -> ('a, 'b) pairlist/1},
    structure Token :
      {structure LrTable :
         {datatype ('a, 'b) pairlist =
-           (('a, 'b) pairlist',
-            {con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+           (('a, 'b) pairlist/1,
+            {con ('a, 'b) EMPTY : ('a, 'b) pairlist/1,
              con ('a, 'b) PAIR :
-               'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'}),
-         con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+               'a * 'b * ('a, 'b) pairlist/1 -> ('a, 'b) pairlist/1}),
+         con ('a, 'b) EMPTY : ('a, 'b) pairlist/1,
          con ('a, 'b) PAIR :
-           'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'}}}
+           'a * 'b * ('a, 'b) pairlist/1 -> ('a, 'b) pairlist/1}}}
 - > signature Fol_LRVALS =
-  /\=pairlist''.
+  /\=pairlist/2.
     {structure ParserData :
        {structure LrTable :
           {datatype ('a, 'b) pairlist =
-             (('a, 'b) pairlist'',
-              {con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+             (('a, 'b) pairlist/2,
+              {con ('a, 'b) EMPTY : ('a, 'b) pairlist/2,
                con ('a, 'b) PAIR :
-                 'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''}),
-           con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+                 'a * 'b * ('a, 'b) pairlist/2 -> ('a, 'b) pairlist/2}),
+           con ('a, 'b) EMPTY : ('a, 'b) pairlist/2,
            con ('a, 'b) PAIR :
-             'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''},
+             'a * 'b * ('a, 'b) pairlist/2 -> ('a, 'b) pairlist/2},
         structure Token :
           {structure LrTable :
              {datatype ('a, 'b) pairlist =
-                (('a, 'b) pairlist'',
-                 {con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+                (('a, 'b) pairlist/2,
+                 {con ('a, 'b) EMPTY : ('a, 'b) pairlist/2,
                   con ('a, 'b) PAIR :
-                    'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''}),
-              con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+                    'a * 'b * ('a, 'b) pairlist/2 -> ('a, 'b) pairlist/2}),
+              con ('a, 'b) EMPTY : ('a, 'b) pairlist/2,
               con ('a, 'b) PAIR :
-                'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''}}}}
+                'a * 'b * ('a, 'b) pairlist/2 -> ('a, 'b) pairlist/2}}}}
 - > functor FolLrValsFun :
-  !=pairlist''.
+  !=pairlist/2.
    {structure Token :
       {structure LrTable :
          {datatype ('a, 'b) pairlist =
-            (('a, 'b) pairlist'',
-             {con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+            (('a, 'b) pairlist/2,
+             {con ('a, 'b) EMPTY : ('a, 'b) pairlist/2,
               con ('a, 'b) PAIR :
-                'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''}),
-          con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+                'a * 'b * ('a, 'b) pairlist/2 -> ('a, 'b) pairlist/2}),
+          con ('a, 'b) EMPTY : ('a, 'b) pairlist/2,
           con ('a, 'b) PAIR :
-            'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''}}}->
+            'a * 'b * ('a, 'b) pairlist/2 -> ('a, 'b) pairlist/2}}}->
        {structure ParserData :
           {structure LrTable :
              {datatype ('a, 'b) pairlist =
-                (('a, 'b) pairlist'',
-                 {con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+                (('a, 'b) pairlist/2,
+                 {con ('a, 'b) EMPTY : ('a, 'b) pairlist/2,
                   con ('a, 'b) PAIR :
-                    'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''}),
-              con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+                    'a * 'b * ('a, 'b) pairlist/2 -> ('a, 'b) pairlist/2}),
+              con ('a, 'b) EMPTY : ('a, 'b) pairlist/2,
               con ('a, 'b) PAIR :
-                'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''},
+                'a * 'b * ('a, 'b) pairlist/2 -> ('a, 'b) pairlist/2},
            structure Token :
              {structure LrTable :
                 {datatype ('a, 'b) pairlist =
-                   (('a, 'b) pairlist'',
-                    {con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+                   (('a, 'b) pairlist/2,
+                    {con ('a, 'b) EMPTY : ('a, 'b) pairlist/2,
                      con ('a, 'b) PAIR :
-                       'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''}),
-                 con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+                       'a * 'b * ('a, 'b) pairlist/2 -> ('a, 'b) pairlist/2}),
+                 con ('a, 'b) EMPTY : ('a, 'b) pairlist/2,
                  con ('a, 'b) PAIR :
-                   'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''}}}}
+                   'a * 'b * ('a, 'b) pairlist/2 -> ('a, 'b) pairlist/2}}}}
 - > structure FolLrVals :
   {structure ParserData :
      {structure LrTable :
         {datatype ('a, 'b) pairlist =
-           (('a, 'b) pairlist',
-            {con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+           (('a, 'b) pairlist/1,
+            {con ('a, 'b) EMPTY : ('a, 'b) pairlist/1,
              con ('a, 'b) PAIR :
-               'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'}),
-         con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+               'a * 'b * ('a, 'b) pairlist/1 -> ('a, 'b) pairlist/1}),
+         con ('a, 'b) EMPTY : ('a, 'b) pairlist/1,
          con ('a, 'b) PAIR :
-           'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'},
+           'a * 'b * ('a, 'b) pairlist/1 -> ('a, 'b) pairlist/1},
       structure Token :
         {structure LrTable :
            {datatype ('a, 'b) pairlist =
-              (('a, 'b) pairlist',
-               {con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+              (('a, 'b) pairlist/1,
+               {con ('a, 'b) EMPTY : ('a, 'b) pairlist/1,
                 con ('a, 'b) PAIR :
-                  'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'}),
-            con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+                  'a * 'b * ('a, 'b) pairlist/1 -> ('a, 'b) pairlist/1}),
+            con ('a, 'b) EMPTY : ('a, 'b) pairlist/1,
             con ('a, 'b) PAIR :
-              'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'}}}}
+              'a * 'b * ('a, 'b) pairlist/1 -> ('a, 'b) pairlist/1}}}}
 - > structure FolParser :
   {structure Token :
      {structure LrTable :
         {datatype ('a, 'b) pairlist =
-           (('a, 'b) pairlist',
-            {con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+           (('a, 'b) pairlist/1,
+            {con ('a, 'b) EMPTY : ('a, 'b) pairlist/1,
              con ('a, 'b) PAIR :
-               'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'}),
-         con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+               'a * 'b * ('a, 'b) pairlist/1 -> ('a, 'b) pairlist/1}),
+         con ('a, 'b) EMPTY : ('a, 'b) pairlist/1,
          con ('a, 'b) PAIR :
-           'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'}}}
+           'a * 'b * ('a, 'b) pairlist/1 -> ('a, 'b) pairlist/1}}}
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > New type names: =t
   datatype t = (t,{con C : t -> t})
@@ -4585,14 +4572,14 @@ Enter `quit();' to quit.
   datatype ('a, 'b) v = (('a, 'b) v,{con ('a, 'b) E : 'a * 'b -> ('a, 'b) v})
   con ('a, 'b) E = fn : 'a * 'b -> ('a, 'b) v
 - > signature S =
-  /\=t' =u' =v'.
-    {datatype t = (t',{con C : t' -> t'}),
-     con C : t' -> t',
-     datatype 'a u = ('a u',{con 'a D : 'a -> 'a u'}),
-     con 'a D : 'a -> 'a u',
+  /\=t/1 =u/1 =v/1.
+    {datatype t = (t/1,{con C : t/1 -> t/1}),
+     con C : t/1 -> t/1,
+     datatype 'a u = ('a u/1,{con 'a D : 'a -> 'a u/1}),
+     con 'a D : 'a -> 'a u/1,
      datatype ('a, 'b) v =
-       (('a, 'b) v',{con ('a, 'b) E : 'a * 'b -> ('a, 'b) v'}),
-     con ('a, 'b) E : 'a * 'b -> ('a, 'b) v'}
+       (('a, 'b) v/1,{con ('a, 'b) E : 'a * 'b -> ('a, 'b) v/1}),
+     con ('a, 'b) E : 'a * 'b -> ('a, 'b) v/1}
 - > signature Ok =
   {datatype t = (t,{con C : t -> t}),
    con C : t -> t,
@@ -4690,10 +4677,10 @@ Enter `quit();' to quit.
 ! Illegal where constraint: the type constructor v
 ! is specified as a datatype
 ! but its constraint is not a datatype
-- > New type names: =t'
-  datatype t = (t',{con C : bool -> t', con D : int -> t'})
-  con C = fn : bool -> t'
-  con D = fn : int -> t'
+- > New type names: =t/1
+  datatype t = (t/1,{con C : bool -> t/1, con D : int -> t/1})
+  con C = fn : bool -> t/1
+  con D = fn : int -> t/1
 - ! Toplevel input:
 ! signature Fail = sig datatype u = C of bool end where type u = t;
 !                                                       ^^^^^^^^^^
@@ -4702,10 +4689,10 @@ Enter `quit();' to quit.
 ! the constraint's constructor environment does not match the specification's constructor environment
 ! Datatype mismatch: type constructor u
 ! is specified as the datatype
-!   datatype u = (t',{con C : bool -> t'})
+!   datatype u = (t/1,{con C : bool -> t/1})
 ! in the specification
 ! but declared as the different datatype
-!   datatype u = (t',{con C : bool -> t', con D : int -> t'})
+!   datatype u = (t/1,{con C : bool -> t/1, con D : int -> t/1})
 ! in the constraint
 ! The datatypes should agree on the names and the order of value constructors
 - ! Toplevel input:
@@ -4716,10 +4703,10 @@ Enter `quit();' to quit.
 ! the constraint's constructor environment does not match the specification's constructor environment
 ! Scheme mismatch: value identifier D
 ! is specified with type scheme 
-!   con D : bool -> t'
+!   con D : bool -> t/1
 ! in the specification
 ! but its declaration has the unrelated type scheme 
-!   con D : int -> t'
+!   con D : int -> t/1
 ! in the constraint
 ! The declared type scheme should be at least as general as the specified type scheme
 - ! Toplevel input:
@@ -4729,10 +4716,10 @@ Enter `quit();' to quit.
 ! is specified as a datatype
 ! but its constraint is not a datatype
 - > signature OK =
-  {datatype u = (t',{con C : bool -> t', con D : int -> t'}),
-   con C : bool -> t',
-   con D : int -> t'}
-- > type s = t'
+  {datatype u = (t/1,{con C : bool -> t/1, con D : int -> t/1}),
+   con C : bool -> t/1,
+   con D : int -> t/1}
+- > type s = t/1
 - ! Toplevel input:
 ! signature Fail = sig datatype u = C of bool end where type u = s;
 !                                                       ^^^^^^^^^^
@@ -4741,10 +4728,10 @@ Enter `quit();' to quit.
 ! the constraint's constructor environment does not match the specification's constructor environment
 ! Datatype mismatch: type constructor u
 ! is specified as the datatype
-!   datatype u = (t',{con C : bool -> t'})
+!   datatype u = (t/1,{con C : bool -> t/1})
 ! in the specification
 ! but declared as the different datatype
-!   datatype u = (t',{con C : bool -> t', con D : int -> t'})
+!   datatype u = (t/1,{con C : bool -> t/1, con D : int -> t/1})
 ! in the constraint
 ! The datatypes should agree on the names and the order of value constructors
 - ! Toplevel input:
@@ -4755,16 +4742,16 @@ Enter `quit();' to quit.
 ! the constraint's constructor environment does not match the specification's constructor environment
 ! Scheme mismatch: value identifier D
 ! is specified with type scheme 
-!   con D : bool -> t'
+!   con D : bool -> t/1
 ! in the specification
 ! but its declaration has the unrelated type scheme 
-!   con D : int -> t'
+!   con D : int -> t/1
 ! in the constraint
 ! The declared type scheme should be at least as general as the specified type scheme
 - > signature OK =
-  {datatype u = (t',{con C : bool -> t', con D : int -> t'}),
-   con C : bool -> t',
-   con D : int -> t'}
+  {datatype u = (t/1,{con C : bool -> t/1, con D : int -> t/1}),
+   con C : bool -> t/1,
+   con D : int -> t/1}
 - ! Toplevel input:
 ! signature Fail = sig datatype u = C of bool type v = u end where type v = t;
 !                                                                  ^^^^^^^^^^
@@ -4773,10 +4760,10 @@ Enter `quit();' to quit.
 ! the constraint's constructor environment does not match the specification's constructor environment
 ! Datatype mismatch: type constructor v
 ! is specified as the datatype
-!   datatype v = (t',{con C : bool -> t'})
+!   datatype v = (t/1,{con C : bool -> t/1})
 ! in the specification
 ! but declared as the different datatype
-!   datatype v = (t',{con C : bool -> t', con D : int -> t'})
+!   datatype v = (t/1,{con C : bool -> t/1, con D : int -> t/1})
 ! in the constraint
 ! The datatypes should agree on the names and the order of value constructors
 - ! Toplevel input:
@@ -4787,17 +4774,17 @@ Enter `quit();' to quit.
 ! the constraint's constructor environment does not match the specification's constructor environment
 ! Scheme mismatch: value identifier D
 ! is specified with type scheme 
-!   con D : bool -> t'
+!   con D : bool -> t/1
 ! in the specification
 ! but its declaration has the unrelated type scheme 
-!   con D : int -> t'
+!   con D : int -> t/1
 ! in the constraint
 ! The declared type scheme should be at least as general as the specified type scheme
 - > signature OK =
-  {datatype u = (u',{con C : bool -> u', con D : int -> u'}),
-   con C : bool -> u',
-   con D : int -> u',
-   type v = u'}
+  {datatype u = (u/1,{con C : bool -> u/1, con D : int -> u/1}),
+   con C : bool -> u/1,
+   con D : int -> u/1,
+   type v = u/1}
 - ! Toplevel input:
 !       signature Fail = sig datatype u = C of bool end where type u = t;
 !                                                             ^^^^^^^^^^
@@ -4806,14 +4793,14 @@ Enter `quit();' to quit.
 ! the constraint's constructor environment does not match the specification's constructor environment
 ! Scheme mismatch: value identifier C
 ! is specified with type scheme 
-!   con C : bool -> t''
+!   con C : bool -> t/2
 ! in the specification
 ! but its declaration has the unrelated type scheme 
-!   con C : int -> t''
+!   con C : int -> t/2
 ! in the constraint
 ! The declared type scheme should be at least as general as the specified type scheme
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 [opening file "test.sml"]
 > structure Real :
@@ -5366,35 +5353,35 @@ File "sample5.sml", line 181-185, characters 4-151:
    con 'a enq : 'a t * 'a -> 'a t,
    val 'a hd : 'a t -> 'a,
    val 'a null : 'a t -> bool}
-> New type names: =t'
+> New type names: =t/1
   structure Queue3 :
-  {datatype 'a t = ('a t',{con 'a Queue : 'a list * 'a list -> 'a t'}),
+  {datatype 'a t = ('a t/1,{con 'a Queue : 'a list * 'a list -> 'a t/1}),
    exn E : exn,
-   con 'a Queue : 'a list * 'a list -> 'a t',
-   val 'a deq : 'a t' -> 'a t',
-   val 'a empty : 'a t',
-   val 'a enq : 'a t' * 'a -> 'a t',
-   val 'a hd : 'a t' -> 'a,
-   val 'a norm : 'a t' -> 'a t',
-   val 'a null : 'a t' -> bool}
+   con 'a Queue : 'a list * 'a list -> 'a t/1,
+   val 'a deq : 'a t/1 -> 'a t/1,
+   val 'a empty : 'a t/1,
+   val 'a enq : 'a t/1 * 'a -> 'a t/1,
+   val 'a hd : 'a t/1 -> 'a,
+   val 'a norm : 'a t/1 -> 'a t/1,
+   val 'a null : 'a t/1 -> bool}
 > signature QUEUE =
-  /\t''.
-    {type 'a t = 'a t'',
+  /\t/2.
+    {type 'a t = 'a t/2,
      exn E : exn,
-     val 'a empty : 'a t'',
-     val 'a enq : 'a t'' * 'a -> 'a t'',
-     val 'a null : 'a t'' -> bool,
-     val 'a hd : 'a t'' -> 'a,
-     val 'a deq : 'a t'' -> 'a t''}
-> New type names: t''
+     val 'a empty : 'a t/2,
+     val 'a enq : 'a t/2 * 'a -> 'a t/2,
+     val 'a null : 'a t/2 -> bool,
+     val 'a hd : 'a t/2 -> 'a,
+     val 'a deq : 'a t/2 -> 'a t/2}
+> New type names: t/2
   structure Queue :
-  {type 'a t = 'a t'',
+  {type 'a t = 'a t/2,
    exn E : exn,
-   val 'a deq : 'a t'' -> 'a t'',
-   val 'a empty : 'a t'',
-   val 'a enq : 'a t'' * 'a -> 'a t'',
-   val 'a hd : 'a t'' -> 'a,
-   val 'a null : 'a t'' -> bool}
+   val 'a deq : 'a t/2 -> 'a t/2,
+   val 'a empty : 'a t/2,
+   val 'a enq : 'a t/2 * 'a -> 'a t/2,
+   val 'a hd : 'a t/2 -> 'a,
+   val 'a null : 'a t/2 -> bool}
 File "sample7.sml", line 147, characters 6-23:
 !   fun qhd(Q1(x::q)) = x;
 !       ^^^^^^^^^^^^^^^^^
@@ -5430,29 +5417,28 @@ File "sample7.sml", line 166-167, characters 6-69:
   val 'a qhd = fn : 'a queue2 -> 'a
   val 'a deq = fn : 'a queue2 -> 'a queue2
 > functor TestQueue :
-  !t'''.
-   {type 'a t = 'a t''',
+  !t/3.
+   {type 'a t = 'a t/3,
     exn E : exn,
-    val 'a empty : 'a t''',
-    val 'a enq : 'a t''' * 'a -> 'a t''',
-    val 'a null : 'a t''' -> bool,
-    val 'a hd : 'a t''' -> 'a,
-    val 'a deq : 'a t''' -> 'a t'''}->
-       {val 'a fromList : 'a list -> 'a t''',
-        val 'a toList : 'a t''' -> 'a list}
+    val 'a empty : 'a t/3,
+    val 'a enq : 'a t/3 * 'a -> 'a t/3,
+    val 'a null : 'a t/3 -> bool,
+    val 'a hd : 'a t/3 -> 'a,
+    val 'a deq : 'a t/3 -> 'a t/3}->
+       {val 'a fromList : 'a list -> 'a t/3, val 'a toList : 'a t/3 -> 'a list}
 > functor BreadthFirst :
-  !t'''.
-   {type 'a t = 'a t''',
+  !t/3.
+   {type 'a t = 'a t/3,
     exn E : exn,
-    val 'a empty : 'a t''',
-    val 'a enq : 'a t''' * 'a -> 'a t''',
-    val 'a null : 'a t''' -> bool,
-    val 'a hd : 'a t''' -> 'a,
-    val 'a deq : 'a t''' -> 'a t'''}->
-       {val 'a enqlist : 'a t''' -> 'a list -> 'a t''',
+    val 'a empty : 'a t/3,
+    val 'a enq : 'a t/3 * 'a -> 'a t/3,
+    val 'a null : 'a t/3 -> bool,
+    val 'a hd : 'a t/3 -> 'a,
+    val 'a deq : 'a t/3 -> 'a t/3}->
+       {val 'a enqlist : 'a t/3 -> 'a list -> 'a t/3,
         val 'a search : ('a -> 'a list) -> 'a -> 'a seq}
 > structure Breadth :
-  {val 'a enqlist : 'a t'' -> 'a list -> 'a t'',
+  {val 'a enqlist : 'a t/2 -> 'a list -> 'a t/2,
    val 'a search : ('a -> 'a list) -> 'a -> 'a seq}
 > val brQueen = fn : int -> int list seq
 > structure Breadth1 :
@@ -5460,21 +5446,21 @@ File "sample7.sml", line 166-167, characters 6-69:
    val 'a search : ('a -> 'a list) -> 'a -> 'a seq}
 > val brQueen1 = fn : int -> int list seq
 > signature ZSP =
-  /\t'''.
-    {type t = t''',
-     val zero : t''',
-     val sum : t''' * t''' -> t''',
-     val prod : t''' * t''' -> t'''}
+  /\t/3.
+    {type t = t/3,
+     val zero : t/3,
+     val sum : t/3 * t/3 -> t/3,
+     val prod : t/3 * t/3 -> t/3}
 > functor MatrixZSP :
-  !t'''.
-   {type t = t''',
-    val zero : t''',
-    val sum : t''' * t''' -> t''',
-    val prod : t''' * t''' -> t'''}->
-       {type t = t''' list list,
-        val prod : t''' list list * t''' list list -> t''' list list,
-        val sum : t''' list list * t''' list list -> t''' list list,
-        val zero : t''' list list}
+  !t/3.
+   {type t = t/3,
+    val zero : t/3,
+    val sum : t/3 * t/3 -> t/3,
+    val prod : t/3 * t/3 -> t/3}->
+       {type t = t/3 list list,
+        val prod : t/3 list list * t/3 list list -> t/3 list list,
+        val sum : t/3 list list * t/3 list list -> t/3 list list,
+        val zero : t/3 list list}
 > structure IntZSP :
   {type t = int,
    val prod : int * int -> int,
@@ -5507,41 +5493,41 @@ File "sample7.sml", line 265, characters 6-15:
      [1073741823, 4, 0, 1073741823, 1073741823],
      [2, 1073741823, ~5, 0, 1073741823],
      [1073741823, 1073741823, 1073741823, 6, 0]] : int list list
-> signature ORDER = /\t'''.{type t = t''', val compare : t''' * t''' -> order}
+> signature ORDER = /\t/3.{type t = t/3, val compare : t/3 * t/3 -> order}
 > structure StringOrder :
   {type t = string, val compare : string * string -> order}
 > functor Dictionary :
-  !t'''.
-   {type t = t''', val compare : t''' * t''' -> order}->
-       ?t''''.
-        {type key = t''',
-         type 'a t = 'a t'''',
-         exn E : t''' -> exn,
-         val 'a empty : 'a t'''',
-         val 'a insert : 'a t'''' * t''' * 'a -> 'a t'''',
-         val 'a lookup : 'a t'''' * t''' -> 'a,
-         val 'a update : 'a t'''' * t''' * 'a -> 'a t''''}
-> New type names: t'''
+  !t/3.
+   {type t = t/3, val compare : t/3 * t/3 -> order}->
+       ?t/4.
+        {type key = t/3,
+         type 'a t = 'a t/4,
+         exn E : t/3 -> exn,
+         val 'a empty : 'a t/4,
+         val 'a insert : 'a t/4 * t/3 * 'a -> 'a t/4,
+         val 'a lookup : 'a t/4 * t/3 -> 'a,
+         val 'a update : 'a t/4 * t/3 * 'a -> 'a t/4}
+> New type names: t/3
   structure StringDict :
   {type key = string,
-   type 'a t = 'a t''',
+   type 'a t = 'a t/3,
    exn E : string -> exn,
-   val 'a empty : 'a t''',
-   val 'a insert : 'a t''' * string * 'a -> 'a t''',
-   val 'a lookup : 'a t''' * string -> 'a,
-   val 'a update : 'a t''' * string * 'a -> 'a t'''}
+   val 'a empty : 'a t/3,
+   val 'a insert : 'a t/3 * string * 'a -> 'a t/3,
+   val 'a lookup : 'a t/3 * string -> 'a,
+   val 'a update : 'a t/3 * string * 'a -> 'a t/3}
 > signature PRIORITY_QUEUE =
-  /\t'''' t'''''.
-    {structure Item : {type t = t'''', val compare : t'''' * t'''' -> order},
-     type t = t''''',
-     val empty : t''''',
-     val null : t''''' -> bool,
-     val insert : t'''' * t''''' -> t''''',
-     val min : t''''' -> t'''',
-     val delmin : t''''' -> t''''',
-     val fromList : t'''' list -> t''''',
-     val toList : t''''' -> t'''' list,
-     val sort : t'''' list -> t'''' list}
+  /\t/4 t/5.
+    {structure Item : {type t = t/4, val compare : t/4 * t/4 -> order},
+     type t = t/5,
+     val empty : t/5,
+     val null : t/5 -> bool,
+     val insert : t/4 * t/5 -> t/5,
+     val min : t/5 -> t/4,
+     val delmin : t/5 -> t/5,
+     val fromList : t/4 list -> t/5,
+     val toList : t/5 -> t/4 list,
+     val sort : t/4 list -> t/4 list}
 > functor AssocList :
   !=key.
    {type key = key}->
@@ -5553,33 +5539,33 @@ File "sample7.sml", line 265, characters 6-15:
         val 'a lookup : (key * 'a) list * key -> 'a,
         val 'a update : (key * 'a) list * key * 'a -> (key * 'a) list}
 > signature TREE =
-  /\=tree'.
+  /\=tree/1.
     {datatype 'a tree =
-       ('a tree',
-        {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-         con 'a Lf : 'a tree'}),
-     con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-     con 'a Lf : 'a tree',
-     val 'a size : 'a tree' -> int,
-     val 'a depth : 'a tree' -> int,
-     val 'a reflect : 'a tree' -> 'a tree'}
+       ('a tree/1,
+        {con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+         con 'a Lf : 'a tree/1}),
+     con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+     con 'a Lf : 'a tree/1,
+     val 'a size : 'a tree/1 -> int,
+     val 'a depth : 'a tree/1 -> int,
+     val 'a reflect : 'a tree/1 -> 'a tree/1}
 > signature BRAUN =
-  /\=tree'.
+  /\=tree/1.
     {structure Tree :
        {datatype 'a tree =
-          ('a tree',
-           {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-            con 'a Lf : 'a tree'}),
-        con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-        con 'a Lf : 'a tree',
-        val 'a size : 'a tree' -> int,
-        val 'a depth : 'a tree' -> int,
-        val 'a reflect : 'a tree' -> 'a tree'},
-     val 'a sub : 'a tree' * int -> 'a,
-     val 'a update : 'a tree' * int * 'a -> 'a tree',
-     val 'a delete : 'a tree' * int -> 'a tree',
-     val 'a loext : 'a tree' * 'a -> 'a tree',
-     val 'a lorem : 'a tree' -> 'a tree'}
+          ('a tree/1,
+           {con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+            con 'a Lf : 'a tree/1}),
+        con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+        con 'a Lf : 'a tree/1,
+        val 'a size : 'a tree/1 -> int,
+        val 'a depth : 'a tree/1 -> int,
+        val 'a reflect : 'a tree/1 -> 'a tree/1},
+     val 'a sub : 'a tree/1 * int -> 'a,
+     val 'a update : 'a tree/1 * int * 'a -> 'a tree/1,
+     val 'a delete : 'a tree/1 * int -> 'a tree/1,
+     val 'a loext : 'a tree/1 * 'a -> 'a tree/1,
+     val 'a lorem : 'a tree/1 -> 'a tree/1}
 File "sample7.sml", line 425, characters 10-33:
 !       fun min (PQ(Br(v,_,_))) = v;
 !           ^^^^^^^^^^^^^^^^^^^^^^^
@@ -5601,83 +5587,82 @@ File "sample7.sml", line 454-458, characters 10-192:
 ! Warning: pattern matching is not exhaustive
 
 > functor PriorityQueue :
-  !t'''' =tree'.
-   {structure Item : {type t = t'''', val compare : t'''' * t'''' -> order},
+  !t/4 =tree/1.
+   {structure Item : {type t = t/4, val compare : t/4 * t/4 -> order},
     structure Tree :
       {datatype 'a tree =
-         ('a tree',
-          {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-           con 'a Lf : 'a tree'}),
-       con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-       con 'a Lf : 'a tree',
-       val 'a size : 'a tree' -> int,
-       val 'a depth : 'a tree' -> int,
-       val 'a reflect : 'a tree' -> 'a tree'}}->
-       ?t'''''.
-        {structure Item :
-           {type t = t'''', val compare : t'''' * t'''' -> order},
-         type t = t''''',
-         val delmin : t''''' -> t''''',
-         val empty : t''''',
-         val fromList : t'''' list -> t''''',
-         val insert : t'''' * t''''' -> t''''',
-         val min : t''''' -> t'''',
-         val null : t''''' -> bool,
-         val sort : t'''' list -> t'''' list,
-         val toList : t''''' -> t'''' list}
+         ('a tree/1,
+          {con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+           con 'a Lf : 'a tree/1}),
+       con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+       con 'a Lf : 'a tree/1,
+       val 'a size : 'a tree/1 -> int,
+       val 'a depth : 'a tree/1 -> int,
+       val 'a reflect : 'a tree/1 -> 'a tree/1}}->
+       ?t/5.
+        {structure Item : {type t = t/4, val compare : t/4 * t/4 -> order},
+         type t = t/5,
+         val delmin : t/5 -> t/5,
+         val empty : t/5,
+         val fromList : t/4 list -> t/5,
+         val insert : t/4 * t/5 -> t/5,
+         val min : t/5 -> t/4,
+         val null : t/5 -> bool,
+         val sort : t/4 list -> t/4 list,
+         val toList : t/5 -> t/4 list}
 > functor FlexArray :
-  !=tree'.
+  !=tree/1.
    {structure Tree :
       {datatype 'a tree =
-         ('a tree',
-          {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-           con 'a Lf : 'a tree'}),
-       con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-       con 'a Lf : 'a tree',
-       val 'a size : 'a tree' -> int,
-       val 'a depth : 'a tree' -> int,
-       val 'a reflect : 'a tree' -> 'a tree'},
-    val 'a sub : 'a tree' * int -> 'a,
-    val 'a update : 'a tree' * int * 'a -> 'a tree',
-    val 'a delete : 'a tree' * int -> 'a tree',
-    val 'a loext : 'a tree' * 'a -> 'a tree',
-    val 'a lorem : 'a tree' -> 'a tree'}->
-       ?=array'.
-        {type 'a array = 'a array',
-         val 'a empty : 'a array',
-         val 'a hiext : 'a array' * 'a -> 'a array',
-         val 'a hirem : 'a array' -> 'a array',
-         val 'a length : 'a array' -> int,
-         val 'a loext : 'a array' * 'a -> 'a array',
-         val 'a lorem : 'a array' -> 'a array',
-         val 'a sub : 'a array' * int -> 'a,
-         val 'a update : 'a array' * int * 'a -> 'a array'}
+         ('a tree/1,
+          {con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+           con 'a Lf : 'a tree/1}),
+       con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+       con 'a Lf : 'a tree/1,
+       val 'a size : 'a tree/1 -> int,
+       val 'a depth : 'a tree/1 -> int,
+       val 'a reflect : 'a tree/1 -> 'a tree/1},
+    val 'a sub : 'a tree/1 * int -> 'a,
+    val 'a update : 'a tree/1 * int * 'a -> 'a tree/1,
+    val 'a delete : 'a tree/1 * int -> 'a tree/1,
+    val 'a loext : 'a tree/1 * 'a -> 'a tree/1,
+    val 'a lorem : 'a tree/1 -> 'a tree/1}->
+       ?=array/1.
+        {type 'a array = 'a array/1,
+         val 'a empty : 'a array/1,
+         val 'a hiext : 'a array/1 * 'a -> 'a array/1,
+         val 'a hirem : 'a array/1 -> 'a array/1,
+         val 'a length : 'a array/1 -> int,
+         val 'a loext : 'a array/1 * 'a -> 'a array/1,
+         val 'a lorem : 'a array/1 -> 'a array/1,
+         val 'a sub : 'a array/1 * int -> 'a,
+         val 'a update : 'a array/1 * int * 'a -> 'a array/1}
 > functor BraunFunctor :
-  !=tree'.
+  !=tree/1.
    {datatype 'a tree =
-      ('a tree',
-       {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-        con 'a Lf : 'a tree'}),
-    con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-    con 'a Lf : 'a tree',
-    val 'a size : 'a tree' -> int,
-    val 'a depth : 'a tree' -> int,
-    val 'a reflect : 'a tree' -> 'a tree'}->
+      ('a tree/1,
+       {con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+        con 'a Lf : 'a tree/1}),
+    con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+    con 'a Lf : 'a tree/1,
+    val 'a size : 'a tree/1 -> int,
+    val 'a depth : 'a tree/1 -> int,
+    val 'a reflect : 'a tree/1 -> 'a tree/1}->
        {structure Tree :
           {datatype 'a tree =
-             ('a tree',
-              {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-               con 'a Lf : 'a tree'}),
-           con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-           con 'a Lf : 'a tree',
-           val 'a depth : 'a tree' -> int,
-           val 'a reflect : 'a tree' -> 'a tree',
-           val 'a size : 'a tree' -> int},
-        val 'a delete : 'a tree' * int -> 'a tree',
-        val 'a loext : 'a tree' * 'a -> 'a tree',
-        val 'a lorem : 'a tree' -> 'a tree',
-        val 'a sub : 'a tree' * int -> 'a,
-        val 'a update : 'a tree' * int * 'a -> 'a tree'}
+             ('a tree/1,
+              {con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+               con 'a Lf : 'a tree/1}),
+           con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+           con 'a Lf : 'a tree/1,
+           val 'a depth : 'a tree/1 -> int,
+           val 'a reflect : 'a tree/1 -> 'a tree/1,
+           val 'a size : 'a tree/1 -> int},
+        val 'a delete : 'a tree/1 * int -> 'a tree/1,
+        val 'a loext : 'a tree/1 * 'a -> 'a tree/1,
+        val 'a lorem : 'a tree/1 -> 'a tree/1,
+        val 'a sub : 'a tree/1 * int -> 'a,
+        val 'a update : 'a tree/1 * int * 'a -> 'a tree/1}
 File "sample7.sml", line 577, characters 9-14:
 ! 	    val y::ys = List.drop(xs,k)
 ! 	        ^^^^^
@@ -5685,66 +5670,66 @@ File "sample7.sml", line 577, characters 9-14:
 
 > functor TreeFunctor :
   {}->
-      ?=tree'.
+      ?=tree/1.
        {datatype 'a tree =
-          ('a tree',
-           {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-            con 'a Lf : 'a tree'}),
-        con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-        con 'a Lf : 'a tree',
-        val 'a depth : 'a tree' -> int,
-        val 'a reflect : 'a tree' -> 'a tree',
-        val 'a size : 'a tree' -> int}
-> New type names: =tree'
+          ('a tree/1,
+           {con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+            con 'a Lf : 'a tree/1}),
+        con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+        con 'a Lf : 'a tree/1,
+        val 'a depth : 'a tree/1 -> int,
+        val 'a reflect : 'a tree/1 -> 'a tree/1,
+        val 'a size : 'a tree/1 -> int}
+> New type names: =tree/1
   structure Tree :
   {datatype 'a tree =
-     ('a tree',
-      {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-       con 'a Lf : 'a tree'}),
-   con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-   con 'a Lf : 'a tree',
-   val 'a depth : 'a tree' -> int,
-   val 'a reflect : 'a tree' -> 'a tree',
-   val 'a size : 'a tree' -> int}
+     ('a tree/1,
+      {con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+       con 'a Lf : 'a tree/1}),
+   con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+   con 'a Lf : 'a tree/1,
+   val 'a depth : 'a tree/1 -> int,
+   val 'a reflect : 'a tree/1 -> 'a tree/1,
+   val 'a size : 'a tree/1 -> int}
 > structure Braun :
   {structure Tree :
      {datatype 'a tree =
-        ('a tree',
-         {con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-          con 'a Lf : 'a tree'}),
-      con 'a Br : 'a * 'a tree' * 'a tree' -> 'a tree',
-      con 'a Lf : 'a tree',
-      val 'a depth : 'a tree' -> int,
-      val 'a reflect : 'a tree' -> 'a tree',
-      val 'a size : 'a tree' -> int},
-   val 'a delete : 'a tree' * int -> 'a tree',
-   val 'a loext : 'a tree' * 'a -> 'a tree',
-   val 'a lorem : 'a tree' -> 'a tree',
-   val 'a sub : 'a tree' * int -> 'a,
-   val 'a update : 'a tree' * int * 'a -> 'a tree'}
-> New type names: =array'
+        ('a tree/1,
+         {con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+          con 'a Lf : 'a tree/1}),
+      con 'a Br : 'a * 'a tree/1 * 'a tree/1 -> 'a tree/1,
+      con 'a Lf : 'a tree/1,
+      val 'a depth : 'a tree/1 -> int,
+      val 'a reflect : 'a tree/1 -> 'a tree/1,
+      val 'a size : 'a tree/1 -> int},
+   val 'a delete : 'a tree/1 * int -> 'a tree/1,
+   val 'a loext : 'a tree/1 * 'a -> 'a tree/1,
+   val 'a lorem : 'a tree/1 -> 'a tree/1,
+   val 'a sub : 'a tree/1 * int -> 'a,
+   val 'a update : 'a tree/1 * int * 'a -> 'a tree/1}
+> New type names: =array/1
   structure Flex :
-  {type 'a array = 'a array',
-   val 'a empty : 'a array',
-   val 'a hiext : 'a array' * 'a -> 'a array',
-   val 'a hirem : 'a array' -> 'a array',
-   val 'a length : 'a array' -> int,
-   val 'a loext : 'a array' * 'a -> 'a array',
-   val 'a lorem : 'a array' -> 'a array',
-   val 'a sub : 'a array' * int -> 'a,
-   val 'a update : 'a array' * int * 'a -> 'a array'}
-> New type names: t''''
+  {type 'a array = 'a array/1,
+   val 'a empty : 'a array/1,
+   val 'a hiext : 'a array/1 * 'a -> 'a array/1,
+   val 'a hirem : 'a array/1 -> 'a array/1,
+   val 'a length : 'a array/1 -> int,
+   val 'a loext : 'a array/1 * 'a -> 'a array/1,
+   val 'a lorem : 'a array/1 -> 'a array/1,
+   val 'a sub : 'a array/1 * int -> 'a,
+   val 'a update : 'a array/1 * int * 'a -> 'a array/1}
+> New type names: t/4
   structure StringPQueue :
   {structure Item : {type t = string, val compare : string * string -> order},
-   type t = t'''',
-   val delmin : t'''' -> t'''',
-   val empty : t'''',
-   val fromList : string list -> t'''',
-   val insert : string * t'''' -> t'''',
-   val min : t'''' -> string,
-   val null : t'''' -> bool,
+   type t = t/4,
+   val delmin : t/4 -> t/4,
+   val empty : t/4,
+   val fromList : string list -> t/4,
+   val insert : string * t/4 -> t/4,
+   val min : t/4 -> string,
+   val null : t/4 -> bool,
    val sort : string list -> string list,
-   val toList : t'''' -> string list}
+   val toList : t/4 -> string list}
 [closing file "sample7.sml"]
 > val it = () : unit
 [opening file "sample8.sml"]
@@ -5752,23 +5737,23 @@ File "sample7.sml", line 577, characters 9-14:
 > val pFact = fn : int * int ref -> unit
 > val 'a irev = fn : 'a list -> 'a list
 > signature IMP_SEQUENCE =
-  /\t'''''.
-    {type 'a t = 'a t''''',
+  /\t/5.
+    {type 'a t = 'a t/5,
      exn Empty : exn,
-     val 'a empty : 'a t''''',
-     val 'a cons : 'a * (unit -> 'a t''''') -> 'a t''''',
-     val 'a null : 'a t''''' -> bool,
-     val 'a hd : 'a t''''' -> 'a,
-     val 'a tl : 'a t''''' -> 'a t''''',
-     val 'a take : 'a t''''' * int -> 'a list,
-     val 'a toList : 'a t''''' -> 'a list,
-     val 'a fromList : 'a list -> 'a t''''',
-     val 'a @ : 'a t''''' * 'a t''''' -> 'a t''''',
-     val 'a interleave : 'a t''''' * 'a t''''' -> 'a t''''',
-     val 'a concat : 'a t''''' t''''' -> 'a t''''',
-     val ('a, 'b) map : ('a -> 'b) -> 'a t''''' -> 'b t''''',
-     val 'a filter : ('a -> bool) -> 'a t''''' -> 'a t''''',
-     val 'a cycle : ((unit -> 'a t''''') -> 'a t''''') -> 'a t'''''}
+     val 'a empty : 'a t/5,
+     val 'a cons : 'a * (unit -> 'a t/5) -> 'a t/5,
+     val 'a null : 'a t/5 -> bool,
+     val 'a hd : 'a t/5 -> 'a,
+     val 'a tl : 'a t/5 -> 'a t/5,
+     val 'a take : 'a t/5 * int -> 'a list,
+     val 'a toList : 'a t/5 -> 'a list,
+     val 'a fromList : 'a list -> 'a t/5,
+     val 'a @ : 'a t/5 * 'a t/5 -> 'a t/5,
+     val 'a interleave : 'a t/5 * 'a t/5 -> 'a t/5,
+     val 'a concat : 'a t/5 t/5 -> 'a t/5,
+     val ('a, 'b) map : ('a -> 'b) -> 'a t/5 -> 'b t/5,
+     val 'a filter : ('a -> bool) -> 'a t/5 -> 'a t/5,
+     val 'a cycle : ((unit -> 'a t/5) -> 'a t/5) -> 'a t/5}
 File "sample8.sml", line 102-103, characters 6-49:
 ! ......null Nil = true
 !     | null (Cons _) = false.
@@ -5821,62 +5806,62 @@ File "sample8.sml", line 141-145, characters 6-166:
 ! 	  else filter pred (force xp).
 ! Warning: pattern matching is not exhaustive
 
-> New type names: t'''''
+> New type names: t/5
   structure ImpSeq :
-  {type 'a t = 'a t''''',
-   val 'a @ : 'a t''''' * 'a t''''' -> 'a t''''',
+  {type 'a t = 'a t/5,
+   val 'a @ : 'a t/5 * 'a t/5 -> 'a t/5,
    exn Empty : exn,
-   val 'a concat : 'a t''''' t''''' -> 'a t''''',
-   val 'a cons : 'a * (unit -> 'a t''''') -> 'a t''''',
-   val 'a cycle : ((unit -> 'a t''''') -> 'a t''''') -> 'a t''''',
-   val 'a empty : 'a t''''',
-   val 'a filter : ('a -> bool) -> 'a t''''' -> 'a t''''',
-   val 'a fromList : 'a list -> 'a t''''',
-   val 'a hd : 'a t''''' -> 'a,
-   val 'a interleave : 'a t''''' * 'a t''''' -> 'a t''''',
-   val ('a, 'b) map : ('a -> 'b) -> 'a t''''' -> 'b t''''',
-   val 'a null : 'a t''''' -> bool,
-   val 'a take : 'a t''''' * int -> 'a list,
-   val 'a tl : 'a t''''' -> 'a t''''',
-   val 'a toList : 'a t''''' -> 'a list}
-> val ('a, 'b) pairs = fn : 'a t''''' * 'b t''''' -> ('a * 'b) t'''''
-> val add = fn : int t''''' * int t''''' -> int t'''''
-> val fib = <t> : int t'''''
+   val 'a concat : 'a t/5 t/5 -> 'a t/5,
+   val 'a cons : 'a * (unit -> 'a t/5) -> 'a t/5,
+   val 'a cycle : ((unit -> 'a t/5) -> 'a t/5) -> 'a t/5,
+   val 'a empty : 'a t/5,
+   val 'a filter : ('a -> bool) -> 'a t/5 -> 'a t/5,
+   val 'a fromList : 'a list -> 'a t/5,
+   val 'a hd : 'a t/5 -> 'a,
+   val 'a interleave : 'a t/5 * 'a t/5 -> 'a t/5,
+   val ('a, 'b) map : ('a -> 'b) -> 'a t/5 -> 'b t/5,
+   val 'a null : 'a t/5 -> bool,
+   val 'a take : 'a t/5 * int -> 'a list,
+   val 'a tl : 'a t/5 -> 'a t/5,
+   val 'a toList : 'a t/5 -> 'a list}
+> val ('a, 'b) pairs = fn : 'a t/5 * 'b t/5 -> ('a * 'b) t/5
+> val add = fn : int t/5 * int t/5 -> int t/5
+> val fib = <t> : int t/5
 > val it =
     [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584,
      4181, 6765, 10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811,
      514229, 832040, 1346269, 2178309, 3524578, 5702887, 9227465, 14930352,
      24157817, 39088169, 63245986, 102334155] : int list
 > signature RINGBUF =
-  /\=t''''''.
-    {type 'a t = 'a t'''''',
+  /\=t/6.
+    {type 'a t = 'a t/6,
      exn Empty : exn,
-     val 'a empty : unit -> 'a t'''''',
-     val 'a null : 'a t'''''' -> bool,
-     val 'a label : 'a t'''''' -> 'a,
-     val 'a moveLeft : 'a t'''''' -> unit,
-     val 'a moveRight : 'a t'''''' -> unit,
-     val 'a insert : 'a t'''''' * 'a -> unit,
-     val 'a delete : 'a t'''''' -> 'a}
-> New type names: =t''''''
+     val 'a empty : unit -> 'a t/6,
+     val 'a null : 'a t/6 -> bool,
+     val 'a label : 'a t/6 -> 'a,
+     val 'a moveLeft : 'a t/6 -> unit,
+     val 'a moveRight : 'a t/6 -> unit,
+     val 'a insert : 'a t/6 * 'a -> unit,
+     val 'a delete : 'a t/6 -> 'a}
+> New type names: =t/6
   structure RingBuf :
-  {type 'a t = 'a t'''''',
+  {type 'a t = 'a t/6,
    exn Empty : exn,
-   val 'a delete : 'a t'''''' -> 'a,
-   val 'a empty : unit -> 'a t'''''',
-   val 'a insert : 'a t'''''' * 'a -> unit,
-   val 'a label : 'a t'''''' -> 'a,
-   val 'a moveLeft : 'a t'''''' -> unit,
-   val 'a moveRight : 'a t'''''' -> unit,
-   val 'a null : 'a t'''''' -> bool}
+   val 'a delete : 'a t/6 -> 'a,
+   val 'a empty : unit -> 'a t/6,
+   val 'a insert : 'a t/6 * 'a -> unit,
+   val 'a label : 'a t/6 -> 'a,
+   val 'a moveLeft : 'a t/6 -> unit,
+   val 'a moveRight : 'a t/6 -> unit,
+   val 'a null : 'a t/6 -> bool}
 > signature VARRAY =
-  /\t'''''''.
-    {type 'a t = 'a t''''''',
-     val 'a array : int * 'a -> 'a t''''''',
-     val 'a reroot : 'a t''''''' -> 'a t''''''',
-     val 'a sub : 'a t''''''' * int -> 'a,
-     val 'a justUpdate : 'a t''''''' * int * 'a -> 'a t''''''',
-     val 'a update : 'a t''''''' * int * 'a -> 'a t'''''''}
+  /\t/7.
+    {type 'a t = 'a t/7,
+     val 'a array : int * 'a -> 'a t/7,
+     val 'a reroot : 'a t/7 -> 'a t/7,
+     val 'a sub : 'a t/7 * int -> 'a,
+     val 'a justUpdate : 'a t/7 * int * 'a -> 'a t/7,
+     val 'a update : 'a t/7 * int * 'a -> 'a t/7}
 File "sample8.sml", line 280, characters 12-20:
 ! 	       val Main ary = !bnext
 ! 	           ^^^^^^^^
@@ -5915,14 +5900,14 @@ File "sample8.sml", line 297-301, characters 6-169:
 ! 	else raise Subscript.
 ! Warning: pattern matching is not exhaustive
 
-> New type names: t'''''''
+> New type names: t/7
   structure Varray :
-  {type 'a t = 'a t''''''',
-   val 'a array : int * 'a -> 'a t''''''',
-   val 'a justUpdate : 'a t''''''' * int * 'a -> 'a t''''''',
-   val 'a reroot : 'a t''''''' -> 'a t''''''',
-   val 'a sub : 'a t''''''' * int -> 'a,
-   val 'a update : 'a t''''''' * int * 'a -> 'a t'''''''}
+  {type 'a t = 'a t/7,
+   val 'a array : int * 'a -> 'a t/7,
+   val 'a justUpdate : 'a t/7 * int * 'a -> 'a t/7,
+   val 'a reroot : 'a t/7 -> 'a t/7,
+   val 'a sub : 'a t/7 * int -> 'a,
+   val 'a update : 'a t/7 * int * 'a -> 'a t/7}
 > val months =
     ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT",
      "NOV", "DEC"] : string list
@@ -5950,20 +5935,20 @@ File "sample8.sml", line 319, characters 10-30:
 > val firstLine = fn : string -> string
 > val htmlCvt = fn : string -> unit
 > signature PRETTY =
-  /\t''''''''.
-    {type t = t'''''''',
-     val blo : int * t'''''''' list -> t'''''''',
-     val str : string -> t'''''''',
-     val brk : int -> t'''''''',
-     val pr : outstream * t'''''''' * int -> unit}
-> New type names: =t''''''''
+  /\t/8.
+    {type t = t/8,
+     val blo : int * t/8 list -> t/8,
+     val str : string -> t/8,
+     val brk : int -> t/8,
+     val pr : outstream * t/8 * int -> unit}
+> New type names: =t/8
   structure Pretty :
-  {type t = t'''''''',
-   val blo : int * t'''''''' list -> t'''''''',
-   val brk : int -> t'''''''',
-   val pr : outstream * t'''''''' * int -> unit,
-   val str : string -> t''''''''}
-> val prettyshow = fn : prop -> t''''''''
+  {type t = t/8,
+   val blo : int * t/8 list -> t/8,
+   val brk : int -> t/8,
+   val pr : outstream * t/8 * int -> unit,
+   val str : string -> t/8}
+> val prettyshow = fn : prop -> t/8
 [closing file "sample8.sml"]
 > val it = () : unit
 [opening file "sample9.sml"]
@@ -6032,15 +6017,13 @@ File "sample8.sml", line 319, characters 10-30:
         val ('b, 'a) repeat : ('a -> 'b * 'a) -> 'a -> 'b list * 'a,
         val ('a, 'b) || : ('a -> 'b) * ('a -> 'b) -> 'a -> 'b}
 > signature TYPE =
-  /\=t'''''''''.
+  /\=t/9.
     {datatype t =
-       (t''''''''',
-        {con Con : string * t''''''''' list -> t''''''''',
-         con Var : string -> t'''''''''}),
-     con Con : string * t''''''''' list -> t''''''''',
-     con Var : string -> t''''''''',
-     val pr : t''''''''' -> unit,
-     val read : string -> t'''''''''}
+       (t/9,{con Con : string * t/9 list -> t/9, con Var : string -> t/9}),
+     con Con : string * t/9 list -> t/9,
+     con Var : string -> t/9,
+     val pr : t/9 -> unit,
+     val read : string -> t/9}
 > structure LamKey : {val 'a alphas : 'a list, val symbols : string list}
 > New type names: =token
   structure LamLex :
@@ -6075,79 +6058,77 @@ File "sample9.sml", line 212-216, characters 8-161:
 ! 						 typ ty2])
 ! Warning: pattern matching is not exhaustive
 
-> New type names: =t'''''''''
+> New type names: =t/9
   structure Type :
   {datatype t =
-     (t''''''''',
-      {con Con : string * t''''''''' list -> t''''''''',
-       con Var : string -> t'''''''''}),
-   con Con : string * t''''''''' list -> t''''''''',
-   con Var : string -> t''''''''',
-   val pr : t''''''''' -> unit,
-   val read : string -> t'''''''''}
+     (t/9,{con Con : string * t/9 list -> t/9, con Var : string -> t/9}),
+   con Con : string * t/9 list -> t/9,
+   con Var : string -> t/9,
+   val pr : t/9 -> unit,
+   val read : string -> t/9}
 > signature LAMBDA =
-  /\=t''''''''''.
+  /\=t/10.
     {datatype t =
-       (t'''''''''',
-        {con Abs : string * t'''''''''' -> t'''''''''',
-         con Apply : t'''''''''' * t'''''''''' -> t'''''''''',
-         con Bound : int -> t'''''''''',
-         con Free : string -> t''''''''''}),
-     con Abs : string * t'''''''''' -> t'''''''''',
-     con Apply : t'''''''''' * t'''''''''' -> t'''''''''',
-     con Bound : int -> t'''''''''',
-     con Free : string -> t'''''''''',
-     val abstract : int -> string -> t'''''''''' -> t'''''''''',
-     val absList : string list * t'''''''''' -> t'''''''''',
-     val applyList : t'''''''''' * t'''''''''' list -> t'''''''''',
-     val subst : int -> t'''''''''' -> t'''''''''' -> t'''''''''',
-     val inst : t'''''''''' t''' -> t'''''''''' -> t''''''''''}
-> New type names: =t''''''''''
+       (t/10,
+        {con Abs : string * t/10 -> t/10,
+         con Apply : t/10 * t/10 -> t/10,
+         con Bound : int -> t/10,
+         con Free : string -> t/10}),
+     con Abs : string * t/10 -> t/10,
+     con Apply : t/10 * t/10 -> t/10,
+     con Bound : int -> t/10,
+     con Free : string -> t/10,
+     val abstract : int -> string -> t/10 -> t/10,
+     val absList : string list * t/10 -> t/10,
+     val applyList : t/10 * t/10 list -> t/10,
+     val subst : int -> t/10 -> t/10 -> t/10,
+     val inst : t/10 t/3 -> t/10 -> t/10}
+> New type names: =t/10
   structure Lambda :
   {datatype t =
-     (t'''''''''',
-      {con Abs : string * t'''''''''' -> t'''''''''',
-       con Apply : t'''''''''' * t'''''''''' -> t'''''''''',
-       con Bound : int -> t'''''''''',
-       con Free : string -> t''''''''''}),
-   con Abs : string * t'''''''''' -> t'''''''''',
-   con Apply : t'''''''''' * t'''''''''' -> t'''''''''',
-   con Bound : int -> t'''''''''',
-   con Free : string -> t'''''''''',
-   val absList : string list * t'''''''''' -> t'''''''''',
-   val abstract : int -> string -> t'''''''''' -> t'''''''''',
-   val applyList : t'''''''''' * t'''''''''' list -> t'''''''''',
-   val inst : t'''''''''' t''' -> t'''''''''' -> t'''''''''',
-   val subst : int -> t'''''''''' -> t'''''''''' -> t''''''''''}
-> signature PARSE_TERM = {val read : string -> t''''''''''}
-> structure ParseTerm : {val read : string -> t''''''''''}
+     (t/10,
+      {con Abs : string * t/10 -> t/10,
+       con Apply : t/10 * t/10 -> t/10,
+       con Bound : int -> t/10,
+       con Free : string -> t/10}),
+   con Abs : string * t/10 -> t/10,
+   con Apply : t/10 * t/10 -> t/10,
+   con Bound : int -> t/10,
+   con Free : string -> t/10,
+   val absList : string list * t/10 -> t/10,
+   val abstract : int -> string -> t/10 -> t/10,
+   val applyList : t/10 * t/10 list -> t/10,
+   val inst : t/10 t/3 -> t/10 -> t/10,
+   val subst : int -> t/10 -> t/10 -> t/10}
+> signature PARSE_TERM = {val read : string -> t/10}
+> structure ParseTerm : {val read : string -> t/10}
 > signature DISPLAY_TERM =
   {val rename : string list * string -> string,
-   val stripAbs : t'''''''''' -> string list * t'''''''''',
-   val pr : t'''''''''' -> unit}
+   val stripAbs : t/10 -> string list * t/10,
+   val pr : t/10 -> unit}
 File "sample9.sml", line 352, characters 11-20:
 ! 	  let val (b::bs,u) = stripAbs t
 ! 	          ^^^^^^^^^
 ! Warning: pattern matching is not exhaustive
 
 > structure DisplayTerm :
-  {val pr : t'''''''''' -> unit,
+  {val pr : t/10 -> unit,
    val rename : string list * string -> string,
-   val stripAbs : t'''''''''' -> string list * t''''''''''}
+   val stripAbs : t/10 -> string list * t/10}
 > signature REDUCE =
-  {val eval : t'''''''''' -> t'''''''''',
-   val byValue : t'''''''''' -> t'''''''''',
-   val headNF : t'''''''''' -> t'''''''''',
-   val byName : t'''''''''' -> t''''''''''}
+  {val eval : t/10 -> t/10,
+   val byValue : t/10 -> t/10,
+   val headNF : t/10 -> t/10,
+   val byName : t/10 -> t/10}
 > structure Reduce :
-  {val byName : t'''''''''' -> t'''''''''',
-   val byValue : t'''''''''' -> t'''''''''',
-   val eval : t'''''''''' -> t'''''''''',
-   val headNF : t'''''''''' -> t''''''''''}
-> val insertEnv = fn : (string * string) * t'''''''''' t''' -> t'''''''''' t'''
-> val stdEnv = <t> : t'''''''''' t'''
-> val stdRead = fn : string -> t''''''''''
-> val try = fn : (t'''''''''' -> t'''''''''') -> string -> unit
+  {val byName : t/10 -> t/10,
+   val byValue : t/10 -> t/10,
+   val eval : t/10 -> t/10,
+   val headNF : t/10 -> t/10}
+> val insertEnv = fn : (string * string) * t/10 t/3 -> t/10 t/3
+> val stdEnv = <t> : t/10 t/3
+> val stdRead = fn : string -> t/10
+> val try = fn : (t/10 -> t/10) -> string -> unit
 [closing file "sample9.sml"]
 > val it = () : unit
 [opening file "sample10.sml"]
@@ -6214,29 +6195,29 @@ File "sample9.sml", line 352, characters 11-20:
      term * (string * string list) list -> (string * string list) list,
    val termVars : term * string list -> string list}
 > structure FolKey : {val alphas : string list, val symbols : string list}
-> New type names: =token'
+> New type names: =token/1
   structure FolLex :
   {datatype token =
-     (token',{con Id : string -> token', con Key : string -> token'}),
-   con Id : string -> token',
-   con Key : string -> token',
-   val scan : string -> token' list}
+     (token/1,{con Id : string -> token/1, con Key : string -> token/1}),
+   con Id : string -> token/1,
+   con Key : string -> token/1,
+   val scan : string -> token/1 list}
 > structure FolParsing :
-  {type token = token',
+  {type token = token/1,
    val ('a, 'b, 'c) !! : ('a -> 'b * 'c) -> 'a -> 'b * 'c,
-   val $ : string -> token' list -> string * token' list,
+   val $ : string -> token/1 list -> string * token/1 list,
    val ('a, 'b) $-- :
-     string * (token' list -> 'a * 'b) -> token' list -> 'a * 'b,
+     string * (token/1 list -> 'a * 'b) -> token/1 list -> 'a * 'b,
    val ('c, 'a, 'b, 'd, 'e) -- :
      ('a -> 'b * 'c) * ('c -> 'd * 'e) -> 'a -> ('b * 'd) * 'e,
    val ('b, 'a, 'd, 'c) >> : ('a -> 'b * 'c) * ('b -> 'd) -> 'a -> 'd * 'c,
    exn SyntaxErr : string -> exn,
    val ('b, 'a) empty : 'a -> 'b list * 'a,
-   val id : token' list -> string * token' list,
+   val id : token/1 list -> string * token/1 list,
    val 'a infixes :
-     (token' list -> 'a * token' list) * (string -> int) *
-     (string -> 'a -> 'a -> 'a) -> token' list -> 'a * token' list,
-   val ('b, 'a) reader : (token' list -> 'a * 'b list) -> string -> 'a,
+     (token/1 list -> 'a * token/1 list) * (string -> int) *
+     (string -> 'a -> 'a -> 'a) -> token/1 list -> 'a * token/1 list,
+   val ('b, 'a) reader : (token/1 list -> 'a * 'b list) -> string -> 'a,
    val ('b, 'a) repeat : ('a -> 'b * 'a) -> 'a -> 'b list * 'a,
    val ('a, 'b) || : ('a -> 'b) * ('a -> 'b) -> 'a -> 'b}
 > signature PARSE_FOL = {val read : string -> form}
@@ -6252,40 +6233,40 @@ File "sample10.sml", line 192, characters 6-62:
   {val form : form -> unit, val goal : int -> form list * form list -> unit}
 > signature UNIFY =
   {exn Failed : exn,
-   val atoms : form * form -> term t''',
-   val instTerm : term t''' -> term -> term,
-   val instForm : term t''' -> form -> form,
-   val instGoal : term t''' -> form list * form list -> form list * form list}
+   val atoms : form * form -> term t/3,
+   val instTerm : term t/3 -> term -> term,
+   val instForm : term t/3 -> form -> form,
+   val instGoal : term t/3 -> form list * form list -> form list * form list}
 > structure Unify :
   {exn Failed : exn,
-   val atoms : form * form -> term t''',
-   val instForm : term t''' -> form -> form,
-   val instGoal : term t''' -> form list * form list -> form list * form list,
-   val instTerm : term t''' -> term -> term}
+   val atoms : form * form -> term t/3,
+   val instForm : term t/3 -> form -> form,
+   val instGoal : term t/3 -> form list * form list -> form list * form list,
+   val instTerm : term t/3 -> term -> term}
 > signature RULE =
   /\state.
     {type state = state,
-     type tactic = state -> state t''''',
+     type tactic = state -> state t/5,
      val main : state -> form,
      val subgoals : state -> (form list * form list) list,
      val initial : form -> state,
      val final : state -> bool,
-     val basic : int -> state -> state t''''',
-     val unify : int -> state -> state t''''',
-     val conjL : int -> state -> state t''''',
-     val conjR : int -> state -> state t''''',
-     val disjL : int -> state -> state t''''',
-     val disjR : int -> state -> state t''''',
-     val impL : int -> state -> state t''''',
-     val impR : int -> state -> state t''''',
-     val negL : int -> state -> state t''''',
-     val negR : int -> state -> state t''''',
-     val iffL : int -> state -> state t''''',
-     val iffR : int -> state -> state t''''',
-     val allL : int -> state -> state t''''',
-     val allR : int -> state -> state t''''',
-     val exL : int -> state -> state t''''',
-     val exR : int -> state -> state t'''''}
+     val basic : int -> state -> state t/5,
+     val unify : int -> state -> state t/5,
+     val conjL : int -> state -> state t/5,
+     val conjR : int -> state -> state t/5,
+     val disjL : int -> state -> state t/5,
+     val disjR : int -> state -> state t/5,
+     val impL : int -> state -> state t/5,
+     val impR : int -> state -> state t/5,
+     val negL : int -> state -> state t/5,
+     val negR : int -> state -> state t/5,
+     val iffL : int -> state -> state t/5,
+     val iffR : int -> state -> state t/5,
+     val allL : int -> state -> state t/5,
+     val allR : int -> state -> state t/5,
+     val exL : int -> state -> state t/5,
+     val exR : int -> state -> state t/5}
 File "sample10.sml", line 409, characters 25-69:
 !   val conjL = propL "&" (fn (([p1,p2], ps), qs) => [(p1::p2::ps, qs)]);
 !                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -6359,34 +6340,34 @@ File "sample10.sml", line 478, characters 14-48:
 > New type names: state
   structure Rule :
   {type state = state,
-   type tactic = state -> state t''''',
-   val allL : int -> state -> state t''''',
-   val allR : int -> state -> state t''''',
-   val basic : int -> state -> state t''''',
-   val conjL : int -> state -> state t''''',
-   val conjR : int -> state -> state t''''',
-   val disjL : int -> state -> state t''''',
-   val disjR : int -> state -> state t''''',
-   val exL : int -> state -> state t''''',
-   val exR : int -> state -> state t''''',
+   type tactic = state -> state t/5,
+   val allL : int -> state -> state t/5,
+   val allR : int -> state -> state t/5,
+   val basic : int -> state -> state t/5,
+   val conjL : int -> state -> state t/5,
+   val conjR : int -> state -> state t/5,
+   val disjL : int -> state -> state t/5,
+   val disjR : int -> state -> state t/5,
+   val exL : int -> state -> state t/5,
+   val exR : int -> state -> state t/5,
    val final : state -> bool,
-   val iffL : int -> state -> state t''''',
-   val iffR : int -> state -> state t''''',
-   val impL : int -> state -> state t''''',
-   val impR : int -> state -> state t''''',
+   val iffL : int -> state -> state t/5,
+   val iffR : int -> state -> state t/5,
+   val impL : int -> state -> state t/5,
+   val impR : int -> state -> state t/5,
    val initial : form -> state,
    val main : state -> form,
-   val negL : int -> state -> state t''''',
-   val negR : int -> state -> state t''''',
+   val negL : int -> state -> state t/5,
+   val negR : int -> state -> state t/5,
    val subgoals : state -> (form list * form list) list,
-   val unify : int -> state -> state t'''''}
+   val unify : int -> state -> state t/5}
 > signature COMMAND =
   {val goal : string -> unit,
-   val by : (state -> state t''''') -> unit,
+   val by : (state -> state t/5) -> unit,
    val pr : state -> unit,
    val getState : unit -> state}
 > structure Command :
-  {val by : (state -> state t''''') -> unit,
+  {val by : (state -> state t/5) -> unit,
    val getState : unit -> state,
    val goal : string -> unit,
    val pr : state -> unit}
@@ -6412,57 +6393,50 @@ File "sample10.sml", line 478, characters 14-48:
      val ('a, 'b, 'c) firstF :
        ('a -> ('b, 'c) multifun) list -> 'a -> ('b, 'c) multifun}
 > structure Tactical :
-  {type ('a, 'b) multifun = 'a -> 'b t''''',
-   val ('b, 'a, 'c) -- :
-     ('a -> 'b t''''') * ('b -> 'c t''''') -> 'a -> 'c t''''',
-   val 'a all : 'a -> 'a t''''',
-   val 'a depthFirst : ('a -> bool) -> ('a -> 'a t''''') -> 'a -> 'a t''''',
-   val 'a depthIter :
-     ('a -> bool) * int -> ('a -> 'a t''''') -> 'a -> 'a t''''',
-   val ('a, 'b, 'c) firstF :
-     ('a -> 'b -> 'c t''''') list -> 'a -> 'b -> 'c t''''',
-   val ('a, 'b) no : 'a -> 'b t''''',
-   val 'a repeat : ('a -> 'a t''''') -> 'a -> 'a t''''',
-   val 'a repeatDeterm : ('a -> 'a t''''') -> 'a -> 'a t''''',
-   val 'a try : ('a -> 'a t''''') -> 'a -> 'a t''''',
-   val ('a, 'b) |@| : ('a -> 'b t''''') * ('a -> 'b t''''') -> 'a -> 'b t''''',
-   val ('a, 'b) || : ('a -> 'b t''''') * ('a -> 'b t''''') -> 'a -> 'b t'''''}
+  {type ('a, 'b) multifun = 'a -> 'b t/5,
+   val ('b, 'a, 'c) -- : ('a -> 'b t/5) * ('b -> 'c t/5) -> 'a -> 'c t/5,
+   val 'a all : 'a -> 'a t/5,
+   val 'a depthFirst : ('a -> bool) -> ('a -> 'a t/5) -> 'a -> 'a t/5,
+   val 'a depthIter : ('a -> bool) * int -> ('a -> 'a t/5) -> 'a -> 'a t/5,
+   val ('a, 'b, 'c) firstF : ('a -> 'b -> 'c t/5) list -> 'a -> 'b -> 'c t/5,
+   val ('a, 'b) no : 'a -> 'b t/5,
+   val 'a repeat : ('a -> 'a t/5) -> 'a -> 'a t/5,
+   val 'a repeatDeterm : ('a -> 'a t/5) -> 'a -> 'a t/5,
+   val 'a try : ('a -> 'a t/5) -> 'a -> 'a t/5,
+   val ('a, 'b) |@| : ('a -> 'b t/5) * ('a -> 'b t/5) -> 'a -> 'b t/5,
+   val ('a, 'b) || : ('a -> 'b t/5) * ('a -> 'b t/5) -> 'a -> 'b t/5}
 > signature TAC =
-  {val safeSteps : int -> state -> state t''''',
-   val quant : int -> state -> state t''''',
-   val step : int -> state -> state t''''',
-   val depth : state -> state t''''',
-   val depthIt : int -> state -> state t'''''}
+  {val safeSteps : int -> state -> state t/5,
+   val quant : int -> state -> state t/5,
+   val step : int -> state -> state t/5,
+   val depth : state -> state t/5,
+   val depthIt : int -> state -> state t/5}
 > structure Tac :
-  {val depth : state -> state t''''',
-   val depthIt : int -> state -> state t''''',
-   val quant : int -> state -> state t''''',
-   val safeSteps : int -> state -> state t''''',
-   val step : int -> state -> state t'''''}
+  {val depth : state -> state t/5,
+   val depthIt : int -> state -> state t/5,
+   val quant : int -> state -> state t/5,
+   val safeSteps : int -> state -> state t/5,
+   val step : int -> state -> state t/5}
 [closing file "sample10.sml"]
 > val it = () : unit
 [opening file "test10.sml"]
-> val by = fn : (state -> state t''''') -> unit
+> val by = fn : (state -> state t/5) -> unit
   val getState = fn : unit -> state
   val goal = fn : string -> unit
   val pr = fn : state -> unit
-> type ('a, 'b) multifun = 'a -> 'b t'''''
-  val ('b, 'a, 'c) -- = fn :
-  ('a -> 'b t''''') * ('b -> 'c t''''') -> 'a -> 'c t'''''
-  val 'a all = fn : 'a -> 'a t'''''
-  val 'a depthFirst = fn : ('a -> bool) -> ('a -> 'a t''''') -> 'a -> 'a t'''''
-  val 'a depthIter = fn :
-  ('a -> bool) * int -> ('a -> 'a t''''') -> 'a -> 'a t'''''
+> type ('a, 'b) multifun = 'a -> 'b t/5
+  val ('b, 'a, 'c) -- = fn : ('a -> 'b t/5) * ('b -> 'c t/5) -> 'a -> 'c t/5
+  val 'a all = fn : 'a -> 'a t/5
+  val 'a depthFirst = fn : ('a -> bool) -> ('a -> 'a t/5) -> 'a -> 'a t/5
+  val 'a depthIter = fn : ('a -> bool) * int -> ('a -> 'a t/5) -> 'a -> 'a t/5
   val ('a, 'b, 'c) firstF = fn :
-  ('a -> 'b -> 'c t''''') list -> 'a -> 'b -> 'c t'''''
-  val ('a, 'b) no = fn : 'a -> 'b t'''''
-  val 'a repeat = fn : ('a -> 'a t''''') -> 'a -> 'a t'''''
-  val 'a repeatDeterm = fn : ('a -> 'a t''''') -> 'a -> 'a t'''''
-  val 'a try = fn : ('a -> 'a t''''') -> 'a -> 'a t'''''
-  val ('a, 'b) |@| = fn :
-  ('a -> 'b t''''') * ('a -> 'b t''''') -> 'a -> 'b t'''''
-  val ('a, 'b) || = fn :
-  ('a -> 'b t''''') * ('a -> 'b t''''') -> 'a -> 'b t'''''
+  ('a -> 'b -> 'c t/5) list -> 'a -> 'b -> 'c t/5
+  val ('a, 'b) no = fn : 'a -> 'b t/5
+  val 'a repeat = fn : ('a -> 'a t/5) -> 'a -> 'a t/5
+  val 'a repeatDeterm = fn : ('a -> 'a t/5) -> 'a -> 'a t/5
+  val 'a try = fn : ('a -> 'a t/5) -> 'a -> 'a t/5
+  val ('a, 'b) |@| = fn : ('a -> 'b t/5) * ('a -> 'b t/5) -> 'a -> 'b t/5
+  val ('a, 'b) || = fn : ('a -> 'b t/5) * ('a -> 'b t/5) -> 'a -> 'b t/5
 > val showResult = fn : unit -> unit
 > val checkFailed = fn : unit -> string
 P & Q --> Q & P
