@@ -3332,19 +3332,43 @@ fun elabToplevelDec (dec : Dec) =
   else ();
   resetBindingLevel();
   let val EXISTS(T',(ME',FE',GE',VE',TE')) =
+      elabDec (mkGlobalME()) (mkGlobalFE()) (mkGlobalGE()) [] 
+              (mkGlobalVE()) (mkGlobalTE()) (* ps: true *) false dec  
+      val _ = if (!currentCompliance) <> Liberal 
+		   then Synchk.compliantTopDec dec 
+	      else ()
+  in EXISTS(T',(cleanEnv ME', 
+		 cleanEnv FE', 
+		 cleanEnv GE', 
+		 cleanEnv VE', 
+		 cleanEnv TE'))
+  end
+);
+
+fun elabStrDec (dec : Dec) =
+(
+  if unguardedDec dec <> [] then
+    errorMsg (xLR dec) "Unguarded type variables at the top-level"
+  else ();
+  resetBindingLevel();
+  let val EXISTS(T',(ME',FE',GE',VE',TE')) =
      elabDec (mkGlobalME()) (mkGlobalFE()) (mkGlobalGE()) [] 
              (mkGlobalVE()) (mkGlobalTE()) (* ps: true *) false dec  
-  in EXISTS(T',(cleanEnv ME', 
-                cleanEnv FE', 
-                cleanEnv GE', 
-                cleanEnv VE', 
-                cleanEnv TE'))
+      val _ = if (!currentCompliance) <> Liberal 
+		   then Synchk.compliantStrDec dec 
+	      else ()
+  in 
+      EXISTS(T',(cleanEnv ME', 
+		 cleanEnv FE', 
+		 cleanEnv GE', 
+		 cleanEnv VE', 
+		 cleanEnv TE'))
   end
 );
 
 fun elabToplevelSigExp (sigexp as (loc,_) : SigExp) =
     (resetBindingLevel();
-      let val LAMBDAsig(T,M) = 
+     let val LAMBDAsig(T,M) = 
 	  elabSigExp (mkGlobalME()) 
 	             (mkGlobalFE()) 
 		     (mkGlobalGE()) 
@@ -3356,15 +3380,43 @@ fun elabToplevelSigExp (sigexp as (loc,_) : SigExp) =
 	  FUNmod _ => 
 	      errorMsg loc "Illegal unit signature: the signature \
                             \must specify a structure, not a functor"
-        | STRmod RS => LAMBDA(T,RS)
+        | STRmod RS => 
+              (if (!currentCompliance) <> Liberal 
+		   then Synchk.compliantSigExp sigexp 
+	       else ();
+	       LAMBDA(T,RS))
       end);
 
 fun elabToplevelSpec (spec : Spec) =
     (resetBindingLevel();
-     elabSpec (mkGlobalME()) (mkGlobalFE()) 
-              (mkGlobalGE()) [] 
-	      (mkGlobalVE()) (mkGlobalTE()) 
-	      (* ps: true *) false spec);
+     let val StrSig = 
+	 elabSpec (mkGlobalME()) (mkGlobalFE()) 
+	          (mkGlobalGE()) [] 
+		  (mkGlobalVE()) (mkGlobalTE()) 
+                   (* ps: true *) false spec
+     in  
+	 if (!currentCompliance) <> Liberal 
+	     then Synchk.compliantTopSpec spec
+	 else ();
+	 StrSig
+     end )
+;
+
+fun elabSigSpec (spec : Spec) =
+    (resetBindingLevel();
+     let val StrSig = 
+	 elabSpec (mkGlobalME()) (mkGlobalFE()) 
+	          (mkGlobalGE()) [] 
+		  (mkGlobalVE()) (mkGlobalTE()) 
+                   (* ps: true *) false spec
+     in  
+	 if (!currentCompliance) <> Liberal 
+	     then Synchk.compliantSpec spec
+	 else ();
+	 StrSig
+     end )
+;
+
 
 
 (* tie the knot *)

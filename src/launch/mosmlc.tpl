@@ -5,7 +5,7 @@ mosmlbin=BINDIR
 
 linkalso=true
 includes=""
-compopt=""
+compopt="-conservative"
 linkopt=""
 custom=""
 linkfiles=""
@@ -88,6 +88,8 @@ while : ; do
     -imptypes)
       compopt="$compopt $1";;
     -valuepoly)
+      compopt="$compopt $1";;
+    -orthodox|-conservative|-liberal)
       compopt="$compopt $1";;
     -files)
       linkfiles="$linkfiles $1 $2"

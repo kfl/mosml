@@ -306,4 +306,21 @@ datatype Mode = STRmode | TOPDECmode
 val currentMode = ref STRmode
 ;
 
+(* vanilla SML compliance levels *)
+
+datatype Compliance = 
+    Orthodox (* SML only, reject extensions *)
+  | Conservative (* warn of any extensions *)
+  | Liberal (* anything goes *);
+
+val currentCompliance = ref Liberal; (* cvr: TODO should be liberal *)
+
+
    
+
+
+
+
+
+
+

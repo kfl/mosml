@@ -105,3 +105,13 @@ datatype Mode = STRmode | TOPDECmode
 ;
 val currentMode : Mode ref
 ;
+
+(* vanilla SML compliance levels *)
+
+datatype Compliance = 
+    Orthodox (* SML only, reject extensions *)
+  | Conservative (* warn of any extensions *)
+  | Liberal (* anything goes *);
+
+val currentCompliance : Compliance ref;
+

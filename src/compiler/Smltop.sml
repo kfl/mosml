@@ -273,6 +273,9 @@ val smltop_con_basis =
   ("system", { qualid={qual="Meta", id=["system"]},
                info=PRIMname (mkPrimInfo 1 (MLPccall(1, "sml_system"))) }),
   ("quit",   { qualid={qual="Meta", id=["quit"]},    info=VARname REGULARo}),
+  ("orthodox",   { qualid={qual="Meta", id=["orthodox"]},    info=VARname REGULARo}),
+  ("conservative",   { qualid={qual="Meta", id=["conservative"]},    info=VARname REGULARo}),
+  ("liberal",   { qualid={qual="Meta", id=["liberal"]},    info=VARname REGULARo}),
   ("installPP",
              { qualid={qual="Meta", id=["installPP"]}, info=VARname OVL1TPUo})
 ];
@@ -288,8 +291,8 @@ val smltop_VE =
    ("compileStructure",trivial_scheme(type_arrow (type_list type_string)
 				                (type_arrow type_string 
 						            type_unit))),
-   ("compileToplevel",trivial_scheme(type_arrow (type_list type_string)
-				                (type_arrow type_string 
+   ("compileToplevel",trivial_scheme(type_arrow (type_list type_string)	
+   	                                        (type_arrow type_string
 						            type_unit))),
    ("verbose",     trivial_scheme(type_ref type_bool)),
    ("quietdec",    trivial_scheme(type_ref type_bool)),
@@ -301,6 +304,9 @@ val smltop_VE =
    ("printLength", trivial_scheme(type_ref type_int)),
    ("system",      trivial_scheme(type_arrow type_string type_int)),
    ("quit",        trivial_scheme(type_arrow type_unit type_unit)),
+   ("orthodox",    trivial_scheme(type_arrow type_unit type_unit)),
+   ("conservative",trivial_scheme(type_arrow type_unit type_unit)),
+   ("liberal",     trivial_scheme(type_arrow type_unit type_unit)),
    ("installPP",    sc_bogus)  
 ];
 
@@ -335,6 +341,9 @@ fun resetSMLTopDynEnv() =
     ("printDepth",  repr printDepth),
     ("printLength", repr printLength),
     ("quit",        repr (fn () => (msgFlush(); BasicIO.exit 0))),
+    ("orthodox",    repr (fn () => (currentCompliance := Orthodox))),
+    ("conservative",repr (fn () => (currentCompliance := Conservative))),
+    ("liberal",     repr (fn () => (currentCompliance := Liberal))),
     ("installPP",   repr evalInstallPP)
 ];
 

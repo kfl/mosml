@@ -2,7 +2,7 @@
 
 # This works with bash
 
-MOSML=mosml
+MOSML=mosml -liberal
 
 # with the supplied compiler
 all:

@@ -378,10 +378,10 @@ fun compileSigExp sigexp =
   end
 ;
 
-fun compileSpecPhrase spec =
+fun compileSpecPhrase elab spec =
   let 
       val (iBas,spec) = resolveToplevelSpec spec
-      val LAMBDA(T, S) = elabToplevelSpec spec
+      val LAMBDA(T, S) = elab spec
   in
     updateCurrentStaticT T;  
     extendCurrentStaticIBas iBas;
@@ -422,7 +422,7 @@ fun compileSignature context uname umode filename =
 	    | r as (ref (SOME RS)) => r := SOME (removeGEofRecStr RS)
       fun compileSig (AnonSig specs) = 
 	  (* cvr: TODO warn *)
-	  (app compileSpecPhrase specs;
+	  (app (compileSpecPhrase elabSigSpec) specs;
 	   (#uIdent(!currentSig)):= uname;
 	   Hasht.clear (iBasOfSig(!currentSig));
 	   Hasht.clear (sigEnvOfSig(!currentSig));
@@ -436,7 +436,7 @@ fun compileSignature context uname umode filename =
 	   Hasht.clear (sigEnvOfSig(!currentSig));
 	   removeGEofSig())
         | compileSig (TopSpecs specs) = 
-	   app compileSpecPhrase specs
+	   app (compileSpecPhrase elabToplevelSpec) specs
   in
        input_name   := source_name;
        input_stream := is;
@@ -489,21 +489,21 @@ fun compLamPhrase os state (RE, lams) =
     updateCurrentCompState (state, RE)
 );
 
-fun compResolvedDecPhrase os (iBas, dec) =
-  let val ExEnv = elabToplevelDec dec in
+fun compResolvedDecPhrase os elab (iBas, dec) =
+  let val ExEnv = elab dec in
     resolveOvlDec dec;
     commit_free_typevar_names (); (* cvr: will never be rolled-back *)
     compLamPhrase os (iBas, ExEnv) (translateToplevelDec dec)
   end
 ;
 
-fun compileImplPhrase os dec =
+fun compileImplPhrase os elab dec =
   let val (iBas,resdec) = resolveToplevelDec dec in
-      compResolvedDecPhrase os (iBas,resdec)
+      compResolvedDecPhrase os elab (iBas,resdec)
   end
 ;
 
-fun compileAndEmit context uname uident umode filename specSig_opt decs =
+fun compileAndEmit context uname uident umode filename specSig_opt elab decs =
   let
     val filename_ui  = filename ^ ".ui"
     val filename_uo  = filename ^ ".uo"
@@ -520,7 +520,7 @@ fun compileAndEmit context uname uident umode filename specSig_opt decs =
     val os = open_out_bin filename_uo
   in
     ( start_emit_phrase os;
-      app (compileImplPhrase os) decs;
+      app (compileImplPhrase os elab) decs;
       (case umode of 
 	 STRmode =>      
 	     (Hasht.clear (iBasOfSig(!currentSig));
@@ -569,17 +569,17 @@ fun compileUnitBody context uname umode filename =
 	  if file_exists filename_sig then
 	      (hasSpecifiedSignature := true;
 	       checkExists filename_ui filename_sig filename_sml;
-	       compileAndEmit context uname uname umode filename (SOME (readSig uname)) decs)
+	       compileAndEmit context uname uname umode filename (SOME (readSig uname)) elabStrDec decs)
 	  else 
 	      (hasSpecifiedSignature := false;
 	       remove_file filename_ui;
-	       compileAndEmit context uname uname umode filename NONE decs)
+	       compileAndEmit context uname uname umode filename NONE elabStrDec decs)
 	| compileStruct (NamedStruct{locstrid as (_,strid), locsigid = NONE, decs}) =
 	  (checkUnitId "structure" locstrid uname;
 	   checkNotExists filename_sig filename_sml;
 	   hasSpecifiedSignature := false;
 	   remove_file filename_ui;
-	   compileAndEmit context uname strid umode filename NONE decs)
+	   compileAndEmit context uname strid umode filename NONE elabStrDec decs)
 	 (* cvr: TODO remove locsigid field from NamedStruct *)
 	| compileStruct (NamedStruct _) = fatalError "compileUnitBody"
 	| compileStruct (Abstraction{locstrid as (_,strid), locsigid, decs}) =
@@ -587,17 +587,17 @@ fun compileUnitBody context uname umode filename =
 	   checkUnitId "signature" locsigid uname;
 	   checkExists filename_ui filename_sig filename_sml;
 	   hasSpecifiedSignature := true;
-	   compileAndEmit context uname strid umode filename (SOME (readSig uname)) decs
+	   compileAndEmit context uname strid umode filename (SOME (readSig uname)) elabStrDec decs
 )
 	| compileStruct (TopDecs decs) = 
 	  if file_exists filename_sig then
 	      (hasSpecifiedSignature := true;
 	       checkExists filename_ui filename_sig filename_sml;
-	       compileAndEmit context uname "" umode  filename (SOME (readSig uname)) decs)
+	       compileAndEmit context uname "" umode  filename (SOME (readSig uname)) elabToplevelDec decs)
 	  else 
 	      (hasSpecifiedSignature := false;
 	       remove_file filename_ui;
-	       compileAndEmit context uname "" umode filename NONE decs)
+	       compileAndEmit context uname "" umode filename NONE elabToplevelDec decs)
   in
       input_name := filename_sml;
       input_stream := is;

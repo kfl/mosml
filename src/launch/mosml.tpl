@@ -3,7 +3,7 @@
 stdlib=LIBDIR
 mosmlbin=BINDIR
 includes=""
-options=""
+options="-conservative"
 
 while : ; do
   case $1 in
@@ -26,6 +26,9 @@ while : ; do
       ;;
     -valuepoly)
       options="$options -valuepoly"
+      ;;
+    -orthodox|-conservative|-liberal)
+      options="$options $1"
       ;;
     -stdlib)
       stdlib=$2

@@ -105,6 +105,9 @@ fun someUnitSupport () =
 fun fullUnitSupport () =
   unitSupport := FULLunitsupport;
 
+fun orthodox () = currentCompliance := Orthodox;
+fun conservative () = currentCompliance := Conservative;
+fun liberal () = currentCompliance := Liberal;
 
 fun main () =
 (
@@ -121,6 +124,8 @@ fun main () =
     toplevel := true;
     (* Choose the default (value polymorphism or imperative types) here: *)
     value_polymorphism := true;
+    (* Choose the default SML compliance checks here *)
+    currentCompliance := Liberal;
     Arg.parse [("-stdlib",    Arg.String set_stdlib),
                ("-I",         Arg.String add_include),
                ("-include",   Arg.String add_include),
@@ -134,7 +139,10 @@ fun main () =
                ("-m",         Arg.String set_msgstyle),
 	       ("-units",  Arg.Unit fullUnitSupport),
 	       ("-nounits",  Arg.Unit noUnitSupport),
-	       ("-warnunits",  Arg.Unit someUnitSupport)
+	       ("-warnunits",  Arg.Unit someUnitSupport),
+	       ("-orthodox",  Arg.Unit orthodox),
+	       ("-conservative",  Arg.Unit conservative),
+	       ("-liberal",  Arg.Unit liberal)
 	       ]
       anonymous;
     if !path_library <> "" then

@@ -129,6 +129,11 @@ fun topdec_mode () =
 fun str_mode () =
   initialMode := STRmode;
 
+fun orthodox () = currentCompliance := Orthodox;
+fun conservative () = currentCompliance := Conservative;
+fun liberal () = currentCompliance := Liberal;
+
+
 fun main () =
 (
   perv_set "default";
@@ -136,6 +141,8 @@ fun main () =
   toplevel := true;
   (* Choose the default (value polymorphism or imperative types) here: *)
   value_polymorphism := true;
+  (* Choose the default SML compliance checks here *)
+  currentCompliance := Liberal;
   Arg.parse [("-stdlib",    Arg.String set_stdlib),
              ("-I",         Arg.String add_include),
              ("-include",   Arg.String add_include),
@@ -155,7 +162,10 @@ fun main () =
              ("-nounits",  Arg.Unit noUnitSupport),
              ("-warnunits",  Arg.Unit someUnitSupport),
              ("-structure",  Arg.Unit str_mode),
-             ("-toplevel",  Arg.Unit topdec_mode)
+             ("-toplevel",  Arg.Unit topdec_mode),
+             ("-orthodox",  Arg.Unit orthodox),
+             ("-conservative",  Arg.Unit conservative),
+             ("-liberal",  Arg.Unit liberal)
              ]
     anonymous;
   if !path_library <> "" then
