@@ -1030,8 +1030,8 @@ and trModExp (env as (rho,depth)) (_, (modexp,r)) =
 		       Llet([trModExp env funmodexp,
 			     trConstrainedModExp (rho,depth+ 1) modexp (normMod M)],
 		             Lapply(Lvar 1, [Lvar 0]))                                        
-		       end
-	 | _ => fatalError "trModExp:2"))
+		       end)
+	 | _ => fatalError "trModExp:2")
   | (PARmodexp modexp,SOME _) => trModExp env modexp
 (* cvr: unsafe version that works but doesn't check for definedness
   | (RECmodexp((_,strid),ref (SOME RS'),sigexp,modexp),
