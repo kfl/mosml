@@ -1,4 +1,4 @@
-				     Ken Friis Larsen 31/3, 1/4 - 2000
+				Ken Friis Larsen 31/3, 1/4, 2/4 - 2000
 
 Note about the PM prototype
 ---------------------------
@@ -10,15 +10,18 @@ Note about the PM prototype
   PMCompile.compile "sources.pm"
 
 * Everything managed by pm is compiled with the command
-	mosmlc -c -toplevel context1 context2 ... contextn file
-  where file is a .sml file and context1 ... contextn are .ui files.
+	mosmlc -c -toplevel context1 ... contextM file1 ... fileN
+  where file1 to fileN are .sml files and context1 to contextM are .ui
+  files.  (This is the general case in compileBodyOpt, in compileBody
+  N=1.  I thought compileBodyOpt would gain some speed but that does
+  not seem to be the case)
 
 * PMCompile.compilePM returns the context obtained from a pmfile
   data structure.
 
 * All filenames are transformed to be fullpath'ed
 
-* changed made to the kit 
+* Changes made to the kit 
   + Parsing/Topdec.grm.sig renamed to Parsing/Topdec.grm.sig.sml (also
     in Common/common.pm) 
   + Lots of "IO." commented out in Common/Flags.sml 
@@ -40,6 +43,37 @@ Note about the PM prototype
     Manager.sml}
   + Changed IO.Io to Io in Manager/{IntModules.sml,ParserElab.sml,
     Manager.sml}
-  + Changed Int.toString status to "0" on line 128 in
+  + Changed `Int.toString status' to `"0"' on line 128 in
     Manager/ManagerObjects.sml
-  +
+  + Renamed Edlib/List.uo Edlib/edList.uo
+  + Renamed Edlib/ListPair.uo Edlib/edListPair.uo
+  + Renamed Common/BasicIO.sml Common/comBasicIO.sml
+  
+  Most of these errors can be boiled down to:
+  + Mosml's basic library should be updated now that nested structures
+    are allowed. For the Kit especially the OS structure sould be
+    extended, and the Io exception should be in the IO structure.
+  + The order of constructures in datatype declarations matters. 
+  + We need a way to rename a compilation unit
+
+
+* After I have implemented the findFiles functions, I realize that the
+  Right Way to handle the pm files is to build a graph representation
+  from them.  This will also make it easy to check that the pm files
+  don't contains cycles (we just check that the graph is a DAG).
+
+
+TODO ( - : not implemented, + : implemented, * : droped ) 
+  - Implement compilation unit renaming when mosmlc supports it
+  - Figure out how to handle .sig files
+  - Reimplement using graph data structure
+  - Implement smart recompilation.  That is, don't recompile if the
+    context and the .u? files are up to date. (This might also be
+    easier, if we had a graph.  But on the other hand HOlmake seems to
+    do fine without one)
+  - Make everything robust wrt missing files, syntax errors in pm
+    files, etc.
+  - Testing, testing, testing.  Lots of test done in the interactive
+    environment, and the kit seems to be a good test case but still it
+    would be nice with some systematic test files so as we can track
+    when and how we break pm.
