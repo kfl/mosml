@@ -210,6 +210,22 @@ val printLength = ref 200;
 fun prVal (depth: int) (prior: int) (tau: Type) (v: obj) =
   let fun prP s = if prior > 0 then msgString s else ()
       fun prD f = if depth <= 0 then msgString "#" else f()
+(* cvr: post 144 merge *)
+      and prExn (e : obj) =			(* e : exn *)
+	  decode_exn (repr e)
+	             (fn q => (prP " "; printVQ q))
+	             (fn q => fn va => fn tyOpt =>
+		              (prP "(";
+			       printVQ q; msgString " ";
+			       (case tyOpt of 
+				    NONE    => prGeneric va
+				  | SOME ty => prVal (depth-1) 1 ty va); 
+			       prP ")" ))
+      fun prettyprint printer pp_out v =
+	  printer pp_out v
+	  handle e => (msgString "<installed prettyprinter failed: "; 
+		       prExn (repr e); msgString ">")
+(* cvr: post 144 merge *)
       val tau = normType tau
   in
     case tau of
@@ -322,7 +338,8 @@ fun prVal (depth: int) (prior: int) (tau: Type) (v: obj) =
             (case tyapp of
 		 NAMEtyapp tyname =>
 		     (case findInstalledPrinter tyname of
-			  SOME printer => printer pp_out v
+(* cvr: post 144 merge    SOME printer => printer pp_out v *)
+			  SOME printer => prettyprint printer pp_out v 
 			| NONE =>
 				if (isEqTN tyname tyname_int) then (prP " "; prInt v)
 				else if (isEqTN tyname tyname_word)   
@@ -335,6 +352,7 @@ fun prVal (depth: int) (prior: int) (tau: Type) (v: obj) =
 					 then (prP " "; prReal v)
 				else if (isEqTN tyname tyname_string)
 					 then (prP " "; prString v)
+(* cvr: post 144 merge
 			        else if (isEqTN tyname tyname_exn) then
 				    decode_exn v
 				    (fn q =>
@@ -347,6 +365,9 @@ fun prVal (depth: int) (prior: int) (tau: Type) (v: obj) =
 					 | SOME ty => prVal (depth-1) 1 ty va); 
 					   prP ")"))
 			        else if (isEqTN tyname tyname_ref) then
+*)
+   			        else if (isEqTN tyname tyname_exn) then prExn v
+				else if (isEqTN tyname tyname_ref) then
 				    let val t = hd ts
 					val x = obj_field v 0
 				    in
@@ -374,7 +395,9 @@ fun prVal (depth: int) (prior: int) (tau: Type) (v: obj) =
              ( if (case tyapp of 
 		       NAMEtyapp tyname =>
 			 (case findInstalledPrinter tyname of
-			       SOME printer => (printer pp_out v;true)
+(* cvr: post 144 merge         SOME printer => (printer pp_out v;true)  *)
+
+			       SOME printer => (prettyprint printer pp_out v;true) 
 			     | NONE => false)
 		      | _ => false)
 		then ()
@@ -596,8 +619,12 @@ fun evalPrint (sc : obj) (v : obj) =
 
 fun evalInstallPP (sc : obj) (p : ppstream -> 'a -> unit) =
   case normType(specialization (magic_obj sc : TypeScheme)) of
-(* cvr: TODO 
-      CONt([], tyname) =>
+      CONt([], NAMEtyapp tyname) =>
+	  installedPrinters :=
+	  (tyname, magic p : ppstream -> obj -> unit)
+	  :: !installedPrinters
+(*
+      CONt([], NAMEtyapp tyname) =>
         (case #tnStr(! (#info tyname)) of
              DATATYPEts _ =>
                installedPrinters :=
@@ -610,7 +637,7 @@ fun evalInstallPP (sc : obj) (p : ppstream -> 'a -> unit) =
            | _ =>
               raise Fail "installPP: pp's argument is not a nullary type constructor")
 *)
-     CONt(_ :: _, tyname) =>
+    |  CONt(_ :: _, tyname) =>
         raise Fail "installPP: pp's argument type is not a nullary type constructor"
     | _ =>
         raise Fail "installPP: pp's argument type is not a type constructor"
