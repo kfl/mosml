@@ -1,4 +1,4 @@
-% mosmlref.tex v. 1.44.3 Copyright (C) Peter Sestoft 1994, 1999-08-08
+% mosmlref.tex v. 2.00.0 Copyright (C) Peter Sestoft 1994, 2000-06-14
 %
 % You may edit for lay-out, or leave out irrelevant sections (if
 % such omissions are marked somehow), but you may not redistribute the
@@ -12,7 +12,7 @@
 \nonstopmode
 \usepackage{alltt}
 
-\usepackage{isolatin1,notesart,a4wide,pslatex}
+\usepackage{isolatin1,mosml,a4wide,pslatex}
 \usepackage[T1]{fontenc}
 
 % \documentstyle[A4,fleqn,notesart]{article}
@@ -98,7 +98,7 @@ the compliance level may be set interactively using the functions
 abstype  and  andalso  as  case  do  datatype  else  end eqtype exception  fn  fun  functor 
 handle  if  in  include  infix  infixr  let  local  nonfix  of  op  open  orelse  raise  rec  
 sharing  sig  signature  struct  structure  then  type  val  where  with  withtype  while  
-(  )  [  ]  {  }  ,  :  :>  ;  ...    _  |  =  =>  ->  #
+(  )  [  ]  \{  \}  ,  :  :>  ;  ...    _  |  =  =>  ->  #
 \end{alltt}}
 
 
@@ -276,14 +276,14 @@ several classes of identifiers:
  to a structure or functor identifier during type checking, using
  the optional keyword \op\ to resolve any remaining ambiguities.
  See the comments at the end of Section \ref{sec-modules}.
-
-\item Any occurrence of a structure identifier {\it strid\/} that is not
-bound in the current context refers to the unit implementation {\tt unitid.uo\/}
-of the same name (ie. {\tt unitid} = {\it strid}).  At
-compile time, the unit's compiled interface {\tt unitid.ui\/} must exist
-and have been compiled in \emph{structure} mode.  At link time, the
-unit's compiled implementation {\tt unitid.uo\/} must exist and have
-been compiled in \emph{structure} mode.
+ 
+\item Any occurrence of a structure identifier {\it strid\/} that is
+  not bound in the current context refers to the unit implementation
+  {\tt unitid.uo\/} of the same name (ie. {\tt unitid} = {\it strid}).
+  At compile time, the unit's compiled interface {\tt unitid.ui\/}
+  must exist and have been compiled in \emph{structure} mode.  At link
+  time, the unit's compiled implementation {\tt unitid.uo\/} must
+  exist and have been compiled in \emph{structure} mode.
 
 \item Any occurrence of a signature identifier {\it sigid\/} that is not
 bound in the current context refers to the compiled unit interface
@@ -364,14 +364,13 @@ right-associative operators of the same precedence.
 
 \item Moscow ML phrases that are non-compliant 
       extensions of Standard ML syntax are
-      marked with an \x\ in the margin, eg:
-
-\item Moscow ML phrases that are non-compliant 
-      generalisations of Standard ML syntax,
-      but have instances that comply with Standard ML, are 
-      marked with an \x[$N$]\ in the margin, where
-      $N$ refers to an explanatory comment that appears in
-      Section \ref{sec-SMLrestrictions}.
+      marked with an asterisk (\x) in the margin.
+      
+    \item Moscow ML phrases that are non-compliant generalisations of
+      Standard ML syntax, but have instances that comply with Standard
+      ML, are marked with an an asterisk and a number (\x[$N$]) in the
+      margin, where $N$ refers to an explanatory comment that appears
+      in Section \ref{sec-SMLrestrictions}.
 \end{itemize}
 
 \newpage
@@ -379,7 +378,7 @@ right-associative operators of the same precedence.
 \section{Grammar for the Moscow ML Core language}
 \label{sec-grammar-core}
 
-\subsubsection*{Expressions and matches}
+\subsubsection*{Expressions and Matches}
 
 \begin{tabular}{@{}lllll}
 {\it exp\/} & ::= & {\it infexp\/}\\
@@ -592,7 +591,7 @@ declaration
 \end{quot}
 
 \noindent This convention applies to interactive sessions only.  In a
-batch-compiled unit, write {\tt val it = {\tt exp}} or {\tt val \verb#_# =
+batch-compiled unit, write {\tt val it = {\tt exp}}\\ or {\tt val \verb#_# =
   {\it exp\/}} etc.
 
 \newpage
@@ -603,7 +602,7 @@ batch-compiled unit, write {\tt val it = {\tt exp}} or {\tt val \verb#_# =
 
 The Moscow ML Modules language is a superset of the full Standard ML Modules language.
 
-\subsubsection*{Module Expressions}
+\subsubsection*{Module expressions}
 
 \begin{tabular}{@{}lllll}
 {\it modexp\/} & ::= & {\it appmodexp\/}\\
@@ -623,7 +622,7 @@ The Moscow ML Modules language is a superset of the full Standard ML Modules lan
 & & {\tt ( {\it modexp\/} )} \\
 \end{tabular}
 
-\subsubsection*{Module Bindings}
+\subsubsection*{Module bindings}
 
 \begin{tabular}{@{}lllll}
 {\it strbind\/} & ::= & {\tt {\it strid\/} \la\ {\it con} \ra\ = {\it modexp} \la\ and {\it strbind} \ra} 
@@ -644,14 +643,14 @@ The Moscow ML Modules language is a superset of the full Standard ML Modules lan
 & signature binding\\[2ex]
 
 {\it con\/} & ::= & {\tt :} {\it sigexp} & transparent constraint \\
-	    &     & {\tt :>} {\it sigexp} & opaque constraint \\
+            &     & {\tt :>} {\it sigexp} & opaque constraint \\
 
 {\it arg\/} & ::= & {\tt ( {\it modid\/} :\ {\it sigexp} )} & argument of generative functor \\
-	    &     & {\tt  {\it modid\/} :\ {\it sigexp} } & argument of applicative functor & \x \\\
+            &     & {\tt  {\it modid\/} :\ {\it sigexp} } & argument of applicative functor & \x \\\
 
 \end{tabular}
 
-\subsubsection*{Signature Expressions}
+\subsubsection*{Signature expressions}
 
 \begin{tabular}{@{}lllll}
 {\it sigexp\/} & ::= & {\tt sig {\it spec\/} end}& basic\\
@@ -683,7 +682,7 @@ The Moscow ML Modules language is a superset of the full Standard ML Modules lan
 & & {\tt structure} {\it strdesc}        & structure\\
 & & {\tt functor} {\it fundesc}        & functor & \x \\
 & & {\tt signature} {\it sigbind}        & signature & \x \\
-& & {\tt include} {\it sigid\/}\et\ $\cdots$\ {\it strid\/}\n	& include,
+& & {\tt include} {\it sigid\/}\et\ $\cdots$\ {\it strid\/}\n   & include,
  $n \geq 1$ \\
 & & {\tt local} {\it lspec} {\tt in} {\it spec} {\tt end}
                                         & local specifications & \x\\
@@ -753,7 +752,7 @@ The Moscow ML Modules language is a superset of the full Standard ML Modules lan
  \opop\ \longmodid\ is constrained by a signature
  then the signature 
  forces a unique interpretation 
- on \longmodid\ (depending on whether the signature specificies a structure or functor).
+ on \longmodid\ (depending on whether the signature specifies a structure or functor).
  Similarly, if \opop\ \longmodid\ occurs as the argument of a functor application,
  then the functor's domain forces a unique interpretation 
  on \longmodid.
@@ -860,48 +859,54 @@ The syntax and semantics of a unit's interface and implementation
 files depends on the mode and is described in the following sections.
 
 
-\subsection{Syntax and Semantics for Units Compiled in \emph{Structure} Mode}
+\subsection{Syntax and semantics for units compiled in \emph{structure} mode}
 
-In \emph{structure} mode, the unit interface file {\tt unitid.sig}, if present, must contain 
-a single Moscow ML signature declaration binding the signature {\tt unitid};
-the unit implementation file {\tt unitid.sml} must contain a single Moscow ML structure declaration,
-binding the structure {\tt unitid}.
-The unit interface may be omitted.
+In \emph{structure} mode, the unit interface file {\tt unitid.sig}, if
+present, must contain a single Moscow ML signature declaration binding
+the signature {\tt unitid}; the unit implementation file {\tt
+  unitid.sml} must contain a single Moscow ML structure declaration,
+binding the structure {\tt unitid}.  The unit interface may be
+omitted.
 
-With the batch compiler {\tt mosmlc}, the files {\tt unitid.sig} and {\tt unitid.sml} are compiled in \emph{structure} mode if their filenames are preceded by the command line argument {\tt -structure}, eg:
-
-\begin{alltt}
-mosmlc -structure unitid.sig unitid.sml 
-\end{alltt}
-
-Since \emph{structure} mode is the default compilation mode, the {\tt -structure} option
-may also be omitted:
+With the batch compiler {\tt mosmlc}, the files {\tt unitid.sig} and
+{\tt unitid.sml} are compiled in \emph{structure} mode if their
+filenames are preceded by the command line argument {\tt -structure},
+eg:
 
 \begin{alltt}
-mosmlc unitid.sig unitid.sml 
+   mosmlc -structure unitid.sig unitid.sml 
 \end{alltt}
 
-In the interactive system, a unit interface or implementation may
-be compiled in structure mode using the functions {\tt compile} 
-and {\tt compileStructure}.
+\noindent Since \emph{structure} mode is the default compilation
+mode, the {\tt -structure} option may also be omitted:
+
+\begin{alltt}
+   mosmlc unitid.sig unitid.sml 
+\end{alltt}
+
+\noindent 
+In the interactive system, a unit interface or implementation may be
+compiled in structure mode using the functions {\tt compile} and {\tt
+  compileStructure}.  
 
 The semantics of
+
 \begin{alltt}
-- compileStructure ["unitid\et",\allttcdots,"unitid\n"] "unitid.sig";(* if unitid.sig exists *) 
-- compileStructure ["unitid\et",\allttcdots,"unitid\n"] "unitid.sml";
-- load "unitid";
+   - compileStructure ["unitid\et",\allttcdots,"unitid\n"] "unitid.sig";(* if unitid.sig exists *) 
+   - compileStructure ["unitid\et",\allttcdots,"unitid\n"] "unitid.sml";
+   - load "unitid";
 \end{alltt}
-is roughly equivalent to
+\noindent is roughly equivalent to that of
 \begin{alltt}
-- load "unitid\et";
-\allttcdots
-- load "unitid\n";
-- use "unitid.sig"; (* if unitid.sig exists *)
-- use "unitid.sml";
+   - load "unitid\et";
+   \allttcdots
+   - load "unitid\n";
+   - use "unitid.sig"; (* if unitid.sig exists *)
+   - use "unitid.sml";
 \end{alltt}
 
 
-\subsubsection*{Unit Implementation (in file {\tt unitid.sml})}
+\subsubsection*{Structure-mode unit implementation (in file {\tt unitid.sml})}
 
 \begin{tabular}{lllll}
 {\it unitimp\/} & ::= 
@@ -936,7 +941,7 @@ is roughly equivalent to
   1$\\[2ex]
 \end{tabular}
 
-\subsubsection*{Unit Interface (in file {\tt unitid.sig})}
+\subsubsection*{Structure-mode unit interface (in file {\tt unitid.sig})}
 
 \begin{tabular}{lllll}
 {\it unitint\/} & ::= 
@@ -1002,46 +1007,51 @@ and are not exported in the interface.
 
 \end{itemize}
 
-\subsection{Syntax and Semantics for Units Compiled in \emph{Toplevel} Mode}
+\subsection{Syntax and semantics for units compiled in \emph{toplevel} mode}
 
-In \emph{toplevel} mode, the unit interface in file {\tt unitid.sig}, if present,
-must be a Moscow ML specification (which may itself be a sequence of specifications);
-the unit implementation in file {\tt unitid.sml} must be a Moscow ML declaration (which may itself be
-a sequence of declarations).
-The unit interface may be omitted.
+In \emph{toplevel} mode, the unit interface in file {\tt unitid.sig},
+if present, must be a Moscow ML specification (which may itself be a
+sequence of specifications); the unit implementation in file {\tt
+  unitid.sml} must be a Moscow ML declaration (which may itself be a
+sequence of declarations).  The unit interface may be omitted.
 
-With the batch compiler {\tt mosmlc},
-the files {\tt unitid.sig} and {\tt unitid.sml} are compiled in \emph{toplevel} mode only if their filenames are preceded by the command line argument {\tt -toplevel}.
+With the batch compiler {\tt mosmlc}, the files {\tt unitid.sig} and
+{\tt unitid.sml} are compiled in \emph{toplevel} mode only if their
+filenames are preceded by the command line argument {\tt -toplevel}.
 
 \begin{alltt}
-mosmlc -toplevel unitid.sig unitid.sml
+   mosmlc -toplevel unitid.sig unitid.sml
 \end{alltt}
 
-In the interactive system, a unit interface or implementation may
-be compiled in \emph{toplevel} mode using the function
-{\tt compileToplevel}.
+\noindent 
+In the interactive system, a unit interface or implementation may be
+compiled in \emph{toplevel} mode using the function {\tt
+  compileToplevel}.
 
 The semantics of
 \begin{alltt}
-- compileToplevel ["unitid\et",\allttcdots,"unitid\n"] "unitid.sig"; (* if unitid.sig exists *) 
-- compileToplevel ["unitid\et",\allttcdots,"unitid\n"] "unitid.sml";
-- load "unitid";
-\end{alltt}
-is roughly equivalent to
-\begin{alltt}
-- load "unitid\et";
-\allttcdots
-- load "unitid\n";
-- use "unitid.sml";
+   - compileToplevel ["unitid\et",\allttcdots,"unitid\n"] "unitid.sig"; (* if unitid.sig exists *) 
+   - compileToplevel ["unitid\et",\allttcdots,"unitid\n"] "unitid.sml";
+   - load "unitid";
 \end{alltt}
 
-\subsubsection*{Unit Implementation (in file {\tt unitid.sml})}
+\noindent is roughly equivalent to
+
+\begin{alltt}
+   - load "unitid\et";
+   \allttcdots
+   - load "unitid\n";
+   - use "unitid.sml";
+\end{alltt}
+
+
+\subsubsection*{Toplevel-mode unit implementation (in file {\tt unitid.sml})}
 
 \begin{tabular}{llll}
 {\it unitimp\/} & ::= & {\it dec\/} & declaration \\
 \end{tabular}
 
-\subsubsection*{Unit Interface (in file {\tt unitid.sig})}
+\subsubsection*{Toplevel-mode unit interface (in file {\tt unitid.sig})}
 
 \begin{tabular}{lllll}
 {\it unitint\/} & ::=   & {\it spec\/} & specification \\
@@ -1079,7 +1089,7 @@ are required to ensure compliance with Standard ML.
   {\tt let}-expression.
 
 \item\label{closure} 
-  In any {\it typbind\/}, {\it datbind\/}, {\it datdesc} or {it typreal},
+  In any {\it typbind\/}, {\it datbind\/}, {\it datdesc} or {\it typreal},
   any {\it tyvar\/} occurring within the right side
   must occur in the {\it tyvarseq\/} of the left side. 
 
@@ -1094,12 +1104,12 @@ are required to ensure compliance with Standard ML.
   \end{tabular}
 
   The parenthesised structure expressions {\tt ( {\it modexp\/} )} and
-  {\tt( {\it dec\/} )}, although otherwise illegal, are legal 
+  {\tt( {\it dec\/} )}, although otherwise illegal in SML, are legal 
   when occurring as a functor argument.
 
  \item\label{funbind} 
-  A functor binding must define a one-argument, generative functor 
-  and be of the form:
+  A functor binding must define a one-argument, generative functor, 
+  and must have the form:
 
   \begin{tabular}{l}
   {\tt {\it funid\/}  ( {\it modid\/} :\ {\it sigexp} )  \la\ {\it con\/} \ra\ =        {\it modexp}}\\
@@ -1171,8 +1181,8 @@ word8       & Bytes (8 bit)           &  yes & {\tt 0w241}, {\tt
 \subsection*{Built-in exception constructors}
 
 \begin{verbatim}
-          Bind  Chr  Domain  Div  Fail  Graphic_failure Interrupt  
-          Io  Match  Option  Ord  Overflow  Size  Subscript  
+          Bind  Chr  Domain  Div  Fail  Graphic  Interrupt  Io
+          Match  Option  Ord  Overflow  Size  Subscript  SysErr
 \end{verbatim}
 
 \newpage
@@ -1384,25 +1394,25 @@ verbose        & {\tt bool ref}   & permit feedback from {\tt
 \end{itemize}
 
 \newpage
-\section{List of all library units}
+\section{List of all library modules}
 
-A table of Mosml ML's predefined library units is given on
-page~\pageref{table-predefined-units}.  The status of each unit is
+A table of Mosml ML's predefined library modules is given on
+page~\pageref{table-predefined-units}.  The status of each module is
 indicated as follows:
 
 \begin{center}
 \begin{tabular}{lcl}
-{\tt S} & : & the unit belongs to the SML Basis Library.\\
+{\tt S} & : & the module belongs to the SML Basis Library.\\
 
-{\tt D} & : & the unit is preloaded by default.\\
+{\tt D} & : & the module is preloaded by default.\\
 
-{\tt F} & : & the unit is loaded when option {\tt -P full}
+{\tt F} & : & the module is loaded when option {\tt -P full}
   is specified.\\
 
-{\tt N} & : &  the unit is loaded when option {\tt -P nj93}
+{\tt N} & : &  the module is loaded when option {\tt -P nj93}
   is specified.\\
 
-{\tt O} & : & the unit is loaded when option {\tt -P sml90}
+{\tt O} & : & the module is loaded when option {\tt -P sml90}
   is specified.
 \end{tabular}
 \end{center}
@@ -1412,17 +1422,17 @@ indicated as follows:
 \begin{itemize}
 %\item The index in Section~\ref{sec-libindex}
 %  (page~\pageref{sec-libindex}) lists all identifiers defined in
-%  Moscow ML library units.
+%  Moscow ML library modules.
 
 \item Typing {\tt help "lib";} in a {\tt mosml} session gives a list of
-  all library units.
+  all library modules.
 
-\item Typing {\tt help "{\it unit\/}";} in a {\tt mosml} session gives
-  information about library unit {\it unit\/}.
+\item Typing {\tt help "{\it module\/}";} in a {\tt mosml} session gives
+  information about library module {\it module\/}.
 
 \item Typing {\tt help "{\it id\/}";} in a {\tt mosml} session gives
   information about identifier {\it id\/}, regardless which library
-  unit(s) it is defined in.
+  module(s) it is defined in.
 
 \item In your Moscow ML installation, consult the library documentation 
 (in printable format):
@@ -1449,9 +1459,9 @@ indicated as follows:
 \end{itemize}
 
 
-\begin{center}\renewcommand{\arraystretch}{0.88}
+\begin{center}\small\renewcommand{\arraystretch}{0.9}
 \begin{tabular}{@{}|lll|}\hline
-Library unit & Description & Status\\\hline
+Library module & Description & Status\\\hline
 {\tt Array}  & Mutable polymorphic arrays & {\tt SDF}\\
 {\tt Array2} & Two-dimensional arrays & {\tt S }\\
 {\tt Arraysort} &  Array sorting (quicksort) & \\
@@ -1468,10 +1478,10 @@ Library unit & Description & Status\\\hline
 {\tt CommandLine} & Program name and arguments & {\tt S F}\\
 {\tt Date}   & From time points to dates and vice versa& {\tt S F}\\
 {\tt Dynarray} & Dynamic arrays & \\
-{\tt Dynlib}  & Dynamic linking with C (Linux+Solaris)  & \\
+{\tt Dynlib}  & Dynamic linking with C & \\
 {\tt FileSys} & File system interface & {\tt S F}\\
 {\tt Gdbm}    & Persistent hash tables of strings (GNU gdbm) & \\
-{\tt Gdimage} & Generation of GIF images (Boutell's GD package) & \\
+{\tt Gdimage} & Generation of PNG images (Boutell's GD package) & \\
 {\tt General} & Various top-level primitives & {\tt SD}\\
 {\tt Help} & On-line help & {\tt \ DFNO}\\
 {\tt Int} & Integer arithmetic and comparisons & {\tt S F}\\
@@ -1485,6 +1495,8 @@ Library unit & Description & Status\\\hline
 {\tt Meta}   & Functions specific to the interactive system &\\
 {\tt Mosml}  & Various Moscow ML utilities & {\tt \ \ F}\\
 {\tt Mosmlcgi}  & Utilities for writing CGI programs & \\
+{\tt Mosmlcookie}  & manipulating cookies in CGI programs & \\
+{\tt Msp}    & Utilities for efficiently generating HTML code & \\
 {\tt Mysql}  & Interface to the MySQL database server & \\
 {\tt NJ93}   & Top-level compatibility with SML/NJ 0.93 & {\tt \ \ \ N}\\
 {\tt OS}     & Operating system interface & {\tt S F}\\
@@ -1498,6 +1510,7 @@ Library unit & Description & Status\\\hline
 {\tt Random} & Generation of pseudo-random numbers & \\
 {\tt Real}   & Real arithmetic and comparisons & {\tt S F}\\
 {\tt Regex}  & Regular expressions as in POSIX 1003.2 & \\
+{\tt Signal}   & Unix signals & {\tt S}\\
 {\tt SML90}    & Top-level compatibility with 1990 Definition & {\tt S\
   \ \ O}\\
 {\tt Socket} & Interface to sockets & \\
@@ -1509,6 +1522,7 @@ Library unit & Description & Status\\\hline
 {\tt TextIO} & Text input-output streams (imperative) & {\tt SDF}\\
 {\tt Time}   & Time points and durations & {\tt S F}\\
 {\tt Timer}  & Timing operations & {\tt S F}\\
+{\tt Unix}   & Starting concurrent subprocesses under Unix & {\tt S}\\
 {\tt Vector} & Immutable vectors & {\tt SDF}\\
 {\tt Weak}   & Arrays of weak pointers & \\
 {\tt Word}   & Unsigned 31-bit integers (`machine words') & {\tt S F}\\
@@ -1523,7 +1537,7 @@ Library unit & Description & Status\\\hline
 
 \newpage
 
-\section{The preloaded library units}
+\section{The preloaded library modules}
 
 The following libraries are preloaded by default: {\tt Array}, {\tt
   Char}, {\tt List}, {\tt String}, {\tt TextIO}, and {\tt Vector}.  To
@@ -1544,7 +1558,7 @@ $xs, ys$ & lists\\\hline
 \end{center}
 
 
-\subsection*{List manipulation functions (unit {\tt List})}
+\subsection*{List manipulation functions (module {\tt List})}
 
 \begin{tabular}{@{\tt\ \ }lll}\hline
 {\it id\/}  &  type &     effect \\\hline
@@ -1602,14 +1616,14 @@ tl          & {\tt 'a list -> 'a list}
 %   raise exception {\tt Subscript}.
 
 \item For a more detailed description, type {\tt help "List";} or see
-  file {\tt mosml/lib/List.sig}.  The {\tt List} unit is loaded and
+  file {\tt mosml/lib/List.sig}.  The {\tt List} module is loaded and
   partially opened in the initial environment, making the following
   functions available: {\tt @}, {\tt app}, {\tt foldl}, {\tt foldr},
   {\tt hd}, {\tt length}, {\tt map}, {\tt null}, {\tt rev}, {\tt tl}.
 \end{itemize}
 
 
-\subsection*{Built-in values and functions for text-mode input/output (unit
+\subsection*{Built-in values and functions for text-mode input/output (module
   {\tt TextIO})}
 
 \begin{tabular}{@{\tt\ \ }lll}\hline
@@ -1670,7 +1684,7 @@ stdOut       & {\tt outstream}
 \end{itemize}
 
 
-\subsection*{String manipulation functions (unit {\tt String})}
+\subsection*{String manipulation functions (module {\tt String})}
 
 \noindent\begin{tabular}{@{\tt\ \ }lll}\hline
 {\it id\/}  &  type &     effect \\\hline
@@ -1739,7 +1753,7 @@ and concatenate\\\hline
 \end{itemize}
 
 
-\subsection*{Vector manipulation functions (unit {\tt Vector})}
+\subsection*{Vector manipulation functions (module {\tt Vector})}
 
 Type {\tt 'a vector} is the type of one-dimensional, immutable,
 zero-based constant time access vectors with elements of type {\tt
@@ -1800,7 +1814,7 @@ tabulate    & {\tt int * (int -> 'a) -> 'a vector}
 \end{itemize}
 
 
-\subsection*{Array manipulation functions (unit {\tt Array})}
+\subsection*{Array manipulation functions (module {\tt Array})}
 
 Type {\tt 'a array} is the type of one-dimensional, mutable,
 zero-based constant time access arrays with elements of type {\tt 'a}.
@@ -1872,12 +1886,12 @@ update      & {\tt 'a array * int * 'a -> unit}
 %     extract}, and {\tt copy} may raise {\tt Subscript}.
 
 \item For a more detailed description, type {\tt help "Array";} or see
-  file {\tt mosml/lib/Array.sig}.  The {\tt Array} unit is loaded but
+  file {\tt mosml/lib/Array.sig}.  The {\tt Array} module is loaded but
   not opened in the initial environment.
 \end{itemize}
 
 
-\subsection*{Character manipulation functions (unit {\tt Char})}
+\subsection*{Character manipulation functions (module {\tt Char})}
 
 \begin{tabular}{@{\tt\ \ }llll}\hline
 {\it id\/}  & type &     effect & exception \\\hline
@@ -1917,7 +1931,7 @@ toUpper    & {\tt char -> char} & convert to upper case (ASCII) \\\hline
     <=}, {\tt >}, {\tt >=} work on the {\tt char} type.
 
 \item For a more detailed description, type {\tt help "Char";} or see
-  file {\tt mosml/lib/Char.sig}.  The {\tt Char} unit is loaded and
+  file {\tt mosml/lib/Char.sig}.  The {\tt Char} module is loaded and
   partially opened in the initial environment, making the functions
   {\tt chr} and {\tt ord} available.
 \end{itemize}
@@ -1949,11 +1963,3 @@ toUpper    & {\tt char -> char} & convert to upper case (ASCII) \\\hline
 %\end{itemize}
 %
 \end{document}
-
-
-
-
-
-
-
-

@@ -1,0 +1,109 @@
+% File ``mosml.sty'' --- old macroes for lecture notes
+% Updated 1992-07-03, ..., 2000-06-14
+
+% NEWCOMMANDS
+
+\newcommand{\com}{\newcommand}
+\newcommand{\rcom}{\renewcommand}
+
+%  No leaders in contents list 
+\def\@dotsep{200}
+
+% Going into math mode when possibly already there:
+\def\mymath#1{\relax\ifmmode{#1}\else${#1}$\fi}
+
+% Going out of math mode when possibly not there:
+\def\mynomath#1{\relax\ifmmode{\mathchoice%
+{\hbox{#1}}%
+{\hbox{#1}}%
+{\hbox{\scriptsize{#1}}}%
+{\hbox{\tiny{#1}}}%
+}\else{\mbox{#1}}\fi}
+
+%  Spacing between items in list removed (stolen from ph.sty)
+%
+\def\@listI{\leftmargin\leftmargini \parsep 0pt plus 1pt%
+\topsep 10pt plus 4pt minus 6pt%
+\itemsep 0pt plus 1pt}
+\def\@listii{\leftmargin\leftmarginii
+ \labelwidth\leftmarginii\advance\labelwidth-\labelsep
+ \topsep 4.5pt plus 2pt minus 1pt
+ \parsep 0pt plus 1pt
+ \itemsep \parsep}
+
+% Environment for displaying material.  Indents the same amount as
+% displaymath, equations, etc.
+
+\newenvironment{quot}{\begin{list}{{}}{
+	\setlength{\partopsep}{0mm}\setlength{\topsep}{3mm}
+\setlength{\leftmargin}{\mathindent}\setlength{\rightmargin}{0mm}}
+\item[]}{\end{list}} 
+
+% Super, Subscript
+
+\com{\sub}[1]{\mymath{_{#1}}}
+\rcom{\sup}[1]{\mymath{^{#1}}}
+\com{\n}{\mymath{_n}}
+\com{\m}{\mymath{_m}}
+\com{\et}{\mymath{_1}}
+\com{\nul}{\mymath{_0}}
+\rcom{\to}{\mymath{_2}}
+\com{\tre}{\mymath{_3}}
+\com{\p}{\mymath{'}}
+\com{\mkset}[1]{\{#1\}}
+
+% Program texts -----------------------------------------
+
+\newcommand{\programenvironment}{\programmode%
+	\def\par{\leavevmode\endgraf}\obeylines\nobreak%
+	\programmode}
+\newcommand{\programinfig}{%
+	 \parindent 0em
+	 \nobreak\programenvironment}
+\newcommand{\programmode}{\small\tt%
+	\catcode`\_=12 \catcode`\?=12 \catcode`\.=12 \catcode`\,=12
+	\catcode`\;=12 \catcode`\:=12 \catcode`\@=12 \catcode`\~=12
+        \catcode`\#=12 \catcode`\&=12      % Added by PS 1991-06-17
+        \catcode`\^=12                     % Added by PS 1992-11-03
+	\obeyspaces\frenchspacing}%
+
+\newenvironment{programintext}{\programenvironment}{}
+
+\newlength{\programwidth}
+
+\newenvironment{program}{%
+        \setlength{\programwidth}{\textwidth}
+        \addtolength{\programwidth}{-\leftmargin}
+        \setlength{\partopsep}{0mm}\setlength{\topsep}{0mm}
+	\begin{trivlist}\item[]
+        \addtolength{\programwidth}{-\mathindent}
+	\hspace*{\mathindent}\begin{minipage}{\programwidth}
+	\vspace{1mm}
+	\begin{programintext}
+	}{\end{programintext}
+	\vspace{1mm}
+	\end{minipage}
+	\end{trivlist}
+	\noindent}
+
+% The following is an environment for listing (long) programs in
+% appendices etc., by PS 1991-06-17
+
+\com{\separatingline}{\noindent\rule[0.5\baselineskip]{\linewidth}{0.3mm}}
+
+\newenvironment{longprogram}{%
+	\vspace{\baselineskip}
+	\separatingline
+	\programenvironment
+	\setlength{\baselineskip}{0.8\baselineskip}
+        }{%
+	\separatingline}
+
+% What the following code does is not clear.  Maybe it makes Tex
+% respect spaces and tabs in the source text, which is useful for
+% program layout.
+
+{\catcode`\^^I=\active \obeyspaces\global\def^^I{ }}
+{\obeyspaces\global\let =\ } % let active space = control space
+{\catcode`\`=\active \gdef`{\relax\lq}}
+

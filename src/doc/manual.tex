@@ -6,7 +6,7 @@
 
 \documentclass[fleqn]{article}
 
-\usepackage{a4,isolatin1,notesart,a4wide,pslatex}
+\usepackage{a4,isolatin1,mosml,a4wide,pslatex}
 \usepackage[T1]{fontenc}
 
 %\pdfcompresslevel=9
@@ -50,14 +50,6 @@ ML syntax and the most common built-in functions
 the \emph{Moscow ML Library Documentation}, describes in detail all
 Moscow ML library structures \cite{MoscowML:2000:MoscowMLLibrary}. 
 
-{\bf Acknowledgements:} The Caml Light system was instrumental in
-creating Moscow ML, which uses its runtime system and essentially the
-same bytecode generator.  Many other aspects of the design were
-derived from Caml Light, developed by Xavier Leroy and Damien Doligez
-at INRIA, France \cite{Leroy:1990:TheZinc,Leroy:1993:TheCaml}.  The ML
-Kit helped solving problems of parsing, infix resolution, and type
-inference \cite{Birkedal:1993:TheML}.
-
 \vfill
 
 \begin{center}
@@ -82,8 +74,9 @@ Get a copy of the Moscow ML system executables (see
 Section~\ref{sec-how-to-get} for instructions) and unpack them in your
 home directory (under Unix) or in directory \verb#C:\# (under MS
 Windows and DOS)\@.  This creates a directory {\tt mosml}.  Read the
-file {\tt mosml/install.txt}.  This manual, and the {\em Moscow ML
-  Language Overview\/}, are in directory {\tt mosml/doc}.
+file {\tt mosml/install.txt}.  This manual, as well as the {\em Moscow
+  ML Language Overview\/} and the \emph{Moscow ML Library
+  Documentation}, are in directory {\tt mosml/doc}.
 
 
 \subsection{The interactive system}
@@ -99,7 +92,6 @@ Enter `quit();' to quit.
 > val fac = fn : int -> int
 -  fac 10;
 > val it = 3628800 : int
--
 \end{program}
 
 \noindent You can quit the interactive session by typing `{\tt
@@ -119,33 +111,33 @@ manner similar to C compilers.  See Section~\ref{sec-batch-compiler}
 for further information on {\tt mosmlc}.
 
 
-\subsection{A simple module system}
+\subsection{The Moscow ML Modules language}
 
-Moscow ML provides a simple subset of the Standard ML Modules
-language, restricted to signatures and non-nested structures.  A
-Moscow ML program consists of one or more units.  A unit U has a
-signature (or interface) in file U.sig and a body (or implementation)
-in file U.sml.  The unit signature corresponds to a Standard ML
-signature, and the unit body corresponds to a Standard ML structure.
-Moscow ML supports type-safe separate compilation and linking.
-Section~\ref{sec-compilation-units} gives the syntax and an informal
-semantics of compilation units.  Section~\ref{sec-recompilation-guide}
-explains automatic recompilation management.
+The Moscow ML Modules language is a conservative extension of the
+Standard ML Modules language, so that any Standard ML program can be
+compiled with Moscow ML 2.00, using toplevel-mode compilation; see
+Section~\ref{sec-toplevel-mode}.
+
+Moreover, the Moscow ML Modules language is backwards compatible with
+Moscow ML versions 1.44 and before, so that any existing Moscow ML
+program can be compiled with Moscow ML 2.00, using structure-mode
+compilation; see Section~\ref{sec-structure-mode}.
 
 
 \subsection{What is new in release 2.00}
 
 \begin{itemize}
-\item The full SML Modules language (structures, signatures, and
-  functors) is now supported, thanks to Claudio Russo.
-\item Several extensions to the SML Modules language are provided,
-  thanks to Claudio Russo:
+\item The Moscow ML Modules language (designed and implemented by
+  Claudio Russo) includes the full Standard ML Modules language
+  (structures, signatures, and functors):
+\item The Moscow ML Modules language extends the Standard ML Modules
+  language in three respects:
   \begin{itemize}
   \item higher-order functors: functors may be defined within
     structures and functors; see Section~\ref{sec-ho-modules}
   \item first-class modules: structures may be packed and then handled
     as Core language values, which may then be unpacked to structures
-    again; see Section~\ref{sec-ho-modules}
+    again; see Section~\ref{sec-firstclass-modules}
   \item recursive modules: signatures and structures may be
     recursively defined; see Section~\ref{sec-rec-modules}
   \end{itemize}
@@ -162,6 +154,10 @@ explains automatic recompilation management.
   \texttt{Mosmlcookie}, thanks to Hans Molin, Uppsala, Sweden.
 \item The \texttt{Gdimage} structure now produces PNG images (using
   Thomas Boutell's gd library).
+\item Internal changes: restrictions on datatype constructor ordering
+  have been removed; the runtime system and bytecode format now
+  accommodate much larger programs; the representation of exceptions
+  has been simplified; literals are now shared inside topdecs; etc.
 \end{itemize}
 
 % \subsection{What is new in release 1.44}
@@ -283,7 +279,7 @@ explains automatic recompilation management.
 %\item The standard syntax for signatures and non-nested structures may
 %  be used in unit signatures and bodies; this improves portability
 %  between Moscow ML and SML/NJ\@.  See
-%  Section~\ref{sec-compilation-units}.
+%  Section~\ref{sec-old-compilation-units}.
 %\end{itemize}
 
 
@@ -313,7 +309,6 @@ explains automatic recompilation management.
 %\item Quotations and antiquotations are supported.
 %\end{itemize}
 
-\newpage
 
 \section{Overview and documentation}
 
@@ -340,7 +335,7 @@ functional stream input-output operations.  The Standard ML Basis
 Library is a joint effort of the Standard ML of New Jersey, MLWorks,
 and Moscow ML developers\footnote{The Basis Library authors are Andrew
   Appel (Princeton, USA); Emden Gansner (AT\&T Research, USA); John
-  Reppy, Lal George, Lorenz Huelsbergen, Dave MacQueen (Bell
+  Reppy, Lal George, Lorenz Huelsbergen, Dave MacQueen (Lucent Bell
   Laboratories, USA); Matthew Arcus, Dave Berry, Richard Brooksby,
   Nick Barnes, Brian Monahan, Jon Thackray (Harlequin Ltd., Cambridge,
   England); Carsten M{\"u}ller (Berlin, Germany); and Peter Sestoft
@@ -351,9 +346,9 @@ The Apple Macintosh version of Moscow ML is described in detail in
 \emph{Moscow ML for the Apple Macintosh}
 \cite{Currie:1999:MoscowMLMac}.
 
-%\newpage
+\newpage
 
-\section{The interactive system}
+\section{The interactive system: mosml}
 \label{sec-interactive-system}
 
 The interactive system {\tt mosml} is invoked simply by typing {\tt
@@ -448,6 +443,13 @@ lines.
 \label{sec-mosml-options}
 
 \begin{description}
+\item[{\tt -conservative}]\mbox{ }
+  
+  Sets conservative mode for compilation of subsequent units: accept
+  all extensions to the SML Modules language, but issue a warning for
+  each use; see Section~\ref{sec-modules-extensions}.  This is the
+  default.
+
 \item[{\tt -I {\rm directory}}]\mbox{ }
 
   Specifies directories to be searched for interface files, bytecode
@@ -458,11 +460,6 @@ lines.
   (This option affects the variable {\tt Meta.loadPath}; see
   Section~\ref{sec-nonstandard-interactive}).
 
-\item[{\tt -valuepoly}]\mbox{ }
-
-  Specifies that the type checker should use `value polymorphism'; see
-  Section~\ref{sec-valuepoly}.  Default.
-
 \item[{\tt -imptypes}]\mbox{ }
 
   Specifies that the type checker should distinguish between
@@ -470,12 +467,18 @@ lines.
   applicative type variables, and generalize imperative type variables
   only in non-expansive expressions.  See Section~\ref{sec-valuepoly}.
 
-\item[{\tt -quietdec}]\mbox{ }
+\item[{\tt -liberal}]\mbox{ }
+  
+  Sets liberal mode for compilation of subsequent units: accept
+  without warnings all extensions to the SML Modules language; see
+  Section~\ref{sec-modules-extensions}.
 
-  Turns off the interactive system's prompt and responses, except for
-  the two-line start-up message, warnings, and error messages.  Useful
-  for writing scripts in SML\@.  Sets {\tt Meta.quietdec} to {\tt
-    true}; see Section~\ref{sec-nonstandard-interactive}.
+\item[{\tt -orthodox}]\mbox{ }
+  
+  Sets orthodox mode for the compilation of subsequent units: reject
+  all uses of the extensions to the SML Modules language.  That is,
+  accept only SML Modules syntax; see
+  Section~\ref{sec-modules-extensions}.
 
 \item[{\tt -P {\rm unit-set}}]\mbox{ }
 
@@ -519,7 +522,7 @@ lines.
       -imptypes}.
 
   \item[{\tt -P full}] This loads all the libraries marked {\tt F} in
-    the library list (see \cite{MoscowML:1999:MoscowMLLanguage}), and
+    the library list (see \cite{MoscowML:2000:MoscowMLLanguage}), and
   partially opens the {\tt Char}, {\tt List}, and {\tt String} units.
 
   \item[{\tt -P none}] No library units are loaded or opened initially.
@@ -528,12 +531,24 @@ lines.
   Additional library units can loaded into the interactive system by
   using the {\tt load} function; see
   Section~\ref{sec-nonstandard-interactive} below.
+
+\item[{\tt -quietdec}]\mbox{ }
+
+  Turns off the interactive system's prompt and responses, except for
+  the two-line start-up message, warnings, and error messages.  Useful
+  for writing scripts in SML\@.  Sets {\tt Meta.quietdec} to {\tt
+    true}; see Section~\ref{sec-nonstandard-interactive}.
   
 \item[{\tt -stdlib {\rm stdlib-directory}}]\mbox{ }
 
   Specify the standard library directory to be stdlib-directory.  The
   default standard library is usually {\tt mosml/lib} under Unix and
   \verb#c:\mosml\lib# under MS Windows and DOS.
+
+\item[{\tt -valuepoly}]\mbox{ }
+
+  Specifies that the type checker should use `value polymorphism'; see
+  Section~\ref{sec-valuepoly}.  Default.
 \end{description}
 
 
@@ -543,25 +558,28 @@ lines.
 The following non-standard primitives are defined in unit {\tt Meta},
 loaded (and open by default) only in the interactive system.  Hence
 these primitives cannot be used from source files which are compiled
-separately.  The functions {\tt compile} and {\tt load} deal with
-Moscow ML compilation units; see Section~\ref{sec-compilation-units}.
+separately.  The functions {\tt compile}, \texttt{compileStructure},
+\texttt{compileToplevel} and {\tt load} deal with Moscow ML
+compilation units; see Section~\ref{sec-compilation-units}.
 
 \begin{description}
 
 \item[{\tt compile :\ string -> unit}]\mbox{ }
-
+  
   Evaluating {\tt compile "{\rm U.sig}"} will compile and elaborate
-  the unit signature in file U.sig, producing a compiled signature
-  file U.ui.  During compilation, the compiled signatures of other
-  units will be accessed if they are mentioned in U.sig.
-
+  the specifications in file U.sig in structure mode, producing a
+  compiled signature U in file U.ui.  This function is backwards
+  compatible with Moscow ML 1.44 and earlier.  Equivalent to
+  \texttt{compileStructure [] "{\rm U.sig}"}.
+  
   Evaluating {\tt compile "{\rm U.sml}"} will elaborate and compile
-  the unit body in file U.sml, producing a bytecode file U.uo.  If
-  there is an explicit signature U.sig, then file U.ui must exist, and
-  the unit body must match the signature.  If there is no U.sig, then
-  an inferred signature file U.ui will be produced also.  No
-  evaluation takes place.  During compilation, the compiled signatures
-  of other units will be accessed if they are mentioned in U.sml.
+  the declarations in file U.sml in structure mode, producing a
+  compiled structure U in bytecode file U.uo.  If there is an explicit
+  signature U.sig, then file U.ui must exist, and the structure must
+  match the signature.  If there is no U.sig, then an inferred
+  signature will be produced in file U.ui.  No evaluation takes place.
+  This function is backwards compatible with Moscow ML 1.44 and
+  earlier.  Equivalent to \texttt{compileStructure [] "{\rm U.sml}"}.
 
   The declared identifiers will be reported if {\tt verbose} is {\tt
     true} (see below); otherwise compilation will be silent.  In any
@@ -570,8 +588,52 @@ Moscow ML compilation units; see Section~\ref{sec-compilation-units}.
     string argument.
 
 \item[{\tt compileStructure :\ string list -> string -> unit}]\mbox{ }
+  
+  Evaluating \texttt{compileStructure \textit{opnunits} "{\rm U.sig}"
+    } will elaborate and compile the specifications in file U.sig in
+  structure mode, producing a compiled signature U in file U.ui.  The
+  units listed in \textit{opnunits} are added to the compilation
+  context in which the specifications in U.sig are compiled.  
+  
+  Evaluating \texttt{compileStructure \textit{opnunits} "{\rm U.sml}"
+    } will elaborate and compile the declarations in file U.sig in
+  structure mode, producing a compiled structure U in bytecode file
+  U.uo.  The contents of the units listed in \textit{opnunits} are
+  added to the compilation context in which the declarations in U.sml
+  are compiled.  If there is an explicit signature U.sig, then file
+  U.ui must exist, and the structure must match the signature.  If
+  there is no U.sig, then an inferred signature will be produced in
+  file U.ui.  No evaluation takes place.
+
 
 \item[{\tt compileToplevel :\ string list -> string -> unit}]\mbox{ }
+  
+  Evaluating \texttt{compileToplevel \textit{opnunits} "{\rm U.sig}" }
+  will elaborate and compile the specifications in file U.sig in
+  toplevel mode, producing a compiled interface file U.ui.  The units
+  listed in \textit{opnunits} are added to the compilation context in
+  which the specifications in U.sig are compiled.
+  
+  Evaluating \texttt{compileStructure \textit{opnunits} "{\rm U.sml}"
+    } will elaborate and compile the declarations in file U.sig in
+  toplevel mode, producing a bytecode file U.uo.  The contents of the
+  units listed in \textit{opnunits} are added to the compilation
+  context in which the declarations in U.sml are compiled.  If there
+  is an explicit signature U.sig, then file U.ui must exist, and
+  declarations must match the interface.  If there is no U.sig, then
+  an inferred signature will be produced in file U.ui.  No evaluation
+  takes place.
+
+\item[{\tt conservative :\ unit -> unit}]\mbox{ }
+  
+  Evaluating \texttt{conservative ()} sets conservative mode for the
+  compilation functions: accept all extensions to the Modules
+  language, but issue a warning for each use; see
+  Section~\ref{sec-modules-extensions}.  The liberal, conservative,
+  and orthodox modes affect the functions \texttt{compile},
+  \texttt{compileStructure}, and \texttt{compileToplevel}.  The
+  conservative mode may be set also by the \texttt{mosml} option
+  \texttt{-conservative}.  Conservative mode is the default.
 
 \item[{\tt installPP :\ (ppstream -> 'a -> unit) -> unit}]\mbox{ }
 
@@ -584,6 +646,14 @@ Moscow ML compilation units; see Section~\ref{sec-compilation-units}.
     printVal} is invoked on an argument of type {\tt ty}, the
   prettyprinter $pp$ will be invoked to print it.  See the example in
   {\tt mosml/examples/pretty}.
+
+\item[{\tt liberal :\ unit -> unit}]\mbox{ }
+  
+  Evaluating \texttt{liberal ()} sets liberal mode for the compilation
+  functions: accept (without warnings) all extensions to the SML
+  Modules language; see Section~\ref{sec-modules-extensions}.  The
+  liberal mode may be set also by the \texttt{mosml} option
+  \texttt{-liberal}.
 
 \item[{\tt load :\ string -> unit}]\mbox{ }
 
@@ -631,6 +701,14 @@ Moscow ML compilation units; see Section~\ref{sec-compilation-units}.
   directory is in the list, but if additional directories are
   specified using option {\tt -I}, then these directories are
   prepended to {\tt Meta.loadPath}.
+
+\item[{\tt orthodox :\ unit -> unit}]\mbox{ }
+  
+  Evaluating \texttt{orthodox ()} sets orthodox mode for the
+  compilation functions: reject all uses of the extensions to the SML
+  Modules language; see Section~\ref{sec-modules-extensions}.  That
+  is, accept only SML Modules syntax.  The orthodox mode may be set
+  also by the \texttt{mosml} option \texttt{-orthodox}.
 
 \item[{\tt printVal :\ 'a -> 'a}]\mbox{ }
 
@@ -717,31 +795,134 @@ Moscow ML compilation units; see Section~\ref{sec-compilation-units}.
 \end{description}
 
 
-\section{Modules and compilation units}
+\newpage
+\section{Compilation units}
 \label{sec-compilation-units}
+
+Moscow ML programs can be split into several source files, so-called
+compilation units, or \emph{units} for short.  Compilation unit
+consists of an implementation file \texttt{unitid.sml} and an optional
+interface file \texttt{unitid.sig}.
+
+A compilation unit can be compiled in one of two modes: 
+
+\begin{itemize}
+\item \textbf{Structure mode:} File \texttt{unitid.sml} declares a
+  single Standard ML structure \texttt{unitid}, and file
+  \texttt{unitid.sig}, if present, declares an explicit signature
+  constraint for the structure.
+  
+  Structure-mode units are backwards compatible with Moscow ML version
+  1.20 through 1.44.
+  
+  When structure-mode units declare only non-nested structures, they
+  admit simple recompilation management using \texttt{mosmldep} and
+  makefiles; see Section~\ref{sec-recompilation-guide}.
+  
+  To compile a unit in structure mode, use the function
+  \texttt{compileStructure} (see
+  Section~\ref{sec-nonstandard-interactive}), or invoke the batch
+  compiler \texttt{mosmlc}, preceding the unit file name with option
+  \texttt{-structure} (see Section~\ref{sec-mosmlc-options}).
+
+  
+\item \textbf{Toplevel mode:} File \texttt{unitid.sml} contains a
+  Moscow ML declaration (which may itself be a sequence of
+  declarations), and file \texttt{unitid.sig}, if present, must be a
+  Moscow ML specification (which may itself be a sequence of
+  specifications).
+
+  Toplevel-mode units can contain arbitrary Moscow ML code.
+  
+  To compile a unit in toplevel mode, use the function
+  \texttt{compileToplevel} (see
+  Section~\ref{sec-nonstandard-interactive}), or invoke the batch
+  compiler \texttt{mosmlc}, preceding the unit file name with option
+  \texttt{-toplevel} (see Section~\ref{sec-mosmlc-options}).
+
+\end{itemize}
+
+\noindent 
+The implementation file and the interface file (if any) of a unit must
+be compiled in the same mode.  The precise syntax of Moscow ML units
+is given in the \emph{Moscow ML Language Overview}
+\cite{MoscowML:2000:MoscowMLLanguage}.
+
+
+\subsection{Compiling, linking, and loading units}
+
+Units can be compiled and linked using the batch compiler {\tt
+  mosmlc}; see Section~\ref{sec-batch-compiler}.  Units compiled with
+option {\tt -c} can be linked together.  Use {\tt mosml -o mosmlout
+  A.uo} to produce a linked executable bytecode file {\tt mosmlout}
+which will invoke the runtime system {\tt camlrunm}.  The linker will
+automatically link any required bytecode files into {\tt mosmlout}.
+See Section~\ref{sec-mosmlc-options} for more options.
+
+Units can also be compiled from and loaded into the interactive system
+{\tt mosml} using the primitives {\tt compile}, {\tt
+  compileStructure}, {\tt compileToplevel}, {\tt load}, and
+\texttt{loadOne}; see Section~\ref{sec-nonstandard-interactive} above.
+
+
+\subsection{Unit names and MS DOS/Windows/OS2 file names}
+
+In MS DOS, Windows, and OS/2, the file system may change the case of
+unit file names, and even truncate them (in MS DOS)\@.
+
+Under MS Windows, file names are not truly case sensitive.  Under MS
+DOS, filenames can be at most 8 characters long (plus a 3 character
+extension).  Since file names are used as unit names, this may cause
+problems.  We attempt to circumvent these problems as follows:
+
+\begin{itemize}
+\item Unit names used inside ML programs under MS DOS and MS Windows
+  are `normalized': the first character is made upper case (if it is a
+  letter), all other characters are made lower case, and (under MS DOS
+  only) the unit name is truncated to eight characters.  Hence a unit
+  which resides in file {\tt commands.sml} can be referred to as unit
+  {\tt Commands} inside an ML program.
+  
+\item The following names are exceptions to this rule: {\tt BasicIO},
+  {\tt BinIO}, {\tt CharArray}, {\tt CharVector},\\ {\tt CommandLine},
+  {\tt FileSys}, {\tt ListPair}, {\tt OS}, {\tt StringCvt}, {\tt
+    Substring}, {\tt TextIO}, {\tt Word8Array}, {\tt Word8Vector};
+  they are normalized precisely as shown in this list for
+  compatibility with the SML Basis Library.
+
+% \item In DOS makefiles, the file names appearing after {\tt all:}\
+%   must be all lower case and at most 8 characters long (otherwise
+%   `make' will not work properly).  For instance, the unit {\tt
+%     CharArray} must be called {\tt chararra} in a DOS makefile.
+  
+\item Under MS DOS (only), a unit name given as argument to e.g.\ {\tt
+    load} or {\tt compile}, or to the batch compiler, is truncated and
+  made lower case, so evaluating {\tt load "VeryLongName"} will load
+  bytecode file {\tt verylong.uo}.
+\end{itemize}
+
+
+\newpage
+\section{Structure-mode compilation units}
+\label{sec-structure-mode}
+
+This section describes the use of the (old) structure-mode compilation
+units, which are backwards compatible with Moscow ML versions 1.20
+through 1.44.
 
 
 \subsection{Basic concepts}
 
-A Moscow ML program can consist of one or more {\em compilation
-  units\/}, or {\em units\/} for short.  A compilation unit consists
-of an optional {\em unit signature\/} and a {\em unit body\/}.  The
-unit signature specifies the contents of the unit; it is an interface
-to the unit.  The unit body declares the contents of the unit; it
-provides an implementation of the unit.  The following analogies may
-be helpful:
+A structure-mode compilation unit consists of a {\em unit body}, in
+file unitid.sml, and an optional {\em unit signature}, in a file called
+unitid.sig\@.  The file unitid.sml must contain a single Moscow ML structure
+declaration, binding the or the must be declared in
 
-\begin{center}
-\begin{tabular}{@{}|l|ll|}\hline
-Moscow ML       & unit signature &      unit body\\
-Standard ML     & signature      &      structure\\
-Caml Light      & module interface &    module implementation\\
-Modula-2        & interface module &    implementation module\\\hline
-\end{tabular}
-\end{center}
 
-\noindent The unit body is always present, whereas the signature can
-be omitted.  When the unit signature is present, it is called the {\em
+The unit signature specifies the
+contents of the unit; it is an interface to the unit.  The unit body
+declares the contents of the unit; it provides an implementation of
+the unit.  When the unit signature is present, it is called the {\em
   explicit signature\/} to distinguish it from the signature inferred
 when elaborating the unit body.  When present, the explicit signature
 must be matched by the body, and only those identifiers specified in
@@ -749,28 +930,8 @@ the signature are visible outside the unit.  If no signature is given,
 all identifiers visible at the end of the unit body are visible
 outside the unit.
 
-Units are closely associated with files, as in Modula-2.  The body of
-the unit called `U' is defined in a file called `U.sml', and its
-explicit signature (if any) in file `U.sig'.
 
-\begin{center}
-  \begin{tabular}{ccc}
-\begin{tabular}{@{}|ll|}\hline
-\multicolumn{2}{|c|}{Files containing program text:}\\\hline
-\makebox[2cm][l]{U.sig} & unit signature, specifications\\
-U.sml & unit body, declarations\\\hline
-\end{tabular}
-& &
-\begin{tabular}{@{}|ll|}\hline
-\multicolumn{2}{|c|}{Files created by the compiler:}\\\hline
-U.ui & compiled unit signature \\
-U.uo & compiled unit body, bytecode\\\hline
-\end{tabular}
-  \end{tabular}
-\end{center}
-
-
-\subsection{Units without explicit signature}
+\subsection{Structure-mode units without explicit signature}
 \label{sec-units-without}
 
 A unit U without an explicit signature consists of a file U.sml
@@ -784,7 +945,7 @@ structure U = struct {\rm \ldots\ declarations\ \ldots} end
 There must be no corresponding explicit signature file U.sig.
 
 
-\subsection{Units with explicit signature}
+\subsection{Structure-mode units with explicit signature}
 \label{sec-units-with}
 
 A unit U with an explicit signature consists of a signature file
@@ -800,181 +961,17 @@ signature U = sig {\rm \ldots\ specifications\ \ldots} end
 structure U :> U = struct {\rm \ldots\ declarations\ \ldots} end
 \end{program}
 
-\noindent This is the same as a SML structure declaration with an
+\noindent This is the same as an SML structure declaration with an
 opaque signature constraint.  Note that the file name, signature name,
 and structure name must be the same.  The notation `{\tt U :> U}' is
 an opaque signature constraint, meaning that other units have no
 access to the internals of U.sml, only to the signature U.sig.
 
-To illustrate the difference between transparent and opaque signature
-constraints, consider the Standard ML (not Moscow ML) declarations:
 
-\begin{program}
-signature SIG = sig                     structure S: SIG = struct
-    type t                                  type t = int   
-    val x: t                                val x = 17     
-end;                                    end                             
-\end{program}
-
-\noindent Given these declarations, the expression {\tt S.x+33} will
-typecheck.  Although the signature {\tt SIG} just says that there
-exists a type {\tt t}, constraining {\tt S} with {\tt SIG} does not
-hide the fact that {\tt S.x} is actually an integer.
-
-On the other hand, an opaque signature constraint, as in Moscow ML
-units, {\em does\/} hide the true nature of {\tt t} and {\tt x}:
-
-\begin{program}
-structure M :> SIG = struct
-    type t = int
-    val x = 17
-end                             
-\end{program}
-
-\noindent After this declaration, {\tt M.x+33} would fail to
-typecheck: the type checker cannot see that {\tt M.t} is {\tt int} and
-{\tt M.x} is an integer.  Often such hiding is just what is needed for
-software engineering purposes.
-
-
-\subsection{Syntax of unit signatures}
-\label{sec-syntax-signatures}
-
-Moscow ML unit signatures are very similar to Standard ML signatures
-as defined in \cite{Milner:1997:TheDefinition}; the differences are
-explained below.  A unit signature (in file U.sig) has the form:
-
-\begin{quot}
-\begin{tabular}{@{}lcll}
-{\it unitsig\/} & ::= 
-  & {\tt signature} {\it unitid} {\tt = sig {\it uspec\/} end} 
-                                                & named signature \\
-& & {\it uspec\/}                               & signature (old syntax)\\[2ex]
-{\it uspec} & ::= & {\tt val} {\it valdesc}     & value specification\\
-& & {\tt type} {\it typdesc}                    & abstract type \\
-& & {\tt type} {\it typbind}            & type abbreviation \\
-& & {\tt eqtype} {\it typdesc}          & abstract equality type\\
-& & {\tt datatype} {\it datbind}        & datatype\\
-& & {\tt datatype} {\it datbind} {\tt withtype} {\it typbind\/} &
-                                         datatype with typbind\\
-& & {\tt exception} {\it exdesc}        & exception\\
-& & {\tt local} {\it lspec} {\tt in} {\it uspec} {\tt end}
-                                        & local specifications\\
-& &                                     & empty\\
-& & {\it uspec} $\langle${;}$\rangle$ {\it uspec}       & sequential 
-%\\
-%& & {\tt infix\ }  $\langle${\it d\/}$\rangle$ {\it id$_1$\/} $\cdots$\ 
-%                                             {\it id$_n$}
-%                                       & infix (L) directive\\
-%& & {\tt infixr} $\langle${\it d\/}$\rangle$ {\it id$_1$\/} $\cdots$\ 
-%                                             {\it id$_n$}
-%                                       & infix (R) directive\\
-%& & {\tt nonfix} {\it id$_1$\/} $\cdots$\ {\it id$_n$}
-%                                        & nonfix directive
-\\[2ex]
-
-{\it lspec} & ::= & {\tt open} {\it unitid$_1$\/} $\cdots$\ {\it
-  unitid$_n$\/}
-                                        & open other units\\
-& & {\tt type} {\it typbind}            & type abbreviation \\
-& & {\tt local} {\it lspec\/} {\tt in} {\it lspec} {\tt end}
-& local specifications\\
-& &                                             & empty\\
-& & {\it lspec\/} $\langle${;}$\rangle$ {\it lspec\/} & sequential\\
-\end{tabular}
-\end{quot}
-
-\noindent Note:
-
-\begin{enumerate}
-\item Type abbreviations {\tt type {\it typbind\/}} are permitted in
-  signatures.  
-
-\item There are no structure specifications and no sharing
-  specifications.
-
-\item No type, value, or exception may be specified twice at
-  top-level.
-
-\item A {\tt local} specification can be used only to restrict the
-  scope of {\tt open} specifications and type abbreviations.
-
-\item An {\tt open} specification can appear only inside {\tt local}.
-
-\item The `{\tt signature {\it unitid\/} = sig}' and `{\tt end}' parts
-  may be left out, although this is not recommended.
-\end{enumerate}
-
-\noindent Restriction (2) is the most significant one.  Restriction
-(3), and restrictions similar to (4) and (5), are imposed by the
-Standard ML of New Jersey implementation also.
-
-
-\subsection{Syntax of unit bodies}
-
-A unit body (in file U.sml) has the form:
-
-\begin{quot}
-\begin{tabular}{@{}llll}
-{\it unitbody\/} & ::= 
-  & {\tt structure} {\it unitid} {\tt = struct {\it dec\/} end} 
-                                                & structure \\
-& & {\tt structure {\it unitid\/} :> {\it unitid\/} = struct {\it dec\/} end}
-                                                & structure with
-                                                signature \\
-& & {\it dec\/}                                 & structure (old syntax)\\
-\end{tabular}
-\end{quot}
-
-\noindent A long identifier can refer to entities declared in other
-units.  In Moscow ML, the syntax of long identifiers is:
-
-\begin{quot}
-\begin{tabular}{@{}lcll}
-{\it longid\/} & ::= &   \makebox[2.5cm][l]{{\it id\/}}  & identifier\\
-               &     &   {\it unitid.id\/} & qualified identifier
-\end{tabular}
-\end{quot}
-
-\noindent where {\it unitid\/} and {\it id\/} are arbitrary SML
-identifiers (either symbolic or alphanumeric).
-
-A qualified identifier {\it unitid.id\/} denotes an entity {\it id\/}
-declared in the compilation unit {\it unitid\/}.  A qualified
-identifier can denote either a value variable, a value constructor, an
-exception constructor, or a type constructor.  As in Standard ML, a
-{\it longid\/} appearing in a defining position, such as a value
-variable in a pattern, cannot have a qualifier: the identifier being
-defined will always belong to the current unit.
-
-An {\tt open} declaration has the form
-
-\begin{program}
-open {\rm U}\sub{1} $\cdots$ {\rm U}\sub{n}
-\end{program}
-
-\noindent where U\sub{1} $\cdots$ U\sub{n} are names of units.  The
-units are opened from left to right, in the order U\sub{1} $\cdots$ 
-U\sub{n}.  The text following an {\tt open {\rm U}} declaration can
-reference identifiers declared in U without explicitly specifying the
-name of the unit, subject to the usual scope rules of Standard ML\@.
-That is, one can use {\it id\/} instead of U.{\it id\/}.
-
-In the interactive system, a unit must be loaded before it can be
-opened.  In the batch compilation system, the linker links in (only)
-the needed declarations from opened units.  
-
-A unit body U.sml must elaborate to a structure S\@.  If there is an
-explicit signature U.sig corresponding to U.sml, then the resulting
-structure must match the explicit signature.  As in Standard ML (but
-in contrast to Caml Light), no reference is made to the signature
-while elaborating the unit body.
-
-
-\subsection{An example program consisting of three units}
+\subsection{An example program consisting of three structure-mode units}
 \label{sec-example-units}
 
-To illustrate the module system, we present a tiny program working
+To illustrate structure-mode units, we present a tiny program working
 with arithmetic expressions.  It consists of three units {\tt Expr},
 {\tt Reduce}, and {\tt Evaluate}.  This example is in {\tt
   mosml/examples/manual}.
@@ -991,16 +988,6 @@ structure Expr = struct
     fun show (Cst n)         = makestring n
       | show (Neg e)         = "(-" ^ show e ^ ")"
       | show (Plus (e1, e2)) = "(" ^ show e1 ^ "+" ^ show e2 ^ ")"
-end
-\end{program}
-
-\noindent File {\tt Reduce.sig} below contains the signature {\tt
-  Reduce}, which specifies a function for reducing expressions.  It
-mentions the type {\tt Expr.expr} from {\tt Expr}:
-
-\begin{program}
-signature Reduce = sig
-    val reduce : Expr.expr -> Expr.expr
 end
 \end{program}
 
@@ -1056,143 +1043,98 @@ end
 \end{program}
 
 
-\subsection{Compiling, linking, and loading units}
+\subsection{Recompilation management for structure-mode programs}
+\label{sec-structure-mode-recompilation}
 
-Units can be compiled and linked using the batch compiler {\tt
-  mosmlc}; see Section~\ref{sec-batch-compiler}.  Units compiled with
-option {\tt -c} can be linked together.  Use {\tt mosml -o mosmlout
-  A.uo} to produce a linked executable bytecode file {\tt mosmlout}
-which will invoke the runtime system {\tt camlrunm}.  Use {\tt mosml
-  -noheader -o mosmlout A.uo} to produce a linked bytecode file which
-can be executed by {\tt camlrunm mosmlout}.  The linker will
-automatically link any required bytecode files into {\tt mosmlout}.
-See Section~\ref{sec-mosmlc-options} for more options.
+Recompilation management helps the programmer recompile only what is
+necessary after a change to a unit interface or unit implementation.  
 
-Units can also be compiled from and loaded into the interactive system
-{\tt mosml} using the primitives {\tt compile} and {\tt load}; see
-Section~\ref{sec-nonstandard-interactive} above.
+Type-safe linking prevents the programmer from creating unsafe or
+meaningless programs.  The {\tt load} function and the batch linker in
+Moscow ML ensure probabilistically type-safe linking, so it is
+virtually impossible to cause the system to create a type-unsafe
+program.
 
+Recompilation management for structure-mode units that declare only
+flat structures\footnote{For managing the recompilation of full
+  Standard ML programs, see Section~\ref{sec-program-manager}.} may be
+performed using the standard `make' tool in conjunction with the
+Moscow ML program \texttt{mosmldep}.
 
-\subsection{Organizing  programs for compatibility with SML Modules}
-\label{sec-compatible-modules}
-
-Moscow ML and Standard ML of New Jersey (version 110) implement the
-same core language, and many of the same libraries.  Here we give
-advice on organizing structures and signatures so that they can be
-compiled by both systems.
-
-Assume we have a software system consisting of three structures A, B,
-and C, where A and B each have a signature constraint, but C does not.
-Assume further that C depends on A and B\@.  (There must be no functors
-or nested structures in A and B).  We organize them in five files:
-
-\begin{quot}
-\begin{tabular}{|l|l|}\hline
-Source file & File contents\\\hline
-A.sig   & \tt signature A = sig \ldots\ end\\
-B.sig   & \tt signature B = sig \ldots\ end\\
-A.sml   & \tt structure A :> A = struct \ldots\ end\\
-B.sml   & \tt structure B :> B = struct \ldots\ end\\
-C.sml   & \tt structure C = struct \ldots\ A.foo \ldots\ B.bar \ldots\ end\\\hline
-\end{tabular}
-\end{quot}
-
-\noindent Now we can compile these files using {\tt mosmlc} and load
-them into a {\tt mosml} session as follows (where `\verb#$#' is the
-shell prompt and `\verb#-#' is the ML prompt):
-
-\begin{program}
-\$\ mosmlc -c A.sig B.sig A.sml B.sml C.sml
-\$\ mosml
-- load "C";
-\end{program}
-
-\noindent Or, we can load and compile them in an SML/NJ session as
-follows:
-
-\begin{program}
-\$\ sml
-- app use ["A.sig", "B.sig", "A.sml", "B.sml", "C.sml"];
-\end{program}
-
-\noindent Hence the same source files can be used unmodified in both
-systems.  Note that in Moscow ML, {\tt mosmlc} will create bytecode
-files A.ui, A.uo, and so on.  If the source files do not change, there
-is no need to recompile them with {\tt mosmlc}; just reload them using
-the fast {\tt load} function.
-
-If the source files {\em do\/} change, and have to be recompiled at
-every use, it may be more practical to use the function {\tt compile}:
-
-\begin{program}
-\$\ mosml
-- app compile ["A.sig", "B.sig", "A.sml", "B.sml", "C.sml"];
-- load "C";
-\end{program}
-
-
-\subsection{Matching a unit body against a signature}
-\label{sec-matching-body-signature}
-
-A unit body S matches a signature SIG under the conditions described
-in the Definition of Standard ML \cite{Milner:1997:TheDefinition}.
-Roughly, this means:
-
-\begin{itemize}
-\item a value specification {\tt val} {\it v:t\/} must be matched by a
-  value variable or value constructor or exception constructor {\it
-v\/} in S whose type generalizes {\it t\/}
- 
-\item a type abbreviation {\tt type} {\it t = ty\/} must be matched by
-  the same type abbreviation {\it t = ty\/} in S
-
-\item an abstract type {\it t\/} must be matched by some type {\it
-    t\/} in S
-
-\item an abstract equality type {\it t\/} must be matched by a type
-  {\it t\/} in S admitting equality
-
-\item a datatype must be matched by precisely the same datatype in S
-
-\item an exception constructor {\it E\/} of type {\it t\/}
-  must be matched by an exception constructor {\it E\/} in S whose
-type generalizes {\it t\/}
-\end{itemize}
-
-\noindent Moreover, to facilitate separate compilation, there are some
-representation constraints:
+Consider the example program in Section~\ref{sec-example-units}
+consisting of the three units Evaluate, Expr, and Reduce.  Assume
+their source files *.sig and *.sml reside in a particular directory.
+Copy the Makefile stub from \texttt{mosml/tools/Makefile.stub} to that
+directory, and change to that directory.
 
 \begin{enumerate}
-\item If the specified argument type of a value constructor (in a
-  datatype specification) is an explicit tuple or record, then the
-  declared argument type must be an explicit tuple or record also, and
-  vice versa.  This restriction does not apply if there is only one
-  constructor in the datatype.
+\item Edit the Makefile so that the names of the bytecode files
+  Evaluate.uo, Expr.uo, and Reduce.uo appear on the line beginning
+  with `{\tt all:}' (see the example makefile below).
 
-\item The order of value constructors in a datatype specification must
-  be the same as in the matching datatype declaration.
+\item Compute the dependencies among the files by executing:
+\begin{program}
+make depend
+\end{program}
+
+\item Recompile all those files which have not yet been compiled, or
+  which have been modified but not yet recompiled, or which depend on
+  modified files, by executing:
+        
+\begin{program}
+make    
+\end{program}
 \end{enumerate}
+
+\noindent Step (3) must be repeated whenever you have modified a
+component of the program system.  Step (2) need only be repeated if
+the inter-dependencies of some components change, or if you add or
+remove an explicit signature file.  Step (1) need only be repeated
+when you add or delete an entire unit of the program system.
+
+The compiled *.ui and *.uo files can be removed by executing:
+
+\begin{program}
+make clean  
+\end{program}
+
+\noindent The inter-dependencies are computed by the ML program
+{\tt mosmldep}, which can handle only structure-mode units, and only
+flat structures, neither functors nor nested structures.
+
+
+\section{Toplevel-mode units}
+\label{sec-toplevel-mode}
+
+Toplevel-mode ...
+
+
+\subsection{Toplevel-mode recompilation management: pm}
+\label{sec-program-manager}
+
 
 
 \newpage
 
-\section{The batch compiler}
+\section{The batch compiler and linker: mosmlc}
 \label{sec-batch-compiler}
 
-Moscow ML includes a batch compiler {\tt mosmlc} in addition to the
-interactive system {\tt mosml}.  It compiles and links programs
-non-interactively, and can turn them into standalone executable files.
-The batch compiler can be invoked from a Makefile, which simplifies
-the (re)compilation of large programs considerably; see
-Section~\ref{sec-recompilation-guide}.
+Moscow ML includes a batch compiler and linker {\tt mosmlc} in
+addition to the interactive system {\tt mosml}.  It compiles units and
+links programs, and can turn them into standalone executable bytecode
+files.  The batch compiler can be invoked from a Makefile, which
+simplifies the (re)compilation of large programs considerably; see
+Sections~\ref{sec-structure-mode-recompilation}
+and~\ref{sec-program-manager}.
 
 
 \subsection{Overview}
 
 The {\tt mosmlc} command has a command-line interface similar to that
 of most C compilers.  It accepts several types of arguments: source
-files for unit bodies, source files for unit signatures, and compiled
-unit bodies.
+files for unit interfaces, source files for unit implementations,
+compiled unit interfaces (which are added to the compilation context),
+and compiled unit bodies (which are added to the linked executable).
 
 \begin{itemize}
 \item An argument ending in .sig is taken to be the name of a source
@@ -1203,13 +1145,17 @@ unit bodies.
   file containing a unit body.  Given a file U.sml, the compiler
   produces compiled object code in the file U.uo.  It also produces an
   inferred signature file U.ui if there is no explicit signature U.sig.
-
+  
+\item An argument ending in .ui is taken to be the named of a
+  compilation unit interface.  The contents of that compilation unit
+  are added to the compilation context of the remaining source files.
+  
 \item An argument ending in .uo is taken to be the name of a compiled
-  unit body.  Such files are linked together, along with the compiled
-  unit bodies obtained by compiling .sml arguments (if any), and the
-  necessary Moscow ML library files, to produce a standalone
-  executable program.  
-
+  unit implementation.  Such files are linked together, along with the
+  compiled unit implementation obtained by compiling .sml arguments
+  (if any), and the necessary Moscow ML library files, to produce a
+  standalone executable program.
+  
   The linker automatically includes any additional bytecode files
   required by the files specified on the command line; option {\tt -i}
   makes it report all the files that were linked.  The linker issues a
@@ -1217,10 +1163,16 @@ unit bodies.
   precedes {\tt B} in the command line.  At run-time, the top-level
   declarations of the files are evaluated in the order in which the
   files were linked; in the absence of any warning, this is the order
-  of the files on the command line.
+  of the .uo and .sml files on the command line.
 \end{itemize}
 
-\noindent The output of the linking phase is a file containing
+\noindent 
+
+XXXXXXXX This corresponds to
+  invoking the batch compiler as follows: mosmlc -c U1.ui ... Un.ui
+  -structure U.sig where opnunits equals ["U1", ..., "Un"].XXXXXXXXX
+
+The output of the linking phase is a file containing
 compiled code that can be executed by the runtime system {\tt
   camlrunm}.  If {\tt mosmlout} is the name of the file produced by the
 linking phase, the command
@@ -1230,8 +1182,8 @@ camlrunm mosmlout arg\sub{1} arg\sub{2} \ldots\ arg\sub{n}
 \end{program}
 
 \noindent executes the compiled code contained in {\tt mosml.out}.
-The list of arguments can be obtained in Moscow ML by evaluating
-the expression {\tt CommandLine.arguments ()}.
+The list of arguments can be obtained in a program by evaluating the
+expression {\tt CommandLine.arguments ()}.
 
 \begin{description}
 \item[MS Windows and DOS:] If the output file produced by the linking
@@ -1247,7 +1199,7 @@ The output file {\tt mosmlout.exe} consists of a tiny executable file
 prepended to a linked bytecode file.  The executable invokes the {\tt
   camlrunm} runtime system to interpret the bytecode.  As a
 consequence, this is not a standalone executable: it still requires
-{\tt camlrunm.exe} to reside in one of the directories in the path.
+{\tt camlrt.dll} to be present in directory \verb+C:\mosml\bin+.
 
 \item[Unix:] The output file produced by the linking phase is directly
   executable (unless the {\tt -noheader} option is used).  It
@@ -1256,15 +1208,8 @@ consequence, this is not a standalone executable: it still requires
   using the Unix incantation \verb|#!/usr/local/bin/camlrunm| or
   similar.  In the former case, {\tt camlrunm} must be in one of the
   directories in the path; in the latter case it must be in {\tt
-    /usr/local/bin}.  To create a true stand-alone executable you may
-  simply concatenate the runtime system with the bytecode file
-  produced by {\tt mosmlc -noheader}, but this adds 60--150 KB to the
-  size of the executable, depending on your version of Unix:
-
-\begin{program}
-cat /usr/local/bin/camlrunm mosmlout > mosmlbin
-chmod a+x mosmlbin
-\end{program}
+    /usr/local/bin}.  To create a true stand-alone executable, use
+  \texttt{mosmlc} option \texttt{-standalone}.
 \end{description}
 
 
@@ -1280,6 +1225,13 @@ The following command-line options are recognized by {\tt mosmlc}.
   Source code files are turned into compiled files (.ui and .uo), but
   no executable file is produced.  This option is useful for compiling
   separate units.
+
+\item[{\tt -conservative}]\mbox{ }
+  
+  Sets conservative mode for compilation of subsequent units: accept
+  all extensions to the SML Modules language, but issue a warning for
+  each use; see Section~\ref{sec-modules-extensions}.  This is the
+  default.
 
 \item[{\tt -files {\rm response-file}}]\mbox{ }
 
@@ -1305,39 +1257,6 @@ The following command-line options are recognized by {\tt mosmlc}.
   to a file U.out, and subsequently editing this file to obtain a file
   U.sig.
 
-\item[{\tt -msgstyle \textrm{style}}]\mbox{ }
-  
-  By specifying \texttt{-msgstyle msdev}, one can make the compiler
-  generate error messages understandable by Microsoft Developer
-  Studio.  The default behaviour is to generate error messages
-  understandable the Emacs editor in SML mode.
-
-\item[{\tt -noautolink}]\mbox{ }
-
-  In version 1.42 and later, the linker automatically links in any
-  additional object files required by the files explicitly specified
-  on the command line.  Option {\tt -noautolink} reinstates the
-  behaviour of pre-1.42 versions: all object files must be explicitly
-  specified in the appropriate order.
-
-\item[{\tt -standalone}]\mbox{ }
-  
-  Unix: Specifies that the runtime system should be prepended to the
-  linked bytecode, thus creating a stand-alone executable.  This adds
-  75--100 KB to the size of the linked file.  MS Windows: This option
-  cannot be used.  All mosmlc-generated executables require the
-  dynamically linked library \texttt{camlrt.dll} to be present in the
-  directory \verb+C:\mosml\bin+.
-
-\item[{\tt -stdlib {\rm stdlib-directory}}]\mbox{ }
-
-  Specifies the standard library directory, which will be searched by
-  the compiler and linker for the .ui and .uo files corresponding to
-  units mentioned in the files being linked.  The default standard
-  library is set when the system is created, and is usually {\tt
-    \$\{HOME\}/mosml/lib} under Unix and \verb#c:\mosml\lib# under MS
-  Windows and DOS.
-
 \item[{\tt -I {\rm directory}}]\mbox{ }
 
   Add the given directory to the list of directories searched for
@@ -1349,11 +1268,6 @@ The following command-line options are recognized by {\tt mosmlc}.
   {\tt -I} options on the command line, these directories are searched
   from left to right.
 
-\item[{\tt -valuepoly}]\mbox{ }
-
-  Specify that the type checker should use `value polymorphism'; see
-  Section~\ref{sec-valuepoly}.  Default.
-
 \item[{\tt -imptypes}]\mbox{ }
 
   Specify that the type checker should distinguish imperative and
@@ -1361,12 +1275,46 @@ The following command-line options are recognized by {\tt mosmlc}.
   variables, and generalize imperative type variables only in
   non-expansive expressions.  See Section~\ref{sec-valuepoly}.
 
+\item[{\tt -liberal}]\mbox{ }
+  
+  Sets liberal mode for compilation of subsequent units: accept
+  without warnings all extensions to the SML Modules language; see
+  Section~\ref{sec-modules-extensions}.
+
+\item[{\tt -msgstyle \textrm{style}}]\mbox{ }
+  
+  By specifying \texttt{-msgstyle msdev}, one can make the compiler
+  generate error messages understandable by Microsoft Developer
+  Studio.  The default behaviour is to generate error messages
+  understandable the Emacs editor in SML mode.
+
+\item[{\tt -noautolink}]\mbox{ }
+  
+  The linker automatically links in any additional object files
+  required by the files explicitly specified on the command line.
+  With option {\tt -noautolink} all required object files must be
+  explicitly specified in the appropriate order.
+
+\item[{\tt -noheader}]\mbox{ }
+
+  Causes the output file produced by the linker to contain only the
+  bytecode, not preceded by any executable code.  A file {\tt
+    mosmlout} thus obtained can be executed only by explicitly
+  invoking the runtime system as follows: {\tt camlrunm mosmlout}.
+
 \item[{\tt -o {\rm exec-file}}]\mbox{ }
 
   Specify the name of the output file produced by the linker.  In the
   absence of this option, a default name is used.  In MS Windows and
   DOS, the default name is {\tt mosmlout.exe}; in Unix it is {\tt
     a.out}.
+
+\item[{\tt -orthodox}]\mbox{ }
+  
+  Sets orthodox mode for the compilation of subsequent units: reject
+  all uses of the extensions to the SML Modules language.  That is,
+  accept only SML Modules syntax; see
+  Section~\ref{sec-modules-extensions}.
 
 \item[{\tt -P {\rm unit-set}}]\mbox{ }
 
@@ -1413,225 +1361,84 @@ The following command-line options are recognized by {\tt mosmlc}.
   Additional directories to be searched for library units can be
   specified with the {\tt -I {\rm directory}} option.
 
-\item[{\tt -noheader}]\mbox{ }
-
-  Causes the output file produced by the linker to contain only the
-  bytecode, not preceded by any executable code.  A file {\tt
-    mosmlout} thus obtained can be executed only by explicitly
-  invoking the runtime system as follows: {\tt camlrunm mosmlout}.
-
 \item[{\tt -q}]\mbox{ }
 
   Enables the quotation/antiquotation mechanism; see
   Section~\ref{sec-quotations}.
 
-\item[{\tt -v}]\mbox{ }
+\item[{\tt -standalone}]\mbox{ }
+  
+  Unix: Specifies that the runtime system should be prepended to the
+  linked bytecode, thus creating a stand-alone executable.  This adds
+  75--100 KB to the size of the linked file.  MS Windows: This option
+  cannot be used.  Under MS Windows, all mosmlc-generated executables
+  require the dynamically linked library \texttt{camlrt.dll} to be
+  present in the directory \verb+C:\mosml\bin+.
 
- Prints the version number of the various passes of the
-  compiler.
+\item[{\tt -stdlib {\rm stdlib-directory}}]\mbox{ }
+
+  Specifies the standard library directory, which will be searched by
+  the compiler and linker for the .ui and .uo files corresponding to
+  units mentioned in the files being linked.  The default standard
+  library is set when the system is created, and is usually {\tt
+    \$\{HOME\}/mosml/lib} under Unix and \verb#c:\mosml\lib# under MS
+  Windows and DOS.
+
+\item[{\tt -structure}]\mbox{ }
+  
+  Specifies that subsequent .sml and .sig source files must be
+  compiled in structure mode; see Section~\ref{sec-structure-mode}.
+  Default.
+
+\item[{\tt -toplevel}]\mbox{ }
+  
+  Specifies that subsequent .sml and .sig source files must be
+  compiled in toplevel mode; see Section~\ref{sec-toplevel-mode}.
+
+\item[{\tt -v}]\mbox{ }
+  
+  Prints the version number of the various passes of the compiler.
+
+\item[{\tt -valuepoly}]\mbox{ }
+
+  Specify that the type checker should use `value polymorphism'; see
+  Section~\ref{sec-valuepoly}.  Default.
 \end{description}
 
 
-\section{Recompilation management}
-\label{sec-recompilation-guide}
 
-Recompilation management helps the programmer recompile only what is
-necessary after a change to a unit signature or unit body.  
+\newpage
+\section{Extensions to the Standard ML Modules language}
+\label{sec-modules-extensions}
 
-Type-safe linking prevents the programmer from creating unsafe or
-meaningless programs.  The {\tt load} function and the batch linker
-ensure probabilistically type-safe linking, so it is virtually
-impossible to cause the system to create a type-unsafe program.  
-
-
-\subsection{Using `make' to manage recompilation}
-\label{sec-using-make}
-
-Consider the example program in Section~\ref{sec-example-units}
-consisting of the three units Evaluate, Expr, and Reduce.  Assume
-their source files *.sig and *.sml reside in a particular directory.
-Copy a Makefile stub (see below) to that directory, and change to that
-directory.
-
-\begin{enumerate}
-\item Edit the Makefile so that the names of the bytecode files
-  Evaluate.uo, Expr.uo, and Reduce.uo appear on the line beginning
-  with `{\tt all:}' (see the example makefiles below).
-
-\item Compute the dependencies among the files by executing:
-\begin{program}
-make depend
-\end{program}
-
-\item Recompile all those files which have not yet been compiled, or
-  which have been modified but not yet recompiled, or which depend on
-  modified files, by executing:
-        
-\begin{program}
-make    
-\end{program}
-\end{enumerate}
-
-\noindent Step (3) must be repeated whenever you have modified a
-component of the program system.  Step (2) need only be repeated if
-the inter-dependencies of some components change, or if you add or
-remove an explicit signature file.  Step (1) need only be repeated
-when you add or delete an entire unit of the program system.
-
-Old versions of the compiled *.ui and *.uo files can be removed by
-executing:
-
-\begin{program}
-make clean  
-\end{program}
-
-\noindent The inter-dependencies are computed by a small ML program
-{\tt mosmldep}, which correctly handles nested comments and strings in
-the source files.
-
-
-\subsection{An example Makefile for Unix}
-\label{sec-makefile-unix}
-
-To use the Makefile below, first edit it so that all the required
-units (.uo files) appear on the line beginning with `{\tt all:}', then
-proceed as explained in Section~\ref{sec-using-make}.  You do not need
-to edit any other part of the Makefile.  In particular, the
-dependencies following {\tt DO NOT DELETE THIS LINE} are generated
-automatically when executing {\tt make depend} (as above).  A copy of
-the Makefile can be found in {\tt mosml/tools/Makefile.stub}.
-
-You will need only the Unix utility {\tt make}.
-
-\begin{program}
-# Unix Makefile stub for separate compilation with Moscow ML.  
-
-MOSMLHOME=\$\{HOME\}/mosml
-MOSMLTOOLS=camlrunm \$(MOSMLHOME)/tools
-MOSMLC=mosmlc -c
-MOSMLL=mosmlc
-MOSMLLEX=mosmllex
-MOSMLYACC=mosmlyac
-
-.SUFFIXES :
-.SUFFIXES : .sig .sml .ui .uo
-
-all: Evaluate.uo Expr.uo Reduce.uo
-
-clean:
-        rm -f *.ui
-        rm -f *.uo
-        rm -f Makefile.bak
-
-.sig.ui:
-        \$(MOSMLC) \$<
-
-.sml.uo:
-        \$(MOSMLC) \$<
-
-depend: 
-        rm -f Makefile.bak
-        mv Makefile Makefile.bak
-        \$(MOSMLTOOLS)/cutdeps < Makefile.bak > Makefile
-        \$(MOSMLTOOLS)/mosmldep >> Makefile
-
-### DO NOT DELETE THIS LINE
-Evaluate.ui: Expr.uo 
-Evaluate.uo: Evaluate.ui Expr.uo Reduce.ui 
-Reduce.uo: Reduce.ui Expr.uo 
-Reduce.ui: Expr.uo 
-\end{program}
-
-
-\subsection{An example Makefile for MS DOS}
-\label{sec-makefile-dos}
-
-To use the Makefile below, first edit it so that all the required
-units (.uo files) appear on the line beginning with `{\tt all:}', then
-proceed as explained in Section~\ref{sec-using-make}.  You do not need
-to edit any other part of the Makefile.  In particular, the
-dependencies following {\tt DO NOT DELETE THIS LINE} are generated
-automatically when executing {\tt make depend} (as above).  A copy of
-this makefile can be found in {\tt
-  mosml\verb#\#tools\verb#\#makefile.stb}.
-
-You will need a DOS version of {\tt make}, such as that from Borland
-C++ version 2.0 or 3.0.
-
-\begin{program}
-# DOS Makefile stub for separate compilation with Moscow ML.  
-
-MOSMLHOME=c:\verb#\#mosml
-MOSMLTOOLS=camlrunm \$(MOSMLHOME)\verb#\#tools
-MOSMLC=mosmlc -c
-MOSMLL=mosmlc
-MOSMLLEX=mosmllex
-MOSMLYACC=mosmlyac
-
-all: evaluate.uo expr.uo reduce.uo
-
-clean:
-        del *.ui
-        del *.uo
-        del makefile.bak
-
-.sig.ui:
-        \$(MOSMLC) \$<
-
-.sml.uo:
-        \$(MOSMLC) \$<
-
-depend:
-        del makefile.bak
-        ren makefile makefile.bak
-        \$(MOSMLTOOLS)\verb#\#cutdeps < makefile.bak > makefile
-        \$(MOSMLTOOLS)\verb#\#mosmldep >> makefile
-
-### DO NOT DELETE THIS LINE
-evaluate.uo: evaluate.ui expr.uo reduce.ui 
-reduce.ui: expr.uo 
-reduce.uo: reduce.ui expr.uo 
-evaluate.ui: expr.uo 
-\end{program}
-
-
-\subsection{Unit names and DOS file names}
-
-Recompilation management for DOS is essentially as for Unix, except
-for the usual complications that follow from the restrictions on the
-length of file names, and from their case-insensitivity.
-
-Under MS DOS, filenames are all the same case and can be at most 8
-characters long (plus a 3 character extension).  Since file names are
-used as unit names, this may cause problems.  We attempt to circumvent
-these problems as follows:
+The Moscow ML Modules language extends the Standard ML Modules
+language in three ways:
 
 \begin{itemize}
-\item Unit names used inside ML programs under DOS are `normalized':
-  the first character is made upper case (if it is a letter), all
-  other characters are made lower case, and the unit name is truncated
-  to eight characters.  Hence a unit which resides in file {\tt
-    commands.sml} can be referred to as unit {\tt Commands} inside an
-  ML program, and can also be referred to as {\tt CommandStructure},
-  etc., since normalization transforms the latter into the former.
-
-\item The following names are exceptions to this rule: {\tt BasicIO},
-  {\tt BinIO}, {\tt CharArray}, {\tt CharVector},\\ {\tt CommandLine},
-  {\tt FileSys}, {\tt ListPair}, {\tt OS}, {\tt StringCvt}, {\tt
-    Substring}, {\tt TextIO}, {\tt Word8Array}, {\tt Word8Vector};
-  they are normalized precisely as shown in this list.  This is to
-  accommodate the SML Basis Library.
-
-\item In DOS makefiles, the file names appearing after {\tt all:}\
-  must be all lower case and at most 8 characters long (otherwise
-  `make' will not work properly).  For instance, the unit {\tt
-    CharArray} must be called {\tt chararra} in a DOS makefile.
-
-\item A unit name given as argument to {\tt load}, to {\tt compile},
-  or to the batch compiler, is truncated and made lower case by DOS as
-  usual, so evaluating {\tt load "VeryLongName"} will load bytecode
-  file {\tt verylong.uo}.
+\item higher-order functors: functors may be defined within
+  structures and functors; see Section~\ref{sec-ho-modules}
+\item first-class modules: structures may be packed and then handled
+  as Core language values, which may then be unpacked to structures
+  again; see Section~\ref{sec-firstclass-modules}
+\item recursive modules: signatures and structures may be
+  recursively defined; see Section~\ref{sec-rec-modules}
 \end{itemize}
+
+\noindent Moscow ML has three compilation modes.
+
+Moscow ML offers three compilation 
+Compilation modes: liberal, conservative, orthodox...
+
+
+\subsection{Higher-order modules}
+\label{sec-ho-modules}
+
+\subsection{First-class modules}
+\label{sec-firstclass-modules}
+
+\subsection{Recursive modules}
+\label{sec-rec-modules}
+
 
 \newpage
 
@@ -1641,8 +1448,9 @@ these problems as follows:
 The 1997 revision of Standard ML \cite{Milner:1997:TheDefinition}
 adopts value polymorphism, discarding the distinction between
 imperative (\verb#'_a#) and applicative (\verb#'a#) type variables,
-and generalizing type variables only in non-expansive expressions.
-Consider a {\tt val}-binding
+and generalizing type variables only in non-expansive expressions.  In
+Moscow ML 2.00, non-generalized type variables are left free, to be
+instantiated later.  Consider a {\tt val}-binding
 
 \begin{program}
 val x = e;
@@ -1657,7 +1465,7 @@ defined by the grammar below:
 \begin{quot} 
 \begin{tabular}{@{}lcll}
 {\it nexp} & ::= & {\it scon\/}  & special constant\\
-&& {\it longid\/} & (possibly qualified) identifier\\           
+&& {\it longvid\/} & (possibly qualified) value identifier\\           
 && \verb#{# $\langle${\it nexprow\/}$\rangle$ \verb#}# & record of
 non-expansive expressions\\
 && \verb#(# {\it nexp\/} \verb#)# & parenthesized non-expansive expression\\
@@ -1676,49 +1484,62 @@ $\langle$\verb#,# {\it nexprow\/}$\rangle$  \\
 is, an expression in normal form.  For example, the right-hand side
 {\tt length} below is an identifier, and so is non-expansive.  Hence
 the free type variable {\tt 'a} in the type {\tt 'a list -> int} of
-{\tt x} becomes generalized:
+{\tt x} becomes generalized, as shown by the occurrence of \texttt{'a}
+right after \texttt{val}:
 
 \begin{program}
 - val x = length;
-> val x = fn : 'a list -> int 
+> val 'a x = fn : 'a list -> int
 \end{program}
 
 \noindent On the other hand, the right-hand side {\tt (fn f => f)
   length} below, although it evaluates to the same value as the
 previous one, is expansive: it is not derivable from the above
 grammar.  Hence the type variable {\tt 'a} will not be generalized,
-and type checking will fail:
+and a warning will be issued:
 
 \begin{program}
 - val x = (fn f => f) length;
-! Toplevel input:
-! val x = (fn f => f) length;
-! ^^^^^^^^^^^^^^^^^^^^^^^^^^
-! Value polymorphism: Free type variable at top level
+! Warning: Value polymorphism: 
+! Free type variable(s) at top level in value identifier x
+> val x = fn : 'a list -> int
 \end{program}
 
-\noindent In Standard ML, all type variables in types reported at
-top-level must be universally quantified; there must be no free type
-variables.  When type checking fails for this reason, there are two
-remedies: Either (1) insert a type constraint to eliminate the type
-variables, or (2) {\em eta-expand\/} the right-hand side to make it
+\noindent Note that the type variable \texttt{'a} has not been
+generalized.  Thus type variable \texttt{'a} is free and may become
+instantiated when \texttt{x} is used.  If so, the type of \texttt{x}
+becomes more specific:
+
+\begin{program}
+- x ["abc", "def"];
+! Warning: the free type variable 'a has been instantiated to string
+> val it = 2 : int
+- x;
+> val it = fn : string list -> int
+\end{program}
+
+\noindent To make sure that a type variable gets generalized, one may {\em
+  eta-expand\/} the right-hand side expression.  Eta-expansion
+replaces an expression $e$ with \texttt{fn y => (e y)} thus making it
 non-expansive:
 
 \begin{program}
-- val x1 = (fn f => f) length : bool list -> int;
-> val x1 = fn : bool list -> int
-
-- val x2 = fn ys => (fn f => f) length ys;
-> val x2 = fn : 'a list -> int    
+- val x1 = fn y => (fn f => f) length y;
+> val 'b x1 = fn : 'b list -> int
 \end{program}
 
-\noindent In Moscow ML versions prior to 1.40, the type checker would
-distinguish imperative and applicative type variables, generalize all
-applicative type variables, and generalize imperative type variables
-only in non-expansive expressions, as required by the 1990 {\em
-  Definition\/} \cite{Milner:1990:TheDefinition}.  To reinstate this
-behaviour, invoke {\tt mosml} or {\tt mosmlc} with the option {\tt
-  -imptypes}.  This is useful for compiling old programs.
+\noindent Compatibility: All programs compiled with Moscow ML 1.44
+will compile also with Moscow ML 2.00\@.  To compile old programs that
+use imperative type variables as in the 1990 Definition, you may
+invoke {\tt mosml} or {\tt mosmlc} with the option {\tt -imptypes}.
+
+% In Moscow ML versions prior to 1.40, the type checker would
+% distinguish imperative and applicative type variables, generalize all
+% applicative type variables, and generalize imperative type variables
+% only in non-expansive expressions, as required by the 1990 {\em
+%   Definition\/} \cite{Milner:1990:TheDefinition}.  To reinstate this
+% behaviour, invoke {\tt mosml} or {\tt mosmlc} with the option {\tt
+%   -imptypes}.  This is useful for compiling old programs.
 
 \newpage
 
@@ -1768,7 +1589,7 @@ C functions from Moscow ML, without recompiling the runtime system.
 
 It is the responsibility of the C functions to access and construct
 SML values properly, using the macroes defined in {\tt
-  mosml/src/runtime/mlvalues.h}.  For this reason, the foreign
+  mosml/include/mlvalues.h}.  For this reason, the foreign
 function interface is included only with the source distribution.  As
 usual, type or storage mistakes in C programs may crash your programs.
 
@@ -1777,10 +1598,10 @@ is made.  This may cause ML values to be moved (from the young
 generation to the old one).  To make sure that ML heap pointers needed
 by your C function are adjusted correctly by the garbage collector,
 register them using the \verb+Push_roots+ and \verb+Pop_roots+ macroes
-from {\tt runtime/memory.h}.
+from {\tt mosml/include/memory.h}.
 
 To modify a value in the ML heap, you must use the {\tt Modify} macro
-from {\tt runtime/memory.h}; otherwise you may confuse the incremental
+from {\tt mosml/include/memory.h}; otherwise you may confuse the incremental
 garbage collector and crash your program.
 
 When loading the compiled library one must specify the absolute path
@@ -1796,95 +1617,101 @@ indicated there.
 
 For more information, see the examples in directory {\tt
   mosml/src/dynlibs}, in particular\\ {\tt
-  mosml/src/dynlibs/interface}.  See also the {\tt Dynlib} signature;
-try `{\tt help "Dynlib";}'.
+  mosml/src/dynlibs/interface}\@.  See also the {\tt Dynlib} section
+in the \emph{Moscow ML Library Documentation}
+\cite{MoscowML:2000:MoscowMLLibrary}; or try `{\tt help "Dynlib";}'.
 
 
-\section{Using GNU gdbm persistent hash tables }
+\newpage \section{Guide to selected dynamically loaded libraries}
+
+\subsection{Using GNU gdbm persistent hash tables }
 \label{sec-using-mgdbm}
 
 Moscow ML provides an interface to GNU gdbm persistent hashtables, via
-structures {\tt Gdbm} and {\tt Polygdbm}; this requires {\tt Dynlib},
-see Section~\ref{sec-dynamic-linking}.  GNU gdbm provides fast access
-even to very large hashtables stored on disk, ensuring mutual
-exclusion, handy for creating simple databases for use by CGI scripts
-etc.
+structures {\tt Gdbm} and {\tt Polygdbm}; see the appropriate sections
+in \cite{MoscowML:2000:MoscowMLLibrary}.  GNU gdbm provides fast
+access even to very large hashtables stored on disk, ensuring mutual
+exclusion, and are handy for creating simple databases for use by CGI
+scripts etc.
 
-GNU gdbm (not included with Moscow ML) must be installed, and the
-interface to GNU gdbm defined in {\tt mosml/src/dynlibs/mgdbm} must be
-compiled and installed before
-{\tt Gdbm} and {\tt Polygdbm} can be used.  For instructions, see file
-{\tt mosml/src/dynlibs/mgdbm/README}.
+Using \texttt{Gdbm} or \texttt{Polygdbm} requires {\tt Dynlib} (see
+Section~\ref{sec-dynamic-linking} above): GNU gdbm (not included with Moscow
+ML) must be installed, and the interface to GNU gdbm defined in {\tt
+  mosml/src/dynlibs/mgdbm} must be compiled and installed.  For
+instructions, see the {\tt README} file there.
 
 
-\section{Using POSIX regular expressions}
+\subsection{Using POSIX regular expressions}
 \label{sec-using-mregex}
 
 Moscow ML provides an interface to the GNU regex implementation of
 POSIX 1003.2 regular expressions, with additional support for
-replacing matching substrings etc., via structure {\tt Regex}\@.  This
-requires {\tt Dynlib}, see Section~\ref{sec-dynamic-linking}.
+replacing matching substrings etc., via structure {\tt Regex}; see the
+appropriate section in \cite{MoscowML:2000:MoscowMLLibrary}.
 
-The GNU regex library (which is included with Moscow ML) and the
-interface defined in\\ {\tt mosml/src/dynlibs/mregex} must be compiled
-and installed before
-structure {\tt Regex}  can be used.  For instructions, see file
-{\tt mosml/src/dynlibs/mregex/README}.
+Using \texttt{Regex} requires {\tt Dynlib} (see
+Section~\ref{sec-dynamic-linking} above): The GNU regex library (which is
+included with Moscow ML) and the interface defined in {\tt
+  mosml/src/dynlibs/mregex} must be compiled and installed.  For
+instructions, see the {\tt README} file there.
 
 
-\section{Using the PostgreSQL relational database server}
+\subsection{Using the PostgreSQL relational database server}
 \label{sec-using-mpq}
 
 Moscow ML provides an interface to the PostgreSQL relational database
-server, via structure {\tt Postgres}\@.  This requires {\tt Dynlib},
-see Section~\ref{sec-dynamic-linking}.
+server, via structure {\tt Postgres}; see the appropriate section in
+\cite{MoscowML:2000:MoscowMLLibrary}.
 
-The PostgreSQL database server (not included) must be installed, and
-the interface to PostgreSQL defined in {\tt mosml/src/dynlibs/mpq}
-must be compiled and installed before structure {\tt Postgres} can be
-used.  For instructions, see file {\tt mosml/src/dynlibs/mpq/README}.
+Using \texttt{Postgres} requires {\tt Dynlib} (see
+Section~\ref{sec-dynamic-linking} above): the PostgreSQL database server
+(not included) must be installed, and the interface to PostgreSQL
+defined in {\tt mosml/src/dynlibs/mpq} must be compiled and installed.
+For instructions, see the {\tt README} file there.
 
 
-\section{Using the MySQL relational database server}
+\subsection{Using the MySQL relational database server}
 \label{sec-using-mmysql}
 
-Moscow ML provides an interface to the MySQL relational database
-server, via structure {\tt Mysql}\footnote{Thanks to Thomas S.
-  Iversen.}\@.  This requires {\tt Dynlib}, see
-Section~\ref{sec-dynamic-linking}.
+Moscow ML provides an interface\footnote{Thanks to Thomas S.
+  Iversen.} to the MySQL relational database server, via structure
+{\tt Mysql}; see the appropriate section in
+\cite{MoscowML:2000:MoscowMLLibrary}.
 
-The MySQL database server (not included) must be installed, and the
-interface to Mysql defined in\\ {\tt mosml/src/dynlibs/mmysql} must be
-compiled and installed before structure {\tt Mysql} can be used.  For
-instructions, see file {\tt mosml/src/dynlibs/mmysql/README}.
+Using \texttt{Mysql} requires {\tt Dynlib} (see
+Section~\ref{sec-dynamic-linking} above): the MySQL database server (not
+included) must be installed, and the interface to Mysql defined in
+{\tt mosml/src/dynlibs/mmysql} must be compiled and installed.  For
+instructions, see the {\tt README} file there.
 
 
-\section{Using the GIF image library}
+\subsection{Using the PNG image library}
 \label{sec-using-mgd}
 
 Moscow ML provides an interface to Thomas Boutell's gd graphics
-package for creating GIF images, via structure {\tt Gdimage}\@.  This
-requires {\tt Dynlib}, see Section~\ref{sec-dynamic-linking}.
+package for creating PNG images, via structure {\tt Gdimage}; see the
+appropriate section in \cite{MoscowML:2000:MoscowMLLibrary}.
 
-Thomas Boutell's gd image package (not included) must be installed,
-and the interface defined in\\ {\tt mosml/src/dynlibs/mgd} must be
-compiled and installed before structure {\tt Gdimage} can be used.
-For instructions, see file {\tt mosml/src/dynlibs/mgd/README}.
+Using \texttt{Gdimage} requires {\tt Dynlib} (see
+Section~\ref{sec-dynamic-linking} above): the gd image package (not
+included) must be installed, and the interface defined in {\tt
+  mosml/src/dynlibs/mgd} must be compiled and installed.  For
+instructions, see the {\tt README} file there.
 
 
-\section{Using the Socket interface}
+\subsection{Using the Socket interface}
 \label{sec-using-msocket}
 
-Moscow ML provides an interface to Internet and file sockets, via
-structure {\tt Socket}\footnote{Thanks to Ken Larsen; initial
-  development financed by the PROSPER project.}, which adheres fairly
-closely to the SML Basis Library structure of the same name.  Using
-structure {\tt Socket} requires {\tt Dynlib}, see
-Section~\ref{sec-dynamic-linking}.
+Moscow ML provides an interface\footnote{Thanks to Ken Larsen; initial
+  development financed by the PROSPER project.} to Internet and file
+sockets, via structure {\tt Socket}, which adheres fairly closely to
+the SML Basis Library structure of the same name; see the
+appropriate section in \cite{MoscowML:2000:MoscowMLLibrary}.
 
-The sockets interface defined in {\tt mosml/src/dynlibs/msocket} must
-be compiled and installed before structure {\tt Socket} can be used.
-For instructions, see file {\tt mosml/src/dynlibs/msocket/README}.
+Using structure {\tt Socket} requires {\tt Dynlib} (see
+Section~\ref{sec-dynamic-linking} above): the sockets interface defined in\\
+{\tt mosml/src/dynlibs/msocket} must be compiled and installed.  For
+instructions, see the {\tt README} file there.
 
 \newpage
 \section{Quotations and antiquotations}
@@ -1988,7 +1815,7 @@ representation of a C phrase:
 
 \newpage
 
-\section{A lexer generator}
+\section{A lexer generator: mosmllex}
 \label{sec-mosmllex}
 
 This section describes {\tt mosmllex}, a lexer generator which is
@@ -2264,7 +2091,7 @@ decimal\\\hline
 
 \newpage
 
-\section{A parser generator}
+\section{A parser generator: mosmlyac}
 \label{sec-mosmlyac}
 
 This section describes {\tt mosmlyac}, a simple parser generator which
@@ -2457,20 +2284,15 @@ file {\tt mosml/examples/lexyacc/Main.sml} for an example.
   Standard ML\@.  Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999,
   2000.  Sergei Romanenko, Moscow, Russia and Peter Sestoft,
   Copenhagen, Denmark.
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.  This program is distributed in
+  the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+  even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+  PARTICULAR PURPOSE.  See the GNU General Public License (in file
+  mosml/copyrght/gpl2) for more details.    
 
 Note that a number of source files are derived from the Caml Light
 distribution, copyright (C) 1993 INRIA, Rocquencourt, France.
@@ -2479,14 +2301,15 @@ permission from INRIA; see the INRIA copyright notice in file
 copyrght/copyrght.cl.\\[2ex]
 
 
-\item[Main Moscow ML contributors] 
+\item[Main Moscow ML contributors]\mbox{ }
   \begin{itemize}
   \item Doug Currie (e@flavors.com), Flavors Technology, USA.
   \item Sergei Romanenko (roman@keldysh.ru), Keldysh Institute of
     Applied Mathematics, Russian Academy of Sciences, Russia.
-  \item Claudio V.\ Russo (Claudio.Russo@cl.cam.ac.uk),
-    University of Cambridge.  Much of the work was done at the
-    University of Edinburgh under project XXXXXXX??.
+  \item Claudio V.\ Russo (Claudio.Russo@cl.cam.ac.uk), University of
+    Cambridge.  Thanks to Don Sannella at LFCS, Division of
+    Informatics, University of Edinburgh for funding under EPSRC grant
+    GR/K63795.
   \item Peter Sestoft (sestoft@dina.kvl.dk), Department of Mathematics
     and Physics, Royal Veterinary and Agricultural University, Denmark
     and The IT University of Copenhagen, Denmark.  Part of the work
@@ -2497,16 +2320,23 @@ copyrght/copyrght.cl.\\[2ex]
 
 \item[Moscow ML owes much to]\mbox{ }
 \begin{itemize}
-\item the CAML Light implementation by Xavier Leroy and Damien
-  Doligez (INRIA, Rocquencourt, France);
-\item the ML Kit by Lars Birkedal, Martin Elsman, Niels Hallenberg,
-  Nick Rothwell, Mads Tofte and David Turner (Copenhagen University,
-  Denmark, and Edinburgh University, Scotland);
-\item inspiration from the SML/NJ compiler developed at Princeton
-  University and AT\&T Bell Laboratories, New Jersey, USA; and
-\item feedback, suggestions, contributions, or proposals for new
-  features from Jonas Barklund, Michael Gordon, Ken Friis Larsen,
-  Michael Norrish, Konrad Slind, and numerous other people.
+\item The Caml Light implementation by Xavier Leroy and Damien Doligez
+  (INRIA, Rocquencourt, France).  It was instrumental in creating
+  Moscow ML, which uses its runtime system, essentially the same
+  bytecode generator, and many other aspects of its design
+  \cite{Leroy:1990:TheZinc,Leroy:1993:TheCaml}.
+\item The Definition of Standard ML, unbeatably precise and concise.
+\item The ML Kit by Lars Birkedal, Martin Elsman, Niels Hallenberg,
+  Nick Rothwell, Mads Tofte and David Turner (University of
+  Copenhagen, Denmark, and University of Edinburgh, Scotland), which
+  helped solving problems of parsing, infix resolution, and type
+  inference \cite{Birkedal:1993:TheML}.
+\item Inspiration from the SML/NJ compiler developed at Princeton
+  University and AT\&T/Lucent Bell Laboratories, New Jersey,
+  USA.
+\item Feedback, contributions, or proposals for new features from
+  Jonas Barklund, Mike Gordon, Ken Friis Larsen, Michael Norrish,
+  Konrad Slind, and numerous other people.
 \end{itemize}
 \end{description}
 
@@ -2521,12 +2351,8 @@ copyrght/copyrght.cl.\\[2ex]
         ftp://ftp.dina.kvl.dk/pub/mosml/linux-mos20bin.tar.gz
 \item The MS Windows executables are in 
         ftp://ftp.dina.kvl.dk/pub/mosml/win32-mos20bin.zip
-\item The MS DOS executables are in 
-        ftp://ftp.dina.kvl.dk/pub/mosml/mos20bin.zip
 \item The Macintosh/MacOS (68k and PPC) executables are in\\
         ftp://ftp.dina.kvl.dk/pub/mosml/mac-mos20bin.sea.hqx
-\item The DOS source files are in 
-        ftp://ftp.dina.kvl.dk/pub/mosml/mos20src.zip
 \item The Unix and MS Windows source files are in 
         ftp://ftp.dina.kvl.dk/pub/mosml/mos20src.tar.gz
 \item The MacOS modified source files (relative to Unix) are in\\
@@ -2545,17 +2371,23 @@ copyrght/copyrght.cl.\\[2ex]
 \section{Books and other materials on Standard ML}
 \label{sec-books}
 
-\subsubsection*{The Definition and Commentary}
+%\subsubsection*{The Definition and Commentary}
 
-\begin{itemize}
-\item Robin Milner, Mads Tofte and Robert Harper, {\em The Definition of
-  Standard ML\/}, MIT Press 1990, ISBN 0-262-63132-6.  
-\item Robin Milner, Mads Tofte, Robert Harper, and David B. MacQueen,
-  {\em The Definition of Standard ML (Revised)\/}, MIT Press 1997,
-  ISBN 0-262-63181-4.
-\item Robin Milner and Mads Tofte, {\em Commentary on Standard ML\/},
-  MIT Press 1991, ISBN 0-262-63137-7.
-\end{itemize}
+The 1997 Definition \cite{Milner:1997:TheDefinition} is the
+authoritative description of Standard ML, revised from the 1990
+Definition \cite{Milner:1990:TheDefinition}\@.  The Commentary
+\cite{Milner:1991:Commentary} explains many finer points in the 1990
+Definition.
+
+% \begin{itemize}
+% \item Robin Milner, Mads Tofte and Robert Harper, {\em The Definition of
+%   Standard ML\/}, MIT Press 1990, ISBN 0-262-63132-6.  
+% \item Robin Milner, Mads Tofte, Robert Harper, and David B. MacQueen,
+%   {\em The Definition of Standard ML (Revised)\/}, MIT Press 1997,
+%   ISBN 0-262-63181-4.
+% \item Robin Milner and Mads Tofte, {\em Commentary on Standard ML\/},
+%   MIT Press 1991, ISBN 0-262-63137-7.
+% \end{itemize}
 
 \subsubsection*{Textbooks available from publishers}
 
