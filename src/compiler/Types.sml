@@ -584,9 +584,9 @@ and copyTyFun bns bvs tyfun =
         end
     |  LAMtyfun (tn,tyfun') =>
         let val () = incrBindingLevel ();
-            val (bns,bvs,tn',tn2tn') = copyTyName PARAMETERts bns bvs tn;
+            val (bns,bvs,tn',tn2tn') = copyTyName PARAMETERts bns bvs tn
 	    val (bns,bvs,styfun',ctyfun') = 
-		copyTyFun (tn2tn'::bns) bvs tyfun
+		copyTyFun (tn2tn'::bns) bvs tyfun'
 	    val bns = restrictBns bns [tn2tn']
         in   
             decrBindingLevel();
