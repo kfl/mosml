@@ -59,6 +59,7 @@ install:
 	cd toolssrc; make install
 	cd lex; make install
 	(cd $(INCDIR)/..; rm -f config; ln -s include config)
+	cd doc; make install
 
 # Remove all generated files
 clean:
