@@ -1,0 +1,46 @@
+The implementation of Moscow ML's interactive system
+
+ * Structures used only to implement the interactive system:
+
+    Predef.sml
+
+      Allocation of the first 39 slots of the global_data array,
+      corresponding to the runtime system's runtime/globals.h, from
+      which the Predef.sml source file is generated automatically.
+
+      The purpose is to enable interaction between the SML code of the
+      interactive system and the (C code of the) runtime system.
+
+      The values are formally bound in structure General, but since
+      the names are not all in the compile-time environment exposed by
+      the interactive system, they are not all accessible to the
+      programmer.
+
+    Prim_c.sml 
+
+      An array of the names of the C primitives in the runtime system
+
+    Symtable.sml 
+
+    Patch.sml 
+
+    Tr_const.sml
+
+    Rtvals.sml 
+
+    Load_phr.sml 
+ 
+    Exec_phr.sml 
+
+    Smltop.sml 
+
+    Maint.sml
+
+
+ * The built-in structure Meta is available in the interactive system
+   only.  Its values are defined in compiler/Smltop.sml.  They are
+   mostly hooks to SML functions used to implement the interactive
+   system itself.  In mosml.net these names could be bound at
+   load-time (or resolved at every use) using reflection.
+
+ * 
