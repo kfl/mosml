@@ -43,7 +43,6 @@ end
 %token DATATYPE
 %token DLBRACE
 %token DO
-%token DOT
 %token DOTDOTDOT
 %token DRBRACE
 %token ELSE
