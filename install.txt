@@ -139,6 +139,13 @@ systems, then you can install Moscow ML as follows:
      - to install support for process manipulation under Unix,
      consult mosml/src/dynlibs/munix/README
 
+(S9) If you want to reformat the Moscow ML documentation, go to
+     mosml/src/doc, change the documents as desired, and do 
+        make clean
+        make
+     The Moscow ML compiler must be already installed for this to
+     work.
+
 
 AUTHOR AND CREDITS
 
