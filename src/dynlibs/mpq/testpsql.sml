@@ -269,7 +269,7 @@ val test10 = check'(fn _ => (copytableto (pc, "t", append6);
 
 (* val _ = closebase pc; *)
 
-end
+end;
 
 (*
 fun gettuplist dbres (getfields : int -> 'a) : 'a list =
