@@ -163,7 +163,7 @@ long listsum(value lst)
 long treesum(value v)
 {
   long sum = 0;
-  int contag = Tag_val(v);	/* 0 = Lf, 1 = Br, 2 = Brs */
+  int contag = Tag_val(v);	/* 0 = Br, 1 = Brs, 2 = Lf */
   switch (contag) {
   case 2: /* Lf */
     sum = 0; break;
