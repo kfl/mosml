@@ -1,4 +1,4 @@
-(* File "test/array2.sml" 1995-09-12, 1997-03-12, 1998-04-07 *)
+(* File "test/array2.sml" 1995-09-12, 1997-03-12, 1998-04-07, 2001-05-29 *)
 
 val _ = load "Array2";			(* MOSML *)
 
@@ -122,30 +122,33 @@ val test6f =
     testcopy {row=1,  col=1,  nrows=SOME 0, ncols=SOME 2 } 0 0 same
 val test6g = 
     testcopy {row=1,  col=1,  nrows=SOME 2, ncols=SOME 0 } 0 0 same
+
+val ### = Vector.fromList
+
 val test6h = 
     testcopy {row=0,  col=0,  nrows=NONE, ncols=SOME 3 } 0 1
-    (elts [ #[0, 0, 1, 2], #[10, 10, 11, 12], #[20, 20, 21, 22]])
+    (elts [ ###[0, 0, 1, 2], ###[10, 10, 11, 12], ###[20, 20, 21, 22]])
 val test6i = 
     testcopy {row=0,  col=0,  nrows=SOME 2, ncols=NONE } 1 0
-    (elts [ #[0, 1, 2, 3], #[0, 1, 2, 3], #[10, 11, 12, 13]])
+    (elts [ ###[0, 1, 2, 3], ###[0, 1, 2, 3], ###[10, 11, 12, 13]])
 val test6j = 
     testcopy {row=0,  col=0,  nrows=SOME 2, ncols=SOME 3 } 1 1
-    (elts [ #[0, 1, 2, 3], #[10, 0, 1, 2], #[20, 10, 11, 12]])
+    (elts [ ###[0, 1, 2, 3], ###[10, 0, 1, 2], ###[20, 10, 11, 12]])
 val test6k = 
     testcopy {row=1,  col=1,  nrows=SOME 2, ncols=SOME 3 } 0 0
-    (elts [ #[11, 12, 13, 3], #[21, 22, 23, 13], #[20, 21, 22, 23]])
+    (elts [ ###[11, 12, 13, 3], ###[21, 22, 23, 13], ###[20, 21, 22, 23]])
 val test6l = 
     testcopy {row=0,  col=1,  nrows=SOME 2, ncols=SOME 3 } 1 0
-    (elts [ #[0, 1, 2, 3], #[1, 2, 3, 13], #[11, 12, 13, 23]])
+    (elts [ ###[0, 1, 2, 3], ###[1, 2, 3, 13], ###[11, 12, 13, 23]])
 val test6m = 
     testcopy {row=0,  col=1,  nrows=SOME 2, ncols=SOME 3 } 1 1
-    (elts [ #[0, 1, 2, 3], #[10, 1, 2, 3], #[20, 11, 12, 13]])
+    (elts [ ###[0, 1, 2, 3], ###[10, 1, 2, 3], ###[20, 11, 12, 13]])
 val test6n = 
     testcopy {row=0,  col=1,  nrows=NONE, ncols=SOME 1 } 0 3
-    (elts [ #[0, 1, 2, 1], #[10, 11, 12, 11], #[20, 21, 22, 21]])
+    (elts [ ###[0, 1, 2, 1], ###[10, 11, 12, 11], ###[20, 21, 22, 21]])
 val test6o = 
     testcopy {row=1,  col=0,  nrows=SOME 1, ncols=NONE } 2 0
-    (elts [ #[0, 1, 2, 3], #[10, 11, 12, 13], #[10, 11, 12, 13]])
+    (elts [ ###[0, 1, 2, 3], ###[10, 11, 12, 13], ###[10, 11, 12, 13]])
 
 fun failcopy { row, col, nrows, ncols } dst_row dst_col = 
     (copy { src={ base=a1, row=row, col=col, nrows=nrows, ncols=ncols}, 
@@ -264,51 +267,51 @@ fun chkmodifyi { row, col, nrows, ncols } resseq reschk =
 val test9a = 
     chkmodify 
       [23, 22, 21, 20, 13, 12, 11, 10, 3, 2, 1, 0]
-      (elts [#[0, 10, 20, 30], #[100, 110, 120, 130], #[200, 210, 220, 230]]);
+      (elts [###[0, 10, 20, 30], ###[100, 110, 120, 130], ###[200, 210, 220, 230]]);
 val test9b = 
     chkmodifyi { row=0, col=0, nrows=NONE, ncols=NONE }
       [23, 22, 21, 20, 13, 12, 11, 10, 3, 2, 1, 0]
-      (elts [#[0, 10, 20, 30], #[100, 110, 120, 130], #[200, 210, 220, 230]]);
+      (elts [###[0, 10, 20, 30], ###[100, 110, 120, 130], ###[200, 210, 220, 230]]);
 val test9c = 
     chkmodifyi { row=0, col=1, nrows=NONE, ncols=NONE }
       [23, 22, 21, 13, 12, 11, 3, 2, 1]
-      (elts [#[0, 10, 20, 30], #[10, 110, 120, 130], #[20, 210, 220, 230]]);
+      (elts [###[0, 10, 20, 30], ###[10, 110, 120, 130], ###[20, 210, 220, 230]]);
 val test9d = 
     chkmodifyi { row=1, col=0, nrows=NONE, ncols=NONE }
       [23, 22, 21, 20, 13, 12, 11, 10]
-      (elts [#[0, 1, 2, 3], #[100, 110, 120, 130], #[200, 210, 220, 230]]);
+      (elts [###[0, 1, 2, 3], ###[100, 110, 120, 130], ###[200, 210, 220, 230]]);
 val test9e = 
     chkmodifyi { row=1, col=1, nrows=NONE, ncols=NONE }
       [23, 22, 21, 13, 12, 11]
-      (elts [#[0, 1, 2, 3], #[10, 110, 120, 130], #[20, 210, 220, 230]]);
+      (elts [###[0, 1, 2, 3], ###[10, 110, 120, 130], ###[20, 210, 220, 230]]);
 val test9f =  
     chkmodifyi { row=3, col=0, nrows=NONE, ncols=NONE }
       []
-      (elts [#[0, 1, 2, 3], #[10, 11, 12, 13], #[20, 21, 22, 23]]);
+      (elts [###[0, 1, 2, 3], ###[10, 11, 12, 13], ###[20, 21, 22, 23]]);
 val test9g =  
     chkmodifyi { row=0, col=4, nrows=NONE, ncols=NONE }
       []
-      (elts [#[0, 1, 2, 3], #[10, 11, 12, 13], #[20, 21, 22, 23]]);
+      (elts [###[0, 1, 2, 3], ###[10, 11, 12, 13], ###[20, 21, 22, 23]]);
 val test9h =  
     chkmodifyi { row=1, col=1, nrows=SOME 0, ncols=NONE }
       []
-      (elts [#[0, 1, 2, 3], #[10, 11, 12, 13], #[20, 21, 22, 23]]);
+      (elts [###[0, 1, 2, 3], ###[10, 11, 12, 13], ###[20, 21, 22, 23]]);
 val test9i =  
     chkmodifyi { row=1, col=1, nrows=NONE, ncols=SOME 0 }
       []
-      (elts [#[0, 1, 2, 3], #[10, 11, 12, 13], #[20, 21, 22, 23]]);
+      (elts [###[0, 1, 2, 3], ###[10, 11, 12, 13], ###[20, 21, 22, 23]]);
 val test9j =  
     chkmodifyi { row=1, col=1, nrows=SOME 1, ncols=NONE }
       [13, 12, 11]
-      (elts [#[0, 1, 2, 3], #[10, 110, 120, 130], #[20, 21, 22, 23]]);
+      (elts [###[0, 1, 2, 3], ###[10, 110, 120, 130], ###[20, 21, 22, 23]]);
 val test9k =  
     chkmodifyi { row=1, col=1, nrows=NONE, ncols=SOME 1 }
       [21, 11]
-      (elts [#[0, 1, 2, 3], #[10, 110, 12, 13], #[20, 210, 22, 23]]);
+      (elts [###[0, 1, 2, 3], ###[10, 110, 12, 13], ###[20, 210, 22, 23]]);
 val test9l =  
     chkmodifyi { row=0, col=1, nrows=SOME 2, ncols=SOME 2 }
       [12, 11, 2, 1]
-      (elts [#[0, 10, 20, 3], #[10, 110, 120, 13], #[20, 21, 22, 23]]);
+      (elts [###[0, 10, 20, 3], ###[10, 110, 120, 13], ###[20, 21, 22, 23]]);
 
 fun chkfold traversal resseq =
     check'(fn _ =>

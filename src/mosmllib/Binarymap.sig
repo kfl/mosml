@@ -15,7 +15,7 @@ val numItems  : ('key, 'a) dict -> int
 val listItems : ('key, 'a) dict -> ('key * 'a) list
 val app       : ('key * 'a -> unit) -> ('key,'a) dict -> unit
 val revapp    : ('key * 'a -> unit) -> ('key,'a) dict -> unit
-val foldr     : ('key * 'a * 'b -> 'b)-> 'b -> ('key,'a) dict -> 'b
+val foldr     : ('key * 'a * 'b -> 'b) -> 'b -> ('key,'a) dict -> 'b
 val foldl     : ('key * 'a * 'b -> 'b) -> 'b -> ('key,'a) dict -> 'b
 val map       : ('key * 'a -> 'b) -> ('key,'a) dict -> ('key, 'b) dict
 val transform : ('a -> 'b) -> ('key,'a) dict -> ('key, 'b) dict
@@ -31,7 +31,7 @@ val transform : ('a -> 'b) -> ('key,'a) dict -> ('key, 'b) dict
 
    [insert(m, i, v)] extends (or modifies) map m to map i to v.
 
-   [find (m, k)] returns v if m maps k to v; otherwise raises NotFound.
+   [find(m, k)] returns v if m maps k to v; otherwise raises NotFound.
    
    [peek(m, k)] returns SOME v if m maps k to v; otherwise returns NONE.
 
