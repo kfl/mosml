@@ -1,0 +1,11 @@
+
+
+# Files derived from .lex and .grm files
+*.ui *.uo
+Lexer.sml
+Parser.sig
+Parser.sml
+helpsigs.val
+htmlsigs
+index.txt
+makebase

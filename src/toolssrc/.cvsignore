@@ -1,0 +1,7 @@
+*.ui *.uo
+Deplex.sml
+Deppars.sig
+Deppars.sml
+Mosmldep.sml
+cutdeps
+mosmldep
