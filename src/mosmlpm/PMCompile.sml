@@ -16,11 +16,13 @@ struct
     fun insertSep sep []      = []
       | insertSep sep (x::xs) = x :: sep :: insertSep sep xs     
 
+    local structure P = OS.Path
+    in
     fun newExt ext filename = 
-	let structure P = OS.Path
-	    val base = P.base filename
+	let val base = P.base filename
 	in  P.joinBaseExt{base = base, ext = SOME ext}
 	end
+    end
 
     val toUi  = newExt "ui"
     val toUo  = newExt "uo"
@@ -86,8 +88,8 @@ struct
 	       orelse (if sigExist 
 		       then isNewer sigfile ui
 		       else isNewer2 smlfile binfiles)
-	       orelse (exists ui andalso exists uo 
-		       andalso isNewer2 pmfile binfiles)
+	       orelse exists ui andalso isNewer pmfile ui
+	       orelse exists uo andalso isNewer pmfile uo
 	    then (true,  allfiles)
 	    else (false, if sigExist andalso isNewer smlfile uo 	       
 			 then [smlfile]
