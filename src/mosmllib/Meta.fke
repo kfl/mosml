@@ -15,9 +15,6 @@ val loadPath    : string list ref
 val quietdec    : bool ref
 val verbose     : bool ref
 
-val exnName     : exn -> string
-val exnMessage  : exn -> string
-
 val quotation   : bool ref
 val valuepoly   : bool ref
 
@@ -127,16 +124,6 @@ val system      : string -> int
    of Moscow ML signatures, so the output of compile "U.sml" can be
    edited to subsequently create file U.sig.  The default value is
    ref false.
-
-   [exnName exn] returns a name for the exception constructor in exn.  
-   Never raises an exception itself.  The name returned may be that of
-   any exception constructor aliasing with exn.  For instance,
-        let exception E1; exception E2 = E1 in exnName E2 end
-   may evaluate to "E1" or "E2".
-
-   [exnMessage exn] formats and returns a message corresponding to
-   exception exn.  For the exceptions defined in the SML Basis Library, 
-   the message will include the argument carried by the exception.
 
    [quotation] determines whether quotations and antiquotations are
    permitted in declarations entered at top-level and in files
