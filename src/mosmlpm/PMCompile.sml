@@ -233,7 +233,8 @@ struct
     fun link options filename outfile =
 	let val smlfiles = findFiles filename
 	    val uofiles  = List.map smlToUo smlfiles
-	    val args = String.concat("mosmlc -toplevel "::
+	    val args = 
+		String.concat("mosmlc -toplevel -o ":: outfile :: " " ::
 				     options @ (insertSep " " uofiles))
 	in  (*chat [args];*)
             chat ["Linking: ", outfile]
