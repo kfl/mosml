@@ -451,11 +451,10 @@ and printDec (_, dec') =
   | DATATYPEdec(dbs, tbs_opt) =>
       (msgString "datatype "; printSeq printDatBind " and " dbs;
        printWithtype tbs_opt)
-  | DATATYPErepdec(tyvarseq1,tycon,tyvarseq2,tyconpath) =>
+  | DATATYPErepdec(tycon,tyconpath) =>
       (msgString "datatype ";
-       printTyVarSeq tyvarseq1; printTyCon tycon;
-       msgString " = "; 
-       printTyVarSeq tyvarseq2;
+       printTyCon tycon;
+       msgString " = datatype "; 
        printTyConPath tyconpath
       )
   | ABSTYPEdec(dbs, tbs_opt, dec) =>

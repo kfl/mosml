@@ -211,10 +211,10 @@ signature L = sig
 		  structure E : sig datatype e = datatype d end
 
 		  datatype 'a d1 = C1 of 'a | D1 of 'a d1 
-		  structure E1 : sig datatype 'a e1 = datatype 'a d1 end
+		  structure E1 : sig datatype e1 = datatype d1 end
     
 		  datatype ('a,'b) d2 =  C2 of 'a * 'b | D2 of ('b,'a) d2 
-		  structure E2 : sig datatype ('a,'b) e2 = datatype ('a,'b) d2 end
+		  structure E2 : sig datatype e2 = datatype d2 end
 	      end;
 signature G = sig 
 		  type  u 
@@ -230,10 +230,10 @@ signature G = sig
 		  datatype d = datatype E.e
 
 		  structure E1 : sig datatype 'a e1 = C1 of 'a | D1 of 'a e1 end
-		  datatype 'a d1 = datatype 'a E1.e1 
+		  datatype d1 = datatype E1.e1 
     
 		  structure E2 : sig datatype ('a,'b) e2 = C2 of 'a * 'b | D2 of ('b,'a) e2  end
-		  datatype ('a,'b) d2 = datatype ('a,'b) E2.e2  
+		  datatype d2 = datatype E2.e2  
 
 	      end;
 
@@ -265,20 +265,20 @@ signature L = sig datatype t = C of (t,unit u) v
 		  and 'a u = D of t 
 		  and ('a,'b) v = E of ('a * 'b) u
 		  structure X : sig datatype t = datatype X.t
-		                    datatype 'a u = datatype 'a X.u
-				    datatype ('a,'b) v = datatype ('a,'b) X.v
+		                    datatype u = datatype X.u
+				    datatype v = datatype X.v
 				end
 		  structure Y : sig datatype t = datatype X.t
-		                    datatype 'a u = datatype 'a X.u
-				    datatype ('a,'b) v = datatype ('a,'b) X.v
+		                    datatype u = datatype X.u
+				    datatype v = datatype X.v
 				end
 	      end;
 signature G = sig datatype t = C of (t,unit u) v 
 		  and 'a u = D of t 
 		  and ('a,'b) v = E of ('a * 'b) u
 		  structure X : sig datatype t = datatype X.t
-				    datatype 'a u = datatype 'a X.u
-				    datatype ('a,'b) v = datatype ('a,'b) X.v
+				    datatype u = datatype X.u
+				    datatype v = datatype X.v
 				end
 		  structure Y : sig datatype t = C of (t,unit u) v 
 				    and 'a u = D of t 

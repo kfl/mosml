@@ -280,7 +280,7 @@ functor FLYGL = functor(FLYGL:sig functor F: functor(L:L)->functor(YG:sig struct
 
 (* ref equality mismatch *)
 
-signature G = sig datatype 'a myref = datatype 'a ref end;
+signature G = sig datatype myref = datatype ref end;
 signature L = sig type 'a myref = 'a end;
 
 functor L = functor (L:L)=>

@@ -387,7 +387,7 @@ and resolveOvlDec firstpass (_, dec') =
 	resolveOvlTypBindList firstpass tbds)
   | DATATYPEdec (dbds,NONE) => 
        (resolveOvlDatBindList firstpass dbds)      
-  | DATATYPErepdec(_,_,_,tyconpath) => 
+  | DATATYPErepdec(_,tyconpath) => 
       resolveOvlTyConPath firstpass tyconpath
   | ABSTYPEdec(dbds,NONE, dec2) =>
       (resolveOvlDatBindList firstpass dbds;      
@@ -498,7 +498,7 @@ and resolveOvlSpec firstpass (_, spec') =
 	resolveOvlTypBindList firstpass tbds)
   | DATATYPEspec (dbds,NONE) => 
        (resolveOvlDatBindList firstpass dbds)      
-  | DATATYPErepspec (tyvarseq, tycon, tyvarseq',tyconpath) =>       
+  | DATATYPErepspec (_,tyconpath) =>       
         resolveOvlTyConPath firstpass tyconpath
   | EXCEPTIONspec eds => 
       resolveOvlExDescList firstpass eds

@@ -328,7 +328,7 @@ and unguardedDec (_, dec') =
 	(U_map unguardedTypBind tbds)
   | DATATYPEdec (dbds,NONE) => 
  	 U_map unguardedDatBind dbds
-  | DATATYPErepdec (tyvarseq, tycon, tyvarseq',tyconpath) =>       
+  | DATATYPErepdec (tycon, tyconpath) =>       
 	 unguardedTyConPath tyconpath
   | ABSTYPEdec(dbds,SOME tbds,dec) =>
       (U_map unguardedDatBind dbds) U 
@@ -427,7 +427,7 @@ and unguardedSpec (_, spec') =
        (U_map unguardedTypBind tbds)
   | DATATYPEspec (dbds,NONE) => 
        U_map unguardedDatBind dbds
-  | DATATYPErepspec (tyvarseq, tycon, tyvarseq',tyconpath) =>       
+  | DATATYPErepspec (tycon, tyconpath) =>       
        unguardedTyConPath tyconpath
   | EXCEPTIONspec eds => U_map unguardedExDesc eds
   | LOCALspec(spec1, spec2) =>
@@ -2207,35 +2207,11 @@ and elabMRule (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv)
 
 and elabDatatypeReplication (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) 
         (UE:UEnv) (VE:VarEnv) (TE : TyEnv) 
-       (loc,(tyvarseq1,(_,tycon),tyvarseq2,tyconpath)) =
- let fun idOfTyVar (tv:TyVar) = #id(#qualid tv)
-     val _ =  checkDuplIds tyvarseq1 "Duplicate parameter"
-     val _ =  checkDuplIds tyvarseq2 "Duplicate parameter"
- in (* cvr: TODO it might be better to introduce a new type name for
-            tycon and then realise it to improve printing *)
-    if (map idOfTyVar tyvarseq1) <> (map idOfTyVar tyvarseq2)
-	then errorMsg loc "The type arguments on the left differ from the type arguments on the right"
-    else let val tyStr as (tyfun,CE) =
-	           elabTyConPath ME FE GE UE VE TE tyconpath
-	     val specArity = length tyvarseq1
-	     val infArity  = (case kindTyFun tyfun of 
-				  ARITYkind a => a 
-				| _ => fatalError "elabDataTypeReplication")
-	 in if infArity <> specArity
-		then (msgIBlock 0;
-                      errLocation loc;
-		      errPrompt "Arity mismatch: the type constructor ";
-		      msgString tycon;
-		      msgString " should have arity ";
-		      msgInt (specArity); msgEOL();
-		      errPrompt "but the path has arity ";
-		      msgInt (infArity);
-		      msgEOL();
-		      msgEBlock();
-		      raise Toplevel)
-	    else (VEofCE CE,mk1Env tycon tyStr)
-	 end
- end
+       (loc,((_,tycon),tyconpath)) =
+    let val tyStr as (tyfun,CE) =
+	elabTyConPath ME FE GE UE VE TE tyconpath
+    in (VEofCE CE,mk1Env tycon tyStr)
+    end
 and elabDec (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv)
   (TE : TyEnv) (onTop : bool)  (loc, dec') =
   case dec' of

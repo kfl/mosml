@@ -296,7 +296,7 @@ and resolveDecOp (iBas : InfixBasis) (dec as (loc, dec')) =
   | PRIM_TYPEdec (tynamequ, typdescs) => NILenv
   | DATATYPEdec (dbds,SOME tbds) => (app (resolveDatBindOp iBas) dbds; app (resolveTypBindOp iBas) tbds;NILenv)
   | DATATYPEdec (dbds,NONE) => (app (resolveDatBindOp iBas) dbds;NILenv)
-  | DATATYPErepdec (tyvarseq, tycon, tyvarseq',tyconpath) =>
+  | DATATYPErepdec (tycon, tyconpath) =>
       (resolveTyConPathOp iBas tyconpath;
        NILenv)
   | ABSTYPEdec(dbds, SOME tbds, dec2) =>
@@ -423,7 +423,7 @@ and resolveSpecOp (iBas : InfixBasis) (spec as (loc, spec')) =
   | DATATYPEspec (dbds,NONE) => 
       (app (resolveDatBindOp iBas) dbds;
        NILenv)
-  | DATATYPErepspec (tyvarseq, tycon, tyvarseq',tyconpath) =>
+  | DATATYPErepspec (tycon, tyconpath) =>
       (resolveTyConPathOp iBas tyconpath;
        NILenv)
   | EXCEPTIONspec eds => 

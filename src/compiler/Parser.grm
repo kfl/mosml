@@ -125,7 +125,7 @@ end
 %type <Asynt.ValBind list> FnValBind AndFnValBind_opt
 %type <Asynt.TypBind list> TypBind AndTypBind_opt
 %type <Asynt.TypDesc list> TypDesc AndTypDesc_opt
-%type <Asynt.DatBind list> DatBind AndDatBind_opt
+%type <Asynt.DatBind list> DatBind AndDatBind_opt DatBind_0 DatBind_n
 %type <Asynt.ConBind list> ConBind BarConBind_opt
 %type <Asynt.TypBind list option> WithType_opt
 %type <Asynt.ExBind list> ExBind AndExBind_opt
@@ -359,10 +359,14 @@ KWDec :
   | PRIM_TYPE TypDesc           { mkLoc(PRIM_TYPEdec(FALSEequ, $2)) }
   | PRIM_EQTYPE TypDesc         { mkLoc(PRIM_TYPEdec(TRUEequ, $2)) }
   | PRIM_REFTYPE TypDesc        { mkLoc(PRIM_TYPEdec(REFequ, $2)) }
+  | DATATYPE DatBind_0 WithType_opt
+                                { mkLoc(DATATYPEdec($2,$3)) } 
+  | DATATYPE DatBind_n WithType_opt
+                                { mkLoc(DATATYPEdec($2,$3)) } 
   | DATATYPE DatBind WithType_opt
-                                { mkLoc(DATATYPEdec($2,$3)) }
-  | DATATYPE TyVarSeq TyCon EQUALS DATATYPE TyVarSeq TyConPath
-                                { mkLoc(DATATYPErepdec($2,$3,$6,$7))}
+                                { mkLoc(DATATYPEdec($2,$3)) } 
+  | DATATYPE TyCon EQUALS DATATYPE TyConPath
+                                { mkLoc(DATATYPErepdec($2,$5))}
   | ABSTYPE DatBind WithType_opt WITH Dec END
                                 { mkLoc(ABSTYPEdec($2,$3,$5)) }
   | EXCEPTION ExBind            { mkLoc(EXCEPTIONdec $2) }
@@ -392,10 +396,16 @@ KWCoreDec :
   | PRIM_TYPE TypDesc           { mkLoc(PRIM_TYPEdec(FALSEequ, $2)) }
   | PRIM_EQTYPE TypDesc         { mkLoc(PRIM_TYPEdec(TRUEequ, $2)) }
   | PRIM_REFTYPE TypDesc        { mkLoc(PRIM_TYPEdec(REFequ, $2)) }
+  | DATATYPE DatBind_0 WithType_opt
+                                { mkLoc(DATATYPEdec($2,$3)) } 
+  | DATATYPE DatBind_n WithType_opt
+                                { mkLoc(DATATYPEdec($2,$3)) } 
+/* cvr: this simpler production cause a shift/reduce conflict 
+	with datatype replication 
   | DATATYPE DatBind WithType_opt
-                                { mkLoc(DATATYPEdec($2,$3)) }
-  | DATATYPE TyVarSeq TyCon EQUALS DATATYPE TyVarSeq TyConPath
-                                { mkLoc(DATATYPErepdec($2,$3,$6,$7))}
+                                { mkLoc(DATATYPEdec($2,$3)) } */
+  | DATATYPE TyCon EQUALS DATATYPE TyConPath
+                                { mkLoc(DATATYPErepdec($2,$5))}
   | ABSTYPE DatBind WithType_opt WITH Dec END
                                 { mkLoc(ABSTYPEdec($2,$3,$5)) }
   | EXCEPTION ExBind            { mkLoc(EXCEPTIONdec $2) }
@@ -458,6 +468,16 @@ DatBind :
                         { ($1, $2, $4) :: $5 }
 ;
 
+DatBind_0 :
+    TyCon EQUALS ConBind AndDatBind_opt
+                        { ([], $1, $3) :: $4 }
+;
+
+DatBind_n :
+    TyVarSeq1 TyCon EQUALS ConBind AndDatBind_opt
+                        { ($1, $2, $4) :: $5 }
+;
+
 AndDatBind_opt :
     AND DatBind         { $2 }
   | /* */               { [] }
@@ -501,6 +521,10 @@ ColonTy_opt :
 
 OfTy_opt :
     OF Ty       { SOME $2 }
+/* cvr: TODO possible syntax for greedy constructors
+  | LBRACE  Label COLON Ty COMMA TyRow RBRACE       { SOME (mkLoc(RECty(($2,$4)::$6))) } 
+  | LPAREN Ty_sans_STAR STAR TupleTy RPAREN  { SOME (tupleTy($2 :: $4)) } 
+*/
   | /* */       { NONE }
 ;
 
@@ -871,10 +895,16 @@ KWCoreSpec :
   | TYPE TypDesc                { mkLoc(TYPEDESCspec(FALSEequ, $2)) }
   | EQTYPE TypDesc              { mkLoc(TYPEDESCspec(TRUEequ, $2)) }
   | PRIM_REFTYPE TypDesc        { mkLoc(TYPEDESCspec(REFequ, $2)) }
+  | DATATYPE DatBind_0 WithType_opt
+                                { mkLoc(DATATYPEspec($2,$3)) } 
+  | DATATYPE DatBind_n WithType_opt
+                                { mkLoc(DATATYPEspec($2,$3)) } 
+/* cvr: this simpler production cause a shift/reduce conflict 
+	with datatype replication 
   | DATATYPE DatBind WithType_opt
-                                { mkLoc(DATATYPEspec($2,$3)) }
-  | DATATYPE TyVarSeq TyCon EQUALS DATATYPE TyVarSeq TyConPath
-                                { mkLoc(DATATYPErepspec($2,$3,$6,$7))}
+                                { mkLoc(DATATYPEspec($2,$3)) } */
+  | DATATYPE TyCon EQUALS DATATYPE TyConPath
+                                { mkLoc(DATATYPErepspec($2,$5))}
   | EXCEPTION ExDesc            { mkLoc(EXCEPTIONspec $2) }
   | LOCAL Spec IN Spec END      { mkLoc(LOCALspec($2,$4)) }
   | OPEN LongModIdInfo_seq1         { mkLoc(OPENspec $2) }

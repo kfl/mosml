@@ -190,7 +190,7 @@ signature S = rec(X: sig type ('a,'b) a end)
 
 structure A = rec(X:S)
     struct
-	datatype ('a,'b) a = datatype ('a,'b) X.a
+	datatype a = datatype X.a
     end;
 
 structure B = A :> S;
@@ -205,7 +205,7 @@ signature S = rec(X: sig datatype ('a,'b) a = C of ('a,'b) a | D of 'a | E of 'b
 
 structure A = rec(X:S)
     struct
-	datatype ('a,'b) a = datatype ('a,'b) X.a
+	datatype a = datatype X.a
     end;
 
 structure B = A :> S;

@@ -132,7 +132,7 @@ and Dec' =
   | TYPEdec of TypBind list
   | PRIM_TYPEdec of TyNameEqu * TypDesc list
   | DATATYPEdec of DatBind list * TypBind list option
-  | DATATYPErepdec of TyVarSeq * TyCon * TyVarSeq * TyConPath
+  | DATATYPErepdec of TyCon * TyConPath
   | ABSTYPEdec of DatBind list * TypBind list option * Dec
   | EXCEPTIONdec of ExBind list
   | LOCALdec of Dec * Dec
@@ -188,7 +188,7 @@ and Spec' =
   | TYPEDESCspec of TyNameEqu * TypDesc list
   | TYPEspec of TypBind list
   | DATATYPEspec of DatBind list * TypBind list option
-  | DATATYPErepspec of TyVarSeq * TyCon * TyVarSeq * TyConPath
+  | DATATYPErepspec of TyCon * TyConPath
   | EXCEPTIONspec of ExDesc list
   | LOCALspec of Spec * Spec
   | OPENspec of LongModIdInfo list

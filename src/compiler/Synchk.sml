@@ -524,7 +524,7 @@ and compliantDec (loc,dec') =
 	 (app compliantTypBind tbds))
   | DATATYPEdec (dbds,NONE) => 
  	 app compliantDatBind dbds
-  | DATATYPErepdec (tyvarseq, tycon, tyvarseq',tyconpath) =>       
+  | DATATYPErepdec (_,tyconpath) =>       
 	 compliantTyConPath tyconpath
   | ABSTYPEdec(dbds,SOME tbds,dec) =>
       ((app compliantDatBind dbds);
@@ -569,7 +569,7 @@ and compliantStrDec (loc,dec') =
 	 (app compliantTypBind tbds))
   | DATATYPEdec (dbds,NONE) => 
  	 app compliantDatBind dbds
-  | DATATYPErepdec (tyvarseq, tycon, tyvarseq',tyconpath) =>       
+  | DATATYPErepdec (_,tyconpath) =>       
 	 compliantTyConPath tyconpath
   | ABSTYPEdec(dbds,SOME tbds,dec) =>
       ((app compliantDatBind dbds);
@@ -613,7 +613,7 @@ and compliantTopDec (loc,dec') =
 	 (app compliantTypBind tbds))
   | DATATYPEdec (dbds,NONE) => 
  	 app compliantDatBind dbds
-  | DATATYPErepdec (tyvarseq, tycon, tyvarseq',tyconpath) =>       
+  | DATATYPErepdec (_,tyconpath) =>       
 	 compliantTyConPath tyconpath
   | ABSTYPEdec(dbds,SOME tbds,dec) =>
       ((app compliantDatBind dbds);
@@ -776,7 +776,7 @@ and compliantSpec (loc, spec') =
         (app compliantTypBind tbds))
   | DATATYPEspec (dbds,NONE) => 
        app compliantDatBind dbds
-  | DATATYPErepspec (tyvarseq, tycon, tyvarseq',tyconpath) =>       
+  | DATATYPErepspec (_,tyconpath) =>       
        compliantTyConPath tyconpath
   | EXCEPTIONspec eds => app compliantExDesc eds
   | LOCALspec(spec1, spec2) =>
