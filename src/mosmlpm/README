@@ -23,4 +23,12 @@ Future plans:
 * Make a library so as project can be managed in a mosml session.
 
 
+Known Bugs:
+-----------
+* Poor (non-existent) error messages
+* mosmlpm enters an infinite (well it is bound by the memory
+  available) loop if the project files are cyclic
+
+
+
 Ken Friis Larsen, June 2000.

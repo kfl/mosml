@@ -1,5 +1,4 @@
 (* Arg.sig from compiler ported to SML'97 by Henning Niss *)
-
 signature ArgParse = 
 sig
 

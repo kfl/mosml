@@ -4,6 +4,7 @@ struct
 
     datatype body =
 	     SRC of filename * body
+           | STRSRC of filename * body
            | LOCAL of body * body * body
            | NULL
     datatype pmfile = PM of {imports : filename list,
@@ -27,7 +28,7 @@ struct
     
 				   
 	datatype token =
-		 LOCAL_T | IN_T | END_T | IMPORT_T 
+		 LOCAL_T | IN_T | END_T | IMPORT_T | STRUCTURE_T | TOPLEVEL_T
 	       | FILENAME_T of filename
 	       | EOF_T
 
@@ -44,10 +45,12 @@ struct
 	infix 7 |>
 	fun (pf |> res) = pf >> (fn _ => res)
 			
-	fun keyword "local"  = LOCAL_T
-	  | keyword "in"     = IN_T
-	  | keyword "end"    = END_T
-	  | keyword "import" = IMPORT_T
+	fun keyword "local"     = LOCAL_T
+	  | keyword "in"        = IN_T
+	  | keyword "end"       = END_T
+	  | keyword "import"    = IMPORT_T
+	  | keyword "structure" = STRUCTURE_T
+	  | keyword "toplevel"  = TOPLEVEL_T
 	  | keyword file     = FILENAME_T file
   
 	fun token stream =
@@ -85,12 +88,15 @@ struct
 	val getFile = getOpt(fn (FILENAME_T s) => SOME s | _ => NONE)
 
 	val imports = repeat0 getFile
-		      
+
+	val optTOPLEVEL = optional(getLit TOPLEVEL_T)
+
 	fun body stream = 
-	    (   getFile -- body >> SRC
+	    (   optTOPLEVEL #-- getFile -- body >> SRC
+             || STRUCTURE_T &-- getFile -- body >> STRSRC
 	     || LOCAL_T &-- body -- IN_T &-- body -- END_T &-- body
 	                                >> (fn((b1,b2),b3) => LOCAL(b1,b2,b3))
-             || success                    NULL
+             || success                                    NULL
             ) stream
 
 	val pm = 

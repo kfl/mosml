@@ -11,15 +11,19 @@ struct
     fun insertSep sep []      = []
       | insertSep sep (x::xs) = x :: sep :: insertSep sep xs     
 
-    fun newExt ex filename = 
-	let open OS.Path
-	in  case splitBaseExt filename of
-		{base, ext=SOME"sml"} => joinBaseExt{base=base,ext=SOME ex}
-	      | _ => error "Can only handle .sml files for now"
+    fun newExt ext filename = 
+	let structure P = OS.Path
+	    val base = P.base filename
+	in  P.joinBaseExt{base = base, ext = SOME ext}
 	end
 	    
-    val smlToUi = newExt "ui"
-    val smlToUo = newExt "uo"
+    fun checkExt ext filename = OS.Path.ext filename = SOME ext
+    val isSML = checkExt "sml"
+    val isSIG = checkExt "sig"
+    fun isML file = isSML file orelse isSIG file
+
+    val toUi = newExt "ui"
+    val toUo = newExt "uo"
 
     fun normalizeName filename = OS.FileSys.fullPath filename
 		  
@@ -31,9 +35,10 @@ struct
     fun dropLocal (dirty, (x::_::xs)) = (dirty, x::xs)
     fun dropImports (dirty, files)    = (dirty, List.hd files)
     fun files (_,fs)                  = fs
+    fun dirty (d,_)                   = d
     fun setDirty dirty (_, files)     = (dirty, files)
     fun addImport (d1, fs1) (d2, fs2) = (d1 orelse d2, fs1 :: fs2)
-    fun addUI file (dirty, x::xs)     = (dirty, (smlToUi file :: x) :: xs)
+    fun addUI file (dirty, x::xs)     = (dirty, (toUi file :: x) :: xs)
 
 
     (* returns true if file exists *)					
@@ -46,11 +51,24 @@ struct
 			      in  Time.> (t1, t2)
 			      end
 
-    fun uptodate (dirty,_) file =
-	not dirty 
-	andalso isNewer (smlToUo file) file
-	andalso isNewer (smlToUi file) file
+    (* checks if a toplevel file need to be recompiled *)
+    fun uptodate context file =
+	not (dirty context)
+	andalso isNewer (toUo file) file
+	andalso isNewer (toUi file) file
 
+    (* checks if a structure file needs to be recompiled, *much* more
+       ugly than the predicate for toplevel files*)
+    fun strUptodate context file =
+	not (dirty context)
+	andalso
+	if isSIG file then isNewer (toUi file) file
+	else isNewer (toUo file) file
+	     andalso (not(exists (newExt "sig" file))
+		      orelse isNewer (toUi file) file)
+
+
+(*
     fun makeTempName file =
 	let val {base,ext} = OS.Path.splitBaseExt file
 	    val base = String.concat[base,"-",Option.valOf ext]
@@ -59,7 +77,7 @@ struct
 
     (* move file.ui to file.ui.tmp *)
     fun move_ui_file file =
-      let val ui  = smlToUi file
+      let val ui  = toUi file
 	  val new = makeTempName ui
       in  if exists ui then
 	      OS.FileSys.rename {old=ui,new=new}
@@ -81,73 +99,61 @@ struct
 	end handle _ => false
 
     fun check_ui_file file : bool (*true if dirty *) =
-      let val ui = smlToUi file
+      let val ui = toUi file
 	  val ui' = makeTempName ui
       in
 	  if filesEqual ui ui' then
 	      (OS.FileSys.rename {old=ui',new=ui}; false)
 	  else (OS.FileSys.remove ui';             true)
       end handle _ => true
+*)
 
     (* context is in reverse order *)
-    fun mosmlc context file = 
-	if uptodate context file then 
-	    (chat ["Reusing: ", file];
-	     (false, true))
-	else
-	    let open Process
-		val _ = move_ui_file file
-		val cont = List.concat ([file] :: files context)
-		val cont = rev(insertSep " " cont)
-		val args = String.concat("mosmlc -c -orthodox -toplevel "
-					 :: cont)
-		val return = (chat ["Compiling: ", file]; 
-			      system args = success)
-	    in (check_ui_file file, return)
-	    end
-
-    fun srcSeq (SRC(file,b)) acc = srcSeq b (file::acc)
-      | srcSeq b             acc = (b, List.rev acc)  
-
-    (* not ready for context with dirty bit *)
-    (*fun compileBodyOpt path b context =
-	case b of
-	    SRC _ =>
-	        let val (b,seq) = srcSeq b [] 
-		    fun filename file = Path.mkAbsolute(file,path)
-		    val files = List.map filename seq
-		    val context' = foldl (fn(f,c) => addUI f c) context files
-	        in  if mosmlc context (rev files) then 
-			compileBodyOpt path b context'
-		    else error (String.concat("Could not compile: "::files))
+    fun mosmlc toplevel context file = 
+	let val up2date = if toplevel then uptodate else strUptodate
+	in
+	    if up2date context file then 
+		( chat ["Reusing: ", file]
+		; (false, true)
+                )
+	    else
+		let structure P = OS.Process
+		    (*val _ = move_ui_file file
+		     *)
+		    val cont = List.concat ([file] :: files context)
+		    val cont = rev(insertSep " " cont)
+		    val mode = if toplevel then " -toplevel "
+			                   else " -structure "
+		    val args = String.concat("mosmlc -c":: mode 
+					     :: cont)
+		    val return = (chat ["Compiling: ", file]; 
+				  P.system args = P.success)
+		in (*(check_ui_file file, return)
+		    *) (true, return)
 		end
-	  | LOCAL(b1,b2,b3) =>
-	        let val context = compileBodyOpt path b1 (scope context)
-		    val context = compileBodyOpt path b2 (scope context)
-		    val context = dropLocal context
-		in  compileBodyOpt path b3 context
-		end 
-	  | NULL => context 
-		*)
+	end
 
     fun compileBody path b context =
-	case b of
-	    SRC (file,b) =>
-	        let val name = OS.Path.mkAbsolute(file,path)
-		    val (dirty, status) = mosmlc context name
+	let fun compileFile toplevel file next =
+		let val name = OS.Path.mkAbsolute(file,path)
+		    val (dirty, status) = mosmlc toplevel context name
 		    val context = addUI name (setDirty dirty context)
 	        in  if status then 
-		         compileBody path b context
+			compileBody path next context
 		    else error ("Could not compile: "^file)
 		end
-	  | LOCAL(b1,b2,b3) =>
-	        let val context = compileBody path b1 (scope context)
-		    val context = compileBody path b2 (scope context)
-		    val context = dropLocal context
-		in  compileBody path b3 context
-		end 
-	  | NULL => context 
-
+	in
+	    case b of
+		SRC (file,b)    => compileFile true file b
+	      | STRSRC (file,b) => compileFile false file b
+	      | LOCAL(b1,b2,b3) =>
+		    let val context = compileBody path b1 (scope context)
+			val context = compileBody path b2 (scope context)
+			val context = dropLocal context
+		    in  compileBody path b3 context
+		    end 
+	      | NULL => context 
+	end
 
     fun compile filename =
 	let val table  = Polyhash.mkPolyTable(37, Subscript)
@@ -187,17 +193,21 @@ struct
 
     
     fun findFilesBody path body accu =
-	case body of
-	    SRC (file, body) =>
-	        let val name = OS.Path.mkAbsolute(file,path)
+	let fun findFilesFile file body = 
+		let val name = OS.Path.mkAbsolute(file,path)
 		in  findFilesBody path body (name :: accu) 
 		end
-	  | LOCAL(b1,b2,b3) =>
-	        let val accu = findFilesBody path b1 accu
-		    val accu = findFilesBody path b2 accu
-		in             findFilesBody path b3 accu
-		end
-	  | NULL => accu
+	in 
+	    case body of
+		SRC (file, body)    => findFilesFile file body
+	      | STRSRC (file, body) => findFilesFile file body
+	      | LOCAL(b1,b2,b3) =>
+		    let val accu = findFilesBody path b1 accu
+			val accu = findFilesBody path b2 accu
+		    in             findFilesBody path b3 accu
+		    end
+	      | NULL => accu
+	end
 
     
     fun findFiles filename = 
@@ -232,11 +242,13 @@ struct
     (* For now assume that everything is compiled and upto date *)
     fun link options filename outfile =
 	let val smlfiles = findFiles filename
-	    val uofiles  = List.map smlToUo smlfiles
+	    fun makeUo file = if isSML file then SOME(toUo file)
+			      else NONE
+	    val uofiles  = List.mapPartial makeUo smlfiles
 	    val args = 
 		String.concat("mosmlc -toplevel -o ":: outfile :: " " ::
 				     options @ (insertSep " " uofiles))
-	in  (*chat [args];*)
+	in  chat [args];
             chat ["Linking: ", outfile]
           ; Process.system args = Process.success
 	end
