@@ -76,7 +76,7 @@ fun setCookie { name : string, value : string, expiry : Date.date option,
 		concatOpt "; expires=" (Option.map datefmt expiry),
 		concatOpt "; domain=" domain,
 		concatOpt "; path=" path,
-		"; secure", Bool.toString secure]
+		"; secure=", Bool.toString secure, "\n"]
     end
 
 (* To set multiple cookies *)
