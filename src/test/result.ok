@@ -497,10 +497,10 @@ ba> val it = CONSab{a = "a", b = "b"} : (string, string) AB
 > val eew1 = true : bool
 > val eec1 = true : bool
 > val eeg1 = true : bool
-User: 1.000  System: 0.010  GC: 0.000  Real: 1.015
+User: 0.550  System: 0.000  GC: 0.000  Real: 0.551
 > val it = 7 : int
 > val loop2 = fn : int -> int
-User: 0.970  System: 0.000  GC: 0.000  Real: 0.978
+User: 0.510  System: 0.000  GC: 0.000  Real: 0.512
 > val it = 7 : int
 > val maxi = fn : int array -> int * int
 [closing file "ovlsucc.sml"]

@@ -24,7 +24,8 @@ mgd.o: mgd.c
 	$(CC) $(CFLAGS) -c -o mgd.o mgd.c
 
 libmgd.so: mgd.o
-	$(DYNLD) -o libmgd.so mgd.o ${GDDIR}/libgd.a -L/usr/X11R6/lib -lpng -lz
+	$(DYNLD) -o libmgd.so mgd.o ${GDDIR}/libgd.a -L/usr/lib -lpng -lz
+#	$(DYNLD) -o libmgd.so mgd.o ${GDDIR}/libgd.a -L/usr/X11R6/lib -lpng -lz
 #	$(DYNLD) -o libmgd.so mgd.o ${GDDIR}/libgd.a -R/pack/libs/lib -L/pack/libs/lib -lpng -lz
 
 test: Graphs.uo

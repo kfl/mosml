@@ -231,9 +231,9 @@ fun pq_getdate dbres fno tupno : int * int * int =
 	fun getint src = Option.valOf (Int.scan StringCvt.DEC getc src)
 	fun drop p     = StringCvt.dropl p getc
 	fun isSep c  = (c = #"-")
-	val (month, src1) = getint (all s)
-	val (day,   src2) = getint (drop isSep src1)
-	val (year,  src3) = getint (drop isSep src2)
+	val (year,  src1) = getint (all s)
+	val (month, src2) = getint (drop isSep src1)
+	val (day,   src3) = getint (drop isSep src2)
     in 
 	(year, month, day)
     end
