@@ -25,6 +25,7 @@ base:
 
 install:
 	cp helpsigs.val $(LIBDIR)
+	test -d $(DOCDIR)/mosmllib || mkdir -p $(DOCDIR)/mosmllib
 	cp htmlsigs/*.html $(DOCDIR)/mosmllib
 	cp index.html $(DOCDIR)/mosmllib
 
