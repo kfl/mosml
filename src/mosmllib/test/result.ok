@@ -1,4 +1,4 @@
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 [opening file "test.sml"]
 [opening file "array.sml"]
@@ -373,27 +373,27 @@ Enter `quit();' to quit.
 > val checkrange = fn : int * int -> (int -> bool) -> string
 [closing file "auxil.sml"]
 > val it = () : unit
-This is (local time) now:        Wed Mar 15 22:58:43 2000
-This is UTC now:                 Wed Mar 15 21:58:43 2000
-This is an hour from now:        Wed Mar 15 23:58:43 2000
-This is a day from now:          Thu Mar 16 22:58:43 2000
-This is a week from now:         Wed Mar 22 22:58:43 2000
-This is 120 days from now:       Thu Jul 13 23:58:43 2000
-This is 160 days from now:       Tue Aug 22 23:58:43 2000
-This is 200 days from now:       Sun Oct  1 23:58:43 2000
-This is 240 days from now:       Fri Nov 10 22:58:43 2000
+This is (local time) now:        Thu Jun 22 23:50:22 2000
+This is UTC now:                 Thu Jun 22 22:50:22 2000
+This is an hour from now:        Fri Jun 23 00:50:22 2000
+This is a day from now:          Fri Jun 23 23:50:22 2000
+This is a week from now:         Thu Jun 29 23:50:22 2000
+This is 120 days from now:       Fri Oct 20 23:50:22 2000
+This is 160 days from now:       Wed Nov 29 22:50:22 2000
+This is 200 days from now:       Mon Jan  8 22:50:22 2001
+This is 240 days from now:       Sat Feb 17 22:50:22 2001
 This is the epoch (UTC):         Thu Jan  1 00:00:00 1970
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
-The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
+The UTC millenium (UTC time):    Sat Jan  1 01:00:00 2000
 The UTC millenium minus 5 sec:   Fri Dec 31 23:59:55 1999
 The UTC millenium (local time):  Sat Jan  1 01:00:00 2000
-The local millenium (UTC time):  Fri Dec 31 23:00:00 1999
-The UTC+01 millenium (UTC):      Fri Dec 31 23:00:00 1999
-The UTC-01 millenium (UTC):      Sat Jan  1 01:00:00 2000
-This is today's number:          075 (internally: 74)
-This is today's weekday:         Wednesday
-This is the name of this month:  March
-Today's ISO date:                2000-03-15
+The local millenium (UTC time):  Sat Jan  1 00:00:00 2000
+The UTC+01 millenium (UTC):      Sat Jan  1 00:00:00 2000
+The UTC-01 millenium (UTC):      Sat Jan  1 02:00:00 2000
+This is today's number:          174 (internally: 173)
+This is today's weekday:         Thursday
+This is the name of this month:  June
+Today's ISO date:                2000-06-22
 > val test1 = "OK" : string
   val test2 = "OK" : string
   val test3 = "OK" : string
@@ -1128,14 +1128,14 @@ abcde <--- this should read abcde
 > val it = () : unit
 
 Each line below should show roughly the same User, System, and Gc times:
-User: 0.370  System: 0.000  Gc: 0.000  Real: 0.372
-User: 0.370  System: 0.000  Gc: 0.000  Real: 0.372
-User: 0.370  System: 0.000  Gc: 0.000  Real: 0.372
-User: 0.370  System: 0.000  Gc: 0.000  Real: 0.372
-User: 0.370  System: 0.000  Gc: 0.000  Real: 0.372
-User: 0.370  System: 0.000  Gc: 0.000  Real: 0.372
-User: 0.380  System: 0.000  Gc: 0.000  Real: 0.373
-User: 0.370  System: 0.000  Gc: 0.000  Real: 0.372
+User: 0.330  System: 0.000  Gc: 0.000  Real: 0.325
+User: 0.320  System: 0.000  Gc: 0.000  Real: 0.325
+User: 0.330  System: 0.000  Gc: 0.000  Real: 0.324
+User: 0.320  System: 0.000  Gc: 0.000  Real: 0.325
+User: 0.330  System: 0.000  Gc: 0.000  Real: 0.328
+User: 0.320  System: 0.000  Gc: 0.000  Real: 0.325
+User: 0.330  System: 0.000  Gc: 0.000  Real: 0.324
+User: 0.320  System: 0.000  Gc: 0.000  Real: 0.325
 > val test1 = "OK" : string
   val test2 = "OK" : string
   val test3 = "OK" : string
@@ -1297,7 +1297,7 @@ test5:
 test6:
 test7:
 test8:
-///////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
 > val a = <array> : int list array
   val test1 = "OK" : string
   val test2 = "OK" : string
@@ -1553,12 +1553,12 @@ test8:
   val test6b = "OK" : string
   val test6c = "OK" : string
   val e = <array> : array
-  val a2v = fn : array -> vector'
-  val ev = <vector> : vector'
+  val a2v = fn : array -> vector/1
+  val ev = <vector> : vector/1
   val test7 = "OK" : string
   val test8a = "OK" : string
   val test8b = "OK" : string
-  val f = <vector> : vector'
+  val f = <vector> : vector/1
   val test9 = "OK" : string
   val test9a = "OK" : string
   val test9b = "OK" : string
@@ -1601,12 +1601,12 @@ test8:
 > val checkrange = fn : int * int -> (int -> bool) -> string
 [closing file "auxil.sml"]
 > val it = () : unit
-> val a = <vector> : vector'
-  val b = <vector> : vector'
-  val c = <vector> : vector'
+> val a = <vector> : vector/1
+  val b = <vector> : vector/1
+  val c = <vector> : vector/1
   val test1 = "OK" : string
   val test2 = "OK" : string
-  val d = <vector> : vector'
+  val d = <vector> : vector/1
   val test3 = "OK" : string
   val test4a = "OK" : string
   val test4b = "OK" : string
@@ -1615,10 +1615,10 @@ test8:
   val test6a = "OK" : string
   val test6b = "OK" : string
   val test6c = "OK" : string
-  val e = <vector> : vector'
+  val e = <vector> : vector/1
   val test7 = "OK" : string
   val test8 = "OK" : string
-  val f = <vector> : vector'
+  val f = <vector> : vector/1
   val test9 = "OK" : string
   val test9a = "OK" : string
   val test9b = "OK" : string

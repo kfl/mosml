@@ -1,4 +1,4 @@
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 [opening file "test.sml"]
 [opening file "test1.sml"]
@@ -497,10 +497,10 @@ ba> val it = CONSab{a = "a", b = "b"} : (string, string) AB
 > val eew1 = true : bool
 > val eec1 = true : bool
 > val eeg1 = true : bool
-User: 0.580  System: 0.000  GC: 0.000  Real: 0.582
+User: 1.000  System: 0.010  GC: 0.000  Real: 1.015
 > val it = 7 : int
 > val loop2 = fn : int -> int
-User: 0.520  System: 0.000  GC: 0.000  Real: 0.528
+User: 0.970  System: 0.000  GC: 0.000  Real: 0.978
 > val it = 7 : int
 > val maxi = fn : int array -> int * int
 [closing file "ovlsucc.sml"]
@@ -591,12 +591,12 @@ File "testmatc.sml", line 80-84, characters 4-154:
 !   | fcon (C[], A, A    ) = 555.
 ! Warning: pattern matching is not exhaustive
 
-> New type names: =t'
-  datatype t = (t',{con A : t', con B : t', con C : int list -> t'})
-  con A = A : t'
-  con B = B : t'
-  con C = fn : int list -> t'
-  val fcon = fn : t' * t' * t' -> int
+> New type names: =t/1
+  datatype t = (t/1,{con A : t/1, con B : t/1, con C : int list -> t/1})
+  con A = A : t/1
+  con B = B : t/1
+  con C = fn : int list -> t/1
+  val fcon = fn : t/1 * t/1 * t/1 -> int
 > val test6a = "OK" : string
 > val test6b = "OK" : string
 > val test6c = "OK" : string
@@ -807,31 +807,31 @@ File "testmatc.sml", line 311, characters 13-15:
 [closing file "testmatc.sml"]
 > val it = () : unit
 [opening file "recsucc.sml"]
-> New type names: =t''
-  datatype t = (t'',{con f : t'', con g : int -> t''})
-  con g = fn : int -> t''
+> New type names: =t/2
+  datatype t = (t/2,{con f : t/2, con g : int -> t/2})
+  con g = fn : int -> t/2
   exn F = F : exn
   exn G = fn : int -> exn
   val 'a f = fn : 'a -> 'a
 > val 'a g = fn : 'a -> 'a
 > val 'a F = fn : 'a -> 'a
 > val 'a G = fn : 'a -> 'a
-> New type names: =t'''
-  datatype t = (t''',{con f : t''', con g : int -> t'''})
-  con g = fn : int -> t'''
+> New type names: =t/3
+  datatype t = (t/3,{con f : t/3, con g : int -> t/3})
+  con g = fn : int -> t/3
   exn F = F : exn
   exn G = fn : int -> exn
   val 'a f = fn : 'a -> 'a
 > val 'a g = fn : 'a -> 'a
 > val 'a F = fn : 'a -> 'a
 > val 'a G = fn : 'a -> 'a
-> New type names: =t''''
+> New type names: =t/4
   infix 0 ff
   infix 0 gg
   infix 0 FF
   infix 0 GG
-  datatype t = (t'''',{con ff : t'''', con gg : int -> t''''})
-  con gg = fn : int -> t''''
+  datatype t = (t/4,{con ff : t/4, con gg : int -> t/4})
+  con gg = fn : int -> t/4
   exn FF = FF : exn
   exn GG = fn : int -> exn
   val ('a, 'b) ff = fn : 'a * 'b -> 'a
@@ -845,10 +845,10 @@ File "recsucc.sml", line 47, characters 21-22:
 !                      ^
 ! Warning: pattern matching is not exhaustive
 
-> New type names: =t'''''
-  datatype t = (t''''',{con f : t''''', con g : int -> t'''''})
-  con f = f : t'''''
-  con g = fn : int -> t'''''
+> New type names: =t/5
+  datatype t = (t/5,{con f : t/5, con g : int -> t/5})
+  con f = f : t/5
+  con g = fn : int -> t/5
   exn F = F : exn
   exn G = fn : int -> exn
   val test1 = true : bool
@@ -942,7 +942,7 @@ File "recsucc.sml", line 47, characters 21-22:
 > val h = so far so good<installed prettyprinter failed: PP7> : int
 [closing file "testpp.sml"]
 > val it = () : unit
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > type word8 = word8
 - ! Toplevel input:
@@ -1076,7 +1076,7 @@ Enter `quit();' to quit.
 !                  ^^^^^
 ! Word8.word constant is too large
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - ! Toplevel input:
 ! val fail1 = ~1073741825;
@@ -1135,7 +1135,7 @@ Enter `quit();' to quit.
 !              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Lexical error: word constant is too large.
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - ! Toplevel input:
 ! datatype t = true;
@@ -1282,7 +1282,7 @@ Enter `quit();' to quit.
 !             ^^^
 ! Illegal rebinding or respecification
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - > val ('a, 'b) it = fn : 'a -> ('a -> 'b) -> 'b
 - ! Toplevel input:
@@ -1332,7 +1332,7 @@ Enter `quit();' to quit.
 !   'b
 ! because of circularity
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - ! Toplevel input:
 ! fun f1 x = (x=x, x 1);
@@ -1478,7 +1478,7 @@ Enter `quit();' to quit.
 !   'a -> 'a
 ! cannot have explicit type 'a
 - 
-Moscow ML version 1.99 (internal release)
+Moscow ML version 2.00 (June 2000)
 Enter `quit();' to quit.
 - ! Toplevel input:
 ! fun true x  = x;
