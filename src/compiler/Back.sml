@@ -716,10 +716,14 @@ fun compileExp env staticfail =
     and compTest2 sz dp cond ifso ifnot C =
       let val (sflbl,sftsz) = staticfail
           val Cc = 
+(* This optimization is rather ill-considered.  It works if the result () 
+   of the switch is disregarded, but otherwise it fails.  sestoft 2000-04-26
+
             if ifnot = Lconst constUnit
             then let val (lbl, C1) = labelCode C
                  in Kstrictbranchifnot lbl :: compexp sz dp ifso C1 end
-            else
+            else *)
+
             if ifso = Lstaticfail andalso sz = sftsz
             then Kbranchif sflbl :: compexp sz dp ifnot C
             else

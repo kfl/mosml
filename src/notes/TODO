@@ -265,3 +265,80 @@ value input_nonblocking(value channel, value buff, value start, value length) /*
 * TextIO.scanStream -- get rid of cs?
 
 * Should gc time be subtracted from sys time?  (Timer, Mosml)
+
+* Non-blocking IO should have a function canInput : int -> SOME int instead.
+
+http://www.dina.kvl.dk/~sestoft/sml/imperative-io.html#IMPERATIVE_IO:SIG:SPEC
+
+* 2000-04-26: Michael NorrishL this crashes mosml 1.44 (and 1.99):
+
+datatype 'a result =
+    FIRST of 'a
+  | SECOND of 'a;
+val zz = case FIRST() of
+    FIRST _ => ()
+  | _ => ();     
+
+while this works:
+
+val z = case SECOND() of
+    FIRST _ => ()
+  | _ => ();
+
+compiler/Rtvals.sml function prSeq; decode_obj thinks zz is a record
+of length 1.  Why?  Has nothing to do with the polymorphism of result.
+
+And really, the *representation* of the result is wrong; here zz
+evaluates to false:
+
+datatype result =
+    FIRST of int
+  | SECOND of int;
+val zz = () = (case FIRST 1 of
+    FIRST _ => ()
+  | _ => ());     
+
+But the generated code looks OK:
+
+(prim (set_global Top.zz/3) 
+	(prim (ccall2 sml_equal) (BLOCK 0:1 ) 
+	      let (BLOCK 0:2 1) in 
+	          ((switch:2 var:0 of 
+	              0:2 : (BLOCK 0:1 )) 
+	            statichandle (BLOCK 0:1 )) 
+              end))
+
+But the Kcode is wrong:
+
+(BLOCK 0:1 ); 
+push; 
+(BLOCK 0:2 1); 
+push; 
+access 0; 
+strictbranchifnot 1; 
+branch 2; 
+label 2; (BLOCK 0:1 ); 
+label 1; pop 1; 
+ccall2 sml_equal;
+set_global Top.zz/1
+
+Problem: the returned value is the argument of FIRST (which is a block
+of length 1 in this case): nothing is pushed between strictbranchifnot
+1 and branch 2.  Probably we forget to generate code to put unit in
+the accumulator???  Back.sml line 721, optimization for the case where
+the else-branch is a constunit ().  In that case, then other branches
+are () too (but may have side effects).
+
+The problem is caused by an optimization in the compiler backend, file
+compiler/Back.sml line 721.  If you want to get rid of it, uncomment
+this code:
+
+         (* if ifnot = Lconst constUnit
+            then let val (lbl, C1) = labelCode C
+                 in Kstrictbranchifnot lbl :: compexp sz dp ifso C1 end
+            else *)
+
+I'm afraid I introduced this optimization in 1997.  The reasoning was
+that if some branch of a switch evaluates to () : unit, then all
+branches do, and they are evaluated only for their side effects.  Not
+so.  
