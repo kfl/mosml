@@ -1011,6 +1011,48 @@ from file to file without understanding what I'm doing.
   (where an empty `env' is allocated; strictly speaking an
   always-ignored () : unit, which is a mistake).
 
+* 2001 December: List of bugs compiled by Claudio and Peter at MSR:
+
+  * local_dec bug (level error)
+
+  * structure mode dec bug (level error)
+
+  * win32 mosmlc bugs
+
+  * local type projections grammar bug (int   )
+
+  * non-linear patterns  fun f a a = ...  should be forbidden
+
+  * Stephen Weeks type spec 
+
+  * incompleteness for recursive structures
+
+  * sig elaboration performance
+
+  * type explosion, datatypes copied
+
+  * MacOS X dynlib
+
+  * maps and sets in libraries
+
+  * parsing of numbers in scan (?)
+
+  * SML Basis Library (check updates)
+
+  * test cases, share with ML Kit and SML.NET as far as possible
+
+  * dynlib `examples' to be integrated with rest of mosml
+
+  * PM?
+
+  * Doug's mosmle?
+
+  * parser combinators to lib, plus an actual example use
+
+  * Windows installer (Jakob Lichtenberg or .msi? or ?)
+
+  * document or fix Dawson bug (*.ui)
+
 * 2001-12-17: Mosmlcgi and Mosmlcookie suggestions from Hans Molin.
 
 * 2001-12-26: Stanislaw Skowron, see skowron-bug.sml: excess
