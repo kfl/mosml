@@ -8,9 +8,9 @@ if exist Makefile.w32 (
 
 echo "Renaming all Makefile to Makefile.w32"
 
-FOR /F  %%f IN ('dir /S /B Makefile) DO move /Y %%f %%f.w32
+FOR /F  %%f IN ('dir /S /B Makefile') DO move /Y %%f %%f.w32
 
 echo "Renaming all Makefile.unx to Makefile"
 
-FOR /F  %%f IN ('dir /S /B Makefile.unx') DO move /Y %%f %%~pfMakefile
+FOR /F  %%f IN ('dir /S /B Makefile.unx') DO move /Y %%f %%~dpfMakefile
 
