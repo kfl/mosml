@@ -1641,15 +1641,6 @@ Enter `quit();' to quit.
    val a : int,
    val 'a d : 'a list,
    exn e : exn}
-- > val it = 1 : int
-- > val it = true : bool
-- > val it = true : bool
-- > val it = "c" : string
-- > val 'a it = [] : 'a list
-- > val it = e : exn
-- > val it = e : exn
-- > val it = "c" : string
-- > val it = "c" : string
 - > type u = int
 - > type u = int
 - > New type names: =v
@@ -1670,30 +1661,6 @@ Enter `quit();' to quit.
 ! type fail = X.v where X = G();
 !             ^^^^^^^^^^^^^^^^^
 ! Illegal projection: this projection causes an existential type constructor to escape its scope
-- ! Toplevel input:
-! val fail = X.C where X = struct datatype t = C of t end;
-!            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-! Type clash: expression of type
-!   t -> t
-! cannot have type
-!   'a
-! because of a scope violation:
-! the type constructor t is a parameter 
-! that is declared within the scope of 'a
-- > functor G : {}->?=v'.{datatype v = (v',{con C : v'}), con C : v'}
-- ! Toplevel input:
-! val fail = X.C where X = G();
-!            ^^^^^^^^^^^^^^^^^
-! Type clash: expression of type
-!   v'
-! cannot have type
-!   'a
-! because of a scope violation:
-! the type constructor v' is a parameter 
-! that is declared within the scope of 'a
-- > functor G : {}->?=v'.{datatype v = (v',{con C : v'}), con C : v'}
-- > New type names: =v'
-  structure OK : {datatype v = (v',{con C : v'}), con C : v'}
 - 
 Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
@@ -3369,44 +3336,13 @@ Enter `quit();' to quit.
 - > functor Ok : {}->{}
 - > functor Ok : {}->{}
 - > structure S : {}
-- ! Toplevel input:
-! structure F = functor(X:sig end)struct end;
-!                                 ^^^^^^
-! Syntax error.
+- > functor F : {}->{}
 - > functor G : {}->{}
 - > functor H : ({}->{})->{}->{}
 - > structure Ok : {}
 - > structure Ok : {}
 - > functor Ok : {}->{}
 - > functor Ok : {}->{}
-- > functor Ok : {}->{}
-- ! Toplevel input:
-! functor Fail(X:S) = op X where Y = struct end;
-!                     ^^^^^^^^^^^^^^^^^^^^^^^^^
-! Unbound functor identifier: X
-! (In this context, it is assumed that 
-!    op X
-!  refers to a functor.
-!  If you actually meant the structure of the same name,
-!  you must use the syntax: 
-!    X
-!  to indicate this.)
-- > functor Ok : ({}->{})->{}->{}
-- ! Toplevel input:
-! functor Fail(X:F) = X where Y = struct end;
-!                     ^^^^^^^^^^^^^^^^^^^^^^
-! Cannot access unit X before it has been loaded.
-! (In this context, it is assumed that 
-!    X
-!  refers to a structure.
-!  If you actually meant the functor of the same name,
-!  you must use the syntax: 
-!    op X
-!  to indicate this.)
-- > functor Ok : {}->{}
-- > functor OK : {}->{}
-- > functor Ok : ({}->{})->{}->{}
-- > functor OK : ({}->{})->{}->{}
 - > functor Ok : {}->{}
 - ! Toplevel input:
 ! functor Fail(X:S) = let in op X end;

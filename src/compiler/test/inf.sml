@@ -5,18 +5,21 @@
 
 val integer = fn 0 => 0 | i => i;
 
-val ok = fn i => X.x where X = struct val x = integer i end;;
+val ok = fn i => let structure X = struct val x = integer i end in X.x end;;
 
 (* the type inferred for i must be int *)
-val ok = fn i => X.y where X = struct type t = Y.u 
-                                            where Y = struct type u = int;
-							     val x = integer i end;
-                       val y = 1
-               end;
+val ok = fn i => let structure X = struct type t = Y.u 
+                                          where Y = struct type u = int;
+							   val x = integer i 
+						    end;
+					  val y = 1
+				   end
+                  in X.y end;
 
 (* the type inferred for i must be int *)
 
-val ok = fn i => X.x where X = struct val x = i end :  sig val x: int end;
+val ok = fn i => let structure X = struct val x = i end :  sig val x: int end
+		 in X.x end;
 
 (* should type-check because i is declared in the scope of the type A.a *)
 functor OK(A:sig type a; val a: a end) = 

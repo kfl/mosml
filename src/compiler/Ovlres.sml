@@ -295,14 +295,10 @@ and resolveOvlExp firstpass (loc, exp') =
   case exp' of
     SCONexp sconInfo => 
 	if firstpass then resolveOvlScon loc sconInfo else ()
-  | VIDPATHexp (ref (RESvidpath vidpath)) => 
-     (case vidpath of
-	LONGvidpath _ => ()
-      | WHEREvidpath (ii,modid,modexp) =>
- 	resolveOvlModExp firstpass modexp)
+  | VIDPATHexp (ref (RESvidpath vidpath)) => ()
   | VIDPATHexp (r as ref (OVLvidpath vidpathinfo)) => 
     (case vidpathinfo of
-       (LONGvidpath ii,ovltype,tau) =>
+       (ii,ovltype,tau) =>
         if firstpass then 
 	   ()
         else
@@ -312,21 +308,8 @@ and resolveOvlExp firstpass (loc, exp') =
 	  in
 	      #idKind info :=
 	      { qualid={qual="General", id=id}, info=PRIMik pi };
-	      r := RESvidpath (LONGvidpath ii)
-	  end 
-    | (WHEREvidpath (ii,modid,modexp),ovltype,tau) =>
-	(resolveOvlModExp firstpass modexp;
-	 if firstpass then 
-	     ()
-	 else
-	     let val {qualid, info} = ii
-		 val {qual, id} = qualid
-		 val pi = resolveOvlId loc (hd id) ovltype tau
-	     in
-		 #idKind info :=
-		 { qualid={qual="General", id=id}, info=PRIMik pi };
-		 r := RESvidpath (WHEREvidpath(ii,modid,modexp))
-	     end))
+	      r := RESvidpath ii
+	  end )
   | FNexp mrules =>
       app (resolveOvlMRule firstpass) mrules
   | APPexp(e1, e2) =>
@@ -440,8 +423,6 @@ and resolveOvlModExp firstpass (loc,(modexp',_)) =
     case modexp' of
       DECmodexp dec => resolveOvlDec firstpass dec
     | LONGmodexp _ => ()
-    | WHEREmodexp (_,_,modexp) => 
-       resolveOvlModExp firstpass modexp
     | CONmodexp (modexp,sigexp) => 
        (resolveOvlModExp firstpass modexp;resolveOvlSigExp firstpass sigexp) 
     | ABSmodexp (modexp,sigexp) => 

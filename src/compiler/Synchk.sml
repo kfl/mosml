@@ -431,14 +431,7 @@ fun atmodexps args (loc,(APPmodexp(func,arg),_)) =
 fun compliantExp (loc, exp') =
   case exp' of
     SCONexp _ => ()
-  | VIDPATHexp (ref (RESvidpath (LONGvidpath _))) => ()
-  | VIDPATHexp (ref (OVLvidpath (LONGvidpath _,ovlty,ty))) => ()
-  | VIDPATHexp (ref (RESvidpath (WHEREvidpath (_,_,modexp)))) => 
-	(complianceMsg loc "<vidpath> ::= <longvid> where <strid> = <modexp>"; 
-	 compliantModExp modexp)
-  | VIDPATHexp (ref (OVLvidpath (WHEREvidpath (_,_,modexp),_,_))) => 
-	(complianceMsg loc "<vidpath> ::= <longvid> where <strid> = <modexp>"; 
-	 compliantModExp modexp)
+  | VIDPATHexp _ => ()
   | RECexp(ref (RECre fields)) =>
       app (fn(_, e) => compliantExp e) fields
   | RECexp(ref (TUPLEre es)) => 
@@ -706,9 +699,6 @@ and compliantModExp (loc,(modexp,_)) =
 			 ...},
 		 qualid = {id = (funid::strid::_),...}} =>
 	 complianceMsg loc "<longfunid> ::= <strid_1>. ... .<strid_n>.<funid>"	  | LONGmodexp _ => ()
-   | WHEREmodexp (_,_,modexp) => 
-	(complianceMsg loc "<modexp> ::= <longmodid> where <strid> = <modexp>"; 
-	 compliantModExp modexp)
    | LETmodexp (dec,modexp) =>
 	  (compliantStrDec dec;compliantModExp modexp)
    | PARmodexp modexp => 

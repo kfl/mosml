@@ -32,7 +32,7 @@ functor Ok = H(F);
 functor Ok = H(op F);
 
 structure S = struct end;
-structure F = functor(X:sig end)struct end;
+functor F = functor(X:sig end)=>struct end;
 functor G X:S = X;
 functor H X:F = op X;
 
@@ -41,18 +41,6 @@ structure Ok = G(op S);
 
 functor Ok = H(F);
 functor Ok = H(op F);
-
-functor Ok(X:S) = X where Y = struct end;
-functor Fail(X:S) = op X where Y = struct end;
-
-functor Ok(X:F) = op X where Y = struct end;
-functor Fail(X:F) = X where Y = struct end;
-
-functor Ok(X:S) = (op X where Y = struct end) : S ;
-functor OK(X:S) = (X where Y = struct end) : S;
-
-functor Ok(X:F) = (op X where Y = struct end) : F;
-functor OK(X:F) = (X where Y = struct end) : F;
 
 functor Ok(X:S) = let in X end;
 functor Fail(X:S) = let in op X end;

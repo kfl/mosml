@@ -183,7 +183,6 @@ end
 %type <Asynt.FValBind list> FValBind AndFValBind_opt
 %type <Asynt.FValBind> FClauseWithLoc
 %type <Asynt.FClause list> FClause BarFClause_opt
-%type <Asynt.VIdPath'> VIdPath
 %type <Asynt.VIdPathInfo> VIdPathInfo
 %type <Asynt.InfixExp> InfixExp
 %type <Asynt.Exp> AtExp Exp
@@ -611,16 +610,8 @@ SCon :
   | STRING      { STRINGscon $1 }
 ;
 
-VIdPath : 
-    LongOpEqIdent  WhereModBind_opt 	
-         {(case $2 of 	
-	       NONE => LONGvidpath($1)
-	     | SOME (modid,modexp) => 
-		   WHEREvidpath($1,modid,modexp))}
-;
-
 VIdPathInfo :
-    VIdPath             {RESvidpath $1}
+    LongOpEqIdent  {RESvidpath $1}
 ;
 
 AtExp :
@@ -1105,10 +1096,7 @@ FunBindBody :
 
 AtModExp : 
     STRUCT Dec END               {mkLoc((DECmodexp $2,ref NONE))} 
-  | LongModId WhereModBind_opt    {(case $2 of 	
-	                             NONE => mkLoc((LONGmodexp $1,ref NONE))
-	                           | SOME (modid,modexp) => 
-	                             mkLoc((WHEREmodexp($1,modid,modexp),ref NONE))) }
+  | LongModId 	                 {mkLoc((LONGmodexp $1,ref NONE))}
   | LET Dec IN ModExp END        {mkLoc((LETmodexp($2,$4),ref NONE))}
   | LPAREN ModExp RPAREN         {mkLoc((PARmodexp($2),ref NONE))}
   | LPAREN Dec RPAREN            {mkLoc((PARmodexp((xLR $2,(DECmodexp $2,ref NONE))),ref NONE))} /* derived form */

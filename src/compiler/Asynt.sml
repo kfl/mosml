@@ -86,12 +86,8 @@ and RecPat =
 *)
 
 and VIdPathInfo =
-    RESvidpath of VIdPath'
-  | OVLvidpath of VIdPath' * OvlType * Type
-and VIdPath' = 
-    LONGvidpath of LongVId
-  | WHEREvidpath of LongVId * ModId * ModExp
-
+    RESvidpath of LongVId
+  | OVLvidpath of LongVId * OvlType * Type
 and InfixExp =
     UNRESinfixexp of Exp list 
   | RESinfixexp of Exp
@@ -167,7 +163,6 @@ and FunctorSort =
 and ModExp' = 
     DECmodexp of Dec
   | LONGmodexp of LongModId
-  | WHEREmodexp of LongModId * ModId * ModExp
   | LETmodexp of Dec * ModExp 
   | PARmodexp of ModExp
   | CONmodexp of ModExp *  SigExp
@@ -220,7 +215,6 @@ and Struct =
 withtype TyConPath = Location * TyConPath'
 and Ty = Location * Ty'
 and Pat = Location * Pat'
-and VIdPath = Location * VIdPath'
 and Exp = Location * Exp'
 and ModExp = Location * (ModExp' * (ExMod option) ref)
 and SigExp = Location * SigExp'

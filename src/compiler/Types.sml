@@ -2546,15 +2546,6 @@ fun checkRealization (* (inferredSig : CSig) (specSig : CSig)*)
 
 ;
 
-(* ps: remove
-
-fun checkHomeUnits path id desc infQual specQual =
-  if specQual <> infQual then 
-      raise MatchError (GlobalMismatch (path,id, desc, infQual,specQual))
-  else ();
-;
-*)
-
 fun matchIdStatus (* os *) path id 
     (infInfo as {info = (_,infStatus),qualid = infQualid})
     (specInfo as {info = (_,specStatus),qualid = specQualid}) =
@@ -2564,7 +2555,6 @@ fun matchIdStatus (* os *) path id
   in
     case specStatus of
         VARname ovltype =>
-          (* checkHomeUnits infQual specQual id "value"; *)
           (case infStatus of
                VARname ovltype' =>
                  (if ovltype <> ovltype' then 
@@ -2573,7 +2563,6 @@ fun matchIdStatus (* os *) path id
              | REFname => raise MatchError (StatusMismatch (path,id,infInfo,specInfo))
 	     | _ => ())
       | PRIMname pi =>
-          (* checkHomeUnits infQual specQual id "prim_value"; *)
           (case infStatus of
                PRIMname pi'=>
                  if pi <> pi' 
@@ -2583,7 +2572,6 @@ fun matchIdStatus (* os *) path id
              | _  => 
 		     raise MatchError (StatusMismatch (path,id,infInfo,specInfo)))
       | CONname ci =>
-          (* checkHomeUnits infQual specQual id "value constructor"; *)
           (case infStatus of
                CONname ci' =>
                  if #conArity(!ci) <> #conArity(!ci')
@@ -2594,10 +2582,7 @@ fun matchIdStatus (* os *) path id
                  else ()
              | _ => raise MatchError (StatusMismatch (path,id,infInfo,specInfo)))
       | EXNname ei =>
-          (* cvr: TODO review whether call to checkHomeUnits still makes sense here *)
-          ((* ps: checkHomeUnits path id "exception" infQual specQual; *)
-	   
-           case infStatus of
+          (case infStatus of
               EXNname ei' =>
        	        ((* ps:  (case(#exconTag(!ei'),#exconTag(!ei)) of
 		     (NONE,NONE) => ()

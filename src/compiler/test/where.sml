@@ -6,15 +6,6 @@ structure A = struct val a = 1
                      type t = int
                      exception e;
 	      end;
-(X.a where X = A);
-(X.b where X = A.B);
-(X.B.b where X = A);
-(X.c where X = A.B);
-(X.d where X = A);		     
-(X.e where X = A);
-(X.e where X = A);
-(X.c where X = Y where Y = A.B);
-(X.c where X = Y where Y = Z.B where Z = A);
 
 type u = X.t where X = A;
 type u = X.v where X = struct type v = int datatype t = C of t end;
@@ -29,12 +20,6 @@ type fail = X.v where X = struct datatype t = C of t type v = t end;
 functor G = functor(X:sig end)=>struct datatype v = C end;
 type fail = X.v where X = G();
 
-val fail = X.C where X = struct datatype t = C of t end;
-functor G = functor(X:sig end)=>struct datatype v = C end;
-val fail = X.C where X = G();
-
-functor G = functor(X:sig end)=>struct datatype v = C end;
-structure OK = X where X = G();
 
 
 

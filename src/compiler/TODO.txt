@@ -1,3 +1,31 @@
+remove patch directory
+-------------------------
+Hi guys,
+
+I've been working on the definition (almost done now)
+and spotted some simplifications.
+
+I'd like to remove the extensions
+
+atexp ::= longvid where strid = modexp
+
+atmodexp ::= longmodid where strid = modexp
+
+These are already defineable using let, but I originally included them for
+symmentry with
+
+tyconpath := longtycon where strid = modexp
+
+which I want to keep because it isn't defineable, and lets
+you project a type constructor from a module expression without evaluating that module expression (useful to express type sharing  in the presence of applicative functors).
+
+I'd also like to relax the restriction on elimination of first-class modules, which is currently not allowed in structure bodies, but 
+need only be ruled out in functor bodies.
+
+Any objections?
+
+-c
+---------------
 uIdent should be string, not string ref
 restore verbose mode
 match modes before compilation.

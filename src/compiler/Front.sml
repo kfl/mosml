@@ -223,8 +223,7 @@ fun splitFirstArg (arg :: args) =
 fun isSafe (_, exp') =
   case exp' of
     SCONexp _ => true
-  | VIDPATHexp (ref (RESvidpath (LONGvidpath _)))=> true
-  | VIDPATHexp (ref (RESvidpath (WHEREvidpath (_,_,modexp)))) => isSafeModExp modexp
+  | VIDPATHexp (ref (RESvidpath _))=> true
   | VIDPATHexp (ref (OVLvidpath _)) => fatalError "isSafe:1"
   | FNexp _ => true
   | APPexp(e1,e2) => false
@@ -257,7 +256,6 @@ and isSafeModExp (_, (modexp',_)) =
     case modexp' of
       DECmodexp _ => false
     | LONGmodexp _ => true
-    | WHEREmodexp (_,_,modexp) => isSafeModExp modexp
     | LETmodexp (dec,modexp) => false
     | PARmodexp modexp => isSafeModExp modexp
     | CONmodexp (modexp,sigexp) => isSafeModExp modexp
@@ -565,11 +563,8 @@ fun trExp (env as (rho, depth)) (exp as (loc, exp')) =
   case exp' of
     SCONexp (scon, _) =>
       Lconst (ATOMsc scon)
-  | VIDPATHexp (ref (RESvidpath (LONGvidpath ii)))=> 
+  | VIDPATHexp (ref (RESvidpath ii))=> 
       trVar env ii 
-  | VIDPATHexp (ref (RESvidpath (WHEREvidpath (ii,(_,modid),modexp)))) => 
-      Llet([trModExp env modexp],
-	   trVar (bindInEnv rho (ModId modid) (Path_local depth),depth+1) ii)
   | VIDPATHexp (ref (OVLvidpath _)) => fatalError "trExp"
   | FNexp [] =>
       fatalError "trExp: empty fun"
@@ -586,7 +581,7 @@ fun trExp (env as (rho, depth)) (exp as (loc, exp')) =
              else
                let val (env', tr_args, envelope) = trArgs env args
                in envelope(Lapply(trExp env' func, tr_args)) end
-          | (func as (_,VIDPATHexp(ref (RESvidpath (LONGvidpath ii)))),args)=>
+          | (func as (_,VIDPATHexp(ref (RESvidpath ii))),args)=>
               trVarApp env ii args
           | (func, args) =>
               let val (env', tr_args, envelope) = trArgs env (func :: args)
@@ -977,9 +972,6 @@ and trModExp (env as (rho,depth)) (_, (modexp,r)) =
       end
   | (LONGmodexp ii, _) =>
        trVar env ii
-  | (WHEREmodexp (ii,(_,modid),modexp),_) => 
-      Llet([trModExp env modexp],
-	   trVar (bindInEnv rho (ModId modid) (Path_local depth),depth+1) ii)
   | (CONmodexp (modexp',sigexp), SOME (EXISTSexmod(_,M'))) =>
         trConstrainedModExp env modexp' M'
   | (ABSmodexp (modexp',sigexp), SOME (EXISTSexmod(_,M'))) =>

@@ -33,14 +33,14 @@ val qANTIQUOTE = { qual = "General", id = ["ANTIQUOTE"] };
 fun quoteExp exp =
   let val loc = xLR exp in
     (loc, APPexp((loc,
-       VIDPATHexp(ref (RESvidpath(LONGvidpath (mkIdInfo (loc, qQUOTE) false))))), exp))
+       VIDPATHexp(ref (RESvidpath(mkIdInfo (loc, qQUOTE) false)))), exp))
   end
 ;
 
 fun antiquoteExp exp =
   let val loc = xLR exp in
     (loc, APPexp((loc,
-       VIDPATHexp(ref (RESvidpath(LONGvidpath (mkIdInfo (loc, qANTIQUOTE) false))))), exp))
+       VIDPATHexp(ref (RESvidpath(mkIdInfo (loc, qANTIQUOTE) false)))), exp))
   end
 ;
 
@@ -54,10 +54,10 @@ fun listExp (Loc(l,r), exps) =
                  val locI = xxRL e1 e2
              in
                (locO, APPexp((locI,
-                        VIDPATHexp(ref (RESvidpath(LONGvidpath (mkIdInfo (locI, qCons) false))))),
+                        VIDPATHexp(ref (RESvidpath(mkIdInfo (locI, qCons) false)))),
                           pairExp e1 e2))
              end)
-          (locR, VIDPATHexp(ref (RESvidpath(LONGvidpath (mkIdInfo (locR,qNil) false))))) exps
+          (locR, VIDPATHexp(ref (RESvidpath(mkIdInfo (locR,qNil) false)))) exps
   end;
 
 fun seqExp exps =
@@ -74,7 +74,7 @@ fun hashLabelExp (loc, lab) =
                 (RECrp([(lab, (loc, VARpat(mkIdInfo (loc,qX) false)))],
                        SOME (fresh3DotType())))))
       and exp =
-        (loc, VIDPATHexp(ref (RESvidpath(LONGvidpath (mkIdInfo (loc, qX) false)))))
+        (loc, VIDPATHexp(ref (RESvidpath(mkIdInfo (loc, qX) false))))
   in (loc, FNexp [MRule(ref([pat]),exp)]) end
 ;
 
@@ -280,25 +280,10 @@ and printOvlType ovltype tau =
 )
 
 
-and printVIdPath' vidpath' = 
-  case vidpath' of
-    LONGvidpath ii =>
-       printIdInfo ii 
-  | WHEREvidpath (ii,(loc,modid),modexp) =>
-      (printIdInfo ii;
-       msgString " where ";
-       msgString modid;
-       msgString " = ";
-       printModExp modexp)
-
-
-
-and printVIdPath (_, vidpath') = printVIdPath' vidpath'
-
-and printVIdPathInfo (ref(RESvidpath vidpath')) = 
-      printVIdPath' vidpath'
-  | printVIdPathInfo (ref(OVLvidpath (vidpath',ovltype,tau))) =
-      (printVIdPath' vidpath';
+and printVIdPathInfo (ref(RESvidpath longvid)) = 
+      printIdInfo longvid
+  | printVIdPathInfo (ref(OVLvidpath (longvid,ovltype,tau))) =
+      (printIdInfo longvid;
        printOvlType ovltype tau)       
 
 and printInfixExp ie = 

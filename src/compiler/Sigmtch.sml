@@ -77,20 +77,6 @@ fun exportExConAsVal os valRenList id (ei : ExConInfo) (infStatus : ConStatus) (
 	drop (fn (name,stamp) => name = vid) valRenList
     end;
 
-fun checkHomeUnits infQual specQual id thing =
-  if specQual <> infQual then (
-    msgIBlock 0;
-    errPrompt "Specified signature expects the ";
-    msgString thing; msgString " ";
-    msgString id; msgString " to be defined"; msgEOL();
-    errPrompt "in the unit "; msgString specQual;
-    msgString " but it is defined in the unit ";
-    msgString infQual; msgEOL();
-    msgEBlock();
-    raise Toplevel)
-  else ();
-;
-
 (* cvr: TODO simplify to remove error checking (now done during matching in Types.sml) *)
 
 fun exportVar os valRenList id {info = (_,infInfo),qualid = infQualid} 
@@ -103,7 +89,6 @@ fun exportVar os valRenList id {info = (_,infInfo),qualid = infQualid}
   in
     case specInfo of
         VARname ovltype =>
-          (* checkHomeUnits infQual specQual id "value"; *)
           (case infInfo of
                VARname ovltype' =>
                  (if ovltype <> ovltype' then errorImplMismatch id
@@ -119,7 +104,6 @@ fun exportVar os valRenList id {info = (_,infInfo),qualid = infQualid}
                    exportExConAsVal os valRenList id  ei' infStatus specStatus
              | REFname => errorImplMismatch id)
       | PRIMname pi =>
-          (* checkHomeUnits infQual specQual id "prim_value"; *)
           (case infInfo of
                VARname ovltype' => errorImplMismatch id
              | PRIMname pi'=>
@@ -129,7 +113,6 @@ fun exportVar os valRenList id {info = (_,infInfo),qualid = infQualid}
              | EXNname ei' => errorImplMismatch id
              | REFname => errorImplMismatch id)
       | CONname ci =>
-          (* checkHomeUnits infQual specQual id "value constructor"; *)
           (case infInfo of
                VARname ovltype' => errorImplMismatch id
              | PRIMname pi' => errorImplMismatch id
@@ -143,11 +126,7 @@ fun exportVar os valRenList id {info = (_,infInfo),qualid = infQualid}
              | EXNname ei' => errorImplMismatch id
              | REFname => errorImplMismatch id)
       | EXNname ei =>
-          ( 
-        (* cvr: TODO review whether call to checkHomeUnits still makes sense
-         *)
-           checkHomeUnits infQual specQual id "exception"; 
-           case infInfo of
+          (case infInfo of
                VARname ovltype' => errorImplMismatch id
              | PRIMname pi' => errorImplMismatch id
              | CONname ci' => errorImplMismatch id

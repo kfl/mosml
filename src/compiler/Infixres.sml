@@ -12,7 +12,7 @@ fun lookup_iBas (iBas : InfixBasis) id =
   handle Subscript => NONFIXst
 ;
 
-fun asId_Exp (_, VIDPATHexp(ref (RESvidpath (LONGvidpath ii)))) =
+fun asId_Exp (_, VIDPATHexp(ref (RESvidpath  ii))) =
       let val { qualid, info } = ii in
         if #qual qualid <> "" 
            orelse #withOp info 
@@ -27,7 +27,7 @@ fun applyId_Exp (ii : IdInfo) exp =
   let val { qualid, info } = ii
       val { idLoc, ... } = info
   in
-    (xLR exp, APPexp((idLoc, VIDPATHexp(ref (RESvidpath (LONGvidpath ii)))), exp))
+    (xLR exp, APPexp((idLoc, VIDPATHexp(ref (RESvidpath ii))), exp))
   end
 ;
 
@@ -352,17 +352,12 @@ and resolveTyConPathOp iBas (_,tyconpath) =
       LONGtyconpath _ => ()
     | WHEREtyconpath (_,_,modexp) => 
         resolveModExpOp iBas modexp
-and resolveVIdPath'Op iBas vidpath = 
-    case vidpath of
-      LONGvidpath _ => ()
-    | WHEREvidpath (_,_,modexp) => 
-        resolveModExpOp iBas modexp
+and resolveVIdPath'Op iBas vidpath = ()
 and resolveModExpOp iBas (_,(modexp,_)) = 
     case modexp of
       DECmodexp dec => 
         (resolveDecOp iBas dec; ())
     | LONGmodexp _ => ()
-    | WHEREmodexp (_,_,modexp) => resolveModExpOp iBas modexp
     | LETmodexp (dec,modexp) =>
         let val iBas' = resolveDecOp iBas dec 
         in

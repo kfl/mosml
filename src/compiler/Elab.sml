@@ -200,9 +200,9 @@ fun looksLikeInfixExp (_, exp') =
 
 fun looksLikeInfixExp (_, exp') =
   case exp' of
-    VIDPATHexp(ref(RESvidpath (LONGvidpath {qualid={qual="",id=[_]}, info={withOp=false,...}})))
+    VIDPATHexp(ref(RESvidpath ({qualid={qual="",id=[_]}, info={withOp=false,...}})))
       => true
-  | VIDPATHexp(ref(OVLvidpath (LONGvidpath {qualid={qual="",id=[_]}, info={withOp=false,...}}, _, _)))
+  | VIDPATHexp(ref(OVLvidpath ({qualid={qual="",id=[_]}, info={withOp=false,...}}, _, _)))
       => true
   | _ => false
 ;
@@ -242,12 +242,8 @@ fun xs without (tyvarseq:TyVarSeq) =
 fun unguardedExp (_, exp') =
   case exp' of
     SCONexp _ => []
-  | VIDPATHexp (ref (RESvidpath (LONGvidpath _))) => []
-  | VIDPATHexp (ref (OVLvidpath (LONGvidpath _,ovlty,ty))) => []
-  | VIDPATHexp (ref (RESvidpath (WHEREvidpath (_,_,modexp)))) => 
-		unguardedModExp modexp
-  | VIDPATHexp (ref (OVLvidpath (WHEREvidpath (_,_,modexp),_,_))) => 
-		unguardedModExp modexp (*cvr: should this be a fatal error? *)
+  | VIDPATHexp (ref (RESvidpath (_))) => []
+  | VIDPATHexp (ref (OVLvidpath (_,ovlty,ty))) => []
   | RECexp(ref (RECre fields)) =>
       U_map (fn(_, e) => unguardedExp e) fields
   | RECexp(ref (TUPLEre es)) => 
@@ -392,8 +388,6 @@ and unguardedModExp (_,(modexp,_)) =
       DECmodexp dec => 
 	  unguardedDec dec
    | LONGmodexp _ => []
-   | WHEREmodexp (_,_,modexp) => 
-	  unguardedModExp modexp
    | LETmodexp (dec,modexp) =>
 	  unguardedDec dec U unguardedModExp modexp
    | PARmodexp modexp => 
@@ -528,12 +522,8 @@ fun incrUE tyvars =
 fun isExpansiveExp (_, exp') =
   case exp' of
     SCONexp _       => false
-  | VIDPATHexp (ref (RESvidpath (LONGvidpath _))) => false
-  | VIDPATHexp (ref (OVLvidpath (LONGvidpath _,ovlty,ty))) => false
-  | VIDPATHexp (ref (RESvidpath (WHEREvidpath (_,_,modexp)))) => 
-	isExpansiveModExp modexp
-  | VIDPATHexp (ref (OVLvidpath (WHEREvidpath (_,_,modexp),ovlty,ty))) => 
-	isExpansiveModExp modexp
+  | VIDPATHexp (ref (RESvidpath (_))) => false
+  | VIDPATHexp (ref (OVLvidpath (_,ovlty,ty))) => false
   | PARexp exp      => isExpansiveExp exp
   | TYPEDexp(exp,_) => isExpansiveExp exp
   | FNexp _         => false
@@ -541,7 +531,7 @@ fun isExpansiveExp (_, exp') =
 	exists (fn (_, e) => isExpansiveExp e) exprow
   | RECexp (ref (TUPLEre explist)) =>
 	exists isExpansiveExp explist
-  | APPexp((_, VIDPATHexp (ref(RESvidpath(LONGvidpath ii)))), exp) =>
+  | APPexp((_, VIDPATHexp (ref(RESvidpath ii))), exp) =>
 	isExpansiveExp exp orelse
 	let val {info = {idKind, ...}, ...} = ii
 	in case !idKind of
@@ -549,7 +539,7 @@ fun isExpansiveExp (_, exp') =
 	  | {info = EXCONik _, ...}               => false
 	  | _                                     => true
 	end 
-  | APPexp((_,VIDPATHexp (ref(OVLvidpath(LONGvidpath ii,_,_)))),exp) =>
+  | APPexp((_,VIDPATHexp (ref(OVLvidpath(ii,_,_)))),exp) =>
 	isExpansiveExp exp orelse
 	let val {info = {idKind, ...}, ...} = ii
 	in case !idKind of
@@ -561,13 +551,12 @@ fun isExpansiveExp (_, exp') =
       isExpansiveExp e   
   | INFIXexp (ref (UNRESinfixexp _)) => fatalError "isExpansiveExp: unresolved infix exp"
   | STRUCTUREexp (modexp,_,_) => isExpansiveModExp modexp
-  | FUNCTORexp (modexp,_,_) => isExpansiveModExp modexp 
+  | FUNCTORexp (modexp,_,_) => isExpansiveModExp modexp  
   | _ => true
 and isExpansiveModExp (_, (modexp',_)) = 
     case modexp' of
       DECmodexp _ => true
     | LONGmodexp _ => false
-    | WHEREmodexp (_,_,modexp) => isExpansiveModExp modexp
     | PARmodexp modexp => isExpansiveModExp modexp
     | CONmodexp (modexp,_) => isExpansiveModExp modexp
     | ABSmodexp  (modexp,_) => isExpansiveModExp modexp
@@ -1068,8 +1057,6 @@ fun checkApplicativeModExp (_,(modexp,_)) =
       DECmodexp dec => 
 	  checkApplicativeDec dec
    | LONGmodexp _ => ()
-   | WHEREmodexp (_,_,modexp) => 
-	  checkApplicativeModExp modexp
    | LETmodexp (dec,modexp) =>
 	  (checkApplicativeDec dec;
 	   checkApplicativeModExp modexp)
@@ -1113,33 +1100,7 @@ and checkApplicativeDec (loc,dec') =
   | _ => ()
 ;
 
-(*
-fun checkApplicativeDec (loc,dec') = 
-  case dec' of
-    ABSTYPEdec(_, _, dec2) =>
-      checkApplicativeDec dec2
-  | LOCALdec (dec1, dec2) =>
-      (checkApplicativeDec dec1;checkApplicativeDec dec2)
-  | SEQdec (dec1, dec2) =>
-      (checkApplicativeDec dec1;checkApplicativeDec dec2)
-  | STRUCTUREdec mbs => 
-      app (fn ASmodbind ((loc,_),_,_) =>
-	   errorMsg loc "Illegal structure binding: \
-	                 \a structure value cannot be opened in a structure body"
-	   | _ => ())
-           mbs
-  | FUNCTORdec fbs => 
-      app (fn ASfunbind ((loc,_),_,_) =>
-	   errorMsg loc "Illegal functor binding: \
-	                 \a functor value cannot be opened in a structure body"
-	   | _ => ())
-           fbs
-  | _ => ()
-;
-*)
 (* semantic checks *)
-
-
 
 val bindOnceInEnv = fn env => fn (loc,id) => fn info => fn msg => 
                          (lookupEnv env id;
@@ -2067,7 +2028,7 @@ fun elabExp (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (TE : 
   | VARexp(ref (OVLve(_, ovltype, tau))) =>
       unifyExp exp (elabOvlExp tau ovltype) exp_t
 *)
-  | VIDPATHexp (r as (ref (RESvidpath (LONGvidpath ii)))) =>
+  | VIDPATHexp (r as (ref (RESvidpath ii))) =>
       let 
 	  val {qualid, info} = ii
 	  val {idKind, idFields,... } = info
@@ -2082,48 +2043,7 @@ fun elabExp (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (TE : 
              unifyExp exp tau exp_t)
         | VARname ovltype =>
             let val tau = newUnknown() in
-               r := OVLvidpath (LONGvidpath ii, ovltype, tau);
-               unifyExp exp (elabOvlExp tau ovltype) exp_t
-            end 
-        | PRIMname pi =>
-            (idKind := { qualid=csqualid, info=PRIMik pi };
-             idFields := fields;
-             unifyExp exp tau exp_t)
-        | CONname ci =>
-            (idKind := { qualid=csqualid, info=CONik ci };
-             idFields := fields;
-             unifyExp exp tau exp_t)
-        | EXNname ei =>
-            (idKind := { qualid=csqualid, info=EXCONik ei };
-             idFields := fields;
-             unifyExp exp tau exp_t)
-        | REFname   =>
-            (idKind := { qualid=csqualid, info=PRIMik piRef };
-             idFields := fields;
-             unifyExp exp tau exp_t)
-      end
-  | VIDPATHexp (r as (ref (RESvidpath (WHEREvidpath(ii,locmodid as (_,modid),modexp))))) =>
-      let 
-	  val EXISTSexmod(T,M) = elabModExp STRexpected ME FE GE UE VE TE modexp
-	  val S = case M of 
-	      FUNmod _ => errorMsg loc "Illegal where expression: this module expression should be\
-                          \ a structure but is actually a functor"
-	    | STRmod S => S 
-          val modidinfo = {qualid =  mkLocalName  modid, info = S}
- 	  val {qualid, info} = ii
-	  val {idKind, idFields,... } = info
-          val (fields,{qualid = csqualid, info = (scheme,cs)}) = 
-	      findLongVId (bindInEnv ME modid modidinfo) VE loc qualid
-          val tau = specialization(scheme)
-      in
-        case cs of
-          VARname REGULARo =>
-            (idKind := { qualid=csqualid, info=VARik };
-             idFields := fields;
-             unifyExp exp tau exp_t)
-        | VARname ovltype =>
-            let val tau = newUnknown() in
-               r := OVLvidpath (WHEREvidpath (ii,locmodid,modexp), ovltype, tau);
+               r := OVLvidpath (ii, ovltype, tau);
                unifyExp exp (elabOvlExp tau ovltype) exp_t
             end 
         | PRIMname pi =>
@@ -2618,7 +2538,7 @@ and elabModExp expectation (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv)
    (VE : VarEnv) (TE : TyEnv) (loc,(modexp',r)) = 
   case modexp' of
       DECmodexp dec => 
-       let (* val _ = checkApplicativeDec dec; *)
+       let 
 	   val EXISTS(T',(ME',FE',GE',VE',TE')) = elabDec ME FE GE UE VE TE false dec
            val exmod = EXISTSexmod(T',(STRmod (NONrec (STRstr (sortEnv ME',
 							       sortEnv FE',
@@ -2657,43 +2577,6 @@ and elabModExp expectation (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv)
 	       end
 	   | _ => fatalError "elabModExp:resolveExpectation")
       handle Toplevel => reportExpectation expectation ii)
-    | WHEREmodexp (ii as {info = {withOp,...},...},(_,modid),modexp) =>
-	   let val EXISTSexmod(T,M) =
-	       elabModExp (STRexpected) ME FE GE UE VE TE modexp 
-	       val S = case M of 
-		   FUNmod _ => errorMsg loc "Illegal where expression: this module expression should be\
-		    \ a structure but is actually a functor"
-		 | STRmod S => S 
-               val modidinfo = {qualid =  mkLocalName  modid, info = S}
-	   in
-              (case resolveExpectation(expectation,withOp) of
-		   STRexpected =>
-		       let val {qualid, info} = ii
-			   val {idKind, idFields,... } = info
-			   val (fields,{qualid=resqualid,info=S'}) = 
-			       findLongModId (bindInEnv ME modid modidinfo) loc qualid
-			   val X = EXISTSexmod(T,STRmod S')
-		       in
-			   idKind := {qualid = resqualid, info = STRik};
-			   idFields := fields;
-			   r :=  SOME X;
-			   X
-		       end
-		 | FUNexpected =>
-		       let val {qualid, info} = ii
-			   val {idKind, idFields,... } = info
-			   val (fields,{qualid=resqualid,info=F}) = 
-			       findLongFunId (bindInEnv ME modid modidinfo) FE loc qualid
-			   val X = EXISTSexmod(T,FUNmod F)
-		       in
-			   idKind := {qualid = resqualid, info = FUNik};
-			   idFields := fields;
-			   r :=  SOME X;
-			   X
-		       end
-		 | _ => fatalError "elabModExp:resolveExpectation")
-	      handle Toplevel => reportExpectation expectation ii
-	   end
     | CONmodexp (modexp,sigexp) =>
        let 
            val LAMBDAsig(T',M') = elabSigExp ME FE GE UE VE TE sigexp 
@@ -2745,7 +2628,7 @@ and elabModExp expectation (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv)
            end
        end
    | LETmodexp (dec, modexp) =>
-      let (* val _ = checkApplicativeDec dec; *)
+      let 
 	  val EXISTS(T',(ME',FE',GE',VE', TE')) =
 	      elabDec ME FE GE UE VE TE false dec;
           val _ = incrBindingLevel();
