@@ -1,5 +1,5 @@
 (* Match.sml : Compile matches to decision trees, then to lambda code
-   1996-07-09, 1997-02-03, 2000-01-24
+   1996-07-09, 1997-02-03, 2000-02-16
 
    See P. Sestoft: ML pattern match compilation and partial
    evaluation.  In Danvy, Glück, and Thiemann (editors): Dagstuhl
@@ -7,10 +7,11 @@
    Computer Science 1110, pages 446-464.  Springer-Verlag 1996.
    ftp://ftp.dina.kvl.dk/pub/Staff/Peter.Sestoft/papers/match.ps.gz
 
-   Some day (January 2000) the distinction between static and dynamic
-   excons should be eradicated from mosml; this would lead to some
-   simplification in the match compiler and the back-end.
-*)
+   Some day the distinction between static and dynamic excons should
+   be eradicated from mosml; this would lead to some simplification in
+   the match compiler and the back-end.  It finally happened in
+   January 2000.
+ *)
 
 open Asynt Lambda
 
@@ -19,20 +20,28 @@ fun splitPath n obj =
             if i < 0 then oargs else
             loop (i-1) (Lprim(Prim.Pfield i, [obj]) :: oargs)
   in loop (n-1) [] end;
+
+(* To skip type constraints and aliases, and translate exnname accesses *)
+
+(* cvr: TODO revise:
+      translating a long exception name under 
+      the pattern matching function can lead to a space leak --- 
+      do it eagerly! 
+*)
   
-fun mkPairPat p1 p2 = RECpat(ref (TUPLErp [p1, p2]))
+fun mkExnPat loc env ii arg = 
+    let val exnname = Tr_env.translateExName env ii
+    in RECpat(ref (TUPLErp [(loc, EXNAMEpat exnname), arg])) end
 
-(* To skip type constraints and aliases, and encode dynamic excons *)
-
-fun simplifyPat (loc, pat') =
+fun simplifyPat env (loc, pat') =
     case pat' of
 	VARpat _         => WILDCARDpat
       | REFpat p         => RECpat(ref (TUPLErp [p]))
-      | PARpat p         => simplifyPat p
-      | TYPEDpat(p,_)    => simplifyPat p
-      | LAYEREDpat(_, p) => simplifyPat p
-      | EXNILpat ii      => mkPairPat (loc, EXNAMEpat ii) (loc, WILDCARDpat) 
-      | EXCONSpat(ii, p) => mkPairPat (loc, EXNAMEpat ii) p 
+      | PARpat p         => simplifyPat env p
+      | TYPEDpat(p,_)    => simplifyPat env p
+      | LAYEREDpat(_, p) => simplifyPat env p
+      | EXNILpat ii      => mkExnPat loc env ii (loc, WILDCARDpat)
+      | EXCONSpat(ii, p) => mkExnPat loc env ii p 
       | _                => pat';
 
 (* Constructors *)
@@ -42,7 +51,7 @@ datatype con =
   | Tup of int				(* arity                *)
   | Vec of int				(* matching tag = arity *)
   | CCon of Const.BlockTag * int	(* arity                *)
-  | EExn of Asynt.IdInfo		(* dynamic excon        *)
+  | EExn of Lambda.Lambda		(* dynamic excon        *)
 
 fun span (SCon (Const.CHARscon _))         = 256
   | span (SCon _)                          = 0	   (* infinity *)
@@ -146,9 +155,9 @@ fun unique (node as IfEq(_, _, t1, t2)) =
 	      end)
   | unique _ = Fnlib.fatalError "Match.unique";
 
-fun makedag failure ([] : (Asynt.Pat list * decision) list) : decision = 
+fun makedag env failure ([] : (Asynt.Pat list * decision) list) : decision = 
     Fnlib.fatalError "Match.makedag: no rules"
-  | makedag failure (allmrules as (pats1, _) :: _) = 
+  | makedag env failure (allmrules as (pats1, _) :: _) = 
 let 
 val noOfPats = List.length pats1
 val objs1 = List.rev (List.tabulate(noOfPats, Lvar))
@@ -180,7 +189,7 @@ and mktest pcon obj dsc ctx work rhs rules conequal =
 			fail (builddsc ctx (addneg dsc pcon) work) rules))
 
 and match pat obj dsc ctx work rhs rules =
-    case simplifyPat pat of
+    case simplifyPat env pat of
 	SCONpat (scon, _) => 
 	    let fun conequal newdsc = 
 		succeed (apply ctx newdsc) work rhs rules
@@ -256,7 +265,7 @@ end
 (* Switchify and compile decision nodes to Lambda-code.  Each shared
  * subdag is compiled once, to a Lambda.Lshared.  *)
 
-fun tolambda env (ref {tree, ...} : decision) (failLam : Lambda) : Lambda =
+fun tolambda (ref {tree, ...} : decision) (failLam : Lambda) : Lambda =
     let fun getSCon (SCon scon)      = scon
           | getSCon _                = Fnlib.fatalError "Match.getSCon"
 	fun getCCon (CCon (ccon, _)) = ccon
@@ -315,19 +324,10 @@ fun tolambda env (ref {tree, ...} : decision) (failLam : Lambda) : Lambda =
 				      ::revmap share cases),
 			      share otherwise)
 	    end
-
-(* cvr: TODO revise:
-      translating a long exception name under 
-      the pattern matching function can lead to a space leak --- 
-      do it eagerly! 
-*)
-	  | mkSwitch (IfEq(obj, EExn ii, thenact, elseact)) = 
-	    let val exnname = Tr_env.translateExName env ii
-	    in 
-		Lif(Lprim(Prim.Ptest Prim.Peq_test, [obj, exnname]), 
-		    share thenact, 
-		    share elseact)
-	    end
+	  | mkSwitch (IfEq(obj, EExn exnname, thenact, elseact)) = 
+	    Lif(Lprim(Prim.Ptest Prim.Peq_test, [obj, exnname]), 
+		share thenact, 
+		share elseact)
 	  | mkSwitch tree = toseq tree
 
     in toseq tree end
@@ -338,7 +338,7 @@ fun translateMatch (env : Tr_env.TranslEnv) failure_code loc mrules =
   let val failure = mkDecision Failure
       val uniqmrules = 
 	  List.map (fn (pats, rhs) => (pats, mkDecision (Success rhs))) mrules
-      val decdag = makedag failure uniqmrules 
+      val decdag = makedag env failure uniqmrules 
       val _ = incrnode decdag;
       val _ = Hasht.clear table		(* Discard memo-table *)
       open Mixture
@@ -351,7 +351,7 @@ fun translateMatch (env : Tr_env.TranslEnv) failure_code loc mrules =
 	   msgEBlock())
       else ();
       if used failure then		               (* Inexhaustive match *)
-	  tolambda env decdag (failure_code ())
+	  tolambda decdag (failure_code ())
       else
-	  tolambda env decdag Lunspec
+	  tolambda decdag Lunspec
   end

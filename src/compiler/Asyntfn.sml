@@ -389,8 +389,8 @@ and printPat (_, pat') =
   | EXNILpat ii => printIdInfo ii
   | EXCONSpat(ii,p) =>
       (msgString "("; printIdInfo ii; printPat p; msgString ")")
-  | EXNAMEpat ii =>
-      (msgString "<"; printIdInfo ii; msgString ">")
+  | EXNAMEpat lam =>
+      (msgString "<exnname access>")
   | REFpat p =>
       (msgString "("; msgString "ref "; printPat p; msgString ")")
   | RECpat(ref (RECrp(fs, dots))) =>
