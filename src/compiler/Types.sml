@@ -87,9 +87,6 @@ and matchReason =
 |   PatternMismatch of path * string * TyStr * TyStr * TyName * ScopeViolation
 |   CircularMismatch of path * string * TyStr * TyStr * TyName
 |   DatatypeMismatch of path * string * TyInfo * TyInfo
-    (* cvr: TODO GlobalMismatch appears to be redundant *)
-|   GlobalMismatch of path * string * string * string * string
-                     (* longmodid * id * desc * infQual * specQual *)
 |   ModuleMismatch  of path * string * string
                      (* path * infDesc * specDesc *)
 ;
@@ -150,10 +147,6 @@ and tyname_vector = mkSML "vector"
     {tnStamp=mkSMLStamp(),  tnKind=ARITYkind 1, tnEqu=TRUEequ,  tnSort=PARAMETERts, tnLevel=0, tnConEnv=ref NONE}
 and tyname_word = mktyname "Word" "word" 
     {tnStamp=mkSMLStamp(),  tnKind=ARITYkind 0, tnEqu=TRUEequ,  tnSort=PARAMETERts, tnLevel=0, tnConEnv=ref NONE}
-(* cvr: this is an insecurity ... 
-and tyname_word8 = mktyname "Word8" "word" 
-    {tnStamp=0,  tnKind=ARITYkind 0, tnEqu=TRUEequ,  tnSort=PARAMETERts, tnLevel=0, tnConEnv=ref NONE}
-*)
 and tyname_word8 = mktyname "Word8" "word8" 
     {tnStamp=mkSMLStamp(),  tnKind=ARITYkind 0, tnEqu=TRUEequ,  tnSort=PARAMETERts, tnLevel=0, tnConEnv=ref NONE}
 val tyname_bogus =
@@ -582,41 +575,6 @@ and copyTyApp bns bvs tyapp  =
 			      in ((tyname,ctyapp)::bns,bvs,false,ctyapp)
 			      end
 		      end))
-(* cvr: TODO remove
-       NAMEtyapp tyname => 
-         (let val ctyapp = lookup tyname bns
-	      val styapp = 
-		  case ctyapp of 
-		      NAMEtyapp tyname' => tyname = tyname'
-		    |  _ => false
-	  in
-		 (bns,bvs,styapp,ctyapp)
-	  end
-          handle Subscript =>
-             (case #tnSort(!(#info(tyname))) of
-		  VARIABLEts => (bns,bvs,true,tyapp)
-		| PARAMETERts => (bns,bvs,true,tyapp)
-		| REAts tyfun =>
-		      let 
-			  val (bns,bvs,styfun,ctyfun) = 
-			      copyTyFun bns bvs tyfun 
-		      in
-			  if styfun then
-(*			      (bns,bvs,true,tyapp) (* cvr: is this ok ? *) *)
-(*			      let val ctyname = 
-				      copyAndRealiseTyName tyname tyfun
-				  val ctyapp = NAMEtyapp ctyname
-			      in ((tyname,ctyapp)::bns,bvs,false,ctyapp)
-			      end *)
-			      ((tyname,tyapp)::bns,bvs,true,tyapp)
-			  else
-			      let val ctyname = 
-				      copyAndRealiseTyName tyname ctyfun
-				  val ctyapp = NAMEtyapp ctyname
-			      in ((tyname,ctyapp)::bns,bvs,false,ctyapp)
-			      end
-		      end))
-*)
     |  APPtyapp (tyapp',tyfun) =>  
 	    let val (bns,bvs,styapp',ctyapp') = copyTyApp bns bvs tyapp'
 		val (bns,bvs,styfun,ctyfun) = copyTyFun bns bvs tyfun
@@ -854,7 +812,7 @@ in
     val copyRecStr = fn bns => fn bvs => fn S => 
 	#4 (copyRecStr bns bvs S)
     val copyGenFun = fn bns => fn bvs => fn F => 
-	#4 (copyFun bns bvs F) (* cvr: should be copyFun *)
+	#4 (copyFun bns bvs F) 
     val copyMod = fn bns => fn bvs => fn M => 
 	#4 (copyMod bns bvs M)
     val copyExMod = fn bns => fn bvs => fn X => 
@@ -959,179 +917,6 @@ and freeVarsSigEnv bns bvs fnvs GE =
 and freeVarsExEnv bns bvs fnvs (EXISTS(T,(ME,FE,GE,VE,TE))) = 
         freeVarsModEnv bns bvs (freeVarsFunEnv bns bvs (freeVarsSigEnv bns bvs (freeVarsTyEnv bns bvs (freeVarsVarEnv bns bvs fnvs VE) TE) GE) FE) ME
 
-
-
-(* cvr: original, non sharing but correct copying code *)
-(* 
-and copyTyNameSet tnSort bns bvs T =  
-  let val bns' = 
-         map (fn tn =>
-	        case tn of
-		    {qualid,info = ref {tnKind,tnEqu,tnStamp,tnSort = _,tnLevel,tnConEnv}} =>
-                     let val tn' = {qualid = {qual = "", id = #id qualid}, 
-				    info = ref {tnKind = tnKind,
-						tnEqu = tnEqu, 
-						tnSort = tnSort, 
-						tnStamp = newTyNameStamp(),
-						tnLevel= !binding_level,
-						tnConEnv = ref NONE}}
-		     in (tn, NAMEtyapp tn')
-		     end) 
-	      T
-      val bns'' = bns'@bns
-      val T' = 
-           map  (fn (tn, NAMEtyapp tn') => 
-		   case !(#tnConEnv (!(#info tn))) of
-		        NONE => tn'
-		     |  SOME conenv => ((#tnConEnv (!(#info tn'))) := SOME (copyConEnv bns'' bvs conenv); 
-					tn'))
-                bns'
-   in
-        (T',bns')
-   end
-
-and copyTyName tnSort bns bvs tn =  
-    case tn of
-	{qualid,info = ref { tnKind,tnEqu,tnStamp,tnSort = _, tnLevel,tnConEnv}} =>
-	    let val tnConEnv' = ref NONE;
-		val tn' = {qualid = {qual = "", id = #id qualid}, 
-			   info = ref {tnKind = tnKind,
-				       tnEqu = tnEqu, 
-				       tnSort = tnSort, (* cvr: REVISE *)
-				       tnStamp =newTyNameStamp(),
-				       tnLevel= !binding_level,
-				       tnConEnv = tnConEnv'}}
-                val tn2tn' =  (tn, NAMEtyapp tn')
-            in
-		case !tnConEnv of 
-		     NONE => ()
-		  |  SOME conenv => (tnConEnv' := SOME (copyConEnv (tn2tn'::bns) bvs conenv));
-		(tn',tn2tn')
-  end
-
-(* Perhaps optimizable when bvs = []? *)
-
-and copyType bns bvs tau = 
-          case  normType tau  of
-                tau' as VARt var =>
-                  (lookup var bvs
-                  handle Subscript => tau')
-              | ARROWt(t,t') =>
-                 ARROWt(copyType bns bvs t,copyType bns bvs t')
-              | CONt(ts, tyapp) =>
-                 CONt(map (copyType bns bvs) ts,copyTyApp bns bvs tyapp)
-              | RECt (ref{fields,rho}) =>
-                  RECt (ref {fields = map_fields (copyType bns bvs) fields, rho = rho})
-              | PACKt X => PACKt (copyExMod bns bvs X)
-and copyTypeScheme bns bvs (TypeScheme {tscParameters,tscBody})  = 
-        let val _ = incrBindingLevel()
-            val bvs' = map refreshTypeParameter tscParameters 
-            val scheme = TypeScheme {tscParameters = bvs', 
-			  tscBody =copyType bns ((zip2 tscParameters (map VARt bvs'))@bvs) tscBody}
-        in   
-            decrBindingLevel();
-            scheme
-        end
-and copyTyApp bns bvs tyapp  =  (* cvr: copyTyApp assumes tyapp has no head redex *)
-    case tyapp of
-       NAMEtyapp tyname => 
-                   (lookup tyname bns 
-                   handle Subscript => tyapp)
-    |  APPtyapp (tyapp,tyfun) =>  
-        APPtyapp (copyTyApp bns bvs tyapp, copyTyFun bns bvs tyfun)
-and copyTyFun bns bvs tyfun =
-    case normTyFun tyfun of 
-       TYPEtyfun (vs,ty) => 
-        let val _ = incrBindingLevel()
-            val bvs' = map refreshTypeParameter vs 
-            val tyfun' = TYPEtyfun(bvs', copyType bns ((zip2 vs (map VARt bvs'))@bvs) ty)
-        in   
-            decrBindingLevel();
-            tyfun'
-        end
-    |  LAMtyfun (tn,tyfun) =>
-          let val () = incrBindingLevel ();
-              val (tn',tn2tn') = copyTyName PARAMETERts bns bvs tn;
-              val tyfun' = LAMtyfun(tn', copyTyFun (tn2tn'::bns) bvs tyfun)
-          in 
-              decrBindingLevel();
-              tyfun'
-          end
-    |  APPtyfun tyapp => APPtyfun (copyTyApp bns bvs  tyapp)
-and copyConInfo bns bvs (ref { conArity, conIsGreedy, conSpan, conTag, conType}) = 
-    ref {conArity = conArity,
-	 conIsGreedy = conIsGreedy,
-	 conSpan = conSpan,
-	 conTag = conTag,
-	 conType = copyTypeScheme bns bvs conType}
-and copyConStatusDesc bns bvs csd =
-    (case csd of 
-      CONname coninfo => CONname (copyConInfo bns bvs coninfo)
-    |   _ => csd)
-and copyVarEnv  bns bvs = 
-    mapEnv (fn _ => fn {qualid=qual,info = (sc,csd)} =>  
-             {qualid=qual, info = (copyTypeScheme bns bvs sc,copyConStatusDesc bns bvs csd)})
-and copyConEnv bns bvs conenv =
-    case conenv of
-	ConEnv CE =>
-	    ConEnv (map (fn {qualid,info=coninfo} => 
-			 {qualid=qualid,info = copyConInfo bns bvs coninfo}) 
-	                CE)
-      | LAMconenv(tn,conenv) =>
-          let val () = incrBindingLevel ();
-              val (tn',tn2tn') = copyTyName PARAMETERts bns bvs tn;
-              val conenv' = LAMconenv(tn', copyConEnv (tn2tn'::bns) bvs conenv)
-          in 
-              decrBindingLevel();
-              conenv'
-          end
-and copyTyEnv bns bvs = mapEnv (fn _ => fn (tyfun,CE) =>  (copyTyFun bns bvs tyfun, copyConEnv bns bvs CE))
-and copyStr  bns bvs S = 
-    case S of 
-       STRstr (ME,FE,TE,VE) =>
-        STRstr (copyModEnv bns bvs ME,
-		copyFunEnv bns bvs FE, 
-		copyTyEnv bns bvs TE, 
-		copyVarEnv bns bvs  VE) 
-    |  SEQstr (S,S') => 
-        SEQstr (copyStr bns bvs S,copyStr bns bvs S')
-and copyMod bns bvs M = 
-    case M of
-      STRmod S => STRmod (copyStr bns bvs S)
-    | FUNmod F => FUNmod (copyGenFun bns bvs F)
-and copyModEnv bns bvs = 
-       mapEnv (fn id => fn {qualid, info = S} => {qualid = qualid,info = copyStr bns bvs S})
-and copyFunEnv bns bvs = 
-       mapEnv (fn id => fn {qualid, info = F} => {qualid = qualid,info = copyGenFun bns bvs F})
-and copyGenFun  bns bvs (T,M,X) = 
-          let val () = incrBindingLevel ();
-              val (T',T2T') = copyTyNameSet PARAMETERts bns bvs T;
-              val bns' = T2T'@bns;
-              val F = (T', copyMod bns' bvs M,copyExMod bns' bvs X)
-          in 
-              decrBindingLevel();
-              F
-          end
-and copyExMod bns bvs (EXISTSexmod(T,M)) = 
-          let val () = incrBindingLevel ();
-              val (T',T2T') = copyTyNameSet PARAMETERts bns bvs T;
-              val X = EXISTSexmod(T', copyMod (T2T'@bns) bvs M)
-          in 
-              decrBindingLevel();
-              X
-          end
-and copySig bns bvs (LAMBDAsig(T,M)) = 
-          let val () = incrBindingLevel ();
-              val (T',T2T') = copyTyNameSet PARAMETERts bns bvs T;
-              val G = LAMBDAsig(T', copyMod (T2T'@bns) bvs M)
-          in 
-              decrBindingLevel();
-              G
-          end
-*)
-(* cvr: end original copying *)
-
-
 and apptycon tys tyfun = 
    case tyfun of 
     (* TYPEtyfun([],tau) => tau *)
@@ -1213,14 +998,16 @@ instead of copying. Which do we want?
 	 (case normTyApp tyapp of
 	    APPtyfun tyapp => APPtyfun (APPtyapp (tyapp,tyfun))
           | tyfun' => normTyFun (apptyfun tyfun' tyfun))
-     (*                 (* normTyFun *) (apptyfun (normTyApp tyapp) tyfun) (* cvr: TODO does the outer norm cause looping? *) *)
+     (*                 (* normTyFun *) (apptyfun (normTyApp tyapp) tyfun) 
+         (* cvr: TODO does the outer norm cause looping? *) *)
 and normTyFun tyfun = 
   case tyfun of
     LAMtyfun _ => tyfun
   | APPtyfun tyapp => normTyApp tyapp
   | TYPEtyfun _ => tyfun;
 
-(* cvr: normalizing a module type sorts the entries of its term components           so their field positions can be calculated correctly *)
+(* cvr: normalizing a module type sorts the entries of its term components   
+        so their field positions can be calculated correctly *)
 
 fun normStr S = 
     STRstr (sortEnv (mapEnv normModBind (MEofStr S)),
@@ -1328,25 +1115,6 @@ fun isTupleType tau =
       | _       => false;
 
 
-(* Error printing *)
-
-(* cvr: now redundant *)
-(*
-fun errorToplevelImperativeVar loc var =
-(
-  msgIBlock 0;
-  errLocation loc;
-  if !value_polymorphism then
-      errPrompt "Value polymorphism: Free type variable at top level"
-  else
-      errPrompt "Free imperative type variable at top level";
-  (* printType var; *) msgEOL();
-  msgEBlock();
-  raise Toplevel
-);
-*)
-
-
 (* Correct binding level will be set later, *)
 (* during type-checking *)
 
@@ -1385,23 +1153,6 @@ fun extractLab r r' (lab: Lab) (rho: RowType) =
     | FIELDrow _ => fatalError "extractLab"
 ;
 
-(* cvr: rewrote
-fun occur_check var tau =
-  let fun test t =
-    case normType t of
-        VARt var' =>
-          if var = var' then
-            raise Unify UnifyCircular
-          else ()
-      | ARROWt(t1,t2) =>
-          (test t1; test t2)
-      | CONt(ts, _) => (* cvr: TODO *)
-          app test ts
-      | RECt (ref{fields, ...}) =>
-          app_field test fields
-  in test tau end;
-*)
-
 fun occur_check var fvs =                     
       (* cvr: TODO it might be more efficient to proceed as above and only caculate free vars for PACKt *)
     app (fn  var' =>
@@ -1409,44 +1160,6 @@ fun occur_check var fvs =
             raise Unify UnifyCircular
           else ())
     fvs;
-
-
-(* cvr: rewrote
-fun pruneRho_level (max_level: int) (rho: RowType) =
-  case !rho of
-      NILrow => ()
-    | VARrow rv =>
-        if #rvLevel(!rv) > max_level then
-          setRvLevel rv max_level
-        else ()
-    | LINKrow _ => fatalError "pruneRho_level"
-    | FIELDrow _ => fatalError "pruneRho_level"
-;
-*)
-
-(* cvr: rewrote
-fun prune_level max_level =
-  let fun prune t =
-    case normType t of
-        VARt var =>
-          if #tvLevel(!var) > max_level then
-            (if isExplicit var then
-               raise Unify UnifyExplicit
-             else
-               setTvLevel var max_level)
-          else ()
-      | ARROWt(t1,t2) =>
-          (prune t1; prune t2)
-      | CONt(ts, _) =>
-          app prune ts (* cvr: TODO *)
-      | RECt (ref {fields, rho}) =>
-          (app_field prune fields;
-           pruneRho_level max_level rho)
-  in prune end
-;
-*)
-
-
 
 exception ScopeViolation of ScopeViolation;
 
@@ -1560,21 +1273,6 @@ fun makeEquality t = (* cvr: TODO review for tyapp *)
       (app_field makeEquality fields;
        makeEqualityRho rho)
    | PACKt _ => raise Unify UnifyEquality
-(* cvr: TODO remove
-and makeEqualityTyApp tyapp = 
-  case tyapp of
-    NAMEtyapp tn => ()
-  | APPtyapp (tyapp,tyfun) => 
-      (makeEqualityTyApp tyapp;
-       makeEqualityTyFun tyfun)
-and makeEqualityTyFun tyfun = 
-  case normTyFun tyfun of
-    APPtyfun tyapp => makeEqualityTyApp tyapp
-  | TYPEtyfun(tvs,ty) => 
-      assumingEqualityTypeVars tvs makeEquality ty
-  | LAMtyfun (tn,tyfun) => 
-      assumingEqualityTyName tn makeEqualityTyFun tyfun 
-*)
 ;
 
 
@@ -1584,27 +1282,6 @@ fun makeImperativeRho rho =
         setRvImp rv true
     | _ => ()
 ;
-
-(*
-fun makeImperative t =
-  case normType t of
-    VARt var =>
-      if #tvImp(!var) then ()
-      else if isExplicit var then
-        raise Unify UnifyExplicit
-      else
-        setTvImp var true
-  | ARROWt(t1,t2) =>
-      (makeImperative t1; makeImperative t2)
-  | CONt(ts, _) =>
-      app makeImperative ts
-  | RECt (ref {fields, rho}) =>
-      (app_field makeImperative fields;
-       makeImperativeRho rho)
-  (* cvr: TODO what should really happen here? *)
-  | PACKt _ => raise Unify UnifyImperative
-;
-*)
 
 fun makeImperative (fnvs as (fns,fvs,frvs)) =
     (app (fn var =>
@@ -1845,73 +1522,6 @@ val equalsTyFunTyName = fn tyfun => fn tn =>
     else false;
 
 
-(* cvr: modified 
-fun generalization onTop loc isExpansive tau =
-  let val parameters = ref []
-      fun collect_parameters tau =
-            case normType tau of
-                VARt var =>
-                  let val {tvImp, tvOvl, tvLevel, ...} = !var in
-                    if member var (!parameters) then ()
-                    else if tvLevel <= !binding_level then
-                      (if onTop andalso not tvOvl then
-                         errorToplevelImperativeVar loc (VARt var)
-                       else ())
-                    else if tvOvl then
-                      (if onTop then
-			 (* Should not be generalized; will be resolved *)
-                         () 
-                       else
-                         setTvLevel var (!binding_level))
-                    else if tvImp andalso isExpansive then
-                      (if onTop then
-                         errorToplevelImperativeVar loc (VARt var)
-                       else
-                         setTvLevel var (!binding_level))
-                    else
-                      parameters := var :: !parameters
-                  end
-              | ARROWt(t,t') =>
-                  (collect_parameters t; collect_parameters t')
-              | CONt(ts, _) =>
-                  app collect_parameters ts
-              | RECt (ref{fields, ...}) =>
-                  app_field collect_parameters fields
-  in
-    collect_parameters tau;
-    TypeScheme {tscParameters = !parameters, tscBody = tau}
-  end;
-*)
-
-(*
-fun generalization isExpansive tau =
-  let val parameters = ref []
-      fun collect_parameters tau =
-            case normType tau of
-                VARt var => (* cvr: TODO double check this corresponds to original version with onTop = false *)
-                  let val {tvImp, tvOvl, tvLevel, ...} = !var in
-                    if member var (!parameters) then ()
-                    else if tvLevel <= !binding_level then
-                      ()
-                    else if tvOvl then
-                      (setTvLevel var (!binding_level))
-                    else if tvImp andalso isExpansive then
-                      (setTvLevel var (!binding_level))
-                    else
-                      parameters := var :: !parameters (* cvr: TODO make var explicit? ie. a parameter? *)
-                  end
-              | ARROWt(t,t') =>
-                  (collect_parameters t; collect_parameters t')
-              | CONt(ts, _) =>
-                  app collect_parameters ts
-              | RECt (ref{fields, ...}) =>
-                  app_field collect_parameters fields
-              (* cvr: TODO package types *)
-  in
-    collect_parameters tau;
-    TypeScheme {tscParameters = !parameters, tscBody = tau}
-  end;
-*)
 
 fun generalization isExpansive tau =
   let val (_,fvs,_)= freeVarsType [] [] ([],[],[]) tau
@@ -2108,54 +1718,13 @@ fun specialization scheme =
     case tscParameters of
       [] => tscBody
     | _ =>
-(* cvr: TODO revise? *)
-        let (* val _ = incrBindingLevel(); *)
+        let 
 	    val UE =
               map (fn var => (var, VARt(refreshTypeVar var))) tscParameters;
-           (* val _ = decrBindingLevel() *)
         in copyType [] UE tscBody end
   end;
 
 fun TypeOfScheme (TypeScheme {tscBody, ...}) = tscBody;
-
-(*
-fun type_subst UE tau =
-  case normType tau of
-      VARt var =>
-        (lookup var UE
-         handle Subscript => fatalError "type_subst: Unknown variable")
-    | ARROWt(t,t') =>
-        ARROWt(type_subst UE t, type_subst UE t')
-    | CONt(ts, tn) =>
-        CONt(map (type_subst UE) ts, tn) (* cvr: TODO *)
-    | RECt (ref{fields, rho}) =>
-        RECt (ref{fields=map_fields (type_subst UE) fields, rho=rho})
-;
-*)
-
-(* cvr: rewrote
-fun freshSchemeOfType tau =
-  let
-    val parameters = ref []
-    fun collect_parameters tau =
-          case normType tau of
-              VARt var =>
-                if member var (!parameters) then () else
-                parameters := var :: !parameters
-            | ARROWt(t,t') =>
-                (collect_parameters t; collect_parameters t')
-            | CONt(ts, _) =>
-                app collect_parameters ts
-            | RECt (ref{fields, ...}) =>
-                app_field collect_parameters fields
-    val () = collect_parameters tau
-    val vs = map (fn _ => newTypeVar false false false) (!parameters)
-    val UE = Fnlib.map2 (fn var => fn var' => (var, VARt var'))
-                        (!parameters) vs
-  in
-    TypeScheme{tscParameters = vs, tscBody = type_subst UE tau}
-  end;
-*)
 
 fun freshSchemeOfType tau =
   let
@@ -2294,22 +1863,6 @@ val initial_frag_CE = ConEnv [infoANTIQUOTE, infoQUOTE];
 
 val unit_General = newSig "General" "General" STRmode;
 
-(* cvr: TODO  
-val () = setConstructors unit_General 100 initial_bool_CE;
-val () = setConstructors unit_General 200 initial_list_CE;
-val () = setConstructors unit_General 300 initial_option_CE;
-val () = setConstructors unit_General 500 initial_order_CE;
-val () = setConstructors unit_General 600 initial_frag_CE;
-*)
-
-(* cvr: TODO
-val () = setTnStr (#info tyname_unit)      (TYPEts([], type_unit));
-val () = setTnStr (#info tyname_bool)      (DATATYPEts 100);
-val () = setTnStr (#info tyname_list)      (DATATYPEts 200);
-val () = setTnStr (#info tyname_option)    (DATATYPEts 300);
-val () = setTnStr (#info tyname_order)     (DATATYPEts 500);
-val () = setTnStr (#info tyname_frag)      (DATATYPEts 600);
-*)
 val () = setTnSort (#info tyname_unit)      (REAts (TYPEtyfun([], type_unit)));
 val () = (#tnConEnv (!(#info tyname_bool))) := SOME (initial_bool_CE);
 val () = (#tnConEnv (!(#info tyname_list))) := SOME (initial_list_CE);
@@ -2344,40 +1897,6 @@ fun lookupStr_VarEnv S path id info =
        raise MatchError (MissingValue (path, id, info))
 end;
 
-(*
-fun errorImplMismatch id =
-(
-  msgIBlock 0;
-  errPrompt "Mismatch between the specification of the value ";
-  msgString id; msgEOL();
-  errPrompt "in the signature and its implementation in the structure";
-  msgEOL();
-  msgEBlock();
-  raise Toplevel
-);
-
-fun errorConImplMsmatch id =
-(
-  msgIBlock 0;
-  errPrompt "Mismatch between the specification of the value constructor ";
-  msgString id; msgEOL();
-  errPrompt "in the signature and its implementation in the structure";
-  msgEOL();
-  msgEBlock();
-  raise Toplevel
-);
-
-fun errorExConImplMismatch id =
-(
-  msgIBlock 0;
-  errPrompt "Mismatch between the specification of the exception constructor ";
-  msgString id; msgEOL();
-  errPrompt "in the signature and its implementation in the structure";
-  msgEOL();
-  msgEBlock();
-  raise Toplevel
-);
-*)
 
 (* cvr: since substitution now expands realisations automatically by normalisation we can simplify expandRea to:  *)
 
@@ -2606,19 +2125,7 @@ fun matchIdStatus (* os *) path id
       | EXNname ei =>
           (case infStatus of
               EXNname ei' =>
-       	        ((* ps:  (case(#exconTag(!ei'),#exconTag(!ei)) of
-		     (NONE,NONE) => ()
- 		 |   (SOME _, SOME _) =>  ()
-(* cvr: unfortunately, the following is meaningless since we allow rebinding of static excons ...
- 		 |   (SOME ((qualid',_)), SOME ((qualid,_))) =>  
-		      	 if qualid' = qualid then ()
-			 else raise MatchError (StaticStaticMismatch (path,id,qualid',qualid))
-*)
-                 |   (NONE,SOME _) => 
-			 raise MatchError (StatusMismatch (path,id,infInfo,specInfo))
-		 |   (SOME _,NONE) =>
-			 raise MatchError (StatusMismatch (path,id,infInfo,specInfo)));   *)
-                 if #exconArity(!ei) <> #exconArity(!ei')
+       	        (if #exconArity(!ei) <> #exconArity(!ei')
 		 then raise MatchError (StatusMismatch (path,id,infInfo,specInfo))
                  else ())
              | _ => raise MatchError (StatusMismatch (path,id,infInfo,specInfo)))
@@ -3009,7 +2516,6 @@ fun prType prior tau =
                (msgIBlock 0; msgString "(";
                 prTypeSeq 0 "," 1 ts;
                 msgString ") "; msgEBlock());
-         (* printTQ tn *)
 	 prTyName false tn)
     | CONt(ts, tyapp) => (* cvr: TODO revise *)
         (case ts of
@@ -3019,7 +2525,6 @@ fun prType prior tau =
                (msgIBlock 0; msgString "(";
                 prTypeSeq 0 "," 1 ts;
                 msgString ") "; msgEBlock());
-         (* printTQ tn *)
 	 prTyApp 1 tyapp)
     | RECt rt =>
         let val {fields=fs, rho=rho} = !rt in
@@ -3071,15 +2576,6 @@ and prTyNameSet T sep  = (* cvr:TODO *)
         (prTyName true tn; msgString sep; msgBreak(1, 1);
          prTyNameSet T' sep)
 and prTypeRow fs =
-(* cvr: post 144 merge
-  case fs of
-      [] => ()
-    | [(lab,t)] =>
-        (printLab lab; msgString " :"; msgBreak(1, 2); prType 0 t)
-    | (lab,t) :: rest =>
-        (printLab lab; msgString " :"; msgBreak(1, 2); prType 0 t;
-         msgString ","; msgBreak(1, 0); prTypeRow rest)
-*)
   case fs of
       [] => ()
     | [(lab,t)] =>
@@ -3097,24 +2593,6 @@ and prTypeScheme sch = under_binder
 		prTypeVarSeq tscParameters "";
 		msgString ".");
         prType 0 tscBody)) sch
-(*
-and prTyApp prior tyapp  = 
-  let
-    fun prParen prior' s = if prior >= prior' then msgString s else ()
-  in
-    case tyapp of
-       NAMEtyapp tyname => 
-	   prTyName false tyname
-    |  APPtyapp (tyapp,tyfun) => 
-        ( prParen 1 "(";  (* cvr: TODO revise *)
-	  msgIBlock 0;
-          prTyApp 0 tyapp;
-	  msgBreak(1,2);
-          prTyFun 1  tyfun;
-          prParen 1 ")";
-	  msgEBlock())
-  end
-*)
 and prTyApp prior tyapp  = 
   let
     fun prParen prior' s = if prior >= prior' then msgString s else ()
@@ -3449,15 +2927,6 @@ val commit_free_typevar_names = fn () =>
 end;
 
 
-(*
-fun printType tau =
-(
-  resetTypePrinter();
-  collectExplicitVars tau;
-  prType  tau;
-  resetTypePrinter() 
-);
-*)
 (* cvr: REVISE *)
 fun printType tau =
   under_binder
@@ -3831,17 +3300,6 @@ in
 	     errPrompt "  ";prVarInfo (fn info => ()) id infInfo;msgEOL();
 	     msgEBlock())) 
              ()
-(* cvr: meaningless to consider this case... (see above)
-  | StaticStaticMismatch (ids,id,qualid',qualid) =>	    
-	    (msgIBlock 0;
-	     errPrompt "Mismatch between the specification of the static exception "; 
-               printQualId {qual = "",id = id::ids}; msgString" = "; printQualId qualid; msgEOL();
-	     errPrompt "in the signature and its implementation as the different static exception "; 
-	       printQualId qualid'; msgString " in the structure";
-	     msgEOL();
-	     msgEBlock()
-	     )
-*)
   | ConEnvMismatch (path,id,infTyStr,specTyStr) => 
 	 under_binder (fn () =>
 	    (collectExplicitVarsInObj freeVarsTyStr specTyStr;
@@ -4014,33 +3472,6 @@ in
 	     errPrompt "The declaration should also be a datatype";msgEOL();
 	     msgEBlock()))
             ()
-  | GlobalMismatch (path,id,desc,infQual,specQual) => 
-	     (msgIBlock 0;
-	      errPrompt "Global mismatch: ";msgString desc;
-	      prPath (DOTpath(path,id));msgEOL();	      
-	      errPrompt "is specified ";
-              (case specQual of 
-		   "" => 
-		      (msgString "as a local ";
-		       msgString desc)
-		 |  _ => 
-		      (msgString "as a global ";
-		       msgString desc;
-		       msgString " of the unit ";msgString specQual));
-	      msgEOL();
-  	      errPrompt "in the ";prSpec path;msgEOL();
-	      errPrompt "but it is declared ";
-              (case infQual of 
-		   "" => 
-		      ("as a local ";
-		       msgString desc)
-		 |  _ => 
-		      (msgString "as a global ";
-		       msgString desc;
-		       msgString " of the unit ";msgString infQual));
-	      msgEOL();
-  	      errPrompt "in the ";prInf path;msgEOL();
-	      msgEBlock())
   | ModuleMismatch (path as NILpath,infDesc,specDesc) => 
 	     (msgIBlock 0;
 	      errPrompt "Module mismatch: The ";

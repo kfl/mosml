@@ -5,9 +5,6 @@ in
 
 type RenEnv = (string * int) list;
 
-(* cvr: modified 
-val lookupRenEnv : QualifiedIdent -> (QualifiedIdent * int);
-*)
 val lookupRenEnv : (string -> Const.Id) -> QualifiedIdent -> (QualifiedIdent * int);
 val updateCurrentRenEnv: RenEnv -> unit;
 
@@ -21,16 +18,10 @@ datatype AccessPath =
   | Path_virtual_son of int * AccessPath
 ;
 
-
-(* cvr: modified
-type TranslEnv = (string, AccessPath) Env * int;
-val translateLocalAccess : TranslEnv -> string -> Lambda;
-val translateAccess : TranslEnv -> QualifiedIdent -> Lambda;
-*)
 type TranslEnv = (Const.Id, AccessPath) Env * int;
 val translateLocalAccess : (string -> Const.Id) -> TranslEnv -> string -> Lambda;
 val translateAccess : (string -> Const.Id) -> TranslEnv -> QualifiedIdent -> Lambda;
-val translateLongAccess : (string -> Const.Id) -> TranslEnv -> IdInfo ->  Lambda; (* cvr added *)
+val translateLongAccess : (string -> Const.Id) -> TranslEnv -> IdInfo ->  Lambda; 
 
 val translateExName : TranslEnv -> IdInfo -> Lambda;
 val mkEnvOfRecPats : int -> Pat list -> TranslEnv;

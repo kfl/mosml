@@ -174,26 +174,6 @@ fun varsOfPatAcc (_, pat') iis =
   | LAYEREDpat(p1,p2) => varsOfPatAcc p2 (varsOfPatAcc p1 iis)
 ;
 
-(*
-(* cvr: TODO remove varsOfTyAcc fns *) 
-fun varsOfTyAcc (_, ty') iis =
-  case ty' of
-    TYVARty ii => if exists (fn {qualid,info} => qualid = #qualid ii) iis
-		      then iis (* cvr: this is ugly because we use idinfo for tyvars *)
-                  else ii :: iis
-  | RECty fs =>
-      foldR_map varsOfTyAcc snd iis fs
-  | CONty(tys, _) =>
-      foldR varsOfTyAcc iis tys
-  | FNty(ty, ty') =>
-      varsOfTyAcc ty (varsOfTyAcc ty' iis)
-  | PACKty(sigexp) => iis   
-  | PARty(ty) => varsOfTyAcc ty iis  
-;
-(* cvr: TODO remove *)
-fun varsOfTy ty = varsOfTyAcc ty [];
-*)
-
 fun curriedness (MRule(ref pats,_) :: _) = List.length pats
   | curriedness _ = fatalError "curriedness"
 ;

@@ -10,9 +10,6 @@ prim_val static_alloc : int -> string = 1 "static_alloc";
 prim_val static_free : string -> unit = 1 "static_free";
 prim_val static_resize : string -> int -> string = 2 "static_resize";
 prim_val gc_full_major : unit -> unit = 1 "gc_full_major";
-(* cvr: 144 merge
-prim_val interprete : string -> int -> int -> obj = 3 "start_interp";
-*)
 prim_val interprete : bool -> string -> int -> int -> obj = 4 "start_interp";
 prim_val available_primitives : unit -> string Vector.vector
                                           = 1 "available_primitives";

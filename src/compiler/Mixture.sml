@@ -53,7 +53,6 @@ fun errPrompt s =
   msgString s)
 ;
 
-(* cvr: 144 merge *)
 val msgStyle = ref "default";
 
 (* Handling files and directories *)
@@ -303,7 +302,7 @@ datatype Compliance =
   | Conservative (* warn of any extensions *)
   | Liberal (* anything goes *);
 
-val currentCompliance = ref Liberal; (* cvr: TODO should be liberal *)
+val currentCompliance = ref Liberal; 
 
 
    

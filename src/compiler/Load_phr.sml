@@ -13,14 +13,9 @@ fun do_code may_free code entrypoint len =
     (!literal_table);
   literal_table := [];
   let val res =
-    (* cvr: 144 merge
-    interprete code entrypoint len
-    *)
     interprete may_free code entrypoint len
     handle x =>
-      ((* cvr: 144 merge
-        if may_free then static_free code else (); *)
-       (case x of
+      ((case x of
             Interrupt => raise x
           | Toplevel => raise x
           | Impossible _ => raise x
@@ -34,43 +29,10 @@ fun do_code may_free code entrypoint len =
        msgEBlock();
        raise Toplevel)
   in
-    (* cvr: 144 merge 
-    if may_free then static_free code else ();
-    *)
     res
   end
 );
 
-(* cvr: 144 merge
-fun loadZamPhrase (phr : ZamPhrase) =
-(
-  reloc_reset();
-  init_out_code();
-  Labels.reset_label_table();
-  literal_table := [];
-  (* It is essential to emit the initialization code *)
-  (* before the function bodies, in order for all Pset_global *)
-  (* to appear before all the Pget_global. *)
-  let val entrypoint = !out_position
-      val () = emit (#kph_inits phr)
-      val () = out STOP
-      val () = emit (#kph_funcs phr)
-      val len = !out_position
-      (* This is not a true string! *)
-      val code = static_alloc len
-      prim_val blit_string_ : string -> int -> string -> int -> int -> unit
-                                                       = 5 "blit_string"
-      val out_buffer_ = !(magic (!out_buffer) : string ref)
-  in
-    blit_string_ out_buffer_ 0 code 0 len;
-    patch_object code 0 (get_reloc_info());
-    do_code (case (#kph_funcs phr) of [] => true | _ => false)
-            code entrypoint len
-  end
-);
-*)
-
-(* cvr: 144 merge *)
 fun loadZamPhrase (phr : ZamPhrase) =
 (
   reloc_reset();

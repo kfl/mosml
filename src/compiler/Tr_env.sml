@@ -12,27 +12,8 @@ datatype AccessPath =
   | Path_virtual_son of int * AccessPath
 ;
 
-(* cvr: modified 
-type TranslEnv = (string, AccessPath) Env * int;
-*)
-
 type TranslEnv = (Const.Id, AccessPath) Env * int;
 
-
-(* cvr:
-fun lookupRenEnv q =
-  let val {qual, id} = q in
-    if qual = "" then fatalError "lookupRenEnv: empty qualifier"
-    else ();
-    if qual = currentUnitName() then
-      (mkUniqueGlobalName (id, Hasht.find (!currentRenEnv) id)
-       handle Subscript => fatalError
-         ("lookupRenEnv: unknown variable: " ^ showQualId q))
-    else
-      (q, 0)
-  end
-;
-*)
 
 fun lookupRenEnv asId q =
   let val {qual, id = lid} = q 
@@ -98,16 +79,7 @@ fun translateLocalAccess asId (rho, depth) id =
   handle Subscript =>
     fatalError ("translateLocalAccess"^id)
 ;
-(* cvr:
-fun lookupInLocalEnv env q =
-  let val {qual, id} = q in
-    if qual = "" orelse qual = currentUnitName() then
-      lookupEnv env id
-    else
-      raise Subscript
-  end
-;
-*)
+
 fun lookupInLocalEnv asId env q =
   let val {qual,id} = q in (* cvr: TODO handle long ids *)
     if qual = "" orelse qual = currentUnitName() then
@@ -141,17 +113,6 @@ fun translateLongAccess asId env (ii:IdInfo) =
          in trLongAccess id (!idFields)
          end
     end;
-
-
-(* cvr: rewrote 
-fun translateExName env (ii : IdInfo) =
-  let val {qualid, info} = ii in
-    case #info(!(#idKind info)) of
-        EXCONik _ =>
-          translateAccess env qualid
-      | _ => fatalError "translateExName"
-  end;
-*)
 
 
 fun translateExName env (ii : IdInfo) =

@@ -94,7 +94,6 @@ fun main() =
              ("-g",          Arg.Unit set_debug),
              ("-debug",      Arg.Unit set_debug),
              ("-noheader",   Arg.Unit set_noheader),
-             (* cvr: 144 merge *)
              ("-standalone", Arg.Unit set_standalone),
              ("-o",          Arg.String set_exec_file),
              ("-exec",       Arg.String set_exec_file),

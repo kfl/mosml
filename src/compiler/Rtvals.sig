@@ -4,8 +4,6 @@ local
   open Obj Const Globals Types;
 in
 
-(* type ExnName = QualifiedIdent ref; cvr:removed *)
-
 val getGlobalVal : int -> obj;
 val setGlobalVal : int -> obj -> unit;
 val printLiteralConst : obj -> unit;

@@ -1,3 +1,7 @@
+Hi Mom!
+
+mosmldep's Lexer really needs to be updated to Modules, though it's fine
+for the recommended use.
 ----------------------------
 mosml doesn't allow derived form
 functor F()...()= ()
@@ -30,7 +34,7 @@ By 3) u is tyname that point to the tyname t.
 
 structure X = struct type t = int type u = int end:>S.
 
-When we match the structure against S, t in S is realised to int, then, by 2) u is compressed to point directly at int, by-passing t. After resetting t to hide its realistion, u still points to int, 
+When we match the structure against S, t in S is realised to int, then, by 2) u is compressed to point directly at int, by-passing t. After resetting t to hide its realisation, u still points to int, 
 causing a loss of abstraction. Moreover,
 X.t and X.u no longer share, though they should.
 
@@ -53,13 +57,8 @@ of the ui files by around 1%. I think path compression is less important
 in type name realisation than it is during type variable unification, 
 but I may be wrong.
 
-This should probably be reviewed!
-
--c
-
----------
+-------------------------
 clean trToplevelDec --- the obscure mangling code could be improved 
-remove patch directory
 -------------------------
 uIdent should be string, not string ref
 restore verbose mode
@@ -68,110 +67,27 @@ warn on anonstruct and anonsigs, perhaps  add error production
 for module level decs and specs occurring in anonstructs and anonsigs.
 add mosmldep function
 --------
-I haven't completed the new compilation model yet but I'm at the point where
-what I do will affect the command line arguments to mosml and  mosmlcmp,
-(as well as the top-level compilation functions).
-
-Basically, I'd like to change the command line arguments to mosmlcmp
-as follows.
-
--str indicates compilation in structure mode for subsequent .sml and .sig files
--topdec indicates compilaton in topdec mode for subsequent .sml and .sig files
-I guess -str should be the default or initial mode for backwards compatibility.
-
-foo.ui means add foo.ui (in the mode with which it was compiled) to the
-       compilation context of subsequent files
-
-foo.sig means compile foo.sig to foo.ui in the current compilation mode,
-       and add foo.ui to the compilation context for subsequent files.
-
-foo.sml means compile foo.sml to foo.uo in the current compilation mode,
-       (and foo.ui if no .sig file present)
-       and add foo.ui (if not already added),
-       to the current compilation context for subsequent files.
-
-eg.
-
-mosmlcmp -str A.ui B.sig B.sml -topdec C.ui D.sig D.sml -str E.sml
-
-This means that command line arguments are processed in sequence, building
-up a context. We need to be able to do this since topdec files can't be
-opened in .sig and .sml files, so there's no way to indicate dependency on 
-them. I'll keep the behaviour that a reference to a free structure identifier
-is implicitly resolved by searching the load path for a .ui file (that
-should have been compiled in str mode.
-
-Is that ok with you guys?
-
-
-PS. I noticed a problem with the current compilation of .sml and .sig files:
-
-A.sig:
-
-structure A : A = struct ... end
-
-A.sml:
-
-structure A : A = struct ... end
-
-Currently, the signature for A isn't bound in struct .... end (that was
-ok for core level ...), and any reference to A in struct end will refer to some other signature.
-The signature A should be bound in struct end  if we want the meaning
-to be equivalent to the sequence of top-level declarations:
-
-signature A = sig ... end
-structure A : A = struct ... end
-
 ------------
-o add compiler/test/okasaki to cvs 
 o norming rec str should probably go all the way
-o add compiler/test/recmod.sml to cvs
 o matching recursive modules probably deserves an extension to 
   the path data structure
   for decent error reporting.
-o restore reporting of results during signature compilation in Compile.sml
-o the last reduce/reduce conflict arises
-  from 
-  functor modid: sigexp => modexp  (* anonymous functor *)
-  and 
-  functor modid : sigexp = modexp  (* derived form for functor bindings *)
-  This should be fixed somehow, although both just affect parsing
-  of the extensions (they aren't legal sml anyway).
-
-o fix printing of record values (see compiler/test/result for the bug) (DONE)
 o reconsider use of large array in Back.sml (see bindEnv bug)
-o restore verbose mode
+o restore verbose mode for interface compilation?
 o get rid of Units.extendXXX functions
 o get rid of reduce/reduce conflicts by post parse resolution (DONE).
-o cvr: TODO revise Match.sml
+o cvr: TODO revise Match.sml/ has this been done?
       translating a long exception name under the lambda of
       a pattern matching function can lead to a space leak --- 
       should  do it eagerly before taking the closure! 
-o add compiler/test/coerce.sml
-o check with Peter that unary exception coercion don't introduce a space leak by
-  keeping a reference to the entire structure in the closure!
-o generalise treatment of PrimValBind to allow scoped tyvars a la valbind
 o report scope violations better, perhaps by associating each variable and type name with a 
   path a la matching to describe the binding locations and kind of quantification.
-o distinguish uses of UnifyExplicit
-
-o restore filename norming
-o report unmangled ids in link errs
-o fix makefile
+o distinguish uses of UnifyExplicit. done?
+o restore filename norming, done but needs testing.
 o misleading error message:
-- val ('a,'b) f = fn x:'a => x:'b;
-! Toplevel input:! val ('a,'b) f = fn x:'a => x:'b;
-!                            ^
-! Type clash: expression of type
-!   'a
-! cannot have type
-!   'b
-! because of a scope violation
-
 o at the moment, explicitly scoped tyvars that are not generalised
   are treated as free parameters, not variables, causing
   bizarre type clashes:
-eg.
 	- val id = (fn x => x) (fn x:'a => x);
 	! Warning: Value polymorphism: Free type variable(s) at top level in value identifier id
 	> val id = fn : 'a'' -> 'a''
@@ -187,46 +103,7 @@ eg.
   One idea is to update free explicit tyvars to variables after
   generalisation. Since these aren't quantified, they can only
   receive at most one instantiation.
-
-
-o the treatment of equality for higher-order tynames, tyapps and tyfuns
-  may need to be revised
-  to avoid the anomaly with
-  functor F X:sig type t end = struct datatype u = C of X.t ref end
-  In the current implementation u will only be an eqaulity type if
-  t is realised by an equality type, though this is too conservative.
-  Note that with the generative functor
-  functor G( X:sig type t end) = struct datatype u = C of X.t ref end
-  u will invariably be an equality type!.
-
-  One idea is to treat the equality attribute of a tyname as part of the arity,
-  rather than as a separate attribute, and then introduce subkinding....
-
-  This needs careful thought and a review of the literature on
-  equality types, if there is any!
- 
-o and banking demo and link test to compiler/test
-
-o Synchk.sml needs to be modified.
-  Unfortunately, part of Synchk.sml relies on identifier resolution,
-  so can only be done during or (after?) elaboration. Other parts
-  really are just syntactic and could be folded in infix
-  resolution code.
-  Note that some restriction should be lifted, ie
-    o allow open type expressions.
-  For the moment, we just turn it off...
-
-o  Elab.elabDatBind contains a commented line that should be enough to
-   ensure that datbinds are insensitive to constructor ordering, as
-   required by the definition. However, it breaks the current
-   implementation of some runtime primitives (eg. unix file
-   permissions) that rely on constructors being assigned tags
-   according to their order of appearance, not lexicographic
-   order. Until the assumption is removed from the run-time, we'll
-   just live with the current implementation restriction.
-
-   val conbind_list = Sort.sort (fn ConBind(ii,_) => fn ConBind(ii',_) =>
-                                 hd(#id(#qualid ii))<=hd(#id(#qualid ii'))) conbind_list
+  Unfortunately, the current strange behaviour appears to be the dictated by SML.
 
 o In the 144 library Callback.sml, I  needed to edit
     val mltable = mkPolyTable(17, Subscript) 
@@ -236,328 +113,6 @@ o In the 144 library Callback.sml, I  needed to edit
   because the type constraint leads to a scope violation during unification in the subsequent 
   definition of `register'. Unfortunately, I'm not quite sure what the correct behaviour 
   should be...
-
-BUGS:
-
-------------
-signature S = sig type t type u sharing type  u = t end
-structure X = struct datatype  t = C of t type u = t end : S;
-
-(* raise Out of Memory --- this might just be because we aren't distinguishing between parameters and variables
-   during matching yet --- check again later! 
-   Actually, I think the error is because we identify flexible names by being type functions of the form APPtyname:
-   The realisation of u by APPtyname causes it to be treated as flexible, when really it should be rigig
-   by the time we are matching against u --- it think we are creating a looping realisation, thus check
-   Realisation fails to terminate and runs out of memory.
- *)
-
--------------
-signature S = sig datatype t = C of t type u sharing type u = t end where type u = int;
-! Type constructor u is specified as admitting equality,
-! but its realization doesn't admit equality
-(* fails, with a bizarre error message *)
-
-(* fails with a bizarre type error --- looks like a failure to normalize a type name *)
-signature A = sig type t val a : t end
-
-functor F(A : sig type t val pr : t -> string end) = 
-  struct datatype k = A of A.t 
-         fun pr (A t) = "A(" ^ A.pr t ^ ")"
-         val test = fn a => pr (A a)
-  end
-
-functor H(A : sig type t val a: t
-	          val pr : t -> string 
-	      end) =
-  struct
-    structure A1  = A 
-    structure A2 = F(A1)
-    val a = A2.A A.a
-    val _ =  A2.pr a
-  end;
-
-(* *)
-
-functor F(A : sig val pr : string -> string end) = 
-  struct datatype 'a k = A of 'a 
-         fun pr (A t) = "A(" ^ A.pr t ^ ")"
-         val test = fn a => pr (A a)
-  end
- structure A = struct type t = string 
-                      val pr = fn s => s
-                      val a = ""
-               end;
- structure A1  = A;
- structure A2 = F(A1);
- val a = A2.A A.a;
- val _ =  A2.pr a;
-
-
-(* test for scope violations *)
-fn x => let functor F(X:sig eqtype t val y:t end) = struct val e = x = X.y end in 1 end;
-
-fn x => let datatype t = C in C end;
-
-fun f x  =  let datatype t = C in f C end;
-
-fun f x  =  let abstype t = C with val y = C end in fn x => y end;
-
------------------------------
-
-Open
-----
-
-Like Moscow, I'm using the same syntax for
-qualified idents and long idents. Long idents are resolved to a
-qualified idents at elaboration time (basically if the head of the
-long ident is free then it refers to a unit otherwise to a local
-structure). Unfortunately this uniform approach will cause problems
-with mosmldep since it won't be able to calculate dependencies
-properly: eg in
-
-open X;
-open Y;
-
-Y is a free (and thus a unit) if X doesn't contain a structure Y and Y
-is bound (not a unit) if X does contain a Y structure. Unfortunately,
-we can't tell which case holds without knowing the *type* of X (open
-is really nasty).
-
-As a simple solution, do you have any objection to introducing a
-simple syntactic restriction between qualified idents and long idents?
-I'm thinking of something like preceding a qualified ident with a
-period or some distinguishing character (period is nice because it
-correspond to projecting from the
-"world").
-
-Then the long identifier .X.Y.z refers to component Y.z of unit X and
-the long identifier W.Y.z refers to component W.Y.z. of the structure
-W. We can still allow W.Y.z to resolve to the .W.Y.z if W is free at
-elaboration time, but issue a warning that mosmldep won't find this
-dependency.
-
-Similary when parsing
-
-open .X.Y.z  W.Y.z
-
-with mosmldep then we can tell which structure is a unit and which
-structure is a local.
-
-Hopefully this distinction will make it easy to modify mosmldep to do
-the right thing and to write a simple script for updgrading existing
-sources.
-
-Unfortunately, it will also cause bootstrapping problems unless we
-introduce a old-behaviour/new-behaviour flag to mosmldep and calculate
-dependencies for the compiler and libraries using the old behaviour.
-Since free long identifiers will still be resolved to units if
-necessary, the new compiler should still be able to compile itself.
-
-
-Exceptions
-----------
-> > One remaining problem is that I think the distinction between the
-> > representations of dynamic and static exceptions is going to cause
-> > problems.
->
-> Yes, this is a silly problem.  Perhaps I should put on the agenda to
-> get rid of this distinction before the next release in any case.  In
-> the match compiler it accounts for 90 per cent of the ugliness.
->
-> > Because they have different representations, the handler for a
-> > dynamic exception won't work for a static exception and vice
-> > versa. I'm putting this aside for the moment but may ask you for
-> > more ideas sometime next week.
->
-> If in doubt, handle the dynamic exceptions and ignore the static ones.
-> My hunch is that the static ones will have to go, and some technique
-> must be invented to communicate the identity of a few dynamic
-> exceptions to the runtime system.
->
-
-Ok, that sounds reasonable. My first idea was to embed the reference
-for a dynamic exception in the same slot that holds the tag of the
-static exception to get a uniform representation. But the problem is
-that the tag for a static exception isn't stored in a slot of a block,
-but as the tag of the block. 
-
-So perhaps it would be possible to store a fixed representation of the
-tag of the static exception in the slot used by the name of the
-dynamic exception, but then the runtime would have to be modified to
-raise static exceptions in the proper, redundant format. 
-
-Another possibility might be to associate a dynamic exception binding
-not with the name of the exception, but with the constructor and
-handler for the exception, so that a static exception binding can be
-coerced to a dynamic one by installing the correct constructor/handler
-code.
-
-A final solution that avoids the problem altogether is to simply
-disallow a dynamic exception to be bound/coerced to static exception
-and vice versa and to introduce a separate specification and
-declarations phrases for static exceptions
-(perhaps 'prim exception exndesc/exnbind' for static exceptions ).  If
-there are only very few system exceptions (is that true?), this might
-not be too bad, especially if all the Standard ML and Standard Library
-exceptions can be compiled as dynamic exceptions (is this possible
-already?)
-
-
-Syntax
-------
-
-Modify the syntax to avoid the intro of new keywords:
-
-- use "t of modexp" and "x of modexp" for anonymous projections ---
-  avoid {{ }} keywords and should allow us of ( and ) for parenthetic module
-  (and signature?) expressions
-
-- drop "module" keyword by distinguishing between functor and structure
-  namespace, bindings and specifications. Allow functor  bindings to introduce
-  both applicative and generative functors.
-
-  functor F (X:S) = modexp (generative)
-   == functor F = functor(X:S) => modexp
-  functor F X:S = modexp (applicative)
-   == functor F = functor X:S => modexp
-  
-  use single application construct
-   longfunid modexp 
-  with two generative/applicative rules   
- 
-- use signature syntax: functor(X:S)->S and functor X:S->S for
-  generative/applicative functor signatures
-- use syntax functor(X:S)=>modexp and functor X:S =>modexp for
-  generative/applicative functors.
-
-- Possibly use disjoint namespaces for (all) functors and structures. 
-  Distinguish between id status of longmodid by context:
-  The only problem is that this won't work for functor bodies
-  functor F(X:S)=Y   (should Y be a structure or a functor?) ---- 
-  maybe Y should be a structure by default
-  ie functorF(X:S)= longmodid indicates treat longmodid as strid
-     functor F(X:S)= longmodid indicates treat longmodid as funid
-  functor F(X:S)= G should be written = functor(Y:S')(G) or maybe
-        functor F(X:S) = let functor G = G in G end
-  could we use brackets to indicate which?
-  Ie. if we are parsing an unknown modexp then
-      longmodid means a structure,- (longmodid) a functor, but if
-      we know what we are looking for then (longmodid) is just
-      the same as longmodid. What we are looking for
-      should just be an extra flag to elaboration
-      with values funexp | strexp | modexp.
-  When elaborating an application or constraint, we should elaborate
-  the functor / signature
-  first to determine whether we expect a functor or structure
-  argument.    
-
-- use syntax 
-   structure modexp as sigexp
-   functor modexp as sigexp
-  to introduce first-class structures and functors.
-- use syntax 
-      structure sigexp 
-  and 
-      functor sigexp 
-  for package  types
-  eg mkArray : nat -> structure Array.
-- use binding syntax
-   structure X as S = e to eliminate first-class structures
-   functor F as S = e to eliminate first-class functors
-
-(* recursive modules *)
-
-Hey Peter,
-
->They look real weird!  I understand (from confearence presentations)
->that types for recursive modules is a fairly non-trivial subject.
-
-Ahhh, but only if you abandon the definition instead of
-generalising it ;->.
-
-For intuition (though I may have got it wrong here):
-
-1. In the signature expression:
-
-rec(X:sigexp)sigexp'
-
-sigexp is a forward declaration that let's you specify mutually recursive datatypes in sigexp' that cross module boundaries
-
-rule (I think):
-C |- sigexp => LAMBDA(P,S) P fresh for C
-C,X:S |- sigexp' => LAMBDA(P',S') P' fresh for (LAMBDA(P,S))
-S' >= phi(S) dom(phi)= P  P doesn't occur in Rng(phi) (occur check)
--------------------------------------------------------------------
-C |- rec(X:sigexp)sigexp' => LAMBDA(P',rec(phi(S),S')
-
-The new semantic object rec(S,S') is just a pair of
-semantic structures (environments). The idea is that
-to match another structure S'' against one of these you first
-match S'' against S, to find a realisation phi' for the forward type declarations in P',you then match S'' against (phi' S') to find
-a realisation for the remaining things in P'. Operationally, it makes
-a lot of sense (that's kind of what you do to match datatype declarations).
-Note this only allows mutually recursive datatypes, not type abbreviations(because of the occur check).
-
-2: In the module expression
-
-rec(X:sigexp)modexp
-
-sigexp is a forward declaration that let's you specify mutually
-recursive values in modexp that cross module boundaries. Mutually
-recursive types, on the other, have to be specified in sigexp using a
-recursive signature and then just copied using Standard ML datatype replication in modexp (that's why the
-examples look weird).
-
-C |- sigexp => LAMBDA(P,S) P fresh for C
-C,X:S |- modexp => EXISTS(P',S') P' fresh for (LAMBDA(P,S))
-S' >= S (* no realisation here, just check enrichment *) 
--------------------------------------------------------------------
-C |- rec(X:sigexp)modexp => EXISTS(P U P',S')
-
-Compilation:
-
-allocate a reference to NONE for X
-evaluate modexp, treating references to X as
-   case !X of NONE => raise BIND | SOME modval => modval
-(this is an ugly, but safe, dynamic check to see a fix point is reached)
-set the reference to the value of modexp (coerced according to sigexp)
-return the value of modexp. You can also compile it without the check,
-but it ain't safe.
-
-Don't know if it's sound though. It does give you (heavy weight/inefficient)
-polymorphic recursion, which is nice.
-
->However, I think we might include this in mosml, provided that (1) it
->does not slow down the compilation of `ordinary' programs (which is
->probably unlikely), and (2) it has to be enabled by using a flag or
->similar.
-
-It passes the regression test fine (no additional cost, I think), however,
-I think I'll hold back for now since it does need a bit
-more code (not much, but I'd rather play with it for a bit to see its ok),
-and I think it still has some wrinkles in it.
-
->Over the weekend I finished (so far) the clean-up of dynlibs.  Other
->than that, my mosml progress is slow due to lots of other
->obligations.
-
-Yes, me too. I managed to get rid of the last reduce/reduce
-conflict (it was trivial)-that leave 37 shift/reduce conflicts but I think they
-are correct (though it deserves more checking). Also fixed a wee bug in
-unguarded. 
-
-More importantly, any thoughts about my approach to compiling unit
-implementations in structure mode and topdec mode. It should be easy
-to implement, I think?  I'm willing to give it a try but would prefer
-to have approval.
-
--c
-
-PS. Important things to do. 
-
-Address the datatype issue
-Clean up the code!!!
-Sharing (sigh)
 
 
 

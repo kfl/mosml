@@ -153,7 +153,6 @@ val printLength = ref 200;
 fun prVal (depth: int) (prior: int) (tau: Type) (v: obj) =
   let fun prP s = if prior > 0 then msgString s else ()
       fun prD f = if depth <= 0 then msgString "#" else f()
-(* cvr: post 144 merge *)
       and prExn (e : obj) =			(* e : exn *)
 	  decode_exn (repr e)
 	             (fn q => (prP " "; printVQ q))
@@ -168,7 +167,6 @@ fun prVal (depth: int) (prior: int) (tau: Type) (v: obj) =
 	  printer pp_out v
 	  handle e => (msgString "<installed prettyprinter failed: "; 
 		       prExn (repr e); msgString ">")
-(* cvr: post 144 merge *)
       val tau = normType tau
   in
     case tau of
@@ -185,102 +183,12 @@ fun prVal (depth: int) (prior: int) (tau: Type) (v: obj) =
             (prD (fn() =>
                prSeq "{" "}" (prField (depth-1)) "," fs vs))
         end
-(*
-    | CONt(ts, NAMEtyapp tyname) => (* cvr: TODO complete for APPtyapp *)
-        (case !(#tnConEnv (! (#info tyname))) of
-           NONE => 
-	       (case findInstalledPrinter tyname of
-		    SOME printer => printer pp_out v
-		  | NONE =>
-             if      (isEqTN tyname tyname_int)    then (prP " "; prInt v)
-             else if (isEqTN tyname tyname_word)   then (prP " "; prWord v)
-             else if (isEqTN tyname tyname_word8)  then (prP " "; prWord v)
-             else if (isEqTN tyname tyname_char)   then (prP " "; prChar v)
-             else if (isEqTN tyname tyname_real)   then (prP " "; prReal v)
-             else if (isEqTN tyname tyname_string) then (prP " "; prString v)
-             else if (isEqTN tyname tyname_exn) then
-               decode_exn v
-                 (fn q =>
-                    (prP " "; printVQ q))
-                 (fn q => fn va => fn tyOpt =>
-                    (prP "(";
-                     printVQ q; msgString " ";
-		     (case tyOpt of 
-			  NONE    => prGeneric va
-			| SOME ty => prVal (depth-1) 1 ty va); 
-		     prP ")"))
-             else if (isEqTN tyname tyname_ref) then
-               let val t = hd ts
-                   val x = obj_field v 0
-               in
-                 prD (fn() => (prP "("; printVQ (#qualid tyname);
-                               prVal (depth-1) 1 t x; prP ")"))
-               end
-             else if (isEqTN tyname tyname_vector) then
-               let val vs = decode_vector v in
-                 prD (fn() =>
-                   (prP " ";
-                    prVector (depth-1) (!printLength) (hd ts) vs))
-               end
-             else
-               (msgString "<"; msgString (hd (#id (#qualid tyname)));
-                msgString ">"))
-         | SOME (ConEnv CE) =>
-             (case findInstalledPrinter tyname of
-                SOME printer => printer pp_out v
-              | NONE =>
-                    if null CE then
-                      (msgString "<"; msgString (hd (#id (#qualid tyname)));
-                       msgString ">")
-                    else if #conSpan(! (#info (hd CE))) = 1 andalso
-                            #conArity(! (#info (hd CE))) = 1
-                    then
-                      let val ci = hd CE
-                          val {qualid, info} = ci
-                          val {conArity, conIsGreedy, conType, ...} = !info
-                      in
-                        case specialization conType of
-                            ARROWt(a_t, r_t) =>
-                              (unify tau r_t;
-                               (prD (fn() =>
-                                  (prP "("; printVQ qualid;
-                                   prVal (depth-1) 1 a_t v;
-                                   prP ")"))))
-                          | _ => fatalError "prVal"
-                      end
-                    else
-                      let val i = obj_tag v
-                          val ci = nth(CE, i)
-                          val {qualid, info} = ci
-                          val {conArity, conIsGreedy, conType, ...} = !info
-                      in
-                        if (isEqTN tyname tyname_list) then
-                          (prD (fn() =>
-                             (prP " ";
-                              prList (depth-1) (!printLength)
-                                     (hd ts) (decode_list v))))
-                        else if conArity = 0 then
-                          (prD (fn() => (prP " "; printVQ qualid)))
-                        else
-                          case specialization conType of
-                              ARROWt(a_t, r_t) =>
-                                (unify tau r_t;
-                                 (prD (fn() =>
-                                    (prP "("; printVQ qualid;
-                                     if conIsGreedy
-                                       then prVal (depth-1) 1 a_t v
-                                       else prVal (depth-1) 1 a_t (obj_field v 0);
-                                     prP ")"))))
-                            | _ => fatalError "prVal"
-                      end))
-*)
-    | CONt(ts, tyapp) => (* cvr: TODO complete for APPtyapp *)
+    | CONt(ts, tyapp) => 
         (case conEnvOfTyApp tyapp of
            NONE => 
             (case tyapp of
 		 NAMEtyapp tyname =>
 		     (case findInstalledPrinter tyname of
-(* cvr: post 144 merge    SOME printer => printer pp_out v *)
 			  SOME printer => prettyprint printer pp_out v 
 			| NONE =>
 				if (isEqTN tyname tyname_int) then (prP " "; prInt v)
@@ -294,20 +202,6 @@ fun prVal (depth: int) (prior: int) (tau: Type) (v: obj) =
 					 then (prP " "; prReal v)
 				else if (isEqTN tyname tyname_string)
 					 then (prP " "; prString v)
-(* cvr: post 144 merge
-			        else if (isEqTN tyname tyname_exn) then
-				    decode_exn v
-				    (fn q =>
-				     (prP " "; printVQ q))
-				    (fn q => fn va => fn tyOpt =>
-				     (prP "(";
-				      printVQ q; msgString " ";
-				      (case tyOpt of 
-					   NONE    => prGeneric va
-					 | SOME ty => prVal (depth-1) 1 ty va); 
-					   prP ")"))
-			        else if (isEqTN tyname tyname_ref) then
-*)
    			        else if (isEqTN tyname tyname_exn) then prExn v
 				else if (isEqTN tyname tyname_ref) then
 				    let val t = hd ts
@@ -337,8 +231,6 @@ fun prVal (depth: int) (prior: int) (tau: Type) (v: obj) =
              ( if (case tyapp of 
 		       NAMEtyapp tyname =>
 			 (case findInstalledPrinter tyname of
-(* cvr: post 144 merge         SOME printer => (printer pp_out v;true)  *)
-
 			       SOME printer => (prettyprint printer pp_out v;true) 
 			     | NONE => false)
 		      | _ => false)
@@ -369,14 +261,6 @@ fun prVal (depth: int) (prior: int) (tau: Type) (v: obj) =
                           val {qualid, info} = ci
                           val {conArity, conIsGreedy, conType, ...} = !info
                       in
-
-(*
-                     if (isEqTN tyname tyname_list) then
-                          (prD (fn() =>
-                             (prP " ";
-                              prList (depth-1) (!printLength)
-                                     (hd ts) (decode_list v))))
-*)
                        if case tyapp of 
 			   NAMEtyapp tyname =>
 			       if (isEqTN tyname tyname_list) then
@@ -403,107 +287,8 @@ fun prVal (depth: int) (prior: int) (tau: Type) (v: obj) =
                             | _ => fatalError "prVal"
                       end)
 	 | _ => fatalError "prVal 1")
-(*  | CONt (ts, APPtyapp _) => fatalError "prVal: unimplemented CONt(ts, APPtyapp _)" *)
- (* cvr: TODO revise *)
  | PACKt (EXISTSexmod(T,STRmod S)) =>  (prP " "; msgString "[structure ...]")
  | PACKt (EXISTSexmod(T,FUNmod F)) =>  (prP " "; msgString "[functor ...]")
-(*
-    | CONt(ts, tyname) =>
-        (case #tnStr(! (#info tyname)) of
-           NILts => 
-	       (case findInstalledPrinter tyname of
-		    SOME printer => printer pp_out v
-		  | NONE =>
-             if      (isEqTN tyname tyname_int)    then (prP " "; prInt v)
-             else if (isEqTN tyname tyname_word)   then (prP " "; prWord v)
-             else if (isEqTN tyname tyname_word8)  then (prP " "; prWord v)
-             else if (isEqTN tyname tyname_char)   then (prP " "; prChar v)
-             else if (isEqTN tyname tyname_real)   then (prP " "; prReal v)
-             else if (isEqTN tyname tyname_string) then (prP " "; prString v)
-             else if (isEqTN tyname tyname_exn) then
-               decode_exn v
-                 (fn q =>
-                    (prP " "; printVQ q))
-                 (fn q => fn va => fn tyOpt =>
-                    (prP "(";
-                     printVQ q; msgString " ";
-		     (case tyOpt of 
-			  NONE    => prGeneric va
-			| SOME ty => prVal (depth-1) 1 ty va); 
-		     prP ")"))
-             else if (isEqTN tyname tyname_ref) then
-               let val t = hd ts
-                   val x = obj_field v 0
-               in
-                 prD (fn() => (prP "("; printVQ (#qualid tyname);
-                               prVal (depth-1) 1 t x; prP ")"))
-               end
-             else if (isEqTN tyname tyname_vector) then
-               let val vs = decode_vector v in
-                 prD (fn() =>
-                   (prP " ";
-                    prVector (depth-1) (!printLength) (hd ts) vs))
-               end
-             else
-               (msgString "<"; msgString (#id (#qualid tyname));
-                msgString ">"))
-         | DATATYPEts dt =>
-             (case findInstalledPrinter tyname of
-                SOME printer => printer pp_out v
-              | NONE =>
-                  let val uname = #qual (#qualid tyname)
-                      val sign = if uname = currentUnitName()
-                                then (!currentSig)
-                                else findSig Location.nilLocation uname
-                      val CE = findConstructors sign dt
-                  in
-                    if null CE then
-                      (msgString "<"; msgString (#id (#qualid tyname));
-                       msgString ">")
-                    else if #conSpan(! (#info (hd CE))) = 1 andalso
-                            #conArity(! (#info (hd CE))) = 1
-                    then
-                      let val ci = hd CE
-                          val {qualid, info} = ci
-                          val {conArity, conIsGreedy, conType, ...} = !info
-                      in
-                        case specialization conType of
-                            ARROWt(a_t, r_t) =>
-                              (unify tau r_t;
-                               (prD (fn() =>
-                                  (prP "("; printVQ qualid;
-                                   prVal (depth-1) 1 a_t v;
-                                   prP ")"))))
-                          | _ => fatalError "prVal"
-                      end
-                    else
-                      let val i = obj_tag v
-                          val ci = nth(CE, i)
-                          val {qualid, info} = ci
-                          val {conArity, conIsGreedy, conType, ...} = !info
-                      in
-                        if (isEqTN tyname tyname_list) then
-                          (prD (fn() =>
-                             (prP " ";
-                              prList (depth-1) (!printLength)
-                                     (hd ts) (decode_list v))))
-                        else if conArity = 0 then
-                          (prD (fn() => (prP " "; printVQ qualid)))
-                        else
-                          case specialization conType of
-                              ARROWt(a_t, r_t) =>
-                                (unify tau r_t;
-                                 (prD (fn() =>
-                                    (prP "("; printVQ qualid;
-                                     if conIsGreedy
-                                       then prVal (depth-1) 1 a_t v
-                                       else prVal (depth-1) 1 a_t (obj_field v 0);
-                                     prP ")"))))
-                            | _ => fatalError "prVal"
-                      end
-                  end)
-         | _ => fatalError "prVal")
-*)
 end
 
 and prField (depth: int) (lab, t) v =

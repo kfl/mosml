@@ -61,7 +61,6 @@ w32: mosmlcmp.w32 mosmllnk.w32 mosmltop.w32
 	echo 'Remember to set the CPP for win32 in Makefile.inc'
 
 mosmlcmp: $(COMP_OBJS) $(C_OBJS)
-	#$(MOSMLL) $(LINKFLAGS) -o mosmlcmp $(C_LIBOBJS) $(COMP_OBJS) Mainc.uo
 	$(MOSMLL) $(LINKFLAGS) -o mosmlcmp Mainc.uo
 
 mosmlcmp.dos: $(COMP_OBJS) $(C_OBJS)
@@ -74,10 +73,9 @@ Opcodes.sml: $(CAMLRT)/instruct.h
 	$(PERL) $(MOSMLTOOLS)/mksmlopc $(CAMLRT)/instruct.h > Opcodes.sml
 
 Parser.sml Parser.sig: Parser.grm
-	$(MOSMLYACC) -v Parser.grm
+	$(MOSMLYACC) Parser.grm
 
 mosmllnk: $(L_OBJS)
-	#$(MOSMLL) $(LINKFLAGS) -o mosmllnk $(L_LIBOBJS) $(L_OBJS) 
 	$(MOSMLL) $(LINKFLAGS) -o mosmllnk Mainl.uo
 
 mosmllnk.dos: $(L_OBJS)
@@ -93,7 +91,6 @@ Prim_c.sml : $(CAMLRT)/primitives
 	$(PERL) $(MOSMLTOOLS)/mksmlprc $(CAMLRT)/primitives > Prim_c.sml
 
 mosmltop: $(COMP_OBJS) $(T_OBJS)
-	#$(MOSMLL) $(LINKFLAGS) -o mosmltop $(T_LIBOBJS) $(COMP_OBJS) $(T_OBJS) 
 	$(MOSMLL) $(LINKFLAGS) -o mosmltop Maint.uo 
 
 mosmltop.dos: $(COMP_OBJS) $(T_OBJS)
@@ -128,19 +125,12 @@ promote:
 	test -f ../mosmlcmp.orig || cp ../mosmlcmp ../mosmlcmp.orig
 	test -f ../mosmllnk.orig || cp ../mosmllnk ../mosmllnk.orig
 	test -f ../mosmllex.orig || cp ../mosmllex ../mosmllex.orig
-	test -f ../mosmllib/Callback.sml.orig || (echo "patching Callback.sml";mv ../mosmllib/Callback.sml ../mosmllib/Callback.sml.orig;cp patch/Callback.sml ../mosmllib/Callback.sml)
 	#$(MOSMLL) $(LINKFLAGS) -o mosmlcmp $(C_LIBOBJS) $(COMP_OBJS) $(C_OBJS)
 	#$(MOSMLL) $(LINKFLAGS) -o mosmllnk $(L_LIBOBJS) $(L_OBJS) 
 	#$(MOSMLL) $(LINKFLAGS) -o mosmltop $(T_LIBOBJS) $(T_OBJS) 
 	test -f mosmllnk && cp mosmllnk ../mosmllnk
 	test -f mosmlcmp && cp mosmlcmp ../mosmlcmp
 	test -f ../lex/mosmllex && cp ../lex/mosmllex ../mosmllex
-
-distribution:
-	cvs diff || (echo "!!!There are uncommitted changes" && false)
-	cd /tmp;tar -zxvf ${HOME}/mos144src.tar.gz 
-	cd /tmp/mosml/src;tar -zcf compiler.orig compiler;rm -r -f /tmp/mosml/src/compiler;cvs export -D today compiler
-	cd /tmp;tar -zcf mos144cvr3src.tar.gz mosml
 
 revert:
 	test -f ../mosmlcmp.orig && (rm ../mosmlcmp;mv ../mosmlcmp.orig ../mosmlcmp)

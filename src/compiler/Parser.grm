@@ -393,43 +393,6 @@ KWModuleDec:
   | SIGNATURE SigBind_seq1         { mkLoc(SIGNATUREdec $2)}
 ;
 
-/*
-KWDec :
-    VAL ValBind                 { mkLoc(VALdec ([], $2)) } 
-  | VAL TyVarSeq1 ValBind       { mkLoc(VALdec ($2, $3)) } 
-  | PRIM_VAL PrimValBind        { mkLoc(PRIM_VALdec ([],$2)) } 
-  | PRIM_VAL TyVarSeq1 PrimValBind
-	                        { mkLoc(PRIM_VALdec ($2,$3)) } 
-  | FUN FValBind                { mkLoc(FUNdec (ref (UNRESfundec([],  $2)))) }
-  | FUN TyVarSeq1 FValBind      { mkLoc(FUNdec (ref (UNRESfundec($2,  $3)))) }
-  | TYPE TypBind                { mkLoc(TYPEdec $2) }
-  | PRIM_TYPE TypDesc           { mkLoc(PRIM_TYPEdec(FALSEequ, $2)) }
-  | PRIM_EQTYPE TypDesc         { mkLoc(PRIM_TYPEdec(TRUEequ, $2)) }
-  | PRIM_REFTYPE TypDesc        { mkLoc(PRIM_TYPEdec(REFequ, $2)) }
-  | DATATYPE DatBind_0 WithType_opt
-                                { mkLoc(DATATYPEdec($2,$3)) } 
-  | DATATYPE DatBind_n WithType_opt
-                                { mkLoc(DATATYPEdec($2,$3)) } 
-  | DATATYPE DatBind WithType_opt
-                                { mkLoc(DATATYPEdec($2,$3)) } 
-  | DATATYPE TyCon EQUALS DATATYPE TyConPath
-                                { mkLoc(DATATYPErepdec($2,$5))}
-  | ABSTYPE DatBind WithType_opt WITH Dec END
-                                { mkLoc(ABSTYPEdec($2,$3,$5)) }
-  | EXCEPTION ExBind            { mkLoc(EXCEPTIONdec $2) }
-  | LOCAL Dec IN Dec END        { mkLoc(LOCALdec($2,$4)) }
-  | OPEN LongModIdInfo_seq1         { mkLoc(OPENdec $2) }
-  | STRUCTURE ModBind_seq1      { mkLoc(STRUCTUREdec $2)}
-  | FUNCTOR FunBind_seq1         { mkLoc(FUNCTORdec $2)}
-  | SIGNATURE SigBind_seq1         { mkLoc(SIGNATUREdec $2)}
-  | INFIX DIGIT_opt EqIdent_seq1
-                                { mkLoc(FIXITYdec(INFIXst $2, $3)) }
-  | INFIXR DIGIT_opt EqIdent_seq1
-                                { mkLoc(FIXITYdec(INFIXRst $2, $3)) }
-  | NONFIX EqIdent_seq1
-                                { mkLoc(FIXITYdec(NONFIXst, $2)) }
-;
-*/
 
 KWCoreDec :
     VAL ValBind                 { mkLoc(VALdec ([], $2)) } /* cvr: REVIEW */
@@ -568,10 +531,6 @@ ColonTy_opt :
 
 OfTy_opt :
     OF Ty       { SOME $2 }
-/* cvr: TODO possible syntax for greedy constructors
-  | LBRACE  Label COLON Ty COMMA TyRow RBRACE       { SOME (mkLoc(RECty(($2,$4)::$6))) } 
-  | LPAREN Ty_sans_STAR STAR TupleTy RPAREN  { SOME (tupleTy($2 :: $4)) } 
-*/
   | /* */       { NONE }
 ;
 
@@ -908,8 +867,6 @@ SigFile :
 
 Spec_seq :
     Spec_seq KWSpec       { $2 :: $1 }
-/*  | Spec_seq SHARING TYPE LongTyConEqn 
-                           { (* cvr: TODO *) } */
   | Spec_seq SEMICOLON    { $1 }
   | /* */                 { [] }
 ;

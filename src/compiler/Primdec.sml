@@ -3,100 +3,6 @@
 local
   open Const Prim Smlprim;
 
-(* cvr: 144 merge 
-val primitive_names = 
-[
-  ("identity", Pidentity),
-  ("field0", Pfield 0),
-  ("field1", Pfield 1),
-  ("field2", Pfield 2),
-  ("field3", Pfield 3),
-  ("field4", Pfield 4),
-  ("field5", Pfield 5),
-  ("field6", Pfield 6),
-  ("field7", Pfield 7),
-  ("field8", Pfield 8),
-  ("field9", Pfield 9),
-  ("field10", Pfield 10),
-  ("field11", Pfield 11),
-  ("field12", Pfield 12),
-  ("setfield0", Psetfield 0),
-  ("setfield1", Psetfield 1),
-  ("setfield2", Psetfield 2),
-  ("setfield3", Psetfield 3),
-  ("setfield4", Psetfield 4),
-  ("setfield5", Psetfield 5),
-  ("setfield6", Psetfield 6),
-  ("setfield7", Psetfield 7),
-  ("setfield8", Psetfield 8),
-  ("setfield9", Psetfield 9),
-  ("setfield10", Psetfield 10),
-  ("setfield11", Psetfield 11),
-  ("setfield12", Psetfield 12),
-  ("update", Pupdate),
-  ("tag_of", Ptag_of),
-  ("raise", Praise),
-  ("not", Pnot),
-  ("succ", Psmlsuccint),
-  ("pred", Psmlpredint),
-  ("~int", Psmlnegint),
-  ("+int", Psmladdint),
-  ("-int", Psmlsubint),
-  ("*int", Psmlmulint),
-  ("div", Psmldivint),
-  ("mod", Psmlmodint),
-  ("and", Pandint),
-  ("or", Porint),
-  ("xor", Pxorint),
-  ("shift_left", Pshiftleftint),
-  ("shift_right_signed", Pshiftrightintsigned),
-  ("shift_right_unsigned", Pshiftrightintunsigned),
-  ("int_of_float", Pintoffloat),
-  ("real_of_int", Pfloatprim Pfloatofint),
-  ("~real", Pfloatprim Psmlnegfloat),
-  ("+real", Pfloatprim Psmladdfloat),
-  ("-real", Pfloatprim Psmlsubfloat),
-  ("*real", Pfloatprim Psmlmulfloat),
-  ("/", Pfloatprim Psmldivfloat),
-  ("string_length", Pstringlength),
-  ("get_nth_char", Pgetstringchar),
-  ("set_nth_char", Psetstringchar),
-  ("make_vect", Pmakevector),
-  ("vect_length", Pvectlength),
-  ("get_vect_item", Pgetvectitem),
-  ("set_vect_item", Psetvectitem),
-  ("==", Ptest Peq_test),
-  ("!=", Ptest Pnoteq_test),
-  ("=int", Ptest (Pint_test PTeq)),
-  ("<>int", Ptest (Pint_test PTnoteq)),
-  ("<int", Ptest (Pint_test PTlt)),
-  (">int", Ptest (Pint_test PTgt)),
-  ("<=int", Ptest (Pint_test PTle)),
-  (">=int", Ptest (Pint_test PTge)),
-  ("=real", Ptest (Pfloat_test PTeq)),
-  ("<>real", Ptest (Pfloat_test PTnoteq)),
-  ("<real", Ptest (Pfloat_test PTlt)),
-  (">real", Ptest (Pfloat_test PTgt)),
-  ("<=real", Ptest (Pfloat_test PTle)),
-  (">=real", Ptest (Pfloat_test PTge)),
-  ("=string", Ptest (Pstring_test PTeq)),
-  ("<>string", Ptest (Pstring_test PTnoteq)),
-  ("<string", Ptest (Pstring_test PTlt)),
-  (">string", Ptest (Pstring_test PTgt)),
-  ("<=string", Ptest (Pstring_test PTle)),
-  (">=string", Ptest (Pstring_test PTge)),
-  ("make_ref_vect", Pmakerefvector),
-  ("+intunsig", Paddint),
-  ("-intunsig", Psubint),
-  ("*intunsig", Pmulint),
-  ("divunsig", Pdivint),
-  ("modunsig", Pmodint),
-  ("quot", Psmlquotint),
-  ("rem", Psmlremint)
-];
-*)
-(* cvr: 144 merge *)
-
 (* Must be sorted for efficient binary search lookup *)
 
 val primitive_names = 
@@ -196,9 +102,6 @@ fun findPrimitive arity name =
   if arity = 0 then
     MLPgv { qual="General", id=[name] }
   else
-    (* cvr: 144 merge   
-    (MLPprim(arity, Fnlib.lookup name primitive_names)
-     *)
     (MLPprim(arity, Fnlib.binlookup name primitive_names)
      handle Subscript =>
        MLPccall(arity, name))

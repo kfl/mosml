@@ -80,11 +80,6 @@ and RecPat =
     RECrp of Pat Row * RowType option
   | TUPLErp of Pat list
 
-(* cvr: the current definitions of VIdPathInfo and
-        VIdPath' are to liberal since a DOTvidpath should never
-        be overloaded --- remember to tidy this up if possible 
-*)
-
 and VIdPathInfo =
     RESvidpath of LongVId
   | OVLvidpath of LongVId * OvlType * Type

@@ -147,7 +147,6 @@ fun exportVar os valRenList id {info = (_,infInfo),qualid = infQualid}
  
 fun exportMod os valRenList id 
     {info = RS,qualid = infQualid} {info = RS',qualid = specQualid} =
-  (* cvr: TODO optimize for null coercions *)
   let val {qual=infQual, id=_} = infQualid
       val {qual=specQual,id=_} = specQualid 
   in
@@ -168,7 +167,6 @@ fun exportMod os valRenList id
 
 fun exportGenFun os valRenList id 
           {info = F,qualid = infQualid} {info = F',qualid = specQualid} =
-  (* cvr: TODO optimize for null coercions *)
   let val {qual=infQual, id=_} = infQualid
       val {qual=specQual,id=_} = specQualid 
   in

@@ -1008,12 +1008,30 @@ and trModExp (env as (rho,depth)) (_, (modexp,r)) =
       Lfn(trModExp (bindInEnv rho (ModId strid) (Path_local depth),
                     depth+1) 
                    modexp)
-  | (APPmodexp (funmodexp,modexp), SOME _) =>
+(*  | (APPmodexp (funmodexp,modexp), SOME _) =>
         (case funmodexp of 
              (_,(_,ref (SOME (EXISTSexmod(_,FUNmod(T,M,X)))))) =>
 		     Lapply(trModExp env funmodexp,                                           
 			    [trConstrainedModExp env modexp (normMod M)])
-        | _ => fatalError "trModExp:2")
+        | _ => fatalError "trModExp:2") *)
+  | (APPmodexp (funmodexp,modexp), SOME _) =>
+      (case funmodexp of 
+	   (_,(_,ref (SOME (EXISTSexmod(_,FUNmod(T,M,X)))))) =>
+	      (case (isSafeModExp funmodexp, isSafeModExp modexp) of
+		   (true,_) =>
+		       Lapply(trModExp env funmodexp,                                           
+			      [trConstrainedModExp env modexp (normMod M)])
+               |   (false,true) => 
+		       Lapply(trModExp env funmodexp,                                           
+			      [trConstrainedModExp env modexp (normMod M)])
+               |  (false,false) => 
+		       let val (rho,depth) = env 
+		       in
+		       Llet([trModExp env funmodexp,
+			     trConstrainedModExp (rho,depth+ 1) modexp (normMod M)],
+		             Lapply(Lvar 1, [Lvar 0]))                                        
+		       end
+	 | _ => fatalError "trModExp:2"))
   | (PARmodexp modexp,SOME _) => trModExp env modexp
 (* cvr: unsafe version that works but doesn't check for definedness
   | (RECmodexp((_,strid),ref (SOME RS'),sigexp,modexp),

@@ -104,7 +104,7 @@ fun lookup k [] = raise Subscript
     if k = a then v else lookup k xs
 ;
 
-(* cvr: 144 merge *)
+
 (* The vector vec must be sorted *)
 
 fun binlookup (name : string) (vec : (string * 'a) Vector.vector) =

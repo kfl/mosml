@@ -474,7 +474,7 @@ and add_SigEnv    = add_qualified_info sigEnvOfSig
 (* Additions to the unit being compiled *)
 (* without redefining names that are already bound! *)
 
-(* cvr: these functions should eventually all be redundant once
+(* cvr: these functions should all be redundant now that
    signature elaboration is done properly *)
 
 fun extend_InfixBasis id info =
@@ -546,8 +546,6 @@ fun extend_FunEnv id info =
       add_FunEnv id info
   end;
 
-(* cvr: we will only need this if we decide to allow signature components 
-        in unit interfaces *)
 fun extend_SigEnv id info =
   let val tbl = sigEnvOfSig (!currentSig) in
     (ignore (Hasht.find tbl id);

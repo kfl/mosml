@@ -45,7 +45,6 @@ List.app (fn (str,tok) => Hasht.insert keyword_table str tok)
   ("fn",           FN),
   ("fun",          FUN),
   ("functor",      FUNCTOR),
-(*  ("funsig",       FUNSIG), *)
   ("handle",       HANDLE),
   ("if",           IF),
   ("in",           IN),
@@ -54,7 +53,6 @@ List.app (fn (str,tok) => Hasht.insert keyword_table str tok)
   ("infixr",       INFIXR),
   ("let",          LET),
   ("local",        LOCAL),
-(*  ("module",       MODULE), *)
   ("nonfix",       NONFIX),
   ("of",           OF),
   ("op",           OP),
@@ -64,9 +62,6 @@ List.app (fn (str,tok) => Hasht.insert keyword_table str tok)
   ("prim_EQtype",  PRIM_REFTYPE),
   ("prim_type",    PRIM_TYPE),
   ("prim_val",     PRIM_VAL),
-(* cvr: remove
-  ("pack",         PACK),
-*)
   ("raise",        RAISE),
   ("rec",          REC),
   ("sharing",      SHARING),
@@ -76,9 +71,6 @@ List.app (fn (str,tok) => Hasht.insert keyword_table str tok)
   ("structure",    STRUCTURE),
   ("then",         THEN),
   ("type",         TYPE),
-(* cvr: remove
-  ("unpack",       UNPACK),
-*)
   ("val",          VAL),
   ("where",        WHERE),
   ("while",        WHILE),
@@ -151,7 +143,7 @@ fun splitQualId s =
   in parse 0 end
 *)
 
-(* cvr: TODO restore normalizeUnitName *)
+(* cvr: NOTE normalizeUnitName done elsewhere now *)
 fun splitQualId s =
   let open CharVector
       val len' = size s
@@ -179,7 +171,7 @@ fun charCodeOfDecimal lexbuf i =
    10 * (Char.ord(getLexemeChar lexbuf (i+1)) - 48) +
         (Char.ord(getLexemeChar lexbuf (i+2)) - 48)
 
-(* cvr: 144 merge *)
+
 fun charCodeOfHexadecimal lexbuf i =
     let fun hexval c = 
 	    if #"0" <= c andalso c <= #"9" then Char.ord c - 48
@@ -336,7 +328,7 @@ and TokenN = parse
 
 and TokenId = parse
     ( [`A`-`Z` `a`-`z`] [ `A`-`Z` `a`-`z` `0`-`9` `_` `'`]*
-    | [(* `.` *) `!` `%` `&` `$` `#` `+` `-` `/` `:` `<` `=` `>` `?` `@` `\\`
+    | [`!` `%` `&` `$` `#` `+` `-` `/` `:` `<` `=` `>` `?` `@` `\\`
        `~` `\`` `^` `|` `*`]+ )
       { mkKeyword lexbuf }
   | ((  [`A`-`Z` `a`-`z`] [ `A`-`Z` `a`-`z` `0`-`9` `_` `'`]*
@@ -352,7 +344,7 @@ and TokenId = parse
 
 and TokenIdQ = parse
     ( [`A`-`Z` `a`-`z`] [ `A`-`Z` `a`-`z` `0`-`9` `_` `'`]*
-    | [(* `.` *) `!` `%` `&` `$` `#` `+` `-` `/` `:` `<` `=` `>` `?` `@` `\\`
+    | [`!` `%` `&` `$` `#` `+` `-` `/` `:` `<` `=` `>` `?` `@` `\\`
        `~` `^` `|` `*`]+ )
       { mkKeyword lexbuf }
   | ((  [`A`-`Z` `a`-`z`] [ `A`-`Z` `a`-`z` `0`-`9` `_` `'`]*
@@ -464,7 +456,7 @@ and SkipQuotation = parse
 
 and AntiQuotation = parse
     ( [`A`-`Z` `a`-`z`] [ `A`-`Z` `a`-`z` `0`-`9` `_` `'`]*
-    | [(* `.` *) `!` `%` `&` `$` `#` `+` `-` `/` `:` `<` `=` `>` `?` `@` `\\`
+    | [`!` `%` `&` `$` `#` `+` `-` `/` `:` `<` `=` `>` `?` `@` `\\`
        `~` `|` `*`]+ )
       { lexingMode := QUOTElm;
         mkKeyword lexbuf

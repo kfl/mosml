@@ -205,62 +205,6 @@ fun reportLinked toscan =
 	msgEOL(); msgEBlock()
     end
 
-(* cvr: 144 merge removed
-fun link unit_list exec_name =
-  let val _ = missing_globals :=  (* 04Sep95 e *)
-               (Hasht.new 263 : (QualifiedIdent * int, unit) Hasht.t)
-      val toscan = foldL check_file [] unit_list
-      val _ = if !verbose then reportLinked toscan else ()
-      val tolink = foldL scan_file [] toscan
-      val os = if !no_header then open_out_bin exec_name
-                             else open_out_exe exec_name
-  in
-    ( (* The header *)
-      if !no_header then () else
-      let val is = open_in_bin (Filename.concat (!path_library) "header")
-          val buff = CharArray.array(4096, #"\000")
-          fun copy () =
-            case buff_input is buff 0 4096 of
-                0 => ()
-              | n => (buff_output os buff 0 n; copy())
-      in
-        (copy(); close_in is)
-          handle x => (close_in is; raise x)
-      end;
-      missing_globals := (* for gc -- 04Sep95 e *)
-       (Hasht.new 1 : (QualifiedIdent * int, unit) Hasht.t);
-      (* The bytecode *)
-      let val pos1 = pos_out os
-          val () = List.app (link_object os) tolink
-          val () = output_byte os Opcodes.STOP;
-          (* The table of global data *)
-          val pos2 = pos_out os
-          val () = emit_data os
-          (* Linker tables *)
-          val pos3 = pos_out os
-          val () =
-            if !write_symbols then save_linker_tables os
-            else ();
-          (* Debugging info (none, presently) *)
-          val pos4 = pos_out os
-      in
-        (* The trailer *)
-        output_binary_int os (pos2 - pos1);
-        output_binary_int os (pos3 - pos2);
-        output_binary_int os (pos4 - pos3);
-        output_binary_int os 0;
-        output(os, "ML08");
-        close_out os
-      end
-    ) handle x =>
-       (close_out os;
-        remove_file exec_name;
-        raise x)
-  end;
-
-*)
-
-(* cvr: 144 merge *)
 fun link unit_list exec_name =
   let val _ = missing_globals :=  (* 04Sep95 e *)
                (Hasht.new 263 : (QualifiedIdent * int, unit) Hasht.t)

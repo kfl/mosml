@@ -56,8 +56,8 @@ val mkExConInfo : unit -> ExConInfo;
 val mkPrimInfo : int -> SMLPrim -> PrimInfo;
 
 val normType: Type -> Type;
-val normTyApp: TyApp -> TyFun; (* cvr *)
-val normTyFun: TyFun -> TyFun; (* cvr *)
+val normTyApp: TyApp -> TyFun; 
+val normTyFun: TyFun -> TyFun; 
 
 val normRecStr : RecStr -> RecStr;
 val normStr : Str -> Str;
@@ -111,9 +111,9 @@ val fresh3DotType : unit -> RowType;
 val contentsOfRowType : RowType -> Type Row * bool;
 val isTupleType   : Type -> bool; 
 
-val kindTyName : TyName -> Kind; (* cvr *)
-val kindTyApp : TyApp -> Kind; (* cvr *)
-val kindTyFun : TyFun -> Kind; (* cvr *)
+val kindTyName : TyName -> Kind; 
+val kindTyApp : TyApp -> Kind; 
+val kindTyFun : TyFun -> Kind; 
 
 val etaExpandTyApp : TyApp -> TyFun;
 val freeVarsTyStr : 
@@ -122,11 +122,10 @@ val freeVarsTyStr :
     TyStr -> 
     (TyName list * TypeVar list * RowVar list)
 val unify: Type -> Type -> unit;
-val unifyTyApp: TyApp -> TyApp -> unit; (* cvr *)
-val unifyTyFun: TyFun -> TyFun -> unit; (* cvr *)
-val equalsTyFunTyName: TyFun -> TyName -> bool; (* cvr *)
-(* cvr: modified *)
-(* val generalization: bool -> Location -> bool -> Type -> TypeScheme; *)
+val unifyTyApp: TyApp -> TyApp -> unit; 
+val unifyTyFun: TyFun -> TyFun -> unit; 
+val equalsTyFunTyName: TyFun -> TyName -> bool; 
+
 val generalization: bool -> Type -> TypeScheme;  
 
 val specialization: TypeScheme -> Type;
@@ -189,30 +188,30 @@ val type_ppstream  : Type;
 
 val unit_General : CSig;
 
-val checkClosedCSig : CSig -> unit; (* cvr: added *)
-val checkClosedExEnvironment : ExEnvironment -> unit; (* cvr: added *)
+val checkClosedCSig : CSig -> unit; 
+val checkClosedExEnvironment : ExEnvironment -> unit; 
 
-val copySig : (TyName * TyApp) list -> (TypeVar * Type) list -> Sig -> Sig; (* cvr: added *)
-val copyMod : (TyName * TyApp) list -> (TypeVar * Type) list -> Mod -> Mod; (* cvr: added *)
-val copyRecStr : (TyName * TyApp) list -> (TypeVar * Type) list -> RecStr -> RecStr; (* cvr: added *)
-val copyStr : (TyName * TyApp) list -> (TypeVar * Type) list -> Str -> Str; (* cvr: added *)
-val copyGenFun : (TyName * TyApp) list -> (TypeVar * Type) list -> GenFun -> GenFun; (* cvr: added *)
+val copySig : (TyName * TyApp) list -> (TypeVar * Type) list -> Sig -> Sig; 
+val copyMod : (TyName * TyApp) list -> (TypeVar * Type) list -> Mod -> Mod; 
+val copyRecStr : (TyName * TyApp) list -> (TypeVar * Type) list -> RecStr -> RecStr; 
+val copyStr : (TyName * TyApp) list -> (TypeVar * Type) list -> Str -> Str; 
+val copyGenFun : (TyName * TyApp) list -> (TypeVar * Type) list -> GenFun -> GenFun; 
 
 val parameteriseTyNameSet: TyNameSet -> TyNameSet -> (TyNameSet * (TyName * TyApp) list);
 
 val conEnvOfTyApp: TyApp -> ConEnv option;
 
-(* cvr: added *)
+
 (* destructively change the kind and update the binding level of type names
 *)
 val refreshTyName: TnSort -> TyName ->  unit; 
 val refreshTyNameSet: TnSort -> TyNameSet  -> unit;
 
 val realizeLongTyCon : QualifiedIdent -> TyStr ->  TyStr -> unit;
-val matchMod : Mod -> Mod -> unit; (* cvr: added *)
-val matchCSig : CSig -> CSig -> unit; (* cvr: added *)
+val matchMod : Mod -> Mod -> unit; 
+val matchCSig : CSig -> CSig -> unit; 
 val errMatchReason : string -> string -> matchReason -> unit;
-val checkCSig : CSig -> CSig -> unit; (* cvr: added *)
+val checkCSig : CSig -> CSig -> unit; 
 
 (* cvr: operations on normed structures and environments to return
    runtime field and  static info *)

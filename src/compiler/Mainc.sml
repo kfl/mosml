@@ -86,7 +86,6 @@ fun perv_set set' =
 		raise Arg.Bad ("Unknown preloaded unit set " ^ set)
     end
 
-(* cvr: 144 merge *)
 fun set_msgstyle p =
   if exists (fn x => x = p) ["default", "msdev"] then
     msgStyle := p
@@ -146,7 +145,6 @@ fun main () =
              ("-q",         Arg.Unit enable_quotation),
              ("-imptypes",  Arg.Unit (set_value_polymorphism false)),
              ("-valuepoly", Arg.Unit (set_value_polymorphism true)),
-	     (* cvr: 144 merge *)
              ("-msgstyle",  Arg.String set_msgstyle), 
              ("-m",         Arg.String set_msgstyle),
              ("-structure",  Arg.Unit str_mode),

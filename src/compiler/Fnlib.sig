@@ -30,7 +30,7 @@ val member : ''a -> ''a list -> bool
 val remove : ''a -> ''a list -> ''a list
 val drop : ('a -> bool) -> 'a list -> 'a list 
 val lookup : ''a -> (''a * 'b) list -> 'b   (* May raise Subscript *)
-val binlookup  : string -> (string * 'b) Vector.vector -> 'b   (* Subscript *) (* cvr: 144 merge *)
+val binlookup  : string -> (string * 'b) Vector.vector -> 'b   (* Subscript *) 
 val exists: ('a -> bool) -> 'a list -> bool 
 val choose: ('a -> bool) -> 'a list -> 'a   (* May raise Subscript *)
 val find : ('a -> bool) -> ('a * 'b) list -> 'b   (* May raise Subscript *)

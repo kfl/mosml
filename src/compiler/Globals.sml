@@ -213,10 +213,8 @@ type RecType = { fields: (Lab * Type) list, rho: RowType } ref;
 
 
 
-(* cvr: these should eventually be removed *)
-
 type ConStatus = ConStatusDesc global;
-type ConBasis = (string, ConStatus) Env;
+
 
 
 
@@ -315,23 +313,6 @@ fun setConType (r : ConInfo) new_typ =
 
 fun setExConArity r new_arity =
     r := { exconArity=new_arity }
-
-(* ps: remove 
-
-fun setExConIsGreedy r new_isGreedy =
-  let val { exconArity=arity, exconIsGreedy=isGreedy } = !r
-  in r :=
-    { exconArity=arity, exconIsGreedy=new_isGreedy }
-  end;
-*)
-
-(* ps: remove
-fun setExConTag r new_tag =
-  let val { exconArity=arity, exconIsGreedy=isGreedy } = !r
-  in  r :=
-    { exconArity=arity, exconIsGreedy=isGreedy, exconTag=new_tag }
-  end;
-*)
 
 fun setTvKind r new_kind =
   let val { tvKind=kind, tvLevel=level, tvEqu=equ, tvImp=imp, tvOvl=ovl }

@@ -22,7 +22,6 @@ val msgReal : real -> unit;
 val msgWord : word -> unit;
 val msgEOL : unit -> unit;
 
-(* cvr: 144 merge *)
 val msgStyle : string ref;
 
 val path_library : string ref;
@@ -67,7 +66,7 @@ val revEnv : ('a, 'b) Env -> ('a, 'b) Env;
 val traverseEnv : (''_a -> 'b -> unit) -> (''_a, 'b) Env -> unit;
 val mapEnv : (''_a -> 'b -> 'c) -> (''_a, 'b) Env -> (''_a, 'c) Env;
 val foldEnv : (''_a -> 'b -> 'c -> 'c) -> 'c -> (''_a, 'b) Env -> 'c;
-val cleanEnv : (''_a, 'b) Env -> (''_a, 'b) Env; (* cvr: added *)
+val cleanEnv : (''_a, 'b) Env -> (''_a, 'b) Env; 
 val sortEnv : (string, 'b) Env -> (string,'b) Env;
 val lookupEnvWithPos : ('b -> int) -> 
                        (''a, 'b) Env -> ''a -> int -> (int * 'b);
