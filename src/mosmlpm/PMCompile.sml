@@ -12,7 +12,7 @@ struct
       | insertSep sep (x::xs) = x :: sep :: insertSep sep xs     
 
     fun newExt ex filename = 
-	let open Path
+	let open OS.Path
 	in  case splitBaseExt filename of
 		{base, ext=SOME"sml"} => joinBaseExt{base=base,ext=SOME ex}
 	      | _ => error "Can only handle .sml files for now"
@@ -21,7 +21,7 @@ struct
     val smlToUi = newExt "ui"
     val smlToUo = newExt "uo"
 
-    fun normalizeName filename = FileSys.fullPath filename
+    fun normalizeName filename = OS.FileSys.fullPath filename
 		  
     (* Functions fo manipulating context *)
     type context = bool * filename list list
@@ -33,25 +33,37 @@ struct
     fun files (_,fs)                  = fs
     fun setDirty dirty (_, files)     = (dirty, files)
     fun addImport (d1, fs1) (d2, fs2) = (d1 orelse d2, fs1 :: fs2)
+    fun addUI file (dirty, x::xs)     = (dirty, (smlToUi file :: x) :: xs)
+
+
+    (* returns true if file exists *)					
+    fun exists file = OS.FileSys.access (file,[])
+
+    (* [isNewer f1 f2] checks that f1 exists and if it newer than f2 *) 
+    fun isNewer file1 file2 =
+	 exists file1 andalso let val t1 = OS.FileSys.modTime file1
+				  val t2 = OS.FileSys.modTime file2
+			      in  Time.> (t1, t2)
+			      end
 
     fun uptodate (dirty,_) file =
-	not dirty andalso (FileSys.access (smlToUo file,[]) andalso
-			   let val t1 = FileSys.modTime file
-			       val t2 = FileSys.modTime (smlToUo file)
-			   in  Time.<(t1,t2)
-			   end)
+	not dirty 
+	andalso isNewer (smlToUo file) file
+	andalso isNewer (smlToUi file) file
 
-    fun addUI file (dirty, x::xs) = (dirty, (smlToUi file :: x) :: xs)
-
+    fun makeTempName file =
+	let val {base,ext} = OS.Path.splitBaseExt file
+	    val base = String.concat[base,"-",ext]
+	in  OS.Path.joinBaseExt{base = base, ext = SOME "tmp"}
+	end
 
     (* move file.ui to file.ui.tmp *)
     fun move_ui_file file =
-      let val ui = smlToUi file
-	val new = OS.Path.joinBaseExt{base=ui, ext=SOME "tmp"}
-      in 
-	if OS.FileSys.access (ui,[]) then
-	  OS.FileSys.rename {old=ui,new=new}
-	else ()
+      let val ui  = smlToUi file
+	  val new = makeTempName ui
+      in  if exists ui then
+	      OS.FileSys.rename {old=ui,new=new}
+	  else ()
       end
 
     fun filesEqual file1 file2 =
@@ -70,26 +82,28 @@ struct
 
     fun check_ui_file file : bool (*true if dirty *) =
       let val ui = smlToUi file
-	val ui' = OS.Path.joinBaseExt{base=ui, ext=SOME "tmp"} 
+	  val ui' = makeTempName ui
       in
-	if filesEqual ui ui' then
-	  (OS.FileSys.rename {old=ui',new=ui}; false)
-	else true
+	  if filesEqual ui ui' then
+	      (OS.FileSys.rename {old=ui',new=ui}; false)
+	  else (OS.FileSys.remove ui';             true)
       end handle _ => true
 
-    (* context and files sould be given in reverse order *)
+    (* context is in reverse order *)
     fun mosmlc context file = 
 	if uptodate context file then 
 	    (chat ["Reusing: ", file];
 	     (false, true))
 	else
 	    let open Process
-	      val _ = move_ui_file file
+		val _ = move_ui_file file
 		val cont = List.concat ([file] :: files context)
 		val cont = rev(insertSep " " cont)
-		val args = String.concat("mosmlc -c -orthodox -toplevel ":: cont)
-		val return = (chat ["Compiling: ", file]; system args = success)
-	    in (check_ui_file file (*true*), return)
+		val args = String.concat("mosmlc -c -orthodox -toplevel "
+					 :: cont)
+		val return = (chat ["Compiling: ", file]; 
+			      system args = success)
+	    in (check_ui_file file, return)
 	    end
 
     fun srcSeq (SRC(file,b)) acc = srcSeq b (file::acc)
@@ -119,7 +133,7 @@ struct
     fun compileBody path b context =
 	case b of
 	    SRC (file,b) =>
-	        let val name = Path.mkAbsolute(file,path)
+	        let val name = OS.Path.mkAbsolute(file,path)
 		    val (dirty, status) = mosmlc context name
 		    val context = addUI name (setDirty dirty context)
 	        in  if status then 
@@ -139,8 +153,7 @@ struct
 	let val table  = Polyhash.mkPolyTable(37, Subscript)
 	    val peek   = Polyhash.peek table
 	    val update = Polyhash.insert table
-			 
-			 
+
 	    fun compileImports imps context = 
 		let fun oneImport (imp,cont) =
 			let val name = normalizeName imp 
@@ -162,10 +175,12 @@ struct
 		    
 	    and compileFile filename = 
 		let val name    = normalizeName filename
-		    val path    = Path.dir name
-		    val current = FileSys.getDir() before FileSys.chDir path 
-		in compilePM path (parseFile name) before FileSys.chDir current
-		   handle e => (FileSys.chDir current; raise e)
+		    val path    = OS.Path.dir name
+		    val current = OS.FileSys.getDir() 
+				  before OS.FileSys.chDir path 
+		in  (compilePM path (parseFile name) 
+		     before OS.FileSys.chDir current)
+		    handle e => (OS.FileSys.chDir current; raise e)
 		end
 	in  compileFile filename
 	end
@@ -174,7 +189,7 @@ struct
     fun findFilesBody path body accu =
 	case body of
 	    SRC (file, body) =>
-	        let val name = Path.mkAbsolute(file,path)
+	        let val name = OS.Path.mkAbsolute(file,path)
 		in  findFilesBody path body (name :: accu) 
 		end
 	  | LOCAL(b1,b2,b3) =>
@@ -204,27 +219,26 @@ struct
 		
 	    and ifindFiles filename accu =
 		let val name    = normalizeName filename
-		    val path    = Path.dir name
-		    val current = FileSys.getDir() before FileSys.chDir path 
-		in  findFilesPM path (parseFile name) accu 
-		                                   before FileSys.chDir current
-		    handle e => (FileSys.chDir current; raise e)
+		    val path    = OS.Path.dir name
+		    val current = OS.FileSys.getDir() 
+				  before OS.FileSys.chDir path 
+		in  (findFilesPM path (parseFile name) accu 
+		     before OS.FileSys.chDir current)
+		    handle e => (OS.FileSys.chDir current; raise e)
 		end
 	in  List.rev(ifindFiles filename [])
 	end
 
     (* For now assume that everything is compiled and upto date *)
-    fun link options filename =
+    fun link options filename outfile =
 	let val smlfiles = findFiles filename
 	    val uofiles  = List.map smlToUo smlfiles
 	    val args = String.concat("mosmlc -toplevel "::
 				     options @ (insertSep " " uofiles))
-	in  chat [args]
+	in  (*chat [args]*)
+            chat ["Linking: ", outfile]
           ; Process.system args = Process.success
 	end
-
-
-
 
     end
 end
