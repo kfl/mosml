@@ -52,7 +52,8 @@ local
   fun append [] ys = ys
     | append (x::xs) ys = x :: append xs ys
 in
-  fun xs @ ys = append xs ys
+  fun xs @ [] = xs
+    | xs @ ys = append xs ys
 end
 
 fun concat []        = []

@@ -3,7 +3,7 @@
 (* The initial implementation was financed by the PROSPER project. *)
 
 (* Beautification and documentation by sestoft@dina.kvl.dk 
-   1999-02-01, 1999-03-10 *)
+   1999-02-01, 2000-05-16 *)
 
 structure Socket :> Socket =
 struct
@@ -266,13 +266,14 @@ struct
 	   Time.time found in mosml/src/mosmllib/Time.sml: *)
 
         prim_val fromtime : Time.time -> {sec : int, usec : int} = 1 "identity"
-	
+	val time_timebase = ~1073741824; 
+
 	fun select { rds, wrs, exs, timeout } =
 	    let val (tsec, tusec) = 
 		    case timeout of
 			NONE   => (~1,0)
 		      | SOME t => let val {sec, usec} = fromtime t 
-				  in (sec, usec) end
+				  in (sec - time_timebase, usec) end
 		val rvec = Vector.fromList rds
 		val wvec = Vector.fromList wrs
 		val evec = Vector.fromList exs
