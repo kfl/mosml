@@ -3683,11 +3683,11 @@ in
 	     else if otherIsGreedy andalso not(thisIsGreedy)		  
              then msgString "a constructor carrying a record with one field"
              else if otherTag <> thisTag
-	     then (msgString "a constructor ";msgInt thisTag; msgString " of ";
-		   msgInt thisSpan; msgString "constructors")
+	     then (msgString "constructor ";msgInt thisTag; msgString " of ";
+		   msgInt thisSpan; msgString " constructor(s)")
              else (* otherSpan <> thisSpan *)
 	          (msgString "one constructor out of ";
-		   msgInt thisSpan; msgString "constructors"))
+		   msgInt thisSpan; msgString " constructor(s)"))
            fun prFields fs = 
 	       let fun prTy_ n = (msgString "<ty_";msgInt n;msgString ">")
 		   fun prRow fs n =
