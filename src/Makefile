@@ -58,7 +58,7 @@ install:
 	cd compiler; make install
 	cd toolssrc; make install
 	cd lex; make install
-	(cd ..; rm -f config; ln -s include config)
+	(cd $(INCDIR)/..; rm -f config; ln -s include config)
 
 # Remove all generated files
 clean:
