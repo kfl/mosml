@@ -1,0 +1,63 @@
+Interface to the POSIX regular expressions
+------------------------------------------
+
+This directory provides a C interface to the GNU regex implementation
+of regular expressions, following POSIX 1003.2.
+
+The interface consists of the following files:
+
+        mregex.c        Implements the dynamic library libmregex.so which 
+                        interfaces Moscow ML to the GNU regex library.
+
+	Regex.sig	Moscow ML's view of regular expressions.
+	Regex.sml	
+
+	regex-0.12	Contains the GNU regex library.
+	
+You must have the following components:
+        
+        Dynlib          The Moscow ML foreign (C) function interface.
+                        Supported for Linux, Solaris, MS Win32, MacOS,
+	                Digital Unix, and HP-UX in mosml 1.44
+
+The runtime system must be compiled with support for dynamic linking
+of foreign functions (edit mosml/src/Makefile.inc to achieve this).
+
+1. Compile mregex.c, Regex.sig, Regex.sml, and GNU regex library:
+
+        make
+
+2. Install mregex in the directory determined by BINDIR in src/Makefile.inc:
+
+        make install
+
+3. Set your LD_LIBRARY_PATH to point to the BINDIR directory.
+
+        For tcsh: setenv LD_LIBRARY_PATH $BINDIR
+        For bash: LD_LIBRARY_PATH=$BINDIR
+                  export LD_LIBRARY_PATH
+
+4. Test the library:
+
+        mosml testregex.sml
+
+
+Implementation notes
+--------------------
+
+Originally this was planned as an ML interface to a pure POSIX 1003.2
+regular expression library, but for efficiency it has become tied to
+the GNU regex implementation.  POSIX regexec does not allow one to
+specify the length of the target string, and some implementations
+therefore compute the length of the string using C strlen(), which
+takes time linear in the length of the string.  Consequently, the
+functions replace, substitute, fold, map, app, tokens, and fields in
+structure Regex would take time quadratic in the length of the target
+string.  Using the GNU regex library instead has allowed us to
+explicitly specify the target string length, thus ensuring linear time
+complexity.  The only non-POSIX feature exploited is the ability to
+specify the target string length.  This also permits us to perform
+searches inside ML Substring.substring values.
+
+-----------------------------------------------------------------------
+File mosml/src/dynlibs/mregex/README * sestoft@dina.kvl.dk * 1998-12-29

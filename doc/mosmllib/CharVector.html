@@ -1,0 +1,48 @@
+<HTML><HEAD><TITLE>Structure CharVector</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure CharVector</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>(* CharVector -- SML Basis Library *)
+<A NAME="line2"></A>
+<A NAME="line3"></A>type vector = string
+<A NAME="line4"></A>type elem = Char.char
+<A NAME="line5"></A>
+<A NAME="line6"></A>val <A NAME="line6"></A>maxLen   : int
+<A NAME="line7"></A>
+<A NAME="line8"></A>val <A NAME="line8"></A>fromList : elem list -> vector
+<A NAME="line9"></A>val <A NAME="line9"></A>tabulate : int * (int -> elem) -> vector
+<A NAME="line10"></A>
+<A NAME="line11"></A>val <A NAME="line11"></A>length   : vector -> int
+<A NAME="line12"></A>val <A NAME="line12"></A>sub      : vector * int -> elem
+<A NAME="line13"></A>val <A NAME="line13"></A>extract  : vector * int * int option -> vector
+<A NAME="line14"></A>val <A NAME="line14"></A>concat   : vector list -> vector
+<A NAME="line15"></A>
+<A NAME="line16"></A>val <A NAME="line16"></A>app      : (elem -> unit) -> vector -> unit
+<A NAME="line17"></A>val <A NAME="line17"></A>map      : (elem -> elem) -> vector -> vector
+<A NAME="line18"></A>val <A NAME="line18"></A>foldl    : (elem * 'b -> 'b) -> 'b -> vector -> 'b
+<A NAME="line19"></A>val <A NAME="line19"></A>foldr    : (elem * 'b -> 'b) -> 'b -> vector -> 'b
+<A NAME="line20"></A>
+<A NAME="line21"></A>val <A NAME="line21"></A>appi     : (int * elem -> unit) -> vector * int * int option -> unit
+<A NAME="line22"></A>val <A NAME="line22"></A>mapi     : (int * elem -> elem) -> vector * int * int option -> vector
+<A NAME="line23"></A>val <A NAME="line23"></A>foldli   : (int * elem * 'b -> 'b) -> 'b -> vector*int*int option -> 'b
+<A NAME="line24"></A>val <A NAME="line24"></A>foldri   : (int * elem * 'b -> 'b) -> 'b -> vector*int*int option -> 'b
+<A NAME="line25"></A>
+<A NAME="line26"></A>
+<A NAME="line27"></A>(* Type vector is the type of one-dimensional, immutable, zero-based
+<A NAME="line28"></A>   constant-time-access vectors with elements of type Char.char,
+<A NAME="line29"></A>   that is, characters.  Type vector admits equality, and vectors
+<A NAME="line30"></A>   v1 and v2 are equal if they have the same length and their
+<A NAME="line31"></A>   elements are equal.  The type vector is the same as String.string.
+<A NAME="line32"></A>
+<A NAME="line33"></A>   All operations are as for Vector.vector.
+<A NAME="line34"></A>*)
+<A NAME="line35"></A>
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

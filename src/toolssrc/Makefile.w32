@@ -1,0 +1,65 @@
+# Win32 makefile for mosmldep
+
+INCLUDES=-I ..\compiler
+COMPFLAGS=$(INCLUDES)
+LINKFLAGS=-g $(INCLUDES)
+
+!include "..\makedefs.w32"
+
+OBJS = \
+	Deppars.uo Deplex.uo Mosmldep.uo
+
+LIBOBJS = \
+	Obj.uo Nonstdio.uo Lexing.uo Parsing.uo
+
+CLIBOBJS = \
+	Hasht.uo Fnlib.uo Config.uo
+
+all: cutdeps mosmldep
+
+mosmldep: $(OBJS)
+        $(MOSMLL) $(LINKFLAGS) -noheader -o mosmldep Mosmldep.uo
+
+cutdeps: cutdeps.uo
+	$(MOSMLL) $(LINKFLAGS) -noheader -o cutdeps cutdeps.uo
+
+Deppars.sml Deppars.sig: Deppars.grm
+	$(MOSMLYACC) Deppars.grm
+
+Deplex.sml: Deplex.lex
+	$(MOSMLLEX) deplex.lex
+
+Mosmldep.sml: Mosmldep.mlp
+
+clean:
+	del *.ui
+	del *.uo
+	del Makefile.bak
+	del Deppars.sig
+	del Deppars.sml
+	del Deplex.sig
+	del Deplex.sml
+	del Mosmldep.sml
+	del cutdeps
+	del mosmldep
+
+install:
+	copy /b cutdeps $(TOOLDIR)
+	copy /b mosmldep $(TOOLDIR)
+
+.sig.ui:
+        $(MOSMLC) $(INCLUDES) $<
+
+.sml.uo:
+        $(MOSMLC) $(INCLUDES) $<
+
+depend: Deplex.sml Deppars.sml Mosmldep.sml
+	del Makefile.bak
+	ren Makefile Makefile.bak
+	$(MOSMLCUT) < Makefile.bak > Makefile
+	$(MOSMLDEP) >> Makefile
+
+### DO NOT DELETE THIS LINE
+Mosmldep.uo: Deplex.uo Deppars.ui 
+Deplex.uo: Deppars.ui 
+Deppars.uo: Deppars.ui 

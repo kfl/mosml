@@ -1,0 +1,22 @@
+clean:
+	cd calc
+        nmake clean
+        cd ..
+	cd cgi
+        nmake clean
+        cd ..
+	cd helpsigs
+        nmake clean
+        cd ..
+	cd lexyacc
+        nmake clean
+        cd ..
+	cd manual
+        nmake clean
+        cd ..
+	cd mls
+        nmake clean
+        cd ..
+	cd pretty
+        nmake clean
+        cd ..

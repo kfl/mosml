@@ -1,0 +1,21 @@
+# Makefile for test cases
+
+all: clean
+        mosml -P full test.sml > result
+        fc result result.ok
+
+libtest: clean
+        mosml -I .. -P full test.sml > result
+        fc result result.ok
+
+newtest: clean
+        ../../camlrunm ../../compiler/mosmltop -I .. -P full test.sml > result
+        fc result result.ok
+
+clean:
+        del result
+        del empty.dat
+        del medium.dat
+        del small1.dat
+        del small2.dat
+        del text.dat 

@@ -1,0 +1,46 @@
+File mosml/src/dynlibs/mgd/fonts.txt
+
+How to create new GD fonts, e.g. for ISO Latin 1
+------------------------------------------------
+
+Note: Some X fonts are 7 bit although they have suffix -iso8859-1.
+
+0. Go to the gd directory
+
+1. Start an X font server
+
+	xfs &
+
+2. Create the fonts
+
+This requires converting from X font server format to bdf format to gd
+font format.  
+
+Note: The font shown were available on my installation.  Your
+installation may have other and perhaps nicer fonts.
+
+
+2a. Make FontTiny:
+
+fstobdf -s localhost:7100 -fn -misc-fixed-medium-r-normal--7-70-75-75-c-50-iso8859-1 | bdftogd FontTiny gdfontt
+
+
+2b. Make FontSmall:
+
+fstobdf -s localhost:7100 -fn  -misc-fixed-medium-r-semicondensed--0-0-75-75-c-0-iso8859-1 | bdftogd FontSmall gdfonts
+
+
+2c. Make FontMediumBold:
+
+fstobdf -s localhost:7100 -fn -misc-fixed-bold-r-normal--13-100-100-100-c-70-iso8859-1 | bdftogd FontMediumBold gdfontmb
+
+
+2d. Make FontLarge:
+
+fstobdf -s localhost:7100 -fn -misc-fixed-medium-r-normal--15-140-75-75-c-90-iso8859-1 | bdftogd FontLarge gdfontl
+
+
+2e. Make FontGiant:
+
+fstobdf -s localhost:7100 -fn -misc-fixed-bold-r-normal--15-140-75-75-c-90-iso8859-1 | bdftogd FontGiant gdfontg
+

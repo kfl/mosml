@@ -1,0 +1,16 @@
+SOME SMALL ML EXAMPLES
+----------------------
+
+roman.sml       Conversion to Roman numerals
+
+perms.sml       Efficient generation of the permutations of a list
+
+countperms.sml  Generating and counting the permutations of a list
+
+queens.sml      An unusual way to solve the N-queens problem
+
+countqueens.sml Counting the solutions to the N-queens problem
+
+subsets.sml     Generating all subsets of a given set (list)
+
+subsum.sml      Generating all subsets with a given element sum

@@ -1,0 +1,61 @@
+# Win32 Makefile for CGI example.  
+
+# Edit this to point to the CGI binaries directory on your webserver:
+
+#WWWCGIBIN=/var/lib/httpd/cgi-bin/sestoft
+WWWCGIBIN=d:\Webshare\cgibin
+
+MOSMLHOME=d:\mosml
+MOSMLTOOLS=camlrunm $(MOSMLHOME)\tools
+MOSMLC=mosmlc -c
+MOSMLL=mosmlc
+MOSMLLEX=mosmllex
+MOSMLYACC=mosmlyac
+
+.SUFFIXES :
+.SUFFIXES : .sig .sml .ui .uo
+
+all: cgiex1 cgiex2
+
+cgiex1: cgiex1.uo
+	mosmlc -o cgiex1.exe cgiex1.uo 
+
+cgiex2: cgiex2.uo
+	mosmlc -o cgiex2.exe cgiex2.uo 
+
+cgitest: cgitest.uo
+	mosmlc -o cgitest.exe cgitest.uo 
+
+install:
+	copy /b cgiex1.exe $(WWWCGIBIN)\cgiex1.exe
+	copy /b cgiex2.exe $(WWWCGIBIN)\cgiex2.exe
+
+uninstall:
+	del $(WWWCGIBIN)\cgiex1.exe
+	del $(WWWCGIBIN)\cgiex2.exe
+	del $(WWWCGIBIN)\cgitest.exe
+
+installcgitest:
+	copy /b cgitest.exe $(WWWCGIBIN)\cgitest.exe
+
+clean:
+	del *.ui
+	del *.uo
+	del cgiex1.exe
+        del cgiex2.exe
+        del cgitest.exe
+	del Makefile.bak
+
+.sig.ui:
+	$(MOSMLC) $<
+
+.sml.uo:
+	$(MOSMLC) $<
+
+depend: 
+	del Makefile.bak
+	ren Makefile Makefile.bak
+	$(MOSMLTOOLS)\cutdeps < Makefile.bak > Makefile
+	$(MOSMLTOOLS)\mosmldep >> Makefile
+
+### DO NOT DELETE THIS LINE

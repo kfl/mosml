@@ -1,0 +1,11 @@
+This is file mosml/src/mosmllib/README.src
+
+In general we discourage modifying the library source codefiles.  If
+you modify them anyway, please note that:
+
+* Some U.sml files are produced automatically from corresponding U.mlp
+files by the C preprocessor; such U.sml files should never be edited
+by hand.  Edit the U.mlp files instead.
+
+* To recompile the library (which is NOT necessary unless you have
+modified it), execute `make depend' and then `make' in this directory.

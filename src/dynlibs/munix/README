@@ -1,0 +1,59 @@
+The SML Basis Library structures Unix and Signal
+------------------------------------------------
+
+*** This release has not been tested systematically ***
+
+This directory provides the Unix and Signal structures from the SML
+Basis Library, based on the dynamic linking mechanism.  In Moscow ML
+1.45 and later this will be integrated into the standard release.
+
+The following files are included:
+
+        munix.c         Implements the dynamic library libmunix.so which 
+                        provides the execute, executeInEnv, kill, and reap 
+                        implementations.
+
+        Unix.sig        The Unix signature, with documentation.
+
+        Unix.sml        The Unix structure (with calls to the C functions
+                        in libmunix.so).
+
+        Signal.sig      The Signal signature, with documentation.
+
+        Signal.sml      The Signal structure (using the Posix signal names).
+
+        sieve.c         A C program used for testing the Unix structure.
+
+        testunix.sml    *Very* rudimentary test of the Unix structure.
+
+You must have the following components:
+        
+        Dynlib          The Moscow ML foreign (C) function interface.
+                        Supported for Linux, Solaris, MS Win32, MacOS,
+                        Digital Unix, and HP-UX in mosml 1.44
+
+The runtime system must be compiled with support for dynamic linking
+of foreign functions (edit mosml/src/Makefile.inc to achieve this).
+
+1. Compile the components:
+
+        make
+
+2. Install libmunix.so, the compiled signatures and structures, and
+   the signature files (for documentation):
+
+        make install
+
+3. Set your LD_LIBRARY_PATH to point to the BINDIR directory (defined
+   in the src/Makefile file:
+
+        For tcsh: setenv LD_LIBRARY_PATH $BINDIR
+        For bash: LD_LIBRARY_PATH=$BINDIR
+                  export LD_LIBRARY_PATH
+
+4. Try it:
+
+        make test
+
+----------------------------------------------------------------------
+File mosml/src/dynlibs/munix/README * sestoft@dina.kvl.dk * 1999-11-08

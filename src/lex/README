@@ -1,0 +1,7 @@
+The source files for mosmllex (in directory mosml/src/lex) are based
+on those of camllex, distributed with the Caml Light system.  The Caml
+Light system was developed by Xavier Leroy and Damien Doligez at INRIA
+Rocquencourt, France.
+
+Mosmllex was instrumental in bootstrapping Moscow ML in Moscow ML, and
+is included here in the hope that it will be useful to others as well.

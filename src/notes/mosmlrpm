@@ -1,0 +1,123 @@
+From jl@itu.dk Thu Oct 21 16:37:54 1999
+Date: Fri, 15 Oct 1999 19:05:06 +0200
+From: Jakob Lichtenberg <jl@itu.dk>
+To: Peter Sestoft <sestoft@dina.kvl.dk>
+Subject: Mosml RPM
+
+Peter,
+
+Jeg skulle bruge mosml'en, så jeg har selv bygget en rpm baseret på din
+src distribution.  Den kan findes på:
+
+http://spectra.itu.dk/itu/RedHat/RPMS/mosml-1.44-3.i386.rpm 
+
+(Efter kl. 9 i aften hvor cd'en bliver opdateret)
+
+Det interessante er den spec fil jeg fik lavet.  Den har jeg vedlagt
+hvis du selv vil lege videre.  Bemærk post-install og uninstall
+scripts...
+
+Mine problemer er:
+* Jeg ved ikke hvilke *.h filer jeg skal tage med.  Jeg har derfor taget
+en STOR bunke.
+* Jeg orker ikke at patche alle dynlibs Makefilerne.  Derfor har jeg KUN
+taget mgdbm med.  Blot for at demonstrere hvordan det kan gøres.
+
+- Jakob
+
+HER ER SPEC FILEN mosml.spec:
+----------------------------------------------------
+Distribution: IT University of Copenhagen
+Vendor: IT University of Copenhagen
+Packager: Jakob Lichtenberg <jl@itu.dk>
+URL: http://www.itu.dk/people/jl/
+Summary:  Moscow ML
+Name: mosml
+Version: 1.44
+Release: 3
+Source: ftp://ftp.dina.kvl.dk/pub/mosml/mos14src.tar.gz 
+Copyright: GPL
+Group: Development/Languages
+%description
+Moscow ML version 1.44
+
+Moscow ML provides a light-weight implementation of Core Standard ML,
+a strict functional language widely used in teaching and research.
+
+It is based on the Caml Light system, which gives fast compilation and
+modest storage consumption.
+Moscow ML provides a light-weight implementation of Core Standard ML,
+a strict functional language widely used in teaching and research.
+
+It is based on the Caml Light system, which gives fast compilation and
+modest storage consumption.
+
+This RPM is the standard distribution compiled with GDBM support.
+
+Missing: MySQL, Postgres, IntInf, mgd, ... compilation
+
+%prep
+%setup -n mosml
+
+cd src
+sed s/"\${HOME}"/"\/usr\/local"/ <Makefile.inc >tmp ; mv -f tmp
+Makefile.inc
+cd dynlibs
+cd mgdbm
+sed s/"\${HOME}\/c\/gdbm-1.7.3"/"\/usr\/lib"/ <Makefile >tmp ; mv -f tmp
+Makefile
+
+
+%build
+cd src
+make clean
+make world
+
+cd dynlibs
+cd mgdbm
+make
+
+%install
+cd src
+make install
+mkdirhier /usr/local/mosml/include
+mkdirhier /usr/local/mosml/config
+cp -a runtime/*.h /usr/local/mosml/include
+cp -a config/*.h /usr/local/mosml/config
+
+cd dynlibs
+cd mgdbm
+make install
+
+ln -sf /usr/local/mosml/bin/camlrunm  /usr/local/bin
+ln -sf /usr/local/mosml/bin/mosml     /usr/local/bin
+ln -sf /usr/local/mosml/bin/mosmlc    /usr/local/bin
+ln -sf /usr/local/mosml/bin/mosmllex  /usr/local/bin
+ln -sf /usr/local/mosml/bin/mosmlyac  /usr/local/bin
+ln -sf /usr/local/mosml/bin/libmgdbm.so /usr/lib
+#ln -sf /usr/local/mosml/bin/libmmysql.so /usr/lib
+#ln -sf /usr/local/mosml/bin/libmpq.so /usr/lib
+#ln -sf /usr/local/mosml/bin/libmregex.so /usr/lib
+#ln -sf /usr/local/mosml/bin/libmsocket.so /usr/lib
+#ln -sf /usr/local/mosml/bin/libmgd.so /usr/lib
+
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
+
+%files
+/usr/local/mosml
+/usr/local/bin/camlrunm
+/usr/local/bin/mosml
+/usr/local/bin/mosmlc
+/usr/local/bin/mosmllex
+/usr/local/bin/mosmlyac
+/usr/lib/libmgdbm.so
+#/usr/lib/libmmysql.so
+#/usr/lib/libmpq.so
+#/usr/lib/libmregex.so
+#/usr/lib/libmsocket.so
+
+%doc README install.txt roadmap doc/*

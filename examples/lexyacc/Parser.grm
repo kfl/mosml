@@ -1,0 +1,99 @@
+%{
+open Data;
+
+fun mkintop2 opr (Int n1, Int n2)  = Int (opr (n1, n2))
+fun mkboolop2 opr (Int n1, Int n2) = Int (opr (n1, n2))
+fun mkrelop2 opr (Int n1, Int n2)  = Int (if opr (n1, n2) then 1 else 0)
+
+val lor  : int * int -> int = op *
+val land : int * int -> int = op +
+val lneg = fn b => if b = 0 then 1 else 0
+%}
+
+%token <int> INT
+%token <string> NAME
+%token PLUS MINUS TIMES DIV MOD
+%token EQ NE LT LE GE GT
+%token AMPERSAND BAR
+%token LAMBDA DOT SEMI COMMA DASHARROW
+%token CASE ELSE END IF IN LET LETREC OF PACK THEN
+%token LBRACE RBRACE LPAR RPAR
+%token EOF
+%token JUNK
+
+%left AMPERSAND			/* lowest precedence */
+%left BAR                       
+%nonassoc EQ NE LT LE GE GT
+%left PLUS MINUS                
+%left TIMES DIV MOD        	/* highest precedence  */
+
+%start Main
+%type <Data.sourceexpr> Main Expr SExpr AppExpr AExpr
+%type <Data.sourceexpr list> Exprs
+%type <string * Data.sourceexpr> Defn
+%type <(string * Data.sourceexpr) list> Defns
+%type <int * string list * Data.sourceexpr> Alt
+%type <(int * string list * Data.sourceexpr) list> Alts
+%type <string list> Vars 
+
+%%
+
+Main:
+    Expr EOF                            { $1 }
+;
+Expr:
+    LET Defns IN Expr                   { LetS($2, $4) }
+  | LETREC Defns IN Expr                { LetrecS($2, $4) }
+  | CASE Expr OF Alts END               { CaseS($2, $4) }
+  | IF Expr THEN Expr ELSE Expr         { IfS($2, $4, $6) }
+  | LAMBDA NAME DOT Expr                { LamS($2, $4) }
+  | SExpr                               { $1 }
+;
+SExpr:
+    AppExpr                             { $1 }
+  | SExpr DIV SExpr                     { Op2S(mkintop2 (op div), $1, $3) }
+  | SExpr MOD SExpr                     { Op2S(mkintop2 (op mod), $1, $3) } 
+  | SExpr TIMES SExpr                   { Op2S(mkintop2 (op *  ), $1, $3) }  
+  | SExpr PLUS SExpr                    { Op2S(mkintop2 (op +  ), $1, $3) }  
+  | SExpr MINUS SExpr                   { Op2S(mkintop2 (op -  ), $1, $3) }  
+  | SExpr EQ SExpr                      { Op2S(mkrelop2 (op =  ), $1, $3) }  
+  | SExpr NE SExpr                      { Op2S(mkrelop2 (op <> ), $1, $3) }    
+  | SExpr LT SExpr                      { Op2S(mkrelop2 (op <  ), $1, $3) }   
+  | SExpr LE SExpr                      { Op2S(mkrelop2 (op <= ), $1, $3) }   
+  | SExpr GT SExpr                      { Op2S(mkrelop2 (op >  ), $1, $3) }   
+  | SExpr GE SExpr                      { Op2S(mkrelop2 (op >= ), $1, $3) }   
+  | SExpr AMPERSAND SExpr               { Op2S(mkboolop2 land, $1, $3) }
+  | SExpr BAR SExpr                     { Op2S(mkboolop2 lor, $1, $3)  }
+;
+AppExpr:
+    AExpr                               { $1 }
+  | AppExpr AExpr                       { AppS($1, $2) }  
+;
+AExpr:
+    NAME                                { VarS $1 }
+  | INT                                 { CstS (Int $1) }
+  | PACK LBRACE INT Exprs RBRACE        { ConS($3, $4) }
+  | LPAR Expr RPAR                      { $2 }
+;
+Defns:
+    Defn                                { [ $1 ] }   
+  | Defn SEMI Defns                     { $1 :: $3 }
+;
+Defn:
+    NAME EQ Expr                        { ($1, $3) }
+;
+Alts:
+    Alt                                 { [ $1 ] }
+  | Alt SEMI Alts                       { $1 :: $3 }
+;
+Alt:
+    LT INT GT Vars DASHARROW Expr       { ($2, $4, $6) }
+;
+Vars:
+    /* empty */                         { [ ] }
+  | NAME Vars                           { $1 :: $2 }
+;
+Exprs:
+    /* empty */                         { [ ] }
+  | COMMA Expr Exprs                    { $2 :: $3 }
+;

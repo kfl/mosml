@@ -1,0 +1,7 @@
+load "Main";
+
+open Data Main;
+
+val _ = print "\nNow try \n\
+              \    parse \"cl/nats.cl\";\n\
+              \or  parse \"cl/error3.cl\";\n\n";

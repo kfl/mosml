@@ -1,0 +1,87 @@
+<HTML><HEAD><TITLE>Structure StringCvt</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure StringCvt</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>(* StringCvt -- SML Basis Library *)
+<A NAME="line2"></A>
+<A NAME="line3"></A>datatype radix = BIN | OCT | DEC | HEX;
+<A NAME="line4"></A>
+<A NAME="line5"></A>datatype realfmt = 
+<A NAME="line6"></A>    SCI of int option   (* scientific,  arg = # dec. digits, dflt=6 *)
+<A NAME="line7"></A>  | FIX of int option   (* fixed-point, arg = # dec. digits, dflt=6 *)
+<A NAME="line8"></A>  | GEN of int option   (* auto choice of the above,                *)
+<A NAME="line9"></A>                        (* arg = # significant digits, dflt=12      *)
+<A NAME="line10"></A>
+<A NAME="line11"></A>type cs                 (* character source state *)
+<A NAME="line12"></A>
+<A NAME="line13"></A>type ('a, 'b) reader = 'b -> ('a * 'b) option
+<A NAME="line14"></A>
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#scanString">scanString</A> : ((char, cs) reader -> ('a, cs) reader) -> string -> 'a option
+<A NAME="line16"></A>
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#splitl">splitl</A>     : (char -> bool) -> (char, 'a) reader -> 'a -> string * 'a
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#takel">takel</A>      : (char -> bool) -> (char, 'a) reader -> 'a -> string 
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#dropl">dropl</A>      : (char -> bool) -> (char, 'a) reader -> 'a -> 'a 
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#skipWS">skipWS</A>     : (char, 'a) reader -> 'a -> 'a 
+<A NAME="line21"></A>
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#padLeft">padLeft</A>    : char -> int -> string -> string
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#padRight">padRight</A>   : char -> int -> string -> string
+<A NAME="line24"></A>
+<A NAME="line25"></A>
+<A NAME="line26"></A>(* This structure presents tools for scanning strings and values from
+<A NAME="line27"></A>   functional character streams, and for formatting ML characters and
+<A NAME="line28"></A>   strings containing escape sequences.
+<A NAME="line29"></A>
+<A NAME="line30"></A>   A character source reader 
+<A NAME="line31"></A>        getc : (char, cs) reader 
+<A NAME="line32"></A>   is used for obtaining characters from a functional character source
+<A NAME="line33"></A>   src of type cs, one at a time. It should hold that
+<A NAME="line34"></A>
+<A NAME="line35"></A>        getc src = SOME(c, src')        if the next character in src 
+<A NAME="line36"></A>                                        is c, and src' is the rest of src;
+<A NAME="line37"></A>                 = NONE                 if src contains no characters
+<A NAME="line38"></A>
+<A NAME="line39"></A>   A character source scanner takes a character source reader getc as
+<A NAME="line40"></A>   argument and uses it to scan a data value from the character
+<A NAME="line41"></A>   source.
+<A NAME="line42"></A>
+   [<A NAME="scanString"><B>scanString</B></A> scan s] turns the string s into a character source and
+   applies the scanner `scan' to that source.
+
+   [<A NAME="splitl"><B>splitl</B></A> p getc src] returns (pref, suff) where pref is the
+   longest prefix (left substring) of src all of whose characters
+   satisfy p, and suff is the remainder of src.  That is, the first
+   character retrievable from suff, if any, is the leftmost character
+   not satisfying p.  Does not skip leading whitespace.
+
+   [<A NAME="takel"><B>takel</B></A> p getc src] returns the longest prefix (left substring) of
+   src all of whose characters satisfy predicate p.  That is, if the
+   left-most character does not satisfy p, the result is the empty
+   string.  Does not skip leading whitespace.  It holds that
+        takel p getc src = #1 (splitl p getc src)
+
+   [<A NAME="dropl"><B>dropl</B></A> p getc src] drops the longest prefix (left substring) of
+   src all of whose characters satisfy predicate p.  If all characters
+   do, it returns the empty source.  It holds that
+        dropl p getc src = #2 (splitl p getc src)
+
+   [<A NAME="skipWS"><B>skipWS</B></A> getc src] drops any leading whitespace from src.
+   Equivalent to dropl Char.isSpace.
+
+   [<A NAME="padLeft"><B>padLeft</B></A> c n s] returns the string s if size s >= n, otherwise pads
+   s with (n - size s) copies of the character c on the left.  
+   In other words, right-justifies s in a field n characters wide.
+
+   [<A NAME="padRight"><B>padRight</B></A> c n s] returns the string s if size s >= n, otherwise pads
+   s with (n - size s) copies of the character c on the right.
+   In other words, left-justifies s in a field n characters wide.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

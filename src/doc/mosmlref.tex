@@ -1,0 +1,1429 @@
+% mosmlref.tex v. 1.44.3 Copyright (C) Peter Sestoft 1994, 1999-08-08
+%
+% You may edit for lay-out, or leave out irrelevant sections (if
+% such omissions are marked somehow), but you may not redistribute the
+% sources.  The authors' names and the Moscow ML URL must be left in place.
+
+\documentclass[fleqn]{article}
+
+\usepackage{isolatin1,notesart,a4wide,pslatex}
+\usepackage[T1]{fontenc}
+
+% \documentstyle[A4,fleqn,notesart]{article}
+
+\newcommand{\la}{$\langle$}
+\newcommand{\ra}{$\rangle$}
+\newcommand{\opop}{\la{\tt op}\ra}
+
+\begin{document}
+
+\begin{center}
+
+  \vspace*{0cm}
+
+{\huge\bf Moscow ML Language Overview}\\[0.5cm]
+
+{Version 1.44 of August 1999}\\[1cm]
+
+\begin{tabular}{ccc}
+\large Sergei Romanenko && \large Peter Sestoft\\[0.1cm]
+Russian Academy of Sciences && Royal Veterinary and Agricultural University\\
+Moscow, Russia && Copenhagen, Denmark
+\end{tabular}
+\end{center}
+
+\vspace{1cm}
+
+\noindent This is a compact reference to the language implemented by
+Moscow ML, a subset of Standard ML\@.  For reference material on
+Standard ML, see Milner, Tofte, Harper and MacQueen: {\em The
+  Definition of Standard ML\/}, The MIT Press 1997.  Moscow ML
+implements parts of the SML Basis Library.  Section~\ref{sec-libindex}
+of this manual lists all structure, type, constructor, value,
+function, and exception identifiers defined by Moscow ML.
+
+{\bf Acknowledgement:} The present document owes a lot to the {\em
+  Definition\/}.
+
+\vfill
+
+\tableofcontents
+
+\vfill
+
+\begin{center}
+\begin{tabular}{|c|}\hline
+\rule[-0.4cm]{0cm}{1cm}The Moscow ML home page is\ \
+    \verb$http://www.dina.kvl.dk/~sestoft/mosml.html$\\\hline
+\end{tabular}
+\end{center}
+
+\newpage 
+
+
+\section{Reserved words}
+\label{sec-reserved-words}
+
+{\small\begin{verbatim} 
+      abstype  and  andalso  as  case  do  datatype  else  end  exception  fn  fun  
+      handle  if  in  infix  infixr  let  local  nonfix  of  op  open  orelse  raise  rec  
+      sig  signature  struct  structure  then  type  val  with  withtype  while  
+      (  )  [  ]  {  }  ,  :  :>  ;  ...    _  |  =  =>  ->  #
+\end{verbatim}}
+
+
+\section{Comments}
+\label{sec-comments}
+
+A comment is any character sequence within comment brackets \verb#(*#
+and \verb#*)# in which comment brackets are properly nested.
+
+
+\section{Special constants}
+\label{sec-special-constants}
+
+
+\subsubsection*{Integer constants}
+
+\begin{quot}
+\begin{tabular}{@{}lcllllllll}
+Examples:   & &  \verb#0# & \verb#~0# & \verb#4# & \verb#~04# &
+\verb#999999# & \verb#0xFFFF# & \verb#~0x1ff#\\
+Non-examples: & & \verb#0.0# & \verb#~0.0# & \verb#4.0# & \verb#1E0# &
+\verb#-317# & \verb#0XFFFF# & \verb#-0x1ff#\\
+\end{tabular}
+\end{quot}
+
+
+\subsubsection*{Real constants}
+
+\begin{quot}
+\begin{tabular}{@{}lcllllllll}
+Examples:   & &  \verb#0.7# & \verb#~0.7# & \verb#3.32E5# & \verb#3E~7#
+ & \verb#~3E~7#  & \verb#3e~7# & \verb#~3e~7#\\
+Non-examples: & & \verb#23# & \verb#.3# & \verb#4.E5# & \verb#1E2.0# & 
+  \verb#1E+7# & \verb#1E-7#
+\end{tabular}
+\end{quot}
+
+
+\subsubsection*{Word constants}
+
+\begin{quot}
+\begin{tabular}{@{}lcllllllll}
+Examples:   & &  \verb#0w0# & \verb#0w4# & \verb#0w999999# &
+\verb#0wxFFFF#  & \verb#0wx1ff#\\
+Non-examples: & & \verb#0w0.0# & \verb#~0w4# & \verb#-0w4# & \verb#0w1E0# &
+\verb#0wXFFFF# & \verb#0WxFFFF#\\
+\end{tabular}
+\end{quot}
+
+
+\subsubsection*{String constants}
+
+A string constant is a sequence, between quotes (\verb#"#), of zero or
+more printable characters, spaces, or escape sequences.  An escape
+sequence starts with the escape character \verb#\# and stands for a
+character sequence:
+
+\begin{quot}
+\begin{tabular}{@{}lp{5in}}
+  \verb#\a# & A single character interpreted by the system as
+  alert (BEL, ASCII 7). \\ 
+
+  \verb#\b# & Backspace (BS, ASCII 8).\\ 
+
+  \verb#\t# & Horisontal tab (HT, ASCII 9).\\ 
+
+  \verb#\n# & Linefeed, also known as newline (LF, ASCII 10). \\ 
+
+  \verb#\v# & Vertical tab (VT, ASCII 11).\\ 
+
+  \verb#\f# & Form feed (FF, ASCII 12).\\ 
+ 
+ \verb#\r# & Carriage return (CR, ASCII 13).\\ 
+
+  \verb#\^#{\it c\/} & The control character {\it c\/}, where {\it
+    c\/} may be any character with ASCII code 64--95 (\verb#@# to
+  \verb#_#).  The ASCII code of \verb#\^#{\it c\/} is 64 less than
+  that of {\it c\/}.\\ 
+
+  \verb#\#{\it ddd\/} & The character with code {\it ddd\/} (3 decimal
+  digits denoting an integer 0--255).\\ 
+
+  \verb#\u#{\it xxxx\/} & The character with code {\it xxxx\/} (4 hexadecimal
+  digits denoting an integer 0--255).\\ 
+
+\verb#\"# & The double-quote character ({\tt "})\\
+
+\verb#\\# & The backslash character (\verb#\#)\\
+
+\verb#\#$f\cdot\cdot f$\verb#\# & This sequence is ignored, where
+$f\cdot\cdot f$ stands for a sequence of one or more formatting
+characters (such as space, tab, newline, form-feed).
+\end{tabular}
+\end{quot}
+
+
+\subsubsection*{Character constants}
+
+A character constant consists of the symbol \verb$#$ immediately
+followed by a string constant of length one.
+
+\begin{quot}
+\begin{tabular}{@{}lclllll}
+Examples:   & &  \verb$#"a"    $ & \verb$#"\n"   $ & \verb$#"\^Z"  $ &
+\verb$#"\255" $ & \verb$#"\""$\\
+Non-examples: & & \verb$# "a"$ & \verb$#c$ & \verb$#"""$ 
+\end{tabular}
+\end{quot}
+
+%\newpage
+
+\section{Identifiers}
+\label{sec-identifiers}
+
+\begin{itemize}
+\item {\bf alphanumeric:} a sequence of letters, digits, primes
+  (\verb#'#) and underbars (\verb#_#) starting with a letter or prime;
+
+\item {\bf symbolic:} any non-empty sequence of the following symbols:\\
+\verb;      ! % & $ # + - / : < = > ? @ \ ~ ` ^ | *;
+\end{itemize}
+
+\noindent Reserved words (Section~\ref{sec-reserved-words}) are
+excluded.  This means that for example \verb$#$ and \verb#|# are not
+identifiers, but \verb$##$ and \verb#|=|# are identifiers.  There are
+several classes of identifiers:
+
+\begin{center}
+\begin{tabular}{@{}lll}
+    var       &  (value variables)           &    long\\
+    con       &  (value constructors)        &    long\\
+    excon     &  (exception constructors)    &    long\\
+    tyvar     &  (type variables)\\
+    tycon     &  (type constructors)         &    long\\
+    lab       &  (record labels)\\
+    unitid    &  (unit identifiers)
+\end{tabular}
+\end{center}
+
+
+\begin{itemize}
+\item A type variable \verb#'a# is an alphanumeric identifier starting
+  with a prime.
+
+%\item An equality type variable \verb#''a# starts with two or more primes.
+%
+%\item An imperative type variable \verb#'_a# starts with one or two primes
+%  followed by an underbar.
+%
+%\item An applicative type variable is one which is not imperative.
+
+\item A label lab is an identifier, or a positive integral numeral
+  \verb#1 2 3 #\ldots\ not starting with \verb#0#.  
+
+\item For each identifier class X marked `long' above there is a class
+  longX of long identifiers, which may have a qualifier consisting of
+  a unit identifier followed by a dot `\verb#.#' :
+  \begin{center}
+      \begin{tabular}{llll}
+    {\it longx\/} & ::= &  {\it x\/}         & identifier\\
+          &     &  {\it unitid\/}\verb#.#{\it x\/}  & qualified identifier
+  \end{tabular}
+  \end{center}
+\end{itemize}
+
+
+
+\section{Infixed operators}
+\label{sec-infixed-operators}
+
+An identifier may be given infix status by the {\tt infix} or {\tt
+  infixr} directive, which may occur as a declaration.  If identifier
+{\it id\/} has infix status, then {\it exp\/}$_1$ {\it id\/} {\it
+  exp\/}$_2$ may occur, in parentheses if necessary, wherever the
+application {\it id\/}\verb#(#{\it exp\/}\et\verb#,# {\it
+  exp\/}\to\verb#)# or {\it id\/}\verb#{1=#{\it
+    exp\/}\et\verb#,2=#{\it exp\/}\to\verb#}# would otherwise occur.
+Infix identifiers in patterns are analogous.  On the other hand, an
+occurrence of a qualified identifier, or any identifier prefixed by
+{\tt op}, is treated as non-infixed.  The form of the fixity directives
+is as follows ($n\geq 1$):
+        
+\begin{center}
+\begin{tabular}{@{}llll}
+{\tt infix}  & $\langle d\rangle$ & $id_1 \cdots id_n$ & left associative\\
+{\tt infixr} & $\langle d\rangle$ & $id_1 \cdots id_n$ & right associative\\
+{\tt nonfix} & & $id_1 \cdots id_n$ & non-associative
+\end{tabular}
+\end{center}
+
+\noindent where $\langle d\rangle$ is an optional decimal digit $d$
+indicating binding precedence.  A higher value of $d$ indicates
+tighter binding; the default is \verb#0#.  Fixity directives are
+subject to the usual scope rules governing visibility of identifiers
+declared inside {\tt let} and {\tt local}.
+
+Mixed left-associative operators of the same precedence associate to
+the left, mixed right-associative operators of the same precedence
+associate to the right, and it is illegal to mix left- and
+right-associative operators of the same precedence.
+
+\section{Notational conventions used in the grammar}
+
+\begin{itemize}
+\item Each syntax class is defined by a list of alternatives, one
+  alternative on each line.  An empty phrase is represented by an
+  empty line.
+
+\item The brackets \la\ and \ra\ enclose optional phrases.
+
+\newpage
+\item For any syntax class X (over which {\it x\/} ranges) we define the syntax
+  class Xseq (over which {\it xseq\/} ranges) as follows:
+
+  \begin{center}
+    \begin{tabular}{llll}
+      {\it xseq\/} &  ::=  & {\it x\/} & (singleton sequence)\\
+             &       &           & (empty sequence)\\
+             &       & {\tt ($x_1$, $\cdots$ , $x_n$)} & (sequence,
+             $n\geq 1$)
+    \end{tabular}
+  \end{center}
+\item Alternative phrases are listed in order of decreasing precedence.
+
+\item L and R indicate left and right association.
+
+\item The syntax of types binds more tightly than that of expressions.
+\item Each iterated construct (e.g.\ {\it match\/}) extends as far to
+  the right as possible.  Hence a {\tt case} inside a {\tt case}, {\tt
+    fn}, or {\tt fun} may have to be enclosed in parentheses.
+\end{itemize}
+
+
+\section{Grammar for the Standard ML Core language}
+\label{sec-grammar-core}
+
+\subsubsection*{Expressions and matches}
+
+\begin{tabular}{@{}llll}
+{\it exp\/} & ::= & {\it infexp\/}\\
+& & {\tt {\it exp\/} :\ {\it ty\/}} & type constraint (L)\\
+& & {\tt {\it exp\/}\et\ andalso {\it exp\/}\to} & sequential conjunction\\
+& & {\tt {\it exp\/}\et\ orelse {\it exp\/}\to}  & sequential disjunction\\
+& & {\tt {\it exp\/} handle {\it match\/}} & handle exception\\
+& & {\tt raise {\it exp\/}} & raise exception\\
+& & {\tt if {\it exp\/}\et\ then {\it exp\/}\to\ else {\it exp\/}\tre}
+& conditional\\
+& & {\tt while {\it exp\/}\et\ do {\it exp\/}\to} & iteration\\
+& & {\tt case {\it exp\/} of {\it match\/}} & case analysis\\
+& & {\tt fn {\it match\/}} & function expression\\[2ex]
+
+{\it infexp\/} & ::= & {\it appexp\/}\\
+& & {\it infexp\/}\et\ {\it id\/} {\it infexp\/}\to & infixed
+application\\[2ex]
+
+{\it appexp\/} & ::= & {\it atexp\/}\\
+& & {\it appexp\/} {\it atexp\/} & application\\[2ex]
+
+{\it atexp\/} & ::= & {\it scon\/} &  special constant 
+(see Section~\ref{sec-special-constants})\\
+& & \la{\tt op}\ra\ {\it longvar\/} & value variable\\
+& & \la{\tt op}\ra\ {\it longcon\/} & value constructor\\
+& & \la{\tt op}\ra\ {\it longexcon\/} &exception constructor\\
+& & \verb#{# \la\ {\it exprow\/} \ra\ \verb#}# & record\\
+& & \verb$#$ {\it lab\/} & record selector\\
+& & \verb#()# &           0-tuple\\
+& & {\tt ({\it exp\/}\et, $\cdots$ , {\it exp\/}\n)} 
+& $n$-tuple, $n\geq 2$\\
+& & {\tt [{\it exp\/}\et, $\cdots$ , {\it exp\/}\n]} 
+& list, $n\geq 0$\\
+& & {\tt \#[{\it exp\/}\et, $\cdots$ , {\it exp\/}\n]} 
+& vector, $n\geq 0$\\
+& & {\tt ({\it exp\/}\et; $\cdots$ ; {\it exp\/}\n)} 
+& sequence, $n\geq 2$\\
+& & {\tt let {\it dec\/} in {\it exp\/}\et; $\cdots$ ; {\it exp\/}\n\
+  end} & local declaration, $n\geq 1$\\
+& & {\tt  ( {\it exp\/} ) }\\[2ex]
+
+{\it exprow\/} & ::= & {\tt {\it lab\/} = {\it exp\/} \la\ , {\it
+    exprow\/} \ra} & expression row\\[2ex]
+
+{\it match\/} & ::= & {\tt {\it mrule\/} \la\ | {\it match\/} \ra}\\[2ex]
+
+{\it mrule\/} & ::= & {\tt {\it pat\/} => {\it exp\/}}
+\end{tabular}
+
+
+\subsubsection*{Declarations and Bindings}
+
+\begin{tabular}{@{}llll}
+{\it dec\/} & ::= & {\tt val {\it tyvarseq\/} {\it valbind\/}} & value declaration\\
+& & {\tt fun {\it tyvarseq\/} {\it fvalbind\/}} & function declaration\\
+& & {\tt type {\it typbind\/}} & type declaration\\
+& & {\tt datatype {\it datbind\/} \la\ withtype {\it typbind\/} \ra} 
+& datatype declaration\\
+& & {\tt abstype {\it datbind\/} \la\ withtype {\it typbind\/} \ra}
+& abstype declaration\\
+& & \hspace{1.5cm}{\tt with {\it dec\/} end}\\
+& & {\tt exception {\it exbind\/}} & exception declaration\\
+& & {\tt local {\it dec\/}\et\ in {\it dec\/}\to\ end} 
+& local declaration\\
+& & {\tt open {\it unitid\/}\et\ $\cdots$ {\it unitid\/}\n} 
+& open declaration, $n\geq 1$\\
+& & & empty declaration\\
+& & {\tt {\it dec\/}\et\ \la;\ra\ {\it dec\/}\to} 
+& sequential declaration\\
+& & {\tt infix \la{\it d\/}\ra\ $id_1 \cdots id_n$} & infix (left)
+  directive, $n\geq 1$\\
+& & {\tt infixr \la{\it d\/}\ra\ $id_1 \cdots id_n$} & infix (right)
+  directive, $n\geq 1$\\
+& & {\tt nonfix $id_1 \cdots id_n$} & nonfix directive, $n\geq
+  1$\\[2ex]
+
+{\it valbind\/} & ::= & {\tt {\it pat\/} = {\it exp\/} \la\ and {\it
+    valbind\/} \ra} & value binding\\
+& & {\tt rec {\it valbind\/}} & recursive binding\\[2ex]
+
+{\it fvalbind\/} & ::= & 
+  \begin{tabular}[t]{ll}
+  {\tt \ \ \opop\ {\it var\/} {\it atpat\/}\et\et\ $\cdots$ {\it atpat\/}\et\n\ 
+  \la{:}ty\ra\ = {\it exp\/}\et}\\
+  {\tt | \opop\ {\it var\/} {\it atpat\/}\to\et\ $\cdots$ {\it atpat\/}\to\n\ 
+  \la{:}ty\ra\ = {\it exp\/}\to}\\ 
+  {\tt | $\cdots$}\\
+  {\tt | \opop\ {\it var\/} {\it atpat\/}\m\et\ $\cdots$ {\it atpat\/}\m\n\ 
+  \la{:}ty\ra\ = {\it exp\/}\m}\\
+  {\tt \ \ \ \la\ and {\it fvalbind\/} \ra}
+  \end{tabular} & $m,n\geq 1$\\[12ex]
+
+{\it typbind\/} & ::= & {\tt {\it tyvarseq\/} {\it tycon\/} = {\it
+    ty\/} \la\ and {\it typbind\/} \ra}\\[2ex]
+
+{\it datbind\/} & ::= & {\tt {\it tyvarseq\/} {\it tycon\/} = {\it
+    conbind\/} \la\ and {\it datbind\/} \ra}\\[2ex]
+
+{\it conbind\/} & ::= & {\tt \opop\ {\it con\/} \la{of} {\it ty\/}\ra\ \la\ | {\it conbind\/} \ra}\\[2ex]
+
+{\it exbind\/} & ::= & {\tt \opop\ {\it excon\/} \la{of} 
+{\it ty\/}\ra\ \la\ and {\it exbind\/} \ra}\\
+
+& & {\tt \opop\ {\it excon\/} = \opop\ {\it longexcon\/} \la\ and {\it
+  exbind\/} \ra}\\[2ex]
+\end{tabular}
+
+\noindent Note: In the {\it fvalbind\/} form above, if {\it var\/} has
+infix status then either {\tt op} must be present, or {\it var\/} must
+be infixed.  Thus, at the start of any clause, {\tt op {\it var\/}
+  ({\it atpat\/}, {\it atpat\/}$'$)} may be written {\tt ({\it
+    atpat\/} {\it var\/} {\it atpat\/}$'$)}.  The parentheses may be
+dropped if `{\tt :{\it ty\/}}' or `{\tt =}' follows immediately.
+
+\subsubsection*{Type expressions}
+
+\begin{tabular}{@{}llll}
+{\it ty\/} & ::= & {\it tyvar\/} & type variable\\
+& & {\tt \{ \la\ {\it tyrow\/} \ra\ \}} & record type expression\\
+& & {\tt {\it tyseq\/} {\it longtycon\/}} & type construction\\
+& & {\tt {\it ty\/}\et\ * $\cdots$ * {\it ty\/}\n} & tuple type,
+$n\geq 2$\\
+& & {\tt {\it ty\/}\et\ -> {\it ty\/}\to} & function type expression\\
+& & {\tt ( {\it ty\/} )}\\[2ex]
+
+{\it tyrow\/} & ::= & {\tt {\it lab\/} :\ {\it ty\/} \la\ , {\it
+    tyrow\/} \ra} & type-expression row
+\end{tabular}
+
+
+\subsubsection*{Patterns}
+
+\begin{tabular}{@{}llll}
+{\it atpat\/} & ::= & \verb#_# & wildcard\\
+& & {\it scon\/} & special constant (see Section~\ref{sec-special-constants})\\
+& & {\tt \opop\ {\it var\/}} & variable\\
+& & {\tt \opop\ {\it longcon\/}} & constructor \\
+& & {\tt \opop\ {\it longexcon\/}} & exception constructor\\
+& & {\tt \{ \la\ {\it patrow\/} \ra\ \}} & record\\
+& & {\tt ()} & 0-tuple\\
+& & {\tt ({\it pat\/}\et, $\cdots$ , {\it pat\/}\n)} & $n$-tuple,
+$n\geq 2$\\
+& & {\tt [{\it pat\/}\et, $\cdots$ , {\it pat\/}\n]} & list, $n\geq 0$\\
+& & {\tt \#[{\it pat\/}\et, $\cdots$ , {\it pat\/}\n]} & vector, $n\geq 0$\\
+& & {\tt ( {\it pat\/} )}\\[2ex]
+
+{\it patrow\/} & ::= & {\tt ...} & wildcard\\
+& & {\tt {\it lab\/} = {\it pat\/} \la\ , {\it patrow\/} \ra} &
+pattern row\\
+& & {\tt {\it lab\/} \la{:}{\it ty\/}\ra\ \la\ as {\it pat\/} \ra\ 
+\la\ , {\it patrow\/} \ra} &  label as variable\\[2ex]
+
+{\it pat\/} & ::= & {\it atpat\/} & atomic pattern\\
+& & {\tt \opop\ {\it longcon\/} {\it atpat\/}} & value construction\\
+& & {\tt \opop\ {\it longexcon\/} {\it atpat\/}} & exception construction\\
+& & {\tt {\it pat\/}\et\ {\it con\/} {\it pat\/}\to} & 
+infixed value construction\\
+& & {\tt {\it pat\/}\et\ {\it excon\/} {\it pat\/}\to} & 
+infixed exception construction\\
+& & {\tt {\it pat\/} :\ {\it ty\/}} & typed\\
+& & {\tt \opop\ {\it var\/} \la{:}{\it ty\/}\ra\ as {\it pat\/}} & layered
+\end{tabular}
+
+
+\subsubsection*{Syntactic restrictions}
+
+\begin{itemize}
+\item No pattern may bind the same {\it var\/} twice.  No expression
+  row, pattern row or type row may bind the same {\it lab\/} twice.
+
+\item No binding {\it valbind\/}, {\it typbind\/}, {\it datbind\/} or
+  {\it exbind\/} may bind the same identifier twice; this applies also
+  to value constructors within a {\it datbind\/}.
+        
+\item In the left side {\it tyvarseq tycon\/} of any {\it typbind\/}
+  or {\it datbind\/}, {\it tyvarseq\/} must not contain the same {\it
+    tyvar\/} twice.  Any {\it tyvar\/} occurring within the right side
+  must occur in {\it tyvarseq\/}.
+
+\item For each value binding {\tt {\it pat\/} = {\it exp\/}} within
+  {\tt rec}, {\it exp\/} must be of the form {\tt fn {\it match\/}},
+  possibly enclosed in parentheses, and possibly constrained by one or
+  more type expressions.
+  
+\item No {\it valbind}, {\it datbind}, or {\it exbind} may bind {\tt
+    true}, {\tt false}, {\tt nil}, {\tt ::}, or {\tt ref}.  No {\it
+    datbind} or {\it exbind} may bind {\tt it}.
+\end{itemize}
+
+
+\section{Interactive sessions}
+
+An expression {\it exp\/} which occurs grammatically at top-level in
+an interactive session is taken to be an abbreviation for the
+declaration
+
+\begin{quot}
+{\tt val it = {\it exp\/}}  
+\end{quot}
+
+\noindent This convention applies to interactive sessions only.  In a
+batch-compiled unit, write {\tt val it = {\tt exp}} or {\tt val \verb#_# =
+  {\it exp\/}} etc.
+
+\newpage
+
+
+\section{Grammar for the Moscow ML module language}
+
+The Moscow ML module language is a simplified form of the full
+Standard ML Modules language.
+
+The equivalent of a Standard ML structure is a unit.  A unit U
+consists of a unit interface in file U.sig (corresponding to an SML
+signature) and a unit body in file U.sml (corresponding to an SML
+structure).  The unit signature can be left out.
+
+
+\subsubsection*{Unit Body (in file unitid.sml)}
+
+\begin{tabular}{llll}
+{\it unitbody\/} & ::= 
+  & {\tt structure} {\it unitid} {\tt = struct {\it dec\/} end} 
+                                                & structure \\
+& & {\tt structure {\it unitid\/} :> {\it unitid\/} = struct {\it dec\/} end}
+                                                & structure with
+                                                signature \\
+& & {\it dec\/}                                 & structure (old syntax)\\[2ex]
+\end{tabular}
+
+\subsubsection*{Unit Signature (in file unitid.sig)}
+
+\begin{tabular}{llll}
+{\it unitsig\/} & ::= 
+  & {\tt signature} {\it unitid} {\tt = sig {\it uspec\/} end} 
+                                                & named signature \\
+& & {\it uspec\/}                               & signature (old syntax)\\[2ex]
+
+{\it uspec} & ::= & {\tt val} {\it valdesc}     & value specification\\
+& & {\tt type} {\it typdesc}                    & abstract type \\
+& & {\tt type} {\it typbind}            & type abbreviation \\
+& & {\tt eqtype} {\it typdesc}          & abstract equality type\\
+& & {\tt datatype} {\it datdesc}        & datatype\\
+& & {\tt datatype} {\it datdesc} {\tt withtype} {\it typbind\/} &
+                                         datatype with typbind\\
+& & {\tt exception} {\it exdesc}        & exception\\
+& & {\tt local} {\it lspec} {\tt in} {\it uspec} {\tt end}
+                                        & local specifications\\
+& &                                     & empty\\
+& & {\tt {\it uspec} $\langle${;}$\rangle$ {\it uspec}} & sequential 
+\\[2ex]
+
+{\it lspec} & ::= & {\tt open} {\it unitid$_1$\/} $\cdots$\ {\it
+  unitid$_n$\/}
+                                        & open other units\\
+& & {\tt type} {\it typbind}            & type abbreviation \\
+& & {\tt local} {\it lspec\/} {\tt in} {\it lspec} {\tt end}
+        & local specifications\\
+& &                                             & empty\\
+& & {\tt {\it lspec\/} $\langle${;}$\rangle$ {\it lspec\/}} & sequential\\[2ex]
+
+{\it valdesc\/} & ::= & {\tt {\it var\/} :\ {\it ty\/} \la\ and {\it
+    valdesc\/} \ra} & value description\\[2ex]
+
+{\it typdesc\/} & ::= & {\tt {\it tyvarseq\/} {\it tycon\/} \la\ and
+  {\it typdesc\/} \ra} & type constructor description\\[2ex]
+        
+{\it datdesc\/} & ::= & {\tt {\it tyvarseq\/} {\it tycon\/} = {\it
+    condesc\/} \la\ and {\it datdesc\/} \ra} & datatype description\\[2ex]
+
+{\it condesc\/} & ::= & {\tt {\it con\/} \la{of} {\it ty\/}\ra\ 
+\la\ | {\it condesc\/} \ra} & constructor description\\[2ex]
+
+{\it exdesc\/} & ::= & {\tt {\it excon\/} \la{of} {\it ty\/}\ra\ \la\
+  and {\it exdesc\/} \ra} & exception constructor description
+\end{tabular}
+
+
+\subsubsection*{Syntactic restrictions}
+
+\begin{itemize}
+\item In Moscow ML, the {\tt unitid}, if specified in a unit signature
+  or unit body file, must agree with the filename.  The name of the
+  constraining signature, if any, must equal that of the structure.
+
+\item No specification {\it valdesc\/}, {\it typdesc\/}, {\it
+    typbind\/}, {\it datdesc\/}, or {\it exdesc\/} may describe the
+  same identifier twice; this applies also to value constructors
+  within a {\it datdesc\/}.
+
+\item In the left side {\it tyvarseq tycon\/} in any {\it typdesc\/},
+  {\it typbind\/}, or {\it datdesc\/}, {\it tyvarseq\/} must not
+  contain the same {\it tyvar\/} twice.  Any {\it tyvar\/} occurring
+  within the right side of a {\it typbind\/} or {\it datdesc\/} must
+  occur in {\it tyvarseq\/}.
+
+\item No type, value, or exception may be specified twice at top-level
+  in a signature.
+  
+\item No {\it valdesc}, {\it datdesc}, or {\it exdesc} may specify
+  {\tt true}, {\tt false}, {\tt nil}, {\tt ::}, or {\tt ref}.  No {\it
+    datdesc\/} or {\it exdesc} may specify {\tt it}.
+\end{itemize}
+
+%\newpage
+
+\section{Built-in types, constructors and exceptions}
+\label{sec-builtin}
+
+The following types, constructors, and exceptions are available in the
+initial environment, of the interactive system as well as files
+compiled with the batch compiler {\tt mosmlc} or the {\tt compile}
+function.
+
+
+\subsection*{Built-in types}
+
+\begin{tabular}{@{\tt\ \ }llll}\hline
+
+{\rm Type} & Values & Admits equality & Constructors and constants\\\hline
+'a array    & Arrays                  &  yes \\
+bool        & Booleans                &  yes  & {\tt false}, {\tt true}\\
+char        & Characters              &  yes & \verb$#"a"$,
+    \verb$#"b"$, $\cdots$\\ 
+exn         & Exceptions              &  no\\
+'a frag     & Quotation fragments     &  if {\tt 'a} does 
+& {\tt QUOTE}, {\tt ANTIQUOTE}\\
+int         & Integers                & yes & {\tt 241}, {\tt 0xF1}, $\cdots$\\
+'a list     & Lists                   &  if {\tt 'a} does & {\tt nil},
+    {\tt ::}\\ 
+'a option   & Optional results        &  if {\tt 'a} does & {\tt
+  NONE}, {\tt SOME}\\ 
+order       & Comparisons  &  yes  & {\tt LESS}, {\tt
+  EQUAL}, {\tt GREATER}\\
+real        & Floating-point numbers  &  yes\\
+'a ref      & References              &  yes            & {\tt ref}\\
+string      & Strings                 &  yes\\
+substring   & Substrings              &  no\\
+unit        & The empty tuple {\tt ()}    & yes \\
+'a vector   & Vectors                 &  if {\tt 'a} does \\
+word        & Words (31-bit)          &  yes & {\tt 0w241}, {\tt
+  0wxF1}, $\cdots$ \\
+word8       & Bytes (8 bit)           &  yes & {\tt 0w241}, {\tt
+  0wxF1}, $\cdots$ \\\hline 
+\end{tabular}
+
+
+\subsection*{Built-in exception constructors}
+
+\begin{verbatim}
+          Bind  Chr  Domain  Div  Fail  Graphic_failure Interrupt  
+          Io  Match  Option  Ord  Overflow  Size  Subscript  
+\end{verbatim}
+
+\newpage
+
+\section{Built-in variables and functions}
+
+For each variable or function we list its type and meaning.  Some
+built-in identifiers are overloaded; this is specified using {\em
+  overloading classes\/}.  For instance, an identifier whose type
+involves the overloading class {\tt realint} stands for two functions:
+one in which {\tt realint} (in the type) is consistently replaced by
+{\tt int}, and another in which {\tt realint} is consistently replaced
+by {\tt real}.  The overloading classes are:
+
+\begin{center}
+\begin{tabular}{|l|l|}\hline
+Overloading class & Corresponding base types\\\hline
+{\tt realint} & {\tt int}, {\tt real}\\
+{\tt wordint} & {\tt int}, {\tt word}, {\tt word8}\\
+{\tt num} &  {\tt int}, {\tt real}, {\tt word}, {\tt word8}\\
+{\tt numtxt} &  {\tt int}, {\tt real}, {\tt word}, {\tt word8}, {\tt
+  char}, {\tt string}\\\hline
+\end{tabular}
+\end{center}
+
+\noindent When the context does not otherwise resolve the overloading,
+it defaults to {\tt int}.
+
+
+\subsection*{Nonfix identifiers in the initial environment}
+
+\begin{tabular}{@{\tt\ \ }llll}\hline
+{\it id\/}  &  type &     effect & exception \\\hline
+
+\verb#~#    & {\tt realint -> realint}  &           arithmetic negation
+        & {\tt Overflow}\\
+
+!           & {\tt 'a ref -> 'a} &        dereference\\
+
+abs         & {\tt realint -> realint}  & absolute value & {\tt Overflow}\\
+
+app         & {\tt ('a -> unit) -> 'a list -> unit} 
+        & apply to all elements\\
+
+ceil       & {\tt real -> int} &           round towards $+\infty$ 
+        & {\tt Overflow}\\
+
+chr         & {\tt int -> char} &           character with number &
+{\tt Chr}\\
+
+concat      & {\tt string list -> string} & concatenate strings 
+& {\tt Size}\\
+
+explode     & {\tt string -> char list} &   list of characters in string\\
+
+false       & {\tt bool} & logical falsehood\\
+
+floor       & {\tt real -> int} &           round towards $-\infty$ 
+        & {\tt Overflow}\\
+
+foldl       & {\tt ('a*'b->'b)->'b->'a list->'b}
+        & fold from left to right\\
+
+foldr       & {\tt ('a*'b->'b)->'b->'a list->'b}
+        & fold from right to left\\
+
+hd          & {\tt 'a list -> 'a}         & first element & {\tt Empty}\\
+
+help        & {\tt string -> unit}        & simple help utility\\
+
+ignore      & {\tt 'a -> unit} &            discard argument\\
+
+implode     & {\tt char list -> string} &   make string from
+characters & {\tt Size}\\
+
+length      & {\tt 'a list -> int}        & length of list\\
+
+map         & {\tt ('a -> 'b) -> 'a list -> 'b list}
+            & map over all elements\\
+
+nil         & {\tt 'a list} &               empty list\\
+
+not         & {\tt bool -> bool} &          logical negation\\
+
+null        & {\tt 'a list -> bool}       & true if list is empty\\
+
+ord         & {\tt char -> int} &           number of character\\
+
+print       & {\tt string -> unit} & print on standard output\\
+
+real        & {\tt int -> real} &           {\tt int} to {\tt real}\\
+
+ref         & {\tt 'a -> 'a ref} &       create reference value\\
+
+rev         & {\tt 'a list -> 'a list}    & reverse list\\
+
+round       & {\tt real -> int} &           round to nearest integer 
+        & {\tt Overflow}\\
+
+size        & {\tt string -> int} &         length of string\\
+
+str         & {\tt char -> string} &        create one-character string\\
+
+tl          & {\tt 'a list -> 'a list}    & tail of list & {\tt Empty}\\
+
+true        & {\tt bool} & logical truth \\
+
+trunc       & {\tt real -> int} &           round towards $0$ 
+        & {\tt Overflow}\\
+
+vector      & {\tt 'a list -> 'a vector} & make vector from list & 
+              {\tt Size}\\\hline 
+\end{tabular}
+
+
+\subsection*{Infixed identifiers in the initial environment}
+
+\begin{tabular}{@{\tt\ \ }llll}\hline
+{\it id\/}  &  type &     effect & exception \\\hline\hline
+\multicolumn{4}{@{}l}{Infix precedence 7:}\\
+/     & {\tt real * real -> real} &     floating-point quotient 
+        & {\tt Div, Overflow }\\
+div   & {\tt wordint * wordint -> wordint}    &     quotient (round towards
+$-\infty$)  & {\tt Div, Overflow}\\
+mod   & {\tt wordint * wordint -> wordint} & remainder (of {\tt div}) &
+{\tt Div, Overflow}\\
+\verb#*# & {\tt num * num -> num}    &     product                 & {\tt
+Overflow}\\\hline
+\multicolumn{4}{@{}l}{Infix precedence 6:}\\
++ &         {\tt num * num -> num}  &        sum        & {\tt Overflow}\\
+- &         {\tt num * num -> num}  &        difference & {\tt Overflow}\\
+\verb#^# &  {\tt string * string -> string} & concatenate & {\tt Size}\\\hline
+\multicolumn{4}{@{}l}{Infix precedence 5:}\\
+:: &  {\tt 'a * 'a list -> 'a list}  & cons onto list (R)\\
+@  &  {\tt 'a list * 'a list -> 'a list} &   append lists (R)\\\hline
+\multicolumn{4}{@{}l}{Infix precedence 4:}\\
+=   & {\tt ''a * ''a -> bool}   & equal to\\
+<>  & {\tt ''a * ''a -> bool}   & not equal to\\
+<   & {\tt numtxt * numtxt -> bool} & less than\\
+<=  & {\tt numtxt * numtxt -> bool} & less than or equal to\\
+>   & {\tt numtxt * numtxt -> bool} & greater than\\
+>=  & {\tt numtxt * numtxt -> bool} & greater than or equal to\\\hline
+\multicolumn{4}{@{}l}{Infix precedence 3:}\\
+:= & {\tt 'a ref * 'a -> unit}  & assignment\\
+o  & {\tt ('b->'c) * ('a->'b) -> ('a->'c)}&  function composition\\\hline
+\multicolumn{4}{@{}l}{Infix precedence 0:}\\
+before & {\tt 'a * 'b -> 'a} & return first argument\\\hline
+\end{tabular}
+
+\vspace*{0.8cm}
+
+\subsection*{Built-in functions available only in the interactive system
+  (unit {\tt Meta})}
+
+\begin{tabular}{@{\tt\ \ }llll}\hline
+{\it id\/}  &  \makebox[5cm][l]{type} &     effect & exception \\\hline
+compile        & {\tt string -> unit} & compile unit (U.sig or U.sml)
+& {\tt Fail}\\
+installPP      & {\tt (ppstream->'a->unit)->unit} & install prettyprinter
+\\
+load        & {\tt string -> unit} & load unit U and any units it needs
+               & {\tt Fail}\\
+loaded        & {\tt unit -> string list} & return list of loaded units
+               &\\
+loadOne        & {\tt string -> unit} & load unit U (only)
+               & {\tt Fail}\\
+loadPath       & {\tt string list ref} & search path for {\tt load}, 
+                {\tt loadOne}, {\tt use}\\ 
+printVal       & {\tt 'a -> 'a}  & print value on \verb#stdOut#\\
+printDepth     & {\tt int ref}   & limit printed data depth\\
+printLength    & {\tt int ref}   & limit printed list and vector length\\
+quietdec       & {\tt bool ref}  & suppress prompt and responses\\
+quit           & {\tt unit -> unit} & quit the interactive system\\
+quotation      & {\tt bool ref}   & permit quotations in source code\\
+system         & {\tt string -> int} & execute operating system command\\
+use            & {\tt string -> unit} & read declarations from file\\
+valuepoly      & {\tt bool ref}   & adopt value polymorphism \\
+verbose        & {\tt bool ref}   & permit feedback from {\tt
+  compile}\\\hline
+\end{tabular}
+
+\begin{itemize}
+% \item These functions are not part of the SML Basis Library.
+\item The Moscow ML Owner's Manual describes how to use {\tt compile}
+  and {\tt load} to perform separate compilation, and how to use
+  quotations.  Evaluating {\tt load {\rm U}} automatically loads any
+  units needed by U, and does nothing if U is already loaded; whereas
+  {\tt loadOne {\rm U}} fails if any unit needed by U is not loaded,
+  or if U is already loaded.  The {\tt loadPath} variable determines
+  where {\tt load}, {\tt loadOne}, and {\tt use} will look for files.
+\end{itemize}
+
+
+\section{List of all library units}
+
+A table of Mosml ML's predefined library units is given on
+page~\pageref{table-predefined-units}.  The status of each unit is
+indicated as follows:
+
+\begin{center}
+\begin{tabular}{lcl}
+{\tt S} & : & the unit belongs to the SML Basis Library.\\
+
+{\tt D} & : & the unit is preloaded by default.\\
+
+{\tt F} & : & the unit is loaded when option {\tt -P full}
+  is specified.\\
+
+{\tt N} & : &  the unit is loaded when option {\tt -P nj93}
+  is specified.\\
+
+{\tt O} & : & the unit is loaded when option {\tt -P sml90}
+  is specified.
+\end{tabular}
+\end{center}
+
+\noindent For more information about the Moscow ML library, see:
+
+\begin{itemize}
+\item The index in Section~\ref{sec-libindex}
+  (page~\pageref{sec-libindex}) lists all identifiers defined in
+  Moscow ML library units.
+
+\item Typing {\tt help "lib";} in a {\tt mosml} session gives a list of
+  all library units.
+
+\item Typing {\tt help "{\it unit\/}";} in a {\tt mosml} session gives
+  information about library unit {\it unit\/}.
+
+\item Typing {\tt help "{\it id\/}";} in a {\tt mosml} session gives
+  information about identifier {\it id\/}, regardless which library
+  unit(s) it is defined in.
+  
+\item In your Moscow ML installation, you find the same documentation
+  in HTML-format at
+
+\begin{verbatim}
+    mosml/doc/mosmllib/index.html
+\end{verbatim}
+
+\item On the World Wide Web the same pages are online at
+
+\begin{verbatim}
+    http://www.dina.kvl.dk/~sestoft/mosmllib/index.html
+\end{verbatim}
+  
+  If you do not have the HTML pages, you may download them from the
+  Moscow ML home page.
+\end{itemize}
+
+
+\begin{center}\renewcommand{\arraystretch}{0.88}
+\begin{tabular}{@{}|lll|}\hline
+Library unit & Description & Status\\\hline
+{\tt Array}  & Mutable polymorphic arrays & {\tt SDF}\\
+{\tt Array2} & Two-dimensional arrays & {\tt S }\\
+{\tt Arraysort} &  Array sorting (quicksort) & \\
+{\tt BasicIO} &  Input-output as in SML'90 & {\tt \ DF}\\
+{\tt Binarymap} &  Binary tree implementation of finite maps &\\
+{\tt Binaryset} &  Binary tree implementation of finite sets &\\
+{\tt BinIO}  & Binary input-output streams (imperative) & {\tt S F}\\
+{\tt Bool}  & Booleans & {\tt S F}\\
+{\tt Byte}  &  Conversions between {\tt Word8} and {\tt Char} & {\tt S F}\\
+{\tt Callback}  &  Registering ML values for access from C code & {\tt SDF}\\
+{\tt Char}  &  Characters & {\tt SDF}\\
+{\tt CharArray} & Mutable arrays of characters & {\tt S F}\\
+{\tt CharVector} & Immutable character vectors (that is, strings) & {\tt S F}\\
+{\tt CommandLine} & Program name and arguments & {\tt S F}\\
+{\tt Date}   & From time points to dates and vice versa& {\tt S F}\\
+{\tt Dynarray} & Dynamic arrays & \\
+{\tt Dynlib}  & Dynamic linking with C (Linux+Solaris)  & \\
+{\tt FileSys} & File system interface & {\tt S F}\\
+{\tt Gdbm}    & Persistent hash tables of strings (GNU gdbm) & \\
+{\tt Gdimage} & Generation of GIF images (Boutell's GD package) & \\
+{\tt General} & Various top-level primitives & {\tt SD}\\
+{\tt Help} & On-line help & {\tt \ DFNO}\\
+{\tt Int} & Integer arithmetic and comparisons & {\tt S F}\\
+{\tt Intmap} & Finite maps from integers & \\
+{\tt Intset} & Finite sets of integers & \\
+{\tt List}   & Lists & {\tt SDFNO}\\
+{\tt ListPair} & Pairs of lists & {\tt S F}\\
+{\tt Listsort} & List sorting (mergesort) & \\
+{\tt Location} & Error reporting for lexers and parsers & \\
+{\tt Math}   & Trigonometric and transcendental functions & {\tt S F}\\
+{\tt Meta}   & Functions specific to the interactive system &\\
+{\tt Mosml}  & Various Moscow ML utilities & {\tt \ \ F}\\
+{\tt Mosmlcgi}  & Utilities for writing CGI programs & \\
+{\tt Mysql}  & Interface to the MySQL database server & \\
+{\tt NJ93}   & Top-level compatibility with SML/NJ 0.93 & {\tt \ \ \ N}\\
+{\tt OS}     & Operating system interface & {\tt S F}\\
+{\tt Option} & Partial functions & {\tt SDFNO}\\
+{\tt Path}   & File pathnames & {\tt S F}\\
+{\tt Polygdbm} & Polymorphic persistent hash tables (GNU gdbm) & \\
+{\tt Polyhash} & Polymorphic hash tables & \\
+{\tt Postgres} & Interface to the PostgreSQL database server & \\
+{\tt PP}     & General prettyprinters & {\tt \ \ F}\\
+{\tt Process} & Process interface & {\tt S F}\\
+{\tt Random} & Generation of pseudo-random numbers & \\
+{\tt Real}   & Real arithmetic and comparisons & {\tt S F}\\
+{\tt Regex}  & Regular expressions as in POSIX 1003.2 & \\
+{\tt SML90}    & Top-level compatibility with 1990 Definition & {\tt S\
+  \ \ O}\\
+{\tt Socket} & Interface to sockets & \\
+{\tt Splaymap} & Splay-tree implementation of finite maps &\\
+{\tt Splayset} & Splay-tree implementation of finite sets &\\
+{\tt String} & String utilities & {\tt SDF}\\
+{\tt StringCvt} & Conversion to and from strings & {\tt S F}\\
+{\tt Substring} & Scanning of substrings & {\tt S F}\\
+{\tt TextIO} & Text input-output streams (imperative) & {\tt SDF}\\
+{\tt Time}   & Time points and durations & {\tt S F}\\
+{\tt Timer}  & Timing operations & {\tt S F}\\
+{\tt Vector} & Immutable vectors & {\tt SDF}\\
+{\tt Weak}   & Arrays of weak pointers & \\
+{\tt Word}   & Unsigned 31-bit integers (`machine words') & {\tt S F}\\
+{\tt Word8}  & Unsigned 8-bit integers (bytes) & {\tt S F}\\
+{\tt Word8Array}  & Mutable arrays of unsigned 8-bit integers & {\tt S F}\\
+{\tt Word8Vector} & Immutable vectors of unsigned 8-bit integers
+        & {\tt S F}\\\hline
+\end{tabular}
+\label{table-predefined-units}
+\end{center}
+
+
+\newpage
+
+\section{The preloaded library units}
+
+The following libraries are preloaded by default: {\tt Array}, {\tt
+  Char}, {\tt List}, {\tt String}, {\tt TextIO}, and {\tt Vector}.  To
+load any other library {\it lib\/}, evaluate {\tt load "{\it lib\/}"}
+in the interactive system.
+
+
+\subsection*{Notation in the tables below}
+
+\begin{center}
+\begin{tabular}{|l|l|}\hline
+$f$ & functional argument\\
+$n$ & integer\\
+$p$ & predicate of type  ({\tt 'a -> bool})\\
+$s$ & string\\
+$xs, ys$ & lists\\\hline
+\end{tabular}
+\end{center}
+
+
+\subsection*{List manipulation functions (unit {\tt List})}
+
+\begin{tabular}{@{\tt\ \ }lll}\hline
+{\it id\/}  &  type &     effect \\\hline
+@           & {\tt 'a list * 'a list -> 'a list} 
+        &    append\\
+all         & {\tt ('a -> bool) -> 'a list -> bool} 
+        & if $p$ true of all elements\\
+app         & {\tt ('a -> unit) -> 'a list -> unit} 
+        & apply $f$ to all elements\\
+concat      & {\tt 'a list list -> 'a list} 
+        & concatenate lists\\
+drop    & {\tt 'a list * int -> 'a list}
+        & drop $n$ first elements\\
+exists      & {\tt ('a -> bool) -> 'a list -> bool} 
+        & if $p$ true of some element\\
+filter      & {\tt ('a -> bool) -> 'a list -> 'a list}
+        & the elements for which $p$ is true\\
+find        & {\tt ('a -> bool) -> 'a list -> 'a option} 
+        & first element for which $p$ is true\\
+foldl       & {\tt ('a * 'b -> 'b) -> 'b -> 'a list -> 'b}
+        & fold from left to right\\
+foldr       & {\tt ('a * 'b -> 'b) -> 'b -> 'a list -> 'b}
+        & fold from right to left\\
+hd          & {\tt 'a list -> 'a}
+        & first element\\
+last        & {\tt 'a list -> 'a}
+        & last element\\
+length      & {\tt 'a list -> int}
+        & number of elements\\
+map         & {\tt ('a -> 'b) -> 'a list -> 'b list}
+        & results of applying $f$ to all elements\\
+mapPartial  & {\tt ('a -> 'b option) -> 'a list -> 'b list} 
+        & list of the non-{\tt NONE} results of $f$\\
+nth         & {\tt 'a list * int -> 'a}
+        & $n$'th element (0-based)\\
+null        & {\tt 'a list -> bool}
+        & true if list is empty\\
+partition   & {\tt ('a->bool)->'a list->'a list*'a list}
+        &  compute (true for $p$, false for $p$)\\
+rev         & {\tt 'a list -> 'a list}
+        & reverse list\\
+revAppend   & {\tt 'a list * 'a list -> 'a list}
+        & compute {\tt (rev $xs$) @ $ys$}\\ 
+tabulate    & {\tt int * (int -> 'a) -> 'a list}
+        & compute {\tt [$f$(0),$\cdots$,$f$(n-1)]}\\
+take    & {\tt 'a list * int -> 'a list}
+        & take $n$ first elements\\
+tl          & {\tt 'a list -> 'a list}
+        & tail of list\\\hline
+\end{tabular}
+
+\begin{itemize}
+% \item Functions {\tt hd}, {\tt tl}, and {\tt last} may raise exception
+%   {\tt Empty}; functions {\tt drop}, {\tt nth}, and {\tt take} may
+%   raise exception {\tt Subscript}.
+
+\item For a more detailed description, type {\tt help "List";} or see
+  file {\tt mosml/lib/List.sig}.  The {\tt List} unit is loaded and
+  partially opened in the initial environment, making the following
+  functions available: {\tt @}, {\tt app}, {\tt foldl}, {\tt foldr},
+  {\tt hd}, {\tt length}, {\tt map}, {\tt null}, {\tt rev}, {\tt tl}.
+\end{itemize}
+
+
+\subsection*{Built-in values and functions for text-mode input/output (unit
+  {\tt TextIO})}
+
+\begin{tabular}{@{\tt\ \ }lll}\hline
+{\it id\/}  &  type &     effect \\\hline
+
+closeIn       & {\tt instream -> unit}  
+        & close input stream\\
+closeOut      & {\tt outstream -> unit}
+        & close output stream\\
+endOfStream  & {\tt instream -> bool}
+        & true if at end of stream\\
+flushOut     & {\tt outstream -> unit}
+        & flush output to consumer\\
+input         & {\tt instream -> string}
+        & input some characters\\
+input1         & {\tt instream -> char option}
+        & input one character\\
+inputN         & {\tt instream * int -> string}
+        & input at most $n$ characters\\
+inputAll         & {\tt instream -> string} 
+        & input all available characters\\
+inputLine    & {\tt instream -> string}
+        & read up to (and including) next end of line\\
+inputNoBlock    & {\tt instream -> string option}
+        & read, if possible without blocking\\
+lookahead      & {\tt instream -> char option} 
+        & get next char non-destructively\\
+openAppend   & {\tt string -> outstream} 
+        & open file for appending to it\\
+openIn       & {\tt string -> instream}
+        & open file for input\\
+openOut      & {\tt string -> outstream} 
+        & open file for output\\
+output         & {\tt outstream * string -> unit}   
+        & write string to output stream\\
+output1        & {\tt outstream * char -> unit}
+        & write character to output stream\\
+print   & {\tt string -> unit} 
+        & write to standard output\\ 
+stdErr       & {\tt outstream} 
+        & standard error output stream\\
+stdIn        & {\tt instream} 
+        & standard input stream\\
+stdOut       & {\tt outstream} 
+        & standard output stream\\
+\hline
+\end{tabular}
+
+\begin{itemize}
+\item For a more detailed description, see file {\tt
+    mosml/lib/TextIO.sig}, or type {\tt help "TextIO";}.  
+
+\item For the corresponding structure {\tt BinIO} for binary
+  (untranslated) input and output, see {\tt help "BinIO"}.
+
+% \item On error, these functions will raise exception {\tt Io} with an
+%   explanatory argument.
+\end{itemize}
+
+
+\subsection*{String manipulation functions (unit {\tt String})}
+
+\noindent\begin{tabular}{@{\tt\ \ }lll}\hline
+{\it id\/}  &  type &     effect \\\hline
+
+\verb#^# & {\tt string * string -> string} & concatenate strings\\
+
+collate & {\tt (char*char->order)->string*string->order} & compare strings\\
+
+compare & {\tt string * string -> order} & compare strings\\
+
+concat    & {\tt string list -> string} & concatenate list of strings
+\\
+
+explode   & {\tt string -> char list} & character list from string\\
+
+extract & {\tt string * int * int option -> string} & get substring or tail\\
+
+fields    & {\tt (char -> bool) -> string -> string list} & find
+(possibly empty) fields\\
+
+fromCString & {\tt string -> string option} & parse C escape
+sequences\\ 
+
+fromString & {\tt string -> string option} & parse ML escape sequences\\
+
+implode   & {\tt char list -> string} & string from character list\\
+
+isPrefix  & {\tt string -> string -> bool} & prefix test\\
+
+map       & {\tt (char -> char) -> string -> string} & map over characters\\
+
+maxSize   & \verb#int# & maximal size of a string\\
+
+size      & {\tt string -> int}
+          & length of string\\
+
+str       & {\tt char -> string} & make one-character string\\
+
+sub       & {\tt string * int -> char}
+          & $n$'th character (0-based)\\
+
+substring & {\tt string * int * int -> string} & get substring
+$(s, first, len)$\\
+
+toCString  & {\tt string -> string} & make C escape sequences\\
+
+toString  & {\tt string -> string} & make ML escape sequences\\
+
+tokens    & {\tt (char -> bool) -> string -> string list} & find
+(non-empty) tokens\\
+
+translate & {\tt (char -> string) -> string -> string} & apply $f$ 
+and concatenate\\\hline
+\end{tabular}
+
+\begin{itemize}
+% \item Functions \verb#^#, {\tt concat}, {\tt implode}, and {\tt
+%     translate} may raise exception {\tt Size}, and {\tt sub} and {\tt
+%     substring} may raise {\tt Subscript}.
+
+\item In addition, the overloaded comparison operators {\tt <}, {\tt
+    <=}, {\tt >}, {\tt >=} work on strings.
+
+\item For a more detailed description, see file {\tt
+    mosml/lib/String.sig}, or type {\tt help "String";}.  
+\end{itemize}
+
+
+\subsection*{Vector manipulation functions (unit {\tt Vector})}
+
+Type {\tt 'a vector} is the type of one-dimensional, immutable,
+zero-based constant time access vectors with elements of type {\tt
+  'a}.  Type {\tt 'a vector} admits equality if {\tt 'a} does.
+
+\vspace{1ex}
+
+\noindent\begin{tabular}{@{\tt\ \ }lll}\hline
+{\it id\/}  &  \makebox[8.5cm][l]{type} &     effect \\\hline
+
+app         & {\tt ('a -> unit) -> 'a vector -> unit} 
+        & apply $f$ left-right\\
+
+appi        & \multicolumn{2}{l}
+        {\tt (int * 'a -> unit) -> 'a vector * int * int option -> unit}\\ 
+
+concat      & {\tt 'a vector list -> 'a vector} 
+        & concatenate vectors\\
+
+extract     & {\tt 'a vector * int * int option -> 'a vector}
+        & extract a subvector or tail\\
+
+foldl       & {\tt ('a * 'b -> 'b) -> 'b -> 'a vector -> 'b} 
+        & fold $f$ left-right\\
+
+foldli      & \multicolumn{2}{l}
+        {\tt (int * 'a * 'b -> 'b) -> 'b -> 'a vector*int*int option -> 'b} \\
+
+foldr       & {\tt ('a * 'b -> 'b) -> 'b -> 'a vector -> 'b} 
+        & fold $f$ right-left\\
+
+foldri      & \multicolumn{2}{l}
+        {\tt (int * 'a * 'b -> 'b) -> 'b -> 'a vector*int*int option -> 'b} \\
+
+fromList    & {\tt 'a list -> 'a vector}
+        & make vector from the list\\
+
+length      & {\tt 'a vector -> int}
+        & length of the vector\\
+
+maxLen      & {\tt int} 
+        & maximal vector length\\
+
+sub         & {\tt 'a vector * int -> 'a}
+        & $n$'th element (0-based)\\
+
+tabulate    & {\tt int * (int -> 'a) -> 'a vector}
+        & vector of {\tt $f$(0),$\cdots$,$f$($n$-1)}\\\hline
+\end{tabular}
+
+\begin{itemize}
+% \item Functions {\tt fromList}, {\tt tabulate}, and {\tt concat} may
+%   raise exception {\tt Size}, and {\tt sub} and {\tt extract} may
+%   raise {\tt Subscript}.
+
+\item For a more detailed description, type {\tt help "Vector";} or
+  see file {\tt mosml/lib/Vector.sig}.
+\end{itemize}
+
+
+\subsection*{Array manipulation functions (unit {\tt Array})}
+
+Type {\tt 'a array} is the type of one-dimensional, mutable,
+zero-based constant time access arrays with elements of type {\tt 'a}.
+Type {\tt 'a array} admits equality regardless whether {\tt 'a} does.
+
+\vspace{1ex}
+
+\noindent\begin{tabular}{@{\tt\ \ }lll}\hline
+{\it id\/}  &  \makebox[8.5cm][l]{type} &     effect \\\hline
+app         & {\tt ('a -> unit) -> 'a array -> unit} 
+        & apply $f$ left-right\\
+
+appi        & \multicolumn{2}{l}
+        {\tt (int * 'a -> unit) -> 'a array * int * int option -> unit}\\
+
+array       & \verb#int * 'a -> 'a array# 
+        & create and initialize array\\
+
+copy        & {\tt \{src :\ 'a array, si :\ int, len :\ int option,} 
+            & copy subarray to subarray\\
+            & {\tt \ dst :\ 'a array, di :\ int\} -> unit}\\
+
+copyVec     & {\tt \{src :\ 'a vector, si :\ int, len :\ int option,}
+            & copy subvector to subarray\\
+            & {\tt \ dst :\ 'a array, di :\ int\} -> unit}\\
+
+extract     & {\tt 'a array * int * int option -> 'a vector}  
+        & extract subarray to vector\\
+
+foldl       & {\tt ('a * 'b -> 'b) -> 'b -> 'a array -> 'b}
+        & fold left-right\\
+
+foldli      & \multicolumn{2}{l}
+     {\tt (int * 'a * 'b -> 'b) -> 'b -> 'a array * int * int option -> 'b}\\
+
+foldr       & {\tt ('a * 'b -> 'b) -> 'b -> 'a array -> 'b}
+        & fold right-left\\
+
+foldri      & \multicolumn{2}{l}
+     {\tt (int * 'a * 'b -> 'b) -> 'b -> 'a array * int * int option -> 'b}\\
+
+fromList & \verb#'a list -> 'a array#
+        & make array from the list\\
+
+length      & {\tt 'a array -> int}
+        & length of the array\\
+
+maxLen      & {\tt int} & maximal array length\\
+
+modify      & {\tt ('a -> 'a) -> 'a array -> unit} 
+        & apply $f$ and update\\
+
+modifyi     & \multicolumn{2}{l}
+        {\tt (int * 'a -> 'a) -> 'a array * int * int option -> unit} \\
+
+sub         & {\tt 'a array * int -> 'a}
+        & $n$'th element (0-based)\\
+
+tabulate    & \verb#int * (int -> 'a) -> 'a array#
+        & array of {\tt $f$(0),$\cdots$,$f$($n$-1)}\\
+
+update      & {\tt 'a array * int * 'a -> unit} 
+        & set $n$'th element (0-based)\\\hline
+\end{tabular}
+
+\begin{itemize}
+% \item Functions {\tt array}, {\tt tabulate}, and {\tt fromList} may
+%   raise exception {\tt Size}, and {\tt sub}, {\tt update}, {\tt
+%     extract}, and {\tt copy} may raise {\tt Subscript}.
+
+\item For a more detailed description, type {\tt help "Array";} or see
+  file {\tt mosml/lib/Array.sig}.  The {\tt Array} unit is loaded but
+  not opened in the initial environment.
+\end{itemize}
+
+
+\subsection*{Character manipulation functions (unit {\tt Char})}
+
+\begin{tabular}{@{\tt\ \ }llll}\hline
+{\it id\/}  & type &     effect & exception \\\hline
+
+chr & {\tt int  -> char} & from character code to character & {\tt Chr}\\
+compare & {\tt char * char -> order} & compare character codes \\
+contains & {\tt string -> char -> bool} & contained in string\\
+fromCString & {\tt string -> char option} & parse C escape sequence\\
+fromString & {\tt string -> char option} & parse SML escape sequence\\
+isAlpha    & {\tt char -> bool}   & alphabetic ASCII character \\
+isAlphaNum & {\tt char -> bool}   & alphanumeric ASCII character\\
+isAscii    & {\tt char -> bool}   & seven-bit ASCII character \\ 
+isCntrl    & {\tt char -> bool}   & ASCII control character \\
+isDigit    & {\tt char -> bool}   & decimal digit \\
+isGraph    & {\tt char -> bool}   & printable and visible ASCII \\
+isHexDigit & {\tt char -> bool}   & hexadecimal digit \\
+isLower    & {\tt char -> bool}   & lower case alphabetic (ASCII) \\
+isPrint    & {\tt char -> bool}   & printable ASCII (including space) \\
+isPunct    & {\tt char -> bool}   & printable, but not space or alphanumeric \\
+isSpace    & {\tt char -> bool}   & space and lay-out (HT, CR, LF, VT, FF) \\
+isUpper    & {\tt char -> bool}   & upper case alphabetic (ASCII) \\
+maxChar    & {\tt char} & last character (in {\tt <=} order)\\
+maxOrd     & {\tt int} & largest character code\\
+minChar    & {\tt char} & first character (in {\tt <=} order)\\
+notContains & {\tt string -> char -> bool} & not in string\\
+ord & {\tt char -> int} & from character to character code \\
+pred & {\tt char -> char} & preceding character & {\tt Chr}\\
+succ & {\tt char -> char} & succeding character & {\tt Chr}\\
+toLower    & {\tt char -> char} & convert to lower case (ASCII) \\
+toCString  & {\tt char -> string} & make C escape sequence \\
+toString   & {\tt char -> string} & make SML escape sequence \\
+toUpper    & {\tt char -> char} & convert to upper case (ASCII) \\\hline
+\end{tabular}
+
+\begin{itemize}
+\item In addition, the overloaded comparison operators {\tt <}, {\tt
+    <=}, {\tt >}, {\tt >=} work on the {\tt char} type.
+
+\item For a more detailed description, type {\tt help "Char";} or see
+  file {\tt mosml/lib/Char.sig}.  The {\tt Char} unit is loaded and
+  partially opened in the initial environment, making the functions
+  {\tt chr} and {\tt ord} available.
+\end{itemize}
+
+%\newpage
+%
+%\section{Relation to Standard ML}
+%
+%Moscow ML has a simple module system, which deviates from the Standard
+%ML Modules language as follows:
+%
+%\begin{itemize}
+%\item There are no functors (and hence no sharing constraints), and no
+%  nested structures.
+% 
+%\item Signatures may contain type abbreviations.  In a signature, no
+%  type, value, or exception constructor may be specified twice at
+%  top-level; a {\tt local} specification can be used only to restrict
+%  the scope of {\tt open} specifications and type abbreviations; and
+%  an {\tt open} specification can appear only inside {\tt local}.
+%
+%\item Signature constraints are opaque: only the information given in
+%  the signature U.sig can be used when compiling another unit which
+%  uses unit U.
+%
+%\item Each signature must reside in a separate file with suffix `{\tt
+%    .sig}', and each structure must reside in a separate file with
+%  suffix `{\tt .sml}'.
+%\end{itemize}
+%
+
+\newpage
+
+\twocolumn
+
+\section{Moscow ML library index}
+\label{sec-libindex}
+
+For each identifier, we list its kind (constructor, exception,
+structure, type, or value) and the structure in which it is defined.
+
+Help on any identifier {\em id\/} can be obtained by typing {\tt help
+  "{\em id\/}";} in a {\tt mosml} session.
+
+\flushleft
+
+\input{index.tex}
+
+\end{document}

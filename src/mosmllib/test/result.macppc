@@ -1,0 +1,1607 @@
+ 
+jalaMPW:ml:mosml142:mosml.image -stdlib jalaMPW:ml:mosml142:lib: -P default
+? jalaMPW:ml:mosml142:mosml.image -stdlib jalaMPW:ml:mosml142:lib: -P full
+Moscow ML version 1.42 (July 1996)
+Mangled by e & eMake 24 July 1996
+Use the Enter key to evaluate an input expression.
+- chDir "jalaMPW:ml:mosml142:src:mosmllib:test:"; use "testmac.sml";
+> val it = () : unit
+- [opening file "testmac.sml"]
+[opening file "array.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val a = <array> : int Array.array
+  val b = <array> : int Array.array
+  val c = <array> : int Array.array
+  val test1 = "OK" : string
+  val test2 = "OK" : string
+  val d = <array> : int Array.array
+  val test3 = "OK" : string
+  val test4a = "OK" : string
+  val test4b = "OK" : string
+  val test4c = "OK" : string
+  val test5a = "OK" : string
+  val test5b = "OK" : string
+  val test6a = "OK" : string
+  val test6b = "OK" : string
+  val test6c = "OK" : string
+  val e = <array> : int Array.array
+  val a2v = fn : 'a Array.array -> 'a vector
+  val ev =
+    #[1, 11, 21, 31, 41, 51, 61, 1, 11, 21, 31, 41, 51, 61, 1, 11, 21, 31, 41,
+      51, 61, 1, 11, 21, 31, 41, 51, 61, 1, 11, 21, 31, 41, 51, 61, 1, 11, 21,
+      31, 41, 51, 61, 1, 11, 21, 31, 41, 51, 61, 1, 11, 21, 31, 41, 51, 61, 1,
+      11, 21, 31, 41, 51, 61, 1, 11, 21, 31, 41, 51, 61, 1, 11, 21, 31, 41, 51,
+      61, 1, 11, 21, 31, 41, 51, 61, 1, 11, 21, 31, 41, 51, 61, 1, 11, 21, 31,
+      41, 51, 61, 1, 11, 441, 551, 661, 1, 11, 21, 31, 41, 51, 61, 1, 11, 21,
+      31, 41, 51, 61, 1, 11, 21, 31, 41, 51, 61, 1, 11, 21, 31, 41, 51, 61, 1,
+      11, 21, 31, 41, 51, 61, 1, 11, 21, 31, 41, 51, 61, 1, 11, 21, 31, 41, 51,
+      61, 1, 11, 21, 31, 41, 51, 61, 1, 11, 21, 31, 41, 51, 61, 1, 11, 21, 31,
+      41, 51, 61, 1, 11, 21, 31, 41, 51, 61, 1, 11, 21, 31, 41, 51, 61, 1, 11,
+      21, 31, 41, 51, 61, 1, 11, 21, 31, 41, 51, ...]
+    : int vector
+  val test7 = "OK" : string
+  val test8a = "OK" : string
+  val test8b = "OK" : string
+  val f = #[441, 551, 661] : int vector
+  val test9 = "OK" : string
+  val test9a = "OK" : string
+  val test9b = "OK" : string
+  val test9c = "OK" : string
+  val test9d = "OK" : string
+  val test9e = "OK" : string
+  val test9f = "OK" : string
+  val test9g = "OK" : string
+  val test9h = "OK" : string
+  val test9i = "OK" : string
+  val test9j = "OK" : string
+  val g = <array> : int Array.array
+  val test10a = "OK" : string
+  val test10b = "OK" : string
+  val test10c = "OK" : string
+  val test10d = "OK" : string
+  val test10e = "OK" : string
+  val test10f = "OK" : string
+  val test10g = "OK" : string
+  val test10h = "OK" : string
+  val test10i = "OK" : string
+  val test11a = "OK" : string
+  val test11b = "OK" : string
+  val test11c = "OK" : string
+  val test11d = "OK" : string
+  val test11e = "OK" : string
+  val test11f = "OK" : string
+  val test11g = "OK" : string
+  val test11h = "OK" : string
+  val test11i = "OK" : string
+  val test11j = "OK" : string
+  val test11k = "OK" : string
+  val array0 = <array> : int Array.array
+  val test12a = "OK" : string
+  val test12b = "OK" : string
+  val test12d = "OK" : string
+  val test12e = "OK" : string
+  val test13a = "OK" : string
+  val test13b = "OK" : string
+  val test13c = "OK" : string
+  val test13d = "OK" : string
+  val test13e = "OK" : string
+  val test13f = "OK" : string
+  val test13g = "OK" : string
+  val test13h = "OK" : string
+  val test13i = "OK" : string
+  val test13j = "OK" : string
+  val test13k = "OK" : string
+  val test13l = "OK" : string
+  val test13m = "OK" : string
+  val test13n = "OK" : string
+  val test15a = "OK" : string
+  val test15b = "OK" : string
+  val test15c = "OK" : string
+  val test15d = "OK" : string
+  val test15e = "OK" : string
+  val test15f = "OK" : string
+  val test15g = "OK" : string
+  val test15h = "OK" : string
+  val test16a = "OK" : string
+  val test16b = "OK" : string
+  val test16c = "OK" : string
+  val test16d = "OK" : string
+  val test16e = "OK" : string
+  val test16f = "OK" : string
+  val test16g = "OK" : string
+[closing file "array.sml"]
+[opening file "array2.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val a0 = <array2> : int Array2.array2
+  val fill = fn : int * int -> int
+  val a = <array2> : int Array2.array2
+  val test0 = true : bool
+  val test1a = "OK" : string
+  val test1b = "OK" : string
+  val test1c = "OK" : string
+  val test1d = "OK" : string
+  val test1e = "OK" : string
+  val test1f = "OK" : string
+  val test2 = "OK" : string
+  val test3a = "OK" : string
+  val test3b = "OK" : string
+  val test3c = "OK" : string
+  val test4a = "OK" : string
+  val test4b = "OK" : string
+  val test4c = "OK" : string
+  val test4d = "OK" : string
+  val test5a = "OK" : string
+  val test5b = "OK" : string
+  val test5c = "OK" : string
+  val test5d = "OK" : string
+  val a1 = <array2> : int Array2.array2
+  val testcopy =
+    fn
+    : {col : int, ht : int option, row : int, wd : int option} -> int -> int ->
+      (int Array2.array2 -> bool) -> string
+  val same = fn : int Array2.array2 -> bool
+  val elts = fn : ''a vector list -> ''a Array2.array2 -> bool
+  val test6a = "OK" : string
+  val test6b = "OK" : string
+  val test6c = "OK" : string
+  val test6d = "OK" : string
+  val test6e = "OK" : string
+  val test6f = "OK" : string
+  val test6g = "OK" : string
+  val test6h = "OK" : string
+  val test6i = "OK" : string
+  val test6j = "OK" : string
+  val test6k = "OK" : string
+  val test6l = "OK" : string
+  val test6m = "OK" : string
+  val test6n = "OK" : string
+  val test6o = "OK" : string
+  val failcopy =
+    fn
+    : {col : int, ht : int option, row : int, wd : int option} -> int -> int ->
+      string
+  val test7a = "OK" : string
+  val test7b = "OK" : string
+  val test7c = "OK" : string
+  val test7d = "OK" : string
+  val test7e = "OK" : string
+  val test7f = "OK" : string
+  val test7g = "OK" : string
+  val test7h = "OK" : string
+  val test7i = "OK" : string
+  val test7j = "OK" : string
+  val test7k = "OK" : string
+  val test7l = "OK" : string
+  val test7m = "OK" : string
+  val test7n = "OK" : string
+  val sequence = ref [12, 11, 2, 1] : int list ref
+  val collect = fn : int -> unit
+  val collecti = fn : int * int * int -> unit
+  val a3 = <array2> : int Array2.array2
+  val test8a = "OK" : string
+  val test8b = "OK" : string
+  val test8c = "OK" : string
+  val test8d = "OK" : string
+  val test8e = "OK" : string
+  val test8f = "OK" : string
+  val test8g = "OK" : string
+  val test8h = "OK" : string
+  val test8i = "OK" : string
+  val test8j = "OK" : string
+  val test8k = "OK" : string
+  val test8l = "OK" : string
+  val chkmodify = fn : int list -> (int Array2.array2 -> bool) -> string
+  val chkmodifyi =
+    fn
+    : {col : int, ht : int option, row : int, wd : int option} -> int list ->
+      (int Array2.array2 -> bool) -> string
+  val test9a = "OK" : string
+  val test9b = "OK" : string
+  val test9c = "OK" : string
+  val test9d = "OK" : string
+  val test9e = "OK" : string
+  val test9f = "OK" : string
+  val test9g = "OK" : string
+  val test9h = "OK" : string
+  val test9i = "OK" : string
+  val test9j = "OK" : string
+  val test9k = "OK" : string
+  val test9l = "OK" : string
+  val chkfold = fn : Array2.traversal -> int list -> string
+  val chkfoldi =
+    fn
+    : Array2.traversal ->
+      {col : int, ht : int option, row : int, wd : int option} -> int list ->
+      string
+  val test10a1 = "OK" : string
+  val test10a2 = "OK" : string
+  val test10b1 = "OK" : string
+  val test10b2 = "OK" : string
+  val test10c1 = "OK" : string
+  val test10c2 = "OK" : string
+  val test10d1 = "OK" : string
+  val test10d2 = "OK" : string
+  val test10e1 = "OK" : string
+  val test10e2 = "OK" : string
+  val test10f1 = "OK" : string
+  val test10f2 = "OK" : string
+  val test10g1 = "OK" : string
+  val test10g2 = "OK" : string
+  val test10h1 = "OK" : string
+  val test10h2 = "OK" : string
+  val test10i1 = "OK" : string
+  val test10i2 = "OK" : string
+  val test10j1 = "OK" : string
+  val test10j2 = "OK" : string
+  val test10k1 = "OK" : string
+  val test10k2 = "OK" : string
+  val test10l1 = "OK" : string
+  val test10l2 = "OK" : string
+  val faili =
+    fn
+    : {col : int, ht : int option, row : int, wd : int option} -> string
+  val test11a = "OK" : string
+  val test11b = "OK" : string
+  val test11c = "OK" : string
+  val test11d = "OK" : string
+  val test11e = "OK" : string
+  val test11f = "OK" : string
+  val test11g = "OK" : string
+  val test11h = "OK" : string
+  val chkfromlist = fn : ''a list list -> string
+  val test12a = "OK" : string
+  val test12b = "OK" : string
+  val test12c = "OK" : string
+  val test12d = "OK" : string
+  val test12e = "OK" : string
+  val test12f = "OK" : string
+  val test12g = "OK" : string
+  val test12h = "OK" : string
+  val test12i = "OK" : string
+  val test12j = "OK" : string
+  val test12k = "OK" : string
+  val test12l = "OK" : string
+[closing file "array2.sml"]
+[opening file "arraysort.sml"]
+> val it = () : unit
+> val it = () : unit
+> val it = () : unit
+> val a = <array> : real Array.array
+> val test1 = true : bool
+> val test2 = true : bool
+[closing file "arraysort.sml"]
+[opening file "bytecmac.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val test1 = "OK" : string
+  val test2 = "OK" : string
+  val test3 = "OK" : string
+  val test4 = "OK" : string
+  val test5 = "OK" : string
+  val test6 = "OK" : string
+  val test7 = "OK" : string
+  val test8 = "OK" : string
+  val test9 = "OK" : string
+  val test10a = "OK" : string
+  val test10b = "OK" : string
+  val test10c = "OK" : string
+  val test10d = "OK" : string
+  val test10e = "OK" : string
+  val test10f = "OK" : string
+  val test10g = "OK" : string
+  val test10h = "OK" : string
+  val test10i = "OK" : string
+  val test10j = "OK" : string
+  val test11a = "OK" : string
+  val test11b = "OK" : string
+  val test11c = "OK" : string
+  val test11d = "OK" : string
+  val test11e = "OK" : string
+  val test11f = "OK" : string
+  val test11g = "OK" : string
+  val test11h = "OK" : string
+  val test11i = "OK" : string
+  val test11j = "OK" : string
+  val test18 = "OK" : string
+  val test19 = "OK" : string
+  val test20 = "OK" : string
+  val test21 = "OK" : string
+  val test22 = "OK" : string
+  val test23 = "OK" : string
+  val test24 = "OK" : string
+  val test25 = "OK" : string
+  val test26 = "OK" : string
+  val test27 = "OK" : string
+  val test28 = "OK" : string
+  val test29 = "OK" : string
+  val test30 = "OK" : string
+  val test31 = "OK" : string
+  val test32 = "OK" : string
+  val test33 = "OK" : string
+  val test34a = "OK" : string
+  val test34b = "OK" : string
+  val test35a = "OK" : string
+  val test35b = "OK" : string
+  val test36 = "OK" : string
+  val test37 = "OK" : string
+  val test38 = "OK" : string
+  val test39 = "OK" : string
+  val test40 = "OK" : string
+  val test41 = "OK" : string
+  val test42 = "OK" : string
+  val test43 = "OK" : string
+[closing file "bytecmac.sml"]
+[opening file "date.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+This is now:                    Thu Jul 24 17:20:41 1997
+This is an hour from now:       Thu Jul 24 18:20:41 1997
+This is a day from now:         Fri Jul 25 17:20:41 1997
+This is a week from now:        Thu Jul 31 17:20:41 1997
+This is 120 days from now:      Fri Nov 21 17:20:41 1997
+This is 160 days from now:      Wed Dec 31 17:20:41 1997
+This is 200 days from now:      Mon Feb  9 17:20:41 1998
+This is 240 days from now:      Sat Mar 21 17:20:41 1998
+This is the epoch (UTC):        Thu Jan  1 04:00:00 1970
+This is the number of the day:  205
+This is today's weekday:        Thursday
+This is the name of this month: July
+> val test1 = "OK" : string
+  val test2 = "OK" : string
+  val test3 = "OK" : string
+  val test4 = "OK" : string
+[closing file "date.sml"]
+[opening file "filesmac.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val test1a = "OK" : string
+  val test1b = "OK" : string
+  val test2 = "OK" : string
+  val test3a = "OK" : string
+  val test3b = "OK" : string
+  val test3c = "OK" : string
+  val test4a = "OK" : string
+  val test4b = "OK" : string
+  val test4c = "OK" : string
+  val test4d = "OK" : string
+  val suspend = fn : int -> unit
+  val test5 = "OK" : string
+  val test6a = "OK" : string
+  val test6b = "OK" : string
+  val test6c = "OK" : string
+  val test6d = "OK" : string
+  val test6e = "OK" : string
+  val test6f = "OK" : string
+  val test6g = "OK" : string
+  val test6h = "OK" : string
+  val test6i = "OK" : string
+  val test6j = "OK" : string
+  val test6k = "OK" : string
+  val test6l = "OK" : string
+  val test7a = "OK" : string
+  val test7b = "OK" : string
+  val test7c = "OK" : string
+  val test7d = "OK" : string
+  val test7e = "OK" : string
+  val test8a = "OK" : string
+  val test8b = "OK" : string
+  val test8c = "OK" : string
+  val test8d = "OK" : string
+  val test8e = "OK" : string
+  val test8f = "OK" : string
+  val test8g = "OK" : string
+  val test8h = "OK" : string
+  val test9a = "OK" : string
+  val test9b = "OK" : string
+  val test10a = "WRONG, because remove removes directories." : string
+  val test10b = "OK" : string
+  val test10c = "OK" : string
+  val test11a = "OK" : string
+  val test11b = "OK" : string
+  val test11c = "OK" : string
+  val test12a = "OK" : string
+  val test12b = "OK" : string
+  val test12c = "OK" : string
+  val test13a = "EXN" : string
+  val test13b = "WRONG" : string
+  val test13c = "EXN" : string
+  val test13d = "OK" : string
+  val test13e = "OK" : string
+  val test14 = "OK" : string
+  val test15a = "OK" : string
+  val test15b = "OK" : string
+  val test15c = "OK" : string
+  val test15d = "OK" : string
+  val test15e = "OK" : string
+[closing file "filesmac.sml"]
+[opening file "generalmac.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> exn NoExceptionRaised = NoExceptionRaised : exn
+  val getExn = fn : (unit -> 'a) -> exn
+  val prExn = fn : string * exn -> unit
+> exn E1 = E1 : exn
+> exn E2 = E2 : exn
+File "generalmac.sml", line 20, characters 42-46:
+!      ("Bind",      getExn(fn _ => let val true = false in () end)),
+!                                           ^^^^
+! Warning: pattern matching is not exhaustive
+
+File "generalmac.sml", line 21, characters 35-48:
+!      ("Match",     getExn(fn _ => (fn true => ()) false)),
+!                                    ^^^^^^^^^^^^^
+! Warning: pattern matching is not exhaustive
+Should be `E1 or E2':
+  E1
+  E1
+Should be `Bind':
+  General.Bind
+  General.Bind
+Should be `Match':
+  General.Match
+  General.Match
+Should be `Subscript':
+  General.Subscript
+  General.Subscript
+Should be `Size':
+  General.Size
+  General.Size
+Should be `Div':
+  General.Div
+  General.Div
+Should be `Chr':
+  General.Chr
+  General.Chr
+Should be `Fail':
+  General.Fail
+  General.Fail: demo
+Should be `Option':
+  Option.Option
+  Option.Option
+Should be `Empty':
+  List.Empty
+  List.Empty
+Should be `SysErr':
+  General.SysErr
+  General.SysErr: modTime failed on `exists.not': Range Error
+Should be `Io':
+  General.Io
+  General.Io: openOut failed on `:'; General.SysErr: Unknown Error (-43)
+
+[closing file "generalmac.sml"]
+[opening file "int.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val test1a = "OK" : string
+  val test1b = "OK" : string
+  val test1c = "OK" : string
+  val test1d = "OK" : string
+  val test2a = "OK" : string
+  val test2b = "OK" : string
+  val test2c = "OK" : string
+  val test2d = "OK" : string
+  val test3 = "OK" : string
+  val test4 = "OK" : string
+  val test5 = "OK" : string
+  val test6 = "OK" : string
+  val test12 = "OK" : string
+  val chk = fn : ('a -> ''b option) -> 'a * ''b -> string
+  val chkScan = fn : StringCvt.radix -> (string * int -> string)
+  val test13a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"]
+    : string list
+  val test13b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test14a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"]
+    : string list
+  val test14b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test15a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"]
+    : string list
+  val test15b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"]
+    : string list
+  val test16a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"]
+    : string list
+  val test16b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK"]
+    : string list
+  val test17a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK"]
+    : string list
+  val test17b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test18 = "OK" : string
+  val test19 = "OK" : string
+  val test20 = "OK" : string
+  val test21 = "OK" : string
+  val test22 = "OK" : string
+[closing file "int.sml"]
+[opening file "list.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val v123 = [1, 2, 3] : int list
+  val even = fn : int -> bool
+  val test1 = "OK" : string
+  val test2 = "OK" : string
+  val test3 = "OK" : string
+  val test4 = "OK" : string
+  val test5 = "OK" : string
+  val test6 = "OK" : string
+  val test7 = "OK" : string
+  val test8 = "OK" : string
+  val test9 = "OK" : string
+  val test10 = "OK" : string
+  val v16 = [1, 2, 3, 4, 5, 6] : int list
+  val test11 = "OK" : string
+  val test12 = "OK" : string
+  val test13 = "OK" : string
+  val reset = fn : unit -> unit
+  val incrv = fn : int -> unit
+  val checkv = fn : unit -> string
+  val test14 = fn : unit -> string
+  val test15 = "OK" : string
+  val test16 = "OK" : string
+  val test17 = "OK" : string
+  val test18 = "OK" : string
+  val test19 = "OK" : string
+  val test20 = "OK" : string
+  val test21 = "OK" : string
+  val test22 = "OK" : string
+  val test23 = "OK" : string
+  val test24 = "OK" : string
+  val test25 = "OK" : string
+  val test26 = "OK" : string
+  val test27 = "OK" : string
+  val test28 = "OK" : string
+  val test29 = "OK" : string
+  val test30 = "OK" : string
+  val test31 = "OK" : string
+  val test32 = "OK" : string
+  val test33 = "OK" : string
+  val test34 = "OK" : string
+  val test35a = "OK" : string
+  val test35b = "OK" : string
+  val test35c = "OK" : string
+  val test36a = "OK" : string
+  val test36b = "OK" : string
+  val test36c = "OK" : string
+  val test37a = "OK" : string
+[closing file "list.sml"]
+[opening file "listpair.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val test1 = "OK" : string
+  val test2a = "OK" : string
+  val test2b = "OK" : string
+  val test3a = "OK" : string
+  val reset = fn : unit -> unit
+  val incrv = fn : int -> unit
+  val checkv = fn : unit -> string
+  val test3b = "OK" : string
+  val test4 = "OK" : string
+  val test5a = "OK" : string
+  val test5b = "OK" : string
+  val test5c = "OK" : string
+  val test5d = "OK" : string
+  val test5e = "OK" : string
+  val test6 = "OK" : string
+  val test7 = "OK" : string
+[closing file "listpair.sml"]
+[opening file "listsort.sml"]
+> val it = () : unit
+> val it = () : unit
+> val it = () : unit
+> val test1 = true : bool
+  val test2 = true : bool
+[closing file "listsort.sml"]
+[opening file "math.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val test0a = "OK" : string
+  val test0b = "OK" : string
+  val test1a = "OK" : string
+  val test1b = "OK" : string
+  val test1c = "OK" : string
+  val test2a = "OK" : string
+  val test2b = "OK" : string
+  val test2c = "OK" : string
+  val test2d = "OK" : string
+  val test3a = "OK" : string
+  val test3b = "OK" : string
+  val test3c = "OK" : string
+  val test3d = "OK" : string
+  val test4a = "OK" : string
+  val test4b = "OK" : string
+  val test4c = "OK" : string
+  val test4d = "OK" : string
+  val test4e = "OK" : string
+  val test4f = "OK" : string
+  val test4g = "OK" : string
+  val test5a = "OK" : string
+  val test5b = "OK" : string
+  val test5c = "OK" : string
+  val test5d = "OK" : string
+  val test5e = "OK" : string
+  val test6a = "OK" : string
+  val test6b = "OK" : string
+  val test6c = "OK" : string
+  val test6d = "OK" : string
+  val test6e = "OK" : string
+  val test7a = "OK" : string
+  val test7b = "OK" : string
+  val test7c = "OK" : string
+  val test7d = "OK" : string
+  val test7e = "OK" : string
+  val test8a = "OK" : string
+  val test8b = "OK" : string
+  val test8c = "OK" : string
+  val test8d = "OK" : string
+  val test8e = "OK" : string
+  val test8f = "OK" : string
+  val test8g = "OK" : string
+  val test8h = "OK" : string
+  val test8i = "OK" : string
+  val test8j = "OK" : string
+  val test8k = "OK" : string
+  val test8l = "OK" : string
+  val test9a = "OK" : string
+  val test9b = "OK" : string
+  val test9c = "OK" : string
+  val test10a = "OK" : string
+  val test10b = "OK" : string
+  val test10c = "OK" : string
+  val test10d = "OK" : string
+  val test10e = "OK" : string
+  val test12a = "OK" : string
+  val test12b = "OK" : string
+  val test12c = "OK" : string
+  val test12d = "OK" : string
+  val test12e = "OK" : string
+  val test12f = "OK" : string
+  val test12g = "OK" : string
+  val test12h = "OK" : string
+  val test12i = "OK" : string
+  val test12j = "OK" : string
+  val test12k = "OK" : string
+  val test12l = "OK" : string
+  val test12m = "OK" : string
+  val test13a = "OK" : string
+  val test13b = "OK" : string
+  val test13c = "OK" : string
+  val test13d = "OK" : string
+  val test13e = "OK" : string
+  val check14a = "OK" : string
+  val check14b = "OK" : string
+  val check14c = "OK" : string
+  val check14d = "OK" : string
+  val check14e = "OK" : string
+  val check15a = "OK" : string
+  val check15b = "OK" : string
+  val check15c = "OK" : string
+  val check15d = "OK" : string
+  val check15e = "OK" : string
+  val check15f = "OK" : string
+  val check15g = "OK" : string
+[closing file "math.sml"]
+[opening file "real.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val test1 = "OK" : string
+  val test2 = "OK" : string
+  val test3 = "OK" : string
+  val test4a = "OK" : string
+  val test4b = "OK" : string
+  val test4c = ["OK", "OK"] : string list
+  val test5a = "OK" : string
+  val test5b = "OK" : string
+  val test5c = ["OK", "OK"] : string list
+  val test6a = "OK" : string
+  val test6b = "OK" : string
+  val test6c = ["OK", "OK"] : string list
+  val test7a = "OK" : string
+  val test7b = fn : real list -> string
+  val test7c = ["OK", "OK"] : string list
+  val test8 = "OK" : string
+  val chk = fn : string * real -> string
+  val test9a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test9b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK"]
+    : string list
+  val test9c =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test9d =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test9e =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test9f =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test9g =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test9h =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test9i =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test9j =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test10 = ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] : string list
+  val test11a = "OK" : string
+  val test11b = "OK" : string
+  val chkFIX = fn : real * string * string * string * string -> bool
+  val chkFIX' = fn : real * string * string * string * string -> bool
+  val test11c = "OK" : string
+  val test12a = "OK" : string
+  val test12b = "OK" : string
+  val chkSCI = fn : real * string * string * string * string -> bool
+  val chkSCI' = fn : real * string * string * string * string -> bool
+  val test12c = "OK" : string
+  val test13a = "OK" : string
+  val test13b = "OK" : string
+  val chkGEN = fn : real * string * string * string * string -> bool
+  val chkGEN' = fn : real * string * string * string * string -> bool
+  val test13c = "OK" : string
+[closing file "real.sml"]
+[opening file "stringmac.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val test1 = "OK" : string
+  val test2 = "OK" : string
+  val test3 = "OK" : string
+  val test4 = "OK" : string
+  val test5 = "OK" : string
+  val test6 = "OK" : string
+  val test7 = "OK" : string
+  val test8 = "OK" : string
+  val test9 = "OK" : string
+  val test10 = "OK" : string
+  val test11a = "OK" : string
+  val test11b = "OK" : string
+  val test11c = "OK" : string
+  val test11d = "OK" : string
+  val test11e = "OK" : string
+  val test11f = "OK" : string
+  val test11g = "OK" : string
+  val test11h = "OK" : string
+  val test12a = "OK" : string
+  val test12b = "OK" : string
+  val test12c = "OK" : string
+  val test12d = "OK" : string
+  val test12e = "OK" : string
+  val test12f = "OK" : string
+  val test12g = "OK" : string
+  val test13a = "OK" : string
+  val test13b = "OK" : string
+  val test14 = "OK" : string
+  val test15 = "OK" : string
+  val test16a = "OK" : string
+  val test16b = "OK" : string
+  val test17 = "OK" : string
+  val test18 = "OK" : string
+  val test19 = "OK" : string
+  val test20 = "OK" : string
+  val test21 = "OK" : string
+  val test22 = "OK" : string
+  val test23 = "OK" : string
+  val test24 = "OK" : string
+  val test25 = "OK" : string
+[closing file "stringmac.sml"]
+[opening file "stringcvt.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val test1 = "OK" : string
+  val test2 = "OK" : string
+  val test3 = "OK" : string
+  val test4 = "OK" : string
+  val test5 = "OK" : string
+  val test6 = "OK" : string
+  val test7 = "OK" : string
+  val test8 = "OK" : string
+  val test9 = "OK" : string
+  val test10 = "OK" : string
+[closing file "stringcvt.sml"]
+[opening file "substring.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val test1a = "OK" : string
+  val test1b = "OK" : string
+  val test1c = "OK" : string
+  val test1d = "OK" : string
+  val test1e = "OK" : string
+  val test1f = "OK" : string
+  val test1g = "OK" : string
+  val test1h = "OK" : string
+  val test2a = "OK" : string
+  val test2b = "OK" : string
+  val test2c = "OK" : string
+  val test3a = "OK" : string
+  val test3b = "OK" : string
+  val test3c = "OK" : string
+  val test4 = "OK" : string
+  val test5a = "OK" : string
+  val test5b = "OK" : string
+  val test6 = "OK" : string
+  val test7 = "OK" : string
+  val test8a = "OK" : string
+  val test8b = "OK" : string
+  val test8c = "OK" : string
+  val test8d = "OK" : string
+  val test8e = "OK" : string
+  val test8f = "OK" : string
+  val test9a = "OK" : string
+  val test9b = "OK" : string
+  val test9c = "OK" : string
+  val test9d = "OK" : string
+  val test9e = "OK" : string
+  val test9f = "OK" : string
+  val test9g = "OK" : string
+  val test9h = "OK" : string
+  val test12 = "OK" : string
+  val test13 = "OK" : string
+  val test14 = "OK" : string
+  val finda = fn : char -> bool
+  val findb = fn : char -> bool
+  val test15 = "OK" : string
+  val test16 = "OK" : string
+  val test17 = "OK" : string
+  val test18 = "OK" : string
+  val test19 = "OK" : string
+  val test20 = "OK" : string
+  val test21 = "OK" : string
+  val test22a = "OK" : string
+  val test22b = "OK" : string
+  val test23 = "OK" : string
+  val test24 = "OK" : string
+  val test25 = "OK" : string
+  val test26a = "OK" : string
+  val test26b = "OK" : string
+  val test27a = "OK" : string
+  val test27b = "OK" : string
+  val test28 = "OK" : string
+  val test29a = "OK" : string
+  val test29b = "OK" : string
+  val test29c = "OK" : string
+  val test30a = "OK" : string
+  val test30b = "OK" : string
+  val test30c = "OK" : string
+  val test30d = "OK" : string
+  val test30e = "OK" : string
+  val test30f = "OK" : string
+  val test31 = "OK" : string
+  val eqspan = fn : substring * substring * substring -> bool
+  val test32a = "OK" : string
+  val test32c = "OK" : string
+  val test32d = "OK" : string
+  val test32b = "OK" : string
+[closing file "substring.sml"]
+[opening file "textio.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+Two lines of output follow:
+1234  <--- this should read 1234
+12345 <--- this should read 12345
+Two lines of output follow:
+abcde <--- this should read abcde
+abcde <--- this should read abcde
+> val empty = <outstream> : TextIO.outstream
+  val small = <outstream> : TextIO.outstream
+  val medium = <outstream> : TextIO.outstream
+  val text = <outstream> : TextIO.outstream
+  val test1 = "OK" : string
+  val test2 = "OK" : string
+  val test3 = "OK" : string
+  val test4 = "OK" : string
+  val test5 = "OK" : string
+  val test6 = "OK" : string
+  val test7a = "OK" : string
+  val test7b = "OK" : string
+  val test7c = "OK" : string
+  val test8a = "OK" : string
+  val test8b = "OK" : string
+  val test8c = "OK" : string
+  val test8d = "OK" : string
+  val test8e = "OK" : string
+  val test8f = "OK" : string
+  val test9a = "OK" : string
+  val test9b = "OK" : string
+  val test9c = "OK" : string
+  val test9d = "OK" : string
+  val test9e = "OK" : string
+  val test10 = "OK" : string
+  val test11 = "OK" : string
+  val test12a = "OK" : string
+  val test12b = "OK" : string
+  val test12c = "OK" : string
+  val test12d = "OK" : string
+[closing file "textio.sml"]
+[opening file "time.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val test1 = "OK" : string
+  val test2a = "OK" : string
+  val test2b = "OK" : string
+  val test2c = "OK" : string
+  val test2d = "OK" : string
+  val test2e = "OK" : string
+  val test3a = "OK" : string
+  val test3b = "OK" : string
+  val test3c = "OK" : string
+  val test4a = "OK" : string
+  val test6a = "OK" : string
+  val test7a = "OK" : string
+  val test8a = "OK" : string
+  val test9a = "OK" : string
+  val test9b = "OK" : string
+  val chk = fn : string * int -> string
+  val test10a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test10b = ["OK", "OK", "OK", "OK", "OK"] : string list
+[closing file "time.sml"]
+[opening file "timer.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+
+Each line below should show roughly the same User, System, and Gc times:
+User: 0.708  System: 0.120  Gc: 0.000  Real: 0.833
+User: 0.708  System: 0.092  Gc: 0.000  Real: 0.800
+User: 0.707  System: 0.073  Gc: 0.000  Real: 0.783
+User: 0.707  System: 0.053  Gc: 0.000  Real: 0.767
+User: 0.708  System: 0.037  Gc: 0.000  Real: 0.750
+User: 0.707  System: 0.021  Gc: 0.000  Real: 0.733
+User: 0.708  System: 0.123  Gc: 0.000  Real: 0.833
+User: 0.708  System: 0.100  Gc: 0.000  Real: 0.817
+> val test1 = "OK" : string
+  val test2 = "OK" : string
+  val test3 = "OK" : string
+  val ctmr = <cpu_timer> : Timer.cpu_timer
+  val test4 = "OK" : string
+[closing file "timer.sml"]
+[opening file "macpath.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val test1a = "OK" : string
+  val test1b = "OK" : string
+  val test1c = "OK" : string
+  val test1d = "OK" : string
+  val test1e = "OK" : string
+  val test1f = "OK" : string
+  val test1g = "OK" : string
+  val test1h = "OK" : string
+  val test1i = "OK" : string
+  val test1j = "OK" : string
+  val test1k = "OK" : string
+  val test1l = "OK" : string
+  val test1m = "OK" : string
+  val test1n = "OK" : string
+  val test2a = "OK" : string
+  val test2b = "OK" : string
+  val test2b' = "OK" : string
+  val test2c = "OK" : string
+  val test2d = "OK" : string
+  val test2e = "OK" : string
+  val test2f = "OK" : string
+  val test2g = "OK" : string
+  val test2h = "OK" : string
+  val test2i = "OK" : string
+  val test2j = "OK" : string
+  val test2k = "OK" : string
+  val test2l = "OK" : string
+  val test2m = "OK" : string
+  val test2n = "OK" : string
+  val test2o = "OK" : string
+  val test2p = "OK" : string
+  val test3b = "OK" : string
+  val test3c = "OK" : string
+  val test3d = "OK" : string
+  val test3e = "OK" : string
+  val test3f = "OK" : string
+  val test3g = "OK" : string
+  val test3h = "OK" : string
+  val test4a = "OK" : string
+  val test4b = "OK" : string
+  val test5a = "OK" : string
+  val test6a = "OK" : string
+  val test6b = "OK" : string
+  val test7a = "OK" : string
+  val test7b = "OK" : string
+  val test7c = "OK" : string
+  val test8a = "OK" : string
+  val test8b = "OK" : string
+  val test8c = "OK" : string
+  val test9a = "OK" : string
+  val test9b = "OK" : string
+  val test10a = "OK" : string
+  val test10b = "OK" : string
+  val test10c = "OK" : string
+  val test11a = "OK" : string
+  val test11b = "DIFFERENT" : string
+  val test12 = "OK" : string
+  val test13 = "OK" : string
+  val test14 = "OK" : string
+  val test15 = "OK" : string
+  val test16 = "OK" : string
+  val test17 = "OK" : string
+  val test18 = "OK" : string
+  val test19 = "OK" : string
+[closing file "macpath.sml"]
+[opening file "vector.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val a = #[0, 1, 2, 3, 4, 5, 6] : int vector
+  val b = #[44, 55, 66] : int vector
+  val c = #[0, 1, 2, 3, 4, 5, 6] : int vector
+  val test1 = "OK" : string
+  val test2 = "OK" : string
+  val d =
+    #[0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2,
+      3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5,
+      6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1,
+      2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4,
+      5, 6, 0, 1]
+    : int vector
+  val test3 = "OK" : string
+  val test4a = "OK" : string
+  val test4b = "OK" : string
+  val test4c = "OK" : string
+  val test5 = "OK" : string
+  val test6a = "OK" : string
+  val test6b = "OK" : string
+  val test6c = "OK" : string
+  val e =
+    #[0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2,
+      3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5,
+      6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1,
+      2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4,
+      5, 6, 0, 1, 44, 55, 66, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1,
+      2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4,
+      5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0,
+      1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3,
+      4, 5, 6, 0, 1, 2, 3, 4, 5, ...]
+    : int vector
+  val test7 = "OK" : string
+  val test8 = "OK" : string
+  val f = #[44, 55, 66] : int vector
+  val test9 = "OK" : string
+  val test9a = "OK" : string
+  val test9b = "OK" : string
+  val test9c = "OK" : string
+  val test9d = "OK" : string
+  val test9e = "OK" : string
+  val test9f = "OK" : string
+  val test9g = "OK" : string
+  val test9h = "OK" : string
+  val test9i = "OK" : string
+  val chkiter =
+    fn
+    : ((int -> 'a) -> ('b -> ''c)) -> (int -> 'a) -> 'b -> ''c * int -> string
+  val chkiteri =
+    fn
+    : ((int * 'a -> 'b) -> ('c -> ''d)) -> ('a -> 'b) -> 'c -> ''d * int ->
+      string
+  val test10a = "OK" : string
+  val test11a = "OK" : string
+  val test11b = "OK" : string
+  val test11c = "OK" : string
+  val test11d = "OK" : string
+  val test11e = "OK" : string
+  val test11f = "OK" : string
+  val test11g = "OK" : string
+  val test11h = "OK" : string
+  val test11i = "OK" : string
+[closing file "vector.sml"]
+[opening file "word.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val test1 = "OK" : string
+  val test3 = "OK" : string
+  val test5a = "OK" : string
+  val test5b = "OK" : string
+  val test6a = "OK" : string
+  val test6b = "OK" : string
+  val test7a = "OK" : string
+  val test7b = "OK" : string
+  val test8a = "OK" : string
+  val test8b = "OK" : string
+  val maxposint = 1073741823 : int
+  val maxnegint = ~1073741824 : int
+  val pwr2 = fn : int -> int
+  val rwp = fn : int -> int -> int
+  val test9a = "OK" : string
+  val test9b = "OK" : string
+  val test9c = "OK" : string
+  val test9d = "OK" : string
+  val test9e = "OK" : string
+  val test9f = "OK" : string
+  val test9g = "OK" : string
+  val test9h = "OK" : string
+  val test10a = "OK" : string
+  val test10b = "OK" : string
+  val test10c = "OK" : string
+  val test10d = "OK" : string
+  val test11a = "OK" : string
+  val test11b = "OK" : string
+  val test11c = "OK" : string
+  val test11d = "OK" : string
+  val test11e = "OK" : string
+  val test11f = "OK" : string
+  val test11g = "OK" : string
+  val test11h = "OK" : string
+  val test11i = "OK" : string
+  val test12a = "OK" : string
+  val test12b = "OK" : string
+  val test12c = "OK" : string
+  val test12d = "OK" : string
+  val test12e = "OK" : string
+  val test12f = "OK" : string
+  val test12g = "OK" : string
+  val test12h = "OK" : string
+  val test12i = "OK" : string
+  val test12j = "OK" : string
+  val test12k = "OK" : string
+  val test12l = "OK" : string
+  val test12m = "OK" : string
+  val test12n = "OK" : string
+  val test12o = "OK" : string
+  val test12p = "OK" : string
+  val test12q = "OK" : string
+  val test12r = "OK" : string
+  val test12s = "OK" : string
+  val chk = fn : ('a -> word option) -> 'a * int -> string
+  val chkScan = fn : StringCvt.radix -> (string * int -> string)
+  val test13a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"]
+    : string list
+  val test13b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test14a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"]
+    : string list
+  val test14b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test15a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"]
+    : string list
+  val test15b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"]
+    : string list
+  val test16a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"]
+    : string list
+  val test16b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK"]
+    : string list
+  val test17a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test17b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test18 = "OK" : string
+  val test19 = "OK" : string
+  val test20 = "OK" : string
+  val test21 = "OK" : string
+  val test22 = "OK" : string
+[closing file "word.sml"]
+[opening file "word8.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val test1 = "OK" : string
+  val test2 = "OK" : string
+  val test3 = "OK" : string
+  val test4 = "OK" : string
+  val test5a = "OK" : string
+  val test5b = "OK" : string
+  val test5c = "OK" : string
+  val test6a = "OK" : string
+  val test6b = "OK" : string
+  val test6c = "OK" : string
+  val test7a = "OK" : string
+  val test7b = "OK" : string
+  val test7c = "OK" : string
+  val test8a = "OK" : string
+  val test8b = "OK" : string
+  val test8c = "OK" : string
+  val test9a = "OK" : string
+  val test9b = "OK" : string
+  val test9c = "OK" : string
+  val test9d = "OK" : string
+  val test9e = "OK" : string
+  val test9f = "OK" : string
+  val test9g = "OK" : string
+  val test9h = "OK" : string
+  val test9i = "OK" : string
+  val test10a = "OK" : string
+  val test10b = "OK" : string
+  val test10c = "OK" : string
+  val test10d = "OK" : string
+  val test10e = "OK" : string
+  val test11a = "OK" : string
+  val test11b = "OK" : string
+  val test11c = "OK" : string
+  val test11d = "OK" : string
+  val test11e = "OK" : string
+  val test11f = "OK" : string
+  val test12a = "OK" : string
+  val test12b = "OK" : string
+  val test12c = "OK" : string
+  val test12d = "OK" : string
+  val test12e = "OK" : string
+  val test12f = "OK" : string
+  val test12g = "OK" : string
+  val test12h = "OK" : string
+  val test12i = "OK" : string
+  val test12j = "OK" : string
+  val test12k = "OK" : string
+  val test12l = "OK" : string
+  val test12m = "OK" : string
+  val test12n = "OK" : string
+  val test12o = "OK" : string
+  val test12p = "OK" : string
+  val test12q = "OK" : string
+  val chk = fn : ('a -> Word8.word option) -> 'a * int -> string
+  val chkScan = fn : StringCvt.radix -> (string * int -> string)
+  val test13a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test13b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test13c = "OK" : string
+  val test13d = "OK" : string
+  val test14a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test14b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test14c = "OK" : string
+  val test14d = "OK" : string
+  val test15a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK", "OK"]
+    : string list
+  val test15b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"]
+    : string list
+  val test15c = "OK" : string
+  val test15d = "OK" : string
+  val test16a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test16b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK"]
+    : string list
+  val test16c = "OK" : string
+  val test16d = "OK" : string
+  val test17a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test17b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"]
+    : string list
+  val test17c = "OK" : string
+  val test17d = "OK" : string
+  val test18 = "OK" : string
+  val test19 = "OK" : string
+  val test20 = "OK" : string
+  val test21 = "OK" : string
+  val test22 = "OK" : string
+[closing file "word8.sml"]
+[opening file "word8array.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val i2w = fn : int -> Word8.word
+  val w127 = 0wx7F : Word8.word
+  val a = <array> : Word8Array.array
+  val b = <array> : Word8Array.array
+  val c = <array> : Word8Array.array
+  val test1 = "OK" : string
+  val test2 = "OK" : string
+  val d = <array> : Word8Array.array
+  val test3 = "OK" : string
+  val test4a = "OK" : string
+  val test4b = "OK" : string
+  val test4c = "OK" : string
+  val test5a = "OK" : string
+  val test5b = "OK" : string
+  val test6a = "OK" : string
+  val test6b = "OK" : string
+  val test6c = "OK" : string
+  val e = <array> : Word8Array.array
+  val a2v = fn : Word8Array.array -> Word8Vector.vector
+  val ev = <vector> : Word8Vector.vector
+  val test7 = "OK" : string
+  val test8a = "OK" : string
+  val test8b = "OK" : string
+  val f = <vector> : Word8Vector.vector
+  val test9 = "OK" : string
+  val test9a = "OK" : string
+  val test9b = "OK" : string
+  val test9c = "OK" : string
+  val test9d = "OK" : string
+  val test9e = "OK" : string
+  val test9f = "OK" : string
+  val test9g = "OK" : string
+  val test9h = "OK" : string
+  val test9i = "OK" : string
+  val g = <array> : Word8Array.array
+  val test10a = "OK" : string
+  val test10b = "OK" : string
+  val test10c = "OK" : string
+  val test10d = "OK" : string
+  val test10e = "OK" : string
+  val test10f = "OK" : string
+  val test10g = "OK" : string
+  val test10h = "OK" : string
+  val test10i = "OK" : string
+  val test11a = "OK" : string
+  val test11b = "OK" : string
+  val test11c = "OK" : string
+  val test11d = "OK" : string
+  val test11e = "OK" : string
+  val test11f = "OK" : string
+  val test11g = "OK" : string
+  val test11h = "OK" : string
+  val test11i = "OK" : string
+  val test11j = "OK" : string
+  val test11k = "OK" : string
+[closing file "word8array.sml"]
+[opening file "word8vector.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "auxil.sml"]
+> val it = () : unit
+> val a = <vector> : Word8Vector.vector
+  val b = <vector> : Word8Vector.vector
+  val c = <vector> : Word8Vector.vector
+  val test1 = "OK" : string
+  val test2 = "OK" : string
+  val d = <vector> : Word8Vector.vector
+  val test3 = "OK" : string
+  val test4a = "OK" : string
+  val test4b = "OK" : string
+  val test4c = "OK" : string
+  val test5 = "OK" : string
+  val test6a = "OK" : string
+  val test6b = "OK" : string
+  val test6c = "OK" : string
+  val e = <vector> : Word8Vector.vector
+  val test7 = "OK" : string
+  val test8 = "OK" : string
+  val f = <vector> : Word8Vector.vector
+  val test9 = "OK" : string
+  val test9a = "OK" : string
+  val test9b = "OK" : string
+  val test9c = "OK" : string
+  val test9d = "OK" : string
+  val test9e = "OK" : string
+  val test9f = "OK" : string
+  val test9g = "OK" : string
+  val test9h = "OK" : string
+  val test9i = "OK" : string
+  val chkiter =
+    fn
+    : ((Word8.word -> 'a) -> ('b -> ''c)) -> (Word8.word -> 'a) -> 'b ->
+      ''c * Word8.word -> string
+  val chkiteri =
+    fn
+    : ((int * 'a -> 'b) -> ('c -> ''d)) -> ('a -> 'b) -> 'c -> ''d * int ->
+      string
+  val test10a = "OK" : string
+  val test11a = "OK" : string
+  val test11b = "OK" : string
+  val test11c = "OK" : string
+  val test11d = "OK" : string
+  val test11e = "OK" : string
+  val test11f = "OK" : string
+  val test11g = "OK" : string
+  val test11h = "OK" : string
+  val test11i = "OK" : string
+[closing file "word8vector.sml"]
+> val it = () : unit
+[closing file "testmac.sml"]
+> val it = () : unit
+- 

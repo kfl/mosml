@@ -1,0 +1,94 @@
+<HTML><HEAD><TITLE>Structure Intset</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Intset</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>(* Intset -- applicative sets of integers.
+<A NAME="line2"></A> *
+<A NAME="line3"></A> * Modified for Moscow ML from SML/NJ library version 0.2, which is
+<A NAME="line4"></A> * COPYRIGHT (c) 1993 by AT&T Bell Laboratories.  
+<A NAME="line5"></A> * See file mosml/copyrght/copyrght.att for details.
+<A NAME="line6"></A> * Original implementation due to Stephen Adams, Southampton, UK.
+<A NAME="line7"></A> *)
+<A NAME="line8"></A>
+<A NAME="line9"></A>type intset
+<A NAME="line10"></A>
+<A NAME="line11"></A>exception NotFound
+<A NAME="line12"></A>
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#empty">empty</A>        : intset
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#singleton">singleton</A>    : int -> intset
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#add">add</A>          : intset * int -> intset
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#addList">addList</A>      : intset * int list -> intset
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#isEmpty">isEmpty</A>      : intset -> bool
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#equal">equal</A>        : intset * intset -> bool
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#isSubset">isSubset</A>     : intset * intset -> bool
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#member">member</A>       : intset * int -> bool
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#delete">delete</A>       : intset * int -> intset
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#numItems">numItems</A>     : intset ->  int
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#union">union</A>        : intset * intset -> intset
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#intersection">intersection</A> : intset * intset -> intset
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#difference">difference</A>   : intset * intset -> intset
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#listItems">listItems</A>    : intset -> int list
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#app">app</A>          : (int -> unit) -> intset -> unit
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#revapp">revapp</A>       : (int -> unit) -> intset -> unit
+<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#foldr">foldr</A>        : (int * 'b -> 'b) -> 'b -> intset -> 'b
+<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#foldl">foldl</A>        : (int * 'b -> 'b) -> 'b -> intset -> 'b
+<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#find">find</A>         : (int -> bool) -> intset -> int option
+<A NAME="line32"></A>
+<A NAME="line33"></A>(* This unit implements sets of integers.  
+<A NAME="line34"></A>
+   [<A NAME="empty"><B>empty</B></A>] is the empty set of integers.
+
+   [<A NAME="singleton"><B>singleton</B></A> i] is the singleton set containing i.
+
+   [<A NAME="add"><B>add</B></A>(s, i)] adds item i to set s.  
+
+   [<A NAME="addList"><B>addList</B></A>(s, xs)] adds all items from the list xs to the set s.
+
+   [<A NAME="isEmpty"><B>isEmpty</B></A> s] returns true if and only if the set is empty.
+
+   [<A NAME="equal"><B>equal</B></A>(s1, s2)] returns true if and only if the two sets have the
+   same elements.
+
+   [<A NAME="isSubset"><B>isSubset</B></A>(s1, s2)] returns true if and only if s1 is a subset of s2.
+
+   [<A NAME="member"><B>member</B></A>(s, i)] returns true if and only if i is in s.
+
+   [<A NAME="delete"><B>delete</B></A>(s, i)] removes item i from s.  Raises NotFound if i is not in s.
+   
+   [<A NAME="numItems"><B>numItems</B></A> s] returns the number of items in set s.
+
+   [<A NAME="union"><B>union</B></A>(s1, s2)] returns the union of s1 and s2.  
+
+   [<A NAME="intersection"><B>intersection</B></A>(s1, s2)] returns the intersectionof s1 and s2.
+
+   [<A NAME="difference"><B>difference</B></A>(s1, s2)] returns the difference between s1 and s2 (that
+   is, the set of elements in s1 but not in s2).
+
+   [<A NAME="listItems"><B>listItems</B></A> s] returns a list of the items in set s, in increasing 
+   order.
+
+   [<A NAME="app"><B>app</B></A> f s] applies function f to the elements of s, in increasing
+   order.
+
+   [<A NAME="revapp"><B>revapp</B></A> f s] applies function f to the elements of s, in decreasing
+   order. 
+
+   [<A NAME="foldl"><B>foldl</B></A> f e s] applies the folding function f to the entries of the
+   set in increasing order.
+
+   [<A NAME="foldr"><B>foldr</B></A> f e s] applies the folding function f to the entries of the
+   set in decreasing order. 
+
+   [<A NAME="find"><B>find</B></A> p s] returns SOME i, where i is an item in s which satisfies
+   p, if one exists; otherwise returns NONE.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

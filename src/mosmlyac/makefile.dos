@@ -1,0 +1,45 @@
+# DOS Makefile for the parser generator.
+
+CC=gcc
+CFLAGS=-O -DNDEBUG
+
+!include "..\makefile.inc"
+
+OBJS= closure.o error.o lalr.o lr0.o main.o mkpar.o output.o reader.o \
+  skeleton.o symtab.o verbose.o warshall.o
+
+all: mosmlyac.exe
+
+mosmlyac.exe: $(OBJS)
+        $(CC) $(CFLAGS) -o mosmlyac @&&!
+$(OBJS)
+!
+        strip mosmlyac
+        coff2exe -s $(RUNTIME32) mosmlyac
+
+clean:
+	del *.o
+        del mosmlyac
+        del mosmlyac.exe
+	del makefile.bak
+
+install:
+        copy mosmlyac.exe $(BINDIR)\mosmlyac.exe
+
+.c.o:
+	$(CC) -c $(CFLAGS) {$< }
+
+depend:
+
+closure.o: defs.h
+error.o: defs.h
+lalr.o: defs.h
+lr0.o: defs.h
+main.o: defs.h
+mkpar.o: defs.h
+output.o: defs.h
+reader.o: defs.h
+skeleton.o: defs.h
+symtab.o: defs.h
+verbose.o: defs.h
+warshall.o: defs.h

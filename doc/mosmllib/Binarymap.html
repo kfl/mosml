@@ -1,0 +1,85 @@
+<HTML><HEAD><TITLE>Structure Binarymap</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Binarymap</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>(* Binarymap -- applicative maps implemented by balanced ordered binary trees.
+<A NAME="line2"></A> *
+<A NAME="line3"></A> * Modified for Moscow ML from SML/NJ library v. 0.2 which is 
+<A NAME="line4"></A> * COPYRIGHT (c) 1993 by AT&T Bell Laboratories.  
+<A NAME="line5"></A> * See file mosml/copyrght/copyrght.att for details.
+<A NAME="line6"></A> * Original implementation due to Stephen Adams, Southampton, UK.
+<A NAME="line7"></A> *)
+<A NAME="line8"></A>
+<A NAME="line9"></A>type ('key, 'a) dict
+<A NAME="line10"></A>
+<A NAME="line11"></A>exception NotFound
+<A NAME="line12"></A>
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#mkDict">mkDict</A>    : ('key * 'key -> order) -> ('key, 'a) dict
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#insert">insert</A>    : ('key, 'a) dict * 'key * 'a -> ('key, 'a) dict
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#find">find</A>      : ('key, 'a) dict * 'key -> 'a
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#peek">peek</A>      : ('key, 'a) dict * 'key -> 'a option
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#remove">remove</A>    : ('key, 'a) dict * 'key -> ('key, 'a) dict * 'a
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#numItems">numItems</A>  : ('key, 'a) dict -> int
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#listItems">listItems</A> : ('key, 'a) dict -> ('key * 'a) list
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#app">app</A>       : ('key * 'a -> unit) -> ('key,'a) dict -> unit
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#revapp">revapp</A>    : ('key * 'a -> unit) -> ('key,'a) dict -> unit
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#foldr">foldr</A>     : ('key * 'a * 'b -> 'b)-> 'b -> ('key,'a) dict -> 'b
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#foldl">foldl</A>     : ('key * 'a * 'b -> 'b) -> 'b -> ('key,'a) dict -> 'b
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#map">map</A>       : ('key * 'a -> 'b) -> ('key,'a) dict -> ('key, 'b) dict
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#transform">transform</A> : ('a -> 'b) -> ('key,'a) dict -> ('key, 'b) dict
+<A NAME="line26"></A>
+<A NAME="line27"></A>
+<A NAME="line28"></A>(* Type ('key, 'a) dict is the type of applicative maps from domain
+<A NAME="line29"></A>   type 'key to range type 'a, or equivalently, applicative
+<A NAME="line30"></A>   dictionaries with keys of type 'key and values of type 'a.  They
+<A NAME="line31"></A>   are implemented as ordered balanced binary trees.
+<A NAME="line32"></A>
+   [<A NAME="mkDict"><B>mkDict</B></A> ordr] returns a new, empty map whose keys have ordering
+   ordr.
+
+   [<A NAME="insert"><B>insert</B></A>(m, i, v)] extends (or modifies) map m to map i to v.
+
+   [<A NAME="find"><B>find</B></A> (m, k)] returns v if m maps k to v; otherwise raises NotFound.
+   
+   [<A NAME="peek"><B>peek</B></A>(m, k)] returns SOME v if m maps k to v; otherwise returns NONE.
+
+   [<A NAME="remove"><B>remove</B></A>(m, k)] removes k from the domain of m and returns the
+   modified map and the element v corresponding to k.  Raises NotFound
+   if k is not in the domain of m.
+
+   [<A NAME="numItems"><B>numItems</B></A> m] returns the number of entries in m (that is, the size
+   of the domain of m).
+
+   [<A NAME="listItems"><B>listItems</B></A> m] returns a list of the entries (k, v) of keys k and
+   the corresponding values v in m, in order of increasing key values.
+
+   [<A NAME="app"><B>app</B></A> f m] applies function f to the entries (k, v) in m, in
+   increasing order of k (according to the ordering ordr used to
+   create the map or dictionary).
+
+   [<A NAME="revapp"><B>revapp</B></A> f m] applies function f to the entries (k, v) in m, in
+   decreasing order of k.
+
+   [<A NAME="foldl"><B>foldl</B></A> f e m] applies the folding function f to the entries (k, v)
+   in m, in increasing order of k.
+
+   [<A NAME="foldr"><B>foldr</B></A> f e m] applies the folding function f to the entries (k, v)
+   in m, in decreasing order of k.
+
+   [<A NAME="map"><B>map</B></A> f m] returns a new map whose entries have form (k, f(k,v)),
+   where (k, v) is an entry in m.
+
+   [<A NAME="transform"><B>transform</B></A> f m] returns a new map whose entries have form (k, f v),
+   where (k, v) is an entry in m.
+
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

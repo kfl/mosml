@@ -1,0 +1,32 @@
+Foreign function interface: how to invoke C functions from Moscow ML
+--------------------------------------------------------------------
+
+This example shows how to call the C function crypt (used for password
+encryption) from Moscow ML.  
+
+If the example fails to compile with the message
+	ld: cannot open -lcrypt: No such file or directory 
+then try deleting -lcrypt from the libcrypt.so line in the Makefile;
+probably crypt() is defined in the standard C library.
+
+This directory contains three files:
+
+        crypt.c         Defines the C function ml_crypt, to be invoked 
+                        from Moscow ML
+
+        Makefile        Compiles crypt.c to a dynamically loadable library
+                        (DLL) called libcrypt.so
+
+        crypt.sml       Shows how to load the libcrypt.so library into 
+                        Moscow ML and how to invoke the ml_crypt function
+
+The runtime system must be compiled with support for dynamic linking
+of foreign functions (edit mosml/src/Makefile.inc to achieve this).
+
+To compile and run the example:
+
+        make
+        mosml crypt.sml
+
+----------------------------------------------------------------------
+File mosml/src/dynlibs/crypt/README * sestoft@dina.kvl.dk * 1998-04-17

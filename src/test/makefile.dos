@@ -1,0 +1,12 @@
+all:
+	del result
+	mosml -P full test.sml > result
+	mosml -P full < ovlfail.sml >> result
+	mosml -P full < constfai.sml >> result
+	mosml -P full < testcon.sml >> result
+	mosml -P full < testty.sml >> result
+	mosml -P full < typerr.sml >> result
+	fc result result.ok
+
+clean:
+	del result

@@ -1,0 +1,99 @@
+INSTALLING MOSCOW ML 1.44cvr UNDER UNIXES
+-----------------------------------------
+
+NB: This README is adapted from ../../install.txt --- read that
+   file first for more configuration options.
+  
+   The only major change here is the insertion of steps 6a)-6c)
+   that we perform to bootstrap Moscow ML 1.44cvr from
+   the Moscow ML 1.44
+
+   Note that the default installation will clobber any existing
+   one if it happens to reside in the same directory.
+
+If you have Linux, FreeBSD, NetBSD, HPPA+HP/UX 9 or 10, Sparc+SunOS,
+Sparc+Solaris, SGI MIPS+IRIX 5, DEC Alpha+OSF/1, and possibly other
+systems, then you can install Moscow ML as follows:
+
+(1) Choose a directory for the Moscow ML subdirectory to reside in,
+    such as /usr/local/ for a systemwide installation, or ${HOME}
+    for a personal installation.
+
+(2) obtain the Unix source file mos144cvrsrc.tar.gz
+     
+
+(3) Unpack it by executing (in /usr/local, or ${HOME})
+
+       tar -zxvf mos144cvrsrc.tar.gz
+
+(4) Change directory to mosml/src
+
+(5) Edit file mosml/src/Makefile.inc to suit your system.  Set
+    MOSMLHOME to /usr/local/mosml, or ${HOME}/mosml.  Also, the
+    versions of /lib/cpp and other minor things differ amoung
+    operating systems; choose suitable values of the configuration
+    parameters for your system.
+  
+    If you want the runtime system to support dynamic linking of
+    foreign (C) functions, further uncomment the setup for this in the
+    Makefile.inc file. 
+
+(6) Execute (in mosml/src)
+
+        make clean
+        make world
+
+(6a) Execute (in mosml/src/compiler)
+
+        make promote 
+   
+     In preparation for bootstrapping, this makes
+     the just compiler version of the compiler the current one,
+     backing up the version that comes with the 1.44 distribution
+     in files *.orig in /mosml/src.
+
+     (* If something goes wrong,
+	make revert
+        restores the original files *)
+
+(6b) Execute (in mosml/src)
+
+        make again
+        make install
+
+     This is the actual bootstrapping compilation, and
+     final installation.
+
+(6c) add the ${HOME}/mosml/bin directory (or wherever it
+     happens to have been installed according to your changes
+     to src/Makefile.inc) to your PATH variable. Eg, in bash
+     	 export PATH=$PATH:${HOME}/mosml/bin 
+     or add this to your .profile
+
+(7) To check that the installation went well, you can try 
+     (7.1) * change directory to mosml/src/test 
+           * execute: make clean
+           * execute: make 
+           * diff result result.ok
+     (7.2) * change directory to mosml/src/mosmllib/test 
+           * execute: make clean
+           * execute: make 
+           * diff result result.ok
+     (7.3) * change directory to mosml/src/compiler/test
+           * execute: make clean
+           * execute: make 
+           * diff result result.ok
+     Note that some of the test cases are suitable only for 32-bit 
+     architectures, and will fail on 64-bit architectures (such as DEC
+     Alpha); this does not necessarily indicate that the Moscow ML
+     implementation is broken. 
+
+     DON'T PANIC: After bootstrapping, there
+     will be quite a few differences between the nominal and test results,
+     but these should just be trivial syntactic differences 
+     resulting from changes to the format of compiler errors and warnings, 
+     not logical errors or failed tests.
+
+
+
+

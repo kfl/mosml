@@ -1,0 +1,51 @@
+# Win32 Makefile for Moscow ML 1.44 dynamically loadable crypt library
+
+# The runtime system must be compiled with support for dynamic libraries.
+# The GNU libcrypt library must be installed.
+
+# Where to find crypt header file and compiled library
+
+CRYPTDIR=..\cw32crypt.w32
+
+CC=cl
+OPTS= /nologo /LD /MT /W1 /GB /O2 /Oy- /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"
+#OPTS= /nologo /LD /MTd /W1 /GB /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS"
+
+CFLAGS= -Dunix $(OPTS) /I ..\..\runtime /I $(CRYPTDIR)
+LIBS= $(CRYPTDIR)\crypt.lib ..\..\runtime\camlrt.lib
+
+!include ..\..\Makedefs.w32
+
+all: libcrypt.so
+	@echo "Now execute 'mosml crypt.sml' to test the C function"
+
+libcrypt.so: $(CRYPTDIR)\crypt.lib crypt.obj
+    $(CC) $(CFLAGS) /Felibcrypt.so crypt.obj $(LIBS) /link /subsystem:console
+
+$(CRYPTDIR)\crypt.lib:
+    cd $(CRYPTDIR)
+    nmake -f crypt.mak CFG="crypt - Win32 Release"
+    cd $(MOSMLHOME)\src\dynlibs\crypt
+
+test:
+    mosml crypt.sml
+
+clean:
+    cd $(CRYPTDIR)
+    nmake -f crypt.mak CFG="crypt - Win32 Release" CLEAN
+    cd $(MOSMLHOME)\src\dynlibs\crypt
+    del *.so
+    del *.exp
+    del *.lib
+    del *.obj
+
+depend: 
+    del Makefile.bak
+    mv Makefile Makefile.bak
+    $(MOSMLTOOLS)\cutdeps < Makefile.bak > Makefile
+    $(MOSMLTOOLS)\mosmldep >> Makefile
+
+libcrypt.obj: libcrypt.c
+
+### EVERYTHING THAT GOES BEYOND THIS COMMENT WILL BE ERASED WITHOUT WARNING
+### DO NOT DELETE THIS LINE

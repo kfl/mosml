@@ -1,0 +1,41 @@
+# VC++ Makefile for the parser generator.
+
+CC=cl
+OPTS= /nologo /ML /W1 /GX /GB /O2 /Oy- /D "ANSI" /D "WIN32" /D "NDEBUG" /D "_CONSOLE"
+CFLAGS= -Dunix $(OPTS)
+LIBS=
+
+!include ..\Makedefs.w32
+
+OBJS= closure.obj error.obj lalr.obj lr0.obj main.obj mkpar.obj output.obj reader.obj \
+  skeleton.obj symtab.obj verbose.obj warshall.obj
+
+.c.obj:
+	$(CC) -c $(CFLAGS) -Fo$@ $<
+
+all: mosmlyac.exe
+
+mosmlyac.exe: $(OBJS)
+	$(CC) $(CFLAGS) /Femosmlyac.exe $(OBJS) $(LIBS) /link /subsystem:console
+
+clean:
+	del *.obj
+	del mosmlyac.exe
+
+install:
+	copy/b mosmlyac.exe $(BINDIR)\mosmlyac.exe
+
+depend:
+
+closure.obj: defs.h
+error.obj: defs.h
+lalr.obj: defs.h
+lr0.obj: defs.h
+main.obj: defs.h
+mkpar.obj: defs.h
+output.obj: defs.h
+reader.obj: defs.h
+skeleton.obj: defs.h
+symtab.obj: defs.h
+verbose.obj: defs.h
+warshall.obj: defs.h

@@ -1,0 +1,149 @@
+# DOS Makefile for Moscow ML library 1995-04-30
+
+# Library is compiled with -imptypes, even when used with value polymorphism
+COMPFLAGS=-imptypes
+
+!include "..\makefile.inc"
+
+all:  \
+     array.uo array2.uo arraysor.uo \
+     basicio.uo binaryse.uo binaryma.uo binio.uo bool.uo byte.uo \
+     char.uo chararra.uo charvect.uo commandl.uo date.uo dynarray.uo \
+     filesys.uo graphics.uo help.uo int.uo intmap.uo intset.uo \
+     list.uo listpair.uo listsort.uo location.uo \
+     math.uo misc.uo mosml.uo mosmlcgi.uo nj93.uo option.uo \
+     os.uo path.uo polyhash.uo pp.uo process.uo random.uo real.uo \
+     sml90.uo splaymap.uo splayset.uo splaytre.uo \
+     strbase.uo string.uo stringcv.uo substrin.uo susp.uo \
+     textio.uo time.uo timer.uo vector.uo \
+     word.uo word8.uo word8arr.uo word8vec.uo \
+     obj.uo nonstdio.uo lexing.uo parsing.uo
+
+clean:
+        del *.ui
+        del *.uo
+        del makefile.bak
+        del array.sml
+        del filesys.sml
+        del help.sml
+        del int.sml
+        del mosml.sml
+        del os.sml
+        del path.sml
+        del strbase.sml
+        del vector.sml
+        del word.sml
+        del word8arr.sml
+        del word8vec.sml
+
+install:
+        copy readme $(LIBDIR)
+        copy *.ui $(LIBDIR)
+        copy *.uo $(LIBDIR)
+        copy *.sig $(LIBDIR)
+	copy general.fke $(LIBDIR)\general.sig
+	copy meta.fke $(LIBDIR)\meta.sig
+	copy os.fke $(LIBDIR)\os.sig
+	copy helpsigs.val $(LIBDIR)
+
+depend: array.sml filesys.sml help.sml int.sml mosml.sml os.sml path.sml \
+    strbase.sml vector.sml word.sml word8arr.sml word8vec.sml
+        del makefile.bak
+        ren makefile makefile.bak
+        $(MOSMLCUT) < makefile.bak > makefile
+        $(MOSMLDEP) >> makefile
+
+### DO NOT DELETE THIS LINE
+sml90.uo: sml90.ui string.ui basicio.ui 
+option.uo: option.ui 
+mosmlcgi.uo: mosmlcgi.ui string.ui stringcv.ui list.ui option.ui process.ui \
+    substrin.ui splaymap.ui textio.ui int.ui char.ui 
+location.uo: location.ui charvect.ui parsing.ui basicio.ui nonstdio.ui \
+    lexing.ui 
+location.ui: basicio.ui lexing.ui 
+word8vec.uo: word8vec.ui list.ui word8.ui 
+commandl.uo: commandl.ui vector.ui 
+word8arr.uo: word8arr.ui list.ui word8.ui word8vec.ui 
+word.uo: word.ui string.ui stringcv.ui char.ui 
+vector.uo: vector.ui list.ui 
+strbase.uo: strbase.ui list.ui 
+path.uo: path.ui string.ui list.ui substrin.ui char.ui 
+mosml.uo: mosml.ui timer.ui filesys.ui binio.ui string.ui list.ui \
+    basicio.ui vector.ui word8.ui process.ui byte.ui int.ui textio.ui \
+    word8vec.ui time.ui 
+int.uo: int.ui string.ui stringcv.ui char.ui 
+help.uo: help.ui string.ui stringcv.ui list.ui basicio.ui vector.ui \
+    textio.ui char.ui 
+filesys.uo: filesys.ui path.ui string.ui charvect.ui list.ui os.uo char.ui \
+    time.ui 
+array.uo: array.ui list.ui vector.ui 
+misc.uo: misc.ui string.ui list.ui option.ui vector.ui array.ui textio.ui \
+    char.ui 
+textio.uo: textio.ui string.ui char.ui 
+old.uo: old.ui string.ui basicio.ui 
+binio.uo: binio.ui word8.ui textio.ui word8vec.ui 
+textio.ui: stringcv.ui char.ui 
+int.ui: stringcv.ui 
+binio.ui: word8.ui word8vec.ui 
+array.ui: vector.ui 
+susp.uo: susp.ui 
+splaytre.uo: splaytre.ui 
+splayset.uo: splayset.ui list.ui splaytre.ui 
+splaymap.uo: splaymap.ui splaytre.ui 
+array2.uo: array2.ui list.ui vector.ui array.ui 
+arraysor.ui: array.ui 
+dynarray.uo: dynarray.ui array.ui 
+filesys.ui: time.ui 
+intmap.uo: intmap.ui 
+arraysor.uo: arraysor.ui array.ui 
+binaryse.uo: binaryse.ui list.ui 
+bool.ui: stringcv.ui 
+intset.uo: intset.ui list.ui 
+lexing.ui: chararra.ui obj.uo 
+random.uo: random.ui 
+real.ui: stringcv.ui 
+binaryma.uo: binaryma.ui 
+string.ui: char.ui 
+byte.ui: string.ui word8arr.ui word8.ui substrin.ui word8vec.ui char.ui 
+substrin.uo: substrin.ui string.ui strbase.ui 
+stringcv.uo: stringcv.ui 
+bool.uo: bool.ui stringcv.ui char.ui 
+parsing.ui: lexing.ui vector.ui obj.uo 
+process.uo: process.ui list.ui basicio.ui 
+polyhash.uo: polyhash.ui array.ui 
+listsort.uo: listsort.ui list.ui 
+date.uo: date.ui string.ui stringcv.ui int.ui time.ui char.ui 
+string.uo: string.ui list.ui strbase.ui char.ui 
+real.uo: real.ui stringcv.ui char.ui 
+nj93.uo: nj93.ui string.ui list.ui basicio.ui textio.ui 
+math.uo: math.ui 
+listpair.uo: listpair.ui list.ui 
+nonstdio.ui: basicio.ui chararra.ui char.ui 
+misc.ui: array.ui 
+timer.uo: timer.ui time.ui 
+time.uo: time.ui string.ui stringcv.ui char.ui 
+timer.ui: time.ui 
+mosml.ui: word8vec.ui 
+pp.uo: pp.ui string.ui list.ui vector.ui array.ui textio.ui 
+word8.uo: word8.ui word.ui string.ui stringcv.ui char.ui 
+parsing.uo: parsing.ui lexing.ui vector.ui obj.uo 
+nonstdio.uo: nonstdio.ui basicio.ui chararra.ui 
+list.uo: list.ui 
+lexing.uo: lexing.ui chararra.ui obj.uo 
+graphics.uo: graphics.ui array.ui 
+charvect.uo: charvect.ui word8vec.ui char.ui 
+chararra.uo: chararra.ui charvect.ui word8arr.ui char.ui 
+char.uo: char.ui strbase.ui 
+byte.uo: byte.ui string.ui word8arr.ui word8.ui substrin.ui word8vec.ui \
+    char.ui 
+basicio.uo: basicio.ui 
+word8vec.ui: word8.ui 
+word8arr.ui: word8.ui word8vec.ui 
+word8.ui: word.ui stringcv.ui 
+word.ui: stringcv.ui 
+time.ui: stringcv.ui 
+graphics.ui: array.ui 
+date.ui: stringcv.ui time.ui 
+charvect.ui: char.ui 
+chararra.ui: charvect.ui char.ui 
+array2.ui: vector.ui 

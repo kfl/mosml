@@ -1,0 +1,165 @@
+(* filename.mlp *)
+
+open CharVector;
+
+fun check_suffix name suff =
+  let val name_len = size name
+      val suff_len = size suff
+  in
+    name_len >= suff_len andalso
+    extract(name, name_len - suff_len, SOME suff_len) = suff
+  end;
+
+fun chop_suffix name suff =
+  extract(name, 0, SOME (size name - size suff))
+;
+
+#ifdef unix
+val current_dir_name = ".";
+
+fun concat dirname filename =
+  let val len = size dirname
+      val x   = if len = 0 then "/" else extract(dirname, len-1, SOME 1)
+  in
+    case x of
+        "/"   => dirname ^ filename
+      | _     => dirname ^ "/" ^ filename
+  end;
+
+fun is_absolute n =
+  let val len = size n in
+     (len >= 1 andalso extract(n, 0, SOME 1) = "/")    orelse
+     (len >= 2 andalso extract(n, 0, SOME 2) = "./")   orelse
+     (len >= 3 andalso extract(n, 0, SOME 3) = "../")
+  end;
+
+fun slash_pos s =
+  let fun pos i =
+    if i < 0 then NONE else
+    case extract(s, i, SOME 1) of
+        "/"  => SOME i
+      | _    => pos (i - 1)
+  in pos (size s - 1) end
+;
+
+fun basename name =
+  case slash_pos name of
+      SOME p => 
+        extract(name, p+1, NONE)
+    | NONE   => name
+;
+
+fun dirname name =
+  if name = "/" then name else
+  case slash_pos name of
+      SOME p  => extract(name, 0, SOME p)
+    | NONE    => "."
+;
+#endif
+
+#ifdef macintosh
+val current_dir_name = ":";
+
+fun is_absolute n =
+  let val len = size n
+      fun h i = 
+        if i >= len then false
+        else if extract(n, i, SOME 1) = ":" then true
+        else h (i+1)
+  in h 0 end;
+
+fun concat dirname filename =
+  let val dirname1 =
+        if is_absolute dirname
+        then dirname
+        else ":" ^ dirname
+      val l = size dirname1 - 1
+      val dirname2 =
+        if l < 0 orelse extract(dirname1, l, SOME 1) = ":"
+        then dirname1
+        else dirname1 ^ ":"
+      val len = size filename
+      val filename2 =
+        if len > 0 andalso extract(filename, 0, SOME 1) = ":"
+        then extract(filename, 1, NONE)
+        else filename 
+  in dirname2 ^ filename2 end
+;
+
+fun colon_pos s =
+  let fun pos i =
+    if i < 0 then NONE else
+    case extract(s, i, SOME 1) of
+        ":"  => SOME i
+      | _    => pos (i - 1)
+  in pos (size s - 1) end
+;
+
+fun basename name =
+  case colon_pos name of
+      SOME p => 
+        extract(name, p+1, NONE)
+    | NONE   => name
+;
+
+fun dirname name =
+  if name = ":" then name else
+  case colon_pos name of
+      SOME p  => extract(name, 0, SOME p)
+    | NONE    => ":"
+;
+#endif
+
+#if defined(msdos) || defined(win32)
+val current_dir_name = ".";
+
+fun concat dirname filename =
+  let val len = size dirname
+      val x   = if len = 0 then "\\" else extract(dirname, len-1, SOME 1)
+  in
+    case x of
+        "\\"  => dirname ^ filename
+      | ":"   => dirname ^ filename
+      | _     => dirname ^ "\\" ^ filename
+  end;
+
+fun is_absolute n =
+  let val len = size n in
+    (len >= 2 andalso extract(n, 1, SOME 1) = ":")     orelse 
+    (len >= 1 andalso extract(n, 0, SOME 1) = "\\")    orelse 
+    (len >= 2 andalso extract(n, 0, SOME 2) = ".\\")   orelse 
+    (len >= 3 andalso extract(n, 0, SOME 3) = "..\\")
+  end;
+
+fun sep_pos s =
+  let fun pos i =
+    if i < 0 then NONE else
+    case extract(s, i, SOME 1) of
+        "/"  => SOME i
+      | "\\" => SOME i
+      | ":"  => SOME i
+      | _    => pos (i - 1)
+  in pos (size s - 1) end
+;
+
+fun basename name =
+  case sep_pos name of
+      SOME p => 
+        extract(name, p+1, NONE)
+    | NONE   => name
+;
+
+fun dirname name =
+  let val len = size name in
+    if len >= 2 andalso extract(name, 1, SOME 1) = ":" then
+      extract(name, 0, SOME 2) ^ 
+        dirname (extract(name, 2, NONE))
+    else if name = "/" orelse name = "\\" then
+      name
+    else
+      case sep_pos name of
+          SOME p => extract(name, 0, SOME p)
+        | NONE   => "."
+  end;
+
+#endif

@@ -1,0 +1,159 @@
+<HTML><HEAD><TITLE>Structure Callback</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Callback</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>(* Callback -- registering ML values with C, and accessing C values from ML *)
+<A NAME="line2"></A>
+<A NAME="line3"></A>(* Registering ML values for access from C code: *)
+<A NAME="line4"></A>
+<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#register">register</A>     : string -> 'a -> unit
+<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#unregister">unregister</A>   : string -> unit
+<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#isRegistered">isRegistered</A> : string -> bool
+<A NAME="line8"></A>
+<A NAME="line9"></A>
+<A NAME="line10"></A>(* Accessing C variables and functions from ML: *)
+<A NAME="line11"></A>
+<A NAME="line12"></A>type cptr
+<A NAME="line13"></A>
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#getcptr">getcptr</A> : string -> cptr
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#var">var</A>     : cptr -> 'b                            
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#app1">app1</A>    : cptr -> 'a1 -> 'b                     
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#app2">app2</A>    : cptr -> 'a1 -> 'a2 -> 'b              
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#app3">app3</A>    : cptr -> 'a1 -> 'a2 -> 'a3 -> 'b       
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#app4">app4</A>    : cptr -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'b
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#app5">app5</A>    : cptr -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
+<A NAME="line21"></A>
+<A NAME="line22"></A>(* 
+<A NAME="line23"></A>   REGISTERING ML VALUES FOR ACCESS FROM C CODE
+<A NAME="line24"></A>   --------------------------------------------
+<A NAME="line25"></A>
+<A NAME="line26"></A>   This example shows how to register the ML function (fn n => 2*n) so
+<A NAME="line27"></A>   that it may be called from C code.
+<A NAME="line28"></A>
+<A NAME="line29"></A>   (0) The ML side registers the function:
+<A NAME="line30"></A>          Callback.register "myfun" (fn n => 2*n)               
+<A NAME="line31"></A>
+<A NAME="line32"></A>   (1) The C side first obtains an ML value pointer:
+<A NAME="line33"></A>          valueptr mvp = get_valueptr("myfun");
+<A NAME="line34"></A>   
+<A NAME="line35"></A>   (2) The C side then uses the ML value pointer to obtain an ML
+<A NAME="line36"></A>       value, and uses it:
+<A NAME="line37"></A>          callback(get_value(mvp), Val_long(42));
+<A NAME="line38"></A>
+<A NAME="line39"></A>   Operation (1) involves a callback to ML, and hence may be slow.
+<A NAME="line40"></A>   Calling get_valueptr may cause the garbage collector to run; hence
+<A NAME="line41"></A>   other live ML values must be registered as GC roots.  The garbage
+<A NAME="line42"></A>   collector will never move the ML value pointer; hence it need not
+<A NAME="line43"></A>   be registered as a GC root in the C code.
+<A NAME="line44"></A>
+<A NAME="line45"></A>   Operation (2) is very fast.  If the garbage collector is invoked
+<A NAME="line46"></A>   between step the call of get_value() and the use of the ML value,
+<A NAME="line47"></A>   then the value must be registered as a GC root.  However, the idiom
+<A NAME="line48"></A>        callback(get_value(mvp), arg1);
+<A NAME="line49"></A>   is safe provided the evaluation of arg1 does not provoke a garbage
+<A NAME="line50"></A>   collection (e.g. if arg1 is a variable).
+<A NAME="line51"></A>
+<A NAME="line52"></A>   The C function get_valueptr returns NULL if nam is not registered.
+<A NAME="line53"></A>
+<A NAME="line54"></A>   The C function get_value returns NULL if nam has been unregistered
+<A NAME="line55"></A>   (and not reregistered) since mvp was obtained; it raises exception
+<A NAME="line56"></A>   Fail if mvp itself is NULL.  Every access to the ML value from C
+<A NAME="line57"></A>   code should use the ML valueptr and get_valueptr, otherwise the C
+<A NAME="line58"></A>   code will not know when the value has been unregistered and
+<A NAME="line59"></A>   possibly deallocated.
+<A NAME="line60"></A>
+<A NAME="line61"></A>   The C functions (in mosml/src/runtime/callback.c)
+<A NAME="line62"></A>      void registervalue(char* nam, value mlval)
+<A NAME="line63"></A>      void unregistervalue(char* nam)
+<A NAME="line64"></A>   can be used just as Callback.register and Callback.unregister.
+<A NAME="line65"></A>
+<A NAME="line66"></A>   The C functions
+<A NAME="line67"></A>      value callbackptr (valueptr mvp, value arg1)
+<A NAME="line68"></A>      value callbackptr2(valueptr mvp, value arg1, value arg2)
+<A NAME="line69"></A>      value callbackptr3(valueptr mvp, value arg1, value arg2, value arg3)
+<A NAME="line70"></A>   can be used for callback via an ML value pointer; they will raise
+<A NAME="line71"></A>   exception Fail if the ML function indicated by mvp has been unregistered.
+<A NAME="line72"></A>
+<A NAME="line73"></A>
+   [<A NAME="register"><B>register</B></A> nam v] registers the ML value v, so that it can be
+   retrieved from C code under the name nam.  If nam has previously
+   been registered and then unregistered, it will be reregistered with
+   the new value.  The new value immediately becomes visible to the C
+   side, both via get_valueptr nam and via any ML value pointer
+   previously obtained for nam.  Raises exception Fail if nam has
+   been registered and not yet unregistered.
+
+   [<A NAME="unregister"><B>unregister</B></A> nam] deletes the registration.  This prevents C code
+   from obtaining an ML value pointer for nam and from using an ML
+   value pointer already obtained (but does not prevent C from
+   attempting to use a stored ML value previously obtained with the
+   help of the ML value pointer, which is unsafe anyway).  Does
+   nothing if nam is already unregistered.  Raises exception Fail
+   if nam has never been registered.
+
+   [<A NAME="isRegistered"><B>isRegistered</B></A> nam] returns true if nam has been registered and not
+   yet unregistered.
+
+
+   ACCESSING REGISTERED C VARIABLES AND FUNCTIONS FROM ML
+   -----------------------------------------------------
+
+   This example shows how to register the C function 
+
+      value silly_cfun(value v) 
+      { return copy_double(42.42 * Double_val(v)); }
+
+   so that it may be called from ML.
+
+   (0) The C side registers the function:
+          registercptr("mycfun", sillycfun);
+
+   (1) The ML side obtains a C pointer and defines an ML function
+       via that pointer: 
+          val sillycfun = app1 (getcptr "mycfun") : real -> real
+       The type ascription is needed to ensure any type safety whatsoever.
+       Mistakes in the types will lead to crashes, as usual with C.
+
+   (2) To the ML side, the new ML function is indistinguishable from
+       other ML functions
+          val result = sillyfun(3.4)
+
+   The C function (in mosml/src/runtime/callback.c)
+	void registercptr(char* nam, void* cptr);
+
+   is used to register C pointers for access from ML.  Only pointers
+   to static C variables, and C functions, should be registered. There
+   is no way to unregister a C pointer.
+
+   [<A NAME="cptr"><B>cptr</B></A>] is the type of pointers to C variables and C functions.
+
+   [<A NAME="getcptr"><B>getcptr</B></A> nam] returns a pointer to the C variable or function
+   registered (by the C side) under the name nam.  Raises exception
+   Fail if the name nam has not been registered.
+
+   [<A NAME="var"><B>var</B></A> cptr] returns the value of the C variable associated with cptr.
+
+   [<A NAME="app1"><B>app1</B></A> cptr arg1] applies the C function associated with cptr to arg1.
+
+   [<A NAME="app2"><B>app2</B></A> cptr arg1 arg2] applies the C function associated with cptr to
+   (arg1, arg2).
+
+   [<A NAME="app3"><B>app3</B></A> cptr arg1 arg2 arg3] applies the C function associated with
+   cptr to (arg1, arg2, arg3).
+
+   [<A NAME="app4"><B>app4</B></A> cptr arg1 arg2 arg3 arg4] applies the C function associated
+   with cptr to (arg1, arg2, arg3, arg4).
+
+   [<A NAME="app5"><B>app5</B></A> cptr arg1 arg2 arg3 arg4 arg5] applies the C function
+   associated with cptr to (arg1, arg2, arg3, arg4, arg5). 
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

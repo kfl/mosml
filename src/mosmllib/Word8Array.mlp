@@ -1,0 +1,156 @@
+(* Word8Array -- as of 1994-12-21 *)
+
+type elem   = Word8.word;
+type vector = Word8Vector.vector;
+
+local 
+    prim_eqtype array_;
+    prim_val array_   : int -> array_                 = 1 "create_string";
+    prim_val vector_  : int -> vector                 = 1 "create_string";
+    prim_val sub_     : array_ -> int -> elem         = 2 "get_nth_char";
+    prim_val update_  : array_ -> int -> elem -> unit = 3 "set_nth_char";
+    prim_val length_  : array_ -> int                 = 1 "string_length";
+    prim_val lengthv_ : vector -> int                 = 1 "string_length";
+    prim_val fill_    : array_ -> int -> int -> elem -> unit 
+                                                      = 4 "fill_string";
+    prim_val blitaa_  : array_ -> int -> array_ -> int -> int -> unit 
+                                                      = 5 "blit_string";
+    prim_val blitav_  : array_ -> int -> vector -> int -> int -> unit 
+                                                      = 5 "blit_string";
+    prim_val blitva_  : vector -> int -> array_ -> int -> int -> unit 
+                                                      = 5 "blit_string";
+in 
+
+type array = array_ ref;
+
+#if defined(msdos)
+#include "../config.dos/m.h"
+#elif defined(win32)
+#include "../config.w32/m.h"
+#else
+#include "../config/m.h"
+#endif
+
+#ifdef SIXTYFOUR
+val maxLen = 144115188075855863;  	(* = (2^54-1)*8-1, with 64 bit *)
+#else
+val maxLen = 16777211;  		(* = (2^22-1)*4-1, with 32 bit *)
+#endif
+
+val array0 = ref (array_ 0);
+
+fun array(n, v: elem) =
+    let val a = if n < 0 orelse n > maxLen then raise Size else array_ n 
+    in fill_ a 0 n v; ref a end;
+
+fun tabulate(n, f : int -> elem) =
+  if n < 0 orelse n > maxLen then raise Size else
+  let val a = array_ n
+      fun init i = if i >= n then () else (update_ a i (f i); init (i+1))
+  in init 0; ref a end;
+
+fun fromList (vs : elem list) =
+    let val n = List.length vs
+	val a = if n > maxLen then raise Size else array_ n 
+	fun init [] i = ()
+	  | init (v::vs) i = (update_ a i v; init vs (i+1))
+    in init vs 0; ref a end;
+
+fun length (ref a) = length_ a;
+
+fun sub(ref a, i) =
+  if i < 0 orelse i >= length_ a then raise Subscript 
+  else sub_ a i;
+
+fun update(ref a, i, v) =
+  if i < 0 orelse i >= length_ a then raise Subscript 
+  else update_ a i v;
+
+fun extract (ref a, i, slicelen) =
+    let val n = case slicelen of NONE => length_ a - i | SOME n => n 
+	val newvec = if i<0 orelse n<0 orelse i+n > length_ a then
+	                     raise Subscript
+			 else
+			     vector_ n 
+    in blitav_ a i newvec 0 n; newvec end;
+
+fun copy {src = ref a1: array, si=i1, len, dst = ref a2: array, di=i2} =
+    let val n = case len of NONE => length_ a1 - i1 | SOME k => k
+    in
+	if n<0 orelse i1<0 orelse i1+n > length_ a1
+	       orelse i2<0 orelse i2+n > length_ a2
+	then raise Subscript
+	else blitaa_ a1 i1 a2 i2 n
+    end
+
+fun copyVec {src = a1: vector, si=i1, len, dst = ref a2: array, di=i2} =
+    let val n = case len of NONE => lengthv_ a1 - i1 | SOME k => k
+    in
+	if n<0 orelse i1<0 orelse i1+n > lengthv_ a1
+               orelse i2<0 orelse i2+n > length_ a2
+        then raise Subscript
+	else blitva_ a1 i1 a2 i2 n
+    end
+
+fun foldl f e (ref a) = 
+    let val stop = length_ a
+	fun lr j res = if j < stop then lr (j+1) (f(sub_ a j, res))
+		       else res
+    in lr 0 e end
+
+fun foldr f e (ref a) =
+    let fun rl j res = if j >= 0 then rl (j-1) (f(sub_ a j, res))
+		       else res
+    in rl (length_ a - 1) e end
+
+fun modify f (ref a) = 
+    let val stop = length_ a
+	fun lr j = if j < stop then (update_ a j (f(sub_ a j)); lr (j+1))
+		   else ()
+    in lr 0 end
+
+fun app f (ref a) = 
+    let val stop = length_ a
+	fun lr j = if j < stop then (f(sub_ a j); lr (j+1))
+		   else ()
+    in lr 0 end
+
+fun sliceend (a, i, NONE) = 
+        if i<0 orelse i>length a then raise Subscript
+	else length a
+  | sliceend (a, i, SOME n) = 
+	if i<0 orelse n<0 orelse i+n>length a then raise Subscript
+	else i+n;
+
+fun foldli f e (slice as (ref a, i, _)) = 
+    let fun loop stop =
+	    let fun lr j res = 
+		if j < stop then lr (j+1) (f(j, sub_ a j, res))
+		else res
+	    in lr i e end
+    in loop (sliceend slice) end;
+
+fun foldri f e (slice as (ref a, i, _)) = 
+    let fun loop start =
+	    let fun rl j res = 
+		    if j >= i then rl (j-1) (f(j, sub_ a j, res))
+		    else res
+	    in rl start e end;
+    in loop (sliceend slice - 1) end
+
+fun modifyi f (slice as (ref a, i, _)) = 
+    let fun loop stop =
+	    let fun lr j = 
+		if j < stop then (update_ a j (f(j, sub_ a j)); lr (j+1))
+		else ()
+	    in lr i end
+    in loop (sliceend slice) end;
+
+fun appi f (slice as (ref a, i, _)) = 
+    let fun loop stop = 
+	    let	fun lr j = 
+		    if j < stop then (f(j, sub_ a j); lr (j+1)) 
+		    else ()
+	    in lr i end
+    in loop (sliceend slice) end;
+end

@@ -1,0 +1,56 @@
+<HTML><HEAD><TITLE>Structure Dynarray</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Dynarray</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>(* Dynarray -- polymorphic dynamic arrays a la SML/NJ library, 1995-01-10 *)
+<A NAME="line2"></A>
+<A NAME="line3"></A>type 'a array
+<A NAME="line4"></A>
+<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#array">array</A>    : int * '_a -> '_a array
+<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#subArray">subArray</A> : '_a array * int * int -> '_a array
+<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#fromList">fromList</A> : '_a list * '_a -> '_a array
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#tabulate">tabulate</A> : int * (int -> '_a) * '_a -> '_a array
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#sub">sub</A>      : 'a array * int -> 'a
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#update">update</A>   : '_a array * int * '_a  -> unit
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#default">default</A>  : 'a array -> 'a
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#bound">bound</A>    : 'a array -> int
+<A NAME="line13"></A>
+<A NAME="line14"></A>(* Type [ty array] is the type of one-dimensional, mutable, zero-based
+<A NAME="line15"></A>   unbounded arrays with elements of type ty.  Type ty array does 
+<A NAME="line16"></A>   not admit equality.  
+<A NAME="line17"></A>
+   [<A NAME="array"><B>array</B></A>(n, d)] returns a dynamic array, all of whose elements are
+   initialized to the default d.  The parameter n is used as a hint of the 
+   upper bound on non-default elements.  Raises Size if n < 0.
+
+   [<A NAME="subArray"><B>subArray</B></A>(a, m, n)] returns a new array with the same default
+   value as a, and whose values in the range [0,n-m] equal the
+   values in a in the range [m,n].  Raises the exception Size if n < m.
+
+   [<A NAME="fromList"><B>fromList</B></A> (xs, d)] returns an array whose first elements are
+   those of [xs], and the rest are the default d.
+
+   [<A NAME="tabulate"><B>tabulate</B></A>(n, f, d)] returns a new array whose first n elements 
+   are f 0, f 1, ..., f (n-1), created from left to right, and whose 
+   remaining elements are the default d.  Raises Size if n < 0.
+
+   [<A NAME="sub"><B>sub</B></A>(a, i)] returns the i'th element of a, counting from 0.
+   Raises Subscript if i < 0.
+
+   [<A NAME="update"><B>update</B></A>(a, i, x)] destructively replaces the i'th element of a by x.
+   Raises Subscript if i < 0.
+
+   [<A NAME="default"><B>default</B></A> a] returns the default value of the array a.
+
+   [<A NAME="bound"><B>bound</B></A> a] returns an upper bound on the indices of non-default values.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

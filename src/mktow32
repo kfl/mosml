@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ -f Makefile.unx ]
+then
+  printf "Already in Win32 mode\n"
+  exit 1
+fi
+
+printf "Renaming all Makefile to Makefile.unx\n"
+
+for file in $(find -name Makefile -print)
+do
+  printf '%s\n' $file
+  mv $file ${file}.unx
+done
+
+printf "Renaming all Makefile.w32 to Makefile\n"
+
+for file in $(find -name Makefile.w32 -print)
+do
+  printf '%s\n' $file
+  mv $file ${file%.w32}
+done

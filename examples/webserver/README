@@ -1,0 +1,44 @@
+File mosml/examples/webserver/README                     PS 1999-03-07
+
+This directory contains three simple webservers (HTTP servers) written
+in Moscow ML.  They all require the Socket structure and hence Dynlib.
+
+The three webservers are:
+
+(1) mosmlserver, which is a simple but usable webserver.  It
+    understands only GET requests, no CGI and no ~user shorthands.
+    But it does handle MIME types, and it handles URLs designating
+    directories correctly.
+(2) minimalserver, which is a real barebones version of mosmlserver
+    (less than 80 lines), useful for understanding the basics of
+    sockets and HTTP.  
+(3) echoserver, which simply sends the browser's HTTP request back to
+    the browser, and outputs on standard output the same HTTP response
+    header it sent to the browser.
+
+How to install and run
+----------------------
+
+1. Make sure you have Socket installed.
+   E.g., start mosml, then do load "Socket"; -- if this works, you're OK.
+
+2. Edit the source file, e.g. mosmlserver.sml: 
+   set myaddr (IP address), docroot (directory containing the documents
+   to be served to the web), and admin (your email address).
+
+3. Compile and start as indicated in the source file.
+
+
+WARNING
+-------
+Let docroot point to your usual web directory (e.g. "/home/ps/.public_html").  
+
+DO NOT let it point to your home directory: in that case, ALL your
+files will be readable from the Internet.
+
+When docroot points to a given directory, (only) files in that
+directory and its subdirectories are accessible to the webserver.
+Note that this includes all files to which there are symbolic links
+from the docroot directory or its subdirectories.
+
+

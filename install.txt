@@ -1,0 +1,166 @@
+This is file install.txt for Moscow ML 1.44 for Linux/Unix (August 1999)
+
+
+SYSTEM REQUIREMENTS
+
+Moscow ML was compiled under Linux 2.2.5 with egcs-2.91.66, and requires
+2 MB of RAM or more.  The installation requires 4 MB disk space.
+
+
+INSTALLING MOSCOW ML (BINARIES ONLY) UNDER LINUX
+
+(1) For a personal installation, move to your home directory, and unpack
+    the Moscow ML distribution using 
+
+        gzip -dc linux-mos14bin.tar.gz | tar xfv -
+
+    This creates a directory ~/mosml with subdirectories 
+
+    mosml/              readme, install.txt
+          bin/          mosml, mosmlc, mosmllex, mosmlyac, camlrunm,
+                        and the dynamically loadable libraries
+          copyrght/     copyright notices
+          doc/          manual.pdf, mosmlref.pdf, ...
+              mosmllib/ HTML-documentation of the Moscow ML library 
+          examples/     a few example programs
+          lib/          bytecode files and basis library units
+          tools/        mosmldep, Makefile.stub
+
+(2) Edit the variables `stdlib' and `mosmlbin' in the scripts
+         mosml/bin/mosml
+    and  mosml/bin/mosmlc
+    and  mosml/bin/mosmllex
+
+(3) Edit the file mosml/lib/header to contain the absolute location of
+    the camlrunm runtime system (e.g. /home/foo/mosml/bin/camlrunm or
+    /usr/local/mosml/bin/camlrunm).
+
+(4*) If you intend to use libraries that use dynamic linking, such as
+    Gdbm, Mysql, Polygdbm, Postgres, Regex, or Socket, define 
+
+	export LD_LIBRARY_PATH=${HOME}/mosml/bin	(for bash)
+	setenv LD_LIBRARY_PATH ${HOME}/mosml/bin	(for csh, tcsh)
+
+    Alternatively, if you are doing a systemwide installation, 
+    as needed for CGI scripts, do
+	- log in as root
+	- execute  cp -p ~/mosml/lib /usr/local/lib
+        - edit /etc/ld.so.conf to list /usr/local/lib on a separate line
+	- execute  ldconfig
+
+(5) Start Moscow ML by typing
+        mosml
+
+(6*) To check that dynamic linking works, do
+	fun myload u =
+            (load u; print ("\nLoaded " ^ u ^ "\n")) handle Fail _ => ();
+	app myload ["Gdbm", "Mysql", "Postgres", "Regex", "Socket"];
+
+To quit Moscow ML, type `quit();' or control-D.
+
+
+INSTALLING MOSCOW ML UNDER OTHER UNIXES
+
+If you have Linux, FreeBSD, NetBSD, HPPA+HP/UX 9 or 10, Sparc+SunOS,
+Sparc+Solaris, SGI MIPS+IRIX 5, DEC Alpha+OSF/1, and possibly other
+systems, then you can install Moscow ML as follows:
+
+(1) Choose a directory for the Moscow ML subdirectory to reside in,
+    such as /usr/local/ for a systemwide installation, or ${HOME}
+    for a personal installation.
+
+(2) Download the Unix source files from
+     ftp://ftp.dina.kvl.dk/pub/mosml/mos14src.tar.gz
+
+(3) Unpack it by executing (in /usr/local, or ${HOME})
+
+        gzip -dc mos14src.tar.gz | tar xvf -
+
+(4) Change directory to mosml/src
+
+(5) Edit file mosml/src/Makefile.inc to suit your system.  Set
+    MOSMLHOME to /usr/local/mosml, or ${HOME}/mosml.  Also, the
+    versions of /lib/cpp and other minor things differ among
+    operating systems; choose suitable values of the configuration
+    parameters for your system.
+  
+    If you want the runtime system to support dynamic linking of
+    foreign (C) functions, further uncomment the setup for this in the
+    Makefile.inc file. 
+
+(6) Execute (in mosml/src)
+
+        make clean
+        make world
+        make install
+
+(7) To check that the installation went well, you can try 
+     (7.1) * change directory to mosml/src/test 
+           * execute: make clean
+           * execute: make 
+           * diff result result.ok
+     (7.2) * change directory to mosml/src/mosmllib/test 
+           * execute: make clean
+           * execute: make 
+           * diff result result.ok
+     Note that some of the test cases are suitable only for 32-bit 
+     architectures, and will fail on 64-bit architectures (such as DEC
+     Alpha); this does not necessarily indicate that the Moscow ML
+     implementation is broken.
+
+(8) If you want to install libraries that use dynamic linking, note
+    point (4*) in the instructions above.  Furthermore, 
+
+    - to install support for Gdbm and Polygdbm persistent
+    hash tables, consult mosml/src/dynlibs/mgdbm/README
+
+    - to install support for the Postgresql relational
+    database server, consult mosml/src/dynlibs/mpq/README
+
+    - to install support for the Mysql relational database
+    server, consult mosml/src/dynlibs/mmysql/README
+
+    - to install support for POSIX 1003.2 regular
+    expressions, consult mosml/src/dynlibs/mregex/README
+
+    - to install support for sockets, consult
+    mosml/src/dynlibs/msocket/README
+
+    - to install support for Thomas Boutell's gd GIF image
+    package, consult mosml/src/dynlibs/mgd/README
+
+
+EXTENT OF THE IMPLEMENTATION
+
+The current version 1.44 of Moscow ML
+    * implements the Core language of Standard ML, as revised 1997
+    * implements large parts of the new SML Basis Library
+    * implements separate compilation and a limited version of the
+      Standard ML Modules language, with signatures and structures
+      but no functors
+    * can produce compact stand-alone executables (a la Caml Light)
+    * supports quotations and antiquotations, useful for metaprogramming
+
+
+AUTHOR AND CREDITS
+
+Moscow ML was written by
+    Sergei Romanenko (roman@keldysh.ru)
+    Keldysh Institute of Applied Mathematics, Russian Academy of Sciences
+    Miusskaya Pl. 4, 125047 Moscow, Russia.
+and Peter Sestoft (sestoft@dina.kvl.dk),
+    Department of Mathematics and Physics, Royal Veterinary and
+    Agricultural University, Thorvaldsensvej 40, DK-1871 Frederiksberg C, 
+    Denmark.  Much of the work was done at the Technical University of
+    Denmark, and while visiting AT&T Bell Laboratories, New Jersey, USA.
+
+Moscow ML owes much to:
+    * the CAML Light implementation by Xavier Leroy and Damien Doligez
+      (INRIA, Rocquencourt, France); especially the Caml Light bytecode
+      generator and the runtime system;
+    * the ML Kit by Lars Birkedal, Nick Rothwell, Mads Tofte and David Turner
+      (Copenhagen University, Denmark, and Edinburgh University, Scotland);
+    * inspiration from the SML/NJ compiler developed at Princeton
+      University and AT&T Bell Laboratories, New Jersey, USA; and
+    * the good work by Doug Currie, Flavors Technology, USA, on the
+      MacOS port and many improvements.

@@ -1,0 +1,1610 @@
+Moscow ML version 1.44 (August 1999)
+Enter `quit();' to quit.
+[opening file "test.sml"]
+[opening file "test1.sml"]
+> val it = 1 : int
+> val it = 5 : int
+> val it = 100 : int
+> val fact = fn : int -> int
+> val it = 24 : int
+> val append2 = fn : 'a list * 'a list -> 'a list
+> val it = [1, 2, 3, 4, 5, 6] : int list
+> val append = fn : 'a list -> 'a list -> 'a list
+> val it = [1, 2, 3, 4, 5, 6] : int list
+> val reverse = fn : 'a list -> 'a list
+> val it = [4, 3, 2, 1] : int list
+> val it = [false, true] : bool list
+> val @ = fn : 'a list * 'a list -> 'a list
+> infixr 5 @
+> val it = [1, 2, 3, 4, 5, 6] : int list
+[closing file "test1.sml"]
+> val it = () : unit
+[opening file "test2.sml"]
+> val fact = fn : int -> int
+> val it = 24 : int
+> val append2 = fn : 'a list * 'a list -> 'a list
+> val it = [1, 2, 3, 4, 5, 6] : int list
+> val append = fn : 'a list -> 'a list -> 'a list
+> val it = [1, 2, 3, 4, 5, 6] : int list
+> val reverse = fn : 'a list -> 'a list
+> val it = [4, 3, 2, 1] : int list
+> val it = [false, true] : bool list
+> val @ = fn : 'a list * 'a list -> 'a list
+> infixr 5 @
+> val it = [1, 2, 3, 4, 5, 6] : int list
+[closing file "test2.sml"]
+> val it = () : unit
+[opening file "test3.sml"]
+> datatype 'a Tree
+  con Lf = Lf : 'a Tree
+  con Br = fn : 'a * 'a Tree * 'a Tree -> 'a Tree
+> val t1 = Br(2, Br(1, Lf, Lf), Br(3, Lf, Lf)) : int Tree
+> val foldTree = fn : ('a -> 'b -> 'b -> 'b) -> 'b -> 'a Tree -> 'b
+> val revBranch = fn : 'a -> 'a Tree -> 'a Tree -> 'a Tree
+> val refl_t1 = Br(2, Br(3, Lf, Lf), Br(1, Lf, Lf)) : int Tree
+[closing file "test3.sml"]
+> val it = () : unit
+[opening file "test4.sml"]
+> val map = fn : ('a -> 'b) -> 'a list -> 'b list
+> val it = [2, 3, 4] : int list
+> infix 5 ++
+> val ++ = fn : 'a list * 'a list -> 'a list
+> val it = [1, 2, 3, 4, 5, 6] : int list
+> val reverse = fn : 'a list -> 'a list
+> val it = [4, 3, 2, 1] : int list
+> val it = [false, true] : bool list
+> infix 3 o
+> val o = fn : ('a -> 'b) * ('c -> 'a) -> 'c -> 'b
+> val it = [1, 2, 3] : int list
+> val zl = [(1, true), (2, false), (3, true)] : (int * bool) list
+> val fst = fn : 'a * 'b -> 'a
+> val snd = fn : 'a * 'b -> 'b
+> val it = [1, 2, 3] : int list
+> val split = fn : ('a * 'b) list -> 'a list * 'b list
+> val it = ([1, 2, 3], [true, false, true]) : int list * bool list
+> val member = fn : ''a -> ''a list -> bool
+> val it = true : bool
+> val it = false : bool
+[closing file "test4.sml"]
+> val it = () : unit
+[opening file "test5.sml"]
+> val it = [7] : int list
+> val Id = fn : 'a -> 'a
+> val Id' = fn : 'a -> 'a
+> val reverse = fn : 'a list -> 'a list
+> val it = [3, 2, 1] : int list
+> val it = [false, true] : bool list
+> val f = fn : int ref -> int ref * int
+> val it = (ref 666, 99) : int ref * int
+> val it = 8 : int
+[closing file "test5.sml"]
+> val it = () : unit
+[opening file "test6.sml"]
+> exn E = E : exn
+> val f = fn : unit -> 'a
+> val it = "OK" : string
+> val elist = [E, Size] : exn list
+> exn E' = E' : exn
+> val it = "OK" : string
+> val it = "OK" : string
+> exn G = fn : int -> exn
+> val it = "OK" : string
+[closing file "test6.sml"]
+> val it = () : unit
+[opening file "test7.sml"]
+> abstype 'a Stack
+  type 'a StackTop = 'a * 'a Stack
+  exn EmptyStack = EmptyStack : exn
+  val empty = <Stack> : 'a Stack
+  val top = fn : 'a Stack -> 'a
+  val push = fn : 'a -> 'a Stack -> 'a Stack
+  val pop = fn : 'a Stack -> 'a Stack
+> val st1 = <Stack> : int Stack
+> val top1 = 3 : int
+> val rest1 = <Stack> : int Stack
+[closing file "test7.sml"]
+> val it = () : unit
+[opening file "test8.sml"]
+> datatype 'a arex
+  type 'a binary = 'a arex * 'a arex
+  type 'a unary = 'a arex
+  con ADD = fn : 'a arex * 'a arex -> 'a arex
+  con SUB = fn : 'a arex * 'a arex -> 'a arex
+  con MINUS = fn : 'a arex -> 'a arex
+  con TIP = fn : 'a -> 'a arex
+> val a1 = MINUS(ADD(TIP 1, SUB(TIP 2, TIP 5))) : int arex
+[closing file "test8.sml"]
+> val it = () : unit
+[opening file "test9.sml"]
+> type person = {age : int, name : string}
+> val p1 = {age = 99, name = "Peter"} : {age : int, name : string}
+> val name1 = "Peter" : string
+  val age1 = 99 : int
+> val nameOfPerson = fn : {age : 'a, name : 'b} -> 'b
+> val name1 = "Peter" : string
+> val name = "Peter" : string
+  val age = 99 : int
+> val name = "Peter" : string
+> val name = "Peter" : string
+  val name1 = "Peter" : string
+> val f = fn : {age : int, name : string} -> string
+> val name1 = "Peter" : string
+> val age1 = 99 : int
+> val f = fn : {lab : int} -> int
+> val it =
+    fn
+    : 'a -> ({l1 : ''b, l2 : int} -> {l1 : ''b, l3 : string} -> bool) * bool
+(fn, true)> val it = () : unit
+> val it =
+    fn
+    : 'a ->
+      ({l1 : 'b, l2 : ''c} -> 'b) * ({l1 : 'd, l2 : 'e} -> 'd * 'e) *
+      ({l1 : ''f, l2 : ''g} -> bool * ''f * (''f * ''g))
+(fn, fn, fn)> val it = () : unit
+[closing file "test9.sml"]
+> val it = () : unit
+[opening file "testa.sml"]
+> val even = fn : int -> bool
+  val odd = fn : int -> bool
+> val it = true : bool
+> val it = false : bool
+> datatype 'a X
+  con X = fn : string -> 'a X
+> val stripX = fn : 'a X -> string
+> val it = fn : 'a -> string
+> val it = "OK" : string
+> val stripX666 = fn : 'a X -> 'a X
+> val it = fn : 'a -> 'b X
+> val it = X "000" : int X
+> val it = fn : 'a -> 'b X
+> val it = X "OK" : int X
+> datatype XXX
+  con A = fn : int * int -> XXX
+  con B = fn : int * int -> XXX
+> val a12 = A(1, 2) : XXX
+  val b12 = B(1, 2) : XXX
+> val strip = fn : XXX -> int * int
+> val it = false : bool
+> val it = true : bool
+[closing file "testa.sml"]
+> val it = () : unit
+[opening file "testb.sml"]
+File "testb.sml", line 3, characters 9-12:
+! (let val nil = [1,2] and _ =
+!          ^^^
+! Warning: pattern matching is not exhaustive
+
+> val it = "OK" : string
+File "testb.sml", line 7, characters 2-17:
+! ((fn 0 => "WRONG") 1)
+!   ^^^^^^^^^^^^^^^
+! Warning: pattern matching is not exhaustive
+
+> val it = "OK" : string
+> val it =
+    [{cause = Fail "OK", function = "OK", name = "OK"}]
+    : {cause : exn, function : string, name : string} list
+> val it =
+    ({cause = Fail "OK", function = "OK", name = "OK"},
+     {cause = Fail "OK", function = "OK", name = "OK"})
+    : {cause : exn, function : string, name : string} *
+      {cause : exn, function : string, name : string}
+> val it =
+    {aaa = {cause = Fail "OK", function = "OK", name = "OK"},
+     bbb = {cause = Fail "OK", function = "OK", name = "OK"}}
+    : {aaa : {cause : exn, function : string, name : string},
+       bbb : {cause : exn, function : string, name : string}}
+> val pr = fn : string -> string
+> val x7 =
+    fn
+    : 'a -> 'b -> 'c -> 'd -> 'e -> 'f -> 'g ->
+      'a * 'b * 'c * 'd * 'e * 'f * 'g
+246> val it =
+    ("1", "2", "3", "4", "5", "6", "7")
+    : string * string * string * string * string * string * string
+> datatype ('a, 'b) AB
+  con NILab = NILab : ('a, 'b) AB
+  con CONSab = fn : {a : 'a, b : 'b} -> ('a, 'b) AB
+ab> val it = CONSab{a = "a", b = "b"} : (string, string) AB
+ba> val it = CONSab{a = "a", b = "b"} : (string, string) AB
+> val f = fn : 'a -> 'a
+> val f = fn : int -> int
+> val it = "OK" : string
+[closing file "testb.sml"]
+> val it = () : unit
+[opening file "testc.sml"]
+> datatype xxx
+  con P = P : xxx
+  con Q = fn : {key : (xxx ref * xxx ref) list} -> xxx
+> val z = ref P : xxx ref
+> val it = () : unit
+> val it =
+    ref(Q{key =
+            [(ref(Q{key =
+                      [(ref(Q{key =
+                                [(ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]})),
+                                 (ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]}))]}),
+                        ref(Q{key =
+                                [(ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]})),
+                                 (ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]}))]})),
+                       (ref(Q{key =
+                                [(ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]})),
+                                 (ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]}))]}),
+                        ref(Q{key =
+                                [(ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]})),
+                                 (ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]}))]}))]}),
+              ref(Q{key =
+                      [(ref(Q{key =
+                                [(ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]})),
+                                 (ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]}))]}),
+                        ref(Q{key =
+                                [(ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]})),
+                                 (ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]}))]})),
+                       (ref(Q{key =
+                                [(ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]})),
+                                 (ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]}))]}),
+                        ref(Q{key =
+                                [(ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]})),
+                                 (ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]}))]}))]})),
+             (ref(Q{key =
+                      [(ref(Q{key =
+                                [(ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]})),
+                                 (ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]}))]}),
+                        ref(Q{key =
+                                [(ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]})),
+                                 (ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]}))]})),
+                       (ref(Q{key =
+                                [(ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]})),
+                                 (ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]}))]}),
+                        ref(Q{key =
+                                [(ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]})),
+                                 (ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]}))]}))]}),
+              ref(Q{key =
+                      [(ref(Q{key =
+                                [(ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]})),
+                                 (ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]}))]}),
+                        ref(Q{key =
+                                [(ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]})),
+                                 (ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]}))]})),
+                       (ref(Q{key =
+                                [(ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]})),
+                                 (ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]}))]}),
+                        ref(Q{key =
+                                [(ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]})),
+                                 (ref(Q{key = [(#, #), (#, #)]}),
+                                  ref(Q{key = [(#, #), (#, #)]}))]}))]}))]})
+    : xxx ref
+[closing file "testc.sml"]
+> val it = () : unit
+[opening file "testd.sml"]
+> val maxint = 1073741823 : int
+> val minint = ~1073741824 : int
+> infix 0 seq
+  val seq = fn : 'a * 'b -> 'b
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val sum = fn : int * int -> int
+> val diff = fn : int * int -> int
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val prod = fn : int * int -> int
+> val it = "OK" : string
+> val checkDivMod = fn : int -> int -> string
+23 10   > val it = "OK" : string
+~23 10   > val it = "OK" : string
+23 ~10   > val it = "OK" : string
+~23 ~10   > val it = "OK" : string
+100 10   > val it = "OK" : string
+~100 10   > val it = "OK" : string
+100 ~10   > val it = "OK" : string
+~100 ~10   > val it = "OK" : string
+100 1   > val it = "OK" : string
+100 ~1   > val it = "OK" : string
+0 1   > val it = "OK" : string
+0 ~1   > val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val maxri = 1073741823.0 : real
+> val minri = ~1073741824.0 : real
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+[closing file "testd.sml"]
+> val it = () : unit
+[opening file "teste.sml"]
+> val MAXDOUBLE = 8.98846567431E307 : real
+> val MINDOUBLE = 1E~307 : real
+> val pi = 3.14159265359 : real
+> val eps = 1E~14 : real
+> infix 0 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check1 = fn : ('a -> real) * 'a * real -> string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val check2 = fn : ('a * 'b -> real) * 'a * 'b * real -> string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val it = "OK" : string
+> val f = fn : real -> real
+[closing file "teste.sml"]
+> val it = () : unit
+[opening file "testprs.sml"]
+> datatype token
+  con Key = fn : string -> token
+  con Name = fn : string -> token
+> exn SynError = fn : string -> exn
+> val $ = fn : string -> token list -> string * token list
+> val id = fn : token list -> string * token list
+> infix 3 >>
+> val >> = fn : ('a -> 'b * 'c) * ('b -> 'd) -> 'a -> 'd * 'c
+> infix 0 ||
+> val || = fn : ('a -> 'b) * ('a -> 'b) -> 'a -> 'b
+> infix 5 ~~
+> val ~~ = fn : ('a -> 'b * 'c) * ('c -> 'd * 'e) -> 'a -> ('b * 'd) * 'e
+> val empty = fn : 'a -> 'b list * 'a
+> val many = fn : ('a -> 'b * 'a) -> 'a -> 'b list * 'a
+> val snd = fn : 'a * 'b -> 'b
+> val many_sep = fn : ('a -> 'b * 'c) -> ('c -> 'd * 'a) -> 'a -> 'b list * 'c
+> val parser = fn : ('a -> 'b * 'c list) -> 'a -> 'b
+> datatype typ
+  con Con = fn : string * typ list -> typ
+  con Var = fn : string -> typ
+> val parseTypeExp = fn : token list -> typ
+> val t1 = [Name "a", Key "->", Name "b", Key "->", Name "c"] : token list
+> val t2 =
+    [Key "(", Name "a", Key "->", Name "b", Key ")", Key "->", Name "c"]
+    : token list
+> val it = Con("->", [Var "a", Con("->", [Var "b", Var "c"])]) : typ
+> val it = Con("->", [Con("->", [Var "a", Var "b"]), Var "c"]) : typ
+[closing file "testprs.sml"]
+> val it = () : unit
+[opening file "ovlsucc.sml"]
+> type word8 = Word8.word
+> val iii1 = fn : int -> int -> int
+> val iii2 = fn : int -> int -> int
+> val iii3 = fn : int -> int -> int
+> val iii4 = fn : int -> int -> int
+> val iii5 = fn : int -> int -> int
+> val iii6 = fn : int -> int -> bool
+> val iib7 = fn : int -> int -> bool
+> val iib8 = fn : int -> int -> bool
+> val iib9 = fn : int -> int -> bool
+> val ii10 = fn : int -> int
+> val ii11 = fn : int -> int
+> val www1 = fn : word -> word -> word
+> val www2 = fn : word -> word -> word
+> val www3 = fn : word -> word -> word
+> val www4 = fn : word -> word -> word
+> val www5 = fn : word -> word -> word
+> val www6 = fn : word -> word -> bool
+> val wwb7 = fn : word -> word -> bool
+> val wwb8 = fn : word -> word -> bool
+> val wwb9 = fn : word -> word -> bool
+> val www1 = fn : Word8.word -> Word8.word -> Word8.word
+> val www2 = fn : Word8.word -> Word8.word -> Word8.word
+> val www3 = fn : Word8.word -> Word8.word -> Word8.word
+> val www4 = fn : Word8.word -> Word8.word -> Word8.word
+> val www5 = fn : Word8.word -> Word8.word -> Word8.word
+> val www6 = fn : Word8.word -> Word8.word -> bool
+> val wwb7 = fn : Word8.word -> Word8.word -> bool
+> val wwb8 = fn : Word8.word -> Word8.word -> bool
+> val wwb9 = fn : Word8.word -> Word8.word -> bool
+> val rrr1 = fn : real -> real -> real
+> val rrr2 = fn : real -> real -> real
+> val rrr3 = fn : real -> real -> real
+> val rrb4 = fn : real -> real -> bool
+> val rrb5 = fn : real -> real -> bool
+> val rrb6 = fn : real -> real -> bool
+> val rrb7 = fn : real -> real -> bool
+> val rr8 = fn : real -> real
+> val rr9 = fn : real -> real
+> val ssb1 = fn : string -> string -> bool
+> val ssb2 = fn : string -> string -> bool
+> val ssb3 = fn : string -> string -> bool
+> val ssb4 = fn : string -> string -> bool
+> val ccb1 = fn : char -> char -> bool
+> val ccb2 = fn : char -> char -> bool
+> val ccb3 = fn : char -> char -> bool
+> val ccb4 = fn : char -> char -> bool
+> val succ1 = fn : Word8.word -> Word8.word list
+> val succ2 = fn : word -> word list
+> val less = fn : int * int -> bool
+  val minii = fn : int * int -> int
+> val is12 = fn : int -> string
+> val ws10 = fn : word -> string
+> val ws10 = fn : Word8.word -> string
+> val rs10 = fn : real -> string
+> val ss5 = fn : string -> string
+> val cs5 = fn : char -> string
+> val eei1 = true : bool
+> val eew1 = true : bool
+> val eec1 = true : bool
+> val eeg1 = true : bool
+User: 0.530  System: 0.010  GC: 0.000  Real: 0.538
+> val it = 7 : int
+> val loop2 = fn : int -> int
+User: 0.500  System: 0.000  GC: 0.000  Real: 0.498
+> val it = 7 : int
+> val maxi = fn : int Array.array -> int * int
+[closing file "ovlsucc.sml"]
+> val it = () : unit
+[opening file "constsuc.sml"]
+> val minInt1 = ~1073741824 : int
+> val maxInt1 = 1073741823 : int
+> val minInt2 = ~1073741824 : int
+> val maxInt21 = 1073741823 : int
+> val maxInt22 = 1073741823 : int
+> val test1 = true : bool
+> val test2 = true : bool
+> val maxWord1 = 0wx7FFFFFFF : word
+> val maxWord2 = 0wx7FFFFFFF : word
+> val test3 = true : bool
+> val maxWord8_1 = 0wxFF : word
+> val maxWord8_2 = 0wxFF : word
+> val test4 = true : bool
+[closing file "constsuc.sml"]
+> val it = () : unit
+[opening file "testmatc.sml"]
+> val check' = fn : (unit -> bool) -> string
+> val checkres1 = fn : ('a -> ''b) -> ('a * ''b) list -> string
+  val checkres2 = fn : ('a -> 'b -> ''c) -> ('a * 'b * ''c) list -> string
+File "testmatc.sml", line 14-15, characters 4-56:
+! ....f1 ([], [])       = 111 
+!   | f1 (x::xr, y::yr) = 222.........
+! Warning: pattern matching is not exhaustive
+
+> val f1 = fn : 'a list * 'b list -> int
+File "testmatc.sml", line 17-18, characters 4-60:
+! ....f1c []      []      = 111 
+!   | f1c (x::xr) (y::yr) = 222.........
+! Warning: pattern matching is not exhaustive
+
+> val f1c = fn : 'a list -> 'b list -> int
+> val test1a = "OK" : string
+> val test1b = "OK" : string
+  val test1c = "OK" : string
+  val test2a = "OK" : string
+File "testmatc.sml", line 30-32, characters 4-84:
+! ....f2 ([], [])       = 111 
+!   | f2 (x::xr, y::yr) = 222
+!   | f2 ([], [])       = 333.
+! Warning: some cases are unused in this match.
+
+File "testmatc.sml", line 30-32, characters 4-84:
+! ....f2 ([], [])       = 111 
+!   | f2 (x::xr, y::yr) = 222
+!   | f2 ([], [])       = 333.
+! Warning: pattern matching is not exhaustive
+
+> val test2b = "OK" : string
+  val test2c = "OK" : string
+  val f2 = fn : 'a list * 'b list -> int
+File "testmatc.sml", line 34-36, characters 4-90:
+! ....f2c []      []      = 111 
+!   | f2c (x::xr) (y::yr) = 222
+!   | f2c []      []      = 333.
+! Warning: some cases are unused in this match.
+
+File "testmatc.sml", line 34-36, characters 4-90:
+! ....f2c []      []      = 111 
+!   | f2c (x::xr) (y::yr) = 222
+!   | f2c []      []      = 333.
+! Warning: pattern matching is not exhaustive
+
+> val f2c = fn : 'a list -> 'b list -> int
+> val test3a = "OK" : string
+> val test3b = "OK" : string
+  val test3c = "OK" : string
+  val test4a = "OK" : string
+> datatype 'a t
+  val test4b = "OK" : string
+  val test4c = "OK" : string
+  con Uniq = fn : 'a -> 'a t
+  val fc1 = fn : string t -> string
+  val test5 = "OK" : string
+  val berry = fn : bool * bool * bool -> int
+> val testberry = "OK" : string
+File "testmatc.sml", line 80-84, characters 4-154:
+! ....fcon (A,   B, C [] ) = 111
+!   | fcon (A,   B, C [1]) = 222
+!   | fcon (B,   B, _    ) = 333
+!   | fcon (A,   A, A    ) = 444
+!   | fcon (C[], A, A    ) = 555.
+! Warning: pattern matching is not exhaustive
+
+> datatype t
+  con A = A : t
+  con B = B : t
+  con C = fn : int list -> t
+  val fcon = fn : t * t * t -> int
+> val test6a = "OK" : string
+> val test6b = "OK" : string
+> val test6c = "OK" : string
+> val test6d = "OK" : string
+File "testmatc.sml", line 106-110, characters 4-89:
+! ....fi 101  = 111
+!   | fi 102  = 222
+!   | fi 101  = 333
+!   | fi 104  = 444
+!   | fi ~101 = 555.
+! Warning: some cases are unused in this match.
+
+File "testmatc.sml", line 106-110, characters 4-89:
+! ....fi 101  = 111
+!   | fi 102  = 222
+!   | fi 101  = 333
+!   | fi 104  = 444
+!   | fi ~101 = 555.
+! Warning: pattern matching is not exhaustive
+
+> val fi = fn : int -> int
+> val test10a = "OK" : string
+File "testmatc.sml", line 117-120, characters 4-87:
+! ....fs "first"  = 111
+!   | fs "second" = 222
+!   | fs "first"  = 333
+!   | fs "fourth" = 444.
+! Warning: some cases are unused in this match.
+
+File "testmatc.sml", line 117-120, characters 4-87:
+! ....fs "first"  = 111
+!   | fs "second" = 222
+!   | fs "first"  = 333
+!   | fs "fourth" = 444.
+! Warning: pattern matching is not exhaustive
+
+> val test10b = "OK" : string
+  val test10c = "OK" : string
+  val test10d = "OK" : string
+  val fs = fn : string -> int
+> val test11a = "OK" : string
+File "testmatc.sml", line 126-129, characters 4-71:
+! ....fc #"A" = 111
+!   | fc #"B" = 222
+!   | fc #"A" = 333
+!   | fc #"D" = 444.
+! Warning: some cases are unused in this match.
+
+File "testmatc.sml", line 126-129, characters 4-71:
+! ....fc #"A" = 111
+!   | fc #"B" = 222
+!   | fc #"A" = 333
+!   | fc #"D" = 444.
+! Warning: pattern matching is not exhaustive
+
+> val test11b = "OK" : string
+  val test11c = "OK" : string
+  val fc = fn : char -> int
+> val test12a = "OK" : string
+File "testmatc.sml", line 137-140, characters 4-79:
+! ....fw 0wx101 = 111
+!   | fw 0wx102 = 222
+!   | fw 0wx101 = 333
+!   | fw 0wx104 = 444.
+! Warning: some cases are unused in this match.
+
+File "testmatc.sml", line 137-140, characters 4-79:
+! ....fw 0wx101 = 111
+!   | fw 0wx102 = 222
+!   | fw 0wx101 = 333
+!   | fw 0wx104 = 444.
+! Warning: pattern matching is not exhaustive
+
+> val test12b = "OK" : string
+  val test12c = "OK" : string
+  val test12d = "OK" : string
+  val test12e = "OK" : string
+  val fw = fn : word -> int
+> val test13a = "OK" : string
+File "testmatc.sml", line 147-151, characters 4-99:
+! ....fr 101.0  = 111
+!   | fr 102.5  = 222
+!   | fr 101.0  = 333
+!   | fr 104.8  = 444
+!   | fr ~101.0 = 555.
+! Warning: some cases are unused in this match.
+
+File "testmatc.sml", line 147-151, characters 4-99:
+! ....fr 101.0  = 111
+!   | fr 102.5  = 222
+!   | fr 101.0  = 333
+!   | fr 104.8  = 444
+!   | fr ~101.0 = 555.
+! Warning: pattern matching is not exhaustive
+
+> val test13b = "OK" : string
+  val test13c = "OK" : string
+  val test13d = "OK" : string
+  val fr = fn : real -> int
+> val test14a = "OK" : string
+File "testmatc.sml", line 162-163, characters 4-39:
+! ....funit1 () = 111
+!   | funit1 x  = 222.
+! Warning: some cases are unused in this match.
+
+> val test14b = "OK" : string
+  val test14c = "OK" : string
+  val test14d = "OK" : string
+  val funit1 = fn : unit -> int
+File "testmatc.sml", line 165-166, characters 4-39:
+! ....funit2 {} = 111
+!   | funit2 x  = 222.
+! Warning: some cases are unused in this match.
+
+> val funit2 = fn : unit -> int
+> val test20 = "OK" : string
+> val test21 = "OK" : string
+File "testmatc.sml", line 174-182, characters 4-380:
+! ....berryvec #[true,  false, _    ] = 111
+!   | berryvec #[false, _,     true ] = 222
+!   | berryvec #[_,     true,  false] = 333
+!   | berryvec #[false, false, false] = 444
+!   | berryvec #[]                    = 666
+!   | berryvec #[true]                = 777
+!   | berryvec #[true, true]          = 888
+!   | berryvec #[true, true, true, true] = 999
+!   | berryvec #[true,  true,  true ] = 555
+! Warning: pattern matching is not exhaustive
+
+> val berryvec = fn : bool vector -> int
+  val testberryvec = "OK" : string
+File "testmatc.sml", line 198-199, characters 4-49:
+! ....fref1 (ref ()) = 111
+!   | fref1 (ref x)  = 222.
+! Warning: some cases are unused in this match.
+
+> val fref1 = fn : unit ref -> int
+> val test30 = "OK" : string
+> val fref2 = fn : int list ref -> int
+> val test31 = "OK" : string
+> val dynExcon = A : exn
+  exn A = A : exn
+  exn C = C : exn
+  exn D = D : exn
+> exn B = B : exn
+File "testmatc.sml", line 225-228, characters 4-63:
+! ....fexc1 A = 1
+!   | fexc1 B = 2
+!   | fexc1 A = 3
+!   | fexc1 C = 4.
+! Warning: some cases are unused in this match.
+
+File "testmatc.sml", line 225-228, characters 4-63:
+! ....fexc1 A = 1
+!   | fexc1 B = 2
+!   | fexc1 A = 3
+!   | fexc1 C = 4.
+! Warning: pattern matching is not exhaustive
+
+> val fexc1 = fn : exn -> int
+> val test40a = "OK" : string
+> val test40b = "OK" : string
+> val test40c = "OK" : string
+> val test40d = "OK" : string
+> val test40e = "OK" : string
+> exn I = fn : int -> exn
+  exn R = fn : real -> exn
+  exn Z = fn : int -> exn
+File "testmatc.sml", line 243-251, characters 4-224:
+! ....fexc2 (I 7)    = 111
+!   | fexc2 (R 1.2)  = 222
+!   | fexc2 (I 8)    = 333
+!   | fexc2 (R ~1.2) = 444
+!   | fexc2 (Z 9)    = 555
+!   | fexc2 (Fail s) = 666
+!   | fexc2 (R ~1.2) = 777
+!   | fexc2 (Z 8)    = 888
+!   | fexc2 _        = 999.
+! Warning: some cases are unused in this match.
+
+> val fexc2 = fn : exn -> int
+> val test41a = "OK" : string
+File "testmatc.sml", line 265-268, characters 5-71:
+! 	....fexc11 A = 1
+! 	  | fexc11 B = 2
+! 	  | fexc11 A = 3
+! 	  | fexc11 C = 4.
+! Warning: pattern matching is not exhaustive
+
+> val enclose42 = fn : unit -> string list
+> val test42 = ["OK", "OK", "OK", "OK", "OK"] : string list
+> val enclose43 = fn : unit -> string
+> val test43 = "OK" : string
+File "testmatc.sml", line 311, characters 13-15:
+!     let val [x] = xs in x end
+!              ^^
+! Warning: pattern matching is not exhaustive
+
+> val fbind = fn : 'a list -> 'a
+  val test50a = "OK" : string
+> val test50b = "OK" : string
+> val test50c = "OK" : string
+> val esc = fn : string -> int
+> val test60a = "OK" : string
+  val irr1 = fn : unit * int -> int
+> val irr2 = fn : 'a vector * int -> int
+> val irr3 = fn : 'a * int -> int
+> val test70 = true : bool
+> exn A71 = A71 : exn
+File "testmatc.sml", line 364, characters 20-59:
+!     in (case A71 of B71 => true | A71 => false | _ => false)
+!                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Warning: some cases are unused in this match.
+
+File "testmatc.sml", line 366, characters 20-59:
+!        (case B71 of A71 => true | B71 => false | _ => false)
+!                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Warning: some cases are unused in this match.
+
+> val test71 = true : bool
+  exn A72 = fn : int -> exn
+> val test71 = true : bool
+[closing file "testmatc.sml"]
+> val it = () : unit
+[opening file "recsucc.sml"]
+> datatype t
+  con g = fn : int -> t
+  exn F = F : exn
+  exn G = fn : int -> exn
+  val f = fn : 'a -> 'a
+> val g = fn : 'a -> 'a
+> val F = fn : 'a -> 'a
+> val G = fn : 'a -> 'a
+> datatype t
+  con g = fn : int -> t
+  exn F = F : exn
+  exn G = fn : int -> exn
+  val f = fn : 'a -> 'a
+> val g = fn : 'a -> 'a
+> val F = fn : 'a -> 'a
+> val G = fn : 'a -> 'a
+> infix 0 ff
+  infix 0 gg
+  infix 0 FF
+  infix 0 GG
+  datatype t
+  con gg = fn : int -> t
+  exn FF = FF : exn
+  exn GG = fn : int -> exn
+  val ff = fn : 'a * 'b -> 'a
+> val gg = fn : 'a * 'b -> 'a
+> val FF = fn : 'a * 'b -> 'a
+> val GG = fn : 'a * 'b -> 'a
+> val it = fn : 'a -> 'a
+> val it = fn : 'a -> 'a
+File "recsucc.sml", line 47, characters 21-22:
+! val test1 = (let val f = g 8 in false end handle Bind => true | _ => false);
+!                      ^
+! Warning: pattern matching is not exhaustive
+
+> datatype t
+  con f = f : t
+  con g = fn : int -> t
+  exn F = F : exn
+  exn G = fn : int -> exn
+  val test1 = true : bool
+> val f = fn : 'a -> 'a
+  val g = fn : 'a -> 'a
+> val f = fn : 'a -> 'a
+  val g = fn : 'a -> 'a
+> val f = fn : 'a -> 'b
+  val g = fn : 'a -> 'b
+  val h = fn : 'a -> 'b
+> val f = fn : 'a -> 'a
+> val f = fn : 'a -> 'a
+> val f = fn : int -> int
+> val f = fn : int -> int
+[closing file "recsucc.sml"]
+> val it = () : unit
+[opening file "testpp.sml"]
+> val it = () : unit
+> exn PP1 = PP1 : exn
+  exn PP2 = fn : int -> exn
+  val intfail0 = fn : 'a -> int -> 'b
+> val a = <installed prettyprinter failed: Fail "ak"> : int
+> val intfail1 = fn : 'a -> int -> 'b
+> val b = <installed prettyprinter failed: PP1> : int
+> val intfail2 = fn : 'a -> int -> 'b
+> val c = <installed prettyprinter failed: PP2 <poly>> : int
+> val cl =
+    [<installed prettyprinter failed: PP2 <poly>>,
+     <installed prettyprinter failed: PP2 <poly>>,
+     <installed prettyprinter failed: PP2 <poly>>]
+    : int list
+> val boolfail1 = fn : 'a -> bool -> 'b
+> val d = <installed prettyprinter failed: ?{PP3}> : bool
+> val boolfail2 = fn : 'a -> bool -> 'b
+> val e = <installed prettyprinter failed: ?{PP4} <poly>> : bool
+> exn PP5 = PP5 : exn
+  val exnfail1 = fn : 'a -> exn -> 'b
+> val f = <installed prettyprinter failed: PP5> : exn
+> val exnfail2 = fn : 'a -> exn -> 'b
+> val g =
+    <installed prettyprinter failed: Io {cause =
+                                           <installed prettyprinter failed: Io {cause =
+                                                                                  <installed prettyprinter failed: Io {cause =
+                                                                                                                         <installed prettyprinter failed: Io {cause =
+                                                                                                                                                                <installed prettyprinter failed: Io {cause =
+                                                                                                                                                                                                       <installed prettyprinter failed: Io {cause =
+                                                                                                                                                                                                                                              <installed prettyprinter failed: Io {cause =
+                                                                                                                                                                                                                                                                                     <installed prettyprinter failed: Io {cause =
+                                                                                                                                                                                                                                                                                                                            <installed prettyprinter failed: Io {cause =
+                                                                                                                                                                                                                                                                                                                                                                   <installed prettyprinter failed: Io {cause =
+                                                                                                                                                                                                                                                                                                                                                                                                          <installed prettyprinter failed: Io #>,
+                                                                                                                                                                                                                                                                                                                                                                                                        function =
+                                                                                                                                                                                                                                                                                                                                                                                                          "nofun",
+                                                                                                                                                                                                                                                                                                                                                                                                        name =
+                                                                                                                                                                                                                                                                                                                                                                                                          "noname"}>,
+                                                                                                                                                                                                                                                                                                                                                                 function =
+                                                                                                                                                                                                                                                                                                                                                                   "nofun",
+                                                                                                                                                                                                                                                                                                                                                                 name =
+                                                                                                                                                                                                                                                                                                                                                                   "noname"}>,
+                                                                                                                                                                                                                                                                                                                          function =
+                                                                                                                                                                                                                                                                                                                            "nofun",
+                                                                                                                                                                                                                                                                                                                          name =
+                                                                                                                                                                                                                                                                                                                            "noname"}>,
+                                                                                                                                                                                                                                                                                   function =
+                                                                                                                                                                                                                                                                                     "nofun",
+                                                                                                                                                                                                                                                                                   name =
+                                                                                                                                                                                                                                                                                     "noname"}>,
+                                                                                                                                                                                                                                            function =
+                                                                                                                                                                                                                                              "nofun",
+                                                                                                                                                                                                                                            name =
+                                                                                                                                                                                                                                              "noname"}>,
+                                                                                                                                                                                                     function =
+                                                                                                                                                                                                       "nofun",
+                                                                                                                                                                                                     name =
+                                                                                                                                                                                                       "noname"}>,
+                                                                                                                                                              function =
+                                                                                                                                                                "nofun",
+                                                                                                                                                              name =
+                                                                                                                                                                "noname"}>,
+                                                                                                                       function =
+                                                                                                                         "nofun",
+                                                                                                                       name =
+                                                                                                                         "noname"}>,
+                                                                                function =
+                                                                                  "nofun",
+                                                                                name =
+                                                                                  "noname"}>,
+                                         function = "nofun", name = "noname"}>
+    : exn
+> exn PP7 = PP7 : exn
+  val intfail3 = fn : ppstream -> int -> 'a
+> val h = so far so good<installed prettyprinter failed: PP7> : int
+[closing file "testpp.sml"]
+> val it = () : unit
+Moscow ML version 1.44 (August 1999)
+Enter `quit();' to quit.
+- > type word8 = Word8.word
+- ! Toplevel input:
+! fun fail1 (x : 'a) = x + x;
+!                      ^
+! Type clash: expression of explicit type 'a
+! cannot have type
+!   'b
+- ! Toplevel input:
+! fun fail2 (x as (a,b,c)) = x + x;
+!                              ^
+! Overloaded + cannot be applied to argument(s) of type 'a * 'b * 'c
+- ! Toplevel input:
+! fun fail3 (x : bool -> bool) = x + x;
+!                                  ^
+! Overloaded + cannot be applied to argument(s) of type bool -> bool
+- ! Toplevel input:
+! fun fail4 (x : bool) = x + x;
+!                          ^
+! Overloaded + cannot be applied to argument(s) of type bool
+- ! Toplevel input:
+! fun fail5 (x : int Array.array) = x + x;
+!                                     ^
+! Overloaded + cannot be applied to argument(s) of type int Array.array
+- ! Toplevel input:
+! fun fail6 x = abs x before ignore (x + 0w0);
+!               ^^^
+! Overloaded abs cannot be applied to argument(s) of type word
+- ! Toplevel input:
+! fun fail7 x = ~ x before ignore (x + 0w0);
+!               ^
+! Overloaded ~ cannot be applied to argument(s) of type word
+- ! Toplevel input:
+! fun fail8 x y = x div y before ignore (y + 0.0);
+!                   ^^^
+! Overloaded div cannot be applied to argument(s) of type real
+- ! Toplevel input:
+! fun fail9 x y = x mod y before ignore (y + 0.0); 
+!                   ^^^
+! Overloaded mod cannot be applied to argument(s) of type real
+- ! Toplevel input:
+! fun fail10  x y = x + y before ignore (y ^ "");
+!                     ^
+! Overloaded + cannot be applied to argument(s) of type string
+- ! Toplevel input:
+! fun fail11  x y = x - y before ignore (y ^ "");
+!                     ^
+! Overloaded - cannot be applied to argument(s) of type string
+- ! Toplevel input:
+! fun fail12 x y = x * y before ignore (y ^ "");
+!                    ^
+! Overloaded * cannot be applied to argument(s) of type string
+- ! Toplevel input:
+! fun fail13 x y = x div y before ignore (y ^ "");
+!                    ^^^
+! Overloaded div cannot be applied to argument(s) of type string
+- ! Toplevel input:
+! fun fail14 x y = x mod y before ignore (y ^ ""); 
+!                    ^^^
+! Overloaded mod cannot be applied to argument(s) of type string
+- ! Toplevel input:
+! fun fail15 x = abs x before ignore (x ^ "");
+!                ^^^
+! Overloaded abs cannot be applied to argument(s) of type string
+- ! Toplevel input:
+! fun fail16 x = ~ x before ignore (x ^ "");
+!                ^
+! Overloaded ~ cannot be applied to argument(s) of type string
+- ! Toplevel input:
+! fun fail17  x y = x + y before ignore (ord y);
+!                     ^
+! Overloaded + cannot be applied to argument(s) of type char
+- ! Toplevel input:
+! fun fail18  x y = x - y before ignore (ord y);
+!                     ^
+! Overloaded - cannot be applied to argument(s) of type char
+- ! Toplevel input:
+! fun fail19 x y = x * y before ignore (ord y);
+!                    ^
+! Overloaded * cannot be applied to argument(s) of type char
+- ! Toplevel input:
+! fun fail20 x y = x div y before ignore (ord y);
+!                    ^^^
+! Overloaded div cannot be applied to argument(s) of type char
+- ! Toplevel input:
+! fun fail21 x y = x mod y before ignore (ord y); 
+!                    ^^^
+! Overloaded mod cannot be applied to argument(s) of type char
+- ! Toplevel input:
+! fun fail22 x = abs x before ignore (ord x);
+!                ^^^
+! Overloaded abs cannot be applied to argument(s) of type char
+- ! Toplevel input:
+! fun fail23 x = ~ x before ignore (ord x);
+!                ^
+! Overloaded ~ cannot be applied to argument(s) of type char
+- ! Toplevel input:
+! fun fail24 x = abs x before ignore (x + 0w0 : word8);
+!                ^^^
+! Overloaded abs cannot be applied to argument(s) of type Word8.word
+- ! Toplevel input:
+! fun fail25 x = ~ x before ignore (x + 0w0 : word8);
+!                ^
+! Overloaded ~ cannot be applied to argument(s) of type Word8.word
+- ! Toplevel input:
+! val fail26 = 0w1 : int;
+!              ^^^
+! Overloaded word constant cannot have type int
+- ! Toplevel input:
+! val fail27 = 0w1 : real;
+!              ^^^
+! Overloaded word constant cannot have type real
+- ! Toplevel input:
+! val fail28 = 0w1 : string;
+!              ^^^
+! Overloaded word constant cannot have type string
+- ! Toplevel input:
+! val fail29 = 0w1 : char;
+!              ^^^
+! Overloaded word constant cannot have type char
+- ! Toplevel input:
+! val fail30 = 0w1 : bool;
+!              ^^^
+! Overloaded word constant cannot have type bool
+- ! Toplevel input:
+! val fail31 = 0w1 : int Array.array;
+!              ^^^
+! Overloaded word constant cannot have type int Array.array
+- ! Toplevel input:
+! fun fail32 (x as 0w256) = [x, x, x, 0w0 : word8]
+!                  ^^^^^
+! Word8.word constant is too large
+- 
+Moscow ML version 1.44 (August 1999)
+Enter `quit();' to quit.
+- ! Toplevel input:
+! val fail1 = ~1073741825;
+!             ^^^^^^^^^^^
+! Lexical error: integer constant is too large.
+- ! Toplevel input:
+! val fail2 =  1073741824;
+!              ^^^^^^^^^^
+! Lexical error: integer constant is too large.
+- ! Toplevel input:
+! val fail3 = ~0x40000001;
+!             ^^^^^^^^^^^
+! Lexical error: integer constant is too large.
+- ! Toplevel input:
+! val fail4 =  0x40000000;
+!              ^^^^^^^^^^
+! Lexical error: integer constant is too large.
+- ! Toplevel input:
+! val fail5 = 0w2147483648;
+!             ^^^^^^^^^^^^
+! Lexical error: word constant is too large.
+- ! Toplevel input:
+! val fail6 = 0wx80000000;
+!             ^^^^^^^^^^^
+! Lexical error: word constant is too large.
+- ! Toplevel input:
+! val fail7 = 0w256  : Word8.word;
+!             ^^^^^
+! Word8.word constant is too large
+- ! Toplevel input:
+! val fail8 = 0wx100 : Word8.word;
+!             ^^^^^^
+! Word8.word constant is too large
+- ! Toplevel input:
+! val fail9  =  9999999999999999999999999999999999999999;
+!               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Lexical error: integer constant is too large.
+- ! Toplevel input:
+! val fail10 = ~9999999999999999999999999999999999999999;
+!              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Lexical error: integer constant is too large.
+- ! Toplevel input:
+! val fail11 =  0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+!               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Lexical error: integer constant is too large.
+- ! Toplevel input:
+! val fail12 = ~0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+!              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Lexical error: integer constant is too large.
+- ! Toplevel input:
+! val fail13 = 0wxFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+!              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Lexical error: word constant is too large.
+- ! Toplevel input:
+! val fail14 = 0wxFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF : Word8.word;
+!              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Lexical error: word constant is too large.
+- 
+Moscow ML version 1.44 (August 1999)
+Enter `quit();' to quit.
+- ! Toplevel input:
+! datatype t = true;
+!              ^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! datatype t = false;
+!              ^^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! datatype t = it;
+!              ^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! datatype t = nil;
+!              ^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! datatype t = op ::;
+!              ^^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! datatype t = ref;
+!              ^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! datatype t = true of int;
+!              ^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! datatype t = false of int;
+!              ^^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! datatype t = it of int;
+!              ^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! datatype t = nil of int;
+!              ^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! datatype t = op :: of int;
+!              ^^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! datatype t = ref of int; 
+!              ^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception true;
+!           ^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception false;
+!           ^^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception it;
+!           ^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception nil;
+!           ^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception op ::;
+!           ^^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception ref;
+!           ^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception true = Div;
+!           ^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception false = Div;
+!           ^^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception it = Div;
+!           ^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception nil = Div;
+!           ^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception op :: = Div;
+!           ^^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception ref = Div;
+!           ^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception true of int;
+!           ^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception false of int;
+!           ^^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception it of int;
+!           ^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception nil of int;
+!           ^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception op :: of int;
+!           ^^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! exception ref of int; 
+!           ^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! abstype t = true of int with end;
+!             ^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! abstype t = false of int with end;
+!             ^^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! abstype t = it of int with end;
+!             ^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! abstype t = nil of int with end;
+!             ^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! abstype t = op :: of int with end;
+!             ^^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! abstype t = ref of int with end;  
+!             ^^^
+! Illegal rebinding or respecification
+- 
+Moscow ML version 1.44 (August 1999)
+Enter `quit();' to quit.
+- > val it = fn : 'a -> ('a -> 'b) -> 'b
+- ! Toplevel input:
+!   f 3
+!     ^
+! Type clash: expression of type
+!   int
+! cannot have type
+!   int -> 'a
+- > val g = fn : 'a list -> int
+- > val h = fn : int list -> int
+- ! Toplevel input:
+!   | k (x::xs) = 1 + k[7,9] + k[true];
+!                                ^^^^
+! Type clash: expression of type
+!   bool
+! cannot have type
+!   int
+- ! Toplevel input:
+! (fn x => let val y : 'aaa = x in y y end) 5;
+!                             ^
+! Type clash: expression of type
+!   'a
+! cannot have explicit type 'aaa
+- ! Toplevel input:
+! val x = (let val Id : 'z -> 'z = fn z => z in Id Id end,
+!                                                  ^^
+! Type clash: expression of type
+!   'z -> 'z
+! cannot have explicit type 'z
+- ! Toplevel input:
+!   (f {lab1=88, lab2="a"}, f {lab1=99, lab2=true})
+!                                            ^^^^
+! Type clash: expression of type
+!   bool
+! cannot have type
+!   string
+- ! Toplevel input:
+!         | mcurryAcc k xs = fn x => mcurryAcc (k-1) (x::xs)
+!                                    ^^^^^^^^^^^^^^^^^^^^^^^
+! Type clash: expression of type
+!   'a -> 'b
+! cannot have type
+!   'b
+! because of circularity
+- 
+Moscow ML version 1.44 (August 1999)
+Enter `quit();' to quit.
+- ! Toplevel input:
+! fun f1 x = (x=x, x 1);
+!                  ^
+! Type clash: expression of equality type ''a
+! cannot have type
+!   'b -> 'c
+- ! Toplevel input:
+! fun f2 x = (x 1, x=x);
+!                  ^
+! Type clash: expression of type
+!   int -> 'a
+! cannot have equality type ''b
+- ! Toplevel input:
+! fun f3a x = f3a [x];
+!                  ^
+! Type clash: expression of type
+!   'a list
+! cannot have type
+!   'a
+! because of circularity
+- ! Toplevel input:
+! fun f3b (x : 'a) = f3b [x];
+!                         ^^
+! Type clash: expression of type
+!   'b list
+! cannot have explicit type 'a
+- ! Toplevel input:
+! fun f3c x = (x=x, f3c [x]);
+!                   ^^^^^^^
+! Type clash: expression of type
+!   bool * 'a
+! cannot have type
+!   'a
+! because of circularity
+- ! Toplevel input:
+! fun f4 [x] = f4 x;
+!                 ^
+! Type clash: expression of type
+!   'a
+! cannot have type
+!   'a list
+! because of circularity
+- ! Toplevel input:
+! fun f5 (SOME x) = f5 x;
+!                      ^
+! Type clash: expression of type
+!   'a
+! cannot have type
+!   'a option
+! because of circularity
+- ! Toplevel input:
+! fun f6 (x, y, z) = f6([x], x, x);
+!                        ^
+! Type clash: expression of type
+!   'a list
+! cannot have type
+!   'a
+! because of circularity
+- ! Toplevel input:
+! fun f7 [x : bool] = f7 x ;
+!                        ^
+! Type clash: expression of type
+!   bool
+! cannot have type
+!   bool list
+- ! Toplevel input:
+! fun f8a (x : 'a) = x=x;
+!                    ^
+! Type clash: expression of type
+!   'a
+! cannot have equality type ''a
+- ! Toplevel input:
+! fun f8b (x : '_a) = x=x;
+!                     ^
+! Type clash: expression of type
+!   'a
+! cannot have equality type ''a
+- ! Toplevel input:
+! fun f9 {x, ...} = f9 x;
+!                      ^
+! Type clash: expression of type
+!   'a
+! cannot have type
+!   {x : 'a, ...}
+! because of circularity
+- ! Toplevel input:
+! fun f10 (r as {a, b, c}) = r = {d=2};
+!                                ^^^^^
+! Type clash: expression of type
+!   {d : 'a}
+! cannot have type
+!   {a : ''b, b : ''c, c : ''d}
+! because record label  a  is missing
+- ! Toplevel input:
+! fun f11 x = #11 = #11;
+!             ^^^
+! Type clash: match rule of type
+!   'a -> 'b
+! cannot have equality type ''c
+- ! Toplevel input:
+! fun f12a (x as {u, v}) = #w x;
+!                             ^
+! Type clash: expression of type
+!   {u : 'a, v : 'b}
+! cannot have type
+!   {u : 'a, v : 'b, w : 'c, ...}
+! because record label  w  is missing
+- ! Toplevel input:
+! fun f12b (x as {u, v}) = #3 x;
+!                             ^
+! Type clash: expression of type
+!   {u : 'a, v : 'b}
+! cannot have type
+!   {u : 'a, v : 'b, 3 : 'c, ...}
+! because record label  3  is missing
+- ! Toplevel input:
+! fun f13 (x as {u, v}) = x = {z = 12};
+!                             ^^^^^^^^
+! Type clash: expression of type
+!   {z : 'a}
+! cannot have type
+!   {u : ''b, v : ''c}
+! because record label  u  is missing
+- ! Toplevel input:
+! fun f14 (x as (u, v)) = x = ([1],2,3);
+!                             ^^^^^^^^^
+! Type clash: expression of type
+!   'a * 'b * 'c
+! cannot have type
+!   ''d * ''e
+! because the tuple has the wrong number of components
+- ! Toplevel input:
+! fun f14 (x as (u, v)) = #3 x;
+!                            ^
+! Type clash: expression of type
+!   'a * 'b
+! cannot have type
+!   {1 : 'a, 2 : 'b, 3 : 'c, ...}
+! because record label  3  is missing
+- ! Toplevel input:
+! val f15 = (let val Id : 'a -> 'a = fn z => z in Id Id end,
+!                                                    ^^
+! Type clash: expression of type
+!   'a -> 'a
+! cannot have explicit type 'a
+- 
+Moscow ML version 1.44 (August 1999)
+Enter `quit();' to quit.
+- ! Toplevel input:
+! fun true x  = x;
+!     ^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! fun false x = x;
+!     ^^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! fun nil x   = x;
+!     ^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! fun [] x    = x;
+!      ^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! fun ref x   = x;
+!     ^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! val rec true    = fn x => x;
+!         ^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! val rec false   = fn x => x;
+!         ^^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! val rec nil     = fn x => x;
+!         ^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! val rec []      = fn x => x;
+!          ^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! val rec (op ::) = fn x => x;
+!          ^^^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! val rec ref     = fn x => x;
+!         ^^^
+! Illegal rebinding or respecification
+- ! Toplevel input:
+! val rec General.x              = fn x => x;
+!         ^^^^^^^^^
+! Variable names in patterns cannot be qualified
+- ! Toplevel input:
+! fun General.f                  = fn x => x;     
+!     ^^^^^^^^^
+! Ill-formed left hand side of a clause
+- ! Toplevel input:
+! val rec General.f as g         = fn x => x;
+!         ^^^^^^^^^
+! Variable names in patterns cannot be qualified
+- ! Toplevel input:
+! val rec f as General.g         = fn x => x;
+!              ^^^^^^^^^
+! Variable names in patterns cannot be qualified
+- ! Toplevel input:
+! val rec General.f as (g)       = fn x => x;
+!         ^^^^^^^^^
+! Variable names in patterns cannot be qualified
+- ! Toplevel input:
+! val rec f as (General.g)       = fn x => x;
+!               ^^^^^^^^^
+! Variable names in patterns cannot be qualified
+- ! Toplevel input:
+! val rec f as g as General.h    = fn x => g x;
+!                   ^^^^^^^^^
+! Variable names in patterns cannot be qualified
+- ! Toplevel input:
+! val rec (General.f)            = fn x => x;
+!          ^^^^^^^^^
+! Variable names in patterns cannot be qualified
+- ! Toplevel input:
+! val rec ((General.f))          = fn x => x;
+!           ^^^^^^^^^
+! Variable names in patterns cannot be qualified
+- ! Toplevel input:
+! val rec General.f : int -> int = fn x => x;
+!         ^^^^^^^^^
+! Variable names in patterns cannot be qualified
+- ! Toplevel input:
+! val rec #[]     = fn x => x;
+!         ^^^
+! Ill-formed left hand side in recursive binding
+- ! Toplevel input:
+! val rec ()      = fn x => x;
+!         ^^
+! Ill-formed left hand side in recursive binding
+- ! Toplevel input:
+! val rec (a, b)  = fn x => x;
+!         ^^^^^^
+! Ill-formed left hand side in recursive binding
+- ! Toplevel input:
+! val rec {a, b}  = fn x => x;
+!         ^^^^^^
+! Ill-formed left hand side in recursive binding
+- ! Toplevel input:
+! val rec { 1=a } = fn x => x;
+!         ^^^^^^^
+! Ill-formed left hand side in recursive binding
+- ! Toplevel input:
+! val rec [_]     = fn x => x;
+!          ^^
+! Ill-formed left hand side in recursive binding
+- ! Toplevel input:
+! fun _       x = x;
+!     ^^^^^^^^^
+! Ill-formed clause start
+- ! Toplevel input:
+! fun #[]     x = x;
+!     ^^^^^^^^^
+! Ill-formed clause start
+- ! Toplevel input:
+! fun ()      x = x;
+!     ^^^^^^^^^
+! Ill-formed clause start
+- ! Toplevel input:
+! fun (a, b)  x = x;
+!     ^^^^^^^^^
+! Ill-formed clause start
+- ! Toplevel input:
+! fun {a, b}  x = x;
+!     ^^^^^^^^^
+! Ill-formed clause start
+- ! Toplevel input:
+! fun { 1=a } x = x;
+!     ^^^^^^^^^
+! Ill-formed clause start
+- ! Toplevel input:
+! fun [_]     x = x;
+!      ^^^^^^^^
+! Ill-formed clause start
+- 

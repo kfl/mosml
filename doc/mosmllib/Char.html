@@ -1,0 +1,192 @@
+<HTML><HEAD><TITLE>Structure Char</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Char</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>(* Char -- SML Basis Library *)
+<A NAME="line2"></A>
+<A NAME="line3"></A>type char = char
+<A NAME="line4"></A>
+<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#minChar">minChar</A> : char
+<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#maxChar">maxChar</A> : char
+<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#maxOrd">maxOrd</A>  : int       
+<A NAME="line8"></A>
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#chr">chr</A>     : int  -> char         (* may raise Chr *)
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#ord">ord</A>     : char -> int
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#succ">succ</A>    : char -> char         (* may raise Chr *)
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#pred">pred</A>    : char -> char         (* may raise Chr *)
+<A NAME="line13"></A>
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#isLower">isLower</A>     : char -> bool   (* contains "abcdefghijklmnopqrstuvwxyz"  *)
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#isUpper">isUpper</A>     : char -> bool   (* contains "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  *)
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#isDigit">isDigit</A>     : char -> bool   (* contains "0123456789"                  *)
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#isAlpha">isAlpha</A>     : char -> bool   (* isUpper orelse isLower                 *)
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#isHexDigit">isHexDigit</A>  : char -> bool   (* isDigit orelse contains "abcdefABCDEF" *)
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#isAlphaNum">isAlphaNum</A>  : char -> bool   (* isAlpha orelse isDigit                 *)
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#isPrint">isPrint</A>     : char -> bool   (* any printable character (incl. #" ")   *)
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#isSpace">isSpace</A>     : char -> bool   (* contains " \t\r\n\v\f"                 *)
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#isPunct">isPunct</A>     : char -> bool   (* printable, not space or alphanumeric   *) 
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#isGraph">isGraph</A>     : char -> bool   (* (not isSpace) andalso isPrint          *)
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#isAscii">isAscii</A>     : char -> bool   (* ord c < 128                            *)
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#isCntrl">isCntrl</A>     : char -> bool   (* control character                      *)
+<A NAME="line26"></A>
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#toLower">toLower</A>     : char -> char
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#toUpper">toUpper</A>     : char -> char
+<A NAME="line29"></A>
+<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#fromString">fromString</A>  : string -> char option       (* ML escape sequences *)
+<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#toString">toString</A>    : char -> string              (* ML escape sequences *)
+<A NAME="line32"></A>
+<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#fromCString">fromCString</A> : string -> char option       (* C escape sequences  *)
+<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#toCString">toCString</A>   : char -> string              (* C escape sequences  *)
+<A NAME="line35"></A>
+<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#contains">contains</A>    : string -> char -> bool
+<A NAME="line37"></A>val <A NAME="line37"></A><A HREF="#notContains">notContains</A> : string -> char -> bool
+<A NAME="line38"></A>
+<A NAME="line39"></A>val <A NAME="line39"></A><A HREF="#<"><</A>  : char * char -> bool
+<A NAME="line40"></A>val <A NAME="line40"></A><= : char * char -> bool
+<A NAME="line41"></A>val <A NAME="line41"></A>>  : char * char -> bool
+<A NAME="line42"></A>val <A NAME="line42"></A>>= : char * char -> bool
+<A NAME="line43"></A>val <A NAME="line43"></A><A HREF="#compare">compare</A> : char * char -> order
+<A NAME="line44"></A>
+<A NAME="line45"></A>(* 
+   [<A NAME="char"><B>char</B></A>] is the type of characters.  
+
+   [<A NAME="minChar"><B>minChar</B></A>] is the least character in the ordering <.
+
+   [<A NAME="maxChar"><B>maxChar</B></A>] is the greatest character in the ordering <.
+
+   [<A NAME="maxOrd"><B>maxOrd</B></A>] is the greatest character code; equals ord(maxChar).
+
+   [<A NAME="chr"><B>chr</B></A> i] returns the character whose code is i.  Raises Chr if
+   i<0 or i>maxOrd.
+
+   [<A NAME="ord"><B>ord</B></A> c] returns the code of character c.
+
+   [<A NAME="succ"><B>succ</B></A> c] returns the character immediately following c, or raises
+   Chr if c = maxChar.
+
+   [<A NAME="pred"><B>pred</B></A> c] returns the character immediately preceding c, or raises
+   Chr if c = minChar.
+
+   [<A NAME="isLower"><B>isLower</B></A> c] returns true if c is a lowercase letter (a to z).
+
+   [<A NAME="isUpper"><B>isUpper</B></A> c] returns true if c is a uppercase letter (A to Z).
+
+   [<A NAME="isDigit"><B>isDigit</B></A> c] returns true if c is a decimal digit (0 to 9).
+
+   [<A NAME="isAlpha"><B>isAlpha</B></A> c] returns true if c is a letter (lowercase or uppercase).
+
+   [<A NAME="isHexDigit"><B>isHexDigit</B></A> c] returns true if c is a hexadecimal digit (0 to 9 or 
+   a to f or A to F).
+
+   [<A NAME="isAlphaNum"><B>isAlphaNum</B></A> c] returns true if c is alphanumeric (a letter or a
+   decimal digit).
+
+   [<A NAME="isPrint"><B>isPrint</B></A> c] returns true if c is a printable character (space or visible)
+
+   [<A NAME="isSpace"><B>isSpace</B></A> c] returns true if c is a whitespace character (blank, newline,
+   tab, vertical tab, new page).
+
+   [<A NAME="isGraph"><B>isGraph</B></A> c] returns true if c is a graphical character, that is,
+   it is printable and not a whitespace character.
+
+   [<A NAME="isPunct"><B>isPunct</B></A> c] returns true if c is a punctuation character, that is, 
+   graphical but not alphanumeric.
+
+   [<A NAME="isCntrl"><B>isCntrl</B></A> c] returns true if c is a control character, that is, if
+   not (isPrint c).
+
+   [<A NAME="isAscii"><B>isAscii</B></A> c] returns true if 0 <= ord c <= 127.
+
+   [<A NAME="toLower"><B>toLower</B></A> c] returns the lowercase letter corresponding to c,
+   if c is a letter (a to z or A to Z); otherwise returns c.
+
+   [<A NAME="toUpper"><B>toUpper</B></A> c] returns the uppercase letter corresponding to c,
+   if c is a letter (a to z or A to Z); otherwise returns c.
+
+   [<A NAME="contains"><B>contains</B></A> s c] returns true if character c occurs in the string s;
+   false otherwise.  The function, when applied to s, builds a table
+   and returns a function which uses table lookup to decide whether a
+   given character is in the string or not.  Hence it is relatively
+   expensive to compute  val p = contains s  but very fast to compute 
+   p(c) for any given character.
+
+   [<A NAME="notContains"><B>notContains</B></A> s c] returns true if character c does not occur in the
+   string s; false otherwise.  Works by construction of a lookup table
+   in the same way as the above function.
+
+   [<A NAME="fromString"><B>fromString</B></A> s] attempts to scan a character or ML escape sequence
+   from the string s.  Does not skip leading whitespace.  For
+   instance, fromString "\\065" equals #"A".
+
+   [<A NAME="toString"><B>toString</B></A> c] returns a string consisting of the character c, if c
+   is printable, else an ML escape sequence corresponding to c.  A
+   printable character is mapped to a one-character string; bell,
+   backspace, tab, newline, vertical tab, form feed, and carriage
+   return are mapped to the two-character strings "\\a", "\\b", "\\t",
+   "\\n", "\\v", "\\f", and "\\r"; other characters with code less
+   than 32 are mapped to three-character strings of the form "\\^Z",
+   and characters with codes 127 through 255 are mapped to
+   four-character strings of the form "\\ddd", where ddd are three decimal 
+   digits representing the character code.  For instance,
+             toString #"A"      equals "A" 
+             toString #"\\"     equals "\\\\" 
+             toString #"\""     equals "\\\"" 
+             toString (chr   0) equals "\\^@"
+             toString (chr   1) equals "\\^A"
+             toString (chr   6) equals "\\^F"
+             toString (chr   7) equals "\\a"
+             toString (chr   8) equals "\\b"
+             toString (chr   9) equals "\\t"
+             toString (chr  10) equals "\\n"
+             toString (chr  11) equals "\\v"
+             toString (chr  12) equals "\\f"
+             toString (chr  13) equals "\\r"
+             toString (chr  14) equals "\\^N"
+             toString (chr 127) equals "\\127"
+             toString (chr 128) equals "\\128"
+
+   [<A NAME="fromCString"><B>fromCString</B></A> s] attempts to scan a character or C escape sequence
+   from the string s.  Does not skip leading whitespace.  For
+   instance, fromString "\\065" equals #"A".
+
+   [<A NAME="toCString"><B>toCString</B></A> c] returns a string consisting of the character c, if c
+   is printable, else an C escape sequence corresponding to c.  A
+   printable character is mapped to a one-character string; bell,
+   backspace, tab, newline, vertical tab, form feed, and carriage
+   return are mapped to the two-character strings "\\a", "\\b", "\\t",
+   "\\n", "\\v", "\\f", and "\\r"; other characters are mapped to 
+   four-character strings of the form "\\ooo", where ooo are three 
+   octal digits representing the character code.  For instance,
+             toString #"A"      equals "A" 
+             toString #"A"      equals "A" 
+             toString #"\\"     equals "\\\\" 
+             toString #"\""     equals "\\\"" 
+             toString (chr   0) equals "\\000"
+             toString (chr   1) equals "\\001"
+             toString (chr   6) equals "\\006"
+             toString (chr   7) equals "\\a"
+             toString (chr   8) equals "\\b"
+             toString (chr   9) equals "\\t"
+             toString (chr  10) equals "\\n"
+             toString (chr  11) equals "\\v"
+             toString (chr  12) equals "\\f"
+             toString (chr  13) equals "\\r"
+             toString (chr  14) equals "\\016"
+             toString (chr 127) equals "\\177"
+             toString (chr 128) equals "\\200"
+
+   [<A NAME="<"><B><</B></A>] compares character codes.  That is, c1 < c2 returns true 
+   if ord(c1) < ord(c2), and similarly for <=, >, >=.  
+
+   [<A NAME="compare"><B>compare</B></A>(c1, c2)] returns LESS, EQUAL, or GREATER, according as c1 is
+   precedes, equals, or follows c2 in the ordering Char.< .
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

@@ -1,0 +1,62 @@
+Interface to the PostgreSQL database server
+-------------------------------------------
+
+This directory provides a C interface to the PostgreSQL relational
+database server.  Using this interface, you can communicate with and
+control this fully-fledged, robust database server from Moscow ML
+programs.  The interaction uses the standard query language SQL, which
+is not described here.  The many books about relational database
+management systems (RDBMS), and the PostgreSQL documentation, describe
+SQL.
+
+If the example fails to compile with the message
+        ld: cannot open -lcrypt: No such file or directory 
+then try deleting -lcrypt from the libmpq.so line in the Makefile;
+probably crypt() is defined in the standard C library.
+
+The interface consists of the following files:
+
+        mpq.c           Implements the dynamic library libmpq.so which 
+                        interfaces Moscow ML to the Postgres libpq library.
+
+        Postgres.sig    Moscow ML's view of the PostgreSQL system.
+        Postgres.sml    
+
+You must have the following components:
+        
+        PostgreSQL      Can be found many places on the Internet, such as
+                        http://www.postgres.org
+
+        Postgres        The Moscow ML library interface to the PostgreSQL
+                        database server.
+
+        Dynlib          The Moscow ML foreign (C) function interface.
+                        Supported for Linux, Solaris, MS Win32, MacOS,
+	                Digital Unix, and HP-UX in mosml 1.44
+
+The runtime system must be compiled with support for dynamic linking
+of foreign functions (edit mosml/src/Makefile.inc to achieve this).
+
+1. Edit the mpq/Makefile to make PGSQLDIR point to the directory in
+   which you installed PostgreSQL.
+
+2. Compile mpq.c, Postgres.sig, and Postgres.sml:
+
+        make
+
+3. Install mpq in the directory determined by BINDIR in src/Makefile.inc:
+
+        make install
+
+4. Set your LD_LIBRARY_PATH to point to the BINDIR directory.
+
+        For tcsh: setenv LD_LIBRARY_PATH $BINDIR
+        For bash: LD_LIBRARY_PATH=$BINDIR
+                  export LD_LIBRARY_PATH
+
+5. Test the library:
+
+        mosml testpgsql.sml
+
+----------------------------------------------------------------------
+File mosml/src/dynlibs/mpq/README * sestoft@dina.kvl.dk * 1998-10-29

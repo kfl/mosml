@@ -1,0 +1,114 @@
+<HTML><HEAD><TITLE>Structure Time</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Time</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>(* Time -- SML Basis Library *)
+<A NAME="line2"></A>
+<A NAME="line3"></A>eqtype time
+<A NAME="line4"></A>
+<A NAME="line5"></A>exception Time
+<A NAME="line6"></A>
+<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#zeroTime">zeroTime</A> : time
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#now">now</A>      : unit -> time
+<A NAME="line9"></A>
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#toSeconds">toSeconds</A>        : time -> int
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#toMilliseconds">toMilliseconds</A>   : time -> int
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#toMicroseconds">toMicroseconds</A>   : time -> int
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#fromSeconds">fromSeconds</A>      : int -> time
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#fromMilliseconds">fromMilliseconds</A> : int -> time
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#fromMicroseconds">fromMicroseconds</A> : int -> time
+<A NAME="line16"></A>
+<A NAME="line17"></A>val <A NAME="line17"></A>fromReal : real -> time
+<A NAME="line18"></A>val <A NAME="line18"></A>toReal   : time -> real
+<A NAME="line19"></A>
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#toString">toString</A>   : time -> string	(* rounded to millisecond precision *)
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#fmt">fmt</A>        : int -> time -> string
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#fromString">fromString</A> : string -> time option
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#scan">scan</A>       : (char, 'a) StringCvt.reader -> (time, 'a) StringCvt.reader
+<A NAME="line24"></A>
+<A NAME="line25"></A>val <A NAME="line25"></A>+  : time * time -> time
+<A NAME="line26"></A>val <A NAME="line26"></A>-  : time * time -> time
+<A NAME="line27"></A>val <A NAME="line27"></A><  : time * time -> bool
+<A NAME="line28"></A>val <A NAME="line28"></A><= : time * time -> bool
+<A NAME="line29"></A>val <A NAME="line29"></A>>  : time * time -> bool
+<A NAME="line30"></A>val <A NAME="line30"></A>>= : time * time -> bool
+<A NAME="line31"></A>
+<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#compare">compare</A> : time * time -> order
+<A NAME="line33"></A>
+<A NAME="line34"></A>(* Values of type [time] represent durations as well as absolute points 
+<A NAME="line35"></A>   in time (which can be thought of as durations since some time zero).
+<A NAME="line36"></A>
+   [<A NAME="zeroTime"><B>zeroTime</B></A>] represents the 0-second duration, and the origin of time, 
+   so zeroTime + t = t + zeroTime = t for all t.
+
+   [<A NAME="now"><B>now</B></A> ()] returns the point in time at which the application occurs.
+
+   [<A NAME="fromSeconds"><B>fromSeconds</B></A> s] returns the time value corresponding to s seconds.  
+   Raises Time if s < 0.
+
+   [<A NAME="fromMilliseconds"><B>fromMilliseconds</B></A> ms] returns the time value corresponding to ms
+   milliseconds.  Raises Time if ms < 0.
+
+   [<A NAME="fromMicroseconds"><B>fromMicroseconds</B></A> us] returns the time value corresponding to us
+   microseconds.  Raises Time if us < 0.
+
+   [<A NAME="toSeconds"><B>toSeconds</B></A> t] returns the number of seconds represented by t,
+   truncated.  Raises Overflow if that number is not representable as
+   an int.
+
+   [<A NAME="toMilliseconds"><B>toMilliseconds</B></A> t] returns the number of milliseconds
+   represented by t, truncated.  Raises Overflow if that number is not
+   representable as an int.
+
+   [<A NAME="toMicroseconds"><B>toMicroseconds</B></A> t] returns the number of microseconds
+   represented by t, truncated.  Raises Overflow if t that number is
+   not representable as an int.
+
+   [<A NAME="realToTime"><B>realToTime</B></A> r] converts a real to a time value representing that
+   many seconds.  Raises Time if r < 0 or if r is not representable
+   as a time value.  It holds that realToTime 0.0 = zeroTime.  
+
+   [<A NAME="timeToReal"><B>timeToReal</B></A> t] converts a time the number of seconds it represents;
+   hence realToTime and timeToReal are inverses of each other when 
+   defined.  Raises Overflow if t is not representable as a real.
+
+   [<A NAME="fmt"><B>fmt</B></A> n t] returns as a string the number of seconds represented by
+   t, rounded to n decimal digits.  If n <= 0, then no decimal digits
+   are reported. 
+
+   [<A NAME="toString"><B>toString</B></A> t] returns as a string the number of seconds represented
+   by t, rounded to 3 decimal digits.  Equivalent to (fmt 3 t).  
+
+   [<A NAME="fromString"><B>fromString</B></A> s] returns SOME t where t is the time value represented
+   by the string s of form [\n\t ]*([0-9]+(\.[0-9]+)?)|(\.[0-9]+); 
+   or returns NONE if s cannot be parsed as a time value.
+
+   [<A NAME="scan"><B>scan</B></A> getc src], where getc is a character accessor, returns SOME
+   (t, rest) where t is a time and rest is rest of the input, or NONE
+   if s cannot be parsed as a time value.
+
+   [<A NAME="t1"><B>t1</B></A> + t2] is the sum of the times t1 and t2.  For reals r1, r2 >= 0.0, 
+   realToTime r1 + realToTime r2 = realToTime(Real.+(r1,r2)).  Raises 
+   Overflow if the result is not representable as a time value.
+
+   [<A NAME="t1"><B>t1</B></A> - t2] is the t1 minus t2, that is, the duration from t2 to t1.
+   Raises Time if t1 < t2 or if the result is not representable as a
+   time value.  It holds that t - zeroTime = t.
+
+   [<A NAME="t1"><B>t1</B></A> < t2] asserts that t1 is strictly before t2.  Similarly for
+   <=, >, >=.  It holds for reals r1, r2 >= 0.0 that
+       realToTime r1 < realToTime r2  iff  Real.<(r1, r2) 
+
+   [<A NAME="compare"><B>compare</B></A>(t1, t2)] returns LESS, EQUAL, or GREATER, according 
+   as t1 precedes, equals, or follows t2 in time.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

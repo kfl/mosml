@@ -1,0 +1,6 @@
+# Win32 Makefile for mosml/examples/weak
+
+all: 
+	mosml hashcons.sml
+
+### DO NOT DELETE THIS LINE

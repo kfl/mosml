@@ -1,0 +1,14 @@
+The source files for mosmlyac (in directory mosml/src/mosmlyac) are
+based on those of camlyacc, distributed with the Caml Light system.
+The Caml Light system was developed by Xavier Leroy and Damien Doligez
+at INRIA Rocquencourt, France.  Camlyacc in turn is based on Bob
+Corbett's Berkeley yacc, see below.
+
+Mosmlyac was instrumental in bootstrapping Moscow ML in Moscow ML, and
+is included here in the hope that it will be useful to others as well.
+
+--- README file from camlyacc ----------------------------------------
+This parser generator for Caml Light is based on Bob Corbett's public
+domain Yacc, also known as Berkeley Yacc. It is a pleasure to
+acknowledge Corbett's outstanding work.
+----------------------------------------------------------------------

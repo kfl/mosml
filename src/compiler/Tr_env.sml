@@ -1,0 +1,271 @@
+(* tr_env.ml: handling of the translation environment. *)
+
+open List Fnlib Mixture Const Prim Lambda Globals Units Types Asynt Asyntfn;
+
+type RenEnv = (string * int) list;
+
+datatype AccessPath =
+    Path_local of int
+  | Path_global of (QualifiedIdent * int)
+  | Path_son of int * AccessPath
+  | Path_virtual_son of int * AccessPath
+;
+
+(* cvr: modified 
+type TranslEnv = (string, AccessPath) Env * int;
+*)
+
+type TranslEnv = (Const.Id, AccessPath) Env * int;
+
+
+(* cvr:
+fun lookupRenEnv q =
+  let val {qual, id} = q in
+    if qual = "" then fatalError "lookupRenEnv: empty qualifier"
+    else ();
+    if qual = currentUnitName() then
+      (mkUniqueGlobalName (id, Hasht.find (!currentRenEnv) id)
+       handle Subscript => fatalError
+         ("lookupRenEnv: unknown variable: " ^ showQualId q))
+    else
+      (q, 0)
+  end
+;
+*)
+
+fun lookupRenEnv asId q =
+  let val {qual, id = [i]} = q 
+      val mangled_i = mangle (asId i) 
+  in (* cvr: TODO treat lond ids *)
+    if qual = "" then fatalError ("lookupRenEnv: empty qualifier for "^i)
+    else ();
+    if qual = currentUnitName() then
+      (mkUniqueGlobalName (mangled_i, Hasht.find (!currentRenEnv) (mangled_i))
+       handle Subscript => fatalError
+         ("lookupRenEnv: unknown variable: " ^ showQualId q))
+    else
+      ({qual=qual,id = [mangled_i]}, 0)
+  end
+;
+
+fun updateCurrentRenEnv RE =
+  app (fn (x,y) => Hasht.insert (!currentRenEnv) x y)
+      (rev RE)
+;
+
+fun renameId id = (id, newValStamp());
+
+(* Generating lambda expressions from access pahts *)
+
+fun translatePath depth = fn
+    Path_local i => Lvar (depth-(i+1))
+  | Path_global uid => Lprim(Pget_global uid, [])
+  | Path_virtual_son(arity, p) =>
+      translatePath depth p
+  | Path_son(n, p)
+      => Lprim(Pfield n, [translatePath depth p])
+;
+
+fun translateTopOfPath depth = fn
+    Path_virtual_son(arity, Path_local i) =>
+      let val lvar = Lvar (depth-(i+1)) in
+        Lprim(Pmakeblock(CONtag(0,1)),
+              tabulate(arity, (fn n => Lprim(Pfield n, [lvar]))))
+      end
+  | Path_virtual_son(arity, p) =>
+      Llet([translatePath depth p],
+        Lprim(Pmakeblock(CONtag(0,1)),
+              tabulate(arity, (fn n => Lprim(Pfield n, [Lvar 0])))))
+  | p => translatePath depth p
+;
+
+fun translateLocalAccess asId (rho, depth) id =
+  translateTopOfPath depth (lookupEnv rho (asId id))
+  handle Subscript =>
+    fatalError ("translateLocalAccess"^id)
+;
+(* cvr:
+fun lookupInLocalEnv env q =
+  let val {qual, id} = q in
+    if qual = "" orelse qual = currentUnitName() then
+      lookupEnv env id
+    else
+      raise Subscript
+  end
+;
+*)
+fun lookupInLocalEnv asId env q =
+  let val {qual, id=[i]} = q in (* cvr: TODO handle long ids *)
+    if qual = "" orelse qual = currentUnitName() then
+      lookupEnv env (asId i)
+    else
+      raise Subscript
+  end
+;
+
+fun translateAccess asId (rho, depth) q =
+  translateTopOfPath depth (lookupInLocalEnv asId rho q)
+  handle Subscript =>
+    Lprim(Pget_global (lookupRenEnv asId q), [])
+;
+
+(* cvr: added *)
+
+fun translateLongAccess asId env (ii:IdInfo) = 
+    let val {info={idKind,idFields,...}, ...} = ii
+        val {qualid, ...} = !idKind
+    in 
+    case qualid of 
+       {qual,id=[]} => Lstruct []
+    |  {qual,id=[_]} => translateAccess asId env qualid
+    |  {qual,id} => 
+         let fun trLongAccess [id] _ = 
+                    translateAccess ModId env {qual = qual,id = [id]}
+               | trLongAccess (id::ids) (field::fields) = 
+                    Lprim(Pfield field, [trLongAccess ids fields])
+               | trLongAccess _ _ = fatalError "trLongAccess"
+         in trLongAccess id (!idFields)
+         end
+    end;
+
+
+(* cvr: rewrote 
+fun translateExName env (ii : IdInfo) =
+  let val {qualid, info} = ii in
+    case #info(!(#idKind info)) of
+        EXCONik _ =>
+          translateAccess env qualid
+      | _ => fatalError "translateExName"
+  end;
+*)
+
+
+fun translateExName env (ii : IdInfo) =
+  let val {qualid, info} = ii in
+    case #info(!(#idKind info)) of
+        EXCONik _ =>
+          translateLongAccess ValId env ii
+      | _ => fatalError "translateExName"
+  end;
+
+fun pair x y = (x, y);
+
+fun pathsOfPatAcc path ((loc, pat') : Pat) acc =
+  case pat' of
+    SCONpat _ => acc
+  | VARpat ii =>
+      bindInEnv acc (ValId (hd(#id(#qualid ii)))) path
+  | WILDCARDpat => acc
+  | NILpat _ => acc
+  | CONSpat(ii, p) =>
+      let val ci = getConInfo ii in
+        if #conSpan(!ci) = 1 then
+          pathsOfPatAcc path p acc
+        else if #conIsGreedy(!ci) then
+          (if #conTag(!ci) = 0 then
+             pathsOfPatAcc path p acc
+           else
+             pathsOfPatAcc (Path_virtual_son(#conArity(!ci), path)) p acc)
+        else
+          pathsOfPatAcc (Path_son(0, path)) p acc
+      end
+  | EXNILpat _ => acc
+  | EXCONSpat(ii, p) =>
+      let val ei = getExConInfo ii in
+        case (isExConStatic ei, #exconIsGreedy(!ei)) of
+             (true,  true ) =>
+               pathsOfPatAcc (Path_virtual_son(#exconArity(!ei), path))
+                             p acc
+           | (true,  false) =>
+               pathsOfPatAcc (Path_son(0, path)) p acc
+           | (false, _    ) =>
+               pathsOfPatAcc (Path_son(1, path)) p acc
+      end
+  | EXNAMEpat _ => fatalError "pathsOfPatAcc"
+  | REFpat p =>
+      pathsOfPatAcc (Path_son(0, path)) p acc
+  | RECpat(ref (TUPLErp ps)) =>
+      foldR (fn(i,p) => fn acc => pathsOfPatAcc (Path_son(i,path)) p acc)
+            acc (mapFrom pair 0 ps)
+  | RECpat(ref (RECrp _)) =>
+      fatalError "pathsOfPatAcc: unresolved record pattern"
+  | VECpat ps =>
+      foldR (fn(i,p) => fn acc => pathsOfPatAcc (Path_son(i,path)) p acc)
+            acc (mapFrom pair 0 ps)
+  | INFIXpat _ => fatalError "pathsOfPatAcc"
+  | PARpat p =>
+      pathsOfPatAcc path p acc
+  | TYPEDpat(p, _) =>
+      pathsOfPatAcc path p acc
+  | LAYEREDpat(p1, p2) =>
+      pathsOfPatAcc path p1 (pathsOfPatAcc path p2 acc)
+;
+
+fun pathsOfPat path pat = pathsOfPatAcc path pat NILenv;
+
+fun mutableVarsOfPatAcc ((loc, pat') : Pat) acc =
+  case pat' of
+    SCONpat _ => acc
+  | VARpat _ => acc
+  | WILDCARDpat => acc
+  | NILpat _ => acc
+  | CONSpat(_, p) =>
+      mutableVarsOfPatAcc p acc
+  | EXNILpat _ => acc
+  | EXCONSpat(ii, p) =>
+      mutableVarsOfPatAcc p acc
+  | EXNAMEpat _ => fatalError "mutableVarsOfPatAcc"
+  | REFpat p =>
+      domPatAcc p acc
+  | RECpat(ref (TUPLErp ps)) =>
+      foldR mutableVarsOfPatAcc acc ps
+  | RECpat(ref (RECrp _)) =>
+      fatalError "mutableVarsOfPatAcc: unresolved record pattern"
+  | VECpat ps =>
+      foldR mutableVarsOfPatAcc acc ps
+  | INFIXpat _ => fatalError "mutableVarsOfPatAcc"
+  | PARpat p =>
+      mutableVarsOfPatAcc p acc
+  | TYPEDpat(p, _) =>
+      mutableVarsOfPatAcc p acc
+  | LAYEREDpat(p1, p2) =>
+      mutableVarsOfPatAcc p1 (mutableVarsOfPatAcc p2 acc)
+;
+
+(* Since the program is supposed to be well-typed, *)
+(* the patterns in a `val rec' can't contain mutable variables. *)
+(* Thus there's no danger in accessing variable values via *)
+(* their access paths... *)
+
+fun mkEnvOfRecPats depth pats =
+  foldL (fn pat => fn (rho, depth) =>
+           (pathsOfPatAcc (Path_local depth) pat rho, depth+1))
+        (NILenv, depth) pats
+;
+
+(* If a `val' declaration isn't recursive, the mutable variables *)
+(* appearing in its patterns must be taken special care of... *)
+
+fun mutableVarsOfPat pat = mutableVarsOfPatAcc pat [];
+
+fun addLetsToEnv varlist (env as (rho, depth)) =
+  case varlist of
+    [] => env
+  | var::rest =>
+      addLetsToEnv rest (bindInEnv rho (ValId var) (Path_local depth), depth+1)
+;
+
+fun addLetsToExp varlist (rho, depth) exp =
+  case varlist of
+      [] => exp
+    | _ =>
+       Llet(mapFrom (fn i => fn var => translateLocalAccess ValId (rho, i) var)
+                    depth varlist,
+           exp)
+;
+
+fun mkEnvOfPats depth pats =
+  let val env' = mkEnvOfRecPats depth pats
+      val mut_vars = foldR mutableVarsOfPatAcc [] pats
+  in (addLetsToEnv mut_vars env', addLetsToExp mut_vars env') end
+;

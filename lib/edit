@@ -1,0 +1,9 @@
+(* ---------------------------------------------------------- *)
+   local 
+      val file = ref ""
+      fun setit "" = !file
+	| setit s  = (file := s; s)
+   in 
+      fun e s = (system ("edit " ^ setit s); use (setit s))
+   end
+(* ---------------------------------------------------------- *)

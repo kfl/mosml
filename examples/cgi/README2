@@ -1,0 +1,66 @@
+Example 2: Form-based file upload in HTML
+-----------------------------------------
+
+To upload a file from the client (browser) to a WWW server, you need
+to write the following components:
+
+        (A) An HTML page containing a FORM
+        (B) A CGI program to receive the file, process it, and respond
+  
+(A) You need an HTML page containing a FORM.  The FORM must have
+
+        - METHOD="POST" and ENCTYPE="multipart/form-data"  
+        - an ACTION equalling the URL of a CGI program
+        - an INPUT field of TYPE=FILE
+        - one or more INPUT fields with TYPE=SUBMIT
+        - optionally other fields (INPUT, SELECT, ...)
+
+See file `upload.html' for an example HTML form.  With that form, you
+can select a local file (on the system running the browser) and choose
+whether you want to count the number of characters in the file, count
+the number of lines in the file, or sort the file.
+
+Note that with upload.html, the chosen file is transmitted as a part
+called "filecontents", and the selected menu option is transmitted as
+another part called "action".
+
+
+(B) You need a CGI program
+
+See file `cgiex2.sml' for an example CGI program.  That program will
+handle requests sent from the above-mentioned example form.  Within
+the example CGI program, the contents of the uploaded file is
+retrieved as
+        Mosmlcgi.part_data (valOf (Mosmlcgi.cgi_part "filecontents"))
+and the chosen select menu option is retrieved as
+        Mosmlcgi.part_data (valOf (Mosmlcgi.cgi_part "action"))
+Morover, the name of the uploaded file can usually be retrieved as
+        Mosmlcgi.part_field_string (valOf (Mosmlcgi.cgi_part "filecontents")) 
+                                   "filename"
+
+
+INSTRUCTIONS FOR USE
+
+(1) Edit the FORM in file `upload.html' so that ACTION refers to a
+cgi-bin directory on your local webserver.
+
+(2) Compile the CGI program:
+
+   mosmlc -c cgiex2.sml
+   mosmlc -o cgiex2 cgiex2.uo
+
+(3) Install the compiled CGI program on your local webserver:
+
+   cat `which camlrunm` cgiex2 > /var/lib/httpd/cgi-bin/sestoft/cgiex2
+   chmod a+x /var/lib/httpd/cgi-bin/sestoft/cgiex2
+
+The above assumes that your webserver lives in /var/lib/httpd/ so that
+your CGI program directory is /var/lib/httpd/cgi-bin/sestoft/, and
+that you are allowed to install CGI programs on your webserver.
+Change the path as appropriate.  (Note that the runtime system is
+simply prepended to the ML bytecode, so that the webserver need not
+look for it.)
+
+The included Makefile automates steps (2) and (3) above.
+
+(4) Open the HTML file `upload.html' with your webbrowser, select a file and an action, and click on `Send'.

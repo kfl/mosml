@@ -1,0 +1,9 @@
+(* OS *)
+
+exception SysErr = SysErr
+
+type syserror = syserror
+
+prim_val errorMsg : syserror -> string = 1 "sml_errormsg"; 
+
+

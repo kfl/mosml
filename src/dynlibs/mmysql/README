@@ -1,0 +1,68 @@
+Interface to the MySQL database server
+--------------------------------------
+
+This directory provides a C interface to the MySQL relational database
+server.  Using this interface, you can communicate with and control
+this database server from Moscow ML programs.  The interaction uses
+the standard query language SQL, which is not described here.  The
+many books about relational database management systems (RDBMS), and
+the MySQL documentation, describe SQL.
+
+The MySQL interface was implemented by Thomas Iversen on the basis of
+the Postgres interface written by Peter Sestoft.
+
+Note:
+
+ - MySQL does not compute cmdtuples correctly after an SQL delete
+ - MySQL 3.22.21 does not implement the bool type: the parser
+   accepts the type name bool but implements it as int, and the
+   literals false and true both map to the integer 0
+
+The interface consists of the following files:
+
+        mmysql.c        Implements the dynamic library libmmysql.so which 
+                        interfaces Moscow ML to the MySQL library.
+
+	Mysql.sig	Moscow ML's view of the MySQL system.
+	Mysql.sml	
+
+You must have the following components:
+        
+        MySQL           Can be found many places on the Internet, such as
+                        http://www.mysql.com
+
+        Mysql           The Moscow ML library interface to the MySQL
+                        database server.
+
+        Dynlib          The Moscow ML foreign (C) function interface.
+                        Supported for Linux, Solaris, MS Win32, MacOS,
+	                Digital Unix, and HP-UX in mosml 1.44
+
+The runtime system must be compiled with support for dynamic linking
+of foreign functions (edit mosml/src/Makefile.inc to achieve this).
+
+1. Edit the mmysql/Makefile to make MYSQLLIBDIR and MYSQLINCDIR point
+to the directories contain the MySQL runtime library and the MySQL
+include files.
+
+2. Compile mmysql.c, Mysql.sig, and Mysql.sml:
+
+        make
+
+3. Install libmmysql.so in the directory determined by BINDIR in
+src/Makefile.inc:
+
+        make install
+
+4. Set your LD_LIBRARY_PATH to point to the BINDIR directory.
+
+        For tcsh: setenv LD_LIBRARY_PATH $BINDIR
+        For bash: LD_LIBRARY_PATH=$BINDIR
+                  export LD_LIBRARY_PATH
+
+5. Test the library:
+
+        mosml testmysql.sml
+
+-----------------------------------------------------------------------
+File mosml/src/dynlibs/mmysql/README * sestoft@dina.kvl.dk * 1999-08-07

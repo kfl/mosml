@@ -1,0 +1,32 @@
+(* File test/test.sml, main file for Standard Library test cases *)
+
+(* open OS; *)
+
+app use
+["array.sml",
+ "array2.sml",
+ "arraysort.sml",
+ "bytechar.sml",
+ "date.sml",
+ "filesys.sml",
+ "general.sml",
+ "int.sml",
+ "list.sml",
+ "listpair.sml",
+ "listsort.sml",
+ "math.sml",
+ "real.sml",
+ "string.sml",
+ "stringcvt.sml",
+ "substring.sml",
+ "textio.sml",
+ "time.sml",
+ "timer.sml",
+ "dospath.sml",
+ "vector.sml",
+ "word.sml",
+ "word8.sml",
+ "word8array.sml",
+ "word8vector.sml"];
+
+ignore(Process.exit Process.success);

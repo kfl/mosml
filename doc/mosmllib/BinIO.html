@@ -1,0 +1,161 @@
+<HTML><HEAD><TITLE>Structure BinIO</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure BinIO</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>(* BinIO -- SML Basis Library *)
+<A NAME="line2"></A>
+<A NAME="line3"></A>type elem   = Word8.word
+<A NAME="line4"></A>type vector = Word8Vector.vector
+<A NAME="line5"></A>
+<A NAME="line6"></A>(* Binary input: *)
+<A NAME="line7"></A>
+<A NAME="line8"></A>type instream 
+<A NAME="line9"></A>
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#openIn">openIn</A>       : string -> instream
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#closeIn">closeIn</A>      : instream -> unit
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#input">input</A>        : instream -> vector
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#inputAll">inputAll</A>     : instream -> vector
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#inputNoBlock">inputNoBlock</A> : instream -> vector option
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#input1">input1</A>       : instream -> elem option
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#inputN">inputN</A>       : instream * int -> vector
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#endOfStream">endOfStream</A>  : instream -> bool
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#lookahead">lookahead</A>    : instream -> elem option
+<A NAME="line19"></A>
+<A NAME="line20"></A>(* Binary output: *)
+<A NAME="line21"></A>
+<A NAME="line22"></A>type outstream
+<A NAME="line23"></A>
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#openOut">openOut</A>      : string -> outstream
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#openAppend">openAppend</A>   : string -> outstream
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#closeOut">closeOut</A>     : outstream -> unit
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#output">output</A>       : outstream * vector -> unit
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#output1">output1</A>      : outstream * elem -> unit
+<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#flushOut">flushOut</A>     : outstream -> unit
+<A NAME="line30"></A>
+<A NAME="line31"></A>(* This structure provides input/output functions on byte streams.
+<A NAME="line32"></A>   The functions are state-based: reading from or writing to a stream
+<A NAME="line33"></A>   changes the state of the stream.  The streams are buffered: output
+<A NAME="line34"></A>   to a stream may not immediately affect the underlying file or
+<A NAME="line35"></A>   device.
+<A NAME="line36"></A>
+<A NAME="line37"></A>   Type instream is the type of state-based byte input streams, and
+<A NAME="line38"></A>   type outstream is the type of state-based byte output streams.
+<A NAME="line39"></A>
+<A NAME="line40"></A>   Type elem is the type Word8.word of bytes, and type vector is the
+<A NAME="line41"></A>   type of Word8Vector.vector (byte vectors).
+<A NAME="line42"></A>
+<A NAME="line43"></A>
+<A NAME="line44"></A>   BYTE INPUT:
+<A NAME="line45"></A>
+   [<A NAME="openIn"><B>openIn</B></A> s] creates a new instream associated with the file named s.
+   Raises Io.Io is file s does not exist or is not accessible.
+
+   [<A NAME="closeIn"><B>closeIn</B></A> istr] closes stream istr.  Has no effect if istr is closed
+   already.  Further operations on istr will behave as if istr is at
+   end of stream (that is, will return "" or NONE or true).
+
+   [<A NAME="input"><B>input</B></A> istr] reads some elements from istr, returning a vector v of
+   those elements.  The vector will be empty (size v = 0) if and only
+   if istr is at end of stream or is closed.  May block (not return
+   until data are available in the external world).
+
+   [<A NAME="inputAll"><B>inputAll</B></A> istr] reads and returns the vector v of all bytes
+   remaining in istr up to end of stream.
+
+   [<A NAME="inputNoBlock"><B>inputNoBlock</B></A> istr] returns SOME(v) if some elements v can be read
+   without blocking; returns SOME("") if it can be determined without
+   blocking that istr is at end of stream; returns NONE otherwise.  If
+   istr does not support non-blocking input, raises
+   Io.NonblockingNotSupported.
+
+   [<A NAME="input1"><B>input1</B></A> istr] returns SOME(e) if at least one element e of istr is
+   available; returns NONE if istr is at end of stream or is closed;
+   blocks if necessary until one of these conditions holds.
+
+   [<A NAME="inputN"><B>inputN</B></A>(istr, n)] returns the next n bytes from istr as a vector,
+   if that many are available; returns all remaining bytes if end of
+   stream is reached before n bytes are available; blocks if necessary
+   until one of these conditions holds.  
+
+   [<A NAME="endOfStream"><B>endOfStream</B></A> istr] returns false if any elements are available in
+   istr; returns true if istr is at end of stream or closed; blocks if
+   necessary until one of these conditions holds.
+
+   [<A NAME="lookahead"><B>lookahead</B></A> istr] returns SOME(e) where e is the next element in the
+   stream; returns NONE if istr is at end of stream or is closed;
+   blocks if necessary until one of these conditions holds.  Does not
+   advance the stream.
+
+
+   BYTE OUTPUT:
+
+   [<A NAME="openOut"><B>openOut</B></A> s] creates a new outstream associated with the file named
+   s.  If file s does not exist, and the directory exists and is
+   writable, then a new file is created.  If file s exists, it is
+   truncated (any existing contents are lost).
+
+   [<A NAME="openAppend"><B>openAppend</B></A> s] creates a new outstream associated with the file
+   named s.  If file s does not exist, and the directory exists and is
+   writable, then a new file is created.  If file s exists, any
+   existing contents are retained, and output goes at the end of the
+   file.
+
+   [<A NAME="closeOut"><B>closeOut</B></A> ostr] closes stream ostr; further operations on ostr
+   (except for additional close operations) will raise exception Io.Io.
+
+   [<A NAME="output"><B>output</B></A>(ostr, v)] writes the byte vector v on outstream ostr.
+
+   [<A NAME="output1"><B>output1</B></A>(ostr, e)] writes the byte e on outstream ostr.
+
+   [<A NAME="flushOut"><B>flushOut</B></A> ostr] flushes the outstream ostr, so that all data
+   written to ostr becomes available to the underlying file or device.
+
+
+   The functions below are not yet implemented:
+
+   [<A NAME="setPosIn"><B>setPosIn</B></A>(istr, i)] sets istr to the position i.  Raises Io.Io if
+   not supported on istr.
+
+   [<A NAME="getPosIn"><B>getPosIn</B></A> istr] returns the current position of istr.  Raises Io.Io
+   if not supported on istr.
+
+   [<A NAME="endPosIn"><B>endPosIn</B></A> istr] returns the last position of istr.  
+
+   [<A NAME="getPosOut"><B>getPosOut</B></A> ostr] returns the current position in stream ostr.
+   Raises Io.Io if not supported on ostr.
+
+   [<A NAME="endPosOut"><B>endPosOut</B></A> ostr] returns the ending position in stream ostr.
+   Raises Io.Io if not supported on ostr.
+
+   [<A NAME="setPosOut"><B>setPosOut</B></A>(ostr, i)] sets the current position in stream to ostr to
+   i.  Raises Io.Io if not supported on ostr.
+
+   [<A NAME="mkInstream"><B>mkInstream</B></A> sistr] creates a state-based instream from the
+   functional instream sistr.
+
+   [<A NAME="getInstream"><B>getInstream</B></A> istr] returns the functional instream underlying the
+   state-based instream istr.
+
+   [<A NAME="setInstream"><B>setInstream</B></A>(istr, sistr)] redirects istr, so that subsequent input
+   is taken from the functional instream sistr.
+
+   [<A NAME="mkOutstream"><B>mkOutstream</B></A> sostr] creates a state-based outstream from the
+   outstream sostr.
+
+   [<A NAME="getOutstream"><B>getOutstream</B></A> ostr] returns the outstream underlying the
+   state-based outstream ostr.
+
+   [<A NAME="setOutstream"><B>setOutstream</B></A>(ostr, sostr)] redirects the outstream ostr so that
+   subsequent output goes to sostr.
+
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

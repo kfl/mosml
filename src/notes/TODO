@@ -1,0 +1,34 @@
+2000-01-18:
+
+* The amlazy file Data.sml containing a structure called Data: parse
+  as AnonStruct, then resolve in the compiler
+
+* Avoid shift/reduce and reduce/reduce conflicts in the parser.
+
+* Documentation: 
+
+  - manual
+  - syntax
+
+* Emitcode: switch larger than 256 ?  OK because the switch
+  compilation in Back breaks switches into chunks of size < 256
+
+* Size of .ui files: sharing?
+
+* Kit: It is functor Parse in k42.sml that causes trouble --- even
+  when actions in k32.sml is commented out.  Functor Parse is declared
+  in k35.sml.  More precisely, the application of functor GrammarUtils
+  inside the Parse functor in k35.sml:
+
+    structure GrammarUtils =
+      GrammarUtils (structure TopdecGrammar = TopdecGrammar
+		    structure LexBasics = LexBasics
+		    structure ParseInfo = ParseInfo
+		    structure Report = Report
+		    structure PrettyPrint = PrettyPrint
+		    structure Crash = Crash
+		      )
+
+  Functor GrammarUtils is declared in k32.sml.
+
+* Back.sml -- array size 65000 -> ??

@@ -1,0 +1,55 @@
+<HTML><HEAD><TITLE>Structure Option</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Option</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>(* Option -- SML Basis Library *)
+<A NAME="line2"></A>
+<A NAME="line3"></A>exception Option
+<A NAME="line4"></A>
+<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#getOpt">getOpt</A>         : 'a option * 'a -> 'a 
+<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#isSome">isSome</A>         : 'a option -> bool 
+<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#valOf">valOf</A>          : 'a option -> 'a 
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#filter">filter</A>         : ('a -> bool) -> 'a -> 'a option 
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#map">map</A>            : ('a -> 'b) -> 'a option -> 'b option
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#app">app</A>            : ('a -> unit) -> 'a option -> unit
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#join">join</A>           : 'a option option -> 'a option
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#compose">compose</A>        : ('a -> 'b) * ('c -> 'a option) -> ('c -> 'b option)
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#mapPartial">mapPartial</A>     : ('a -> 'b option) -> ('a option -> 'b option)
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#composePartial">composePartial</A> : ('a -> 'b option) * ('c -> 'a option) -> ('c -> 'b option)
+<A NAME="line15"></A>
+<A NAME="line16"></A>(* 
+   [<A NAME="getOpt"><B>getOpt</B></A> (xopt, d)] returns x if xopt is SOME x; returns d otherwise.
+
+   [<A NAME="isSome"><B>isSome</B></A> vopt] returns true if xopt is SOME x; returns false otherwise.
+
+   [<A NAME="valOf"><B>valOf</B></A> vopt] returns x if xopt is SOME x; raises Option otherwise.
+
+   [<A NAME="filter"><B>filter</B></A> p x] returns SOME x if p x is true; returns NONE otherwise.
+
+   [<A NAME="map"><B>map</B></A> f xopt] returns SOME (f x) if xopt is SOME x; returns NONE otherwise.
+
+   [<A NAME="app"><B>app</B></A> f xopt] applies f to x if xopt is SOME x; does nothing otherwise.
+
+   [<A NAME="join"><B>join</B></A> xopt] returns x if xopt is SOME x; returns NONE otherwise.
+
+   [<A NAME="compose"><B>compose</B></A> (f, g) x] returns SOME (f y) if g x is SOME y; returns NONE 
+   otherwise.  It holds that compose (f, g) = map f o g.
+
+   [<A NAME="mapPartial"><B>mapPartial</B></A> f xopt] returns f x if xopt is SOME x; returns NONE otherwise.  
+   It holds that mapPartial f = join o map f.
+
+   [<A NAME="composePartial"><B>composePartial</B></A> (f, g) x] returns f y if g x is SOME y; returns NONE 
+   otherwise.  It holds that composePartial (f, g) = mapPartial f o g.
+
+   The operators (map, join, SOME) form a monad.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

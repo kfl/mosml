@@ -1,0 +1,184 @@
+GRAMMAR FOR A SIMPLE FUNCTIONAL LANGUAGE	Peter Sestoft
+----------------------------------------        KVL 1996-01-26, 1996-12-06
+
+The files in this directory present lexer and parser specifications
+for the simple lazy functional language CL (Peyton Jones and Lester,
+Prentice Hall 1992).
+
+    File        contents
+    --------------------------------------------------------
+    README      describes the grammar and the lexical conventions,
+                and gives an example (this file)
+    Lexer.lex   the lexer specification
+    Parser.grm  the parser specification
+    Data.sml    describes the abstract syntax datatype
+    Main.sml    uses the generated lexer and parser 
+    cl/         example source files for parsing
+
+
+Generating, compiling, and using the lexer and parser
+-----------------------------------------------------
+
+You may type `make' to perform steps 1-4 below.
+
+1. Generate the parser
+    mosmlyac Parser.grm
+
+2. Generate the lexer
+    mosmllex Lexer.lex
+
+3. Compile lexer, parser and auxiliary programs
+    mosmlc -c Data.sml Parser.sig Parser.sml Lexer.sml Main.sml
+
+4. Load the compiled parser and lexer
+    mosml load
+
+5. Try them
+    parse "cl/nats.cl";
+    parse "cl/append.cl";
+    parse "cl/fibs.cl";
+    etc.
+
+
+THE GRAMMAR
+===========
+
+Expression:
+
+  Expr     =  "let" Defns "in" Expr              let-binding
+           |  "letrec" Defns "in" Expr           recursive let-binding
+           |  "case" Expr "of" Alts "end"        case expression
+           |  "if" Expr "then" Expr "else" Expr  conditional expression
+           |  "\" Name "." Expr                  function
+           |  SExpr                              simple expression
+                                                 
+Simple expression:                               
+                                                 
+  SExpr    =  AppExpr                            application expression
+           |  SExpr "/" SExpr                    integer division
+           |  SExpr "%" SExpr                    integer remainder
+           |  SExpr "*" SExpr                    multiplication
+           |  SExpr "+" SExpr                    addition
+           |  SExpr "-" SExpr                    subtraction
+           |  SExpr "=" SExpr                    equality
+           |  SExpr "~=" SExpr                   inequality
+           |  SExpr "<" SExpr                    less than
+           |  SExpr "<=" SExpr                   less or equal
+           |  SExpr ">" SExpr                    greater than
+           |  SExpr ">=" SExpr                   greater or equal
+           |  SExpr "&" SExpr                    logical `and'
+           |  SExpr "|" SExpr                    logical `or'
+                                                 
+Application expression:                          
+                                                 
+  AppExpr  =  AExpr                              atomic expression
+           |  AppExpr AExpr                      application
+                                                 
+Atomic expression:                               
+                                                 
+  AExpr    =  Name                               variable
+           |  IntCst                             integer constant
+           |  "pack" "{" IntCst Exprs "}"        tagged data value
+           |  "(" Expr ")"                       parenthesized expr.
+                                                 
+Definition list:                                 
+                                                 
+  Defns    =  Defn                               single definition
+           |  Defn ";" Defns                     multiple definitions
+                                                 
+Definition:                                      
+                                                 
+  Defn     =  Name "=" Expr                      variable binding
+                                                 
+Alternative list:                                
+                                                 
+  Alts     =  Alt                                single alternative
+           |  Alt ";" Alts                       multiple alternatives
+                                                 
+Variable list:                                   
+                                                 
+  Vars     =                                     no variables  
+           |  Name Vars                          one or more variables
+                                                 
+Expression list:                                 
+                                                 
+  Exprs    =                                     no expressions
+           |  "," Expr Exprs                     one or more expressions
+
+
+
+LEXICAL MATTERS
+===============
+
+Whitespace may appear between any two grammar symbols.
+
+Comments (* ... *) may appear everywhere whitespace may appear;
+comments may be nested.
+
+A variable name begins with a letter (lowercase or uppercase) and
+continues with letters or digits.
+
+An integer constant consist of a non-empty sequence of the digits 0-9,
+possibly immediately preceded by a minus sign (~).
+
+
+
+EXAMPLE PROGRAM
+===============
+
+The program below conforms to the grammar above.  Note that the
+program text may contain comments.  Comments and whitespace are
+removed by the lexer and therefore are not mentioned by the grammar.
+
+There are more example programs in the subdirectory `cl'.
+
+----------------------------------------------------------------
+(* Stolen from Klaus Elmquist Nielsen, Copyright (c) 1993 *)
+
+letrec
+   sieve = \xs.case xs of
+               <1>      -> pack {1} ;
+               <2> x xr -> pack {2, x, sieve (filter (\n.(n % x) ~= 0) xr)}
+               end ;
+
+   take = \n.\xs.case xs of
+                 <1>      -> pack {1} ;
+                 <2> x xr -> if n=0 then pack {1}
+                             else pack {2, x, take (n-1) xr}
+                 end;
+
+   filter = \p.\xs.case xs of
+                   <1>      -> pack {1} ;
+                   <2> x xr -> if p x then pack {2, x, filter p xr}
+                               else filter p xr
+                   end ;
+
+   from = \n.pack {2, n, from (n+1)}
+
+in take 200 (sieve (from 2))
+-----------------------------------------------------------------
+
+
+
+THE MEANING OF CL PROGRAMS
+==========================
+
+As far as lexing and parsing are concerned, the *meaning* of
+expressions in the CL language does not matter.  However, for the
+curious student, we note that most things are familiar from SML, and
+that the following correspondences hold:
+
+    CL expression                         SML expression
+    ----------------------------------------------------
+
+    \x.e                corresponds to    fn x => e     
+
+    pack{1}             corresponds to    []            
+
+    pack{2, e1, e2}     corresponds to    e1::e2        
+
+    case e0 of          )              (  case e0 of
+       <1>      -> e1;  ) corresponds  (     []    => e1
+       <2> x xr -> e2   )     to       (   | x::xr => e2
+    end                 )              (
+ 

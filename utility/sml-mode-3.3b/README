@@ -1,0 +1,153 @@
+SML-MODE (3.3b) -- Major Emacs mode for editing Standard ML.
+
+  3.3(beta) because i really am looking at the indentation algorithm,
+  but the new features mentioned below are stable -- modulo bugs.
+
+Files:
+
+  sml-mode.el     (SML mode elisp code)
+  sml-proc.el     (ML interaction code, defaults to SML/NJ(0.93))
+  sml-hilite.el   (hilit19 functions)
+  sml-font.el     (font-lock functions)
+  sml-menus.el    (Simple menus)
+
+  sml-poly-ml.el  (Additional library code to run Poly/ML)
+  sml-mosml.el    (Additional library code to run Moscow ML)
+
+  sml-mode.info   (Softcopy manual -- Info for (X)Emacs19)
+  sml-site.el     (Simple, system-wide installation)
+
+Extras:
+
+  sml-mode.dvi    (Hardcopy manual)
+
+Warning:
+
+  Tried and sort of tested on GNU Emacs 19.3{3,4} and XEmacs 19.14.
+
+  XEmacs 19.11 is known to hang on sending regions to the interaction
+  buffer -- so leave the variable SML-TEMP-THRESHOLD = 0.
+
+System Installation Guide:
+
+  If you're installing this for others in the Emacs hierarchy, either
+
+    go to the site-lisp directory and unpack the tar file there, 
+
+    or create a subdirectory, say site-lisp/sml-mode, and copy at
+    least the sml*.el files into it.
+
+  In either case move or copy the file sml-site.el into the site-lisp
+  directory itself (or some other place that's on the user's default
+  load-path) and read and edit this file. All that's really needed is
+  to ensure that Emacs can find the sml*.el files and the .info file.
+
+  Tell your eager users to
+
+  (requite 'sml-site) 
+
+  in their .emacses. Point them to the help file. At your option, byte
+  compile the sml*.el files (and sml-site.el too, if you like).
+
+Private Installation Guide:
+
+  If you are having to install his in your home directory, say, create
+  a directory like "/home/xxx/lib/emacs/sml-mode", if your login name
+  is xxx, and copy the sml-*.el files to there. Then put:
+  
+  (setq load-path (cons "/home/xxx/lib/emacs/sml-mode" load-path))
+  (autoload 'sml-mode "sml-mode" "Major mode for editing ML programs." t)
+
+  in your .emacs file. Add:
+
+  (setq auto-mode-alist
+        (append '(("\\.sml$" . sml-mode) 
+                  ("\\.sig$" . sml-mode) 
+                  ("\\.ML$"  . sml-mode)) auto-mode-alist))
+
+  to your .emacs so that whenever you visit a file with one of these
+  extensions you will automatically be placed in sml-mode.
+
+  Put the info file (sml-mode.info) somewhere convenient like
+  "/home/xxx/lib/emacs/sml-mode/sml-mode.info", and add
+
+  (setq sml-mode-info "/home/xxx/lib/emacs/sml-mode/sml-mode.info")
+
+  again to your .emacs -- this gives access to on-line help. This help
+  file gives lots of tips about configuring SML mode to suit your
+  preferences: C-c C-i will get you there from SML mode.
+
+  If you want SML mode to speak to Moscow ML or Poly/ML instead of
+  SML/NJ, just add something like this to your .emacs:
+
+  (defun my-mosml-setup () "Configure inferior SML mode for Moscow ML"
+    (load-library "sml-mosml"))
+  (add-hook 'inferior-sml-load-hook 'my-mosml-setup)
+
+  so that when you M-x sml you'll get mosml instead.
+
+New in SML mode Version 3.3 (feedback welcomed on this):
+
+  1
+
+  implemented some multi-frame handling capabilities, specifically so 
+  sml runs in a dedicated window. this is more complex than it needs to
+  be because of XEmacs...
+
+  the variable SML-DEDICATED-FRAME defaults to t if running under a
+  window system; set it to nil in SML-LOAD-HOOK if you want the old
+  split window behaviour back.
+
+  2
+
+  debugged SML-NEXT-ERROR a bit, and improved it to echo the error
+  message in the minibuffer (if possible) and highlight the region in
+  which the error was found (if a suitable character range was given).
+
+  the variable SML-ERROR-OVERLAY controls whether or not to highlight
+  (default is yes); set this to nil in SML-MODE-HOOK to switch this
+  off. 
+
+  SML-NEXT-ERROR won't always raise the inferior ML buffer's frame; it
+  only does so if there's no window already showing the buffer, or if
+  there's an error message it can't understand. i think!
+
+  3
+
+  support for Moscow ML -- see sml-mosml.el.
+
+  4
+
+  forms (aka, templates or macros) insertion semantics have changed
+  because there were bugs. maybe there still are, but anyway: by
+  default C-c C-m inserts the macro at point, C-u C-c C-m will do a
+  newline-and-indent before inserting the macro.
+
+  abstractions are history, and you can play with extending the
+  collection of builtin macros to your heart's content. lookup the
+  function SML-ADDTO-FORMS-ALIST, and the variable SML-FORMS-ALIST.
+
+  5
+
+  drag-and-droppishness, without the drop: SML-DRAG-MOUSE is bound to
+  M-S-down-mouse-1; if you drag the mouse over a region it will be
+  magically sucked into the ML buffer (like C-c C-r, only you don't
+  have to C-@ first). this might be flakey as it heavily depends on
+  the underlying mouse-drag/track-mouse semantics of the various
+  Emacses out there. can't do much about that, sorry.
+
+  6
+
+  anything else i've forgotten already!
+
+To Do:
+
+  0
+
+  indentation is hopeless for sequential code (semicolons). this needs
+  attention; indeed all the indentation code does. Ian Zimmerman's very
+  excellent (looking) indentation code for caml-mode may point the way
+  forward. or we all go over to programming in Lisp instead of ML...
+
+Matthew Morley <mjm@scs.leeds.ac.uk>
+05/97

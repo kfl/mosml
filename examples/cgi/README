@@ -1,0 +1,38 @@
+Writing CGI programs with Moscow ML		  mosml/examples/cgi/README
+-----------------------------------
+
+This directory contains two examples of using Moscow ML for writing
+CGI scripts:
+
+  1. A simple HTML form and the corresponding CGI program; 
+     see README1
+
+  2. Form-based file upload and the corresponding CGI program; 
+     see README2
+
+Moreover, there is a script which displays all the data passed to the
+CGI script by the webserver.  It does so by formatting an HTML
+document containing the data, and returning it to the invoking browser
+for display.  That CGI program is called testcgi.sml.
+
+WARNING: A CGI program is a program which runs on your server at the
+request of a remote user, and with input supplied by that user.
+
+Hence, regardless whether the CGI program is written in ML, Scheme,
+Perl, C, or COBOL, you should:
+
+ * beware that the permissions of the CGI programs are suitably
+   restricted; (these are usually controlled by the setup of httpd,
+   the webserver)
+ * consider what resources remote users may consume (cpu time,
+   computer memory, disk space, net bandwidth, ...)
+ * never leave experimental and half-baked CGI programs lying around
+   in publicly accessible cgi-bin directories, as they may have
+   security holes.
+
+Use Mosmlcgi at your own risk.  While we believe that ML, with static
+type checking and automatic memory management, is a superior tool for
+writing CGI programs, we accept no responsibility for problems caused
+by the use of this software.
+
+Peter Sestoft (sestoft@dina.kvl.dk) 1997-05-07

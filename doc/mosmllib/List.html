@@ -1,0 +1,133 @@
+<HTML><HEAD><TITLE>Structure List</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure List</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>(* List -- SML Basis Library *)
+<A NAME="line2"></A>
+<A NAME="line3"></A>type 'a list = 'a list
+<A NAME="line4"></A>
+<A NAME="line5"></A>exception Empty  (* Subscript and Size *)
+<A NAME="line6"></A>
+<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#null">null</A>       : 'a list -> bool
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#hd">hd</A>         : 'a list -> 'a                          (* Empty     *)
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#tl">tl</A>         : 'a list -> 'a list                     (* Empty     *)
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#last">last</A>       : 'a list -> 'a                          (* Empty     *)
+<A NAME="line11"></A>
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#nth">nth</A>        : 'a list * int -> 'a                    (* Subscript *)
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#take">take</A>       : 'a list * int -> 'a list               (* Subscript *)
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#drop">drop</A>       : 'a list * int -> 'a list               (* Subscript *)
+<A NAME="line15"></A>
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#length">length</A>     : 'a list -> int 
+<A NAME="line17"></A>
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#rev">rev</A>        : 'a list -> 'a list 
+<A NAME="line19"></A>
+<A NAME="line20"></A>val <A NAME="line20"></A>@          : 'a list * 'a list -> 'a list
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#concat">concat</A>     : 'a list list -> 'a list
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#revAppend">revAppend</A>  : 'a list * 'a list -> 'a list
+<A NAME="line23"></A>
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#app">app</A>        : ('a -> unit) -> 'a list -> unit
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#map">map</A>        : ('a -> 'b) -> 'a list -> 'b list
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#mapPartial">mapPartial</A> : ('a -> 'b option) -> 'a list -> 'b list
+<A NAME="line27"></A>
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#find">find</A>       : ('a -> bool) -> 'a list -> 'a option
+<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#filter">filter</A>     : ('a -> bool) -> 'a list -> 'a list
+<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#partition">partition</A>  : ('a -> bool ) -> 'a list -> ('a list * 'a list)
+<A NAME="line31"></A>
+<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#foldr">foldr</A>      : ('a * 'b -> 'b) -> 'b -> 'a list -> 'b
+<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#foldl">foldl</A>      : ('a * 'b -> 'b) -> 'b -> 'a list -> 'b
+<A NAME="line34"></A>
+<A NAME="line35"></A>val <A NAME="line35"></A><A HREF="#exists">exists</A>     : ('a -> bool) -> 'a list -> bool
+<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#all">all</A>        : ('a -> bool) -> 'a list -> bool
+<A NAME="line37"></A>
+<A NAME="line38"></A>val <A NAME="line38"></A><A HREF="#tabulate">tabulate</A>   : int * (int -> 'a) -> 'a list           (* Size      *)
+<A NAME="line39"></A>
+<A NAME="line40"></A>val <A NAME="line40"></A><A HREF="#getItem">getItem</A>    : 'a list -> ('a * 'a list) option
+<A NAME="line41"></A>
+<A NAME="line42"></A>(* 
+   [<A NAME="null"><B>null</B></A> xs] is true iff xs is nil.
+
+   [<A NAME="hd"><B>hd</B></A> xs] returns the first element of xs.  Raises Empty if xs is nil.
+
+   [<A NAME="tl"><B>tl</B></A> xs] returns all but the first element of xs.  
+   Raises Empty if xs is nil.
+
+   [<A NAME="last"><B>last</B></A> xs] returns the last element of xs.  Raises Empty if xs is nil.
+
+   [<A NAME="nth"><B>nth</B></A>(xs, i)] returns the i'th element of xs, counting from 0.
+   Raises Subscript if i<0 or i>=length xs.
+
+   [<A NAME="take"><B>take</B></A>(xs, i)] returns the first i elements of xs.  Raises Subscript
+   if i<0 or i>length xs.
+
+   [<A NAME="drop"><B>drop</B></A>(xs, i)] returns what is left after dropping the first i
+   elements of xs.  Raises Subscript if i<0 or i>length xs.  
+   It holds that take(xs, i) @ drop(xs, i) = xs when 0 <= i <= length xs.
+
+   [<A NAME="length"><B>length</B></A> xs] returns the number of elements in xs.
+
+   [<A NAME="rev"><B>rev</B></A> xs] returns the list of xs's elements, reversed.
+
+   [<A NAME="xs"><B>xs</B></A> @ ys] returns the list which is the concatenation of xs and ys.
+
+   [<A NAME="concat"><B>concat</B></A> xss] returns the list which is the concatenation of all the
+   lists in xss.
+
+   [<A NAME="revAppend"><B>revAppend</B></A>(xs, ys)] is equivalent to rev xs @ ys, but more efficient. 
+
+   [<A NAME="app"><B>app</B></A> f xs] applies f to the elements of xs, from left to right.
+
+   [<A NAME="map"><B>map</B></A> f xs] applies f to each element x of xs, from left to
+   right, and returns the list of f's results.
+ 
+   [<A NAME="mapPartial"><B>mapPartial</B></A> f xs] applies f to each element x of xs, from left
+   to right, and returns the list of those y's for which f(x)
+   evaluated to SOME y.
+
+   [<A NAME="find"><B>find</B></A> p xs] applies f to each element x of xs, from left to
+   right until p(x) evaluates to true; returns SOME x if such an x
+   exists otherwise NONE.
+
+   [<A NAME="filter"><B>filter</B></A> p xs] applies p to each element x of xs, from left to
+   right, and returns the sublist of those x for which p(x) evaluated
+   to true.
+
+   [<A NAME="partition"><B>partition</B></A> p xs] applies p to each element x of xs, from left
+   to right, and returns a pair (pos, neg) where pos is the sublist
+   of those x for which p(x) evaluated to true, and neg is the sublist of
+   those for which p(x) evaluated to false.
+
+   [<A NAME="foldr"><B>foldr</B></A> op% e xs] evaluates x1 % (x2 % ( ... % (x(n-1) % (xn % e)) ... ))
+   where xs = [x1, x2, ..., x(n-1), xn], and % is taken to be infixed.
+
+   [<A NAME="foldl"><B>foldl</B></A> op% e xs] evaluates xn % (x(n-1) % ( ... % (x2 % (x1 % e))))
+   where xs = [x1, x2, ..., x(n-1), xn], and % is taken to be infixed.
+
+   [<A NAME="exists"><B>exists</B></A> p xs] applies p to each element x of xs, from left to
+   right until p(x) evaluates to true; returns true if such an x
+   exists, otherwise false.
+
+   [<A NAME="all"><B>all</B></A> p xs] applies p to each element x of xs, from left to
+   right until p(x) evaluates to false; returns false if such an x
+   exists, otherwise true.
+
+   [<A NAME="tabulate"><B>tabulate</B></A>(n, f)] returns a list of length n whose elements are
+   f(0), f(1), ..., f(n-1), created from left to right.  Raises Size
+   if n<0.
+
+   [<A NAME="getItem"><B>getItem</B></A> xs] attempts to extract an element from the list xs.  It
+   returns NONE if xs is empty, and returns SOME (x, xr) if xs=x::xr.
+   This can be used for scanning booleans, integers, reals, and so on
+   from a list of characters.  For instance, to scan a decimal integer
+   from a list cs of characters, compute 
+	Int.scan StringCvt.DEC List.getItem cs
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

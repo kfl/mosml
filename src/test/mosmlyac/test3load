@@ -1,0 +1,11 @@
+load "test3main";
+let
+    open test3aux test3main;
+in	
+    case red (readlam "test3.lam") of
+	App(Bas 78, Var(Bas 78)) => "OK"
+      | _ => "WRONG"
+end;
+
+quit();
+

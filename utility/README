@@ -1,0 +1,18 @@
+File mosml/utility/README
+
+dosedit         explains one way to use Moscow ML and an editor under 
+                plain MS DOS
+
+emacs           explains how to use Moscow ML under Emacs, with 
+                Matthew Morley's sml-mode
+
+MosML.ico       Moscow ML icon for Windows'95
+
+sml-mode-3.3b   Matthew Morley's Emacs sml-mode version 3.3b, including
+                customization for Moscow ML and Emacs Info documentation.  
+                Available from http://www.scs.leeds.ac.uk/mjm/sml-mode/.
+                Documentation in HTML and Postscript at:
+                http://www.scs.leeds.ac.uk/mjm/sml-mode/sml-mode.html
+
+                A more recent version (requires Emacs 20) is at 
+                ftp://rum.cs.yale.edu/pub/monnier/sml-mode/

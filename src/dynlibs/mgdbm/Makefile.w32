@@ -1,0 +1,52 @@
+# Win32 Makefile for Moscow ML 1.43 dynamically loadable gdbm library
+
+# The runtime system must be compiled with support for dynamic libraries.
+# The GNU GDBM persistent hashtables must be installed.
+
+# Where to find GDBM header file and compiled library
+
+GDBMDIR=..\gdbm.w32
+
+CC=cl
+OPTS= /nologo /LD /MT /W1 /GB /O2 /Oy- /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"
+#OPTS= /nologo /LD /MTd /W1 /GB /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS"
+
+CFLAGS= -Dunix $(OPTS) /I ..\..\runtime /I $(GDBMDIR)
+LIBS= $(GDBMDIR)\gdbm.lib ..\..\runtime\camlrt.lib
+
+!include ..\..\Makedefs.w32
+
+all: libmgdbm.so
+    @echo "Now type  nmake install "
+
+install:
+    copy /b libmgdbm.so $(BINDIR)\libmgdbm.so
+    @echo
+    @echo "Try mosml example1.sml, followed by mosml example2.sml"
+
+libmgdbm.so: $(GDBMDIR)\gdbm.lib mgdbm.obj
+    $(CC) $(CFLAGS) /Felibmgdbm.so mgdbm.obj $(LIBS) /link /subsystem:console
+
+$(GDBMDIR)\gdbm.lib:
+    cd $(GDBMDIR)
+    NMAKE /f "gdbm.mak" CFG="gdbm - Win32 Release"
+    cd $(MOSMLHOME)\src\dynlibs\mgdbm
+
+test:
+	mosml -P full testgdbm.sml
+
+clean:
+    cd $(GDBMDIR)
+    NMAKE /f "gdbm.mak" CFG="gdbm - Win32 Release" CLEAN
+    cd $(MOSMLHOME)\src\dynlibs\mgdbm
+    del *.so
+    del *.exp
+    del *.lib
+    del *.obj
+    del empty
+    del testdb
+    del monthnames
+
+### EVERYTHING THAT GOES BEYOND THIS COMMENT WILL BE ERASED WITHOUT WARNING
+### DO NOT DELETE THIS LINE
+mgdbm.obj: mgdbm.c

@@ -1,0 +1,34 @@
+# Win32 Makefile for mls
+
+MOSMLHOME=d:\mosml
+MOSMLTOOLS=camlrunm $(MOSMLHOME)\tools
+MOSMLC=mosmlc -c
+MOSMLL=mosmlc 
+
+.SUFFIXES :
+.SUFFIXES : .sig .sml .ui .uo
+
+all: mls
+
+mls: mls.uo
+	$(MOSMLL) -o mls.exe mls.uo
+
+clean:
+	del *.ui
+	del *.uo
+	del Makefile.bak
+	del mls.exe
+
+.sig.ui:
+	$(MOSMLC) $<
+
+.sml.uo:
+	$(MOSMLC) $<
+
+depend: 
+	del Makefile.bak
+	ren Makefile Makefile.bak
+	$(MOSMLTOOLS)\cutdeps < Makefile.bak > Makefile
+	$(MOSMLTOOLS)\mosmldep >> Makefile
+
+### DO NOT DELETE THIS LINE

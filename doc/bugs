@@ -1,0 +1,56 @@
+Known bugs and peculiarities in Moscow ML 1.40 (1 July 1995)
+
+* Under MS DOS and MS Windows, timezone information is missing.  Hence
+(Date.fmt "%Z" dt) raises an exception under Windows; and returns
+nonsense under DOS.  This is a DOS oddity and is unlikely to be fixed.
+
+* Under MS DOS, floating point operations use a different precision or
+rounding mode than under Linux, so 1.0 / ~1E80 <> ~1E~80 under DOS,
+but not under Linux.
+
+* Under MS DOS, the FileSys.readDir family of operations sometimes get
+confused if other operations are performed on directory dir between
+the initial call to FileSys.openDir "dir" and subsequent
+FileSys.readDir operations.  Hence one should open, read, and close
+the entire directory before performing other file operations on the
+same directory.  This is a DOS oddity and is unlikely to be fixed.
+
+* The evaluation order in curried function applications is wrong,
+leading to wrong results if the applied function may cause side
+effects `between the arguments' of the application (reported by
+Carsten Mueller, Berlin).  For example, if
+
+    exception Right and Wrong
+    fun f y = (raise Right; fn x => x)
+
+then 
+
+    f 7 (raise Wrong); 
+
+should raise exception Right, since f is applied to 7 before the
+second argument is evaluated, but it raises exception Wrong instead.
+
+The bug can be circumvented by splitting the application:
+
+    let val f1 = f 7 
+    in f1 (raise Wrong) end
+or
+    let fun g f1 = f1 (raise Wrong)
+    in g (f 7) end
+
+The problem is that, in Moscow ML, the expression 
+
+    f e1 ... en
+
+is evaluated by evaluating all argument expressions e1 ... en from
+left to right before f is applied to any of them.  Hence if the
+function bound to f takes m < n arguments, it gets applied too late.
+This causes a problem *only* if evaluation of f causes a side effect,
+*and* some of the arguments  e(m+1) ... en  rely on the state or cause
+side effects themselves.
+
+Since (1) fixing this bug in a straightforward manner would impose a
+considerable performance penalty on all curried function applications,
+and (2) a programming style exhibiting this bug is pretty rare (it has
+not shown up in a real program so far), we have left it in Moscow ML.
+

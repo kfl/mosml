@@ -1,0 +1,204 @@
+<HTML><HEAD><TITLE>Structure TextIO</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure TextIO</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>(* TextIO -- SML Basis Library *)
+<A NAME="line2"></A>
+<A NAME="line3"></A>type elem   = Char.char
+<A NAME="line4"></A>type vector = string
+<A NAME="line5"></A>
+<A NAME="line6"></A>(* Text input: *)
+<A NAME="line7"></A>
+<A NAME="line8"></A>type instream 
+<A NAME="line9"></A>
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#openIn">openIn</A>       : string -> instream
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#closeIn">closeIn</A>      : instream -> unit
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#input">input</A>        : instream -> vector
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#inputAll">inputAll</A>     : instream -> vector
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#inputNoBlock">inputNoBlock</A> : instream -> vector option
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#input1">input1</A>       : instream -> elem option
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#inputN">inputN</A>       : instream * int -> vector
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#inputLine">inputLine</A>    : instream -> string
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#endOfStream">endOfStream</A>  : instream -> bool
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#lookahead">lookahead</A>    : instream -> elem option
+<A NAME="line20"></A>
+<A NAME="line21"></A>type cs (* character source state *)
+<A NAME="line22"></A>
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#scanStream">scanStream</A>   : ((char, cs) StringCvt.reader -> ('a, cs) StringCvt.reader) 
+<A NAME="line24"></A>                   -> instream -> 'a option
+<A NAME="line25"></A>
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#stdIn">stdIn</A>        : instream
+<A NAME="line27"></A>
+<A NAME="line28"></A>(* Text output: *)
+<A NAME="line29"></A>
+<A NAME="line30"></A>type outstream
+<A NAME="line31"></A>
+<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#openOut">openOut</A>      : string -> outstream
+<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#openAppend">openAppend</A>   : string -> outstream
+<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#closeOut">closeOut</A>     : outstream -> unit
+<A NAME="line35"></A>val <A NAME="line35"></A><A HREF="#output">output</A>       : outstream * vector -> unit
+<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#output1">output1</A>      : outstream * elem -> unit
+<A NAME="line37"></A>val <A NAME="line37"></A>outputSubstr : outstream * substring -> unit
+<A NAME="line38"></A>val <A NAME="line38"></A><A HREF="#flushOut">flushOut</A>     : outstream -> unit
+<A NAME="line39"></A>
+<A NAME="line40"></A>val <A NAME="line40"></A><A HREF="#stdOut">stdOut</A>       : outstream
+<A NAME="line41"></A>val <A NAME="line41"></A><A HREF="#stdErr">stdErr</A>       : outstream
+<A NAME="line42"></A>
+<A NAME="line43"></A>val <A NAME="line43"></A>print        : string -> unit
+<A NAME="line44"></A>
+<A NAME="line45"></A>(* This structure provides input/output functions on text streams.
+<A NAME="line46"></A>   The functions are state-based: reading from or writing to a stream
+<A NAME="line47"></A>   changes the state of the stream.  The streams are buffered: output
+<A NAME="line48"></A>   to a stream may not immediately affect the underlying file or
+<A NAME="line49"></A>   device.
+<A NAME="line50"></A>
+<A NAME="line51"></A>   Note that under DOS, Windows, OS/2, and MacOS, text streams will be
+<A NAME="line52"></A>   `translated' by converting (e.g.) the double newline CRLF to a
+<A NAME="line53"></A>   single newline character \n.
+<A NAME="line54"></A>
+<A NAME="line55"></A>   Type instream is the type of state-based characters input streams,
+<A NAME="line56"></A>   and type outstream is the type of state-based character output
+<A NAME="line57"></A>   streams.
+<A NAME="line58"></A>
+<A NAME="line59"></A>   Type elem is the type char of characters, and type vector is the
+<A NAME="line60"></A>   type of character vectors (strings).
+<A NAME="line61"></A>
+<A NAME="line62"></A>
+<A NAME="line63"></A>   TEXT INPUT:
+<A NAME="line64"></A>
+   [<A NAME="openIn"><B>openIn</B></A> s] creates a new instream associated with the file named s.
+   Raises Io.Io is file s does not exist or is not accessible.
+
+   [<A NAME="closeIn"><B>closeIn</B></A> istr] closes stream istr.  Has no effect if istr is closed
+   already.  Further operations on istr will behave as if istr is at
+   end of stream (that is, will return "" or NONE or true).
+
+   [<A NAME="input"><B>input</B></A> istr] reads some elements from istr, returning a vector v of
+   those elements.  The vector will be empty (size v = 0) if and only
+   if istr is at end of stream or is closed.  May block (not return
+   until data are available in the external world).
+
+   [<A NAME="inputAll"><B>inputAll</B></A> istr] reads and returns the string v of all characters
+   remaining in istr up to end of stream.
+
+   [<A NAME="inputNoBlock"><B>inputNoBlock</B></A> istr] returns SOME(v) if some elements v can be read
+   without blocking; returns SOME("") if it can be determined without
+   blocking that istr is at end of stream; returns NONE otherwise.  If
+   istr does not support non-blocking input, raises
+   Io.NonblockingNotSupported.
+
+   [<A NAME="input1"><B>input1</B></A> istr] returns SOME(e) if at least one element e of istr is
+   available; returns NONE if istr is at end of stream or is closed;
+   blocks if necessary until one of these conditions holds.
+
+   [<A NAME="inputN"><B>inputN</B></A>(istr, n)] returns the next n characters from istr as a
+   string, if that many are available; returns all remaining
+   characters if end of stream is reached before n characters are
+   available; blocks if necessary until one of these conditions holds.
+   (This is the behaviour of the `input' function prescribed in the
+   1990 Definition of Standard ML).
+
+   [<A NAME="inputLine"><B>inputLine</B></A> istr] returns one line of text, including the
+   terminating newline character.  If end of stream is reached before
+   a newline character, then the remaining part of the stream is
+   returned, with a newline character added.  If istr is at end of
+   stream or is closed, then the empty string "" is returned.
+
+   [<A NAME="endOfStream"><B>endOfStream</B></A> istr] returns false if any elements are available in
+   istr; returns true if istr is at end of stream or closed; blocks if
+   necessary until one of these conditions holds.
+
+   [<A NAME="lookahead"><B>lookahead</B></A> istr] returns SOME(e) where e is the next element in the
+   stream; returns NONE if istr is at end of stream or is closed;
+   blocks if necessary until one of these conditions holds.  Does not
+   advance the stream.
+
+   [<A NAME="stdIn"><B>stdIn</B></A>] is the buffered state-based standard input stream.
+
+   [<A NAME="scanStream"><B>scanStream</B></A> scan istr] turns the instream istr into a character
+   source and applies the scanner `scan' to that source.  See
+   StringCvt for more on character sources and scanners.  The Moscow
+   ML implementation currently can backtrack only 512 characters, and
+   raises Fail if the scanner backtracks further than that.
+
+
+   TEXT OUTPUT:
+
+   [<A NAME="openOut"><B>openOut</B></A> s] creates a new outstream associated with the file named
+   s.  If file s does not exist, and the directory exists and is
+   writable, then a new file is created.  If file s exists, it is
+   truncated (any existing contents are lost).
+
+   [<A NAME="openAppend"><B>openAppend</B></A> s] creates a new outstream associated with the file
+   named s.  If file s does not exist, and the directory exists and is
+   writable, then a new file is created.  If file s exists, any
+   existing contents are retained, and output goes at the end of the
+   file.
+
+   [<A NAME="closeOut"><B>closeOut</B></A> ostr] closes stream ostr; further operations on ostr
+   (except for additional close operations) will raise exception Io.Io.
+
+   [<A NAME="output"><B>output</B></A>(ostr, v)] writes the string v on outstream ostr.
+
+   [<A NAME="output1"><B>output1</B></A>(ostr, e)] writes the character e on outstream ostr.
+
+   [<A NAME="flushOut"><B>flushOut</B></A> ostr] flushes the outstream ostr, so that all data
+   written to ostr becomes available to the underlying file or device.
+
+   [<A NAME="stdOut"><B>stdOut</B></A>] is the buffered state-based standard output stream.
+
+   [<A NAME="stdErr"><B>stdErr</B></A>] is the unbuffered state-based standard error stream.  That
+   is, it is always kept flushed, so flushOut(stdErr) is redundant.
+
+
+   The functions below are not yet implemented:
+
+   [<A NAME="setPosIn"><B>setPosIn</B></A>(istr, i)] sets istr to the (untranslated) position i.
+   Raises Io.Io if not supported on istr.
+
+   [<A NAME="getPosIn"><B>getPosIn</B></A> istr] returns the (untranslated) current position of istr.
+   Raises Io.Io if not supported on istr.
+
+   [<A NAME="endPosIn"><B>endPosIn</B></A> istr] returns the (untranslated) last position of istr.
+   Because of translation, one cannot expect to read 
+        endPosIn istr - getPosIn istr
+   from the current position.
+
+   [<A NAME="getPosOut"><B>getPosOut</B></A> ostr] returns the current position in stream ostr.
+   Raises Io.Io if not supported on ostr.
+
+   [<A NAME="endPosOut"><B>endPosOut</B></A> ostr] returns the ending position in stream ostr.
+   Raises Io.Io if not supported on ostr.
+
+   [<A NAME="setPosOut"><B>setPosOut</B></A>(ostr, i)] sets the current position in stream to ostr to
+   i.  Raises Io.Io if not supported on ostr.
+
+   [<A NAME="mkInstream"><B>mkInstream</B></A> sistr] creates a state-based instream from the
+   functional instream sistr.
+
+   [<A NAME="getInstream"><B>getInstream</B></A> istr] returns the functional instream underlying the
+   state-based instream istr.
+
+   [<A NAME="setInstream"><B>setInstream</B></A>(istr, sistr)] redirects istr, so that subsequent input
+   is taken from the functional instream sistr.
+
+   [<A NAME="mkOutstream"><B>mkOutstream</B></A> sostr] creates a state-based outstream from the
+   outstream sostr.
+
+   [<A NAME="getOutstream"><B>getOutstream</B></A> ostr] returns the outstream underlying the
+   state-based outstream ostr.
+
+   [<A NAME="setOutstream"><B>setOutstream</B></A>(ostr, sostr)] redirects the outstream ostr so that
+   subsequent output goes to sostr.
+
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

@@ -1,0 +1,73 @@
+Example 1: A simple HTML form and a CGI program in Moscow ML
+------------------------------------------------------------
+
+An HTML form has an associated action, which is usually a call to a
+CGI program, such as 
+	ACTION="http://www.dina.kvl.dk/cgi-bin/sestoft/cgiex1"
+
+When the user submits the form, the webbrowser will send a request to
+the indicated webserver (www.dina.kvl.dk).  The server will invoke the
+CGI program WWWSERVERPREFIX/cgi-bin/sestoft/cgiex1 to handle the
+request (the WWWSERVERPREFIX is an installation-specific path;
+typically /var/lib/httpd).
+
+
+To send a form from the client (browser) to a WWW server, and make the
+server respond properly, you need to write the following components:
+
+	(A) An HTML page containing a FORM
+	(B) A CGI program to receive the form, process it, and respond
+  
+(A) You need an HTML page containing a FORM.  The FORM must have
+
+	- METHOD="POST" 
+	- an ACTION equalling the URL of a CGI program
+	- any number of named INPUT, SELECT, or TEXTAREA fields
+	- one or more INPUT fields with TYPE=SUBMIT
+
+See file `htmlform.html' for an example HTML form.  With that form,
+you can type in a text in a TEXTAREA (on the system running the
+browser) and choose whether you want to count the number of characters
+in the textarea, count the number of lines in the textarea, or sort
+the lines of the textarea.
+
+Note that in htmlform.html, the textarea is named "texttoprocess" and
+the select menu is named "action".
+
+(B) You need a CGI program
+
+See file `cgiex1.sml' for an example CGI program.  That program will
+handle requests sent from the above-mentioned example form.  Within
+the example CGI program, the contents of the HTML form's textarea is
+retrieved as
+	Mosmlcgi.cgi_field_string "texttoprocess"
+and the chosen select menu option is retrieved as
+	Mosmlcgi.cgi_field_string "action"
+
+
+INSTRUCTIONS FOR USE
+
+(1) Edit the FORM in file `htmlform.html' so that ACTION refers to a
+cgi-bin directory on your local webserver.
+
+(2) Compile the CGI program:
+
+   mosmlc -c cgiex1.sml
+   mosmlc -o cgiex1 cgiex1.uo
+
+(3) Install the compiled CGI program on your local webserver:
+
+   cat `which camlrunm` cgiex1 > /var/lib/httpd/cgi-bin/sestoft/cgiex1
+   chmod a+x /var/lib/httpd/cgi-bin/sestoft/cgiex1
+
+The above assumes that your webserver lives in /var/lib/httpd/ so that
+your CGI program directory is /var/lib/httpd/cgi-bin/sestoft/, and
+that you are allowed to install CGI programs on your webserver.
+Change the path as appropriate.  (Note that the runtime system is
+simply prepended to the ML bytecode, so that the webserver need not
+look for it.)
+
+The included Makefile automates steps (2) and (3) above.
+
+(4) Open the HTML file `htmlform.html' with your webbrowser, fill in
+the form, and click on `Send'.

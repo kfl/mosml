@@ -1,0 +1,61 @@
+# Makefile for the Moscow ML lexer generator
+
+INCLUDES=-I ..\compiler
+COMPFLAGS=$(INCLUDES)
+LINKFLAGS=-g $(INCLUDES)
+
+!include "..\makefile.inc"
+
+LIBOBJS= \
+    list.uo vector.uo array.uo strbase.uo char.uo string.uo stringcvt.uo \
+    word.uo word8.uo word8vec.uo word8arr.uo charvect.uo chararra.uo \
+    obj.uo basicio.uo nonstdio.uo lexing.uo parsing.uo
+
+EXTOBJS= \
+    miscsys.uo printexc.uo filename.uo fnlib.uo sort.uo \
+    arg.uo hasht.uo
+
+OBJS= \
+    syntax.uo scan_aux.uo gram_aux.uo grammar.uo scanner.uo \
+    lexgen.uo output.uo mainlex.uo
+
+all: mosmllex
+
+mosmllex: $(OBJS)
+	$(MOSMLL) $(LINKFLAGS) -noheader -o mosmllex -files &&|
+$(LIBOBJS)
+$(EXTOBJS)
+$(OBJS)
+|
+
+clean:
+	del *.exe
+	del *.ui
+	del *.uo
+	del mosmllex
+	del grammar.sml
+	del grammar.sig
+	del scanner.sml
+	del makefile.bak
+
+install:
+	$(MOSMLTOOLS)\installb mosmllex $(BINDIR)\mosmllex
+
+grammar.sml grammar.sig: grammar.grm
+	$(MOSMLYACC) grammar.grm
+
+depend: scanner.sml grammar.sml grammar.sig
+	del makefile.bak
+	ren makefile makefile.bak
+        $(MOSMLCUT) < makefile.bak > makefile
+        $(MOSMLDEP) >> makefile
+
+### DO NOT DELETE THIS LINE
+scanner.uo: scanner.ui syntax.uo scan_aux.uo grammar.ui 
+grammar.ui: syntax.uo 
+grammar.uo: grammar.ui syntax.uo gram_aux.uo 
+output.uo: syntax.uo 
+mainlex.uo: scan_aux.uo output.uo grammar.ui syntax.uo lexgen.uo scanner.ui 
+lexgen.uo: syntax.uo 
+gram_aux.uo: syntax.uo 
+scanner.ui: grammar.ui 

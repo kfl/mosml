@@ -1,0 +1,342 @@
+o ask Peter about bindEnv bug raised by compiler/test/open2.sml
+o restore verbose mode
+o get rid of Units.extendXXX functions
+o get rid of reduce/reduce conflicts by post parse resolution.
+o cvr: TODO revise Match.sml
+      translating a long exception name under the lambda of
+      a pattern matching function can lead to a space leak --- 
+      should  do it eagerly before taking the closure! 
+o add compiler/test/coerce.sml
+o check with Peter that unary exception coercion don't introduce a space leak by
+  keeping a reference to the entire structure in the closure!
+o generalise treatment of PrimValBind to allow scoped tyvars a la valbind
+o report scope violations better, perhaps by associating each variable and type name with a 
+  path a la matching to describe the binding locations and kind of quantification.
+o distinguish uses of UnifyExplicit
+
+o restore filename norming
+o report unmangled ids in link errs
+o fix makefile
+o misleading error message:
+- val ('a,'b) f = fn x:'a => x:'b;
+! Toplevel input:! val ('a,'b) f = fn x:'a => x:'b;
+!                            ^
+! Type clash: expression of type
+!   'a
+! cannot have type
+!   'b
+! because of a scope violation
+
+o at the moment, explicitly scoped tyvars that are not generalised
+  are treated as free parameters, not variables, causing
+  bizarre type clashes:
+eg.
+	- val id = (fn x => x) (fn x:'a => x);
+	! Warning: Value polymorphism: Free type variable(s) at top level in value identifier id
+	> val id = fn : 'a'' -> 'a''
+	- id 1;
+	! Toplevel input:
+	! id 1;
+	!    ^
+	! Type clash: expression of type
+	!   int
+	! cannot have type
+	!   'a''
+	! because of a scope violation
+  One idea is to update free explicit tyvars to variables after
+  generalisation. Since these aren't quantified, they can only
+  receive at most one instantiation.
+
+
+o the treatment of equality for higher-order tynames, tyapps and tyfuns
+  may need to be revised
+  to avoid the anomaly with
+  functor F X:sig type t end = struct datatype u = C of X.t ref end
+  In the current implementation u will only be an eqaulity type if
+  t is realised by an equality type, though this is too conservative.
+  Note that with the generative functor
+  functor G( X:sig type t end) = struct datatype u = C of X.t ref end
+  u will invariably be an equality type!.
+
+  One idea is to treat the equality attribute of a tyname as part of the arity,
+  rather than as a separate attribute, and then introduce subkinding....
+
+  This needs careful thought and a review of the literature on
+  equality types, if there is any!
+ 
+o and banking demo and link test to compiler/test
+
+o Synchk.sml needs to be modified.
+  Unfortunately, part of Synchk.sml relies on identifier resolution,
+  so can only be done during or (after?) elaboration. Other parts
+  really are just syntactic and could be folded in infix
+  resolution code.
+  Note that some restriction should be lifted, ie
+    o allow open type expressions.
+  For the moment, we just turn it off...
+
+o  Elab.elabDatBind contains a commented line that should be enough to
+   ensure that datbinds are insensitive to constructor ordering, as
+   required by the definition. However, it breaks the current
+   implementation of some runtime primitives (eg. unix file
+   permissions) that rely on constructors being assigned tags
+   according to their order of appearance, not lexicographic
+   order. Until the assumption is removed from the run-time, we'll
+   just live with the current implementation restriction.
+
+   val conbind_list = Sort.sort (fn ConBind(ii,_) => fn ConBind(ii',_) =>
+                                 hd(#id(#qualid ii))<=hd(#id(#qualid ii'))) conbind_list
+
+o In the 144 library Callback.sml, I  needed to edit
+    val mltable = mkPolyTable(17, Subscript) 
+	        : (string, '_a option ref) hash_table
+  to
+    val mltable = mkPolyTable(17, Subscript) 
+  because the type constraint leads to a scope violation during unification in the subsequent 
+  definition of `register'. Unfortunately, I'm not quite sure what the correct behaviour 
+  should be...
+
+BUGS:
+
+------------
+signature S = sig type t type u sharing type  u = t end
+structure X = struct datatype  t = C of t type u = t end : S;
+
+(* raise Out of Memory --- this might just be because we aren't distinguishing between parameters and variables
+   during matching yet --- check again later! 
+   Actually, I think the error is because we identify flexible names by being type functions of the form APPtyname:
+   The realisation of u by APPtyname causes it to be treated as flexible, when really it should be rigig
+   by the time we are matching against u --- it think we are creating a looping realisation, thus check
+   Realisation fails to terminate and runs out of memory.
+ *)
+
+-------------
+signature S = sig datatype t = C of t type u sharing type u = t end where type u = int;
+! Type constructor u is specified as admitting equality,
+! but its realization doesn't admit equality
+(* fails, with a bizarre error message *)
+
+(* fails with a bizarre type error --- looks like a failure to normalize a type name *)
+signature A = sig type t val a : t end
+
+functor F(A : sig type t val pr : t -> string end) = 
+  struct datatype k = A of A.t 
+         fun pr (A t) = "A(" ^ A.pr t ^ ")"
+         val test = fn a => pr (A a)
+  end
+
+functor H(A : sig type t val a: t
+	          val pr : t -> string 
+	      end) =
+  struct
+    structure A1  = A 
+    structure A2 = F(A1)
+    val a = A2.A A.a
+    val _ =  A2.pr a
+  end;
+
+(* *)
+
+functor F(A : sig val pr : string -> string end) = 
+  struct datatype 'a k = A of 'a 
+         fun pr (A t) = "A(" ^ A.pr t ^ ")"
+         val test = fn a => pr (A a)
+  end
+ structure A = struct type t = string 
+                      val pr = fn s => s
+                      val a = ""
+               end;
+ structure A1  = A;
+ structure A2 = F(A1);
+ val a = A2.A A.a;
+ val _ =  A2.pr a;
+
+
+(* test for scope violations *)
+fn x => let functor F(X:sig eqtype t val y:t end) = struct val e = x = X.y end in 1 end;
+
+fn x => let datatype t = C in C end;
+
+fun f x  =  let datatype t = C in f C end;
+
+fun f x  =  let abstype t = C with val y = C end in fn x => y end;
+
+-----------------------------
+
+Open
+----
+
+Like Moscow, I'm using the same syntax for
+qualified idents and long idents. Long idents are resolved to a
+qualified idents at elaboration time (basically if the head of the
+long ident is free then it refers to a unit otherwise to a local
+structure). Unfortunately this uniform approach will cause problems
+with mosmldep since it won't be able to calculate dependencies
+properly: eg in
+
+open X;
+open Y;
+
+Y is a free (and thus a unit) if X doesn't contain a structure Y and Y
+is bound (not a unit) if X does contain a Y structure. Unfortunately,
+we can't tell which case holds without knowing the *type* of X (open
+is really nasty).
+
+As a simple solution, do you have any objection to introducing a
+simple syntactic restriction between qualified idents and long idents?
+I'm thinking of something like preceding a qualified ident with a
+period or some distinguishing character (period is nice because it
+correspond to projecting from the
+"world").
+
+Then the long identifier .X.Y.z refers to component Y.z of unit X and
+the long identifier W.Y.z refers to component W.Y.z. of the structure
+W. We can still allow W.Y.z to resolve to the .W.Y.z if W is free at
+elaboration time, but issue a warning that mosmldep won't find this
+dependency.
+
+Similary when parsing
+
+open .X.Y.z  W.Y.z
+
+with mosmldep then we can tell which structure is a unit and which
+structure is a local.
+
+Hopefully this distinction will make it easy to modify mosmldep to do
+the right thing and to write a simple script for updgrading existing
+sources.
+
+Unfortunately, it will also cause bootstrapping problems unless we
+introduce a old-behaviour/new-behaviour flag to mosmldep and calculate
+dependencies for the compiler and libraries using the old behaviour.
+Since free long identifiers will still be resolved to units if
+necessary, the new compiler should still be able to compile itself.
+
+
+Exceptions
+----------
+> > One remaining problem is that I think the distinction between the
+> > representations of dynamic and static exceptions is going to cause
+> > problems.
+>
+> Yes, this is a silly problem.  Perhaps I should put on the agenda to
+> get rid of this distinction before the next release in any case.  In
+> the match compiler it accounts for 90 per cent of the ugliness.
+>
+> > Because they have different representations, the handler for a
+> > dynamic exception won't work for a static exception and vice
+> > versa. I'm putting this aside for the moment but may ask you for
+> > more ideas sometime next week.
+>
+> If in doubt, handle the dynamic exceptions and ignore the static ones.
+> My hunch is that the static ones will have to go, and some technique
+> must be invented to communicate the identity of a few dynamic
+> exceptions to the runtime system.
+>
+
+Ok, that sounds reasonable. My first idea was to embed the reference
+for a dynamic exception in the same slot that holds the tag of the
+static exception to get a uniform representation. But the problem is
+that the tag for a static exception isn't stored in a slot of a block,
+but as the tag of the block. 
+
+So perhaps it would be possible to store a fixed representation of the
+tag of the static exception in the slot used by the name of the
+dynamic exception, but then the runtime would have to be modified to
+raise static exceptions in the proper, redundant format. 
+
+Another possibility might be to associate a dynamic exception binding
+not with the name of the exception, but with the constructor and
+handler for the exception, so that a static exception binding can be
+coerced to a dynamic one by installing the correct constructor/handler
+code.
+
+A final solution that avoids the problem altogether is to simply
+disallow a dynamic exception to be bound/coerced to static exception
+and vice versa and to introduce a separate specification and
+declarations phrases for static exceptions
+(perhaps 'prim exception exndesc/exnbind' for static exceptions ).  If
+there are only very few system exceptions (is that true?), this might
+not be too bad, especially if all the Standard ML and Standard Library
+exceptions can be compiled as dynamic exceptions (is this possible
+already?)
+
+
+Syntax
+------
+
+Modify the syntax to avoid the intro of new keywords:
+
+- use "t of modexp" and "x of modexp" for anonymous projections ---
+  avoid {{ }} keywords and should allow us of ( and ) for parenthetic module
+  (and signature?) expressions
+
+- drop "module" keyword by distinguishing between functor and structure
+  namespace, bindings and specifications. Allow functor  bindings to introduce
+  both applicative and generative functors.
+
+  functor F (X:S) = modexp (generative)
+   == functor F = functor(X:S) => modexp
+  functor F X:S = modexp (applicative)
+   == functor F = functor X:S => modexp
+  
+  use single application construct
+   longfunid modexp 
+  with two generative/applicative rules   
+ 
+- use signature syntax: functor(X:S)->S and functor X:S->S for
+  generative/applicative functor signatures
+- use syntax functor(X:S)=>modexp and functor X:S =>modexp for
+  generative/applicative functors.
+
+- Possibly use disjoint namespaces for (all) functors and structures. 
+  Distinguish between id status of longmodid by context:
+  The only problem is that this won't work for functor bodies
+  functor F(X:S)=Y   (should Y be a structure or a functor?) ---- 
+  maybe Y should be a structure by default
+  ie functorF(X:S)= longmodid indicates treat longmodid as strid
+     functor F(X:S)= longmodid indicates treat longmodid as funid
+  functor F(X:S)= G should be written = functor(Y:S')(G) or maybe
+        functor F(X:S) = let functor G = G in G end
+  could we use brackets to indicate which?
+  Ie. if we are parsing an unknown modexp then
+      longmodid means a structure,- (longmodid) a functor, but if
+      we know what we are looking for then (longmodid) is just
+      the same as longmodid. What we are looking for
+      should just be an extra flag to elaboration
+      with values funexp | strexp | modexp.
+  When elaborating an application or constraint, we should elaborate
+  the functor / signature
+  first to determine whether we expect a functor or structure
+  argument.    
+
+- use syntax 
+   structure modexp as sigexp
+   functor modexp as sigexp
+  to introduce first-class structures and functors.
+- use syntax 
+      structure sigexp 
+  and 
+      functor sigexp 
+  for package  types
+  eg mkArray : nat -> structure Array.
+- use binding syntax
+   structure X as S = e to eliminate first-class structures
+   functor F as S = e to eliminate first-class functors
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+

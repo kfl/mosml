@@ -1,0 +1,40 @@
+<HTML><HEAD><TITLE>Structure Bool</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Bool</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>(* Bool -- SML Basis Library *)
+<A NAME="line2"></A>
+<A NAME="line3"></A>type bool = bool
+<A NAME="line4"></A>
+<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#not">not</A> : bool -> bool
+<A NAME="line6"></A>
+<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#toString">toString</A>   : bool -> string
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#fromString">fromString</A> : string -> bool option
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#scan">scan</A>       : (char, 'a) StringCvt.reader -> (bool, 'a) StringCvt.reader
+<A NAME="line10"></A>
+<A NAME="line11"></A>(* 
+   [<A NAME="not"><B>not</B></A> b] is the logical negation of b.
+
+   [<A NAME="toString"><B>toString</B></A> b] returns the string "false" or "true" according as b is
+   false or true.
+
+   [<A NAME="fromString"><B>fromString</B></A> s] scans a boolean b from the string s, after possible
+   initial whitespace (blanks, tabs, newlines).  Returns (SOME b) if s
+   has a prefix which is either "false" or "true"; the value b is the
+   corresponding truth value; otherwise NONE is returned.
+
+   [<A NAME="scan"><B>scan</B></A> getc src] scans a boolean b from the stream src, using the
+   stream accessor getc.  In case of success, returns SOME(b, rst)
+   where b is the scanned boolean value and rst is the remainder of
+   the stream; otherwise returns NONE.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

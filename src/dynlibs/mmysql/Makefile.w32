@@ -1,0 +1,74 @@
+#This make file is not usable under Win32!
+
+# Win32 Makefile for dynamic library interface to MySQL database server
+
+# The runtime system must be compiled with support for dynamic libraries.
+# The MySQL C (client) library interface must be installed.
+# Where to find the Mysql header file and compiled library
+
+MYSQLLIBDIR=C:\mysql\lib\debug
+MYSQLINCDIR=C:\mysql\include
+
+!include ..\..\Makedefs.w32
+
+CC=cl
+OPTS= /nologo /LD /MTd /W1 /GB /O2 /Oy- /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"
+#OPTS= /nologo /LD /MTd /W1 /GB /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS"
+
+CFLAGS= -Dunix $(OPTS) /I ..\..\runtime -I $(MYSQLINCDIR)
+LIBS= advapi32.lib user32.lib ws2_32.lib $(MYSQLLIBDIR)\mysqlclient.lib ..\..\runtime\camlrt.lib
+
+MOSMLHOME=$(HOME)\mosml
+MOSMLTOOLS=camlrunm $(MOSMLHOME)\tools
+MOSMLC=mosmlc -c
+MOSMLL=mosmlc
+MOSMLLEX=mosmllex
+MOSMLYACC=mosmlyac
+
+all: libmmysql.so Mysql.uo
+    @echo "Now execute 'mosml testmysql.sml' to try Mysql"
+
+libmmysql.so: mmysql.obj
+    $(CC) $(CFLAGS) /Felibmmysql.so mmysql.obj $(LIBS) /link /subsystem:console
+
+install:
+    copy /b libmmysql.so $(BINDIR)\libmmysql.so
+    copy /b Mysql.sig $(LIBDIR)\Mysql.sig
+    copy /b Mysql.ui $(LIBDIR)\Mysql.ui
+    copy /b Mysql.uo $(LIBDIR)\Mysql.uo
+    @echo
+    @echo "You must set your LD_LIBRARY_PATH for Mysql to find libmmysql.so."
+    @echo "You need to do something like this:"
+    @echo " set LD_LIBRARY_PATH=$(BINDIR)"
+    @echo 
+    @echo "Then execute  mosml testmysql.sml"
+
+test:
+    mosml testmysql.sml
+
+clean:
+    del *.so
+    del *.exp
+    del *.lib
+    del *.obj
+    del *.ui
+    del *.uo
+
+.sig.ui:
+    $(MOSMLC) $<
+
+.sml.uo:
+    $(MOSMLC) $<
+
+depend: 
+    del Makefile.bak
+    mv Makefile Makefile.bak
+    $(MOSMLTOOLS)\cutdeps < Makefile.bak > Makefile
+    $(MOSMLTOOLS)\mosmldep >> Makefile
+
+mmysql.obj: mmysql.c
+
+### EVERYTHING THAT GOES BEYOND THIS COMMENT WILL BE ERASED WITHOUT WARNING
+### DO NOT DELETE THIS LINE
+testpsql.uo: Mysql.ui 
+Mysql.uo: Mysql.ui 

@@ -1,0 +1,205 @@
+(* Array -- new basis 1994-11-21, 1995-05-21 *)
+
+structure Array :> Array = struct
+
+(* In fact, type 'a array = 'a array_ ref, but for the static equality
+ * type to be right, we need to declare it a prim_EQtype:              *)
+prim_EQtype 'a array;
+
+local 
+    prim_type 'a array_;
+
+    type 'a vector = 'a Vector.vector;
+
+    prim_val length_  : 'a array_ -> int               = 1 "vect_length";
+    prim_val lengthv_ : 'a vector -> int               = 1 "vect_length";
+
+    prim_val array_  : int -> 'x -> 'a array_          = 2 "make_ref_vect";
+    (* array_ has a non-imperative type for the sake of array0, and a
+       very flexible type 'x to allow initialization.  Thus type
+       correctness inside this unit body depends on type annotations.
+    *)
+
+    prim_val vector_ : int -> 'x -> 'a vector          = 2 "make_vect";
+    prim_val sub_    : 'a array_ -> int -> 'a          = 2 "get_vect_item";
+    prim_val subv_   : 'a vector -> int -> 'a          = 2 "get_vect_item";
+    prim_val update_ : 'a array_ -> int -> 'a -> unit  = 3 "set_vect_item";
+    prim_val updatev : 'a vector -> int -> 'a -> unit  = 3 "set_vect_item";
+
+    prim_val magic   : 'a -> 'b                        = 1 "identity";
+
+    fun from_array (a : 'a  array)  = !(magic a)    : 'a array_;
+    fun make_array (a : '_a array_) = magic (ref a) : 'a array
+in 
+
+#if defined(msdos)
+#include "../config.dos/m.h"
+#elif defined(win32)
+#include "../config.w32/m.h"
+#else
+#include "../config/m.h"
+#endif
+
+#ifdef SIXTYFOUR
+val maxLen = 18014398509481983; (* = 2^54-1, for 64-bit architectures *)
+#else
+val maxLen = 4194303;   	(* = 2^22-1, for 32-bit architectures *)
+#endif
+
+fun array(n, v : '_a) =
+  if n < 0 orelse n > maxLen then raise Size 
+  else make_array (array_ n v) : '_a array;
+
+fun tabulate(n, f : int -> '_a) =
+  if n < 0 orelse n > maxLen then raise Size else
+  let val a = array_ n () : '_a array_
+      fun init i = if i >= n then () else (update_ a i (f i); init (i+1))
+  in (init 0; make_array a : '_a array) end;
+
+fun fromList (vs : '_a list) =
+    let val n = List.length vs
+	val a = if n > maxLen then raise Size
+		else (array_ n () : '_a array_)
+	fun init [] i = ()
+	  | init (v::vs) i = (update_ a i v; init vs (i+1))
+    in (init vs 0; make_array a : '_a array) end;
+
+fun length a = length_ (from_array a);
+
+fun sub(a, i) =
+    let val a = from_array a 
+    in
+	if i < 0 orelse i >= length_ a then raise Subscript 
+	else sub_ a i 
+    end
+
+fun update(a, i, v) =
+    let val a = from_array a 
+    in
+	if i < 0 orelse i >= length_ a then raise Subscript 
+	else update_ a i v
+    end
+
+fun extract (a : 'a array, i, slicelen) =
+    let val a = from_array a : 'a array_ 
+	val n = case slicelen of NONE => length_ a - i | SOME n => n
+	val newvec = if i<0 orelse n<0 orelse i+n > length_ a 
+			 then raise Subscript
+		     else vector_ n () : 'a vector
+	fun copy j = 
+	    if j<n then
+		(updatev newvec j (sub_ a (i+j)); copy (j+1))
+	    else
+		()
+    in copy 0; newvec end;
+
+fun copy {src=a1: 'a array, si=i1, len, dst=a2: 'a array, di=i2} =
+    let val a1 = from_array a1
+	and a2 = from_array a2
+	val n = case len of NONE => length_ a1 - i1 | SOME k => k
+    in
+	if n<0 orelse i1<0 orelse i1+n > length_ a1
+	    orelse i2<0 orelse i2+n > length_ a2
+	then 
+	    raise Subscript
+	else if i1 < i2 then		(* copy from high to low *)
+	         let fun hi2lo j = 
+		     if j >= 0 then
+			 (update_ a2 (i2+j) (sub_ a1 (i1+j)); hi2lo (j-1))
+		     else ()
+		 in hi2lo (n-1) end
+	     else                       (* i1 >= i2, copy from low to high *)
+		 let fun lo2hi j = 
+		     if j < n then
+			 (update_ a2 (i2+j) (sub_ a1 (i1+j)); lo2hi (j+1))
+		     else ()
+		 in lo2hi 0 end
+    end
+
+fun copyVec {src=a1: 'a vector, si=i1, len, dst=a2: 'a array, di=i2} =
+    let val a2 = from_array a2
+	val n = case len of NONE => lengthv_ a1 - i1 | SOME k => k
+    in
+	if n<0 orelse i1<0 orelse i1+n > lengthv_ a1
+	       orelse i2<0 orelse i2+n > length_ a2
+	    then 
+		raise Subscript
+	else 
+	    let fun lo2hi j = if j < n then
+		(update_ a2 (i2+j) (subv_ a1 (i1+j)); lo2hi (j+1))
+			      else ()
+	    in lo2hi 0 end
+    end;
+
+fun foldl f e a = 
+    let val a = from_array a
+	val stop = length_ a
+	fun lr j res = if j < stop then lr (j+1) (f(sub_ a j, res))
+		       else res
+    in lr 0 e end
+
+fun foldr f e a =
+    let val a = from_array a
+	fun rl j res = if j >= 0 then rl (j-1) (f(sub_ a j, res))
+		       else res
+    in rl (length_ a - 1) e end
+
+fun modify f a = 
+    let val a = from_array a
+	val stop = length_ a
+	fun lr j = if j < stop then (update_ a j (f(sub_ a j)); lr (j+1))
+		   else ()
+    in lr 0 end
+
+fun app f a = 
+    let val a = from_array a
+	val stop = length_ a
+	fun lr j = if j < stop then (f(sub_ a j); lr (j+1))
+		   else ()
+    in lr 0 end
+
+fun sliceend (a, i, NONE) = 
+        if i<0 orelse i>length a then raise Subscript
+	else length a
+  | sliceend (a, i, SOME n) = 
+	if i<0 orelse n<0 orelse i+n>length a then raise Subscript
+	else i+n;
+
+fun foldli f e (slice as (a, i, _)) = 
+    let val a = from_array a
+	fun loop stop =
+	    let fun lr j res = 
+		if j < stop then lr (j+1) (f(j, sub_ a j, res))
+		else res
+	    in lr i e end
+    in loop (sliceend slice) end;
+
+fun foldri f e (slice as (a, i, _)) = 
+    let val a = from_array a
+	fun loop start =
+	    let fun rl j res = 
+		    if j >= i then rl (j-1) (f(j, sub_ a j, res))
+		    else res
+	    in rl start e end;
+    in loop (sliceend slice - 1) end
+
+fun modifyi f (slice as (a, i, _)) = 
+    let val a = from_array a
+	fun loop stop =
+	    let fun lr j = 
+		if j < stop then (update_ a j (f(j, sub_ a j)); lr (j+1))
+		else ()
+	    in lr i end
+    in loop (sliceend slice) end;
+
+fun appi f (slice as (a, i, _)) = 
+    let val a = from_array a
+	fun loop stop = 
+	    let	fun lr j = 
+		    if j < stop then (f(j, sub_ a j); lr (j+1)) 
+		    else ()
+	    in lr i end
+    in loop (sliceend slice) end;
+end
+
+end

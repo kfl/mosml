@@ -1,0 +1,64 @@
+# DOS makefile for mosmldep
+
+INCLUDES=-I ../compiler
+COMPFLAGS=$(INCLUDES)
+LINKFLAGS=-g -P full $(INCLUDES)
+
+!include "..\makefile.inc"
+
+OBJS = \
+        deppars.uo deplex.uo mosmldep.uo
+
+LIBOBJS = \
+        obj.uo nonstdio.uo lexing.uo parsing.uo
+
+CLIBOBJS = \
+        hasht.uo fnlib.uo config.uo 
+
+all: cutdeps mosmldep
+
+mosmldep: $(OBJS)
+        $(MOSMLL) $(LINKFLAGS) -noheader -o mosmldep -files &&|
+$(LIBOBJS)
+$(CLIBOBJS) 
+$(OBJS)
+|
+
+cutdeps: cutdeps.uo
+        $(MOSMLL) $(LINKFLAGS) -noheader -o cutdeps cutdeps.uo
+
+deppars.sml deppars.sig: deppars.grm
+        $(MOSMLYACC) deppars.grm
+
+clean:
+        del *.ui
+        del *.uo
+        del makefile.bak
+        del deppars.sig
+        del deppars.sml
+        del deplex.sig
+        del deplex.sml
+        del mosmldep.sml
+        del cutdeps
+        del mosmldep
+
+install:
+	copy cutdeps $(TOOLDIR)
+	copy mosmldep $(TOOLDIR)
+
+.sig.ui:
+        $(MOSMLC) -I ../compiler $<
+
+.sml.uo:
+        $(MOSMLC) -I ../compiler $<
+
+depend: deplex.sml deppars.sml
+        del makefile.bak
+        move makefile makefile.bak
+        $(MOSMLCUT) < makefile.bak > makefile
+        $(MOSMLDEP) >> makefile
+
+### DO NOT DELETE THIS LINE
+mosmldep.uo: deppars.ui deplex.uo 
+deppars.uo: deppars.ui 
+deplex.uo: deppars.ui 

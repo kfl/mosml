@@ -1,0 +1,24 @@
+# Win32 Makefile for Moscow ML 1.43 dynamic libraries: the interface example
+
+CC=cl
+OPTS= /nologo /LD /MT /W1 /GB /O2 /Oy- /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"
+CFLAGS= -Dunix $(OPTS) /I ..\..\runtime
+LIBS= ..\..\runtime\camlrt.lib
+
+!include ..\..\Makedefs.w32
+
+all: libcside.dll
+	@echo "Now execute 'mosml smlside.sml' to test the C functions"
+
+libcside.dll: cside.obj
+	$(CC) $(CFLAGS) /Felibcside.so cside.obj $(LIBS) /link /subsystem:console
+
+clean:
+	del *.so
+	del *.exp
+	del *.lib
+	del *.obj
+
+### EVERYTHING THAT GOES BEYOND THIS COMMENT WILL BE ERASED WITHOUT WARNING
+### DO NOT DELETE THIS LINE
+cside.obj: cside.c

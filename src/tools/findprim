@@ -1,0 +1,19 @@
+#!/usr/local/bin/perl
+
+$primfile = shift(@ARGV);
+
+open(PRIMS, "> $primfile") || die("can't create $primfile");
+
+while (<>) {
+	foreach $f (split) {
+		open(INPUT, $f) || die("can't open $f");
+		while (<INPUT>) {
+			if (m| ([A-Za-z0-9_]*) *\(.*/\* ML \*/|) {
+				print PRIMS $1, "\n";
+			}
+		}
+		close(INPUT);
+	}
+}
+
+close(PRIMS);

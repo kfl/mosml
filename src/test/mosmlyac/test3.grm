@@ -1,0 +1,27 @@
+%{
+
+open test3aux
+
+fun update (env, x:string, v) y = if y=x then v else env y
+
+%}
+
+%token <string * int> ID
+%token <int> NUM
+%token LPAR RPAR LAM DOT EOF
+
+%start Lambda
+
+%type <(string -> test3aux.lam) -> test3aux.lam> Lambda
+
+%% 
+
+Lambda :
+    NUM                         { fn env => Bas $1 } 
+  | ID				{ fn env => (Var o env o #1) $1 }
+  | LAM ID DOT Lambda		{ fn env => 
+	                          Abs(fn v => $4 (update(env, #1 $2, v))) }
+  | LPAR Lambda Lambda RPAR     { fn env => App ($2 env, $3 env) }
+;
+%%
+

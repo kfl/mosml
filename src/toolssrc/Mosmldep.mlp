@@ -1,0 +1,115 @@
+(* Mosmldep -- computing dependencies in a Moscow ML source directory.
+   Handles strings and nested comments correctly; normalizes file names
+   under DOS.
+
+   Usage: mosmldep
+*)
+
+#ifdef unix
+fun manglefilename s = s
+#endif
+
+#ifdef msdos
+fun manglefilename s = 
+    CharVector.tabulate(Int.min(8, size s), 
+			fn i => Char.toLower(String.sub(s, i)))
+#endif
+
+#ifdef win32
+fun manglefilename s =
+    CharVector.tabulate(size s,
+			fn i => Char.toLower(String.sub(s, i)))
+#endif
+
+open BasicIO List
+
+(* Lexer of stream *)
+
+fun createLexerStream (is : instream) =
+  Lexing.createLexer (fn buff => fn n => Nonstdio.buff_input is buff 0 n)
+;
+
+fun parsePhraseAndClear parsingFun lexingFun lexbuf =
+  let val phr =
+    parsingFun lexingFun lexbuf
+    handle x => (Parsing.clearParser(); raise x)
+  in
+    Parsing.clearParser();
+    phr
+  end;
+
+val parseFile =
+  parsePhraseAndClear Deppars.MLtext Deplex.Token;
+
+fun addExt s ext = s ^ "." ^ ext
+
+local 
+    fun say s = (output(std_out, s); flush_out std_out)
+    val col = ref 0
+    and res = ref [];
+
+    fun outstring s =
+	if !col + size s >= 76 then
+	    (print ("\\\n    " ^ s ^ " ");
+	     col := 5 + size s)
+	else
+	    (print (s ^ " ");
+	     col := !col + size s + 1);
+in
+    fun outname s =
+	if FileSys.access (addExt s "sig", []) then
+	    res := addExt s "ui" :: !res
+	else if FileSys.access (addExt s "sml", []) then
+	    res := addExt s "uo" :: !res
+        else ();
+
+    fun beginentry objext target =
+	let val targetname = addExt target objext
+	in 
+	    res := [targetname ^ ":"];
+	    if objext = "uo" andalso FileSys.access(addExt target "sig", [])
+	    then res := addExt target "ui" :: !res else ()
+	end;
+
+    fun endentry () =
+	if length(!res) > 1 then
+	    (col := 0; 
+	     app outstring (rev (!res));
+	     print "\n")
+	else ();	 
+end;
+
+fun read srcext objext filename =
+    let val is       = open_in (addExt filename srcext)
+	val lexbuf   = createLexerStream is
+	val mentions = Hasht.new 37 : (string, unit) Hasht.t
+	val names    = parseFile lexbuf 
+    in 
+	beginentry objext (manglefilename filename);
+	app (fn name => Hasht.insert mentions name ()) names;
+	Hasht.apply (fn name => fn _ => outname (manglefilename name))
+	            mentions;
+	close_in is;
+	endentry ()
+    end
+    handle Parsing.ParseError _ => output(std_out, "Parseerror!\n");
+
+fun processfile filename =
+    let (* val _ = output(std_err, "Processing " ^ filename ^ "\n"); *)
+	val {base, ext} = Path.splitBaseExt filename
+    in 
+	case ext of
+	    SOME "sig" => read "sig" "ui" base
+	  | SOME "sml" => read "sml" "uo" base
+#ifdef win32
+          | SOME "SIG" => read "sig" "ui" base
+	  | SOME "SML" => read "sml" "uo" base
+#endif
+	  | _          => ()
+    end
+
+fun main () =
+    (List.app processfile (Mosml.listDir "."))
+    handle OS.SysErr (str, _) => output(std_err, str ^ "\n\n")
+
+val _ = main ();

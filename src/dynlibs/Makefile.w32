@@ -1,0 +1,36 @@
+clean:
+    cd crypt
+    nmake clean
+    cd ..
+
+    cd interface
+    nmake clean
+    cd ..
+
+#    cd intinf
+#    nmake clean
+#    cd ..
+
+    cd mgd
+    nmake clean
+    cd ..
+
+    cd mgdbm
+    nmake clean
+    cd ..
+
+#    cd mmysql
+#    nmake clean
+#    cd ..
+
+#    cd mpq
+#    nmake clean
+#    cd ..
+
+    cd mregex
+    nmake clean
+    cd ..
+
+    cd msocket
+    nmake clean
+    cd ..

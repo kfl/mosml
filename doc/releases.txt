@@ -1,0 +1,225 @@
+Moscow ML release history
+
+1.00 (1 September 1994) 
+  * First public release, supposed to be reliable.
+
+1.01 (2 September 1994) 
+  * Fixed the bewildering error message from test R021B-FL.
+
+1.02 (6 September 1994)
+  * Removed `Internal error: domPatAcc' from the function of that name in 
+    asynt.ml, which was reported upon elaborating 
+	val ref (x as (y, z)) = ref (1, 2)
+  * Made the compiler reject unbalanced comments: (op *) (2,3);
+    and record labels starting with 0: {02 = true};
+
+1.03 (12 September 1994)
+  * In the implementation of `use', open_in replaced with
+    open_in_bin, to avoid wrong calculation of file positions
+    when reporting errors.
+
+1.10 (28 September 1994)
+  * Exceptions in integer and real arithmetic operations are raised
+    correctly. (Including floor.)  The real arithmetic exceptions work
+    under DOS, Windows, Linux, Ultrix, OSF/1, HP/UX, Sun OS.
+  * The representation of top-level exceptions has been changed
+    to enable SML programs to handle the exceptions raised by
+    the Caml Light run-time system.
+    As a consequence, the exception Interrupt can now be
+    handled by SML programs. (The Caml Light name of that
+    exception is sys__Break.)
+    Evaluating expressions like  10 div 0  no longer causes
+    Moscow ML to crash.
+  * datatype X = A | B of unit; B (); now accepted.
+  * Now ~100 div 10 = ~10. (Previously it was ~11!).
+  * Too large integer or real constants now give rise to error reports.
+  * Error reports produced by the type-checker for the
+    expressions like 0 = [1,2,3] have been made more
+    understandable.
+  * Unbound variables are identified before type-checking.  (To
+    avoid strange error reports in expressions like 2*~2.)
+  * As required by the Definition, inexhaustive patterns in 
+    valbinds at the top level are no longer reported. (For 
+    example, in val nil = [].)
+
+1.20 (1 December 1994)
+  * Supports separate compilation and type-safe linking, using a simple 
+    module system which has Standard ML's signatures and structures, but 
+    no functors.  Includes extensible basis libraries Array, List, and
+    Vector (and Graphics in the MS DOS version).  Cannot create
+    stand-alone executables yet.
+  * Fixed the two bugs found in version 1.10:
+    * Illegal string escapes, such as "\256", caused the system to crash.
+    * Certain illegal infix patterns, as in fn + => (), were accepted.
+
+1.30 (15 June 1995)
+
+  * Now reports `hidden' types t in a less ambiguous manner: ?{t}
+  * New type char, and character constants #"a".
+  * Supports vector expressions #[7, 9, 13] and vector patterns #[x,y,z].
+  * Permits quotations `a b c` and antiquotations `a ^var c`.
+  * Provides a batch compiler which can generate stand-alone executables.
+  * Provides a lexer generator and a parser generator (from Caml Light).
+  * New runtime system with better garbage collector (from Caml Light 0.7).
+  * Moscow ML has been rewritten in Moscow ML and can recompile itself,
+    which simplifies installation on Unix systems.
+  * Supports a large part of the new SML Standard Library, but not yet 
+    the new I/O primitives.
+  * Fixed bugs found in version 1.20:
+    * The Match exception wasn't handled properly
+    * Static argumentless exception constructors in data structures at 
+      top-level caused evaluation to crash.
+    * Now considers ctrl-Z to mean end of file when reading source programs
+      with `use' and `compile', under DOS as well as Unix.  This simplifies 
+      moving source files from DOS to Unix, and prevents ctrl-Z characters
+      in source files from crashing the top-level under DOS.
+
+1.31 (15 October 1995)
+
+  * Added prettyprinter library PP (from SML/NJ library version 0.2)
+  * Added installable prettyprinters
+  * Now works for the Macinstosh, thanks to Doug Currie (e@flavors.com)
+  * The timer functions now report garbage-collection time
+  * Avoid excess flushing: output to std_out no longer flushes immediately; 
+    function BasicIO.say still does.
+  * Make sure that std_out is flushed when (stand-alone) program terminates.
+  * Standard Library: Added getOpt etc. at top-level; changed the types
+    of the word shift operations; ...
+  * Now accepts ctrl-L in source files.
+  * Bugs fixed:
+    * input_line now works properly with pipes, DOS, and Mac
+    * Array2 (and mosmllib/Makefile) were wrong
+    * missing -q/-quotation option in mosmlc (under Unix)
+    * Added test cases for Array2, Arraysort, and Listsort
+    * FileSys.chDir now changes volume under DOS
+    * mosmlyac now requires the types of non-terminals to be declared
+      for type safety
+
+1.40 (1 July 1996)
+
+  * Changes in compiler (many of which to reflect the 1996 revised SML):
+    * New match compiler properly detects inexhaustive matches etc.
+    * Better type error messages
+    * Made value polymorphism default; introduced command-line options 
+      -valuepoly and -imptypes, and added a ref variable Meta.valuepoly
+    * Added hexadecimal integer constants, word type, word special
+      constants, and word printing
+    * Made +, *, -, <, >, <=, >=, div, mod, and makestring overloaded 
+      on word and word8 also
+    * Overloading defaults to type int by default
+    * Made quot and rem nonfix
+    * Permitted 'e' as well as 'E' in real constants
+    * Added trunc, ceil, round at top-level
+    * Removed sqrt, ln, exp, sin, cos, arctan, quot, rem from top-level
+    * Permitted new escape sequences in char and string constants
+    * Forbade rebinding and respecification (as constructors) of the 
+      identifiers true, false, it, nil, ::, ref 
+    * Made the -P unitset option case insensitive
+    * Permit keywords `structure' and `signature' etc. in compilation units
+  * Changes concerning SML Basis Library:  
+    * New structures TextIO and BinIO
+    * Renamed Integer to Int, String.maxLen to String.maxSize
+    * Added String.isPrefix, Substring.isPrefix, FileSys.fileSize,
+      Char.{fromCString, toCString}, StringCvt.scanList, hyperbolic
+      functions in Math, exnName, exnMessage, FileSys.file_id etc.,
+      FileSys.{fullPath, realPath}, exception Domain
+    * Changed {Int, Word, Word8}.{scan, fromString} to accept various
+      combinations of prefixes: 0x, 0X, and 0w, 0wx, 0wX; and {Char,
+      String}.fromString to permit new escape sequences;
+      FileSys.tmpName; built-in exception Io; General.ordering to 
+      General.order
+    * Fixed Real.fmt, Real.toString, Real.fromString on "1.E"
+  * Bugs fixed:
+    * mosmllex handled character set concatenation wrongly
+    * Exceptions SysErr and Io didn't print properly
+    * Missing check for duplicate labels in record types in signatures
+
+1.41 (1 October 1996)
+  * Better type error message for tuples.
+  * New option `-P parsing' for linking mosmlyac- and mosmllex-generated
+    programs.
+  * Bugs fixed:
+    * Overloaded type variables were incorrectly generalized at top-level.
+    * mosmlyac now permits immediate tuple and record types in
+      %tokens; permits function types; and correctly binds $s in semantic 
+      actions even inside closures.
+
+1.42 (July 1997) 
+  * The linker now automatically includes all (and only) referred-to
+    bytecode files.  Option -i makes the linker report which files.
+    Option -noautolink disables the autolinker.  Option -P parsing
+    has been removed.  
+  * Now doesn't print imperative tyvars for library functions.
+  * Now accepts explicit type variable parameters in val and fun.
+  * Basis Library: Added structures Array2, CommandLine, and Option.  
+    Added Substring.span and {Vector, CharVector, Word8Vector}.{map, mapi}.
+    Renamed Old to SML90.  Fixed FileSys.closeDir, Path.joinBaseExt, 
+    Word8.~>>.  FileSys.tmpName now creates absolute pathnames, using
+    POSIX tmpnam.
+  * Support for writing CGI scripts (Mosmlcgi, thanks to Jonas Barklund).
+  * Signature stamps now are standard MD5 checksums rather than CRC128
+  * Several internal improvements to the compiler; faster compilation
+  * Faster and more compact bytecode, thanks to Doug Currie
+  * Bugs fixed: 
+    * compilation of certain patterns with irrefutable subpatterns failed
+    * mosmllex-generated lexers now typesafe
+    * Polyhash.hash now is more useful on ref values
+    * signature stamps now unaffected by gc phenomena; hence stable
+
+1.43 (April 1998) 
+  * Added weak pointers and arrays of weak pointers (structure Weak).
+  * The load paths can be set from the interactive system.
+  * The interactive system's prompts and responses can be turned off
+    (option -quietdec, variable Meta.quietdec).
+  * Prettyprinters can be installed also on base types and abstract types.
+  * The Help facility can be adapted to other uses.
+  * Mosmllex now supports abbreviations for regular expressions.
+  * Added dynamic linking of external functions under Linux, Solaris,
+    OSF/1, Win32 and MacOS (structure Dynlib).
+  * Access to GNU gdbm persistent hashtables (structures Gdbm,
+    Polygdbm); requires Dynlib.  
+  * Added interface to Boutell's GD image package (structure Gdimage)
+  * Basis Library: changes to structures Array2, Date, and Option.
+  * Bugs fixed: 
+    * bogus error message for overloaded variables in local declarations
+    * when a unit cannot load successfully, references to it must fail
+    * the internal representation of ~0.0 was different from ~ 0.0
+    * error in code emission for 63-bit integer constants
+    * mosmllex now reports correct number of actions generated
+    * mosmlyac now implements %nonassoc correctly
+
+1.44 (August 1999)
+  * Added interface to the PostgreSQL database server (structure Postgres)
+  * Added interface to the MySQL database server (structure Mysql)
+  * Added interface to POSIX 1003.2 regular expressions (structure Regex)
+  * Added interface to Internet and file sockets (structure Socket)
+  * String escapes of the form \uxxxx are now accepted
+  * Dynamic linking now also under HP-UX
+  * Faster bytecode execution: bytecode threading at load-time
+  * Minor changes to simplify compilation under NetBSD
+  * Datatypes and abstypes now retain the given explicit tyvar names
+  * New linker option -standalone
+  * Basis Library changes:
+    * Real.fmt and Real.toString now emit no leading zeroes in the exponent
+    * Real.fmt and Substring.trim{l,r} may raise exceptions at partial appl.
+    * FileSys.readDir returns NONE instead of ""
+    * String.map added
+    * Word.toInt now raises Overflow on would-be negative results
+  * Bugs fixed:
+    * mosmllex-generated lexers now handle illegal symbols gracefully
+    * mosmlyac can now use precedence to resolve reduce/reduce conflicts
+    * mosmlyac now discovers missing %type for start symbols
+    * constructors and excons can now be rebound in recursive valbinds
+    * Real.round didn't round to nearest even on HP-UX and MS DOS/Win
+    * some Word comparisons were wrong on DEC Alpha
+    * Mosml.run didn't work on e.g. Solaris (pointed out by Anders Öhrt)
+    * Date.offset was wrong
+
+1.45 (? 2000)
+  * Bugs fixed:
+    * Binding a static excon in a local exbind failed
+    * More sensible failure value from Mosml.run under MS Windows
+    * A failing installed prettyprinter no longer terminates the system
+  * Improved memory handling in Intinf (by Doug Currie)
+  * Improved prettyprinting of record and function types
+  

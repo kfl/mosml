@@ -1,0 +1,45 @@
+Arbitrary precision arithmetic for Moscow ML
+--------------------------------------------
+
+This directory provides a Moscow ML implementation of the Standard ML
+Basis Library structure IntInf for arbitrary precision integer
+arithmetic.  It is based on the GNU GMP multi-precision arithmetic
+package and the Moscow ML Dynlib structure.
+
+It consists of the following files:
+
+        intinf.c        Implements the dynamic library libmgmp.so which 
+                        interfaces Moscow ML to the GNU GMP library.
+
+        IntInf.sig      The Basis Library IntInf signature for arbitrary
+                        precision integer arithmetics.
+
+        IntInf.sml      The implementation of that signature; uses 
+                        libgmgmp.so.
+
+        Makefile        Creates libmgmp.so and the IntInf ML library.
+
+        fac.sml         The factorial function defined using IntInf.
+
+        testintinf.sml  A suite of test cases for the IntInf library.
+
+You must have the following components:
+        
+        GNU GMP v 2     Can be found many places on the Internet, such as
+                        http://www.sunsite.auc.dk/ftp/pub/gnu/gmp-2.0.2.tar.gz
+
+        Dynlib          The Moscow ML foreign (C) function interface.
+                        Supported for Linux, Solaris, MS Win32, MacOS,
+	                Digital Unix, and HP-UX in mosml 1.44
+
+The runtime system must be compiled with support for dynamic linking
+of foreign functions (edit mosml/src/Makefile.inc to achieve this).
+
+To compile, test, and use IntInf:
+
+        make
+        make test
+        mosml fac.sml
+
+-----------------------------------------------------------------------
+File mosml/src/dynlibs/intinf/README * sestoft@dina.kvl.dk * 1998-04-17

@@ -1,0 +1,138 @@
+<HTML><HEAD><TITLE>Structure Dynlib</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Dynlib</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>signature Dynlib =
+<A NAME="line2"></A>sig
+<A NAME="line3"></A>    type dlHandle
+<A NAME="line4"></A>    type symHandle
+<A NAME="line5"></A>        
+<A NAME="line6"></A>    exception Closed
+<A NAME="line7"></A>    
+<A NAME="line8"></A>    datatype flag = RTLD_LAZY | RTLD_NOW
+<A NAME="line9"></A>    val <A NAME="line9"></A><A HREF="#dlopen">dlopen</A>  : { lib : string, flag : flag, global : bool } -> dlHandle
+<A NAME="line10"></A>    val <A NAME="line10"></A><A HREF="#dlsym">dlsym</A>   : dlHandle -> string -> symHandle
+<A NAME="line11"></A>    val <A NAME="line11"></A><A HREF="#dlclose">dlclose</A> : dlHandle -> unit
+<A NAME="line12"></A>
+<A NAME="line13"></A>    val <A NAME="line13"></A><A HREF="#var">var</A>  : symHandle -> 'b                            
+<A NAME="line14"></A>    val <A NAME="line14"></A><A HREF="#app1">app1</A> : symHandle -> 'a1 -> 'b                     
+<A NAME="line15"></A>    val <A NAME="line15"></A><A HREF="#app2">app2</A> : symHandle -> 'a1 -> 'a2 -> 'b              
+<A NAME="line16"></A>    val <A NAME="line16"></A><A HREF="#app3">app3</A> : symHandle -> 'a1 -> 'a2 -> 'a3 -> 'b       
+<A NAME="line17"></A>    val <A NAME="line17"></A><A HREF="#app4">app4</A> : symHandle -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'b
+<A NAME="line18"></A>    val <A NAME="line18"></A><A HREF="#app5">app5</A> : symHandle -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
+<A NAME="line19"></A>end
+<A NAME="line20"></A>
+<A NAME="line21"></A>(* 
+<A NAME="line22"></A>   Structure Dynlib provides dynamic loading and calling of C
+<A NAME="line23"></A>   functions, using the dlfcn interface.  A dynamic library is a
+<A NAME="line24"></A>   collection of symbols (C variables and functions).  
+<A NAME="line25"></A>
+<A NAME="line26"></A>   An ML value passed to or returned from a symbol has type `value' as
+<A NAME="line27"></A>   defined in src/runtime/mlvalues.h.  The C functions should use the
+<A NAME="line28"></A>   macroes defined there to access and produce ML values.  When
+<A NAME="line29"></A>   writing a C function, remember that the garbage collector may be
+<A NAME="line30"></A>   activated whenever you allocate an ML value.  Also, remember that
+<A NAME="line31"></A>   the garbage collector may move values from the young heap to the
+<A NAME="line32"></A>   old one, so that a C pointer pointing into the ML heap may need to
+<A NAME="line33"></A>   be updated. Use the Push_roots and Pop_roots macroes to achieve
+<A NAME="line34"></A>   this.
+<A NAME="line35"></A>
+<A NAME="line36"></A>   Type [dlHandle] is the type of dynamic library handles.  A dynamic
+<A NAME="line37"></A>   library handle is created by opening a dynamic library using
+<A NAME="line38"></A>   dlopen.  This will load the library into the runtime system.  The
+<A NAME="line39"></A>   dynamic library handle is used for accessing symbols in that
+<A NAME="line40"></A>   library.  The library may be closed and removed from the runtime
+<A NAME="line41"></A>   system using dlclose.  
+<A NAME="line42"></A>
+<A NAME="line43"></A>   The same library may be opened more than once, resulting in
+<A NAME="line44"></A>   different library handles.  The physical library will be loaded
+<A NAME="line45"></A>   only once, though, and will remain in the runtime system until all
+<A NAME="line46"></A>   handles to the library have been closed.
+<A NAME="line47"></A>
+<A NAME="line48"></A>   Type [symHandle] is the type of symbol handles.  A symbol handle is
+<A NAME="line49"></A>   used to access a symbol (variable or function) in the dynamic
+<A NAME="line50"></A>   library, using the functions var, app1, app2, ..., app5.  Type
+<A NAME="line51"></A>   safety is the responsibility of the programmer; the runtime system
+<A NAME="line52"></A>   performs no type checking.  Hence you are advised to add explicit
+<A NAME="line53"></A>   types whenever you define an ML function in terms of var, app1,
+<A NAME="line54"></A>   ..., app5.
+<A NAME="line55"></A>
+<A NAME="line56"></A>   How to create a dynamically loadable library
+<A NAME="line57"></A>   --------------------------------------------
+<A NAME="line58"></A>   Assume file "xyz.c" contains your C functions.  
+<A NAME="line59"></A>
+<A NAME="line60"></A>   To compile xyz.c into xyz.o and then create a dynamic library 
+<A NAME="line61"></A>   libxyz.so from xyz.o:
+<A NAME="line62"></A>
+<A NAME="line63"></A>     Under Linux and OSF/1 (Digital Unix):
+<A NAME="line64"></A>        gcc -c -o xyz.o xyz.c 
+<A NAME="line65"></A>        ld -shared -o libxyz.so xyz.o
+<A NAME="line66"></A>     Under Solaris (ignore the warnings from ld):
+<A NAME="line67"></A>        gcc -c -o xyz.o xyz.c 
+<A NAME="line68"></A>        ld -G -B symbolic -z nodefs -o libxyz.so xyz.o
+<A NAME="line69"></A>     Under HP-UX:
+<A NAME="line70"></A>        gcc -fPIC -c -o xyz.o xyz.c 
+<A NAME="line71"></A>        ld -b -B symbolic -E -o libxyz.so xyz.o
+<A NAME="line72"></A>
+<A NAME="line73"></A>   If "xyz.o" depends on another library "libabc.a" you may link the
+<A NAME="line74"></A>   required functions into libxyz.so just by adding -labc or libabc.a
+<A NAME="line75"></A>   to the above linker command.
+<A NAME="line76"></A>
+<A NAME="line77"></A>   If "xyz.o" depends on another dynamic library "libabc.so" you may
+<A NAME="line78"></A>   specify this by adding -labc to the above linker command.  Then
+<A NAME="line79"></A>   Dynlib.dlopen will automatically load libabc.so before libxyz.so.
+<A NAME="line80"></A>
+<A NAME="line81"></A>
+   [<A NAME="dlopen"><B>dlopen</B></A> { lib, flag, global }] will load and open the library in
+   file `lib', returning a handle to it.  
+        If `flag' is RTLD_LAZY, then only symbol relocations will be
+   performed now, and function relocations will be performed when each
+   function is invoked for the first time (if ever).  This is the
+   normal situation.  If `flag' is RTLD_NOW, then all relocations are
+   performed immediately, also for functions that will never be
+   called.  This may waste some time.  
+        If `global' is true, then the library's global symbols are
+   made available for other libraries subsequently loaded.
+        Libraries are usually specified just by file name, leaving out
+   the directory path.  Linux/Unix-specific information: Libraries are
+   searched for in those directories mentioned in LD_LIBRARY_PATH,
+   those mentioned in /etc/ld.so.cache, in /usr/lib and /lib.  (Note
+   that /etc/ld.so.cache is created from /etc/ld.so.conf by running
+   ldconfig; you must be superuser to do that).
+
+   [<A NAME="dlsym"><B>dlsym</B></A> dlh nam] returns a symbol handle for the symbol called `nam'
+   in the library associated with dlh.  Raises Closed if dlh has been
+   closed.
+
+   [<A NAME="dlclose"><B>dlclose</B></A> dlh] closes the library handle and deallocates the library
+   if there are no more open handles to this library.
+
+   The following functions raise Closed if the associated handle has
+   been closed.
+
+   [<A NAME="var"><B>var</B></A> sym] returns the value of the C variable associated with sym.
+
+   [<A NAME="app1"><B>app1</B></A> sym arg1] applies the C function associated with sym to arg1.
+
+   [<A NAME="app2"><B>app2</B></A> sym arg1 arg2] applies the C function associated with sym to
+   (arg1, arg2).
+
+   [<A NAME="app3"><B>app3</B></A> sym arg1 arg2 arg3] applies the C function associated with
+   sym to (arg1, arg2, arg3).
+
+   [<A NAME="app4"><B>app4</B></A> sym arg1 arg2 arg3 arg4] applies the C function associated
+   with sym to (arg1, arg2, arg3, arg4).
+
+   [<A NAME="app5"><B>app5</B></A> sym arg1 arg2 arg3 arg4 arg5] applies the C function
+   associated with sym to (arg1, arg2, arg3, arg4, arg5). 
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

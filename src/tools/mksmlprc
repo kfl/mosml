@@ -1,0 +1,11 @@
+while(<>) {
+	chop;
+	push(@prim, $_);
+}
+
+print "val primitives_table = #[\n";
+
+for ($i = 0; $i < $#prim; $i++) {
+	print "  \"", $prim[$i], "\",\n";
+}
+print "  \"", $prim[$#prim], "\"];\n";

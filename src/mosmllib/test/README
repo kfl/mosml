@@ -1,0 +1,23 @@
+This directory contains test cases for most of the required structures
+in the new SML Basis Library.	    1995-03-23, 1996-04-19, 1997-03-12
+
+The directory must contain this file "README" and three symbolic links:
+	testlink -> README
+	testcycl -> testcycl
+	testbadl -> exists.not
+It must not contain a file or directory named "exists.not".
+
+To run all the tests, invoke (for Moscow ML):
+
+	rm -f result *.dat
+       	mosml -P full test.sml >& result
+       	diff result result.ok
+
+Some things which are specific to Moscow ML are indicated by the
+comment (* MOSML *).
+
+
+Peter Sestoft (sestoft@dina.kvl.dk)
+Department of Mathematics and Physics
+Royal Veterinary and Agricultural University
+Thorvaldsensvej 40, DK-1871 Frederiksberg C, Denmark

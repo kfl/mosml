@@ -1,0 +1,35 @@
+File mosml/examples/README
+
+
+The subdirectories contain various example programs in Standard ML.
+
+Each example can be compiled by going to the subdirectory and
+executing `nmake' from the command line.
+
+
+calc            An calculator for simple arithmetic expressions.
+                Illustrates the use of mosmllex and mosmlyac
+                (adapted from Caml Light).
+
+cgi		Two CGI scripts written in Moscow ML using the Mosmlcgi
+		library, and associated HTML files.
+
+helpsigs        Generation of the signature database
+                Illustrates the organization of a larger program.
+
+lexyacc         Lexer and parser for a small functional language.
+                A larger example of the use of mosmllex and mosmlyac.
+
+manual          The small batch compiler example from the manual.
+                Illustrates the use of Makefiles.
+
+mls             A simple utility for producing a sorted directory listing
+                (like `ls' in Unix and `dir' in DOS).
+                Illustrates the use of the FileSys library.
+
+pretty          Prettyprinting of simple arithmetic expressions.
+                Illustrates the use of installable prettyprinters.
+
+small           Various smaller examples without Makefiles.
+
+weak            An example application of weak pointers.

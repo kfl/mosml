@@ -1,0 +1,49 @@
+Sockets interface for Moscow ML
+-------------------------------
+
+*** This release has not been tested systematically ***
+
+This directory provides a sockets interface for Moscow ML, roughly
+conforming to the SML Basis Library.  It was implemented by Ken Larsen
+and Peter Sestoft.  
+
+The initial implementation was financed by the PROSPER project.
+
+It consists of the following files:
+
+        msocket.c       Implements the dynamic library libmsocket.so which 
+                        provides socket primitives for Moscow ML.
+
+	Socket.sig      The signature of the ML socket primitives, with
+			documentation.
+
+	Socket.sml      The implementation of the ML socket primitives
+			(mostly calls to the C functions in libmsocket.so).
+
+You must have the following components:
+        
+        Dynlib          The Moscow ML foreign (C) function interface.
+                        Supported for Linux, Solaris, MS Win32, MacOS,
+	                Digital Unix, and HP-UX in mosml 1.44
+
+The runtime system must be compiled with support for dynamic linking
+of foreign functions (edit mosml/src/Makefile.inc to achieve this).
+
+1. Compile msocket, Socket.sig, and Socket.sml:
+
+        make
+
+2. Install msocket in the directory determined by BINDIR in src/Makefile.inc:
+
+        make install
+
+3. Set your LD_LIBRARY_PATH to point to the BINDIR directory.
+
+	For tcsh: setenv LD_LIBRARY_PATH $BINDIR
+	For bash: LD_LIBRARY_PATH=$BINDIR
+		  export LD_LIBRARY_PATH
+
+
+------------------------------------------------------------------------
+File mosml/src/dynlibs/msocket/README * sestoft@dina.kvl.dk * 1999-05-10
+

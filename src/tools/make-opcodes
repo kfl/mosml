@@ -1,0 +1,2 @@
+$1=="enum" {n=0; next; }
+           {printf("let %s=%d;;\n", $1, n++);}

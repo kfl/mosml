@@ -1,0 +1,32 @@
+<!-- File mosml/examples/cgi/upload.html
+ 
+  This is the HTML file interpreted by the webbrowser.  It contains a
+  form which allows the user to select a file (on the local system
+  running the browser).  Clicking on "Send" in the form will send a
+  CGI request, including the contents of the file, to a web server.
+  The web server will invoke the CGI program `cgiex2' to handle the
+  request and respond to the web browser.
+
+  The URL "http://ellemose.dina.kvl.dk/cgi-bin/sestoft/cgiex2" must
+  be replaced by one referring to the server on which you install the 
+  CGI script.
+
+  See file README2 for further instructions.
+
+-->
+
+<FORM METHOD="POST" ENCTYPE="multipart/form-data" 
+      ACTION="http://ellemose.dina.kvl.dk/cgi-bin/sestoft/cgiex2">
+
+<INPUT TYPE=FILE SIZE=50 name=filecontents>
+
+<SELECT name=action> 
+ <OPTION>count characters
+ <OPTION>count lines
+ <OPTION>sort
+</SELECT>
+
+<INPUT type=submit value="Send">
+
+</FORM>
+

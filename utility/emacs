@@ -1,0 +1,29 @@
+The directory sml-mode-3.3b contains Matthew Morley's Emacs sml-mode
+version 3.2, including customization for Moscow ML, but excluding
+documentation.
+
+It is available from 
+
+	http://www.scs.leeds.ac.uk/mjm/sml-mode/
+
+On-line documentation is available at
+
+	http://www.scs.leeds.ac.uk/mjm/sml-mode/sml-mode.html
+
+Install as directed in file sml-mode-3.3b/README.
+
+If you follow those instructions, then from within an Emacs buffer in
+sml-mode, you can
+
+ * type  C-c m    to invoke Moscow ML under Emacs 
+ * type  C-c C-s  to jump to the Moscow ML buffer
+ * type  C-c C-b  to load the buffer's contents into Moscow ML
+ * type  C-c C-l  to load some file's contents into Moscow ML
+
+ * type  C-h m    to get brief help on other commands in sml-mode
+ * type  C-c C-i  to get extensive documentation on sml-mode
+
+In case of compilation errors, 
+
+ * type  C-c C-`  to jump to the location of the error in the source code
+

@@ -1,0 +1,139 @@
+Moscow ML version 1.43 (April 1998)
+Enter `quit();' to quit.
+[opening file "testmysql.sml"]
+> val it = () : unit
+[opening file "../../mosmllib/test/auxil.sml"]
+> infix 1 seq
+  val seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> ((int -> bool) -> string)
+[closing file "../../mosmllib/test/auxil.sml"]
+> val it = () : unit
+> datatype dyntype
+  type dbconn
+  datatype dbresultstatus
+  type dbresult
+  datatype dynval
+  val getdynfield = fn : dbresult -> int -> int -> dynval
+  val fname = fn : dbresult -> int -> string
+  con NullVal = NullVal : dynval
+  val ftype = fn : dbresult -> int -> dyntype
+  val db = fn : dbconn -> string
+  val getreal = fn : dbresult -> int -> int -> real
+  con Real = fn : real -> dynval
+  con Nonfatal_error = Nonfatal_error : dbresultstatus
+  exn Null = Null : exn
+  con Copy_in = Copy_in : dbresultstatus
+  con Fatal_error = Fatal_error : dbresultstatus
+  val fnumber = fn : dbresult -> string -> int option
+  con TimeTy = TimeTy : dyntype
+  con DateTimeTy = DateTimeTy : dyntype
+  val getstring = fn : dbresult -> int -> int -> string
+  val getdatetime = fn : dbresult -> int -> int -> Date.date
+  val getbool = fn : dbresult -> int -> int -> bool
+  con String = fn : string -> dynval
+  val status = fn : dbconn -> bool
+  con Command_ok = Command_ok : dbresultstatus
+  val getdate = fn : dbresult -> int -> int -> int * int * int
+  con Date = fn : int * int * int -> dynval
+  con DateTy = DateTy : dyntype
+  val fromtag = fn : dyntype -> string
+  con Empty_query = Empty_query : dbresultstatus
+  val reset = fn : dbconn -> unit
+  val closebase = fn : dbconn -> unit
+  val getint = fn : dbresult -> int -> int -> int
+  con DateTime = fn : Date.date -> dynval
+  con StringTy = StringTy : dyntype
+  con Tuples_ok = Tuples_ok : dbresultstatus
+  val applyto = fn : 'a -> ('a -> 'b) -> 'b
+  val nfields = fn : dbresult -> int
+  val openbase =
+    fn
+    : {dbhost : string option, dbname : string option, dboptions :
+         string option, dbport : string option, dbpwd : string option, dbtty :
+         string option, dbuser : string option} -> dbconn
+  val resultstatus = fn : dbresult -> dbresultstatus
+  con RealTy = RealTy : dyntype
+  val host = fn : dbconn -> string option
+  val gettime = fn : dbresult -> int -> int -> int * int * int
+  con Time = fn : int * int * int -> dynval
+  val errormessage = fn : dbconn -> string option
+  con Bad_response = Bad_response : dbresultstatus
+  val copytableto = fn : dbconn * string * (string -> unit) -> unit
+  val options = fn : dbconn -> string
+  con IntTy = IntTy : dyntype
+  con UnknownTy = UnknownTy : dyntype
+  val cmdtuples = fn : dbresult -> int
+  val copytablefrom = fn : dbconn * string * ((string -> unit) -> unit) -> unit
+  val execute = fn : dbconn -> string -> dbresult
+  val fnames = fn : dbresult -> string vector
+  val ftypes = fn : dbresult -> dyntype vector
+  val port = fn : dbconn -> string
+  val tty = fn : dbconn -> string
+  val ntuples = fn : dbresult -> int
+  val isnull = fn : dbresult -> int -> int -> bool
+  val getdyntups = fn : dbresult -> dynval vector vector
+  con Copy_out = Copy_out : dbresultstatus
+  val getdyntup = fn : dbresult -> int -> dynval vector
+  exn Closed = Closed : exn
+  con Int = fn : int -> dynval
+> val dbhost = SOME "localhost" : string option
+> val dbport = NONE : 'a option
+> val dboptions = NONE : 'a option
+> val dbtty = NONE : 'a option
+> val dbuser = NONE : 'a option
+> val dbpwd = NONE : 'a option
+> val dbname = SOME "test" : string option
+> val pc = <dbconn> : dbconn
+> val info =
+    ("test", SOME "localhost", "", "0", "")
+    : string * string option * string * string * string
+> val inst = fn : string -> dbresult
+  val res1 = <dbresult> : dbresult
+  val test1a = "OK" : string
+  val test1b = "OK" : string
+  val test1c = "OK" : string
+> val test1d = "OK" : string
+  val test1e = "OK" : string
+  val test1f = "OK" : string
+> val test1g = "OK" : string
+> val test1h = "OK" : string
+> val test1i = "OK" : string
+  val test1j = "OK" : string
+  val test1k = "OK" : string
+  val test1l = "OK" : string
+> val res2 = <dbresult> : dbresult
+  val res3 = <dbresult> : dbresult
+> val test3a = "OK" : string
+  val test3b = "OK" : string
+  val test3c = "OK" : string
+> val test3d = "OK" : string
+  val test3e = "OK" : string
+  val test3f = "OK" : string
+  val test3ga =
+    ("OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK")
+    : string * string * string * string * string * string * string * string
+  val test3gb =
+    ("OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK")
+    : string * string * string * string * string * string * string * string
+  val test3gc =
+    ("OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK")
+    : string * string * string * string * string * string * string * string
+  val test3gd =
+    ("OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK")
+    : string * string * string * string * string * string * string * string
+  val test3ha = ("OK", "OK") : string * string
+  val test3hb = ("OK", "OK") : string * string
+  val test3hc = ("OK", "OK") : string * string
+> val test4 = "OK" : string
+  val res5 = <dbresult> : dbresult
+  val test5a = "OK" : string
+  val test6 = "OK" : string
+  val test7 = "OK" : string
+  val test8 = "OK" : string
+  val test9 = "OK" : string
+  val test10 = "OK" : string
+[closing file "testmysql.sml"]
+- 

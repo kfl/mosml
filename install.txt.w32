@@ -1,0 +1,70 @@
+This is file install.txt.w32 for Moscow ML 1.44 for Win95/98/NT (August 1999)
+
+
+SYSTEM REQUIREMENTS
+
+Moscow ML requires an x86 PC, x >= 3, with a floating point processor,
+2 MB of RAM or more, and Windows 95, 98 or NT. The installation
+requires around 11 MB disk space.
+
+
+INSTALLING MOSCOW ML (BINARIES ONLY) UNDER WINDOWS 95/98/NT
+
+(1) Change directory to C:\ and unpack the Moscow ML distribution
+    by executing
+
+        unzip win32-mos14bin.zip
+
+    NOTE: You must use a version of unzip that preserves long file
+    names, such as Info-Zip or Winzip.
+
+    This creates a directory C:\mosml with subdirectories
+
+    mosml/              readme, install.txt
+          bin/          mosml, mosmlc, mosmllex, mosmlyac, camlrunm,
+                        and the dynamically loadable libraries
+          copyrght/     copyright notices
+          doc/          manual.pdf, mosmlref.pdf, ...
+              mosmllib/ HTML-documentation of the Moscow ML library 
+          examples/     a few example programs
+          lib/          bytecode files and basis library units
+          tools/        mosmldep, Makefile.stub
+
+(2) Add C:\mosml\bin to the PATH variable, and set the environment
+    variable `mosmllib' to C:\mosml\lib -- that is, in the case of
+    Windows 95 your AUTOEXEC.BAT file should contain something like:
+
+        set PATH=C:\dos;  ...  ;C:\mosml\bin
+        set MOSMLLIB=C:\mosml\lib
+
+(3) In the case of Windows 95 reboot the system to enable the new 
+    environment variables, and start Moscow ML by entering the command
+    line
+
+        mosml
+    
+To quit Moscow ML, type `quit();' or control-Z and return.
+
+
+AUTHOR AND CREDITS
+
+Moscow ML was written by
+    Sergei Romanenko (roman@keldysh.ru)
+    Keldysh Institute of Applied Mathematics, Russian Academy of Sciences
+    Miusskaya Pl. 4, 125047 Moscow, Russia.
+and Peter Sestoft (sestoft@dina.kvl.dk),
+    Department of Mathematics and Physics, Royal Veterinary and
+    Agricultural University, Thorvaldsensvej 40, DK-1871 Frederiksberg C, 
+    Denmark.  Much of the work was done at the Technical University of
+    Denmark, and while visiting AT&T Bell Laboratories, New Jersey, USA.
+
+Moscow ML owes much to:
+    * the CAML Light implementation by Xavier Leroy and Damien Doligez
+      (INRIA, Rocquencourt, France); especially the Caml Light bytecode
+      generator and the runtime system;
+    * the ML Kit by Lars Birkedal, Nick Rothwell, Mads Tofte and David Turner
+      (Copenhagen University, Denmark, and Edinburgh University, Scotland);
+    * inspiration from the SML/NJ compiler developed at Princeton
+      University and AT&T Bell Laboratories, New Jersey, USA; and
+    * the good work by Doug Currie, Flavors Technology, USA, on the
+      MacOS port and many improvements.

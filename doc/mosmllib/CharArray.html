@@ -1,0 +1,53 @@
+<HTML><HEAD><TITLE>Structure CharArray</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure CharArray</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>(* CharArray -- SML Basis Library *)
+<A NAME="line2"></A>
+<A NAME="line3"></A>eqtype array
+<A NAME="line4"></A>type elem   = Char.char
+<A NAME="line5"></A>type vector = CharVector.vector
+<A NAME="line6"></A>
+<A NAME="line7"></A>val <A NAME="line7"></A>maxLen   : int
+<A NAME="line8"></A>
+<A NAME="line9"></A>val <A NAME="line9"></A>array    : int * elem -> array
+<A NAME="line10"></A>val <A NAME="line10"></A>tabulate : int * (int -> elem) -> array
+<A NAME="line11"></A>val <A NAME="line11"></A>fromList : elem list -> array
+<A NAME="line12"></A>
+<A NAME="line13"></A>val <A NAME="line13"></A>length   : array -> int
+<A NAME="line14"></A>val <A NAME="line14"></A>sub      : array * int -> elem
+<A NAME="line15"></A>val <A NAME="line15"></A>update   : array * int * elem -> unit
+<A NAME="line16"></A>val <A NAME="line16"></A>extract  : array * int * int option -> vector
+<A NAME="line17"></A>
+<A NAME="line18"></A>val <A NAME="line18"></A>copy     : {src: array,  si: int, len: int option, 
+<A NAME="line19"></A>		dst: array, di: int} -> unit
+<A NAME="line20"></A>val <A NAME="line20"></A>copyVec  : {src: vector, si: int, len: int option, 
+<A NAME="line21"></A>		dst: array, di: int} -> unit
+<A NAME="line22"></A>
+<A NAME="line23"></A>val <A NAME="line23"></A>app      : (elem -> unit) -> array -> unit
+<A NAME="line24"></A>val <A NAME="line24"></A>foldl    : (elem * 'b -> 'b) -> 'b -> array -> 'b
+<A NAME="line25"></A>val <A NAME="line25"></A>foldr    : (elem * 'b -> 'b) -> 'b -> array -> 'b
+<A NAME="line26"></A>val <A NAME="line26"></A>modify   : (elem -> elem) -> array -> unit
+<A NAME="line27"></A>
+<A NAME="line28"></A>val <A NAME="line28"></A>appi     : (int * elem -> unit) -> array * int * int option -> unit
+<A NAME="line29"></A>val <A NAME="line29"></A>foldli   : (int * elem * 'b -> 'b) -> 'b -> array * int * int option -> 'b
+<A NAME="line30"></A>val <A NAME="line30"></A>foldri   : (int * elem * 'b -> 'b) -> 'b -> array * int * int option -> 'b
+<A NAME="line31"></A>val <A NAME="line31"></A>modifyi  : (int * elem -> elem) -> array * int * int option -> unit
+<A NAME="line32"></A>
+<A NAME="line33"></A>(* Type [array] is the type of one-dimensional, mutable, zero-based
+<A NAME="line34"></A>   constant-time-access arrays with elements of type Char.char, that
+<A NAME="line35"></A>   is, characters.  Arrays a1 and a2 are equal if both were created by
+<A NAME="line36"></A>   the same call to a primitive, or if both are empty.
+<A NAME="line37"></A>
+<A NAME="line38"></A>   All operations are as for Array.array.
+<A NAME="line39"></A>*)
+<A NAME="line40"></A>
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

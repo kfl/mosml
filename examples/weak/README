@@ -1,0 +1,21 @@
+Example application of weak pointers: weak hash consing
+-------------------------------------------------------
+
+One application of weak pointers is to implement hash consing without
+space leaks.  The idea in hash consing is to re-use pairs: whenever a
+new pair (a, b) is to be built, an auxiliary hash table is checked to
+see whether such a pair exists already.  If so, the old pair is
+reused.  In some applications, this may conserve much space and time.
+However, there is a danger of running out of memory because of a space
+leak: the pair (a, b) cannot be deallocated by the garbage collector
+because it remains forever reachable from the auxiliary table.  To
+circumvent this problem, one creates a weak pointer from the auxiliary
+table to the pair, so that the auxiliary table in itself cannot keep
+the pair alive.
+
+The hashcons.sml example demonstrates how hash consing reuses cons
+cells, and how a cons cell is allowed to die (to be deallocated)
+although it is still referred to from the hash table.
+
+--------------------------------------------
+File mosml/examples/weak/README * 1998-04-19

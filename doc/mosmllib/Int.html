@@ -1,0 +1,142 @@
+<HTML><HEAD><TITLE>Structure Int</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Int</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>(* Int -- SML Basis Library *)
+<A NAME="line2"></A>
+<A NAME="line3"></A>type int = int
+<A NAME="line4"></A>
+<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#precision">precision</A> : int option
+<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#minInt">minInt</A>    : int option
+<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#maxInt">maxInt</A>    : int option
+<A NAME="line8"></A>
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#~">~</A>    : int -> int                   (* Overflow      *)
+<A NAME="line10"></A>val <A NAME="line10"></A>*    : int * int -> int             (* Overflow      *)
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#div">div</A>  : int * int -> int             (* Div, Overflow *)
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#mod">mod</A>  : int * int -> int             (* Div           *)
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#quot">quot</A> : int * int -> int             (* Div, Overflow *)
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#rem">rem</A>  : int * int -> int             (* Div           *)
+<A NAME="line15"></A>val <A NAME="line15"></A>+    : int * int -> int             (* Overflow      *)
+<A NAME="line16"></A>val <A NAME="line16"></A>-    : int * int -> int             (* Overflow      *)
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#>">></A>    : int * int -> bool
+<A NAME="line18"></A>val <A NAME="line18"></A>>=   : int * int -> bool
+<A NAME="line19"></A>val <A NAME="line19"></A><    : int * int -> bool
+<A NAME="line20"></A>val <A NAME="line20"></A><=   : int * int -> bool
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#abs">abs</A>  : int -> int                   (* Overflow      *)
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#min">min</A>  : int * int -> int
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#max">max</A>  : int * int -> int
+<A NAME="line24"></A>
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#sign">sign</A>      : int -> int
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#sameSign">sameSign</A>  : int * int -> bool
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#compare">compare</A>   : int * int -> order
+<A NAME="line28"></A>
+<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#toInt">toInt</A>     : int -> int
+<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#fromInt">fromInt</A>   : int -> int
+<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#toLarge">toLarge</A>   : int -> int
+<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#fromLarge">fromLarge</A> : int -> int
+<A NAME="line33"></A>
+<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#toString">toString</A>   : int -> string
+<A NAME="line35"></A>val <A NAME="line35"></A><A HREF="#fromString">fromString</A> : string -> int option   (* Overflow      *)
+<A NAME="line36"></A>
+<A NAME="line37"></A>val <A NAME="line37"></A><A HREF="#scan">scan</A> : StringCvt.radix 
+<A NAME="line38"></A>           -> (char, 'a) StringCvt.reader -> (int, 'a) StringCvt.reader
+<A NAME="line39"></A>val <A NAME="line39"></A><A HREF="#fmt">fmt</A>  : StringCvt.radix -> int -> string
+<A NAME="line40"></A>
+<A NAME="line41"></A>(* 
+   [<A NAME="precision"><B>precision</B></A>] is SOME n, where n is the number of significant bits in an
+   integer.  In Moscow ML n is 31 in 32-bit architectures and 63 in 64-bit
+   architectures.
+
+   [<A NAME="minInt"><B>minInt</B></A>] is SOME n, where n is the most negative integer.
+
+   [<A NAME="maxInt"><B>maxInt</B></A>] is SOME n, where n is the most positive integer.
+
+   [<A NAME="~"><B>~</B></A>, *, +, -] are the usual operations on integers.  They raise
+   Overflow if the result is not representable as an integer.  
+
+   [<A NAME="abs"><B>abs</B></A>] returns the absolute value of its argument.  Raises Overflow
+   if applied to the most negative integer.
+
+   [<A NAME="div"><B>div</B></A>] is integer division, rounding towards minus infinity.
+   Evaluating i div 0 raises Div.  Evaluating i div ~1 raises
+   Overflow if i is the most negative integer.
+
+   [<A NAME="mod"><B>mod</B></A>] is the remainder for div.  If q = i div d and r = i mod d then
+   it holds that qd + r = i, where either 0 <= r < d or d < r <= 0.  
+   Evaluating i mod 0 raises Div, whereas i mod ~1 = 0, for all i.
+
+   [<A NAME="quot"><B>quot</B></A>] is integer division, rounding towards zero.  Evaluating
+   quot(i, 0) raises Div.  Evaluating quot(i, ~1) raises Overflow if i
+   is the most negative integer.
+
+   [<A NAME="rem"><B>rem</B></A>(i, d)] is the remainder for quot.  That is, if q = quot(i, d)
+   and r = rem(i, d) then d * q + r = i, where r is zero or has the
+   same sign as i.  If made infix, the recommended fixity for quot and
+   rem is
+        infix 7 quot rem
+
+   [<A NAME="min"><B>min</B></A>(x, y)] is the smaller of x and y.
+
+   [<A NAME="max"><B>max</B></A>(x, y)] is the larger of x and y.
+
+   [<A NAME="sign"><B>sign</B></A> x] is ~1, 0, or 1, according as x is negative, zero, or positive.
+
+   [<A NAME=">"><B>></B></A>, >=, <, <=] are the usual comparisons on integers.
+
+   [<A NAME="compare"><B>compare</B></A>(x, y)] returns LESS, EQUAL, or GREATER, according 
+   as x is less than, equal to, or greater than y.
+
+   [<A NAME="sameSign"><B>sameSign</B></A>(x, y)] is true iff sign x = sign y.
+
+   [<A NAME="toInt"><B>toInt</B></A> x] is x (because this is the default int type in Moscow ML).
+
+   [<A NAME="fromInt"><B>fromInt</B></A> x] is x (because this is the default int type in Moscow ML).
+
+   [<A NAME="toLarge"><B>toLarge</B></A> x] is x (because this is the largest int type in Moscow ML).
+
+   [<A NAME="fromLarge"><B>fromLarge</B></A> x] is x (because this is the largest int type in Moscow ML).
+
+   [<A NAME="fmt"><B>fmt</B></A> radix i] returns a string representing i, in the radix (base)
+   specified by radix.
+
+     radix    description                     output format  
+     ------------------------------------------------------
+      BIN     signed binary      (base  2)    ~?[01]+
+      OCT     signed octal       (base  8)    ~?[0-7]+
+      DEC     signed decimal     (base 10)    ~?[0-9]+
+      HEX     signed hexadecimal (base 16)    ~?[0-9A-F]+
+
+   [<A NAME="toString"><B>toString</B></A> i] returns a string representing i in signed decimal format.
+   Equivalent to (fmt DEC i).
+   
+   [<A NAME="fromString"><B>fromString</B></A> s] returns SOME(i) if a decimal integer numeral can be
+   scanned from a prefix of string s, ignoring any initial whitespace;
+   returns NONE otherwise.  A decimal integer numeral must have form,
+   after possible initial whitespace: 
+        [+~-]?[0-9]+
+
+   [<A NAME="scan"><B>scan</B></A> radix getc charsrc] attempts to scan an integer numeral
+   from the character source charsrc, using the accessor getc, and
+   ignoring any initial whitespace.  The radix argument specifies the base
+   of the numeral (BIN, OCT, DEC, HEX).  If successful, it returns
+   SOME(i, rest) where i is the value of the number scanned, and rest
+   is the unused part of the character source.  A numeral must have
+   form, after possible initial whitespace:
+
+     radix    input format 
+     ---------------------------
+      BIN     [+~-]?[0-1]+
+      OCT     [+~-]?[0-7]+
+      DEC     [+~-]?[0-9]+
+      HEX     [+~-]?[0-9a-fA-F]+
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

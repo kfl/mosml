@@ -1,0 +1,212 @@
+<HTML><HEAD><TITLE>Structure Path</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Path</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>(* OS.Path -- SML Basis Library *)
+<A NAME="line2"></A>
+<A NAME="line3"></A>exception Path
+<A NAME="line4"></A>
+<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#parentArc">parentArc</A>    : string
+<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#currentArc">currentArc</A>   : string
+<A NAME="line7"></A>
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#fromString">fromString</A>   : string -> {isAbs : bool, vol : string, arcs : string list}
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#toString">toString</A>     : {isAbs : bool, vol : string, arcs : string list} -> string
+<A NAME="line10"></A>
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#getVolume">getVolume</A>    : string -> string 
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#validVolume">validVolume</A>  : {isAbs : bool, vol : string} -> bool
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#getParent">getParent</A>    : string -> string
+<A NAME="line14"></A>
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#isAbsolute">isAbsolute</A>   : string -> bool
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#isRelative">isRelative</A>   : string -> bool
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#mkAbsolute">mkAbsolute</A>   : string * string -> string
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#mkRelative">mkRelative</A>   : string * string -> string
+<A NAME="line19"></A>
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#concat">concat</A>       : string * string -> string
+<A NAME="line21"></A>
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#mkCanonical">mkCanonical</A>  : string -> string
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#isCanonical">isCanonical</A>  : string -> bool
+<A NAME="line24"></A>
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#splitDirFile">splitDirFile</A> : string -> {dir : string, file : string}
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#joinDirFile">joinDirFile</A>  : {dir : string, file : string} -> string
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#dir">dir</A>          : string -> string
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#file">file</A>         : string -> string
+<A NAME="line29"></A>
+<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#splitBaseExt">splitBaseExt</A> : string -> {base : string, ext : string option}
+<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#joinBaseExt">joinBaseExt</A>  : {base : string, ext: string option} -> string
+<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#base">base</A>         : string -> string    
+<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#ext">ext</A>          : string -> string option
+<A NAME="line34"></A>
+<A NAME="line35"></A>
+<A NAME="line36"></A>(* This module provides OS-independent functions for manipulating
+<A NAME="line37"></A>   strings that represent file names and paths in a directory
+<A NAME="line38"></A>   structure.  None of these functions accesses the actual filesystem.
+<A NAME="line39"></A>   
+<A NAME="line40"></A>   Definitions: 
+<A NAME="line41"></A>
+<A NAME="line42"></A>   * An arc denotes a directory or file.  Under Unix or DOS, an arc may
+<A NAME="line43"></A>   have form "..", ".", "", or "abc", or similar.
+<A NAME="line44"></A>
+<A NAME="line45"></A>   * An absolute path has a root: Unix examples include "/", "/a/b";
+<A NAME="line46"></A>   DOS examples include "\", "\a\b", "A:\a\b".  
+<A NAME="line47"></A>
+<A NAME="line48"></A>   * A relative path is one without a root: Unix examples include
+<A NAME="line49"></A>   "..", "a/b"; DOS examples include "..", "a\b", "A:a\b".
+<A NAME="line50"></A>
+<A NAME="line51"></A>   * A path has an associated volume.  Under Unix, there is only one
+<A NAME="line52"></A>   volume, whose name is "".  Under DOS, the volume names are "",
+<A NAME="line53"></A>   "A:", "C:", and similar.
+<A NAME="line54"></A>
+<A NAME="line55"></A>   * A canonical path contains no occurrences of the empty arc "" or
+<A NAME="line56"></A>   the current arc ".", and contains or the parent arc ".." only at
+<A NAME="line57"></A>   the beginning and only if the path is relative.  
+<A NAME="line58"></A>
+<A NAME="line59"></A>   * All functions (except concat) preserve canonical paths.  That is,
+<A NAME="line60"></A>   if all arguments are canonical, then so will the result be.
+<A NAME="line61"></A>
+<A NAME="line62"></A>   * All functions are defined so that they work sensibly on canonical 
+<A NAME="line63"></A>   paths.
+<A NAME="line64"></A>
+<A NAME="line65"></A>   * There are three groups of functions, corresponding to three ways
+<A NAME="line66"></A>   to look at paths, exemplified by the following paths:
+<A NAME="line67"></A>
+<A NAME="line68"></A>        Unix:    d/e/f/a.b.c       and     /d/e/f/a.b.c 
+<A NAME="line69"></A>        DOS:     A:d\e\f\a.b.c     and     A:d\e\f\a.b.c     
+<A NAME="line70"></A>
+<A NAME="line71"></A>   (1) A path consists of a sequence of arcs, possibly preceded by a
+<A NAME="line72"></A>       volume and a root:
+<A NAME="line73"></A>
+<A NAME="line74"></A>                          vol  [--- arcs ---]        vol  root  [--- arcs ---]
+<A NAME="line75"></A>        ------------------------------------------------------------------ 
+<A NAME="line76"></A>        Unix examples:         d  e  f  a.b.c               /   d  e  f  a.b.c
+<A NAME="line77"></A>        DOS examples:     A:   d  e  f  a.b          A:     \   d  e  f  a.b
+<A NAME="line78"></A>
+<A NAME="line79"></A>   (2) A path consists of a directory part and a (last) file name part:
+<A NAME="line80"></A>
+<A NAME="line81"></A>                          directory   file            directory  file 
+<A NAME="line82"></A>        ------------------------------------------------------------------
+<A NAME="line83"></A>        Unix examples:    d/e/f       a.b.c           /d/e/f     a.b.c
+<A NAME="line84"></A>        DOS examples:     A:d\e\f     a.b             A:\d\e\f   a.b
+<A NAME="line85"></A>
+<A NAME="line86"></A>   (3) A path consists of a base and an extension:
+<A NAME="line87"></A>
+<A NAME="line88"></A>                          base       extension       base        extension
+<A NAME="line89"></A>        ------------------------------------------------------------------
+<A NAME="line90"></A>        Unix examples:    d/e/f/a.b      c           /d/e/f/a.b      c
+<A NAME="line91"></A>        DOS examples:     A:d\e\f\a      b           A:\d\e\f\a      b
+<A NAME="line92"></A>
+<A NAME="line93"></A>
+<A NAME="line94"></A>   GROUP 0: General functions on paths:
+<A NAME="line95"></A>
+   [<A NAME="parentArc"><B>parentArc</B></A>] is the arc denoting a parent directory: ".." under 
+   DOS and Unix.
+
+   [<A NAME="currentArc"><B>currentArc</B></A>] is the arc denoting the current directory: "." under 
+   DOS and Unix.
+
+   [<A NAME="isRelative"><B>isRelative</B></A> p] returns true if p is a relative path.
+
+   [<A NAME="isAbsolute"><B>isAbsolute</B></A> p] returns true if p is an absolute path.  
+   Equals not (isRelative p).
+
+   [<A NAME="validVolume"><B>validVolume</B></A> {isAbs, vol}] returns true if vol is a valid volume
+   name for an absolute path (if isAbs=true) resp. for a relative path
+   (if isAbs=false).  Under Unix, the only valid volume name is "";
+   under MS DOS and MS Windows the valid volume names are "", "a:",
+   "b:", ..., and "A:", "B:", ...
+
+   [<A NAME="getParent"><B>getParent</B></A> p] returns a string denoting the parent directory of p.
+   It holds that getParent p = p if and only if p is a root. 
+
+   [<A NAME="concat"><B>concat</B></A> (p1, p2)] returns the path consisting of p1 followed by p2.
+   Does not preserve canonical paths: concat("a/b", "../c") equals
+   "a/b/../c".  This is because "a/b/../c" and "a/c" may not be
+   equivalent in the presence of symbolic links.  Raises Path if p2 is
+   not a relative path.
+
+   [<A NAME="mkAbsolute"><B>mkAbsolute</B></A>(p1, p2)] returns the absolute path made by taking path
+   p2, then p1.  That is, returns p1 if p1 is absolute; otherwise
+   returns the canonicalized concatenation of p2 and p1.  Raises Path
+   if p2 is not absolute (even if p1 is absolute).
+
+   [<A NAME="mkRelative"><B>mkRelative</B></A>(p1, p2)] returns p1 relative to p2.  That is, returns
+   p1 if p1 is already relative; otherwise returns the relative path
+   leading from p2 to p1.  Raises Path if p2 is not absolute (and even
+   if p1 is relative), or if p1 and p2 are both absolute but have
+   different roots.
+
+   [<A NAME="mkCanonical"><B>mkCanonical</B></A> p] returns a canonical path which is equivalent to p.
+   Redundant occurrences of the parent arc, the current arc, and the
+   empty arc are removed.  The canonical path will never be the empty
+   string; the empty path is converted to the current directory path
+   ("." under Unix and DOS).  
+
+   [<A NAME="isCanonical"><B>isCanonical</B></A> p] is equal to (p = mkCanonical p).
+
+
+   GROUP 1: Manipulating volumes and arcs:
+
+   [<A NAME="fromString"><B>fromString</B></A> p] returns {isAbs=false, vol, arcs} if the path p is
+   relative, and {isAbs=true, vol, arcs} if the path p is absolute.
+   In both cases vol is the volume name and arcs is the list of
+   (possibly empty) arcs of the path.  Under Unix, the volume name is
+   always the empty string ""; under DOS it will have form "A:", "C:",
+   or similar.
+
+   [<A NAME="toString"><B>toString</B></A> path] reconstitutes a path from its root (if any) and
+   arcs.  Raises Path if applied to a relative path whose first arc is
+   empty.  It holds that toString(fromString p) = p, except that in MS
+   DOS, slashes "/" in p will be replaced by backslashes "\".  It
+   holds that fromString (toString p) = p when no exception is raised.
+   It holds that isRelative(toString {isAbs=false, vol, arcs}) = true
+   when no exception is raised.
+
+   [<A NAME="getVolume"><B>getVolume</B></A> p] returns the volume name of the path p, if given.
+   Under Unix and MacOS, this is always the empty string "", and under
+   MS DOS and MS Windows, it may have form "A:", "B:", ...
+
+
+   GROUP 2: Manipulating directory paths and file names:
+
+   [<A NAME="splitDirFile"><B>splitDirFile</B></A> p] returns {dir, file} where file is the last arc in
+   p, and dir is the path preceding that arc.  A typical use is to
+   split a path into the directory part (dir) and the filename (file).
+
+   [<A NAME="joinDirFile"><B>joinDirFile</B></A> {dir, file}] returns the path p obtained by extending
+   the path dir with the arc file.
+
+   [<A NAME="dir"><B>dir</B></A> p] equals #dir (splitDirFile p).
+
+   [<A NAME="file"><B>file</B></A> p] equals #file (splitDirFile p).
+
+
+   GROUP 3: Manipulating file names and extensions:
+
+   [<A NAME="splitBaseExt"><B>splitBaseExt</B></A> s] returns {base, ext} where ext = NONE if s has no
+   extension, and ext = SOME e if s has extension e; base is the part
+   of s preceding the extension.  A path s is considered having no
+   extension if its last arc contains no extension separator
+   (typically ".") or contains an extension separator only as its
+   leftmost character, or contains an extension separator as its
+   right-most character.  Hence none of "a.b/cd", "a/.login", "a.",
+   "..", "." and "." has an extension.
+
+   [<A NAME="joinBaseExt"><B>joinBaseExt</B></A> {base, ext}] returns an arc composed of the base name
+   and the extension (if different from NONE).  It is a left inverse
+   of splitBaseExt, so joinBaseExt (splitBaseExt s) = s, but the
+   opposite does not hold (since the extension may be empty, or may
+   contain extension separators).
+
+   [<A NAME="ext"><B>ext</B></A> s] equals #ext (splitBaseExt s).
+
+   [<A NAME="base"><B>base</B></A> s] equals #base (splitBaseExt s).
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

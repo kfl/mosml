@@ -1,0 +1,54 @@
+Interface to GNU gdbm persistent hashtables
+-------------------------------------------
+
+This directory provides a C interface to the GNU gdbm implementation
+of persistent hashtables.
+
+It consists of the following files:
+
+        mgdbm.c         Implements the dynamic library libmgdbm.so which 
+                        interfaces Moscow ML to the GNU gdbm library.
+
+You must have the following components:
+        
+        GNU gdbm        Can be found many places on the Internet, such as
+                        http://www.sunsite.auc.dk/ftp/pub/gnu/gdbm-1.7.3.tar.gz
+                        A Win32 port was made by Roth (www.roth.net), 
+                        get it from ftp://ftp.roth.net/pub/ntperl/gdbm/
+
+        Gdbm            The Moscow ML library interface to persistent   
+                        hashtables of strings.
+
+        Polygdbm        The Moscow ML library interface to polymorphic 
+                        persistent hashtables.
+
+        Dynlib          The Moscow ML foreign (C) function interface.
+                        Supported for Linux, Solaris, MS Win32, MacOS,
+	                Digital Unix, and HP-UX in mosml 1.44
+
+The runtime system must be compiled with support for dynamic linking
+of foreign functions (edit mosml/src/Makefile.inc to achieve this).
+
+1. Edit the mgdbm/Makefile to make GDBMDIR point to the directory in
+   which you installed gdbm.
+
+2. Compile mgdbm:
+
+        make
+
+3. Install mgdbm in the directory determined by BINDIR in src/Makefile.inc:
+
+        make install
+
+4. Set your LD_LIBRARY_PATH to point to the BINDIR directory.
+
+        For tcsh: setenv LD_LIBRARY_PATH $BINDIR
+        For bash: LD_LIBRARY_PATH=$BINDIR
+                  export LD_LIBRARY_PATH
+
+5. Test the library:
+
+        mosml testgdbm.sml
+
+-----------------------------------------------------------------------
+mosml/src/dynlibs/mgdbm/README * sestoft@dina.kvl.dk * 1998, 1999-06-25

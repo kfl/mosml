@@ -1,0 +1,30 @@
+<!-- File mosml/examples/cgi/htmlform.html
+  This is an HTML file interpreted by the webbrowser.  The user may
+  enter a text in a TEXTAREA.  Clicking on "Send" will send a CGI
+  request, including the contents of the textarea, to a web server.
+  The web server will invoke the CGI program `cgiex1' to handle the
+  request and respond to the web browser.
+
+  The URL "http://ellemose.dina.kvl.dk/cgi-bin/sestoft/cgiex1" must
+  be replaced by one referring to the server and CGI directory in 
+  which you install the CGI script.
+
+  See file README1 for further instructions.
+-->
+
+<FORM METHOD="POST" 
+      ACTION="http://ellemose.dina.kvl.dk/cgi-bin/sestoft/cgiex1">
+
+<TEXTAREA NAME=texttoprocess ROWS=15 COLS=80>
+Enter text to process here.
+</TEXTAREA>
+
+<SELECT name=action> 
+ <OPTION>count characters
+ <OPTION>count lines
+ <OPTION>sort
+</SELECT>
+
+<INPUT type=submit value="Send">
+
+</FORM>

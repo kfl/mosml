@@ -1,0 +1,258 @@
+Getting rid of static exceptions in the Moscow ML implementation
+----------------------------------------------------------------
+
+sestoft@dina.kvl.dk 1999-10-28, 1999-10-29
+
+The problem: both the runtime system and the ML bytecode need to raise
+certain built-in exceptions, which must be handlable from the
+bytecode and the interactive system.
+
+
+Desirable runtime representation of an exception
+------------------------------------------------
+
+An exception name (in the sense of the Definition) is a string ref.
+
+An nullary exception value is a 1-tuple holding an exception name.
+
+A unary exception is a 2-tuple holding an exception name and the
+argument (a value).
+
+An exception value matches an exception pattern if the exception names
+are equal, according to reference equality.
+
+The referred-to string is used for printing the exception.  
+
+The exception binding 
+
+	  exception A = B
+
+means that exn A prints the same as exn B.
+
+
+
+
+Possible implementations
+------------------------
+
+(1) Let the runtime system allocate the exception names and bind them
+    in global_data so that the bytecode can access them through the
+    prim_val mechanism.
+
+    There already is a mechanism for communication values between the
+    runtime system and the ML bytecode (including the interactive
+    system): globals.h, sys.c, Memory.sml, Rtvals.sml
+
+(2) Let the bytecode linker allocate these exceptions and bind them in
+    the global_data table.  
+
+
+The runtime system reads in the global_data from the bytecode file,
+then overwrites the first 19 entries of the table.  How does the
+bytecode anticipate this?  The bytecode linker sets aside the first 19
+entries of the global_data table, so that they can be safely
+overwritten by the runtime system.  This is done in the function
+Symtable.reset_linker_tables, which allocates all variables mentioned
+in Predef.predef_variables.
+
+Hence Predef compiled into the linker (mosmllnk) determines how global
+variables are linked.  Thus one can bootstrap as follows:
+
+ 1. Update the runtime system's globals.h and regenerate Predef.sml
+ 2. Using the old runtime system, recompile mosmllnk
+ 3. Using the old runtime system, use mosmllnk to relink mosmlcmp and
+    mosmllnk
+ 4. Using the new runtime system, recompile mosmllnk and mosmlcmp
+
+Careful: in Maint.sml the constant 16 is used as an offset into the
+global_data vector.  This abuse is necessary because the prim_val
+mechanism gives read access only to the globals.  Better do a
+conservative extension of the globals table.
+
+What exceptions must be raisable from the runtime system (fail.h)?
+
+Used by the runtime system (+), not used by the runtime system, but
+elsewhere (*), and those not used at all (-):
+
++ #define OUT_OF_MEMORY_EXN 0     /* "exc","Out_of_memory",1 */
++ #define SYS_ERROR_EXN 1         /* "sys","Sys_error",1 */
++ #define FAILURE_EXN 2           /* "exc","Failure",3 */
++ #define INVALID_EXN 3           /* "exc","Invalid_argument",2 */
++ #define END_OF_FILE_EXN 4       /* "io","End_of_file",1 */
+- #define ZERO_DIVIDE_EXN 5       /* "int","Division_by_zero",1 */
++ #define BREAK_EXN 6             /* "sys","Break",2 */
++ #define NOT_FOUND_EXN 7         /* "exc","Not_found",4 */
+- #define UNIX_ERROR_EXN 8        /* "unix","Unix_error",1 */
++ #define GRAPHIC_FAILURE_EXN 9   /* "graphics","Graphic_failure",1 */
+- #define PARSE_FAILURE_EXN 10    /* "stream","Parse_failure",1 */
+
+/* Additional predefined exceptions for Moscow ML */
+
+- #define SMLEXN_EXCEPTION 11     /* "general","Exception",1 */
+* #define SMLEXN_BIND      12     /* "general","Bind",2 */
++ #define SMLEXN_CHR       13     /* "general","Chr",3 */
++ #define SMLEXN_DIV       14     /* "general","Div",4 */
++ #define SMLEXN_DOMAIN    15     /* "general","Domain",5 */
+* #define SMLEXN_MATCH     16     /* "general","Match",6 */
++ #define SMLEXN_ORD       17     /* "general","Ord",7 */
++ #define SMLEXN_OVF       18     /* "general","Overflow",8 */
+
+
+How to create the exceptions in the runtime system?
+
+Allocation of the strings may cause the garbage collector to run, but
+global_data is always in the old (shared) generation, whether
+allocated by intern_val() or by realloc_global().  Hence there's no
+need to register the global_data pointer:
+
+value mkexnname(char* name) {
+  value ref;
+  Push_roots(r, 1);
+  r[0] = copy_string(name);
+  ref = alloc(1, Reference_tag);
+  modify(&Field(ref, 0), r[0]);
+  Pop_roots();
+  return ref;
+}
+
+in globals.h:
+
+#define SYS__EXN_MEMORY     19   /* "sys","exn_memory" */
+#define SYS__EXN_ARGUMENT   20   /* "sys","exn_argument" */
+#define SYS__EXN_GRAPHIC    21   /* "sys","exn_graphic" */
+#define SYS__EXN_SYSERR     22   /* "sys","exn_syserr" */
+#define SYS__EXN_FAIL       23   /* "sys","exn_fail" */
+#define SYS__EXN_SIZE       24   /* "sys","exn_size" */
+#define SYS__EXN_INTERRUPT  25   /* "sys","exn_interrupt" */
+#define SYS__EXN_SUBSCRIPT  26   /* "sys","exn_subscript" */
+#define SYS__EXN_CHR        27   /* "sys","exn_chr" */
+#define SYS__EXN_DIV        28   /* "sys","exn_div" */
+#define SYS__EXN_DOMAIN     29   /* "sys","exn_domain" */
+#define SYS__EXN_ORD        30   /* "sys","exn_ord" */
+#define SYS__EXN_OVERFLOW   31   /* "sys","exn_overflow" */
+
+#define SYS__FIRST_EXN 19
+#define SYS__LAST_EXN 31
+
+char** globalexn = { 
+       "Out_of_memory",
+       "Invalid_argument",
+       "Graphic_failure",
+       "SysErr",
+       "Fail",
+       "Size",
+       "Interrupt",
+       "Subscript",
+       "Chr",
+       "Div",
+       "Domain",
+       "Ord",
+       "Overflow" }
+
+in sys_init:
+
+for (i = SYS__FIRST_EXN; i < SYS__LAST_EXN ; i++) {
+   value exn = mkexn(globalexn[i - SYS__FIRST_EXN]);
+   modify(&Field(global_data, i), exn);
+}
+
+
+Also in the new system, exn_bucket should hold the exception value (a
+1-tuple or 2-tuple), and fail.mlraise should take as argument an
+exception value.
+
+The actual raising of a nullary run-time exception, such as Overflow,
+should be done as follows:
+
+raiseprimitive0(SYS__EXN_OVERFLOW);
+
+void raiseprimitive0(int exnindex) {
+  value exn = alloc(1, 0);
+  modify(&Field(exn, 0), Field(global_data, SYS__EXN_OVERFLOW));
+  mlraise(exn);
+}
+
+The actual raising of a nullary run-time exception, such as Overflow,
+should be done as follows:
+
+raiseprimitive1(SYS__EXN_FAIL, copy_string("uf"));
+
+void raiseprimitive1(int exnindex, value arg) {
+  value exn;
+  Push_roots(r, 1);
+  r[0] = arg;
+  exn = alloc(1, 0);
+  modify(&Field(exn, 0), Field(global_data, SYS__EXN_OVERFLOW));
+  modify(&Field(exn, 1), r[0]);
+  Pop_roots();
+  mlraise(exn);
+}
+
+
+Match compilation:
+
+A nullary exception pattern is translated to an EXNAME pattern, which
+in turns is translated to a reference comparison.
+
+A unary exception pattern is translated to a pair of an EXNAME pattern
+and a pattern for the argument.
+
+This is done by the simplifyPat function; EXNILpat and EXCONSpat can
+be disregarded in the rest of the program.
+
+
+Outstanding problems:
+
+* What if allocation fails before the exceptions have been allocated?
+  How then report out_of_memory and similar exceptions in main.c?
+
++ [Ken] What if a signal (Interrupt) is received before the exceptions
+  have been allocated?  Because in_blocking_section is initialized to
+  0, the signal will not be handled before the bytecode interpreter
+  has been started.
+
+
+Bootstrapping the system:
+
+The original 1.44 program versions are camlrunm0, mosmllnk0,
+mosmlcmp0, mosmllib0, mosmllex0.
+
+1. Modify runtime sources to use the new exception representation;
+   modify the compiler sources to use the new exception
+   representation.
+
+2. Recompile the runtime system to obtain camlrunm1
+
+3. Generate a fresh Predef.sml file (from runtime/globals.h)
+
+4. Recompile and link the compiler (using camlrunm0, mosmlcmp0,
+   mosmllnk0, mosmllib0) to obtain mosmlcmp1.  This compiler will
+   compile programs to use the new exception representation, but will
+   itself need to be executed using camlrunm0.
+
+5. Recompile and link the linker (using camlrunm0, mosmlcmp0, and
+   mosmllnk0) to obtain mosmllnk1.  This linker will link programs to
+   use the new exception representation, but will itself need to be
+   executed using camlrunm0.
+
+6. Recompile the libraries in mosmllib (using camlrunm0, mosmlcmp1) to
+   obtain mosmllib1.
+
+7. Recompile and link the compiler (using camlrunm0, mosmlcmp1,
+   mosmllnk1, mosmllib1) to obtain mosmlcmp2.  This compiler will
+   compile programs to use the new exception representation, and will
+   itself need to be executed using camlrunm1.
+
+8. Recompile and link the linker (using camlrunm0, mosmlcmp1,
+   mosmllnk1, mosmllib1) to obtain mosmllnk2.  This linker will link
+   programs to use the new exception representation, and will itself
+   need to be executed using camlrunm1.
+
+9. Recompile and link the lexer generator (using camlrunm1, mosmlcmp2,
+   and mosmllnk2) to obtain mosmllex1.  This lexer generator will need
+   to be executed using camlrunm1.
+
+9. Using camlrunm1, mosmlcmp2, mosmlcmp2, mosmllib1, mosmllex1,
+   recompile everything.
+
+

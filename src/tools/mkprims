@@ -1,0 +1,24 @@
+while(<>) {
+	chop;
+	push(@prim, $_);
+}
+
+print "#include \"mlvalues.h\"\n";
+print "#include \"prims.h\"\n";
+
+foreach $p (@prim) {
+	print "extern value $p();\n";
+}
+print "c_primitive cprim[] = {\n";
+
+foreach $p (@prim) {
+	print "  $p,\n";
+}
+print "  0};\n";
+print "char * names_of_cprim[] = {\n";
+
+foreach $p (@prim) {
+	print "  \"$p\",\n";
+}
+print "  0};\n";
+

@@ -1,0 +1,47 @@
+Sigh.  The regexec matcher in libc 5.4.44 = GNU regex-0.12 loops on this:
+
+-  regexec (regcomp "\\(\\*([^\\*]*(\\*|[^\\)])?)*\\*\\)" [Extended]) [] "(*hjdshf  * *)sds(*bad *)    \n\touue ";
+
+The problem appears in a C program, too:
+
+/* Try GNU implementation of POSIX regex */
+
+#include <stdlib.h>
+#include <sys/types.h>
+#include <regex.h>
+
+/* ML type: string -> word -> regex */
+
+void main(int argc, char* argv[]) {
+  regex_t patbuf;
+  char* pat = "\\(\\*([^\\*]*(\\*|[^\\)])?)*\\*\\)";
+  int comperror = regcomp(&patbuf, pat, REG_EXTENDED);
+  int nmatch = 1;
+  regmatch_t* pmatch = (regmatch_t*)(malloc(nmatch * sizeof(regmatch_t)));
+  char* str = "(*hjdshf  * *)sds(*bad *)    \n\touue ";
+  int matcherror = regexec(&patbuf, str, nmatch, pmatch, 0);
+  printf("%d\n", matcherror);
+}
+
+The problem does not appear if REG_NOSUB is specified.
+
+If we remove the alternation symbol (|), which shouldn't be there
+anyway, the problem goes away:
+
+  char* pat = "\\(\\*([^\\*]*(\\*[^\\)])?)*\\*\\)";
+
+
+   Define fapp f (x, r) = f x :: r
+   Then 
+
+   map regex f s = List.rev (fold regex (#2, fapp f) [] s)
+
+   app regex f s = fold regex (fn _ => (), f o #1) () s
+
+   fields regex f s = fold regex (fapp Substring.string, #2) [] s
+
+   tokens regex f s = List.filter (fn s => s <> "") (fields regex f s)
+
+   substitute regex f s = Substring.concat(fold regex (op ::, 
+   fn (v, r) => f(Substring.string(Vector.sub(v, 0))) :: r) [] s)
+   

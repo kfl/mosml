@@ -1,0 +1,47 @@
+%{
+
+%}
+
+%token LBRA RBRA LPAR RPAR SEMI BAR 
+
+%token EOF
+
+%token <int> NAT NEGINT
+%token <real> REAL
+%token <string> ID NUMBERCODE QUOT TEXT 
+%token <int * int> TIME
+%token <int * real * string> DATE
+%token <{a:int, b:real, c:string}> DATEREC
+%token <int -> real> PERIOD
+%token <int * real * string -> string * bool> ANNOTATION
+
+%start Datafile
+
+%type <int * int> Datafile
+%type <int * real * string> Datamodel
+%type <{a:int, b:real, c:string}> DatamodelRec
+%type <int -> real> Type
+%type <int * real * string -> string * bool> Quots
+%% 
+
+Datafile :
+    Datamodel Type Quots	{ (#1 $1, floor ($2 17)) }
+;
+
+Datamodel :
+    NAT REAL ID        	{ ($1, $2, $3 ^ "blah") }
+;
+
+DatamodelRec :
+    NAT REAL ID        	{ {a=$1, b=$2, c=$3 ^ "blah"} }
+;
+
+Type : 
+    ID				{ fn x => if x=1 then 0.1 else real (size $1) }
+;
+
+Quots : 
+    DATE    			{ fn irs as (i,r,s) => (s, irs=$1) }
+
+%%
+

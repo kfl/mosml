@@ -1,0 +1,5 @@
+#!/bin/sh
+(echo "main() {"
+ for f in $*; do echo "  $f();"; done
+ echo "}") > hasgot.c
+exec $cc -o tst hasgot.c > /dev/null 2>/dev/null

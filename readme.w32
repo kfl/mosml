@@ -1,0 +1,132 @@
+This is file README for Moscow ML 1.43 for Win32 (Windows NT/95)
+(May 1998)
+
+
+EXTENT OF THE IMPLEMENTATION
+
+The current version 1.43 of Moscow ML
+
+    * implements the Core language of Standard ML, as revised 1996
+    * implements large parts of the new SML Basis Library
+    * implements separate compilation and a limited version of the
+      Standard ML Modules language, with signatures and structures
+      but no functors
+    * can produce compact stand-alone executables (a la Caml Light)
+    * supports quotations and antiquotations, useful for metaprogramming
+    * includes several new libraries and a new type `char'
+
+New in version 1.43 of Moscow ML
+
+    * Arrays of weak pointers (structure Weak).
+    * Dynamic linking of external functions under Linux and Solaris
+    * Access to GNU gdbm persistent hashtables (structures Gdbm, Polygdbm)
+    * The load paths can be set from the interactive system.
+    * The interactive system's prompts and responses can be turned off
+      (option -quietdec, variable Meta.quietdec).
+    * Prettyprinters can be installed also on base types and abstract types.
+    * Mosmllex now supports abbreviations for regular expressions.
+
+SYSTEM REQUIREMENTS
+
+Moscow ML was compiled under Win32 with VC++ 5.0, and requires
+2 MB of RAM or more.  The installation requires 3 MB disk space.
+
+LIST OF FILES
+
+Executables and bytecode files:
+    bin/*               Moscow ML top-level system and batch compiler
+    lib/*               Bytecode files and standard libraries
+    tools/*             Tools to infer unit inter-dependencies
+
+Documentation files:
+    install.txt         Installation instructions for Linux
+    README              This file
+    doc/manual.dvi      User manual (DVI format)
+    doc/mosmlref.dvi    A compact guide to Moscow ML syntax and primitives
+    doc/mosmllib/*.html Moscow ML library documentation in HTML format
+    copyrght/*          Copyright notices (for Caml Light, SML/NJ, ...)
+
+AUTHOR AND CREDITS
+
+Moscow ML was written by
+    Sergei Romanenko (roman@keldysh.ru)
+    Keldysh Institute of Applied Mathematics, Russian Academy of Sciences
+    Miusskaya Pl. 4, 125047 Moscow, Russia.
+and Peter Sestoft (sestoft@dina.kvl.dk),
+    Department of Mathematics and Physics, Royal Veterinary and
+    Agricultural University, Thorvaldsensvej 40, DK-1871 Frederiksberg C, 
+    Denmark.  Much of the work was done at the Technical University of
+    Denmark, and while visiting AT&T Bell Laboratories, New Jersey, USA.
+
+Moscow ML owes much to:
+    * the CAML Light implementation by Xavier Leroy and Damien Doligez
+      (INRIA, Rocquencourt, France); especially the Caml Light bytecode
+      generator and the runtime system;
+    * the ML Kit by Lars Birkedal, Nick Rothwell, Mads Tofte and David Turner
+      (Copenhagen University, Denmark, and Edinburgh University, Scotland);
+    * inspiration from the SML/NJ compiler developed at Princeton
+      University and AT&T Bell Laboratories, New Jersey, USA; and
+    * the good work by Doug Currie, Flavors Technology, USA, on the
+      MacOS port.
+
+COPYRIGHT NOTICE FOR MOSCOW ML
+
+    Moscow ML - a lightweight implementation of Core Standard ML.
+    Copyright (C) 1994, 1995, 1996, 1997, 1998  
+    Sergei Romanenko, Moscow, Russia and Peter Sestoft, Copenhagen, Denmark.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License in copyrght/gpl2 for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+Note that a number of source files are derived from the Caml Light
+distribution, copyright (C) 1993 INRIA, Rocquencourt, France.  Thus
+charging money for redistributing Moscow ML may require prior
+permission from INRIA; see the INRIA copyright notice in file
+copyrght/copyrght.cl.  The Caml Light system itself can be obtained
+from ftp.inria.fr:lang/caml-light.
+
+AVAILABILITY
+
+    * The Moscow ML home page is at  
+        http://www.dina.kvl.dk/~sestoft/mosml.html
+    * The MS Windows executables are in 
+        ftp://ftp.dina.kvl.dk/pub/mosml/win32-mos14bin.zip
+    * The MS DOS executables (and documentation) are in
+        ftp://ftp.dina.kvl.dk/pub/mosml/mos14bin.zip
+    * The Linux executables (and documentation) are in
+        ftp://ftp.dina.kvl.dk/pub/mosml/linux-mos14bin.tar.gz
+    * The Macintosh/MacOS (68k and PPC) executables are in
+        ftp://ftp.dina.kvl.dk/pub/mosml/mac-mos14bin.sea.hqx
+    * The DOS source files (no documentation) are in
+        ftp://ftp.dina.kvl.dk/pub/mosml/mos14src.zip
+    * The Unix source files (no documentation) are in
+        ftp://ftp.dina.kvl.dk/pub/mosml/mos14src.tar.gz
+    * The MacOS modified source files (relative to Unix) are in
+        ftp://ftp.dina.kvl.dk/pub/mosml/mac-mos14src.sea.hqx
+
+The files are mirrored at 
+        ftp://ftp.csd.uu.se/pub/mirror/mosml
+
+To compile Moscow ML for Unix systems, you will need the source files,
+gcc, make, and Perl.  Moscow ML has been rewritten in ML and can
+compile itself; hence the installation under Unix has become simpler.
+
+To recompile Moscow ML for MS DOS, you will need the source files,
+djgpp, perl, and Borland C++ version 2.0 (or later).
+    * Djgpp and go32 can be obtained from 
+      ftp://oak.oakland.edu/pub/simtelnet/gnu/djgpp/ 
+      or ftp://ftp.sunet.se/pub/pc/mirror/simtelnet/gnu/djgpp/
+
+To recompile Moscow ML for Win32, you will need the source files,
+VC++ 5.0, and Perl.

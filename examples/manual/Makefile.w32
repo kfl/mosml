@@ -1,0 +1,36 @@
+# Win32 Makefile stub for separate compilation with Moscow ML.  
+
+MOSMLHOME=d:\mosml
+MOSMLTOOLS=camlrunm $(MOSMLHOME)\tools
+MOSMLC=mosmlc -c
+MOSMLL=mosmlc
+MOSMLLEX=mosmllex
+MOSMLYACC=mosmlyac
+
+.SUFFIXES :
+.SUFFIXES : .sig .sml .ui .uo
+
+all: Evaluate.uo Expr.uo Reduce.uo
+
+clean:
+	del *.ui
+	del *.uo
+	del Makefile.bak
+
+.sig.ui:
+	$(MOSMLC) $<
+
+.sml.uo:
+	$(MOSMLC) $<
+
+depend: 
+	del Makefile.bak
+	ren Makefile Makefile.bak
+	$(MOSMLTOOLS)\cutdeps < Makefile.bak > Makefile
+	$(MOSMLTOOLS)\mosmldep >> Makefile
+
+### DO NOT DELETE THIS LINE
+reduce.uo: reduce.ui expr.uo 
+reduce.ui: expr.uo 
+evaluate.uo: evaluate.ui expr.uo reduce.ui 
+evaluate.ui: expr.uo 

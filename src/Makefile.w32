@@ -1,0 +1,101 @@
+# Win32 (Visual C++ 2.0, 4.0, 5.0) Makefile for Moscow ML
+
+# To build the Moscow ML system on a new machine for the first time, 
+#	(1) edit MOSMLHOME etc. in file Makedefs.w32
+#	(2) execute `nmake world'
+
+# To install it
+
+#	(1) execute `nmake install'
+#	(2) edit MOSMLHOME in file mosml\tools\Makefile.stub
+
+# ------------------------------------------------------------
+
+!include Makedefs.w32
+
+# Build the entire system for the first time
+
+world:
+	cd runtime
+        nmake all
+	copy camlrt.dll ..
+	cd ..\launch.w32
+        nmake all
+	copy camlrunm.exe ..
+	cd ..\mosmlyac
+        nmake all
+	cd ..\mosmllib
+        nmake all
+	cd ..\compiler
+        nmake all
+	cd ..\toolssrc
+        nmake all
+	cd ..\lex
+        nmake all
+        cd ..
+
+# Recompile all Mosml code from scratch
+again:
+	cd mosmllib
+        nmake clean all
+	cd ..\compiler
+        nmake clean all
+	cd ..\toolssrc
+        nmake clean all
+	cd ..\lex
+        nmake clean all
+        cd ..
+
+# Install the Mosml system
+install:
+        - mkdir $(BINDIR)
+        - mkdir $(LIBDIR)
+        - mkdir $(TOOLDIR)
+	cd runtime
+        nmake install
+	cd ..\launch.w32
+        nmake install
+	cd ..\mosmlyac
+        nmake install
+	cd ..\mosmllib
+        nmake install
+	cd ..\compiler
+        nmake install
+	cd ..\toolssrc
+        nmake install
+	cd ..\lex
+        nmake install
+        cd ..
+
+# Remove all generated files
+clean:
+	cd runtime
+        nmake clean
+	cd ..\launch.w32
+        nmake clean
+	cd ..\mosmlyac
+        nmake clean
+	cd ..\mosmllib
+        nmake clean
+	cd ..\compiler
+        nmake clean
+	cd ..\toolssrc
+        nmake clean
+	cd ..\lex
+        nmake clean
+        cd ..
+	del camlrt.dll
+	del camlrunm.exe
+
+# Rebuild the dependencies in all Makefiles.
+# You can't do this unless you have a compiled runtime system.
+depend:
+	cd mosmllib
+        nmake depend
+	cd ..\mosmlyac
+        nmake depend
+	cd ..\compiler
+        nmake depend
+	cd ..\lex
+        nmake depend
+        cd ..

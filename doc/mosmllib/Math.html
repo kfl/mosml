@@ -1,0 +1,88 @@
+<HTML><HEAD><TITLE>Structure Math</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Math</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line1"></A>(* Math -- SML Basis Library *)
+<A NAME="line2"></A>
+<A NAME="line3"></A>type real = real
+<A NAME="line4"></A>
+<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#pi">pi</A> : real
+<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#e">e</A>  : real
+<A NAME="line7"></A>
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#sqrt">sqrt</A>  : real -> real
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#sin">sin</A>   : real -> real
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#cos">cos</A>   : real -> real
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#tan">tan</A>   : real -> real
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#atan">atan</A>  : real -> real
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#asin">asin</A>  : real -> real
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#acos">acos</A>  : real -> real
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#atan2">atan2</A> : real * real -> real
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#exp">exp</A>   : real -> real
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#pow">pow</A>   : real * real -> real
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#ln">ln</A>    : real -> real
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#log10">log10</A> : real -> real
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#sinh">sinh</A>  : real -> real
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#cosh">cosh</A>  : real -> real
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#tanh">tanh</A>  : real -> real
+<A NAME="line23"></A>
+<A NAME="line24"></A>(*  
+   [<A NAME="pi"><B>pi</B></A>] is the circumference of the circle with diameter 1: 
+   3.14159265358979323846.
+
+   [<A NAME="e"><B>e</B></A>] is the base of the natural logarithm: 2.7182818284590452354.
+
+   [<A NAME="sqrt"><B>sqrt</B></A> x] is the square root of x.  Raises Domain is x < 0.0.
+
+   [<A NAME="sin"><B>sin</B></A> r] is the sine of r, where r is in radians.
+
+   [<A NAME="cos"><B>cos</B></A> r] is the cosine of r, where r is in radians.
+
+   [<A NAME="tan"><B>tan</B></A> r] is the tangent of r, where r is in radians.  Raises Domain if 
+   r is a multiple of pi/2.
+
+   [<A NAME="atan"><B>atan</B></A> t] is the arc tangent of t, in the open interval ] ~pi/2, pi/2 [.
+
+   [<A NAME="asin"><B>asin</B></A> t] is the arc sine of t, in the closed interval [ ~pi/2, pi/2 ].  
+   Raises Domain if abs x > 1.
+
+   [<A NAME="acos"><B>acos</B></A> t] is the arc cosine of t, in the closed interval [ 0, pi ].
+   Raises Domain if abs x > 1.
+
+   [<A NAME="atan2"><B>atan2</B></A>(y, x)] is the arc tangent of y/x, in the interval ] ~pi, pi ],
+   except that atan2(y, 0) = sign y * pi/2.  The quadrant of the result
+   is the same as the quadrant of the point (x, y).
+   Hence sign(cos(atan2(y, x))) = sign x 
+   and   sign(sin(atan2(y, x))) = sign y. 
+
+   [<A NAME="exp"><B>exp</B></A> x] is e to the x'th power.
+
+   [<A NAME="pow"><B>pow</B></A> (x, y)] is x it the y'th power, defined when 
+      y >= 0 and (y integral or x >= 0)
+   or y < 0 and ((y integral and x <> 0.0) or x > 0).
+
+   We define pow(0, 0) = 1.
+
+   [<A NAME="ln"><B>ln</B></A> x] is the natural logarithm of x (that is, with base e).
+   Raises Domain if x <= 0.0.
+
+   [<A NAME="log10"><B>log10</B></A> x] is the base-10 logarithm of x.  Raises Domain if x <= 0.0.
+
+   [<A NAME="sinh"><B>sinh</B></A> x] returns the hyperbolic sine of x, mathematically defined as
+   (exp x - exp (~x)) / 2.  Raises Overflow if x is too large.
+
+   [<A NAME="cosh"><B>cosh</B></A> x] returns the hyperbolic cosine of x, mathematically defined as
+   (exp x + exp (~x)) / 2.  Raises Overflow if x is too large.
+
+   [<A NAME="tanh"><B>tanh</B></A> x] returns the hyperbolic tangent of x, mathematically defined 
+   as (sinh x) / (cosh x).  Raises Domain if x is too large.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM>Moscow ML 1.44</EM></BODY></HTML>

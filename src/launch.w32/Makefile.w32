@@ -1,0 +1,42 @@
+CFLAGS=/nologo /O2
+
+HEADER_OBJS= mosmlexe.obj
+CAMLRUNM_OBJS= camlrunm.obj
+MOSMLC_OBJS= mosmlc.obj driver.obj
+MOSML_OBJS= mosml.obj driver.obj
+
+!include "..\makedefs.w32"
+
+all: header.exe camlrunm.exe mosmlc.exe mosml.exe
+
+install:
+        copy /b header.exe $(LIBDIR)\header
+        copy /b camlrunm.exe $(BINDIR)\camlrunm.exe
+        copy /b mosmlc.exe $(BINDIR)\mosmlc.exe
+        copy /b mosml.exe $(BINDIR)\mosml.exe
+
+clean:
+	del *.exe
+	del *.obj
+
+header.exe: $(HEADER_OBJS)
+        $(CC) $(CFLAGS) /Feheader.exe $(HEADER_OBJS) ..\runtime\camlrt.lib
+
+camlrunm.exe: $(CAMLRUNM_OBJS)
+        $(CC) $(CFLAGS) /Fecamlrunm.exe $(CAMLRUNM_OBJS) ..\runtime\camlrt.lib
+
+mosmlc.exe: $(MOSMLC_OBJS)
+        $(CC) $(CFLAGS) /Femosmlc.exe $(MOSMLC_OBJS)
+
+mosml.exe: $(MOSML_OBJS)
+        $(CC) $(CFLAGS) /Femosml.exe $(MOSML_OBJS) ..\runtime\camlrt.lib
+
+.c.obj:
+	$(CC) $(CFLAGS) -c $<
+
+mosmlexe.obj: driver.h mosmlexe.c
+camlrunm.obj: driver.h camlrunm.c
+mosmlc.obj: driver.h mosmlc.c
+mosml.obj: driver.h mosml.c
+driver.obj: driver.h driver.c
+

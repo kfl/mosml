@@ -1,0 +1,30 @@
+1999-05-06: Initial version.
+1999-06-21: Nearly ready. Discovered problem with bools and mysql.
+1999-07-06: Made the final changes to the files. Should be consistent
+            with Peters Postgres interface after Peter commit some
+            proposed changes
+1999-08-05: Sent to Peter.
+
+1999-08-08 Peter:
+
++ mysql bytearray -- dropped
+
++ mysql bool -- dropped; do not try to emulate: a waste of time
+
++ mysql totype -- solved the problem by dropping it from the signature
+
++ make mysql pass testcases (changed dbresult, cmdtuples,
+  resultstatus, dyntype, etc; additional testcases)
+
++ copytableto and auxiliaries rewritten for efficiency and bugfixes
+
++ mysql and pgsql avoid naked C pointers in ML values
+
++ mysql and pgsql user name and passwd
+
++ mysql cmdtuples (test5a) -- MySQL is broken
+
++ also changes to the Postgres interface, for consistency with MySQL
+
++ mysql copytablefrom --- recoded for efficiency and to handle line
+  fragments, and put args containing several lines, as in PostgreSQL

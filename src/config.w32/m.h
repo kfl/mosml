@@ -1,0 +1,2 @@
+#undef MOSML_BIG_ENDIAN
+#undef ALIGNMENT

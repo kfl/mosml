@@ -1,0 +1,257 @@
+# Win32 Makefile for Moscow ML compiler
+
+COMPFLAGS=
+LINKFLAGS=-g -noheader
+
+!include ..\Makedefs.w32
+
+COMP_OBJS = \
+    Miscsys.uo Printexc.uo Filename.uo Fnlib.uo Sort.uo Stack.uo \
+    Arg.uo Hasht.uo Memory.uo Config.uo Mixture.uo \
+    Const.uo Prim.uo Instruct.uo \
+    Lambda.uo Smlprim.uo Globals.uo Location.uo \
+    Units.uo Types.uo Smlexc.uo Smlperv.uo Asynt.uo Asyntfn.uo \
+    Parser.uo Lexer.uo Primdec.uo Infixst.uo Ovlres.uo \
+    Synchk.uo Infixres.uo Elab.uo Tr_env.uo Pr_lam.uo \
+    Match.uo Front.uo Back.uo Pr_zam.uo \
+    Opcodes.uo Prim_opc.uo Buffcode.uo Labels.uo Code_dec.uo Reloc.uo \
+    Emitcode.uo Emit_phr.uo Sigmtch.uo Compiler.uo
+
+C_LIBOBJS= \
+    List.uo Strbase.uo Char.uo String.uo BasicIO.uo TextIO.uo \
+    Vector.uo Array.uo Misc.uo \
+    StringCvt.uo Word.uo Word8.uo Word8Vector.uo CharVector.uo \
+    Word8Array.uo CharArray.uo Obj.uo Nonstdio.uo \
+    Lexing.uo Parsing.uo PP.uo
+
+C_OBJS= \
+    Mainc.uo
+
+L_LIBOBJS= \
+    List.uo Strbase.uo Char.uo String.uo BasicIO.uo TextIO.uo \
+    Vector.uo Array.uo Misc.uo \
+    StringCvt.uo Word.uo Word8.uo Word8Vector.uo CharVector.uo \
+    Word8Array.uo CharArray.uo Obj.uo Nonstdio.uo PP.uo
+
+L_OBJS= \
+    Miscsys.uo Printexc.uo Filename.uo \
+    Fnlib.uo Arg.uo Hasht.uo Config.uo Mixture.uo Const.uo \
+    Opcodes.uo Code_dec.uo \
+    Predef.uo Prim_c.uo Symtable.uo Patch.uo Tr_const.uo \
+    Link.uo Readword.uo Mainl.uo
+
+T_LIBOBJS= \
+    List.uo Strbase.uo Char.uo String.uo BasicIO.uo TextIO.uo \
+    Vector.uo Array.uo Misc.uo \
+    StringCvt.uo Word.uo Word8.uo Word8Vector.uo CharVector.uo \
+    Word8Array.uo CharArray.uo Obj.uo Nonstdio.uo \
+    Substring.uo Path.uo Time.uo OS.uo FileSys.uo \
+    Lexing.uo Parsing.uo PP.uo
+
+T_OBJS= \
+    Predef.uo Prim_c.uo Symtable.uo Patch.uo Tr_const.uo \
+    Rtvals.uo Load_phr.uo Exec_phr.uo Smltop.uo Maint.uo
+
+all: mosmlcmp mosmllnk mosmltop
+
+dos: mosmlcmp.dos mosmllnk.dos mosmltop.dos
+
+mosmlcmp: $(COMP_OBJS) $(C_OBJS)
+	$(MOSMLL) $(LINKFLAGS) -o mosmlcmp Mainc.uo
+
+#mosmlcmp.dos: $(COMP_OBJS) $(C_OBJS)
+#	$(MOSMLLDOS) $(LINKFLAGS) -o mosmlcmp $(C_LIBOBJS) $(COMP_OBJS) $(C_OBJS)
+
+Opcodes.sml: $(CAMLRT)\instruct.h
+	perl $(MOSMLTOOLS)\mksmlopc $(CAMLRT)\instruct.h > Opcodes.sml
+
+Parser.sml Parser.sig: Parser.grm
+	$(MOSMLYACC) Parser.grm
+
+mosmllnk: $(L_OBJS)
+	$(MOSMLL) $(LINKFLAGS) -o mosmllnk Mainl.uo
+
+#mosmllnk.dos: $(L_OBJS)
+#	$(MOSMLLDOS) $(LINKFLAGS) -o mosmllnk $(L_LIBOBJS) $(L_OBJS)
+
+Predef.sml : $(CAMLRT)\globals.h $(CAMLRT)\fail.h
+	perl $(MOSMLTOOLS)\mksmlpre $(CAMLRT)\globals.h $(CAMLRT)\fail.h > Predef.sml
+
+Prim_c.sml : $(CAMLRT)\prims
+	perl $(MOSMLTOOLS)\mksmlprc $(CAMLRT)\prims > Prim_c.sml
+
+mosmltop: $(COMP_OBJS) $(T_OBJS)
+	$(MOSMLL) $(LINKFLAGS) -o mosmltop Maint.uo
+
+#mosmltop.dos: $(COMP_OBJS) $(T_OBJS)
+#	$(MOSMLLDOS) $(LINKFLAGS) -o mosmltop \
+#	$(T_LIBOBJS) $(COMP_OBJS) $(T_OBJS)
+
+Lexer.sml: Lexer.lex
+Config.sml: Config.mlp
+Filename.sml: Filename.mlp
+
+clean:
+	del mosmlcmp
+	del mosmllnk
+	del mosmltop
+	del *.ui
+	del *.uo
+	del Opcodes.sml
+	del Parser.sml
+	del Parser.sig
+	del Lexer.sml
+	del Config.sml
+	del Filename.sml
+	del Predef.sml
+	del Prim_c.sml
+	del Makefile.bak
+
+install:
+	copy /b mosmlcmp $(LIBDIR)
+	copy /b mosmllnk $(LIBDIR)
+	copy /b mosmltop $(LIBDIR)
+
+depend: Filename.sml Config.sml Opcodes.sml Parser.sml Parser.sig Lexer.sml \
+    Predef.sml Prim_c.sml
+	del Makefile.bak
+	ren Makefile Makefile.bak
+	$(MOSMLCUT) < Makefile.bak > Makefile
+	$(MOSMLDEP) >> Makefile
+
+### DO NOT DELETE THIS LINE
+Predef.uo: Const.uo 
+Lexer.uo: Lexer.ui Parser.ui Const.uo Fnlib.ui Config.uo Stack.ui \
+    Mixture.ui Hasht.ui Memory.uo 
+Parser.ui: Asynt.uo Const.uo 
+Parser.uo: Parser.ui Asynt.uo Const.uo Fnlib.ui Config.uo Types.ui \
+    Asyntfn.ui Globals.uo Location.ui Mixture.ui 
+Config.uo: Fnlib.ui 
+Filename.uo: Filename.ui 
+Maine.uo: Maine.ui Compiler.ui Fnlib.ui Smltope.ui Rtvals.ui Config.uo \
+    Arg.ui Printexc.ui Smlperv.ui Location.ui Mixture.ui Units.ui \
+    Miscsys.ui Memory.uo 
+Smltope.uo: Smltope.ui Rtvals.ui Emitcode.ui Load_phr.ui Mixture.ui \
+    Location.ui Lexer.ui Link.ui Smlperv.ui Filename.ui Emit_phr.uo \
+    Symtable.ui Globals.uo Compiler.ui Units.ui Smlprim.uo Opcodes.uo \
+    Memory.uo Code_dec.uo Fnlib.ui Hasht.ui Const.uo Types.ui Miscsys.ui \
+    Config.uo Exec_phr.ui Patch.uo Smlexc.uo 
+Printexc.uo: Printexc.ui Miscsys.ui 
+Infixres.ui: Asynt.uo Globals.uo 
+Units.ui: Const.uo Fnlib.ui Globals.uo Location.ui Mixture.ui Hasht.ui 
+Tr_env.ui: Asynt.uo Const.uo Mixture.ui Lambda.uo 
+Tr_const.uo: Const.uo Symtable.ui 
+Synchk.ui: Asynt.uo 
+Types.ui: Const.uo Fnlib.ui Globals.uo Smlprim.uo Location.ui Mixture.ui \
+    Units.ui 
+Symtable.ui: Const.uo 
+Smlprim.uo: Const.uo Prim.uo 
+Smlexc.uo: Const.uo Config.uo Types.ui Mixture.ui 
+Sigmtch.ui: Units.ui 
+Rtvals.ui: Const.uo Types.ui Globals.uo 
+Primdec.uo: Const.uo Fnlib.ui Prim.uo Smlprim.uo 
+Prim_opc.uo: Fnlib.ui Prim.uo Opcodes.uo 
+Pr_zam.uo: Asynt.uo Const.uo Fnlib.ui Config.uo Pr_lam.ui Instruct.uo \
+    Mixture.ui 
+Pr_lam.ui: Prim.uo Lambda.uo 
+Ovlres.ui: Asynt.uo 
+Mixture.ui: Hasht.ui 
+Match.ui: Asynt.uo Tr_env.ui Location.ui Lambda.uo 
+Mainl.uo: Fnlib.ui Config.uo Arg.ui Printexc.ui Link.ui Symtable.ui \
+    Readword.uo Mixture.ui Miscsys.ui Filename.ui 
+Load_phr.ui: Instruct.uo 
+Lexer.ui: Parser.ui 
+Lambda.uo: Const.uo Prim.uo Instruct.uo 
+Labels.uo: Fnlib.ui Buffcode.uo Instruct.uo 
+Instruct.uo: Const.uo Config.uo Prim.uo 
+Infixst.ui: Asynt.uo Fnlib.ui Globals.uo Location.ui Mixture.ui 
+Globals.uo: Const.uo Fnlib.ui Smlprim.uo Mixture.ui 
+Front.ui: Asynt.uo Globals.uo Smlprim.uo Tr_env.ui Lambda.uo 
+Emitcode.ui: Instruct.uo 
+Exec_phr.ui: Asynt.uo 
+Emit_phr.uo: Const.uo Reloc.uo Buffcode.uo Code_dec.uo Labels.uo \
+    Emitcode.ui Instruct.uo Mixture.ui 
+Elab.ui: Asynt.uo Globals.uo 
+Compiler.ui: Asynt.uo Globals.uo Mixture.ui 
+Code_dec.uo: Const.uo Mixture.ui Hasht.ui 
+Buffcode.uo: Fnlib.ui Config.uo Opcodes.uo Mixture.ui 
+Back.ui: Instruct.uo Lambda.uo 
+Asyntfn.ui: Asynt.uo Const.uo Fnlib.ui Types.ui Globals.uo Location.ui \
+    Mixture.ui 
+Asynt.uo: Const.uo Fnlib.ui Types.ui Globals.uo Location.ui Mixture.ui 
+Units.uo: Units.ui Const.uo Fnlib.ui Config.uo Globals.uo Location.ui \
+    Mixture.ui Hasht.ui 
+Types.uo: Types.ui Const.uo Fnlib.ui Globals.uo Smlprim.uo Location.ui \
+    Mixture.ui Units.ui 
+Tr_env.uo: Tr_env.ui Asynt.uo Const.uo Fnlib.ui Prim.uo Types.ui Asyntfn.ui \
+    Globals.uo Mixture.ui Units.ui Hasht.ui Lambda.uo 
+Synchk.uo: Synchk.ui Asynt.uo Const.uo Fnlib.ui Asyntfn.ui Globals.uo \
+    Location.ui Mixture.ui Units.ui 
+Symtable.uo: Symtable.ui Const.uo Fnlib.ui Config.uo Predef.uo Prim_c.uo \
+    Mixture.ui Hasht.ui Miscsys.ui 
+Stack.uo: Stack.ui 
+Sort.uo: Sort.ui 
+Smltop.uo: Smltop.ui Compiler.ui Const.uo Fnlib.ui Patch.uo Emit_phr.uo \
+    Rtvals.ui Config.uo Code_dec.uo Lexer.ui Types.ui Globals.uo Smlprim.uo \
+    Smlexc.uo Smlperv.ui Opcodes.uo Location.ui Symtable.ui Emitcode.ui \
+    Mixture.ui Units.ui Load_phr.ui Hasht.ui Miscsys.ui Memory.uo \
+    Filename.ui Exec_phr.ui 
+Smlperv.uo: Smlperv.ui Const.uo Fnlib.ui Prim.uo Types.ui Globals.uo \
+    Smlprim.uo Smlexc.uo Units.ui Hasht.ui 
+Sigmtch.uo: Sigmtch.ui Front.ui Const.uo Back.ui Fnlib.ui Emit_phr.uo \
+    Prim.uo Types.ui Globals.uo Mixture.ui Units.ui Hasht.ui Lambda.uo 
+Rtvals.uo: Rtvals.ui Const.uo Fnlib.ui Config.uo Types.ui Globals.uo \
+    Smlexc.uo Symtable.ui Location.ui Mixture.ui Units.ui Miscsys.ui \
+    Memory.uo 
+Prim.uo: Const.uo 
+Pr_lam.uo: Pr_lam.ui Asynt.uo Const.uo Prim.uo Mixture.ui Lambda.uo 
+Reloc.uo: Const.uo Buffcode.uo Code_dec.uo 
+Ovlres.uo: Ovlres.ui Asynt.uo Const.uo Fnlib.ui Prim.uo Types.ui Globals.uo \
+    Smlprim.uo Location.ui Mixture.ui Units.ui 
+Mixture.uo: Mixture.ui Fnlib.ui Config.uo Hasht.ui Miscsys.ui Filename.ui 
+Miscsys.uo: Miscsys.ui 
+Match.uo: Match.ui Asynt.uo Const.uo Fnlib.ui Prim.uo Types.ui Asyntfn.ui \
+    Globals.uo Smlexc.uo Tr_env.ui Location.ui Mixture.ui Hasht.ui \
+    Lambda.uo 
+Maint.uo: Maint.ui Compiler.ui Fnlib.ui Rtvals.ui Config.uo Arg.ui \
+    Printexc.ui Smlperv.ui Location.ui Smltop.ui Mixture.ui Units.ui \
+    Miscsys.ui Memory.uo Exec_phr.ui 
+Mainc.uo: Mainc.ui Compiler.ui Fnlib.ui Config.uo Lexer.ui Arg.ui \
+    Printexc.ui Smlperv.ui Location.ui Mixture.ui Units.ui Miscsys.ui \
+    Filename.ui 
+Location.uo: Location.ui Fnlib.ui Config.uo Mixture.ui 
+Load_phr.uo: Load_phr.ui Const.uo Reloc.uo Fnlib.ui Buffcode.uo Patch.uo \
+    Rtvals.ui Types.ui Opcodes.uo Symtable.ui Labels.uo Emitcode.ui \
+    Instruct.uo Tr_const.uo Mixture.ui Memory.uo 
+Link.uo: Link.ui Const.uo Fnlib.ui Patch.uo Config.uo Code_dec.uo \
+    Opcodes.uo Symtable.ui Tr_const.uo Mixture.ui Hasht.ui Miscsys.ui \
+    Filename.ui 
+Infixst.uo: Infixst.ui Asynt.uo Const.uo Fnlib.ui Globals.uo Location.ui \
+    Mixture.ui 
+Infixres.uo: Infixres.ui Asynt.uo Primdec.uo Synchk.ui Const.uo Fnlib.ui \
+    Infixst.ui Types.ui Asyntfn.ui Globals.uo Smlprim.uo Smlexc.uo \
+    Location.ui Mixture.ui Units.ui 
+Hasht.uo: Hasht.ui 
+Front.uo: Front.ui Asynt.uo Const.uo Fnlib.ui Config.uo Prim.uo Types.ui \
+    Asyntfn.ui Globals.uo Smlprim.uo Smlexc.uo Tr_env.ui Location.ui \
+    Match.ui Mixture.ui Units.ui Lambda.uo 
+Fnlib.uo: Fnlib.ui 
+Exec_phr.uo: Exec_phr.ui Asynt.uo Front.ui Compiler.ui Back.ui Fnlib.ui \
+    Pr_zam.uo Infixst.ui Elab.ui Rtvals.ui Types.ui Ovlres.ui Globals.uo \
+    Tr_env.ui Symtable.ui Mixture.ui Units.ui Load_phr.ui Infixres.ui \
+    Miscsys.ui 
+Emitcode.uo: Emitcode.ui Const.uo Reloc.uo Fnlib.ui Buffcode.uo Config.uo \
+    Prim.uo Opcodes.uo Labels.uo Instruct.uo Mixture.ui Prim_opc.uo 
+Elab.uo: Elab.ui Asynt.uo Const.uo Fnlib.ui Config.uo Types.ui Asyntfn.ui \
+    Globals.uo Smlexc.uo Location.ui Mixture.ui Units.ui 
+Compiler.uo: Compiler.ui Asynt.uo Front.ui Parser.ui Const.uo Back.ui \
+    Fnlib.ui Pr_zam.uo Elab.ui Emit_phr.uo Lexer.ui Sigmtch.ui Types.ui \
+    Ovlres.ui Globals.uo Smlperv.ui Tr_env.ui Location.ui Mixture.ui \
+    Units.ui Infixres.ui Hasht.ui 
+Back.uo: Back.ui Sort.ui Const.uo Fnlib.ui Prim.uo Instruct.uo Stack.ui \
+    Mixture.ui Lambda.uo 
+Asyntfn.uo: Asyntfn.ui Asynt.uo Const.uo Fnlib.ui Types.ui Globals.uo \
+    Location.ui Mixture.ui 
+Arg.uo: Arg.ui Fnlib.ui Miscsys.ui 
+Const.uo: Fnlib.ui Config.uo Mixture.ui 
+Patch.uo: Code_dec.uo Symtable.ui 

@@ -1,0 +1,50 @@
+Using Moscow ML under plain DOS
+-------------------------------
+
+If you use mosml under plain DOS, then you need an external editor
+such as DOS `edit' to edit your ML source files.  
+
+Assume that the source file you want to edit is called "gcd.sml".
+Then you can invoke the editor from within the ML session by
+evaluating
+
+	system "edit gcd.sml";
+
+When returning from the editor, you can load the source file by
+evaluating
+
+	use "gcd.sml";
+
+This works, but is tedious.  To simplify the calls to edit and use,
+use the following program in file mosml\lib\edit:
+
+(* ---------------------------------------------------------- *)
+   local 
+      val file = ref ""
+      fun setit "" = !file
+	| setit s  = (file := s; s)
+   in 
+      fun e s = (system ("edit " ^ setit s); use (setit s))
+   end
+(* ---------------------------------------------------------- *)
+
+You may invoke Moscow ML with
+
+	mosml edit
+
+Then, inside the mosml session, you may evaluate
+
+	e "gcd.sml";
+
+This will invoke the DOS editor `edit' on file "gcd.sml".  When you
+are finished editing the file, save it, and exit the editor.  Then the
+edited file will automatically be loaded into the current mosml
+session by `use'.  (If you prefer to use e.g. the Turbo Pascal editor,
+then replace "edit " by "turbo " in function `e' above).
+
+The call to the `e' function saves the filename, so if you need to
+edit the same file "gcd.sml" again, you need to type only
+
+	e "";
+
+This will edit (and then use) the file most recently edited.
