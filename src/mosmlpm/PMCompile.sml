@@ -44,6 +44,35 @@ struct
     fun addUI file (dirty, x::xs) = (dirty, (smlToUi file :: x) :: xs)
 
 
+    (* move file.ui to file.ui.tmp *)
+    fun move_ui_file file =
+      let val ui = smlToUi file
+	val new = OS.Path.joinBaseExt{base=ui, ext=SOME "tmp"}
+      in 
+	if OS.FileSys.access (ui,[]) then
+	  OS.FileSys.rename {old=ui,new=new}
+	else ()
+      end
+
+    fun files_equal file1 file2 : bool =
+      let 
+	fun read f = 
+	  let val is = BinIO.openIn f
+	  in (BinIO.inputAll is before BinIO.closeIn is)
+	    handle ? => (BinIO.closeIn is; raise ?)
+	  end 
+      in read file1 = read file2
+      end handle _ => false
+
+    fun check_ui_file file : bool (*true if dirty *) =
+      let val ui = smlToUi file
+	val ui' = OS.Path.joinBaseExt{base=ui, ext=SOME "tmp"} 
+      in
+	if files_equal ui ui' then
+	  (OS.FileSys.rename {old=ui',new=ui}; false)
+	else true
+      end handle _ => true
+
     (* context and files sould be given in reverse order *)
     fun mosmlc context file = 
 	if uptodate context file then 
@@ -51,11 +80,12 @@ struct
 	     (false, true))
 	else
 	    let open Process
+	      val _ = move_ui_file file
 		val cont = List.concat ([file] :: files context)
 		val cont = rev(insertSep " " cont)
 		val args = String.concat("mosmlc -c -orthodox -toplevel ":: cont)
-	    in  chat ["Compiling: ", file]
-	      ; (true, system args = success)
+		val return = (chat ["Compiling: ", file]; system args = success)
+	    in (check_ui_file file (*true*), return)
 	    end
 
     fun srcSeq (SRC(file,b)) acc = srcSeq b (file::acc)
