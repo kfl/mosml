@@ -15,6 +15,7 @@ BASELIBS=-lm
 # This works with most systems, but not MacOS X:
 
 CC=gcc
+# CC=/usr/sepp/bin/gcc		# Solaris at KVL
 
 # To compile the runtime system camlrunm with support for
 # dynamically loadable libraries (DDLs), uncomment these:
@@ -85,7 +86,7 @@ DYNLD=ld -shared
 # DYNLD=ld -G -B symbolic -z nodefs
 # ADDRUNCFLAGS=
 # ADDDYNLIBCFLAGS=
-
+ 
 # If the above fails with dynlibs, try this:
 # LD=gcc -Wl,--export-dynamic
 

@@ -1350,3 +1350,9 @@ test10 w young+old share
 
 test10 w/o share User: 1048.470  System: 1.090  GC: 904.220 59736 KB
 	         User: 1029.400  System: 0.900  GC: 884.230  
+
+2003-02-20: Doubleword double alignment constraint on Solaris/gcc3.2
+were not correctly detected by config/auto-aux/dblalign.c, leading to
+crashes (Andreas Jonasson, Gothenburg).  
+
+* The dblalign.c script seems to have become too conservative now.

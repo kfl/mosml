@@ -8,6 +8,7 @@ void access_double(p)
      double * p;
 {
   foo = *p;
+  *p = foo;
 }
 
 jmp_buf failure;
@@ -19,13 +20,17 @@ void sig_handler()
 
 main()
 {
-  long n[10];
-  int res;
+#define ARRSIZE 100
+  long n[ARRSIZE];
+  long* p = n;
+  int i, res;
   signal(SIGSEGV, sig_handler);
   signal(SIGBUS, sig_handler);
   if(setjmp(failure) == 0) {
-    access_double((double *) n);
-    access_double((double *) (n+1));
+    for (i=0; i<ARRSIZE; i++) {
+      access_double((double *) p);
+      p++;
+    }
     res = 0;
   } else {
     res = 1;
