@@ -1201,3 +1201,46 @@ to write more coherently tomorrow.
 provided databases are created with LATIN1 or another 8-bit encoding,
 and recognizes the int8 type (returned by COUNT).
 
+* 2002-08-29: From Joe Hurd <joe.hurd@cl.cam.ac.uk>
+
+   I've just been to TPHOLs, where I discussed with Carl Witty the issue
+   of minimizing space usage during execution of ML. He came up with
+   (what seemed to me) a rather good idea, so thought I'd pass it on.
+
+   The idea is that if you compare the following two terms for equality
+
+   CON subterm1 = CON subterm2
+
+   and the test succeeds, then it's fine to swing the pointer from
+   subterm1 to subterm2 (correcting the reference counts as you do it).
+   subterm1 might then be left with no references, allowing it to be
+   garbage collected. Refinements that suggest themselves are swinging
+   the pointer from the least-referenced object to the most-referenced,
+   or favouring objects living in more permanent generations with respect
+   to the garbage collector.
+
+   Over time, this may well shrink the heap size to its optimal size,
+   with only a small overhead on each nontrivial successful equality
+   test.
+
+   Has this been tried before? Can you see any flaws with the scheme?
+
+This could be implemented in sml_equal_aux, in the default (block of
+references) case.  When two referred-to values *p1 and *p2 are found
+to be equal but not identical (*p1 != *p2), and both point into the
+young or old heap, we can assign one to the other:
+   	*p1 = *p2 
+or 
+	*p2 = *p1	
+
+If both p1 and p2 point into the old heap, assign to the one that has
+the lowest address.  If one points into the young heap and one points
+into the old heap, replace the young reference with the old one (this
+may remove the need to ever copy the young value, and is safe
+regardless whether the values v1 and v2 are in the young or old heap).
+
+The garbage collector's invariants must be maintained.  If the garbage
+collector is in the mark phase, the assigned-to block is black, and
+the pointed-to block is white, then the pointed-to block must be
+darkened.  This is not needed in the sweep phase.  What about the weak
+phase???

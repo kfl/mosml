@@ -1,0 +1,155 @@
+The garbage collector used in Caml Light		Peter Sestoft
+----------------------------------------		1994-10-06
+
+The Caml Light garbage collector as actually implemented, at least in
+version 0.6 and 0.61, is different from that described in (Leroy 1990)
+or (Doligez 1989).  It is a generational garbage collector which
+combines stop-and-copy collection of the young generation with
+incremental mark-sweep collection of the old generation, but in
+contrast to (Doligez 1989), there is no compaction in the old
+generation.  
+	Hence it can use a very large proportion (90 per cent) of the
+available memory without undue runtime costs, and it gives good
+real-time response, but may suffer from two drawbacks: fragmentation,
+and bad locality of reference.  The latter is unimportant as long as
+virtual memory isn't used, and it may be argued that if virtual memory
+is ever used, a considerable runtime overhead is incurred anyway:
+waste of memory translates to waste of time.
+
+A value is an object in the heap (young or old).  It has a header with
+a given colour (see below).
+
+The heap is divided into two generations
+----------------------------------------
+
+1. The young generation.  Once allocated, this is a fixed area of
+memory between young_start and young_end, plus the reftable which
+lists the pointers from the old generation into the new one.
+
+2. The old generation.  This is a linked list of chunks, in order of
+increasing memory addresses.  Each chunk consists of a chunk header
+(giving its length and a pointer to the next chunk) and an integral
+number of memory pages of 4 KB each.  Chunks are added (by calling
+malloc) as necessary, and a page table is used to distinguish memory
+pages belonging to a chunk in the old generation from other memory
+(such as the young generation, the argument or return stacks, the
+reftable, the grayvals, the bytecode, etc.).
+
+
+Allocation
+----------
+
+Allocation in the young generation is done linearly; in the old
+generation from a freelist.  
+
+
+Collection
+----------
+
+A minor garbage collection (gc), that is, a gc of the young
+generation, copies the live values from the young generation into the
+old generation, using free memory obtained from the freelist.  The
+live values are those reachable from the globals, the stacks, the
+C-roots, or the reftable.  The space used for the young generation is
+recycled after a minor gc, and the ref table becomes empty.
+
+A major gc, that is, a gc of the old generation, is done by
+incremental mark-sweep, in a number of slices.  One slice of major gc
+is executed after every minor gc.  There are two kinds of gc slices:
+mark slices and sweep slices.  A sequence of mark slices (called the
+mark phase) followed by a sequence of sweep slices (the sweep phase)
+constitute one `cycle' of major gc.  The amount of marking (resp.
+sweeping) to do in a mark (resp. sweep) slice is determined by the
+total size of the live values being promoted from the young generation
+in the preceding minor collection: the more promotion, the more gc
+work must be done.  This is an attempt to distribute the gc work over
+computation in a fair manner, ideally ensuring that the mutator never
+has to wait for the collector to free memory.
+
+During the mark phase, values are divided into three classes,
+represented by colours: not yet visited (white); visited but children
+have not been visited (gray); visited and immediate children have been
+visited (black).  A stack `grayvals' of references to gray values is
+used to speed up marking, so that one marking pass over the old
+generation will usually suffice.  The heap is `pure' if all gray
+values below the marking pointer `markhp' are also in the grayvals
+stack.  If the grayvals stack overflows, and cannot be extended, then
+the heap becomes `impure' and a second marking pass is needed.  The
+mark phase is complete when there are no more gray values in the heap.
+This is the case when the grayvals stack is empty, the heap pure, and
+the marking pointer has reached the end of the heap.
+
+During the sweep phase, the chunks of the heap are swept sequentially,
+and every white (unvisited) value is made blue and put on the free
+list; every black (live) value is made white; and blue `values' (which
+are on the freelist) are left alone.  No gray values can remain after
+the mark phase.  After a number of sweep slices, the sweep pointer is
+at the end of the heap, and gc cycle is complete.  Then the mark phase
+is entered again after graying all values reachable from globals, the
+stacks, and the C-roots.
+
+Colours used in the heap:
+-------------------------
+
+Blue	on the free list
+White	not (yet) visited by the mark phase
+Gray	visited by the mark phase, but children have not been visited
+Black	visited by the mark phase, and immediate children have been visited
+
+During the marking phase,
+	White -> Gray -> Black	for every live value
+
+During the sweeping phase,
+	Black 	-> White
+	White	-> Blue	
+
+When allocating from the free list,
+	Blue 	-> White, if in the sweep phase, 
+                          and the location has been swept already,
+	Blue	-> Black, otherwise
+Since the chunks constituting the old generation appear in order of
+increasing memory addresses, and are swept sequentially, it can easily
+be determined whether a given location has been swept already.
+
+
+Data structures in the runtime system:
+--------------------------------------
+
+There are three dynamically sized components of the abstract machine:
+
+* The argument stack: argument pointers, and markers
+
+* The return stack: continuations, and the environment caches.
+
+* The heap, which is represented by 
+   * The young generation: memory addresses in [young_start, young_end-1]
+   * The reftable: all references from the old into the new generation
+   * The old generation: a linked list of chunks of memory
+   * The page table: which parts of memory belong to the old generation
+   * The grayvals: a stack of pointers to gray values, used for
+     mostly-depth-first marking of the old generation
+
+Relevant files in the runtime system
+------------------------------------
+
+freelist.{c,h}	allocating from the freelist, and 
+		returning garbage to the freelist
+
+gc.h		defining the colours
+
+major_gc.{c,h}	initializing and collecting the old generation,
+		including the grayvals stack and the page table
+
+memory.{c,h}	extending the old generation by a new chunk,
+		allocation in the old generation (using the freelist),
+		allocation in the young generation,
+		initializing and modifying the values in the heap 
+		(including updates to the reftable when necessary)
+
+minor_gc.{c,h}	initializing and collecting the young generation, 
+		including the reftable
+
+mlvalues.h	the lay-out and tags of heap-allocated values
+
+roots.{c,h}	traverse argument and return stacks, and C roots (used
+		in major_gc.c and minor_gc.c to grayen reachable values)
