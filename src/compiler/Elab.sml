@@ -1034,6 +1034,7 @@ fun checkTypDesc (tyvars, tycon) =
     "Duplicate parameter in a prim_type binding"
 ; 
 
+
 (* checkApplicativeModExp dec is used to ensures that module values are
    not opened at top-level within (both generative and applicative) functor bodies 
    (doing so is unsound in the presence of applicative functors).
@@ -1085,6 +1086,31 @@ and checkApplicativeDec (loc,dec') =
            fbs
   | _ => ()
 ;
+
+fun checkApplicativeMod loc (STRmod recstr) =
+    checkApplicativeRecStr loc recstr
+|   checkApplicativeMod loc (FUNmod F) =
+    checkApplicativeFun loc F
+and checkApplicativeFun loc (forall,dom,(EXISTSexmod(exists,rng))) =
+     case exists of 
+       [] => checkApplicativeMod loc rng
+     | _ => errorMsg loc "Illegal applicative functor argument: \
+		   \the signature specifies a generative functor \
+		   \in a positive position"
+and checkApplicativeRecStr loc (RECrec(fwd,bdy)) = 
+    checkApplicativeRecStr loc bdy
+|   checkApplicativeRecStr loc (NONrec str) =
+    checkApplicativeStr loc str
+and checkApplicativeStr loc (STRstr (ME,FE,GE,TE,VE)) =
+    (traverseEnv (fn modid => fn {info=recstr,...} =>
+		    checkApplicativeRecStr loc recstr)
+     ME;
+     traverseEnv (fn funid => fn {info=F,...} =>
+		    checkApplicativeFun loc F) 
+     FE)
+|   checkApplicativeStr loc (SEQstr(S1,S2)) =
+    (checkApplicativeStr loc S1;
+     checkApplicativeStr loc S2)
 
 (* semantic checks *)
 
@@ -2373,7 +2399,8 @@ and elabDec (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv)
           val EXISTS(T'',(ME'', FE'', GE'', VE'',TE'')) =
             elabDec (plusEnv ME ME') (plusEnv FE FE') (plusEnv GE GE')  UE (plusEnv VE VE') (plusEnv TE TE')  dec2
       in  (decrBindingLevel();
-	   EXISTS(T'@T'',(plusEnv ME' ME'', plusEnv FE' FE'',plusEnv GE' GE'',plusEnv VE' VE'', plusEnv TE' TE'')))
+	   (*cvr: is this refresh too expensive? *)
+	   refreshExEnv(EXISTS(T'@T'',(plusEnv ME' ME'', plusEnv FE' FE'',plusEnv GE' GE'',plusEnv VE' VE'', plusEnv TE' TE''))))
       end
   | FIXITYdec _ => EXISTS([],(NILenv,NILenv,NILenv,NILenv,NILenv))
   | STRUCTUREdec mbs => 
@@ -2598,8 +2625,10 @@ and elabModExp expectation (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv)
 	      X'
 	  end
       end
-  | FUNCTORmodexp (Applicative,(loc,modid),idKindDescRef,sigexp,modexp) =>
-      let val LAMBDAsig (T,M) = elabSigExp ME FE GE UE VE TE sigexp
+  | FUNCTORmodexp (Applicative,(loc,modid),idKindDescRef,sigexp as (locsigexp,_),modexp) =>
+      let val _ = checkApplicativeModExp modexp
+	  val LAMBDAsig (T,M) = elabSigExp ME FE GE UE VE TE sigexp
+	  val _ = checkApplicativeMod locsigexp M
 	  val (ME',FE') = case M of 
 	      STRmod S =>
                   (idKindDescRef := STRik;
