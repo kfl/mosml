@@ -4,7 +4,6 @@ include ../../Makefile.inc
 
 OPTS=-fno-defer-pop
 CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(INCDIR)
-BASELIBS=-lm -ldl
 
 all: libcside.so
 
