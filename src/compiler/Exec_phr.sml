@@ -111,10 +111,11 @@ fun execLamPhrase state (RE, tlams) =
   app
     (fn (is_pure, lam) =>
       ( (* msgIBlock 0; Pr_lam.printLam lam; msgEOL(); msgEBlock();   *)
-        (* msgIBlock 0; Pr_lam.printLam lam; msgEOL(); msgEBlock();msgFlush(); *) (* cvr: TODO remove *)
+        (* msgIBlock 0; Pr_lam.printLam lam; msgEOL(); msgEBlock(); 
+	   msgFlush(); *)
        ignore (loadZamPhrase
          let val zam = compileLambda is_pure lam in
-             (* printZamPhrase zam; msgFlush(); *)
+	       (* printZamPhrase zam; msgFlush(); *)
 	       zam
          end)
       ))

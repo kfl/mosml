@@ -1,11 +1,7 @@
 *.bbl *.blg *.dvi *.log *.aux *.toc *.idx *.ilg *.ind
 index.tex
-manual.pdf
 manual.ps
-mosmllib.pdf
 mosmllib.ps
-mosmllib2up.pdf
 mosmllib2up.ps
-mosmlref.pdf
 mosmlref.ps
 texsigsigs.tex

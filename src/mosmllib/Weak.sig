@@ -46,8 +46,8 @@ val modifyi : (int * 'a -> 'a) -> 'a array * int * int option -> unit
    Integers, characters, words and booleans will not be deallocated by
    the garbage collector and will remain reachable forever by a weak
    pointer.  Reals, strings, tuples and other non-nullary constructors
-   may be deallocated by the garbage collector.  Constants, even
-   composite ones, will not be deallocated either.
+   may be deallocated by the garbage collector.  Compile-time constants, 
+   even composite ones, will not be deallocated either.
 
    [weak v] creates and returns a weak pointer to value v.
 

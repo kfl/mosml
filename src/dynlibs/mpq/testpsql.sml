@@ -1,5 +1,5 @@
 (* Testing the Postgres interface -- 1998-10-29, 1998-11-07,
-   1999-08-08, 1999-09-14, 2000-05-30 *)
+   1999-08-08, 1999-09-14, 2000-05-30, 2001-02-03 *)
 
 app load ["Int", "Postgres", "Mosml"];
 
@@ -205,10 +205,16 @@ local
 	    fun append s = buf := s :: !buf
 	    fun return () = rev (!buf)
 	in (append, return) end
-    val expected =   
+(* Date format changed in Postgres 7, from this:
+   val expected =   
 	["f\t1234\t1234.1\t1234.2\tAbc dEf\tAbc DEF\t12-24-1998\t23:59:42\
 	 \\tWed Jun 25 13:45:56 1975 CET",
 	 "t\t-1234\t-1234.1\t-1234.2\t\t\t03-01-1752\t04:59:42\t\\N"]
+*)
+    val expected =   
+	["f\t1234\t1234.1\t1234.2\tAbc dEf\tAbc DEF\t1998-12-24\t23:59:42\
+	 \\t1975-06-25 13:45:56+01",
+	 "t\t-1234\t-1234.1\t-1234.2\t\t\t1752-03-01\t04:59:42\t\\N"]
     val (append1, return1) = collector ()
     val (append2, return2) = collector ()
     val (append3, return3) = collector ()
@@ -218,6 +224,7 @@ local
 in
 
 val test4 = check'(fn _ => (copytableto (pc, "t", append1); 
+			    app print (return1 ());
 			    expected = return1 ()))
 
 val res5 = execute pc "delete from t";

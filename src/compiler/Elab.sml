@@ -2288,7 +2288,7 @@ and elabDec (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv)
           val tbsTE = elabTypBindList_opt ME FE GE UE VE (plusEnv TE dbsTE) tbs_opt
           (* Here dbsTE will get destructively updated too. *)
           val _ = checkNoRebindingsTyEnv loc (plusEnv dbsTE tbsTE)
-	             "the same type constructur is defined twice in this datatype declaration"
+	             "the same type constructor is defined twice in this datatype declaration"
           val (VE',dbsTE') = elabDatBindList ME FE GE UE VE (plusEnv (plusEnv TE dbsTE) tbsTE) dbs
           val _ = checkNoRebindingsVarEnv loc VE'
 	             "the same constructor is defined twice in this datatype declaration"
@@ -2310,7 +2310,7 @@ and elabDec (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv)
           val tbsTE = elabTypBindList_opt ME FE GE UE VE (plusEnv TE dbsTE) tbs_opt
           (* Here dbsTE will get destructively updated too. *)
           val _ = checkNoRebindingsTyEnv loc (plusEnv dbsTE tbsTE)
-	            "the same type constructur is defined twice in this abstype declaration"	      
+	            "the same type constructor is defined twice in this abstype declaration"	      
           val (VE',dbsTE') = elabDatBindList ME FE GE UE VE (plusEnv (plusEnv TE dbsTE) tbsTE) dbs
           val _ = checkNoRebindingsVarEnv loc VE'
 	             "the same constructor is bound twice in this abstype declaration"

@@ -1,0 +1,49 @@
+Notes on how to build a windows installer
+=========================================
+
+We use the free program Inno Setup:
+   http://www.jrsoftware.org/isinfo.htm
+
+
+The configuration script is in the file mosml.iss.  This file should
+be moved to the root of the mosml dir when building the installer.
+
+The installer shows the contents of the file infoafter.txt.  [The
+contents of this file should be updated.]
+
+Current status of the resulting installer is:
+
+    * Perfect on W2K and NT.
+    * Does not set MOSMLHOME nor update PATH on win9x.  Solutions: 
+      1. A technical solution can be made (write two small programs);
+      2. or we can document our way out of it (Inno Setup has some
+         nice hooks for this kind of documentation).
+
+I've made an attempt on solution 1. [But Claudio reports that it is broken].
+
+     [addlines.bat <mosmllib> <mosmlpath>] adds the following 3 lines to
+     c:\autoexec.bat
+ 
+        REM Do NOT delete this line.  This line and the following two lines will be deleted unconditional by the Moscow ML uninstaller
+        SET MOSMLLIB = <mosmllib>
+        PATH = $PATH; <mosmlpath>
+
+     [dellines.sml] deletes the 3 lines above from c:\autoexec.bat 
+
+
+How to build an installer step by step:
+---------------------------------------
+
+1. Prepare a binary distrubution of mosml (ie. compile everything) 
+
+2. Move mosml.iss to root of the bin. dist. 
+
+3. Update mosml.iss as needed (version number etc.)
+
+4. Update infoafter.txt as needed
+
+5. Compile dellines.sml to dellines.exe
+
+6. Run Inno Setup on mosml.iss
+
+7. The installer can now be found the directory "Output"

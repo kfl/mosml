@@ -1,0 +1,3 @@
+Welcome to the wonderful world of Moscow ML version 2.00.
+
+You might need to reboot your computer before Moscow ML works.

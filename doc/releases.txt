@@ -249,9 +249,10 @@ Moscow ML release history
     * Several errors in Mosmlcookie
     * Misplaced double quote in Msp.ahrefa 
     * Exception Option wasn't available at top-level
+    * Listsort: added eqclasses, merge, mergeUniq
   * SML Basis Library changes:
     * String and Substring: added concatWith, isSuffix, isSubstring, full
-    * ListPair: added zipEq, appEq, mapEq, foldlEq, foldreq, allEq
+    * ListPair: added zipEq, appEq, mapEq, foldlEq, foldrEq, allEq
     * Added ArraySlice and VectorSlice structures, also for Char and Word8
     * Added find, findi, all, exists, collate to vector, array and 
       slice structures

@@ -12,14 +12,14 @@ all: Array.uo Array2.uo ArraySlice.uo Arraysort.uo \
      Callback.uo Char.uo CharArray.uo CharArraySlice.uo \
      CharVector.uo CharVectorSlice.uo CommandLine.uo \
      Date.uo Dynarray.uo Dynlib.uo \
-     FileSys.uo Gdbm.uo Gdimage.uo Help.uo \
+     FileSys.uo Gdbm.uo Gdimage.uo Hashset.uo Help.uo \
      Int.uo Intmap.uo Intset.uo IO.uo \
      Lexing.uo List.uo ListPair.uo Listsort.uo Location.uo \
      Math.uo Misc.uo Mosml.uo Mosmlcgi.uo Mosmlcookie.uo Msp.uo Mysql.uo \
      NJ93.uo Nonstdio.uo \
      Obj.uo Option.uo OS.uo \
      Parsing.uo Path.uo Polygdbm.uo Polyhash.uo Postgres.uo PP.uo Process.uo \
-     Random.uo Real.uo Redblackmap.uo Rbset.uo Regex.uo \
+     Random.uo Rbset.uo Real.uo Regex.uo \
      Signal.uo SML90.uo Socket.uo Splaymap.uo Splayset.uo Splaytree.uo \
      Strbase.uo String.uo StringCvt.uo Substring.uo Susp.uo \
      TextIO.uo Time.uo Timer.uo \
@@ -63,25 +63,25 @@ depend: Array.sml FileSys.sml Help.sml Int.sml Mosml.sml Path.sml \
 OS.ui: FileSys.ui Path.ui Process.ui
 
 ### DO NOT DELETE THIS LINE
-Hashset.uo: Hashset.ui Array.ui 
+Hashset.uo: Hashset.ui List.ui Array.ui 
 Word8Vector.uo: Word8Vector.ui String.ui List.ui Word8.ui 
 Word8Array.uo: Word8Array.ui List.ui Word8.ui Word8Vector.ui 
+Word.uo: Word.ui String.ui StringCvt.ui Char.ui 
 Rbset.uo: Rbset.ui List.ui Listsort.ui 
 Redblackmap.uo: Redblackmap.ui 
 Buffer.uo: Buffer.ui String.ui Substring.ui 
-Word.uo: Word.ui String.ui StringCvt.ui Char.ui 
+Weak.uo: Weak.ui 
 CharVectorSlice.uo: CharVectorSlice.ui CharVector.ui Substring.ui Char.ui \
     Word8VectorSlice.ui 
 CharVectorSlice.ui: CharVector.ui Substring.ui Char.ui 
 CharArraySlice.uo: CharArraySlice.ui CharVector.ui CharArray.ui \
     Word8ArraySlice.ui CharVectorSlice.ui 
 CharArraySlice.ui: CharVector.ui CharArray.ui CharVectorSlice.ui 
-Weak.uo: Weak.ui 
+Vector.uo: Vector.ui List.ui 
 Word8ArraySlice.uo: Word8ArraySlice.ui Word8Array.ui Word8.ui \
     Word8Vector.ui Word8VectorSlice.ui 
 Word8ArraySlice.ui: Word8Array.ui Word8.ui Word8Vector.ui \
     Word8VectorSlice.ui 
-Vector.uo: Vector.ui List.ui 
 Word8VectorSlice.uo: Word8VectorSlice.ui Word8.ui Word8Vector.ui 
 Word8VectorSlice.ui: Word8.ui Word8Vector.ui 
 Strbase.uo: Strbase.ui List.ui 
@@ -93,6 +93,7 @@ Signal.ui: Word.ui
 Unix.uo: Unix.ui Signal.ui Word.ui Dynlib.ui Option.ui Vector.ui Process.ui \
     TextIO.ui Obj.uo 
 Unix.ui: Signal.ui Process.ui TextIO.ui 
+Process.uo: Process.ui List.ui BasicIO.ui Time.ui 
 Socket.uo: Socket.ui Word.ui Dynlib.ui Word8Array.ui Vector.ui \
     Word8Vector.ui Time.ui Word8VectorSlice.ui 
 Socket.ui: Word8Array.ui Word8Vector.ui Time.ui 
@@ -109,7 +110,6 @@ Mosmlcookie.uo: Mosmlcookie.ui String.ui List.ui Date.ui Option.ui \
 Mosmlcookie.ui: Date.ui 
 Msp.uo: Msp.ui String.ui StringCvt.ui List.ui Option.ui Vector.ui TextIO.ui \
     Int.ui Mosmlcgi.ui Char.ui 
-Process.uo: Process.ui List.ui BasicIO.ui Time.ui 
 Path.uo: Path.ui String.ui List.ui Substring.ui 
 Mosml.uo: Mosml.ui Timer.ui FileSys.ui BinIO.ui String.ui List.ui Vector.ui \
     Word8.ui Process.ui Byte.ui TextIO.ui Word8Vector.ui Time.ui 

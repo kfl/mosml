@@ -129,11 +129,11 @@ fun addPop n C =
   if n = 0 then C
   else
     case C of
-      Kpop m :: C1                => addPop (n + m) C1
-    | Kreturn m :: C1             => Kreturn (n + m) :: C1
-    | Klabel _ :: Kreturn m :: C1 => Kreturn (n + m) :: C
-    | Kraise :: _                 => C
-    | _                           => Kpop n :: C
+      Kpop m :: C1               => addPop (n + m) C1
+    | Kreturn m :: C1            => Kreturn (n + m) :: C1
+    | Klabel _ :: Kreturn m :: _ => Kreturn (n + m) :: C
+    | Kraise :: _                => C
+    | _                          => Kpop n :: C
 ;
 
 (* Generate a jump through table, unless unnecessary. *)
@@ -442,15 +442,15 @@ fun UNdeBruijn exp =
 
 (* The translator from lambda terms to lists of instructions.
 
-   env: the map from Lvar ids to stackptr offsets; side-effected
+   env : the map from Lvar ids to stackptr offsets; updated by side-effects
    staticfail : the pair (label,sz) where Lstaticfail must branch.
-   sz: the current runtime stack model depth  (includes codegen temporaries)
-   dp: the depth of the Front.sml stack model (excludes codegen temporaries)
+   sz  : the current runtime stack model depth  (includes codegen temporaries)
+   dp  : the depth of the Front.sml stack model (excludes codegen temporaries)
    exp : the lambda term to compile.
-   C : the continuation, i.e. the code that follows the code for lambda.
+   C   : the continuation, i.e. the code that follows the code for lambda.
 
-   The tests on the continuation detect tail-calls and avoid jumps to jumps,
-   or jumps to function returns.
+   The tests on the continuation detect tail-calls and avoid jumps to
+   jumps, or jumps to function returns.
 
 *)
 
@@ -716,8 +716,10 @@ fun compileExp env staticfail =
     and compTest2 sz dp cond ifso ifnot C =
       let val (sflbl,sftsz) = staticfail
           val Cc = 
-(* This optimization is rather ill-considered.  It works if the result () 
-   of the switch is disregarded, but otherwise it fails.  sestoft 2000-04-26
+	      
+	 (* This optimization is rather ill-considered.  It works if
+	    the result () of the switch is disregarded, but otherwise
+	    it fails.  sestoft 2000-04-26
 
             if ifnot = Lconst constUnit
             then let val (lbl, C1) = labelCode C
