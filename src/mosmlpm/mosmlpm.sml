@@ -29,11 +29,12 @@ fun main () =
     let val filename = ref "" 
 	val _ =  
 	    ArgParse.parse 
-		[("-c",          ArgParse.Unit (assignTrue compileOnly))
-	        ,("-o",          ArgParse.String (assign execFile))
-		,("-standalone", ArgParse.Unit (assignTrue standalone))
-		,("-quiet",      ArgParse.Unit (assignTrue PMCompile.quiet))
-		] (assign filename)
+	       [("-c",          ArgParse.Unit (assignTrue compileOnly))
+	       ,("-o",          ArgParse.String (assign execFile))
+	       ,("-standalone", ArgParse.Unit (assignTrue standalone))
+	       ,("-quiet",      ArgParse.Unit (assignTrue PMCompile.quiet))
+               ,("-debug",      ArgParse.Unit (assignTrue PMCompile.debugFlag))
+	       ] (assign filename)
     in  if !filename = "" then 
 	    app print ["Error: no project file specified\n", 
 		       usage]

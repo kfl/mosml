@@ -3,9 +3,14 @@ struct
     local open PMBasic in
 
     fun error msg = raise Fail msg
+
     val quiet = ref false
     fun chat msg = if !quiet then ()
 		   else (app print msg; print "\n")
+
+    val debugFlag = ref false
+    fun debug msg = if !debugFlag then (app print msg; print "\n")
+		    else ()
 
 
     fun insertSep sep []      = []
@@ -126,8 +131,10 @@ struct
 			                   else " -structure "
 		    val args = String.concat("mosmlc -c":: mode 
 					     :: cont)
-		    val return = (chat ["Compiling: ", file]; 
-				  P.system args = P.success)
+		    val return = ( chat ["Compiling: ", file]
+                                 ; debug [args] 
+				 ; P.system args = P.success
+                                 )
 		in (*(check_ui_file file, return)
 		    *) (true, return)
 		end
@@ -248,8 +255,8 @@ struct
 	    val args = 
 		String.concat("mosmlc -toplevel -o ":: outfile :: " " ::
 				     options @ (insertSep " " uofiles))
-	in  chat [args];
-            chat ["Linking: ", outfile]
+	in  chat ["Linking: ", outfile]
+          ; debug [args]
           ; Process.system args = Process.success
 	end
 
