@@ -74,9 +74,10 @@ datatype dynval =
   | Bytea of Word8Array.array           (* psql bytea           *)
   | NullVal                             (* psql NULL            *)
 
-val getdynfield  : dbresult -> int -> (int -> dynval)
-val getdyntup    : dbresult -> (int -> dynval vector)
-val getdyntups   : dbresult -> dynval vector vector 
+val getdynfield : dbresult -> int -> int -> dynval
+val getdyntup   : dbresult -> int -> dynval vector
+val getdyntups  : dbresult -> dynval vector vector 
+val dynval2s    : dynval -> string
 
 (* Bulk copying to or from a table *)
 
@@ -229,6 +230,8 @@ val applyto : 'a -> ('a -> 'b) -> 'b
 
    [getdyntups dbres] returns all tuples of result set dbres as a
    vector of vectors of dynvals.
+
+   [dynval2s dv] returns a string representing the dynval dv.
 
    [applyto x f] computes f(x).  This is convenient for applying
    several functions (given in a list or vector) to the same value:

@@ -1,5 +1,5 @@
 (* mosml/src/dynlibs/mpq/Postgres.sml.  
- sestoft@dina.kvl.dk -- 1998 -- version 0.02 of 1999-07-02 *)
+ sestoft@dina.kvl.dk -- 1998 -- version 0.03 of 2000-02-03 *)
 
 open Dynlib;
 
@@ -432,3 +432,20 @@ fun getdyntup dbres : int -> dynval vector =
 
 fun getdyntups dbres : dynval vector vector =
     Vector.tabulate(ntuples dbres, getdyntup dbres)
+
+local 
+    fun i2s i = StringCvt.padLeft #"0" 2 (Int.toString i)
+    fun fmttrip sep (a,b,c) = String.concat[i2s a, sep, i2s b, sep, i2s c]
+in 
+    fun dynval2s (Bool b)       = Bool.toString b
+      | dynval2s (Int i)        = Int.toString  i
+      | dynval2s (Real r)       = Real.toString r
+      | dynval2s (String s)     = s
+      | dynval2s (Date ymd)     = fmttrip "-" ymd
+      | dynval2s (Time hms)     = fmttrip ":" hms
+      | dynval2s (DateTime dt)  = Date.toString dt
+      | dynval2s (Oid oid)      = "<oid>"
+      | dynval2s (Bytea w8a)    = "<bytearray>"
+      | dynval2s NullVal        = "NULL"
+end
+

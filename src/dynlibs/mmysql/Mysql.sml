@@ -1,4 +1,4 @@
-(* mosml/src/dynlibs/mmysql/Mysql.sml -- version 0.06 of 1999-08-08 
+(* mosml/src/dynlibs/mmysql/Mysql.sml -- version 0.07 of 2000-02-03
    thomassi@dina.kvl.dk and sestoft@dina.kvl.dk *)
 
 open Dynlib;
@@ -420,6 +420,20 @@ fun getdyntup dbres : int -> dynval vector =
 
 fun getdyntups dbres : dynval vector vector =
     Vector.tabulate(ntuples dbres, getdyntup dbres)
+
+local 
+    fun i2s i = StringCvt.padLeft #"0" 2 (Int.toString i)
+    fun fmttrip sep (a,b,c) = String.concat[i2s a, sep, i2s b, sep, i2s c]
+in 
+    fun dynval2s (Int i)        = Int.toString  i
+      | dynval2s (Real r)       = Real.toString r
+      | dynval2s (String s)     = s
+      | dynval2s (Date ymd)     = fmttrip "-" ymd
+      | dynval2s (Time hms)     = fmttrip ":" hms
+      | dynval2s (DateTime dt)  = Date.toString dt
+      | dynval2s NullVal        = "NULL"
+end
+
 
 (* Implements "copy <tablename> to stdout" : *)
 
