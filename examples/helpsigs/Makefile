@@ -25,7 +25,7 @@ install:
 	cp helpsigs.val ../../src/mosmllib
 	cp helpsigs.val ../../lib
 	cp htmlsigs/*.html ../../doc/mosmllib
-	cp index.tex ${HOME}/tex/papers/mosml
+	cp index.tex ../../src/doc
 
 .SUFFIXES :
 .SUFFIXES : .sml .sig .ui .uo .mlp .lex .c .o
