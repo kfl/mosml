@@ -2,7 +2,7 @@
 
 # Where to install stuff
 
-MOSMLHOME=${HOME}/mosml2.0
+MOSMLHOME=${HOME}/mosml
 
 # Various utility programs
 INSTALL_PROGRAM=cp
