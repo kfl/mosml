@@ -2,7 +2,7 @@
 
 # Where to install stuff
 
-MOSMLHOME=D:\mosml
+MOSMLHOME=C:\mosml
 
 # To compile the runtime system camlrunm with support for
 # dynamically loadable libraries (DDLs), uncomment these:

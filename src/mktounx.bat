@@ -2,7 +2,7 @@ REM On Win32, switch Makefiles from Win32 Makefiles to Unix Makefiles,
 REM if not already done.
 
 if exist Makefile.w32 (
-  echo "Already in Unix mode\n"
+  echo "Already in Unix mode"
   exit /B 1
 )
 
