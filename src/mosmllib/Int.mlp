@@ -1,4 +1,4 @@
-(* Int -- new basis 1995-03-19, 1996-04-01 *)
+(* Int -- new basis 1995-03-19, 1996-04-01, 2004-05-02 *)
 
 type int = int
 
@@ -36,7 +36,16 @@ local
 	let fun h 0 res = res
 	      | h n res = h (n div radix) (prhex (n mod radix) :: res)
 	    fun tostr n = h (n div radix) [prhex (n mod radix)]
-	in String.implode (if i < 0 then #"~" :: tostr (~i) else tostr i) end
+	in 
+	    if i < 0 then
+		let val last  = ~(i mod (~radix))
+		    val first = i div (~radix)
+		in 
+		    String.implode(#"~" :: h first [prhex last])
+		end
+	    else
+		String.implode (tostr i) 
+	end
 in
     fun scan radix getc source =
 	let open StringCvt
@@ -48,15 +57,18 @@ in
 		  | HEX => (Char.isHexDigit,                       16)
 	    fun dig1 sgn NONE             = NONE
 	      | dig1 sgn (SOME (c, rest)) = 
-		let fun digr res src = 
-		    case getc src of
-			NONE           => SOME (sgn * res, src)
-		      | SOME (c, rest) => 
-			    if isDigit c then 
-				digr (factor * res + hexval c) rest
-			    else 
-				SOME (sgn * res, src)
-		in if isDigit c then digr (hexval c) rest else NONE end	    
+		let val next_val =
+		        if sgn = 1 then fn (res, hv) => factor * res + hv
+		        else            fn (res, hv) => factor * res - hv
+		    fun digr res src = 
+		        case getc src of
+			    NONE           => SOME (res, src)
+			  | SOME (c, rest) => 
+				if isDigit c then 
+				    digr (next_val(res, hexval c)) rest
+				else 
+				    SOME (res, src)
+		in if isDigit c then digr (sgn * hexval c) rest else NONE end
 	    fun getdigs sgn after0 inp = 
 		case dig1 sgn inp of
 		    NONE => SOME(0, after0)

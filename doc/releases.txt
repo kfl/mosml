@@ -241,7 +241,13 @@ Moscow ML release history
     * Socket.select timeout was wrong
     * Moved exnName and exnMessage to General (where they belong)
 
-2.01 (?)
+2.01 (January 2004)
+  * Bugs fixed:
+    * Y2004 Overflow in Time.toString(Time.now()), Time.+(now(), zeroTime())
+    * Moscow ML 2.00 for Windows failed when loading structure Timer
+    * Misplaced double quote in Msp.ahrefa 
+
+2.02 (?)
   * Support for dynamic linking and callback from C also under MacOS X
   * Bugs fixed:
     * The HTML files generated for mosmllib now have valid URLs

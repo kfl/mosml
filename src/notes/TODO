@@ -742,7 +742,7 @@ Fixed by updating addPop to handle the case where C is Klabel :: Kreturn.
  I've tested it on my laptop with windows 2000 where it seems to work
  fine, and I would like if you could help me testing it like last time.  
 
-* 2001-05-22: Date: 21 May 2001 14:28:31 +0200
++ 2001-05-22: Date: 21 May 2001 14:28:31 +0200
               From: Martin Elsman <mael@dina.kvl.dk>
 Subject: Int overflow
 
@@ -1365,6 +1365,8 @@ Random.newgenseed 0.0
  
 creates a generator which causes Random.random to always return 0.0
 
+----------------------------------------------------------------------
+
 * 2004-01-12: Time trouble.  
 
 In Moscow ML 2.00 time is represented as a pair of ints.  This
@@ -1444,6 +1446,8 @@ to integers afterwards.  Not very pretty:
 The good news is that under Moscow ML 2.00 as well as CVS mosml,
 Date.toString(Date.fromTimeUniv(Time.now())) works correctly.
 
+----------------------------------------------------------------------
+
 * 2004-03-08: Norman Ramsey
 
 Subject: parsing bug in Moscow ML 2.00?
@@ -1519,3 +1523,4 @@ Tried this but failed:
 
 /* %left COLON COLONGT */
 /* %left     WHERE */
+

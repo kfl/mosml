@@ -93,6 +93,18 @@ val test9b =
 	   andalso fmt 5 nlitt = "~454.50170"
 	   andalso fmt 6 nlitt = "~454.501701");
     
+val test9c =
+    check'(fn _ => toString zeroTime = "0.000"
+	   andalso toString(fromReal(Math.pow(2.0,30.0))-fromReal 1.0)
+	   = "1073741823.000"
+	   andalso toString(fromReal(Math.pow(2.0,30.0)))
+	   = "1073741824.000"
+	   andalso toString(fromReal(Math.pow(2.0,30.0))+fromReal 1.0)
+	   = "1073741825.000"
+	   andalso toString(fromReal(Math.pow(2.0,30.0))-fromReal 1.0+
+			    fromReal(Math.pow(2.0,30.0)))
+	   = "2147483647.000");
+
 fun chk (s, r) = 
     check'(fn _ => 
 	   case fromString s of

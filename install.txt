@@ -133,7 +133,7 @@ systems, then you can install Moscow ML as follows:
      - to install support for sockets, consult
      mosml/src/dynlibs/msocket/README
 
-     - to install support for Thomas Boutell's gd GIF image
+     - to install support for Thomas Boutell's gd PNG image
      package, consult mosml/src/dynlibs/mgd/README
 
      - to install support for process manipulation under Unix,
