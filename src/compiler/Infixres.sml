@@ -377,6 +377,8 @@ and resolveModExpOp iBas (_,(modexp,_)) =
        (resolveSigExpOp iBas sigexp;resolveModExpOp iBas modexp)
    | APPmodexp (modexp,modexp') =>
        (resolveModExpOp iBas modexp;resolveModExpOp iBas modexp')
+   | RECmodexp (modid,_,sigexp,modexp) =>
+       (resolveSigExpOp iBas sigexp;resolveModExpOp iBas modexp)
 and resolveModBindOp iBas (MODBINDmodbind(modid,modexp)) =
       resolveModExpOp iBas modexp
   | resolveModBindOp iBas (ASmodbind(modid,sigexp,exp)) =
@@ -396,6 +398,8 @@ and resolveSigExpOp iBas (_,sigexp) =
   | WHEREsigexp (sigexp, tyvarseq, longtycon, ty) =>
            (resolveSigExpOp iBas sigexp; resolveTyOp iBas ty)
   | FUNSIGsigexp (_,modid, sigexp,sigexp') =>
+           (resolveSigExpOp iBas sigexp;resolveSigExpOp iBas sigexp')
+  | RECsigexp (modid, sigexp,sigexp') =>
            (resolveSigExpOp iBas sigexp;resolveSigExpOp iBas sigexp')
 and resolveSpecOp (iBas : InfixBasis) (spec as (loc, spec')) =
   case spec' of

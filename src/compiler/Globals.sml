@@ -86,7 +86,7 @@ and ConEnv = ConEnv of  (ConInfo global list) (* cvr: ConEnv should be renamed f
            | LAMconenv of TyName * ConEnv 
 and ExMod = EXISTSexmod of TyName list * Mod
 and Mod = 
-      STRmod of Str 
+      STRmod of RecStr
     | FUNmod of TyName list * Mod * ExMod
 and Str = STRstr of ModEnv * 
                     (string, (TyName list * Mod * ExMod) global) Env *
@@ -94,8 +94,10 @@ and Str = STRstr of ModEnv *
 		    TyEnv * 
 		    VarEnv
     |     SEQstr of Str * Str                      (* hack for matching algorithm *)
+and RecStr = RECrec of RecStr * RecStr
+           | NONrec of Str 
 and Sig = LAMBDAsig of TyName list * Mod
-withtype ModEnv = (string, Str global) Env
+withtype ModEnv = (string, RecStr global) Env
 and TyStr = TyFun * ConEnv
 and TyEnv = (string, (TyFun * ConEnv)) Env
 and VarEnv = (string,(TypeScheme * ConStatusDesc) global) Env    
@@ -185,7 +187,7 @@ type GenFun = TyNameSet * Mod * ExMod
 
 type VarInfo = (TypeScheme * ConStatusDesc) global
 and TyInfo = (TyFun * ConEnv) 
-and ModInfo = Str global
+and ModInfo = RecStr global
 and FunInfo = GenFun global
 and SigInfo = Sig global
 ;

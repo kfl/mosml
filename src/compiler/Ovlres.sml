@@ -456,6 +456,9 @@ and resolveOvlModExp firstpass (loc,(modexp',_)) =
     | APPmodexp (funmodexp,modexp) => 
        (resolveOvlModExp firstpass funmodexp;
 	resolveOvlModExp firstpass modexp)
+    | RECmodexp (modid,_,sigexp,modexp) => 
+       (resolveOvlSigExp firstpass sigexp;
+	resolveOvlModExp firstpass modexp)
 and resolveOvlTyConPath firstpass (_, LONGtyconpath _) =  ()
   | resolveOvlTyConPath firstpass (_, WHEREtyconpath (_,_,modexp)) = 
       resolveOvlModExp firstpass modexp
@@ -479,6 +482,9 @@ and resolveOvlSigExp firstpass (_,sigexp) =
      (resolveOvlSigExp firstpass sigexp; 
       resolveOvlTy firstpass ty)
   | FUNSIGsigexp (_,modid, sigexp,sigexp') =>
+     (resolveOvlSigExp firstpass sigexp;
+      resolveOvlSigExp firstpass sigexp')
+  | RECsigexp (modid, sigexp,sigexp') =>
      (resolveOvlSigExp firstpass sigexp;
       resolveOvlSigExp firstpass sigexp')
 and resolveOvlSpec firstpass (_, spec') = 

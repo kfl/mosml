@@ -14,7 +14,8 @@ val updateCurrentRenEnv: RenEnv -> unit;
 val renameId : string -> string * int;
 
 datatype AccessPath =
-    Path_local of int
+    Path_rec of int
+  | Path_local of int
   | Path_global of (QualifiedIdent * int)
   | Path_son of int * AccessPath
   | Path_virtual_son of int * AccessPath

@@ -66,7 +66,7 @@ and Pat' =
   | CONSpat of LongVId * Pat
   | EXNILpat of LongVId
   | EXCONSpat of LongVId * Pat
-  | EXNAMEpat of Lambda.Lambda		(* The exnname rep used in Match.sml *)
+  | EXNAMEpat of LongVId         (* This is a hack to be used in match(.sml) *)
   | REFpat of Pat
   | RECpat of RecPat ref
   | VECpat of Pat list
@@ -173,6 +173,7 @@ and ModExp' =
   | ABSmodexp of ModExp *  SigExp 
   | FUNCTORmodexp of FunctorSort *  ModId * (IdKindDesc ref) * SigExp * ModExp
   | APPmodexp of ModExp * ModExp
+  | RECmodexp of ModId * (RecStr option) ref * SigExp * ModExp
 and ModDesc = MODDESCmoddesc of ModId * SigExp
 and FunDesc = FUNDESCfundesc of FunId * SigExp
 and SigExp' = 
@@ -180,6 +181,7 @@ and SigExp' =
   | SIGIDsigexp of SigId
   | WHEREsigexp of SigExp * TyVarSeq * LongTyCon * Ty
   | FUNSIGsigexp of FunctorSort * ModId * SigExp * SigExp
+  | RECsigexp of ModId * SigExp * SigExp
 and Spec' =
     VALspec of TyVarSeq * ValDesc list
   | PRIM_VALspec of TyVarSeq * (PrimValBind list)

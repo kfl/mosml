@@ -1,3 +1,9 @@
+o add compiler/test/okasaki to cvs 
+o norming rec str should probably go all the way
+o add compiler/test/recmod.sml to cvs
+o matching recursive modules probably deserves an extension to 
+  the path data structure
+  for decent error reporting.
 o the -units option that tries to recogize old style 
   unit implementation sytax currently incorrectly
   recognizes
@@ -341,6 +347,100 @@ Modify the syntax to avoid the intro of new keywords:
 - use binding syntax
    structure X as S = e to eliminate first-class structures
    functor F as S = e to eliminate first-class functors
+
+(* recursive modules *)
+
+Hey Peter,
+
+>They look real weird!  I understand (from confearence presentations)
+>that types for recursive modules is a fairly non-trivial subject.
+
+Ahhh, but only if you abandon the definition instead of
+generalising it ;->.
+
+For intuition (though I may have got it wrong here):
+
+1. In the signature expression:
+
+rec(X:sigexp)sigexp'
+
+sigexp is a forward declaration that let's you specify mutually recursive datatypes in sigexp' that cross module boundaries
+
+rule (I think):
+C |- sigexp => LAMBDA(P,S) P fresh for C
+C,X:S |- sigexp' => LAMBDA(P',S') P' fresh for (LAMBDA(P,S))
+S' >= phi(S) dom(phi)= P  P doesn't occur in Rng(phi) (occur check)
+-------------------------------------------------------------------
+C |- rec(X:sigexp)sigexp' => LAMBDA(P',rec(phi(S),S')
+
+The new semantic object rec(S,S') is just a pair of
+semantic structures (environments). The idea is that
+to match another structure S'' against one of these you first
+match S'' against S, to find a realisation phi' for the forward type declarations in P',you then match S'' against (phi' S') to find
+a realisation for the remaining things in P'. Operationally, it makes
+a lot of sense (that's kind of what you do to match datatype declarations).
+Note this only allows mutually recursive datatypes, not type abbreviations(because of the occur check).
+
+2: In the module expression
+
+rec(X:sigexp)modexp
+
+sigexp is a forward declaration that let's you specify mutually
+recursive values in modexp that cross module boundaries. Mutually
+recursive types, on the other, have to be specified in sigexp using a
+recursive signature and then just copied using Standard ML datatype replication in modexp (that's why the
+examples look weird).
+
+C |- sigexp => LAMBDA(P,S) P fresh for C
+C,X:S |- modexp => EXISTS(P',S') P' fresh for (LAMBDA(P,S))
+S' >= S (* no realisation here, just check enrichment *) 
+-------------------------------------------------------------------
+C |- rec(X:sigexp)modexp => EXISTS(P U P',S')
+
+Compilation:
+
+allocate a reference to NONE for X
+evaluate modexp, treating references to X as
+   case !X of NONE => raise BIND | SOME modval => modval
+(this is an ugly, but safe, dynamic check to see a fix point is reached)
+set the reference to the value of modexp (coerced according to sigexp)
+return the value of modexp. You can also compile it without the check,
+but it ain't safe.
+
+Don't know if it's sound though. It does give you (heavy weight/inefficient)
+polymorphic recursion, which is nice.
+
+>However, I think we might include this in mosml, provided that (1) it
+>does not slow down the compilation of `ordinary' programs (which is
+>probably unlikely), and (2) it has to be enabled by using a flag or
+>similar.
+
+It passes the regression test fine (no additional cost, I think), however,
+I think I'll hold back for now since it does need a bit
+more code (not much, but I'd rather play with it for a bit to see its ok),
+and I think it still has some wrinkles in it.
+
+>Over the weekend I finished (so far) the clean-up of dynlibs.  Other
+>than that, my mosml progress is slow due to lots of other
+>obligations.
+
+Yes, me too. I managed to get rid of the last reduce/reduce
+conflict (it was trivial)-that leave 37 shift/reduce conflicts but I think they
+are correct (though it deserves more checking). Also fixed a wee bug in
+unguarded. 
+
+More importantly, any thoughts about my approach to compiling unit
+implementations in structure mode and topdec mode. It should be easy
+to implement, I think?  I'm willing to give it a try but would prefer
+to have approval.
+
+-c
+
+PS. Important things to do. 
+
+Address the datatype issue
+Clean up the code!!!
+Sharing (sigh)
 
 
 

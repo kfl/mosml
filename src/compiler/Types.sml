@@ -5,16 +5,20 @@ open Misc List Fnlib Mixture
 
 (* cvr: operations on semantic structures *)
 
+fun SofRecStr RS =
+    case RS of
+      RECrec(RS,RS') => SofRecStr RS'
+    | NONrec S => S   
+;
+
 fun MEofStr (STRstr (ME,_,_,_)) = ME
   | MEofStr (SEQstr (Str1,Str2)) = plusEnv (MEofStr Str1) (MEofStr Str2);
 
 fun FEofStr (STRstr (_,FE,_,_)) = FE
-  | FEofStr (SEQstr (Str1,Str2)) = plusEnv (FEofStr Str1) (FEofStr Str2);
-
+  | FEofStr (SEQstr (Str1,Str2)) = plusEnv (FEofStr Str1) (FEofStr Str2)
 
 fun TEofStr (STRstr (_,_,TE,_)) = TE
-  | TEofStr (SEQstr (Str1,Str2)) = plusEnv (TEofStr Str1) (TEofStr Str2);
-
+  | TEofStr (SEQstr (Str1,Str2)) = plusEnv (TEofStr Str1) (TEofStr Str2)
 
 fun VEofStr (STRstr (_,_,_,VE)) = VE
   | VEofStr (SEQstr (Str1,Str2)) = plusEnv (VEofStr Str1) (VEofStr Str2);
@@ -60,6 +64,7 @@ and matchReason =
 |   EqualityMismatch of path * string * TyInfo * TyInfo
 |   TransparentMismatch of path * string * TyInfo * TyInfo
 |   PatternMismatch of path * string * TyStr * TyStr * TyName * ScopeViolation
+|   CircularMismatch of path * string * TyStr * TyStr * TyName
 |   DatatypeMismatch of path * string * TyInfo * TyInfo
 |   GlobalMismatch of path * string * string * string * string
                      (* longmodid * id * desc * infQual * specQual *)
@@ -586,7 +591,7 @@ and copyTyFun bns bvs tyfun =
         let val () = incrBindingLevel ();
             val (bns,bvs,tn',tn2tn') = copyTyName PARAMETERts bns bvs tn
 	    val (bns,bvs,styfun',ctyfun') = 
-		copyTyFun (tn2tn'::bns) bvs tyfun'
+		copyTyFun (tn2tn'::bns) bvs tyfun' 
 	    val bns = restrictBns bns [tn2tn']
         in   
             decrBindingLevel();
@@ -699,14 +704,31 @@ and copyStr bns bvs S =
 		     then (bns,bvs,true,S)
 		 else (bns,bvs,false,SEQstr(cS1,cS2))
 	     end
+and copyRecStr bns bvs RS =
+    case RS of
+       RECrec (RS1,RS2) =>
+	     let val (bns,bvs,sRS1,cRS1) = copyRecStr bns bvs RS1
+		 val (bns,bvs,sRS2,cRS2) = copyRecStr bns bvs RS2
+	     in
+		 if sRS1 andalso sRS2
+		     then (bns,bvs,true,RS)
+		 else (bns,bvs,false,RECrec(cRS1,cRS2))
+	     end
+    | NONrec S =>
+	     let val (bns,bvs,sS,cS) = copyStr bns bvs S
+	     in
+		 if sS 
+		     then (bns,bvs,true,RS)
+		 else (bns,bvs,false,NONrec(cS))
+	     end
 and copyMod bns bvs M = 
     case M of
-      STRmod S => 
-	  let val (bns,bvs,sS,cS) = copyStr bns bvs S
+      STRmod RS => 
+	  let val (bns,bvs,sRS,cRS) = copyRecStr bns bvs RS
 	  in
-             if sS
+             if sRS
 	     then (bns,bvs,true,M) 
-	     else (bns,bvs,false,STRmod cS)
+	     else (bns,bvs,false,STRmod cRS)
 	  end		  
     | FUNmod F => 
 	  let val (bns,bvs,sF,cF) = copyFun bns bvs F
@@ -716,7 +738,7 @@ and copyMod bns bvs M =
 	     else (bns,bvs,false,FUNmod cF)
 	  end		
 and copyModEnv bns bvs ME = 
-    copyEnv (copyGlobal copyStr) bns bvs ME
+    copyEnv (copyGlobal copyRecStr) bns bvs ME
 and copyFunEnv bns bvs FE =
     copyEnv (copyGlobal copyFun) bns bvs FE
 and copyFun bns bvs (F as (T,M,X)) =
@@ -774,6 +796,8 @@ in
 	#4 (copyConEnv bns bvs conenv)
     val copyStr = fn bns => fn bvs => fn S => 
 	#4 (copyStr bns bvs S)
+    val copyRecStr = fn bns => fn bvs => fn S => 
+	#4 (copyRecStr bns bvs S)
     val copyGenFun = fn bns => fn bvs => fn F => 
 	#4 (copyFun bns bvs F) (* cvr: should be copyFun *)
     val copyMod = fn bns => fn bvs => fn M => 
@@ -850,11 +874,17 @@ and freeVarsStr  bns bvs fnvs S =
         freeVarsModEnv bns bvs (freeVarsFunEnv bns bvs (freeVarsTyEnv bns bvs (freeVarsVarEnv bns bvs fnvs VE) TE) FE) ME
     |  SEQstr (S,S') => 
         (freeVarsStr bns bvs (freeVarsStr bns bvs fnvs S) S')
+and freeVarsRecStr  bns bvs fnvs RS = 
+    case RS of
+	RECrec (RS,RS') => 
+	    (freeVarsRecStr bns bvs (freeVarsRecStr bns bvs fnvs RS) RS')
+      | NONrec S => 
+	    (freeVarsStr bns bvs fnvs S)
 and freeVarsMod bns bvs fnvs M = 
     case M of
-      STRmod S => freeVarsStr bns bvs fnvs S
+      STRmod S => freeVarsRecStr bns bvs fnvs S
     | FUNmod F => freeVarsGenFun bns bvs fnvs F
-and freeVarsModInfo bns bvs fnvs {qualid=_,info = S} = freeVarsStr bns bvs fnvs S
+and freeVarsModInfo bns bvs fnvs {qualid=_,info = RS} = freeVarsRecStr bns bvs fnvs RS
 and freeVarsModEnv bns bvs fnvs ME = 
        foldEnv (fn id => fn info => fn fnvs => freeVarsModInfo bns bvs fnvs info) fnvs ME
 and freeVarsGenFun  bns bvs fnvs (T,M,X) = 
@@ -1134,11 +1164,16 @@ fun normStr S =
             sortEnv (FEofStr S),
 	    TEofStr S,
 	    sortEnv (VEofStr S))
+and normRecStr RS =
+  case RS of
+    NONrec S => NONrec (normStr S)
+  | RECrec (RS,RS') => normRecStr RS'
 and normMod M = 
-    case M of
-      STRmod S => STRmod (normStr S)
-    | M => M
-and normModBind  id {qualid, info = S} = {qualid = qualid,info = normStr  S}
+  case M of
+    STRmod S => STRmod (normRecStr S)
+  | M => M
+and normModBind  id {qualid, info = RS} = 
+    {qualid = qualid,info = normRecStr  RS}
 and normExMod (EXISTSexmod(T,M)) = EXISTSexmod(T,normMod M);
 
 (* cvr: parameterization of T over P *)
@@ -1874,12 +1909,17 @@ and checkClosedStr parameters str =
          checkClosedVarEnv parameters VE)
     |  SEQstr (str,str') => 
         (checkClosedStr parameters str;checkClosedStr parameters str')
+and checkClosedRecStr parameters RS = 
+    case RS of
+      RECrec (RS,RS') =>
+        (checkClosedRecStr parameters RS;checkClosedRecStr parameters RS')
+    | NONrec S => (checkClosedStr parameters S)
 and checkClosedMod parameters M = 
     case M of
-      STRmod S => checkClosedStr parameters S
+      STRmod RS => checkClosedRecStr parameters RS
     | FUNmod (T,M,X) => (checkClosedMod parameters M;checkClosedExMod parameters X)
 and checkClosedModEnv parameters ME = 
-       traverseEnv (fn id => fn {qualid, info = S} => checkClosedStr parameters S) ME
+       traverseEnv (fn id => fn {qualid, info = RS} => checkClosedRecStr parameters RS) ME
 and checkClosedGenFun parameters (T,M,X) = (checkClosedMod parameters M; checkClosedExMod parameters X)
 and checkClosedFunEnv parameters FE = 
        traverseEnv (fn id => fn {qualid, info = F} => checkClosedGenFun parameters F) FE
@@ -1912,8 +1952,8 @@ fun checkClosedCSig (csig:CSig) =
                     (checkClosedTyFun [] tyfun) 
                     handle Subscript => errorToplevelImperativeVar "type" id)
        (tyEnvOfSig csig);
-       Hasht.apply (fn id => fn {qualid, info = S} => 
-                    (checkClosedStr [] S) 
+       Hasht.apply (fn id => fn {qualid, info = RS} => 
+                    (checkClosedRecStr [] RS) 
                     handle Subscript => errorToplevelImperativeVar "structure" id)
        (modEnvOfSig csig);
        Hasht.apply (fn id => fn {qualid, info = F} => 
@@ -2429,6 +2469,16 @@ fun realizeTyStr path id (infTyStr : TyFun * ConEnv) (specTyStr : TyFun * ConEnv
 	   (tn,tns) =>
 	       let val tnLevel = #tnLevel(!(#info tn))
 		   val (fns,fvs,frvs) = freeVarsTyFun tns [] ([],[],[]) infTyFun 
+		   val _ = (* occur check *)
+		       app (fn tn' => 
+			    if tn = tn' 
+				then
+				    raise MatchError (CircularMismatch(path,
+								       id,
+								       infTyStr,
+								       specTyStr,
+								       tn'))
+			    else ()) fns
                    val _ = (prune_level (tnLevel) (fns,fvs,frvs))
                            handle ScopeViolation sv => 
 			       raise MatchError (PatternMismatch (path,
@@ -2450,7 +2500,7 @@ fun checkRealization (* (inferredSig : CSig) (specSig : CSig)*)
       (specTyFun, ConEnv []) =>
           let  val infTyFun = normTyFun (#1 infTyStr) 
           in
-	      unifyTyFun infTyFun specTyFun 
+	      unifyTyFun infTyFun specTyFun (* cvr: CHECK THIS *)
 	      handle Unify _ => 
 		  raise MatchError (TransparentMismatch (path,id,infTyStr,specTyStr))
 	  end
@@ -2564,6 +2614,12 @@ and matchStr path S S' =
 			(lookupStr_FunEnv S path id specInfo) specInfo)
 	   FE)
   |  SEQstr (S1',S2') => (matchStr path S S1'; matchStr path S S2')
+and matchRecStr path RS (RECrec (RS1',RS2')) = 
+    (matchRecStr path RS RS1'; matchRecStr path RS RS2')
+|   matchRecStr path (NONrec S) (NONrec S') = 
+    (matchStr path S S')
+|   matchRecStr path (RECrec(RS1,RS2)) RS' = 
+    (matchRecStr path RS2 RS')
 and matchFun path (T,M,X) (T',M',X') = 
    (incrBindingLevel();
     refreshTyNameSet PARAMETERts T';
@@ -2571,13 +2627,13 @@ and matchFun path (T,M,X) (T',M',X') =
     matchMod (DOMpath(path)) M' M; 
     matchExMod (RNGpath(path)) X X';
     decrBindingLevel())
-and matchModBind path id {qualid = _,info = S} {qualid = _,info = S'} =
-    matchStr (DOTpath(path,id))  S S'
+and matchModBind path id {qualid = _,info = RS} {qualid = _,info = RS'} =
+    matchRecStr (DOTpath(path,id))  RS RS'
 and matchFunBind path id {qualid = _,info = F} {qualid = _,info = F'} =
     matchFun  (DOTpath(path,id)) F F'
 and matchMod path M M' =
   case (M,M') of
-     (STRmod S,STRmod S') => matchStr path S S'
+     (STRmod RS,STRmod RS') => matchRecStr path RS RS'
   |  (FUNmod F, FUNmod F') => matchFun path F F'
   |  (_,STRmod _) => 
 	 raise MatchError (ModuleMismatch(path,"functor","structure"))
@@ -3086,17 +3142,29 @@ and prStrBody S initial =
         let val initial = prStrBody S initial  
 	in  prStrBody S' initial 
 	end
-and prStr S =  (msgString "{";
-		msgCBlock 0;
-                prStrBody S true ;  
-		msgString "}";
-		msgEBlock())
-and prModInfo id {qualid,info = S} =
+and prRecStr RS = 
+    case RS of
+       NONrec S =>  
+	   (msgString "{";
+	    msgCBlock 0;
+	    prStrBody S true ;  
+	    msgString "}";
+	    msgEBlock())
+     | RECrec (RS,RS') =>
+	   (msgString "rec (";
+	    msgIBlock 0;
+	    prRecStr RS;
+	    msgString ",";             
+	    msgBreak (0,3);
+	    prRecStr RS';
+	    msgEBlock();
+	    msgString ")")
+and prModInfo id {qualid,info = RS} =
 		 (msgString "structure ";
 		  msgString id;
 		  msgString " :";
 		  msgBreak(1, 2);
-		  prStr S)
+		  prRecStr RS)
 and prBoundTyNameSet binder offset T =
     under_binder (fn prBody =>
 		  (msgCBlock 0;
@@ -3118,7 +3186,7 @@ and prMod prior M =
     fun prParen prior' s = if prior >= prior' then msgString s else ()
   in
     case M of
-     STRmod S => prStr S
+     STRmod S => prRecStr S
    | FUNmod F => prGenFun prior F (* cvr: REVISE *)
   end
 and prGenFun prior (T,M,X) = 
@@ -3570,6 +3638,25 @@ in
 			msgEOL()));
 	      msgEBlock()))
 	    ()
+  | CircularMismatch (path,id,infTyStr,specTyStr,tn) => 
+	    under_binder 
+	    (fn () =>
+	     (collectExplicitVarsInObj freeVarsTyStr specTyStr;
+	      collectExplicitVarsInObj freeVarsTyStr infTyStr;
+	      msgIBlock 0;
+	      errPrompt "Circularity: type constructor";
+	      prPath (DOTpath(path,id));
+              msgString " has specification:";msgEOL();
+              errPrompt "  ";prTyInfo id specTyStr;msgEOL();
+  	      errPrompt "in the ";prSpec path;msgEOL();
+	      errPrompt "but is implemented by the declaration: ";msgEOL();
+              errPrompt "  ";prTyInfo id infTyStr;msgEOL();
+  	      errPrompt "in the ";prInf path;msgEOL();
+	      errPrompt "The declaration violates the specification because ";msgEOL();
+	      errPrompt "of the circular occurrence of "; prTyName false tn;
+              msgEOL();
+	      msgEBlock()))
+	    ()
   | DatatypeMismatch (path,id,infTyStr,specTyStr) =>
 	 under_binder (fn () =>
 	    (collectExplicitVarsInObj freeVarsTyStr specTyStr;
@@ -3656,7 +3743,7 @@ fun sizeOfVarEnv env =
     foldEnv (fn _ => fn info => fn size => size + sizeVarInfo info) 0 env
 
 fun sizeOfStr (STRstr(ME,FE,TE,VE)) = sizeOfModEnv ME + sizeOfFunEnv  FE + sizeOfVarEnv VE
- |  sizeOfStr (SEQstr (S,S')) = sizeOfStr S + sizeOfStr S';
+ |  sizeOfStr (SEQstr (S,S')) = sizeOfStr S + sizeOfStr S'
 
 
 (* cvr: the position calculated by lookupMEofStr and lookupVEofStr will *only* be
@@ -3668,7 +3755,7 @@ fun lookupMEofStr str =
     case str of 
 	  STRstr(ME,FE,TE,VE) => 
 		(fn mid => lookupEnvWithPos sizeModInfo ME mid 0)
-	| SEQstr _ => fn mid => (0, lookupEnv (MEofStr str) mid)
+	| _ => fn mid => (0, lookupEnv (MEofStr str) mid)
 
 fun lookupFEofStr str =
     case str of 
@@ -3676,7 +3763,7 @@ fun lookupFEofStr str =
 	    let val sizeOfME = sizeOfModEnv ME in
 		fn fid => lookupEnvWithPos sizeFunInfo FE fid sizeOfME 
 	    end
-	| SEQstr _ => fn fid => (0, lookupEnv (FEofStr str) fid)
+	|  _ => fn fid => (0, lookupEnv (FEofStr str) fid)
 
 fun lookupVEofStr str =
     case str of 
@@ -3684,7 +3771,7 @@ fun lookupVEofStr str =
 	    let val sizeOfMEFE = (sizeOfModEnv ME) + (sizeOfFunEnv FE) in
 		fn vid => lookupEnvWithPos sizeVarInfo VE vid sizeOfMEFE 
 	    end
-	| SEQstr _ => fn vid => (0, lookupEnv (VEofStr str) vid)
+	| _ => fn vid => (0, lookupEnv (VEofStr str) vid)
 
 fun lookupMEofEnv ((ME,_,_,_,_):Environment) =
     fn mid => lookupEnvWithPos sizeModInfo ME mid 0;
@@ -3726,8 +3813,8 @@ fun checkClosedExEnvironment  (EXISTS(T,(ME,FE,GE,VE,TE))) =
                     (checkClosedTyFun fvs tyfun) 
                     handle Subscript => warnToplevelImperativeVar "type" id)
             () TE;
-    foldEnv (fn id => fn {qualid, info = S} => fn _ =>
-                    (checkClosedStr fvs S) 
+    foldEnv (fn id => fn {qualid, info = RS} => fn _ =>
+                    (checkClosedRecStr fvs RS) 
                     handle Subscript => warnToplevelImperativeVar "structure" id)
             () ME;
     foldEnv (fn id => fn {qualid, info = F} => fn _ =>
@@ -3740,18 +3827,3 @@ fun checkClosedExEnvironment  (EXISTS(T,(ME,FE,GE,VE,TE))) =
             () GE)
   end
 end;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

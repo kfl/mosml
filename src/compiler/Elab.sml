@@ -404,6 +404,8 @@ and unguardedModExp (_,(modexp,_)) =
 	  unguardedSigExp sigexp U unguardedModExp modexp 
    | APPmodexp (modexp,modexp') =>
 	  unguardedModExp modexp U unguardedModExp modexp'           
+   | RECmodexp (modid,_,sigexp, modexp) =>
+	  unguardedSigExp sigexp U unguardedModExp modexp 
 and unguardedSigExp (_,sigexp) =
   case sigexp of
     SPECsigexp spec => unguardedSpec spec
@@ -411,6 +413,8 @@ and unguardedSigExp (_,sigexp) =
   | WHEREsigexp (sigexp, tyvarseq, longtycon, ty) =>
            (unguardedSigExp sigexp U (unguardedTy ty without tyvarseq))
   | FUNSIGsigexp (_,modid, sigexp,sigexp') =>
+           (unguardedSigExp sigexp U unguardedSigExp sigexp')
+  | RECsigexp (modid, sigexp,sigexp') =>
            (unguardedSigExp sigexp U unguardedSigExp sigexp')
 and unguardedSpec (_, spec') = 
   case spec' of
@@ -546,7 +550,8 @@ fun findLongModIdForOpen ME loc q =
   case q of 
      {qual, id = []} => fatalError "findLongModIdForOpen"
    | {qual, id = [i] } => 
-	 (let val {qualid,info=S} = lookupEnv ME i
+	 (let val {qualid,info=RS} = lookupEnv ME i
+	      val S = SofRecStr RS
 	  in
 	      ([],{qualid = qualid,
 		   info =  (MEofStr S, 
@@ -576,7 +581,8 @@ fun findLongModIdForOpen ME loc q =
 			       })
 		      end
 	      end)
-   | _ =>  let val (fields,{qualid,info=S}) = findLongModId ME loc q
+   | _ =>  let val (fields,{qualid,info=RS}) = findLongModId ME loc q
+	       val S = SofRecStr RS
 	   in
 	       (fields,{qualid = qualid,
 			info =  (MEofStr S, 
@@ -605,17 +611,18 @@ and findLongModId ME loc q =
 		      let val cu = findAndMentionSig loc i
 		      in
 			  ([],{qualid = {qual = i,id = []},
-			       info = STRstr(bindTopInEnv NILenv (#uModEnv cu), 
+			       info =
+			         NONrec  (STRstr(bindTopInEnv NILenv (#uModEnv cu), 
 					     bindTopInEnv NILenv (#uFunEnv cu), 
 					     bindTopInEnv NILenv (#uTyEnv cu), 
-					     bindTopInEnv NILenv (#uVarEnv cu))
+					     bindTopInEnv NILenv (#uVarEnv cu)))
 			       })
 		      end
 	      end)
  | {qual, id = i::id} =>
-     let val (fields,{qualid = {qual = qual',id = id'}, info = S}) = findLongModId ME loc {qual = qual , id = id}
+     let val (fields,{qualid = {qual = qual',id = id'}, info = RS}) = findLongModId ME loc {qual = qual , id = id}
      in 
-	 let val (field,modglobal) = lookupMEofStr S i  
+	 let val (field,modglobal) = lookupMEofStr (SofRecStr RS) i  
 	 in if isGlobalName (#qualid modglobal) 
 	    then ([],modglobal) 
 	    else (field::fields,
@@ -635,10 +642,10 @@ fun findLongVId ME VE loc q =
 	 handle Subscript => 
 	     errorMsg loc ("Unbound value identifier: "^(showQualId q)))
  | {qual, id = i::id} =>
-	let val (fields,{qualid = {qual = qual', id = id'},info = S}) = 
+	let val (fields,{qualid = {qual = qual', id = id'},info = RS}) = 
 	    findLongModId ME loc {qual = qual , id = id}
 	in 
-	    let val (field,info) = lookupVEofStr S i 
+	    let val (field,info) = lookupVEofStr (SofRecStr RS) i 
 	    in if isGlobalName (#qualid info)
 	       then ([],info) (* inline globals *)	
 	       else (field::fields,
@@ -657,10 +664,10 @@ fun findLongFunId ME FE loc q =
 	 handle Subscript => 
 	     errorMsg loc ("Unbound functor identifier: "^(showQualId q)))
  | {qual, id = i::id} =>
-	let val (fields,{qualid = {qual = qual', id = id'},info = S}) = 
+	let val (fields,{qualid = {qual = qual', id = id'},info = RS}) = 
 	    findLongModId ME loc {qual = qual , id = id}
 	in 
-	    let val (field,info) = lookupFEofStr S i 
+	    let val (field,info) = lookupFEofStr (SofRecStr RS) i 
 	    in  if isGlobalName (#qualid info)
 		then ([],info) (* inline globals *)	
 		else (field::fields,
@@ -680,9 +687,9 @@ fun findLongTyCon ME TE loc q =
        handle Subscript => 
            errorMsg loc ("Unbound type constructor: "^(showQualId q)))
  | {qual, id = i::id} =>
-      let val (_,{info = S,...}) = findLongModId ME loc {qual = qual, id = id} 
+      let val (_,{info = RS,...}) = findLongModId ME loc {qual = qual, id = id} 
       in
-	  ((lookupEnv (TEofStr S) i) 
+	  ((lookupEnv (TEofStr (SofRecStr RS)) i) 
 	   handle Subscript => 
 	       errorMsg loc ("Unbound type component: "^(showQualId q)))
       end
@@ -700,10 +707,10 @@ fun findLongModIdInStr S loc q =
 		     errorMsg loc ("Unbound structure component: "^(showQualId q))
 	  end
  | {qual, id = i::id} =>
-     let val (fields,{qualid = {qual = qual',id = id'}, info = S'}) =
+     let val (fields,{qualid = {qual = qual',id = id'}, info = RS'}) =
 	 findLongModIdInStr S loc {qual = qual,id = id} 
      in 
-	 let val (field,modglobal) = lookupMEofStr S' i  
+	 let val (field,modglobal) = lookupMEofStr (SofRecStr RS') i  
 	 in if isGlobalName (#qualid modglobal) 
 	    then ([],modglobal) 
 	    else (field::fields,
@@ -722,9 +729,9 @@ fun findLongTyConInStr S loc q =
        handle Subscript => 
            errorMsg loc ("Unbound type component: "^(showQualId q)))
  | {qual, id = i::id} =>
-      let val (_,{info = S',...}) = findLongModIdInStr S loc {qual = qual, id = id} 
+      let val (_,{info = RS',...}) = findLongModIdInStr S loc {qual = qual, id = id} 
       in
-	  ((lookupEnv (TEofStr S') i) 
+	  ((lookupEnv (TEofStr (SofRecStr RS')) i) 
 	   handle Subscript => 
 	       errorMsg loc ("Unbound type component: "^(showQualId q)))
       end
@@ -763,7 +770,7 @@ fun findSigId GE loc sigid =
 				{qualid = {qual = i,id = []},
 				 info = (* cvr: remove copySig [] [] *)
 				 (LAMBDAsig(!(tyNameSetOfSig cu),
-					    STRmod S))}
+					    STRmod (NONrec S)))}
 		      end
 	      end
 ;
@@ -1219,8 +1226,9 @@ local (* to implement the derived form for structure sharing,
       end
 
     fun collect_S (loc,T0, path, Ss, acc) : TyName list list =
-      let val (MEs, TEs) = foldL(fn S => fn (MEs, TEs) =>
-				      let val ME = MEofStr S
+      let val (MEs, TEs) = foldL(fn RS => fn (MEs, TEs) =>
+				      let val S = SofRecStr RS
+					  val ME = MEofStr S
                                           val TE = TEofStr S
 				      in (ME::MEs,TE::TEs)
 				      end) ([],[]) Ss
@@ -1301,7 +1309,7 @@ local (* to implement the derived form for structure sharing,
 			 in T' @ T''
 			 end
 in
-    fun share (loc,T0:TyName list, Ss : Str list) : TyName list =
+    fun share (loc,T0:TyName list, Ss : RecStr list) : TyName list =
 	let val Ts = collect_S (loc,T0,[],Ss,[])
 	    val Ts : TyName list list = collapse(Ts,[])
             val T = build T0 Ts
@@ -2423,7 +2431,7 @@ and elabModBind (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv)
    (VE : VarEnv) (TE : TyEnv)  (ASmodbind (locmodid as (loc,modid),sigexp as (loc',_),exp)) = 
   let val LAMBDAsig(T,M) = elabSigExp ME FE GE UE VE TE sigexp
       val S = case M of FUNmod _ => errorMsg loc' "This signature should specify a structure but actually specifies a functor"
-	      |  STRmod S => normStr S 
+	      |  STRmod S => normRecStr S 
       val tau = elabExp ME FE GE UE VE TE exp (PACKt(EXISTSexmod(T,M)))
   in
         EXISTS(T,(locmodid,{qualid = (* mkName onTop *) mkLocalName  modid, info = S})) 
@@ -2477,10 +2485,10 @@ and elabModExp expectation (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv)
       DECmodexp dec => 
        let val _ = checkApplicativeDec dec;
 	   val EXISTS(T',(ME',FE',GE',VE',TE')) = elabDec ME FE GE UE VE TE false dec
-           val exmod = EXISTSexmod(T',(STRmod (STRstr (sortEnv ME',
-						       sortEnv FE',
-                                                       sortEnv TE',
-                                                       sortEnv VE'))))
+           val exmod = EXISTSexmod(T',(STRmod (NONrec (STRstr (sortEnv ME',
+							       sortEnv FE',
+							       sortEnv TE',
+							       sortEnv VE')))))
        in
            r :=  SOME exmod;
            exmod
@@ -2492,7 +2500,7 @@ and elabModExp expectation (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv)
 		   val {idKind, idFields,... } = info
 		   val (fields,{qualid=resqualid,info=S}) = 
 		       findLongModId ME loc qualid
-		   val X = EXISTSexmod([],STRmod ((* cvr: avoid*) copyStr  [] [] S))
+		   val X = EXISTSexmod([],STRmod ((* cvr: avoid*) copyRecStr  [] [] S))
 	       in
 		     idKind := {qualid = resqualid, info = STRik};
 		     idFields := fields;
@@ -2621,7 +2629,7 @@ and elabModExp expectation (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv)
 	      STRmod S =>
                   (idKindDescRef := STRik;
 		   (bindInEnv ME modid {qualid=mkLocalName modid,
-					info = normStr S},
+					info = normRecStr S},
 		    FE))
 	    | FUNmod F => 
                   (idKindDescRef := FUNik;
@@ -2645,7 +2653,7 @@ and elabModExp expectation (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv)
 	      STRmod S =>
                   (idKindDescRef := STRik;
 		   (bindInEnv ME modid {qualid=mkLocalName modid,
-					info = normStr S},
+					info = normRecStr S},
 		    FE))
 	    | FUNmod F => 
                   (idKindDescRef := FUNik;
@@ -2672,7 +2680,7 @@ and elabModExp expectation (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv)
            val EXISTSexmod(T,M) = elabModExp FUNexpected ME FE GE UE VE TE funmodexp
            val (T',M',X) = case M of 
 	       FUNmod F => copyGenFun [] [] F
-	     | STRmod _ => errorMsg loc' "Illegal Application: this module expression \
+	     | STRmod _ => errorMsg loc' "Illegal application: this module expression \
                                             \is a structure but should be a functor"
            val EXISTSexmod(T'',M'') = elabModExp (expectMod M') ME FE GE UE VE TE modexp
 
@@ -2705,6 +2713,52 @@ and elabModExp expectation (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv)
       let val X = elabModExp expectation ME FE GE UE VE TE modexp
       in r:= SOME X;
          X
+      end
+  | RECmodexp ((loc,modid),inforef,
+	       sigexp as (locsigexp,_),
+	       modexp as (locmodexp,_)) =>
+      let val LAMBDAsig (T,M) = elabSigExp ME FE GE UE VE TE sigexp
+	  val (ME',RS) = case M of 
+	      STRmod RS =>
+                  (let val normRS = normRecStr RS
+		   in
+		       inforef := SOME normRS;
+		       (bindInEnv ME modid {qualid=mkLocalName modid,
+					    info = normRS},
+			RS)
+		   end)
+	    | FUNmod F => 
+		  errorMsg locsigexp "Illegal recursive structure: \
+		   \the forward specification should specify \
+		   \a structure but actually specifies a functor"
+	  val _ = incrBindingLevel();
+          val _ = refreshTyNameSet PARAMETERts T;
+	  val EXISTSexmod(T',M') = elabModExp STRexpected ME' FE GE UE VE TE modexp
+	  val RS' = case M' of 
+	      STRmod RS' =>
+                  RS'
+	    | FUNmod F => 
+		  errorMsg locmodexp "Illegal recursive structure: \
+		                     \the body should be \
+				     \a structure but is actually a functor"
+          val _ = refreshTyNameSet PARAMETERts T';
+          val _ = matchMod (STRmod RS') (STRmod RS)
+		      handle MatchError matchReason => 
+			  (msgIBlock 0;
+			   errLocation loc;
+			   errPrompt "Illegal recursive structure: \
+			    \the body does not enrich the forward specification...";
+			   msgEOL();
+			   msgEBlock();
+			   errMatchReason "body" "forward specification" matchReason;
+			   raise Toplevel)
+      in 
+	  decrBindingLevel();
+	  let val X' = EXISTSexmod(T@T',STRmod (normRecStr RS'))
+	  in
+	      r := SOME X';
+	      X'
+	  end
       end
 
 and elabValBind (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv)
@@ -2807,7 +2861,7 @@ and elabSigExp (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE:TyE
 	  let val LAMBDA(T,S) = elabSpec ME FE GE UE VE TE false spec
               val _ = checkNoRebindingsStr loc S
      	                "the same identifier is specified twice in the body of this signature"
-	  in LAMBDAsig (T,STRmod S)
+	  in LAMBDAsig (T,STRmod (NONrec S))
 	  end
    |  SIGIDsigexp (loc,sigid) => 
           let val {qualid,info = G} = findSigId GE loc sigid
@@ -2818,7 +2872,7 @@ and elabSigExp (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE:TyE
 	      val (ME',FE') = case M of 
 				    STRmod S =>
 					(bindInEnv ME modid {qualid=mkLocalName modid,
-							     info = normStr S},
+							     info = normRecStr S},
 					 FE)
 				  | FUNmod F => 
 					(ME,
@@ -2836,7 +2890,7 @@ and elabSigExp (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE:TyE
 	      val (ME',FE') = case M of 
 				    STRmod S =>
 					(bindInEnv ME modid {qualid=mkLocalName modid,
-							     info = normStr S},
+							     info = normRecStr S},
 					 FE)
 				  | FUNmod F => 
 					(ME,
@@ -2855,8 +2909,9 @@ and elabSigExp (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE:TyE
       (case (elabSigExp ME FE GE UE VE TE  sigexp) of
 	    (LAMBDAsig(_,FUNmod _)) =>
 		errorMsg loc "Illegal where constraint: the constrained signature should specify a structure but specifies a functor"
-	|   (LAMBDAsig(T,STRmod S)) =>
-	      let val _ = incrBindingLevel();
+	|   (LAMBDAsig(T,STRmod RS)) =>
+	      let val S = SofRecStr RS
+		  val _ = incrBindingLevel();
 		  val _ = refreshTyNameSet PARAMETERts T;
                   val pars = map (fn tyvar => hd(#id(#qualid tyvar))) tyvarseq
 		  val vs = map (fn tv => newExplicitTypeVar tv) pars
@@ -2891,7 +2946,7 @@ and elabSigExp (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE:TyE
 				       msgEBlock();
 				       errMatchReason "constraint" "signature" matchReason;
 				       raise Toplevel));
-				 LAMBDAsig(remove tn T,STRmod S) 
+				 LAMBDAsig(remove tn T,STRmod RS) 
 			     end
 		       | SOME _ => 
 			     (msgIBlock 0;
@@ -2902,7 +2957,52 @@ and elabSigExp (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE:TyE
 			      msgEBlock();
 			      raise Toplevel))
 	      end)
-)
+   | RECsigexp ((_,modid),sigexp as (locforward,_),sigexp' as (locbody,_)) =>
+          let val LAMBDAsig(T,M) = elabSigExp ME FE GE UE VE TE  sigexp
+	      val (ME',RS) = 
+		  case M of STRmod RS =>
+		      (bindInEnv ME modid {qualid=mkLocalName modid,
+					   info = normRecStr RS},
+		       RS)
+		  | FUNmod F => 
+		      errorMsg locforward 
+		               "Illegal recursive signature: \
+				\the forward specification should specify \
+				\a structure but actually specifies a functor"
+	      val _ = incrBindingLevel();
+	      val _ = refreshTyNameSet PARAMETERts T;
+	      val LAMBDAsig(T',M') = elabSigExp ME' FE GE UE VE TE sigexp'
+	      val RS' = 
+		  case M' of 
+		      STRmod RS' => RS'
+		    | FUNmod F => 
+			  errorMsg locbody 
+			           "Illegal recursive signature: \
+				    \the body should specify a structure \
+				    \but actually specifies a functor"
+	      val _ = refreshTyNameSet VARIABLEts T;
+	      val _ = refreshTyNameSet PARAMETERts T';
+	      val _ = matchMod (STRmod RS') (STRmod RS)
+		      handle MatchError matchReason => 
+			  (msgIBlock 0;
+			   errLocation loc;
+			   errPrompt "Illegal recursive signature: \
+			              \the body does not match the \
+				      \forward specification...";
+			   msgEOL();
+			   msgEBlock();
+			   errMatchReason "body" "forward specification" matchReason;
+			   raise Toplevel)
+	      val T2T' = map (fn tn as {info = ref {tnSort = 
+						    REAts (APPtyfun tyapp),
+						    ...},
+					...} =>
+			      (tn,tyapp))
+		              T
+	  in
+            (decrBindingLevel();
+	     LAMBDAsig(T',copyMod T2T' [] (STRmod (RECrec(RS,RS'))))) 
+	  end)
 and elabModDesc (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE : TyEnv) (MODDESCmoddesc (locmodid as (loc,modid), sigexp as (loc',_)) : ModDesc)=
   let val LAMBDAsig(T,M) = elabSigExp ME FE GE UE VE TE sigexp
       val S = case M of 
@@ -3054,7 +3154,9 @@ and elabSpec  (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE : VarEnv) (TE 
 	  FUNmod _ => 
 	      errorMsg loc "Illegal include: the included \
                             \signature must specify a structure, not a functor"
-        | STRmod S => LAMBDA(T,S)
+        | STRmod (NONrec S) => LAMBDA(T,S)
+	| _ => errorMsg loc "Illegal include: the included \
+                             \signature may not be recursive"
       end
   | SHARINGTYPEspec (spec,longtyconlist) => 
       let val LAMBDA(T,S) = elabSpec ME FE GE UE VE TE onTop spec 
@@ -3212,7 +3314,6 @@ fun elabToplevelSpec (spec : Spec) =
 
 val () = elabSigExpRef := elabSigExp;
 val () = elabModExpRef := elabModExp;
-
 
 
 

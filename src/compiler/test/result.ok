@@ -1,4 +1,4 @@
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - linking values
 OK: a
@@ -272,7 +272,7 @@ functor OK: b
 functor OK: X.x
 functor OK: B.y- 
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > structure A :
   {structure a : {val v : string},
@@ -716,7 +716,7 @@ functor OK: b
 functor OK: X.x
 functor OK: B.y- 
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > val it = () : unit
 - > val it = () : unit
@@ -996,7 +996,7 @@ functor OK: X.x
 functor OK: B.y
 > val it = () : unit
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > signature Array =
   /\array.
@@ -1058,7 +1058,7 @@ Enter `quit();' to quit.
   int list
   val test2 = "OK" : string
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > signature Array =
   /\array.
@@ -1120,7 +1120,7 @@ Enter `quit();' to quit.
   int list
   val test2 = "OK" : string
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > val divides = fn : int -> int -> bool
 - > val succ = fn : int -> int
@@ -1184,7 +1184,7 @@ Enter `quit();' to quit.
      503, 509, 521, 523, 541] : int list
 - > val test = "OK" : string
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > signature POLY =
   /\nat.
@@ -1323,7 +1323,7 @@ Enter `quit();' to quit.
       val z : nat},
    val eval : nat -> nat list -> nat}
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > functor F : {val a : unit}->{val b : unit}->{val c : unit}->{}
 - > structure A : {val a : unit}
@@ -1414,7 +1414,7 @@ Enter `quit();' to quit.
         con 'a C : 'a -> 'a (u' t w x),
         con 'b D : 'b -> 'b (v' t w x)}
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > functor ok :
   !u.(!t.{type t = t}->{type u = (u t)})->!t.{type t = t}->?u'.{type u = u'}
@@ -1633,7 +1633,7 @@ Enter `quit();' to quit.
   val x = D(B{l = (1, false), r = (1, false)}) :
   (int * bool) (x (/\'a.{l : 'a, r : 'a}) bool int)
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > structure A :
   {structure B : {val b : bool, val c : string},
@@ -1695,7 +1695,7 @@ Enter `quit();' to quit.
 - > New type names: =v'
   structure OK : {datatype v = (v',{con C : v'}), con C : v'}
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > signature Collection =
   /\e t.{type e = e, type t = t, val empty : t, val add : e -> t -> t}
@@ -1748,7 +1748,7 @@ Enter `quit();' to quit.
 ! cannot have type
 !   (t'' bool)
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > structure X : {type 'a r = 'a ref}
 - > type 'a r = 'a ref
@@ -1756,7 +1756,7 @@ Enter `quit();' to quit.
 - > structure Z : {type 'a r = 'a ref}
   type 'a r = 'a ref
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > New type names: =u
   structure A :
@@ -1855,7 +1855,7 @@ Enter `quit();' to quit.
 ! but its declaration does not admit equality in the module
 !   type u = (u''''' t)
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > val 'a ok = fn : 'a -> 'a
 - > val ('a, 'b) ok = fn : ('a -> 'b) -> 'a -> 'b
@@ -1937,12 +1937,12 @@ Enter `quit();' to quit.
 ! the type constructor u' is a parameter 
 ! that is declared within the scope of u.
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > New type names: =v, =u, =t
   val matchsuc = "OK" : string
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - ! Toplevel input:
 ! structure X = struct open General end: sig val + : (int * int) -> int end;
@@ -3161,7 +3161,7 @@ Enter `quit();' to quit.
 ! the type constructor u' is a parameter 
 ! that is declared within the scope of u.
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > signature OK = {type t = int}
 - > signature OK = {structure X : {type t = int}}
@@ -3182,7 +3182,7 @@ Enter `quit();' to quit.
           {structure X : {type t = t, type u = u}, type u = u', type v = v}},
      structure W : {type u = u', type v = v}}
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > structure X : {exn e : int -> exn}
 - > structure Y : {val e : int -> exn}
@@ -3195,7 +3195,7 @@ Enter `quit();' to quit.
 - > exn s = s : exn
 - > val it = (s, s) : exn * exn
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > signature S = {}
 - > signature F = {}->{}
@@ -3306,7 +3306,7 @@ Enter `quit();' to quit.
 - > functor Ok : ({}->{})->{}->{}
 - > functor OK : ({}->{})->{}->{}
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 - > val integer = fn : int -> int
 - > val ok = fn : int -> int
@@ -3335,7 +3335,472 @@ Enter `quit();' to quit.
 ! the type constructor b is a parameter 
 ! that is declared within the scope of 'a
 - 
-Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Moscow ML version 1.99 (internal release)
+Enter `quit();' to quit.
+- ! Toplevel input:
+! ..................rec(Fail: sig type a; type b end)
+!     sig 
+!     end.
+! Illegal recursive signature: the body does not match the forward specification...
+! Missing declaration: type a is specified in the forward specification as 
+!   type a = a
+! but not declared in the body
+- ! Toplevel input:
+! signature Fail2 = rec(Fail:functor(Y:sig end)->sig end)
+!                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Illegal recursive signature: the forward specification should specify a structure but actually specifies a functor
+- ! Toplevel input:
+!     functor(Fail:sig end)->sig end;
+!     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Illegal recursive signature: the body should specify a structure but actually specifies a functor
+- ! Toplevel input:
+! ..................rec(Fail: sig type a; type b end)
+!                 sig type a = Fail.a
+!                     type b = Fail.b
+!                  end.
+! Illegal recursive signature: the body does not match the forward specification...
+! Circularity: type constructor a has specification:
+!   type a = a
+! in the forward specification
+! but is implemented by the declaration: 
+!   type a = a
+! in the body
+! The declaration violates the specification because 
+! of the circular occurrence of a
+- ! Toplevel input:
+! ..................rec(Fail: sig type a; type b end)
+!                 sig type a = Fail.b
+!                     type b = Fail.a
+!                  end.
+! Illegal recursive signature: the body does not match the forward specification...
+! Circularity: type constructor b has specification:
+!   type b = b
+! in the forward specification
+! but is implemented by the declaration: 
+!   type b = b
+! in the body
+! The declaration violates the specification because 
+! of the circular occurrence of b
+- ! Toplevel input:
+! ..................rec(Fail: sig type a; eqtype b end)
+!                  sig datatype a = Aa | Ba of Fail.b 
+!                      datatype b = Ab | Bb of Fail.a
+!                  end.
+! Illegal recursive signature: the body does not match the forward specification...
+! Equality type mismatch: type constructor b is specified as admitting equality in the forward specification
+!   type b = b
+! but its declaration does not admit equality in the body
+!   datatype b = (b',{con Ab : b', con Bb : a -> b'})
+- > signature Ok1 =
+  /\a b.
+    rec ({type a = a, type b = b},
+            {datatype a = (a,{con Aa : a, con Ba : b -> a}),
+             con Aa : a,
+             con Ba : b -> a,
+             datatype b = (b,{con Ab : b, con Bb : a -> b}),
+             con Ab : b,
+             con Bb : a -> b})
+- > signature Ok2 =
+  /\a b.
+    rec ({type a = a, type b = b},
+            {datatype a = (a,{con Aa : a, con Ba : b -> a}),
+             con Aa : a,
+             con Ba : b -> a,
+             datatype b = (b,{con Ab : b, con Bb : a -> b}),
+             con Ab : b,
+             con Bb : a -> b})
+- > signature Ok3 =
+  /\b a.
+    rec ({type a = a, type b = b},
+            {datatype b = (b,{con Ab : b, con Bb : a -> b}),
+             con Ab : b,
+             con Bb : a -> b,
+             datatype a = (a,{con Aa : a, con Ba : b -> a}),
+             con Aa : a,
+             con Ba : b -> a})
+- > signature OK4 =
+  /\=a =b.
+    rec ({type a = a, type b = b},
+            {datatype a = (a,{con Aa : a, con Ba : b -> a}),
+             con Aa : a,
+             con Ba : b -> a,
+             datatype b = (b,{con Ab : b, con Bb : a -> b}),
+             con Ab : b,
+             con Bb : a -> b})
+- > signature Ok5 = /\a b.rec ({type a = a, type b = b},{type a = a, type b = b})
+- > signature Ok6 = rec ({type a = int},{type a = int})
+- > signature OK7 =
+  /\=a =b.
+    rec ({datatype a = (a,{con Aa : a, con Ba : b -> a}),
+          datatype b = (b,{con Ab : b, con Bb : a -> b}),
+          con Aa : a,
+          con Ba : b -> a,
+          con Ab : b,
+          con Bb : a -> b},
+            {datatype a = (a,{con Aa : a, con Ba : b -> a}),
+             con Aa : a,
+             con Ba : b -> a,
+             datatype b = (b,{con Ab : b, con Bb : a -> b}),
+             con Ab : b,
+             con Bb : a -> b})
+- > signature OK8 =
+  /\=b =a.
+    rec ({datatype a = (a,{con Aa : a, con Ba : b -> a}),
+          datatype b = (b,{con Ab : b, con Bb : a -> b}),
+          con Aa : a,
+          con Ba : b -> a,
+          con Ab : b,
+          con Bb : a -> b},
+            {datatype a = (a,{con Aa : a, con Ba : b -> a}),
+             datatype b = (b,{con Ab : b, con Bb : a -> b}),
+             con Aa : a,
+             con Ba : b -> a,
+             con Ab : b,
+             con Bb : a -> b})
+- > structure Ok : {}
+- > structure Even : {val even : int -> bool}
+- > val test1 = true : bool
+- > structure EvenOdd : {val even : int -> bool, val odd : int -> bool}
+- > val test2 = true : bool
+- > val tes3 = false : bool
+- > signature U =
+  /\a b.
+    rec ({structure A : {type a = a}, structure B : {type b = b}},
+            {structure A :
+               {datatype a = (a,{con Aa : a, con Ba : b -> a}),
+                con Aa : a,
+                con Ba : b -> a},
+             structure B :
+               {datatype b = (b,{con Ab : b, con Bb : a -> b}),
+                con Ab : b,
+                con Bb : a -> b}})
+- > New type names: a, b
+  structure U :
+  {structure A :
+     {datatype a = (a,{con Aa : a, con Ba : b -> a}),
+      con Aa : a,
+      con Ba : b -> a},
+   structure B :
+     {datatype b = (b,{con Ab : b, con Bb : a -> b}),
+      con Ab : b,
+      con Bb : a -> b}}
+- > signature V =
+  /\a' b'.
+    rec ({structure A : {type a = a'}, structure B : {type b = b'}},
+            {structure A :
+               {datatype a = (a',{con Aa : a', con Ba : b' -> a'}),
+                con Aa : a',
+                con Ba : b' -> a',
+                val height : a' -> int},
+             structure B :
+               {datatype b = (b',{con Ab : b', con Bb : a' -> b'}),
+                con Ab : b',
+                con Bb : a' -> b',
+                val height : b' -> int}})
+- > New type names: a', b'
+  structure V :
+  {structure A :
+     {datatype a = (a',{con Aa : a', con Ba : b' -> a'}),
+      con Aa : a',
+      con Ba : b' -> a',
+      val height : a' -> int},
+   structure B :
+     {datatype b = (b',{con Ab : b', con Bb : a' -> b'}),
+      con Ab : b',
+      con Bb : a' -> b',
+      val height : b' -> int}}
+- > val test4 = 2 : int
+- > val test5 = 3 : int
+- > structure V1 :
+  {structure A :
+     {datatype a = (a',{con Aa : a', con Ba : b' -> a'}),
+      con Aa : a',
+      con Ba : b' -> a',
+      val height : a' -> int},
+   structure B :
+     {datatype b = (b',{con Ab : b', con Bb : a' -> b'}),
+      con Ab : b',
+      con Bb : a' -> b',
+      val height : b' -> int}}
+- > New type names: a'', b''
+  structure V2 :
+  {structure A :
+     {datatype a = (a'',{con Aa : a'', con Ba : b'' -> a''}),
+      con Aa : a'',
+      con Ba : b'' -> a'',
+      val height : a'' -> int},
+   structure B :
+     {datatype b = (b'',{con Ab : b'', con Bb : a'' -> b''}),
+      con Ab : b'',
+      con Bb : a'' -> b'',
+      val height : b'' -> int}}
+- > New type names: a''', b'''
+  structure Y :
+  {structure A :
+     {datatype a = (a''',{con Aa : a''', con Ba : b''' -> a'''}),
+      con Aa : a''',
+      con Ba : b''' -> a''',
+      val foo : int,
+      val height : a''' -> int},
+   structure B :
+     {datatype b = (b''',{con Ab : b''', con Bb : a''' -> b'''}),
+      con Ab : b''',
+      con Bb : a''' -> b''',
+      val bar : bool,
+      val height : b''' -> int}}
+- > structure Y1 :
+  {structure A :
+     {datatype a = (a''',{con Aa : a''', con Ba : b''' -> a'''}),
+      con Aa : a''',
+      con Ba : b''' -> a''',
+      val height : a''' -> int},
+   structure B :
+     {datatype b = (b''',{con Ab : b''', con Bb : a''' -> b'''}),
+      con Ab : b''',
+      con Bb : a''' -> b''',
+      val height : b''' -> int}}
+- > New type names: a'''', b''''
+  structure Y2 :
+  {structure A :
+     {datatype a = (a'''',{con Aa : a'''', con Ba : b'''' -> a''''}),
+      con Aa : a'''',
+      con Ba : b'''' -> a'''',
+      val height : a'''' -> int},
+   structure B :
+     {datatype b = (b'''',{con Ab : b'''', con Bb : a'''' -> b''''}),
+      con Ab : b'''',
+      con Bb : a'''' -> b'''',
+      val height : b'''' -> int}}
+- > val test6 = [structure ...] :
+  [?a''''' b'''''.
+    rec ({structure A : {type a = a'''''}, structure B : {type b = b'''''}},
+            {structure A :
+               {datatype a =
+                  (a''''',{con Aa : a''''', con Ba : b''''' -> a'''''}),
+                con Aa : a''''',
+                con Ba : b''''' -> a''''',
+                val height : a''''' -> int},
+             structure B :
+               {datatype b =
+                  (b''''',{con Ab : b''''', con Bb : a''''' -> b'''''}),
+                con Ab : b''''',
+                con Bb : a''''' -> b''''',
+                val height : b''''' -> int}})]
+- > signature S =
+  /\a'''''.
+    rec ({type a = a'''''},
+            {datatype a = (a''''',{con C : a''''' -> a'''''}),
+             con C : a''''' -> a'''''})
+- > New type names: a'''''
+  structure A :
+  {datatype a = (a''''',{con C : a''''' -> a'''''}), con C : a''''' -> a'''''}
+- > New type names: a''''''
+  structure B :
+  {datatype a = (a'''''',{con C : a'''''' -> a''''''}),
+   con C : a'''''' -> a''''''}
+- > New type names: a'''''''
+  structure C :
+  {datatype a = (a''''''',{con C : a''''''' -> a'''''''}),
+   con C : a''''''' -> a'''''''}
+- > signature S =
+  /\a''''''''.
+    rec ({type ('a, 'b) a = ('a, 'b) a''''''''},
+            {datatype ('a, 'b) a =
+               (('a, 'b) a'''''''',
+                {con ('a, 'b) C : ('a, 'b) a'''''''' -> ('a, 'b) a'''''''',
+                 con ('a, 'b) D : 'a -> ('a, 'b) a'''''''',
+                 con ('a, 'b) E : 'b -> ('a, 'b) a''''''''}),
+             con ('a, 'b) C : ('a, 'b) a'''''''' -> ('a, 'b) a'''''''',
+             con ('a, 'b) D : 'a -> ('a, 'b) a'''''''',
+             con ('a, 'b) E : 'b -> ('a, 'b) a''''''''})
+- > New type names: a''''''''
+  structure A :
+  {datatype ('a, 'b) a =
+     (('a, 'b) a'''''''',
+      {con ('a, 'b) C : ('a, 'b) a'''''''' -> ('a, 'b) a'''''''',
+       con ('a, 'b) D : 'a -> ('a, 'b) a'''''''',
+       con ('a, 'b) E : 'b -> ('a, 'b) a''''''''}),
+   con ('a, 'b) C : ('a, 'b) a'''''''' -> ('a, 'b) a'''''''',
+   con ('a, 'b) D : 'a -> ('a, 'b) a'''''''',
+   con ('a, 'b) E : 'b -> ('a, 'b) a''''''''}
+- > New type names: a'''''''''
+  structure B :
+  {datatype ('a, 'b) a =
+     (('a, 'b) a''''''''',
+      {con ('a, 'b) C : ('a, 'b) a''''''''' -> ('a, 'b) a''''''''',
+       con ('a, 'b) D : 'a -> ('a, 'b) a''''''''',
+       con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''}),
+   con ('a, 'b) C : ('a, 'b) a''''''''' -> ('a, 'b) a''''''''',
+   con ('a, 'b) D : 'a -> ('a, 'b) a''''''''',
+   con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''}
+- > New type names: a''''''''''
+  structure C :
+  {datatype ('a, 'b) a =
+     (('a, 'b) a'''''''''',
+      {con ('a, 'b) C : ('a, 'b) a'''''''''' -> ('a, 'b) a'''''''''',
+       con ('a, 'b) D : 'a -> ('a, 'b) a'''''''''',
+       con ('a, 'b) E : 'b -> ('a, 'b) a''''''''''}),
+   con ('a, 'b) C : ('a, 'b) a'''''''''' -> ('a, 'b) a'''''''''',
+   con ('a, 'b) D : 'a -> ('a, 'b) a'''''''''',
+   con ('a, 'b) E : 'b -> ('a, 'b) a''''''''''}
+- > signature S =
+  /\=a'''''''''''.
+    rec ({datatype ('a, 'b) a =
+            (('a, 'b) a''''''''''',
+             {con ('a, 'b) C : ('a, 'b) a''''''''''' -> ('a, 'b) a''''''''''',
+              con ('a, 'b) D : 'a -> ('a, 'b) a''''''''''',
+              con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''''}),
+          con ('a, 'b) C : ('a, 'b) a''''''''''' -> ('a, 'b) a''''''''''',
+          con ('a, 'b) D : 'a -> ('a, 'b) a''''''''''',
+          con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''''},
+            {datatype ('a, 'b) a =
+               (('a, 'b) a''''''''''',
+                {con ('a, 'b) C :
+                   ('a, 'b) a''''''''''' -> ('a, 'b) a''''''''''',
+                 con ('a, 'b) D : 'a -> ('a, 'b) a''''''''''',
+                 con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''''}),
+             con ('a, 'b) C : ('a, 'b) a''''''''''' -> ('a, 'b) a''''''''''',
+             con ('a, 'b) D : 'a -> ('a, 'b) a''''''''''',
+             con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''''})
+- > New type names: =a'''''''''''
+  structure A :
+  {datatype ('a, 'b) a =
+     (('a, 'b) a''''''''''',
+      {con ('a, 'b) C : ('a, 'b) a''''''''''' -> ('a, 'b) a''''''''''',
+       con ('a, 'b) D : 'a -> ('a, 'b) a''''''''''',
+       con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''''}),
+   con ('a, 'b) C : ('a, 'b) a''''''''''' -> ('a, 'b) a''''''''''',
+   con ('a, 'b) D : 'a -> ('a, 'b) a''''''''''',
+   con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''''}
+- > New type names: =a''''''''''''
+  structure B :
+  {datatype ('a, 'b) a =
+     (('a, 'b) a'''''''''''',
+      {con ('a, 'b) C : ('a, 'b) a'''''''''''' -> ('a, 'b) a'''''''''''',
+       con ('a, 'b) D : 'a -> ('a, 'b) a'''''''''''',
+       con ('a, 'b) E : 'b -> ('a, 'b) a''''''''''''}),
+   con ('a, 'b) C : ('a, 'b) a'''''''''''' -> ('a, 'b) a'''''''''''',
+   con ('a, 'b) D : 'a -> ('a, 'b) a'''''''''''',
+   con ('a, 'b) E : 'b -> ('a, 'b) a''''''''''''}
+- > New type names: =a'''''''''''''
+  structure C :
+  {datatype ('a, 'b) a =
+     (('a, 'b) a''''''''''''',
+      {con ('a, 'b) C : ('a, 'b) a''''''''''''' -> ('a, 'b) a''''''''''''',
+       con ('a, 'b) D : 'a -> ('a, 'b) a''''''''''''',
+       con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''''''}),
+   con ('a, 'b) C : ('a, 'b) a''''''''''''' -> ('a, 'b) a''''''''''''',
+   con ('a, 'b) D : 'a -> ('a, 'b) a''''''''''''',
+   con ('a, 'b) E : 'b -> ('a, 'b) a'''''''''''''}
+- 
+Moscow ML version 1.99 (internal release)
+Enter `quit();' to quit.
+- > signature ORDERED = /\T.{type T = T, val leq : T * T -> bool}
+- > signature HEAP =
+  /\T Heap.
+    {structure Elem : {type T = T, val leq : T * T -> bool},
+     type Heap = Heap,
+     val empty : Heap,
+     val isEmpty : Heap -> bool,
+     val insert : T * Heap -> Heap,
+     val merge : Heap * Heap -> Heap,
+     exn Empty : exn,
+     val findMin : Heap -> T,
+     val deleteMin : Heap -> Heap}
+- ! Toplevel input:
+! 		      fun leq (H (x, _), H (y, _))= Elem.leq (x, y)
+! 		          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Warning: pattern matching is not exhaustive
+
+! Toplevel input:
+!         else let val (H (y, p1)) = PrimH.findMin p
+!                      ^^^^^^^^^^^
+! Warning: pattern matching is not exhaustive
+
+> functor Bootstrap :
+  (!T.
+    {type T = T, val leq : T * T -> bool}->
+        ?Heap.
+         {structure Elem : {type T = T, val leq : T * T -> bool},
+          type Heap = Heap,
+          val empty : Heap,
+          val isEmpty : Heap -> bool,
+          val insert : T * Heap -> Heap,
+          val merge : Heap * Heap -> Heap,
+          exn Empty : exn,
+          val findMin : Heap -> T,
+          val deleteMin : Heap -> Heap})->
+      !T.
+       {type T = T, val leq : T * T -> bool}->
+           ?Heap T'.
+            {structure Elem : {type T = T, val leq : T * T -> bool},
+             type Heap = T',
+             exn Empty : exn,
+             val deleteMin : T' -> T',
+             val empty : T',
+             val findMin : T' -> T,
+             val insert : T * T' -> T',
+             val isEmpty : T' -> bool,
+             val merge : T' * T' -> T'}
+- > functor PairingHeap :
+  !T.
+   {type T = T, val leq : T * T -> bool}->
+       ?Heap.
+        {structure Elem : {type T = T, val leq : T * T -> bool},
+         type Heap = Heap,
+         exn Empty : exn,
+         val deleteMin : Heap -> Heap,
+         val empty : Heap,
+         val findMin : Heap -> T,
+         val insert : T * Heap -> Heap,
+         val isEmpty : Heap -> bool,
+         val merge : Heap * Heap -> Heap}
+- > structure IntElem : {type T = int, val leq : int * int -> bool}
+- > New type names: Heap, T
+  structure IntHeap :
+  {structure Elem : {type T = int, val leq : int * int -> bool},
+   type Heap = T,
+   exn Empty : exn,
+   val deleteMin : T -> T,
+   val empty : T,
+   val findMin : T -> int,
+   val insert : int * T -> T,
+   val isEmpty : T -> bool,
+   val merge : T * T -> T}
+- > val mkHeap = fn : int list -> T
+- > val heap = ?{H}(1, <Heap T>) : T
+- > val test1 = true : bool
+- > val test2 = true : bool
+- > New type names: Heap', T'
+  structure SkewHeap :
+  {structure Elem : {type T = int, val leq : int * int -> bool},
+   type Heap = T',
+   exn Empty : exn,
+   val deleteMin : T' -> T',
+   val empty : T',
+   val findMin : T' -> int,
+   val insert : int * T' -> T',
+   val isEmpty : T' -> bool,
+   val merge : T' * T' -> T'}
+  functor SkewBinomialHeap :
+  !T''.
+   {type T = T'', val leq : T'' * T'' -> bool}->
+       ?Tree.
+        {structure Elem : {type T = T'', val leq : T'' * T'' -> bool},
+         type Heap = Tree list,
+         exn Empty : exn,
+         val deleteMin : Tree list -> Tree list,
+         val empty : Tree list,
+         val findMin : Tree list -> T'',
+         val insert : T'' * Tree list -> Tree list,
+         val isEmpty : Tree list -> bool,
+         val merge : Tree list * Tree list -> Tree list}
+- > val mkHeap = fn : int list -> T'
+- > val heap = ?{H}(1, <Heap' T'>) : T'
+- > val test1 = true : bool
+- > val test2 = true : bool
+- 
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 [opening file "test.sml"]
 > structure Real :

@@ -966,6 +966,8 @@ ModExp :
                                  {mkLoc((FUNCTORmodexp(Applicative,$2,ref VARik,$4,$6),ref NONE))}
   | FUNCTOR LPAREN ModId COLON SigExp RPAREN DARROW ModExp 
                                  {mkLoc((FUNCTORmodexp(Generative false,$3,ref VARik,$5,$8),ref NONE))}
+  | REC LPAREN ModId COLON SigExp RPAREN ModExp 
+                                 {mkLoc((RECmodexp($3,ref NONE,$5,$7),ref NONE))}
 ;
 	    
 AtModExp_seq1 :
@@ -1018,7 +1020,8 @@ SigExp :
                     {mkLoc(FUNSIGsigexp(Generative false,$3,$5,$8))}
   | FUNCTOR ModId COLON SigExp ARROW SigExp 
                    {mkLoc(FUNSIGsigexp(Applicative,$2,$4,$6))} 
-
+  | REC LPAREN ModId COLON SigExp RPAREN SigExp 
+                    {mkLoc(RECsigexp($3,$5,$7))}
 ;
 
 

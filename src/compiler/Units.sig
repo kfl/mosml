@@ -25,7 +25,7 @@ type CSig =
 
 val varEnvOfSig : CSig -> (string, (TypeScheme * ConStatusDesc)global) Hasht.t;
 val tyEnvOfSig  : CSig -> (string, (TyFun * ConEnv)) Hasht.t;
-val modEnvOfSig : CSig -> (string, Str global) Hasht.t;
+val modEnvOfSig : CSig -> (string, RecStr global) Hasht.t;
 val funEnvOfSig : CSig -> (string, GenFun global) Hasht.t;
 val sigEnvOfSig : CSig -> (string, Sig global) Hasht.t;
 val tyNameSetOfSig : CSig -> TyNameSet ref;

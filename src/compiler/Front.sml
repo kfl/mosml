@@ -264,6 +264,7 @@ and isSafeModExp (_, (modexp',_)) =
     | ABSmodexp  (modexp,sigexp) => isSafeModExp modexp
     | FUNCTORmodexp (_,modid,_, sigexp, modexp) => true
     | APPmodexp (modexp,modexp') => false
+    | RECmodexp (modid,_,sigexp, modexp) => false
 ;
 
 (* All unsafe arguments must be lifted, except the rightmost one, *)
@@ -418,14 +419,14 @@ and coerceFunEnv S FE' tr_VE =
 and coerceModEnv S ME' tr_FE_VE =
     let val lookupMEofS = lookupMEofStr S   
     in foldEnv 
-	(fn id => fn {info = S',...} => fn tr_ME_FE_VE =>
-	 let val (field,{qualid,info = S}) = lookupMEofS id 
+	(fn id => fn {info = RS',...} => fn tr_ME_FE_VE =>
+	 let val (field,{qualid,info = RS}) = lookupMEofS id 
 	     val trM = if isGlobalName qualid 
 			   then  getGlobal ModId qualid
 		       else Lprim(Pfield field, [Lvar 0])
 			   
 	 in 
-	     (coerceStr trM S S')::tr_ME_FE_VE
+	     (coerceRecStr trM RS RS')::tr_ME_FE_VE
 	 end) 
 	tr_FE_VE 
 	ME'
@@ -444,7 +445,10 @@ and isIdentityCoercion S pos (Lprim(Pfield field, [Lvar 0])::lams) =
       (pos = field) andalso isIdentityCoercion S (pos+1) lams
   | isIdentityCoercion S pos (_::lams) = false
   | isIdentityCoercion S pos [] = (sizeOfStr S) = pos
-and coerceMod lam (STRmod S) (STRmod S') = coerceStr lam S S' 
+and coerceRecStr lam (NONrec S) (NONrec S') = coerceStr lam S S' 
+  | coerceRecStr lam RS (RECrec (_,RS')) = coerceRecStr lam RS RS'    
+  | coerceRecStr lam (RECrec (_,RS)) RS' = coerceRecStr lam RS RS'    
+and coerceMod lam (STRmod RS) (STRmod RS') = coerceRecStr lam RS RS' 
   | coerceMod lam (FUNmod F) (FUNmod F') = coerceFun lam F F'
 and coerceFun lam (_,M1,EXISTSexmod(_,M1')) (_,M2,EXISTSexmod(_,M2')) =
     let val domCoercion = coerceMod (Lvar 0) (normMod M2) (normMod M1)
@@ -528,18 +532,29 @@ and coerceDecFunEnv env FE FE' tr_VE =
 	FE'
 and coerceDecModEnv env ME ME' tr_FE_VE =
     foldEnv 
-	(fn id => fn {info = S',...} => fn tr_ME_FE_VE =>
-	 let val {qualid,info = S} = lookupEnv ME id 
+	(fn id => fn {info = RS',...} => fn tr_ME_FE_VE =>
+	 let val {qualid,info = RS} = lookupEnv ME id 
 	     val trM = if isGlobalName qualid 
 			   then  getGlobal ModId qualid
 		       else translateLocalAccess ModId env id
 	 in 
-	     (coerceStr trM S S')::tr_ME_FE_VE
+	     (coerceRecStr trM RS RS')::tr_ME_FE_VE
 	 end) 
 	tr_FE_VE 
 	ME'
+(*
 and coerceDec env (STRstr(ME,FE,TE,VE)) (STRstr(ME',FE',TE',VE')) =
       let val tr_VE = coerceDecVarEnv env VE VE' 
+          val tr_FE_VE = coerceDecFunEnv env FE FE' tr_VE
+          val tr_ME_FE_VE = coerceDecModEnv env ME ME' tr_FE_VE 
+      in
+	      Lstruct tr_ME_FE_VE
+      end;
+*)
+and coerceDec env RS RS' =
+      let val (STRstr(ME,FE,TE,VE)) = SofRecStr RS
+	  val (STRstr(ME',FE',TE',VE')) = SofRecStr RS'
+          val tr_VE = coerceDecVarEnv env VE VE' 
           val tr_FE_VE = coerceDecFunEnv env FE FE' tr_VE
           val tr_ME_FE_VE = coerceDecModEnv env ME ME' tr_FE_VE 
       in
@@ -929,8 +944,9 @@ and trFunBindList (env as (rho, depth)) fbs =
   in ((rho', depth+len), fn lam => Llet(args, lam)) end
 and trModExp (env as (rho,depth)) (_, (modexp,r)) = 
   case (modexp,!r) of
-    (DECmodexp dec, SOME (EXISTSexmod (_, STRmod(STRstr(ME,FE,TE,VE))))) =>
-      let val (env as (rho', depth'), envelope') = trDec env dec
+    (DECmodexp dec, SOME (EXISTSexmod (_, STRmod RS))) =>
+      let val STRstr(ME,FE,TE,VE) = SofRecStr RS
+	  val (env as (rho', depth'), envelope') = trDec env dec
           val tr_VE = 
 	      foldEnv  (fn id => fn {qualid,info = (_,cs)} => fn tr_VE => 
 			case cs of  
@@ -987,12 +1003,32 @@ and trModExp (env as (rho,depth)) (_, (modexp,r)) =
 			    [trConstrainedModExp env modexp (normMod M)])
         | _ => fatalError "trModExp:APPmodexp")
   | (PARmodexp modexp,SOME _) => trModExp env modexp
+(* cvr: unsafe version that works but doesn't check for definedness
+  | (RECmodexp((_,strid),ref (SOME RS'),sigexp,modexp),
+	      SOME (EXISTSexmod(_,STRmod RS)))=>
+      Llet([Lprim(Pmakeblock(CONtag(refTag, 1)), [Lconst constUnit])],
+	   Llet([trModExp (bindInEnv rho (ModId strid) (Path_son (0,Path_local depth)),depth+1) modexp],
+		Lseq(Lprim(Psetfield 0,[Lvar 1,coerceRecStr (Lvar 0) RS RS']),
+		     Lvar 0)))
+*)
+  | (RECmodexp((_,strid),ref (SOME RS'),sigexp,modexp),
+	      SOME (EXISTSexmod(_,STRmod RS)))=>
+      Llet([Lprim(Pmakeblock(CONtag(refTag, 1)), 
+		  [Lprim(Pmakeblock(CONtag(0, 2)),[Lconst constUnit])])],
+	   Llet([trModExp (bindInEnv rho (ModId strid) (Path_rec depth),depth+1)
+		          modexp],
+		Lseq(Lprim(Psetfield 0,
+			   [Lvar 1,
+			    (Lprim(Pmakeblock(CONtag(1, 2)),
+				   [coerceRecStr (Lvar 0) RS RS']))]),
+		     Lvar 0)))
+   
 and trConstrainedModExp env (modexp as (_, (modexp',ref (SOME (EXISTSexmod ((_,M))))))) M' = 
     case (modexp',M,M') of
-	(DECmodexp dec,STRmod S,STRmod S') => 
+	(DECmodexp dec,STRmod RS,STRmod RS') => 
 	    let val (env', envelope') = trDec env dec
 	    in
-		envelope' (coerceDec env' S S')
+		envelope' (coerceDec env' RS RS')
 	    end
       | _ =>  coerceMod (trModExp env modexp) M M'
    

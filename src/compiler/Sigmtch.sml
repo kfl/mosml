@@ -167,7 +167,7 @@ fun exportVar os valRenList id {info = (_,infInfo),qualid = infQualid}
 ;
  
 fun exportMod os valRenList id 
-    {info = S,qualid = infQualid} {info = S',qualid = specQualid} =
+    {info = RS,qualid = infQualid} {info = RS',qualid = specQualid} =
   (* cvr: TODO optimize for null coercions *)
   let val {qual=infQual, id=_} = infQualid
       val {qual=specQual,id=_} = specQualid 
@@ -178,7 +178,7 @@ fun exportMod os valRenList id
 		      [])
       val lam =
 	  Lprim(Pset_global ({qual=specQual,id = [mid]}, 0),
-		[coerceStr strlam S S'])
+		[coerceRecStr strlam RS RS'])
   in  
       (*   msgIBlock 0; Pr_lam.printLam lam; msgEOL(); msgEBlock(); (* cvr: TODO remove*) *)
       emit_phrase os (compileLambda true lam);
@@ -290,8 +290,8 @@ fun matchSignature os valRenList (inferredSig : CSig) (specSig : CSig) =
   (* Matching stamps of mentioned signatures *)
   (matchStamps inferredSig specSig;
   (* Type realization. *)
-  let val LAMBDAsig(T,STRmod S) = 
-            copySig [] [] (LAMBDAsig(!(tyNameSetOfSig specSig),STRmod S))
+  let val LAMBDAsig(T,STRmod (NONrec S)) = 
+            copySig [] [] (LAMBDAsig(!(tyNameSetOfSig specSig),STRmod (NONrec S)))
       val S' = STRstr (mk1TopEnv (#uModEnv inferredSig),
                        mk1TopEnv (#uFunEnv inferredSig),
                        mk1TopEnv (#uTyEnv  inferredSig),

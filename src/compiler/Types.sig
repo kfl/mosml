@@ -3,6 +3,7 @@ local
 in
 
 (* cvr: operations on structures *)
+val SofRecStr : RecStr -> Str;
 val MEofStr : Str -> ModEnv;
 val FEofStr : Str -> FunEnv;
 val VEofStr : Str -> VarEnv;
@@ -55,6 +56,7 @@ val normType: Type -> Type;
 val normTyApp: TyApp -> TyFun; (* cvr *)
 val normTyFun: TyFun -> TyFun; (* cvr *)
 
+val normRecStr : RecStr -> RecStr;
 val normStr : Str -> Str;
 val normMod : Mod -> Mod;
 val normExMod : ExMod -> ExMod;
@@ -73,7 +75,7 @@ val prType : Type -> unit;
 val prTypeScheme : TypeScheme -> unit
 val prMod : Mod -> unit;
 val prSig : Sig -> unit;
-val prModInfo : string -> Str global -> unit;
+val prModInfo : string -> RecStr global -> unit;
 val prFunInfo : string -> GenFun global -> unit;
 val prSigInfo : string -> Sig global -> unit;
 val prVarInfo : ((TypeScheme * ConStatusDesc) global -> unit) -> 
@@ -188,6 +190,7 @@ val checkClosedExEnvironment : ExEnvironment -> unit; (* cvr: added *)
 
 val copySig : (TyName * TyApp) list -> (TypeVar * Type) list -> Sig -> Sig; (* cvr: added *)
 val copyMod : (TyName * TyApp) list -> (TypeVar * Type) list -> Mod -> Mod; (* cvr: added *)
+val copyRecStr : (TyName * TyApp) list -> (TypeVar * Type) list -> RecStr -> RecStr; (* cvr: added *)
 val copyStr : (TyName * TyApp) list -> (TypeVar * Type) list -> Str -> Str; (* cvr: added *)
 val copyGenFun : (TyName * TyApp) list -> (TypeVar * Type) list -> GenFun -> GenFun; (* cvr: added *)
 
@@ -212,11 +215,11 @@ val errMatchReason : string -> string -> matchReason -> unit;
 
 val sizeOfStr: Str -> int;
 
-val lookupMEofStr : Str -> string -> (int * (Str global))
+val lookupMEofStr : Str -> string -> (int * (RecStr global))
 val lookupFEofStr : Str -> string -> (int * (GenFun global))
 val lookupVEofStr : Str -> string -> (int*(TypeScheme * ConStatusDesc) global);
 
-val lookupMEofEnv : Environment -> string -> (int * (Str global))
+val lookupMEofEnv : Environment -> string -> (int * (RecStr global))
 val lookupFEofEnv : Environment -> string -> (int * (GenFun global))
 val lookupVEofEnv : Environment -> string -> (int*  (TypeScheme * 
 						     ConStatusDesc) global);

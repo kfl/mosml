@@ -5,7 +5,8 @@ open List Fnlib Mixture Const Prim Lambda Globals Units Types Asynt Asyntfn;
 type RenEnv = (string * int) list;
 
 datatype AccessPath =
-    Path_local of int
+    Path_rec of int 
+  | Path_local of int
   | Path_global of (QualifiedIdent * int)
   | Path_son of int * AccessPath
   | Path_virtual_son of int * AccessPath
@@ -56,15 +57,27 @@ fun updateCurrentRenEnv RE =
 fun renameId id = (id, newValStamp());
 
 (* Generating lambda expressions from access pahts *)
-
+local  (* cvr: TODO copied from Front.sml ---- code should be shared *)
+    fun mkDynexn exnname =
+	Lprim(Pmakeblock (CONtag(0,1)),
+	      [exnname, Lconst constUnit])
+    val bindExn  = 
+	mkDynexn (Lprim(Pget_global ({qual="General", id=["exn_bind"]}, 0), []));
+    val bindRaiser  = Lprim(Praise, [bindExn])
+in
 fun translatePath depth = fn
-    Path_local i => Lvar (depth-(i+1))
+    Path_rec i => 
+	Llet([Lprim(Pfield 0,[Lvar (depth-(i+1))])],
+	     Lswitch(2,Lvar 0,
+		     [(CONtag(0,2),bindRaiser),
+		      (CONtag(1,2),Lprim(Pfield 0,[Lvar 0]))]))
+  | Path_local i => Lvar (depth-(i+1))
   | Path_global uid => Lprim(Pget_global uid, [])
   | Path_virtual_son(arity, p) =>
       translatePath depth p
   | Path_son(n, p)
       => Lprim(Pfield n, [translatePath depth p])
-;
+end
 
 fun translateTopOfPath depth = fn
     Path_virtual_son(arity, Path_local i) =>
