@@ -4,7 +4,8 @@
 # The PostgreSQL C library interface must be installed.
 
 # Where to find the PostgreSQL header file and compiled library
-# Note: Linux distributions vary widely in the PGSQLLIBDIR and PGSQLINCDIR
+# Note: Unix distributions vary widely in the PGSQLLIBDIR 
+#       and PGSQLINCDIR locations
 
 PGSQLLIBDIR=/usr/lib
 PGSQLINCDIR=/usr/include/pgsql
@@ -12,6 +13,8 @@ PGSQLINCDIR=/usr/include/pgsql
 #PGSQLINCDIR=/usr/local/pgsql/include
 #PGSQLLIBDIR=/usr/lib/pgsql/lib
 #PGSQLINCDIR=/usr/lib/pgsql/include
+#PGSQLLIBDIR=/pack/postgresql/lib
+#PGSQLINCDIR=/pack/postgresql/include
 
 include ../../Makefile.inc
 
