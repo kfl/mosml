@@ -1,0 +1,76 @@
+<HTML><HEAD><TITLE>Structure Intmap</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Intmap</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Intmap -- Applicative maps with integer keys                  *)
+<A NAME="line1"></A>(* From SML/NJ lib 0.2, copyright 1993 by AT&amp;T Bell Laboratories *)
+<A NAME="line2"></A>(* Original implementation due to Stephen Adams, Southampton, UK *)
+<A NAME="line3"></A>
+<A NAME="line4"></A>type 'a <A HREF="#intmap-typ">intmap</A>
+<A NAME="line5"></A>
+<A NAME="line6"></A>exception NotFound
+<A NAME="line7"></A>
+<A NAME="line8"></A>val <A HREF="#empty-val">empty</A>     : unit -&gt; 'a intmap
+<A NAME="line9"></A>val <A HREF="#insert-val">insert</A>    : 'a intmap * int * 'a -&gt; 'a intmap
+<A NAME="line10"></A>val <A HREF="#retrieve-val">retrieve</A>  : 'a intmap * int -&gt; 'a
+<A NAME="line11"></A>val <A HREF="#peek-val">peek</A>      : 'a intmap * int -&gt; 'a option
+<A NAME="line12"></A>val <A HREF="#remove-val">remove</A>    : 'a intmap * int -&gt; 'a intmap * 'a
+<A NAME="line13"></A>val <A HREF="#numItems-val">numItems</A>  : 'a intmap -&gt;  int
+<A NAME="line14"></A>val <A HREF="#listItems-val">listItems</A> : 'a intmap -&gt; (int * 'a) list
+<A NAME="line15"></A>val <A HREF="#app-val">app</A>       : (int * 'a -&gt; unit) -&gt; 'a intmap -&gt; unit
+<A NAME="line16"></A>val <A HREF="#revapp-val">revapp</A>    : (int * 'a -&gt; unit) -&gt; 'a intmap -&gt; unit
+<A NAME="line17"></A>val <A HREF="#foldr-val">foldr</A>     : (int * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a intmap -&gt; 'b
+<A NAME="line18"></A>val <A HREF="#foldl-val">foldl</A>     : (int * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a intmap -&gt; 'b
+<A NAME="line19"></A>val <A HREF="#map-val">map</A>       : (int * 'a -&gt; 'b) -&gt; 'a intmap -&gt; 'b intmap
+<A NAME="line20"></A>val <A HREF="#transform-val">transform</A> : ('a -&gt; 'b) -&gt; 'a intmap -&gt; 'b intmap
+<A NAME="line21"></A>
+<A NAME="line22"></A>(* 
+   ['a <A NAME="intmap-typ"><B>intmap</B></A>] is the type of applicative maps from int to 'a.
+
+   [<A NAME="empty-val"><B>empty</B></A>] creates a new empty map.
+
+   [<A NAME="insert-val"><B>insert</B></A>(m, i, v)] extends (or modifies) map m to map i to v.
+
+   [<A NAME="retrieve-val"><B>retrieve</B></A>(m, i)] returns v if m maps i to v; otherwise raises
+   NotFound.
+
+   [<A NAME="peek-val"><B>peek</B></A>(m, i)] returns SOME v if m maps i to v; otherwise NONE.
+
+   [<A NAME="remove-val"><B>remove</B></A>(m, i)] removes i from the domain of m and returns the
+   modified map and the element v corresponding to i.  Raises NotFound
+   if i is not in the domain of m.
+
+   [<A NAME="numItems-val"><B>numItems</B></A> m] returns the number of entries in m (that is, the size
+   of the domain of m).
+
+   [<A NAME="listItems-val"><B>listItems</B></A> m] returns a list of the entries (i, v) of integers i and
+   the corresponding values v in m, in increasing order of i.
+
+   [<A NAME="app-val"><B>app</B></A> f m] applies function f to the entries (i, v) in m, in
+   increasing order of i.
+
+   [<A NAME="revapp-val"><B>revapp</B></A> f m] applies function f to the entries (i, v) in m, in
+   decreasing order of i.
+
+   [<A NAME="foldl-val"><B>foldl</B></A> f e m] applies the folding function f to the entries (i, v)
+   in m, in increasing order of i.
+
+   [<A NAME="foldr-val"><B>foldr</B></A> f e m] applies the folding function f to the entries (i, v)
+   in m, in decreasing order of i.
+
+   [<A NAME="map-val"><B>map</B></A> f m] returns a new map whose entries have form (i, f(i,v)),
+   where (i, v) is an entry in m.
+
+   [<A NAME="transform-val"><B>transform</B></A> f m] returns a new map whose entries have form (i, f(i,v)),
+   where (i, v) is an entry in m.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

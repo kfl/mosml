@@ -1,0 +1,41 @@
+<HTML><HEAD><TITLE>Structure Nonstdio</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Nonstdio</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Nonstdio -- non-standard I/O -- use BinIO and TextIO instead *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>local open BasicIO in
+<A NAME="line3"></A>
+<A NAME="line4"></A>val open_in_bin       : string -&gt; instream
+<A NAME="line5"></A>val buff_input        : instream -&gt; CharArray.array -&gt; int -&gt; int -&gt; int
+<A NAME="line6"></A>val input_char        : instream -&gt; char		(* Raises Size *)
+<A NAME="line7"></A>val input_binary_int  : instream -&gt; int
+<A NAME="line8"></A>val input_value       : instream -&gt; 'a
+<A NAME="line9"></A>val seek_in           : instream -&gt; int -&gt; unit
+<A NAME="line10"></A>val pos_in            : instream -&gt; int
+<A NAME="line11"></A>val in_stream_length  : instream -&gt; int
+<A NAME="line12"></A>val fast_really_input : instream -&gt; string -&gt; int -&gt;  int -&gt; unit
+<A NAME="line13"></A>
+<A NAME="line14"></A>val open_out_bin      : string -&gt; outstream
+<A NAME="line15"></A>val open_out_exe      : string -&gt; outstream
+<A NAME="line16"></A>val output_char       : outstream -&gt; Char.char -&gt; unit
+<A NAME="line17"></A>val output_byte       : outstream -&gt; int -&gt; unit
+<A NAME="line18"></A>val buff_output       : outstream -&gt; CharArray.array -&gt; int -&gt; int -&gt; unit
+<A NAME="line19"></A>val output_binary_int : outstream -&gt; int -&gt; unit
+<A NAME="line20"></A>val output_value      : outstream -&gt; 'a -&gt; unit
+<A NAME="line21"></A>val seek_out          : outstream -&gt; int -&gt; unit
+<A NAME="line22"></A>val pos_out           : outstream -&gt; int
+<A NAME="line23"></A>
+<A NAME="line24"></A>val file_exists       : string -&gt; bool
+<A NAME="line25"></A>
+<A NAME="line26"></A>end
+<A NAME="line27"></A>
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

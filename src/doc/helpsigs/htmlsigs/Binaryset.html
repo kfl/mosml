@@ -1,0 +1,103 @@
+<HTML><HEAD><TITLE>Structure Binaryset</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Binaryset</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Binaryset -- sets implemented by ordered balanced binary trees *)
+<A NAME="line1"></A>(* From SML/NJ lib 0.2, copyright 1993 by AT&amp;T Bell Laboratories  *)
+<A NAME="line2"></A>(* Original implementation due to Stephen Adams, Southampton, UK  *)
+<A NAME="line3"></A>
+<A NAME="line4"></A>type 'item <A HREF="#set-typ">set</A>
+<A NAME="line5"></A>
+<A NAME="line6"></A>exception NotFound
+<A NAME="line7"></A>
+<A NAME="line8"></A>val <A HREF="#empty-val">empty</A>        : ('item * 'item -&gt; order) -&gt; 'item set
+<A NAME="line9"></A>val <A HREF="#singleton-val">singleton</A>    : ('item * 'item -&gt; order) -&gt; 'item -&gt; 'item set
+<A NAME="line10"></A>val <A HREF="#add-val">add</A>          : 'item set * 'item -&gt; 'item set
+<A NAME="line11"></A>val <A HREF="#addList-val">addList</A>      : 'item set * 'item list -&gt; 'item set
+<A NAME="line12"></A>val <A HREF="#retrieve-val">retrieve</A>     : 'item set * 'item -&gt; 'item
+<A NAME="line13"></A>val <A HREF="#peek-val">peek</A>         : 'item set * 'item -&gt; 'item option
+<A NAME="line14"></A>val <A HREF="#isEmpty-val">isEmpty</A>      : 'item set -&gt; bool
+<A NAME="line15"></A>val <A HREF="#equal-val">equal</A>        : 'item set * 'item set -&gt; bool
+<A NAME="line16"></A>val <A HREF="#isSubset-val">isSubset</A>     : 'item set * 'item set -&gt; bool
+<A NAME="line17"></A>val <A HREF="#member-val">member</A>       : 'item set * 'item -&gt; bool
+<A NAME="line18"></A>val <A HREF="#delete-val">delete</A>       : 'item set * 'item -&gt; 'item set
+<A NAME="line19"></A>val <A HREF="#numItems-val">numItems</A>     : 'item set -&gt;  int
+<A NAME="line20"></A>val <A HREF="#union-val">union</A>        : 'item set * 'item set -&gt; 'item set
+<A NAME="line21"></A>val <A HREF="#intersection-val">intersection</A> : 'item set * 'item set -&gt; 'item set
+<A NAME="line22"></A>val <A HREF="#difference-val">difference</A>   : 'item set * 'item set -&gt; 'item set
+<A NAME="line23"></A>val <A HREF="#listItems-val">listItems</A>    : 'item set -&gt; 'item list
+<A NAME="line24"></A>val <A HREF="#app-val">app</A>          : ('item -&gt; unit) -&gt; 'item set -&gt; unit
+<A NAME="line25"></A>val <A HREF="#revapp-val">revapp</A>       : ('item -&gt; unit) -&gt; 'item set -&gt; unit
+<A NAME="line26"></A>val <A HREF="#foldr-val">foldr</A>        : ('item * 'b -&gt; 'b) -&gt; 'b -&gt; 'item set -&gt; 'b
+<A NAME="line27"></A>val <A HREF="#foldl-val">foldl</A>        : ('item * 'b -&gt; 'b) -&gt; 'b -&gt; 'item set -&gt; 'b
+<A NAME="line28"></A>val <A HREF="#find-val">find</A>         : ('item -&gt; bool) -&gt; 'item set -&gt; 'item option
+<A NAME="line29"></A>
+<A NAME="line30"></A>(* 
+   ['item <A NAME="set-typ"><B>set</B></A>] is the type of sets of ordered elements of type 'item.
+   The ordering relation on the elements is used in the representation
+   of the set.  The result of combining two sets with different
+   underlying ordering relations is undefined.  The implementation
+   uses ordered balanced binary trees.
+
+   [<A NAME="empty-val"><B>empty</B></A> ordr] creates a new empty set with the given ordering
+   relation.  
+
+   [<A NAME="singleton-val"><B>singleton</B></A> ordr i] creates the singleton set containing i, with the
+   given ordering relation.
+
+   [<A NAME="add-val"><B>add</B></A>(s, i)] adds item i to set s.  
+
+   [<A NAME="addList-val"><B>addList</B></A>(s, xs)] adds all items from the list xs to the set s.
+
+   [<A NAME="retrieve-val"><B>retrieve</B></A>(s, i)] returns i if it is in s; raises NotFound otherwise.
+
+   [<A NAME="peek-val"><B>peek</B></A>(s, i)] returns SOME i if i is in s; returns NONE otherwise.
+
+   [<A NAME="isEmpty-val"><B>isEmpty</B></A> s] returns true if and only if the set is empty.
+
+   [<A NAME="equal-val"><B>equal</B></A>(s1, s2)] returns true if and only if the two sets have the
+   same elements.
+
+   [<A NAME="isSubset-val"><B>isSubset</B></A>(s1, s2)] returns true if and only if s1 is a subset of s2.
+
+   [<A NAME="member-val"><B>member</B></A>(s, i)] returns true if and only if i is in s.
+
+   [<A NAME="delete-val"><B>delete</B></A>(s, i)] removes item i from s.  Raises NotFound if i is not in s.
+   
+   [<A NAME="numItems-val"><B>numItems</B></A> s] returns the number of items in set s.
+
+   [<A NAME="union-val"><B>union</B></A>(s1, s2)] returns the union of s1 and s2.  
+
+   [<A NAME="intersection-val"><B>intersection</B></A>(s1, s2)] returns the intersectionof s1 and s2.
+
+   [<A NAME="difference-val"><B>difference</B></A>(s1, s2)] returns the difference between s1 and s2 (that
+   is, the set of elements in s1 but not in s2).
+
+   [<A NAME="listItems-val"><B>listItems</B></A> s] returns a list of the items in set s, in increasing
+   order.
+
+   [<A NAME="app-val"><B>app</B></A> f s] applies function f to the elements of s, in increasing
+   order.
+
+   [<A NAME="revapp-val"><B>revapp</B></A> f s] applies function f to the elements of s, in decreasing
+   order. 
+
+   [<A NAME="foldl-val"><B>foldl</B></A> f e s] applies the folding function f to the entries of the
+   set in increasing order.
+
+   [<A NAME="foldr-val"><B>foldr</B></A> f e s] applies the folding function f to the entries of the
+   set in decreasing order. 
+
+   [<A NAME="find-val"><B>find</B></A> p s] returns SOME i, where i is an item in s which satisfies
+   p, if one exists; otherwise returns NONE.
+*)      
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

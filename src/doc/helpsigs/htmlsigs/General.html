@@ -1,0 +1,295 @@
+<HTML><HEAD><TITLE>Structure General</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure General</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* SML Basis Library and Moscow ML top-level declarations *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>(* SML Basis Library types *)
+<A NAME="line3"></A>
+<A NAME="line4"></A>type     <A HREF="#exn-typ">exn</A>
+<A NAME="line5"></A>eqtype   <A HREF="#unit-typ">unit</A>
+<A NAME="line6"></A>datatype <A HREF="#order-typ">order</A> = LESS | EQUAL | GREATER
+<A NAME="line7"></A>
+<A NAME="line8"></A>(* Additional Moscow ML top-level types *)
+<A NAME="line9"></A>
+<A NAME="line10"></A>datatype <A HREF="#bool-typ">bool</A> = false | true
+<A NAME="line11"></A>eqtype <A HREF="#char-typ">char</A>
+<A NAME="line12"></A>eqtype <A HREF="#int-typ">int</A>
+<A NAME="line13"></A>datatype 'a <A HREF="#option-typ">option</A> = NONE | SOME of 'a
+<A NAME="line14"></A>type <A HREF="#ppstream-typ">ppstream</A>
+<A NAME="line15"></A>eqtype <A HREF="#real-typ">real</A>
+<A NAME="line16"></A>eqtype <A HREF="#string-typ">string</A>
+<A NAME="line17"></A>type <A HREF="#substring-typ">substring</A>
+<A NAME="line18"></A>type <A HREF="#syserror-typ">syserror</A>
+<A NAME="line19"></A>type 'a <A HREF="#vector-typ">vector</A>
+<A NAME="line20"></A>eqtype <A HREF="#word-typ">word</A>
+<A NAME="line21"></A>eqtype <A HREF="#word8-typ">word8</A>
+<A NAME="line22"></A>datatype 'a <A HREF="#list-typ">list</A> = nil | op :: of 'a * 'a list
+<A NAME="line23"></A>datatype 'a <A HREF="#ref-typ">ref</A>  = ref of 'a 
+<A NAME="line24"></A>datatype 'a <A HREF="#frag-typ">frag</A> = QUOTE of string | ANTIQUOTE of 'a
+<A NAME="line25"></A>
+<A NAME="line26"></A>(* SML Basis Library exceptions *)
+<A NAME="line27"></A>
+<A NAME="line28"></A>exception <A HREF="#Bind-exc">Bind</A>
+<A NAME="line29"></A>exception <A HREF="#Chr-exc">Chr</A>
+<A NAME="line30"></A>exception <A HREF="#Div-exc">Div</A>
+<A NAME="line31"></A>exception <A HREF="#Domain-exc">Domain</A>
+<A NAME="line32"></A>exception <A HREF="#Fail-exc">Fail</A> of string
+<A NAME="line33"></A>exception <A HREF="#Match-exc">Match</A>
+<A NAME="line34"></A>exception <A HREF="#Overflow-exc">Overflow</A>
+<A NAME="line35"></A>exception <A HREF="#Subscript-exc">Subscript</A>
+<A NAME="line36"></A>exception <A HREF="#Size-exc">Size</A>
+<A NAME="line37"></A>
+<A NAME="line38"></A>(* Additional Moscow ML top-level exceptions *)
+<A NAME="line39"></A>
+<A NAME="line40"></A>exception <A HREF="#Graphic-exc">Graphic</A> of string
+<A NAME="line41"></A>exception <A HREF="#Interrupt-exc">Interrupt</A>
+<A NAME="line42"></A>exception <A HREF="#Invalid_argument-exc">Invalid_argument</A> of string
+<A NAME="line43"></A>exception <A HREF="#Io-exc">Io</A> of {function : string, name : string, cause : exn }
+<A NAME="line44"></A>exception <A HREF="#Out_of_memory-exc">Out_of_memory</A>
+<A NAME="line45"></A>exception <A HREF="#SysErr-exc">SysErr</A> of string * syserror option
+<A NAME="line46"></A>
+<A NAME="line47"></A>(* SML Basis Library values *)
+<A NAME="line48"></A>
+<A NAME="line49"></A>val <A HREF="#%21-val">!</A>          : 'a ref -&gt; 'a
+<A NAME="line50"></A>val <A HREF="#%3A%3D-val">:=</A>         : 'a ref * 'a -&gt; unit
+<A NAME="line51"></A>
+<A NAME="line52"></A>val <A HREF="#o-val">o</A>          : ('b -&gt; 'c) * ('a -&gt; 'b) -&gt; ('a -&gt; 'c)
+<A NAME="line53"></A>val <A HREF="#ignore-val">ignore</A>     : 'a -&gt; unit
+<A NAME="line54"></A>val <A HREF="#before-val">before</A>     : 'a * 'b -&gt; 'a
+<A NAME="line55"></A>
+<A NAME="line56"></A>val <A HREF="#exnName-val">exnName</A>    : exn -&gt; string
+<A NAME="line57"></A>val <A HREF="#exnMessage-val">exnMessage</A> : exn -&gt; string
+<A NAME="line58"></A>
+<A NAME="line59"></A>(* Additional Moscow ML top-level values *)
+<A NAME="line60"></A>
+<A NAME="line61"></A>val <A HREF="#not-val">not</A>    : bool -&gt; bool
+<A NAME="line62"></A>val <A HREF="#%5E-val">^</A>      : string * string -&gt; string
+<A NAME="line63"></A>
+<A NAME="line64"></A>val <A HREF="#%3D-val">=</A>      : ''a * ''a -&gt; bool
+<A NAME="line65"></A>val <A HREF="#%3C%3E-val"><></A>     : ''a * ''a -&gt; bool
+<A NAME="line66"></A>
+<A NAME="line67"></A>val <A HREF="#ceil-val">ceil</A>   : real -&gt; int                (* round towards plus infinity  *)
+<A NAME="line68"></A>val <A HREF="#floor-val">floor</A>  : real -&gt; int                (* round towards minus infinity *)
+<A NAME="line69"></A>val <A HREF="#real-val">real</A>   : int -&gt; real                (* equals Real.fromInt          *)
+<A NAME="line70"></A>val <A HREF="#round-val">round</A>  : real -&gt; int                (* round to nearest even        *)
+<A NAME="line71"></A>val <A HREF="#trunc-val">trunc</A>  : real -&gt; int                (* round towards zero           *)
+<A NAME="line72"></A>
+<A NAME="line73"></A>val <A HREF="#vector-val">vector</A> : 'a list -&gt; 'a vector
+<A NAME="line74"></A>
+<A NAME="line75"></A>(* Below, numtxt is int, Word.word, Word8.word, real, char, string: *)
+<A NAME="line76"></A>
+<A NAME="line77"></A>val <A HREF="#%3C-val"><</A>   : numtxt * numtxt -&gt; bool
+<A NAME="line78"></A>val <A HREF="#%3C%3D-val"><=</A>  : numtxt * numtxt -&gt; bool
+<A NAME="line79"></A>val <A HREF="#%3E-val">></A>   : numtxt * numtxt -&gt; bool
+<A NAME="line80"></A>val <A HREF="#%3E%3D-val">>=</A>  : numtxt * numtxt -&gt; bool
+<A NAME="line81"></A>
+<A NAME="line82"></A>val <A HREF="#makestring-val">makestring</A> : numtxt -&gt; string
+<A NAME="line83"></A>
+<A NAME="line84"></A>(* Below, realint is int or real:                                       *)
+<A NAME="line85"></A>
+<A NAME="line86"></A>val <A HREF="#%7E-val">~</A>   : realint -&gt; realint            (* raises Overflow              *)
+<A NAME="line87"></A>val <A HREF="#abs-val">abs</A> : realint -&gt; realint            (* raises Overflow              *)
+<A NAME="line88"></A>                                                                        
+<A NAME="line89"></A>(* Below, num is int, Word.word, Word8.word, or real:                   *)
+<A NAME="line90"></A>
+<A NAME="line91"></A>val <A HREF="#%2B-val">+</A>   : num * num -&gt; num              (* raises Overflow              *)
+<A NAME="line92"></A>val <A HREF="#--val">-</A>   : num * num -&gt; num              (* raises Overflow              *)
+<A NAME="line93"></A>val <A HREF="#%2A-val">*</A>   : num * num -&gt; num              (* raises Overflow              *)
+<A NAME="line94"></A>val <A HREF="#%2F-val">/</A>   : real * real -&gt; real           (* raises Div, Overflow         *)
+<A NAME="line95"></A>                                                                        
+<A NAME="line96"></A>(* Below, wordint is int, Word.word or Word8.word:                      *)
+<A NAME="line97"></A>
+<A NAME="line98"></A>val <A HREF="#div-val">div</A> : wordint * wordint -&gt; wordint  (* raises Div, Overflow         *)
+<A NAME="line99"></A>val <A HREF="#mod-val">mod</A> : wordint * wordint -&gt; wordint  (* raises Div                   *)
+<A NAME="line100"></A>
+<A NAME="line101"></A>(*
+   [<A NAME="exn-typ"><B>exn</B></A>] is the type of exceptions.
+ 
+   [<A NAME="unit-typ"><B>unit</B></A>] is the type containing the empty tuple () which equals the 
+   empty record { }.
+
+   [<A NAME="order-typ"><B>order</B></A>] is used as the return type of comparison functions.
+
+   [<A NAME="bool-typ"><B>bool</B></A>] is the type of booleans: false and true.  Equals Bool.bool.
+
+   [<A NAME="char-typ"><B>char</B></A>] is the type of characters such as #"A".  Equals Char.char.
+
+   [<A NAME="int-typ"><B>int</B></A>] is the type of integers.  Equals Int.int.
+
+   [<A NAME="option-typ"><B>option</B></A>] is the type of optional values.  Equals Option.option.
+
+   [<A NAME="ppstream-typ"><B>ppstream</B></A>] is the type of pretty-printing streams, see structure PP.  
+   Pretty-printers may be installed in the top-level by function 
+   Meta.installPP; see the Moscow ML Owner's Manual.
+
+   [<A NAME="real-typ"><B>real</B></A>] is the type of floating-point numbers.  Equals Real.real.
+
+   [<A NAME="string-typ"><B>string</B></A>] is the type of character strings.  Equals String.string.
+
+   [<A NAME="substring-typ"><B>substring</B></A>] is the type of substrings.  Equals Substring.substring.
+
+   [<A NAME="syserror-typ"><B>syserror</B></A>] is the abstract type of system error codes.  
+   Equals OS.syserror. 
+
+   [<A NAME="vector-typ"><B>vector</B></A>] is the type of immutable vectors.  Equals Vector.vector.
+   
+   [<A NAME="word-typ"><B>word</B></A>] is the type of unsigned words.  Equals Word.word.
+
+   [<A NAME="word8-typ"><B>word8</B></A>] is the type of unsigned bytes.  Equals Word8.word.
+
+   ['a <A NAME="list-typ"><B>list</B></A>] is the type of lists of elements of type 'a.  
+   Equals List.list.
+
+   ['a <A NAME="ref-typ"><B>ref</B></A>] is the type of mutable references to values of type 'a.
+
+   ['a <A NAME="frag-typ"><B>frag</B></A>] is the type of quotation fragments, resulting from the
+   parsing of quotations ` ... ` and antiquotations.  See the Moscow
+   ML Owner's Manual.
+
+   [<A NAME="Bind-exc"><B>Bind</B></A>] is the exception raised when the right-hand side value in a
+   valbind does not match the left-hand side pattern.
+
+   [<A NAME="Chr-exc"><B>Chr</B></A>] signals an attempt to produce an unrepresentable character.
+
+   [<A NAME="Div-exc"><B>Div</B></A>] signals an attempt to divide by zero.
+   
+   [<A NAME="Domain-exc"><B>Domain</B></A>] signals an attempt to apply a function outside its domain
+   of definition; such as computing Math.sqrt(~1).
+
+   [<A NAME="Fail-exc"><B>Fail</B></A>] signals the failure of some function, usually in the Moscow
+   ML specific library structures.
+
+   [<A NAME="Match-exc"><B>Match</B></A>] signals the failure to match a value against the patterns
+   in a case, handle, or function application.
+
+   [<A NAME="Overflow-exc"><B>Overflow</B></A>] signals the attempt to compute an unrepresentable number.
+
+   [<A NAME="Subscript-exc"><B>Subscript</B></A>] signals the attempt to use an illegal index in an
+   array, dynarray, list, string, substring, vector or weak array.
+
+   [<A NAME="Size-exc"><B>Size</B></A>] signals the attempt to create an array, string or vector
+   that is too large for the implementation.
+
+   [<A NAME="Graphic-exc"><B>Graphic</B></A>] signals the failure of Graphics primitives (DOS only).
+
+   [<A NAME="Interrupt-exc"><B>Interrupt</B></A>] signals user interrupt of the computation.
+
+   [<A NAME="Invalid_argument-exc"><B>Invalid_argument</B></A>] signals the failure of a function in the runtime 
+   system. 
+
+   [<A NAME="Io-exc"><B>Io</B></A> { function, name, cause }] signals the failure of an
+   input/output operation (function) when operating on a file (name).
+   The third field (cause) may give a reason for the failure.
+
+   [<A NAME="Out_of_memory-exc"><B>Out_of_memory</B></A>] signals an attempt to create a data structure too
+   large for the implementation, or the failure to extend the heap or
+   stack.
+
+   [<A NAME="SysErr-exc"><B>SysErr</B></A> (msg, err)] signals a system error, described by msg.  A
+   system error code may be given by err.  If so, it will usually hold
+   that msg = OS.errorMsg err.
+  
+
+   SML Basis Library values 
+
+   [<A NAME="%21-val"><B>!</B></A> rf] returns the value pointed to by reference rf.
+
+   [<A NAME="%3A%3D-val"><B>:=</B></A>(rf, e)] evaluates rf and e, then makes the reference rf point to
+   the value of e.  Since := has infix status, this is usually written
+        rf := e
+
+   [<A NAME="o-val"><B>o</B></A>(f, g)] computes the functional composition of f and g, that is,
+   fn x =&gt; f(g x).  Since  o  has infix status, this is usually written
+        f o g
+
+   [<A NAME="ignore-val"><B>ignore</B></A> e] evaluates e, discards its value, and returns () : unit.
+
+   [<A NAME="before-val"><B>before</B></A>(e1, e2)] evaluates e1, then evaluates e2, then returns the
+   value of e1.  Since  before  has infix status, this is usually written
+        e1 before e2
+
+   [<A NAME="exnName-val"><B>exnName</B></A> exn] returns a name for the exception constructor in exn.  
+   Never raises an exception itself.  The name returned may be that of
+   any exception constructor aliasing with exn.  For instance,
+        let exception E1; exception E2 = E1 in exnName E2 end
+   may evaluate to "E1" or "E2".
+
+   [<A NAME="exnMessage-val"><B>exnMessage</B></A> exn] formats and returns a message corresponding to
+   exception exn.  For the exceptions defined in the SML Basis Library, 
+   the message will include the argument carried by the exception.
+
+
+   Additional Moscow ML top-level values
+
+   [<A NAME="not-val"><B>not</B></A> b] returns the logical negation of b.
+
+   [<A NAME="%5E-val"><B>^</B></A>] is the string concatenation operator.
+
+   [<A NAME="%3D-val"><B>=</B></A>] is the polymorphic equality predicate.
+
+   [<A NAME="%3C%3E-val"><B><></B></A>] is the polymorphic inequality predicate.
+
+   [<A NAME="ceil-val"><B>ceil</B></A> r] is the smallest integer &gt;= r (rounds towards plus infinity).
+   May raise Overflow.
+
+   [<A NAME="floor-val"><B>floor</B></A> r] is the largest integer &lt;= r (rounds towards minus infinity).
+   May raise Overflow.
+
+   [<A NAME="real-val"><B>real</B></A> i] is the floating-point number representing integer i.
+   Equivalent to Real.fromInt.
+
+   [<A NAME="round-val"><B>round</B></A> r] is the integer nearest to r, using the default rounding
+   mode.  May raise Overflow.
+
+   [<A NAME="trunc-val"><B>trunc</B></A> r] is the numerically largest integer between r and zero
+   (rounds towards zero).  May raise Overflow.
+
+   [<A NAME="vector-val"><B>vector</B></A> [x1, ..., xn]] returns the vector #[x1, ..., xn].
+
+   [<A NAME="%3C-val"><B><</B></A> (x1, x2)] 
+   [<A NAME="%3C%3D-val"><B><=</B></A>(x1, x2)]
+   [<A NAME="%3E-val"><B>></B></A> (x1, x2)]
+   [<A NAME="%3E%3D-val"><B>>=</B></A>(x1, x2)]
+
+   These are the standard comparison operators for arguments of type
+   int, Word.word, Word8.word, real, char or string.
+
+   [<A NAME="makestring-val"><B>makestring</B></A> v] returns a representation of value v as a string, for
+   v of type int, Word.word, Word8.word, real, char or string.
+
+   [<A NAME="%7E-val"><B>~</B></A> x] is the numeric negation of x (which can be real or int).  May
+   raise Overflow.
+
+   [<A NAME="abs-val"><B>abs</B></A> x] is the absolute value of x (which can be real or int).  May
+   raise Overflow.
+                                                                        
+   [<A NAME="%2B-val"><B>+</B></A> (e1, e2)]
+   [<A NAME="--val"><B>-</B></A> (e1, e2)]
+   [<A NAME="%2A-val"><B>*</B></A> (e1, e2)]
+
+   These are the standard arithmetic operations for arguments of type
+   int, Word.word, Word8.word, and real.  They are unsigned in the
+   case of Word.word and Word8.word.  May raise Overflow.
+
+   [<A NAME="%2F-val"><B>/</B></A> (e1, e2)] is the floating-point result of dividing e1 by e2.
+   May raise Div and Overflow.
+                                                                        
+   [<A NAME="div-val"><B>div</B></A>(e1, e2)] is the integral quotient of dividing e1 by e2 for
+   arguments of type int, Word.word, and Word8.word.  See Int.div and
+   Word.div for more details.  May raise Div, Overflow.
+
+   [<A NAME="mod-val"><B>mod</B></A>(e1, e2)] is the remainder when dividing e1 by e2, for
+   arguments of type int, Word.word, and Word8.word.  See Int.mod and
+   Word.mod for more details.  May raise Div.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

@@ -1,0 +1,216 @@
+<HTML><HEAD><TITLE>Structure Gdimage</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Gdimage</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Gdimage -- creating PNG images -- requires Dynlib *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>type <A HREF="#image-typ">image</A>
+<A NAME="line3"></A>
+<A NAME="line4"></A>type <A HREF="#color-typ">color</A>
+<A NAME="line5"></A>
+<A NAME="line6"></A>datatype <A HREF="#style-typ">style</A> = 
+<A NAME="line7"></A>    ColorS of color
+<A NAME="line8"></A>  | TransparentS
+<A NAME="line9"></A>
+<A NAME="line10"></A>datatype <A HREF="#mode-typ">mode</A> = 
+<A NAME="line11"></A>    Color of color
+<A NAME="line12"></A>  | Transparent
+<A NAME="line13"></A>  | Brushed of image
+<A NAME="line14"></A>  | Styled of style vector
+<A NAME="line15"></A>  | StyledBrushed of bool vector * image
+<A NAME="line16"></A>  | Tiled of image
+<A NAME="line17"></A>
+<A NAME="line18"></A>datatype <A HREF="#font-typ">font</A> = 
+<A NAME="line19"></A>    Tiny 
+<A NAME="line20"></A>  | Small
+<A NAME="line21"></A>  | MediumBold
+<A NAME="line22"></A>  | Large 
+<A NAME="line23"></A>  | Giant
+<A NAME="line24"></A>
+<A NAME="line25"></A>type <A HREF="#rgb-typ">rgb</A> = int * int * int           (* RGB color components, 0..255   *)
+<A NAME="line26"></A>type <A HREF="#xy-typ">xy</A>  = int * int                 (* points (x, y) and sizes (w, h) *)
+<A NAME="line27"></A>
+<A NAME="line28"></A>val <A HREF="#image-val">image</A>     : xy -&gt; rgb -&gt; image
+<A NAME="line29"></A>val <A HREF="#fromPng-val">fromPng</A>   : string -&gt; image
+<A NAME="line30"></A>val <A HREF="#toPng-val">toPng</A>     : image -&gt; string -&gt; unit
+<A NAME="line31"></A>val <A HREF="#stdoutPng-val">stdoutPng</A> : image -&gt; unit 
+<A NAME="line32"></A>val <A HREF="#size-val">size</A>      : image -&gt; xy
+<A NAME="line33"></A>
+<A NAME="line34"></A>val <A HREF="#color-val">color</A>          : image -&gt; rgb -&gt; color
+<A NAME="line35"></A>val <A HREF="#rgb-val">rgb</A>            : image -&gt; color -&gt; rgb
+<A NAME="line36"></A>val <A HREF="#htmlcolors-val">htmlcolors</A>     : image -&gt; { aqua : color, black : color, blue : color,
+<A NAME="line37"></A>                                fuchsia : color, gray : color, 
+<A NAME="line38"></A>                                green : color, lime : color, maroon : color,
+<A NAME="line39"></A>                                navy : color, olive : color, purple : color,
+<A NAME="line40"></A>                                red : color, silver : color, teal : color,
+<A NAME="line41"></A>                                white : color, yellow : color }
+<A NAME="line42"></A>val <A HREF="#getTransparent-val">getTransparent</A> : image -&gt; color option 
+<A NAME="line43"></A>val <A HREF="#setTransparent-val">setTransparent</A> : image -&gt; color -&gt; unit
+<A NAME="line44"></A>val <A HREF="#noTransparent-val">noTransparent</A>  : image -&gt; unit 
+<A NAME="line45"></A>
+<A NAME="line46"></A>val <A HREF="#drawPixel-val">drawPixel</A>   : image -&gt; mode -&gt; xy -&gt; unit
+<A NAME="line47"></A>val <A HREF="#drawLine-val">drawLine</A>    : image -&gt; mode -&gt; xy * xy -&gt; unit
+<A NAME="line48"></A>val <A HREF="#drawRect-val">drawRect</A>    : image -&gt; mode -&gt; xy * xy -&gt; unit
+<A NAME="line49"></A>val <A HREF="#fillRect-val">fillRect</A>    : image -&gt; mode -&gt; xy * xy -&gt; unit
+<A NAME="line50"></A>val <A HREF="#drawPolygon-val">drawPolygon</A> : image -&gt; mode -&gt; xy vector -&gt; unit
+<A NAME="line51"></A>val <A HREF="#fillPolygon-val">fillPolygon</A> : image -&gt; mode -&gt; xy vector -&gt; unit
+<A NAME="line52"></A>val <A HREF="#drawArc-val">drawArc</A>     : image -&gt; mode -&gt; { c : xy, wh : xy, from : int, to : int }
+<A NAME="line53"></A>                  -&gt; unit
+<A NAME="line54"></A>val <A HREF="#fill-val">fill</A>        : image -&gt; mode -&gt; xy -&gt; unit
+<A NAME="line55"></A>val <A HREF="#fillBorder-val">fillBorder</A>  : image -&gt; mode -&gt; xy -&gt; color -&gt; unit
+<A NAME="line56"></A> 
+<A NAME="line57"></A>val <A HREF="#copy-val">copy</A>        : { src : image, srcxy : xy, srcwh : xy,
+<A NAME="line58"></A>                    dst : image, dstxy : xy } -&gt; unit
+<A NAME="line59"></A>val <A HREF="#copyResize-val">copyResize</A>  : { src : image, srcxy : xy, srcwh : xy,
+<A NAME="line60"></A>                    dst : image, dstxy : xy, dstwh : xy } -&gt; unit
+<A NAME="line61"></A>
+<A NAME="line62"></A>val <A HREF="#char-val">char</A>        : image -&gt; color -&gt; font -&gt; xy -&gt; char -&gt; unit
+<A NAME="line63"></A>val <A HREF="#charUp-val">charUp</A>      : image -&gt; color -&gt; font -&gt; xy -&gt; char -&gt; unit
+<A NAME="line64"></A>val <A HREF="#string-val">string</A>      : image -&gt; color -&gt; font -&gt; xy -&gt; string -&gt; unit
+<A NAME="line65"></A>val <A HREF="#stringUp-val">stringUp</A>    : image -&gt; color -&gt; font -&gt; xy -&gt; string -&gt; unit
+<A NAME="line66"></A>val <A HREF="#charsize-val">charsize</A>    : font -&gt; xy
+<A NAME="line67"></A>
+<A NAME="line68"></A>(* 
+<A NAME="line69"></A>   This is an interface to version 1.7.3 of Thomas Boutell's gd image
+<A NAME="line70"></A>   package for creating PNG images.
+<A NAME="line71"></A>
+   [<A NAME="image-typ"><B>image</B></A>] is the type of images being drawn.  They can be created
+   from scratch, imported from PNG files, and exported to PNG files.
+
+   All functions correctly clip to the actual size of the image.
+   
+   [<A NAME="color-typ"><B>color</B></A>] is the type of colors.  Currently there can be at most 256
+   different colors in an image.
+
+   [<A NAME="style-typ"><B>style</B></A>] is the type of drawing styles.  A style is either a color,
+   or transparent.
+
+   [<A NAME="mode-typ"><B>mode</B></A>] is the type of drawing modes for line drawing and filling.  
+   It may be one of
+        Color c         where c is a color
+        Transparent
+        Brushed img     for line drawing using the given image as brush
+        Styled stys     for line drawing, cyclically using the styles 
+                        in the given vector to create a dashed line
+        StyledBrushed (vis, img) 
+                        for line drawing, using the given image as a brush,
+                        cyclically switching it on and off according to the 
+                        given bool vector
+        Tiled img       for filling, using the given image as a tile
+
+   [<A NAME="font-typ"><B>font</B></A>] is the type of fonts: Tiny, Small, MediumBold, Large, Giant
+
+   [<A NAME="rgb-typ"><B>rgb</B></A>] is the type of (r, g, b) triples, where the components
+   indicate color intensity as an integer value in the range 0..255.
+
+   [<A NAME="xy-typ"><B>xy</B></A>] is the type of pairs, used for (x, y) coordinates and to
+   indicate dimensions (width, height).  The origin (0, 0) is the
+   upper left-hand corner of the image.  The x coordinates increase to
+   the right; the y coordinates increase downwards.
+
+   [<A NAME="image-val"><B>image</B></A> (w, h) rgb] creates a new empty image with size (w, h) and
+   the background color rgb.  Raises Fail if the image cannot be
+   created.
+
+   [<A NAME="fromPng-val"><B>fromPng</B></A> filename] reads an image from the given PNG file.  Raises
+   Fail if the file does not exist or does not contain a PNG image.
+
+   [<A NAME="size-val"><B>size</B></A> img] returns (w, h) where w is the width and h the height of
+   img.
+
+   [<A NAME="toPng-val"><B>toPng</B></A> img filename] write the image to the given file in PNG
+   format.
+
+   [<A NAME="stdoutPng-val"><B>stdoutPng</B></A> img] writes the image to standard output in PNG format,
+   preceded by the HTTP header "Content-type: image/png\n\n".  Useful
+   in CGI scripts.
+
+   [<A NAME="color-val"><B>color</B></A> img rgb] returns the color code corresponding to rgb in the
+   color table of img.  Reuses the color code if it has already been
+   allocated; otherwise allocates the color if possible; otherwise
+   returns an approximation to the color rgb.
+
+   [<A NAME="htmlcolors-val"><B>htmlcolors</B></A> im] returns a record containing the 16 standard HTML
+   colors: aqua, black, blue, fuchsia, gray, green, lime, maroon,
+   navy, olive, purple, red, silver, teal, white, yellow.  This call
+   will allocate all these colors in the color table of the image,
+   even if you do not use all of them.
+
+   [<A NAME="rgb-val"><B>rgb</B></A> img color] returns (r, g, b) where r, g, b are the component
+   intensities of the given color in the color table of img.
+
+   [<A NAME="getTransparent-val"><B>getTransparent</B></A> img] returns SOME c where c is the `transparent'
+   color of the image, if any; otherwise returns NONE.
+
+   [<A NAME="setTransparent-val"><B>setTransparent</B></A> img col] makes the given color transparent in the
+   image.
+
+   [<A NAME="noTransparent-val"><B>noTransparent</B></A> img] makes all colors non-transparent in the image.
+   This is useful for images that are to be used as tiles for filling.
+   Such images are not allowed to have a transparent color.
+
+   [<A NAME="drawPixel-val"><B>drawPixel</B></A> img mode xy] draws the pixel in img at xy using the
+   given mode.
+
+   [<A NAME="drawLine-val"><B>drawLine</B></A> img mode (xy1, xy2)] draws a line in img from xy1 to xy2
+   using the given mode.
+
+   [<A NAME="drawRect-val"><B>drawRect</B></A> img mode (xy1, xy2)] draws a rectangle in img with
+   opposing corners xy1 and xy2 using the given mode.
+
+   [<A NAME="fillRect-val"><B>fillRect</B></A> img mode (xy1, xy2)] draws a filled rectangle in img with
+   opposing corners xy1 and xy2 using the given mode.
+
+   [<A NAME="drawPolygon-val"><B>drawPolygon</B></A> img mode xys] draws a polygon in img with corners as
+   given by the vector xys of coordinates using the given mode.
+
+   [<A NAME="fillPolygon-val"><B>fillPolygon</B></A> img mode xys] draws a filled polygon in img with
+   corners as given by the vector xys of coordinates using the given
+   mode.
+
+   [<A NAME="drawArc-val"><B>drawArc</B></A> img mode { c, wh, from, to }] draw part of an ellipsis arc
+   in img, with center c, width and height wh, using the given `from'
+   and `to' angles, given in degrees (0..360).
+
+   [<A NAME="fill-val"><B>fill</B></A> img mode xy] fills the region in img around xy which has the
+   same color as the point at img, using the given mode.
+
+   [<A NAME="fillBorder-val"><B>fillBorder</B></A> img mode xy col] fills the region in img around xy
+   which is delimited by the color col, using the given mode.
+ 
+   [<A NAME="copy-val"><B>copy</B></A> { src, srcxy, srcwh, dst, dstxy }] copies part of the image
+   src into the image dst, without rescaling.  More precisely, copies
+   the subimage of src whose upper left-hand corner is srcxy and whose
+   size is srcwh, into the subimage of dst whose upper left-hand
+   corner is dstxy.  The images src and dst may be the same, but if
+   the subimages overlap, then the result is unpredictable.  
+
+   [<A NAME="copyResize-val"><B>copyResize</B></A> { src, srcxy, srcwh, dst, dstxy, dstwh }] copies part
+   of the image src into the image dst, rescaling to the given size
+   dstwh of the destination subimage.  Otherwise works as copy.
+
+   [<A NAME="char-val"><B>char</B></A> img col font xy ch] draws the character ch left-right (to be
+   read from south) in img at xy using the given color.
+
+   [<A NAME="charUp-val"><B>charUp</B></A> img col font xy ch] draws the character ch bottom-up (to be
+   read from east) in img at xy using the given color.
+
+   [<A NAME="string-val"><B>string</B></A> img col font xy s] draws the string s left-right (to be
+   read from south) in img at xy using the given color.
+
+   [<A NAME="stringUp-val"><B>stringUp</B></A> img col font xy s] draws the string s bottom-up (to be
+   read from east) in img at xy using the given color.
+
+   [<A NAME="charsize-val"><B>charsize</B></A> font] returns (w, h) where w is the width and h the
+   height, in pixels, of each character in the given font.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

@@ -1,0 +1,141 @@
+<HTML><HEAD><TITLE>Structure List</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure List</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* List -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>datatype <A HREF="#list-typ">list</A> = datatype list
+<A NAME="line3"></A>
+<A NAME="line4"></A>exception Empty
+<A NAME="line5"></A>
+<A NAME="line6"></A>val <A HREF="#null-val">null</A>       : 'a list -&gt; bool
+<A NAME="line7"></A>val <A HREF="#hd-val">hd</A>         : 'a list -&gt; 'a                          (* Empty     *)
+<A NAME="line8"></A>val <A HREF="#tl-val">tl</A>         : 'a list -&gt; 'a list                     (* Empty     *)
+<A NAME="line9"></A>val <A HREF="#last-val">last</A>       : 'a list -&gt; 'a                          (* Empty     *)
+<A NAME="line10"></A>
+<A NAME="line11"></A>val <A HREF="#nth-val">nth</A>        : 'a list * int -&gt; 'a                    (* Subscript *)
+<A NAME="line12"></A>val <A HREF="#take-val">take</A>       : 'a list * int -&gt; 'a list               (* Subscript *)
+<A NAME="line13"></A>val <A HREF="#drop-val">drop</A>       : 'a list * int -&gt; 'a list               (* Subscript *)
+<A NAME="line14"></A>
+<A NAME="line15"></A>val <A HREF="#length-val">length</A>     : 'a list -&gt; int 
+<A NAME="line16"></A>
+<A NAME="line17"></A>val <A HREF="#rev-val">rev</A>        : 'a list -&gt; 'a list 
+<A NAME="line18"></A>
+<A NAME="line19"></A>val @          : 'a list * 'a list -&gt; 'a list
+<A NAME="line20"></A>val <A HREF="#concat-val">concat</A>     : 'a list list -&gt; 'a list
+<A NAME="line21"></A>val <A HREF="#revAppend-val">revAppend</A>  : 'a list * 'a list -&gt; 'a list
+<A NAME="line22"></A>
+<A NAME="line23"></A>val <A HREF="#app-val">app</A>        : ('a -&gt; unit) -&gt; 'a list -&gt; unit
+<A NAME="line24"></A>val <A HREF="#map-val">map</A>        : ('a -&gt; 'b) -&gt; 'a list -&gt; 'b list
+<A NAME="line25"></A>val <A HREF="#mapPartial-val">mapPartial</A> : ('a -&gt; 'b option) -&gt; 'a list -&gt; 'b list
+<A NAME="line26"></A>
+<A NAME="line27"></A>val <A HREF="#find-val">find</A>       : ('a -&gt; bool) -&gt; 'a list -&gt; 'a option
+<A NAME="line28"></A>val <A HREF="#filter-val">filter</A>     : ('a -&gt; bool) -&gt; 'a list -&gt; 'a list
+<A NAME="line29"></A>val <A HREF="#partition-val">partition</A>  : ('a -&gt; bool ) -&gt; 'a list -&gt; ('a list * 'a list)
+<A NAME="line30"></A>
+<A NAME="line31"></A>val <A HREF="#foldr-val">foldr</A>      : ('a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a list -&gt; 'b
+<A NAME="line32"></A>val <A HREF="#foldl-val">foldl</A>      : ('a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a list -&gt; 'b
+<A NAME="line33"></A>
+<A NAME="line34"></A>val <A HREF="#exists-val">exists</A>     : ('a -&gt; bool) -&gt; 'a list -&gt; bool
+<A NAME="line35"></A>val <A HREF="#all-val">all</A>        : ('a -&gt; bool) -&gt; 'a list -&gt; bool
+<A NAME="line36"></A>
+<A NAME="line37"></A>val <A HREF="#collate-val">collate</A>    : ('a * 'a -&gt; order) -&gt; 'a list * 'a list -&gt; order
+<A NAME="line38"></A>
+<A NAME="line39"></A>val <A HREF="#tabulate-val">tabulate</A>   : int * (int -&gt; 'a) -&gt; 'a list           (* Size      *)
+<A NAME="line40"></A>
+<A NAME="line41"></A>val <A HREF="#getItem-val">getItem</A>    : 'a list -&gt; ('a * 'a list) option
+<A NAME="line42"></A>
+<A NAME="line43"></A>(* 
+   ['a <A NAME="list-typ"><B>list</B></A>] is the type of lists of elements of type 'a.
+
+   [<A NAME="null-val"><B>null</B></A> xs] is true iff xs is nil.
+
+   [<A NAME="hd-val"><B>hd</B></A> xs] returns the first element of xs.  Raises Empty if xs is nil.
+
+   [<A NAME="tl-val"><B>tl</B></A> xs] returns all but the first element of xs.  
+   Raises Empty if xs is nil.
+
+   [<A NAME="last-val"><B>last</B></A> xs] returns the last element of xs.  Raises Empty if xs is nil.
+
+   [<A NAME="nth-val"><B>nth</B></A>(xs, i)] returns the i'th element of xs, counting from 0.
+   Raises Subscript if i&lt;0 or i&gt;=length xs.
+
+   [<A NAME="take-val"><B>take</B></A>(xs, i)] returns the first i elements of xs.  Raises Subscript
+   if i&lt;0 or i&gt;length xs.
+
+   [<A NAME="drop-val"><B>drop</B></A>(xs, i)] returns what is left after dropping the first i
+   elements of xs.  Raises Subscript if i&lt;0 or i&gt;length xs.  
+   It holds that take(xs, i) @ drop(xs, i) = xs when 0 &lt;= i &lt;= length xs.
+
+   [<A NAME="length-val"><B>length</B></A> xs] returns the number of elements in xs.
+
+   [<A NAME="rev-val"><B>rev</B></A> xs] returns the list of xs's elements, reversed.
+
+   [xs @ ys] returns the list which is the concatenation of xs and ys.
+
+   [<A NAME="concat-val"><B>concat</B></A> xss] returns the list which is the concatenation of all the
+   lists in xss.
+
+   [<A NAME="revAppend-val"><B>revAppend</B></A>(xs, ys)] is equivalent to rev xs @ ys, but more efficient. 
+
+   [<A NAME="app-val"><B>app</B></A> f xs] applies f to the elements of xs, from left to right.
+
+   [<A NAME="map-val"><B>map</B></A> f xs] applies f to each element x of xs, from left to
+   right, and returns the list of f's results.
+ 
+   [<A NAME="mapPartial-val"><B>mapPartial</B></A> f xs] applies f to each element x of xs, from left
+   to right, and returns the list of those y's for which f(x)
+   evaluated to SOME y.
+
+   [<A NAME="find-val"><B>find</B></A> p xs] applies p to each element x of xs, from left to right,
+   until p(x) evaluates to true; returns SOME x if such an x exists,
+   otherwise NONE.
+
+   [<A NAME="filter-val"><B>filter</B></A> p xs] applies p to each element x of xs, from left to
+   right, and returns the sublist of those x for which p(x) evaluated
+   to true.
+
+   [<A NAME="partition-val"><B>partition</B></A> p xs] applies p to each element x of xs, from left
+   to right, and returns a pair (pos, neg) where pos is the sublist
+   of those x for which p(x) evaluated to true, and neg is the sublist of
+   those for which p(x) evaluated to false.
+
+   [<A NAME="foldr-val"><B>foldr</B></A> op% e xs] evaluates x1 % (x2 % ( ... % (x(n-1) % (xn % e)) ... ))
+   where xs = [x1, x2, ..., x(n-1), xn], and % is taken to be infixed.
+
+   [<A NAME="foldl-val"><B>foldl</B></A> op% e xs] evaluates xn % (x(n-1) % ( ... % (x2 % (x1 % e))))
+   where xs = [x1, x2, ..., x(n-1), xn], and % is taken to be infixed.
+
+   [<A NAME="exists-val"><B>exists</B></A> p xs] applies p to each element x of xs, from left to
+   right until p(x) evaluates to true; returns true if such an x
+   exists, otherwise false.
+
+   [<A NAME="all-val"><B>all</B></A> p xs] applies p to each element x of xs, from left to
+   right until p(x) evaluates to false; returns false if such an x
+   exists, otherwise true.
+
+   [<A NAME="collate-val"><B>collate</B></A> cmp (xs, ys)] returns LESS, EQUAL or GREATER according as
+   xs precedes, equals or follows ys in the lexicographic ordering on
+   lists induced by the ordering cmp on elements.
+
+   [<A NAME="tabulate-val"><B>tabulate</B></A>(n, f)] returns a list of length n whose elements are
+   f(0), f(1), ..., f(n-1), created from left to right.  Raises Size
+   if n&lt;0.
+
+   [<A NAME="getItem-val"><B>getItem</B></A> xs] attempts to extract an element from the list xs.  It
+   returns NONE if xs is empty, and returns SOME (x, xr) if xs=x::xr.
+   This can be used for scanning booleans, integers, reals, and so on
+   from a list of characters.  For instance, to scan a decimal integer
+   from a list cs of characters, compute 
+        Int.scan StringCvt.DEC List.getItem cs
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

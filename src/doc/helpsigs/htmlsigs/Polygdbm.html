@@ -1,0 +1,118 @@
+<HTML><HEAD><TITLE>Structure Polygdbm</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Polygdbm</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Polygdbm -- GNU gdbm persistent polymorphic hashtables -- requires Dynlib *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>type ('key, 'data) <A HREF="#table-typ">table</A> 
+<A NAME="line3"></A>
+<A NAME="line4"></A>exception NotFound
+<A NAME="line5"></A>exception AlreadyThere
+<A NAME="line6"></A>exception NotWriter
+<A NAME="line7"></A>exception Closed
+<A NAME="line8"></A>exception GdbmError of string
+<A NAME="line9"></A>
+<A NAME="line10"></A>val <A HREF="#withtable-val">withtable</A>  : string * Gdbm.openmode -&gt; (('key, 'data) table -&gt; 'a) -&gt; 'a
+<A NAME="line11"></A>val <A HREF="#add-val">add</A>        : ('key, 'data) table -&gt; 'key * 'data -&gt; unit 
+<A NAME="line12"></A>val <A HREF="#insert-val">insert</A>     : ('key, 'data) table -&gt; 'key * 'data -&gt; unit
+<A NAME="line13"></A>val <A HREF="#find-val">find</A>       : ('key, 'data) table -&gt; 'key -&gt; 'data
+<A NAME="line14"></A>val <A HREF="#peek-val">peek</A>       : ('key, 'data) table -&gt; 'key -&gt; 'data option
+<A NAME="line15"></A>val <A HREF="#hasKey-val">hasKey</A>     : ('key, 'data) table -&gt; 'key -&gt; bool
+<A NAME="line16"></A>val <A HREF="#remove-val">remove</A>     : ('key, 'data) table -&gt; 'key -&gt; unit
+<A NAME="line17"></A>val <A HREF="#listKeys-val">listKeys</A>   : ('key, 'data) table -&gt; 'key list
+<A NAME="line18"></A>val <A HREF="#numItems-val">numItems</A>   : ('key, 'data) table -&gt; int
+<A NAME="line19"></A>val <A HREF="#listItems-val">listItems</A>  : ('key, 'data) table -&gt; ('key * 'data) list
+<A NAME="line20"></A>val <A HREF="#app-val">app</A>        : ('key * 'data -&gt; unit) -&gt; ('key, 'data) table -&gt; unit
+<A NAME="line21"></A>val <A HREF="#map-val">map</A>        : ('key * 'data -&gt; 'a) -&gt; ('key, 'data) table -&gt; 'a list
+<A NAME="line22"></A>val <A HREF="#fold-val">fold</A>       : ('key * 'data * 'a -&gt; 'a) -&gt; 'a -&gt; ('key, 'data) table -&gt; 'a
+<A NAME="line23"></A>val <A HREF="#fastwrite-val">fastwrite</A>  : bool ref    
+<A NAME="line24"></A>val <A HREF="#reorganize-val">reorganize</A> : ('key, 'data) table -&gt; unit
+<A NAME="line25"></A>
+<A NAME="line26"></A>(* 
+   [('key, 'data) <A NAME="table-typ"><B>table</B></A>] is the type of an opened table with keys of
+   type 'key and associated values of type 'data.  The actual values
+   of type 'key and 'data cannot contain function closures or abstract
+   values.  Values involving references (even circular values) can be
+   stored, but the identity of references is preserved only with every
+   single key or value stored, not across several different values.
+
+   The Polygdbm table files of are not portable across platforms,
+   because word size and endianness affects the lay-out of values.
+
+   A value of type table can be used only in the argument f to the
+   withtable function.  This makes sure that the table is closed after
+   use.
+
+   [<A NAME="withtable-val"><B>withtable</B></A> (nam, mod) f] first opens the table db in file nam with
+   mode mod, then applies f to db, then closes db.  Makes sure to
+   close db even if an exception is raised during the evaluation of
+   f(db).  Raises GdbmError with an informative message in case the
+   table cannot be opened.  E.g. the table cannot be opened for
+   reading if already opened for writing, and cannot be opened for
+   writing if already opened for reading.
+
+   [<A NAME="add-val"><B>add</B></A> db (k,v)] adds the pair (k, v) to db.  Raises AlreadyThere if
+   there is a pair (k, _) in db already.  Raises NotWriter if db is
+   not opened in write mode.
+
+   [<A NAME="insert-val"><B>insert</B></A> db (k, v)] adds the pair (k, v) to db, replacing any pair
+   (k, _) at k if present.  Raises NotWriter if db is not opened in
+   write mode.
+
+   [<A NAME="find-val"><B>find</B></A>(db, k)] returns v if the pair (k, v) is in db; otherwise
+   raises NotFound.
+
+   [<A NAME="peek-val"><B>peek</B></A> db k] returns SOME v if the pair (k, v) is in db; otherwise
+   returns NONE.
+
+   [<A NAME="hasKey-val"><B>hasKey</B></A>(db, k)] returns true if there is a pair (k, _) in db;
+   otherwise returns false.
+
+   [<A NAME="remove-val"><B>remove</B></A> db k] deletes the pair (k, _) from the table if present;
+   otherwise raises NotFound.  Raises NotWriter if db is not opened in
+   write mode.
+
+   [<A NAME="listKeys-val"><B>listKeys</B></A> db] returns a list of all keys in db in an unspecified
+   order.  
+
+   [<A NAME="numItems-val"><B>numItems</B></A> db] is the number of (key, value) pairs in db.
+   Equivalent to length(listKeys db).
+
+   [<A NAME="listItems-val"><B>listItems</B></A> db] returns a list of all (key, value) pairs in db in some 
+   order.  Equivalent to 
+        List.map (fn key =&gt; (key, find(db,key))) (listKeys db)
+
+   [<A NAME="app-val"><B>app</B></A> f db] is equivalent to List.app f (listItems db), provided the
+   function f does not change the set of keys in the table.
+   Otherwise the effect is unpredictable.
+
+   [<A NAME="map-val"><B>map</B></A> f db] is equivalent to List.map f (listItems db), provided the
+   function f does not change the set of keys in the table.
+   Otherwise the result and effect are unpredictable.
+   
+   [<A NAME="fold-val"><B>fold</B></A> f a db] is equivalent to 
+        List.foldr (fn ((k, v), r) =&gt; f(k, v, r)) a (listItems db)
+   provided the function f does not change the set of keys in the 
+   table. Otherwise the result and effect are unpredictable.
+
+   [<A NAME="fastwrite-val"><B>fastwrite</B></A>] can be set to speed up writes to a table.  By default,
+   !fastwrite is false and every write to a table will be followed by
+   file system synchronization.  This is safe, but slow if you perform
+   thousands of writes.  However, if !fastwrite is true when calling
+   withtable, then writes may not be followed by synchronization,
+   which may speed up writes considerably.  In any case, the file
+   system is synchronized before withtable returns.
+
+   [<A NAME="reorganize-val"><B>reorganize</B></A> db] has no visible effect, but may be called after a
+   lot of deletions to shrink the size of the table file.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

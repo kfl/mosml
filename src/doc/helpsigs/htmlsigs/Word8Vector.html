@@ -1,0 +1,55 @@
+<HTML><HEAD><TITLE>Structure Word8Vector</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Word8Vector</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Word8Vector -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>eqtype <A HREF="#vector-typ">vector</A>
+<A NAME="line3"></A>type elem = Word8.word
+<A NAME="line4"></A>
+<A NAME="line5"></A>val maxLen   : int
+<A NAME="line6"></A>
+<A NAME="line7"></A>val fromList : elem list -&gt; vector
+<A NAME="line8"></A>val tabulate : int * (int -&gt; elem) -&gt; vector
+<A NAME="line9"></A>
+<A NAME="line10"></A>val length   : vector -&gt; int
+<A NAME="line11"></A>val sub      : vector * int -&gt; elem
+<A NAME="line12"></A>val update   : vector * int * elem -&gt; vector
+<A NAME="line13"></A>val concat   : vector list -&gt; vector
+<A NAME="line14"></A>
+<A NAME="line15"></A>val find     : (elem -&gt; bool) -&gt; vector -&gt; elem option
+<A NAME="line16"></A>val exists   : (elem -&gt; bool) -&gt; vector -&gt; bool
+<A NAME="line17"></A>val all      : (elem -&gt; bool) -&gt; vector -&gt; bool
+<A NAME="line18"></A>
+<A NAME="line19"></A>val app      : (elem -&gt; unit) -&gt; vector -&gt; unit
+<A NAME="line20"></A>val map      : (elem -&gt; elem) -&gt; vector -&gt; vector
+<A NAME="line21"></A>val foldl    : (elem * 'b -&gt; 'b) -&gt; 'b -&gt; vector -&gt; 'b
+<A NAME="line22"></A>val foldr    : (elem * 'b -&gt; 'b) -&gt; 'b -&gt; vector -&gt; 'b
+<A NAME="line23"></A>
+<A NAME="line24"></A>val findi    : (int * elem -&gt; bool) -&gt; vector -&gt; (int * elem) option
+<A NAME="line25"></A>val appi     : (int * elem -&gt; unit) -&gt; vector -&gt; unit
+<A NAME="line26"></A>val mapi     : (int * elem -&gt; elem) -&gt; vector -&gt; vector
+<A NAME="line27"></A>val foldli   : (int * elem * 'b -&gt; 'b) -&gt; 'b -&gt; vector -&gt; 'b
+<A NAME="line28"></A>val foldri   : (int * elem * 'b -&gt; 'b) -&gt; 'b -&gt; vector -&gt; 'b
+<A NAME="line29"></A>
+<A NAME="line30"></A>val collate  : (elem * elem -&gt; order) -&gt; vector * vector -&gt; order
+<A NAME="line31"></A>
+<A NAME="line32"></A>(* 
+   [<A NAME="vector-typ"><B>vector</B></A>] is the type of one-dimensional, immutable, zero-based
+   constant-time-access vectors with elements of type Word8.word, that
+   is, 8-bit words.  Type vector admits equality, and vectors v1 and
+   v2 are equal if they have the same length and their elements are
+   equal.
+
+   All operations are as for Vector.vector.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

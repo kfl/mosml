@@ -1,0 +1,42 @@
+<HTML><HEAD><TITLE>Structure Bool</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Bool</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Bool -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>datatype <A HREF="#bool-typ">bool</A> = datatype bool
+<A NAME="line3"></A>
+<A NAME="line4"></A>val <A HREF="#not-val">not</A>        : bool -&gt; bool
+<A NAME="line5"></A>
+<A NAME="line6"></A>val <A HREF="#toString-val">toString</A>   : bool -&gt; string
+<A NAME="line7"></A>val <A HREF="#fromString-val">fromString</A> : string -&gt; bool option
+<A NAME="line8"></A>val <A HREF="#scan-val">scan</A>       : (char, 'a) StringCvt.reader -&gt; (bool, 'a) StringCvt.reader
+<A NAME="line9"></A>
+<A NAME="line10"></A>(* 
+   [<A NAME="bool-typ"><B>bool</B></A>] is the type of Boolean (logical) values: true and false.
+
+   [<A NAME="not-val"><B>not</B></A> b] is the logical negation of b.
+
+   [<A NAME="toString-val"><B>toString</B></A> b] returns the string "false" or "true" according as b is
+   false or true.
+
+   [<A NAME="fromString-val"><B>fromString</B></A> s] scans a boolean b from the string s, after possible
+   initial whitespace (blanks, tabs, newlines).  Returns (SOME b) if s
+   has a prefix which is either "false" or "true"; the value b is the
+   corresponding truth value; otherwise NONE is returned.
+
+   [<A NAME="scan-val"><B>scan</B></A> getc src] scans a boolean b from the stream src, using the
+   stream accessor getc.  In case of success, returns SOME(b, rst)
+   where b is the scanned boolean value and rst is the remainder of
+   the stream; otherwise returns NONE.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

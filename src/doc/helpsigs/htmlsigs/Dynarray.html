@@ -1,0 +1,57 @@
+<HTML><HEAD><TITLE>Structure Dynarray</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Dynarray</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Dynarray -- polymorphic dynamic arrays a la SML/NJ library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>type 'a <A HREF="#array-typ">array</A>
+<A NAME="line3"></A>
+<A NAME="line4"></A>val <A HREF="#array-val">array</A>    : int * '_a -&gt; '_a array
+<A NAME="line5"></A>val <A HREF="#subArray-val">subArray</A> : '_a array * int * int -&gt; '_a array
+<A NAME="line6"></A>val <A HREF="#fromList-val">fromList</A> : '_a list * '_a -&gt; '_a array
+<A NAME="line7"></A>val <A HREF="#tabulate-val">tabulate</A> : int * (int -&gt; '_a) * '_a -&gt; '_a array
+<A NAME="line8"></A>val <A HREF="#sub-val">sub</A>      : 'a array * int -&gt; 'a
+<A NAME="line9"></A>val <A HREF="#update-val">update</A>   : '_a array * int * '_a  -&gt; unit
+<A NAME="line10"></A>val <A HREF="#default-val">default</A>  : 'a array -&gt; 'a
+<A NAME="line11"></A>val <A HREF="#bound-val">bound</A>    : 'a array -&gt; int
+<A NAME="line12"></A>
+<A NAME="line13"></A>(* 
+   ['ty <A NAME="array-typ"><B>array</B></A>] is the type of one-dimensional, mutable, zero-based
+   unbounded arrays with elements of type 'ty.  Type 'ty array does
+   not admit equality.
+
+   [<A NAME="array-val"><B>array</B></A>(n, d)] returns a dynamic array, all of whose elements are
+   initialized to the default d.  The parameter n is used as a hint of the 
+   upper bound on non-default elements.  Raises Size if n &lt; 0.
+
+   [<A NAME="subArray-val"><B>subArray</B></A>(a, m, n)] returns a new array with the same default
+   value as a, and whose values in the range [0,n-m] equal the
+   values in a in the range [m,n].  Raises the exception Size if n &lt; m.
+
+   [<A NAME="fromList-val"><B>fromList</B></A> (xs, d)] returns an array whose first elements are
+   those of [xs], and the rest are the default d.
+
+   [<A NAME="tabulate-val"><B>tabulate</B></A>(n, f, d)] returns a new array whose first n elements 
+   are f 0, f 1, ..., f (n-1), created from left to right, and whose 
+   remaining elements are the default d.  Raises Size if n &lt; 0.
+
+   [<A NAME="sub-val"><B>sub</B></A>(a, i)] returns the i'th element of a, counting from 0.
+   Raises Subscript if i &lt; 0.
+
+   [<A NAME="update-val"><B>update</B></A>(a, i, x)] destructively replaces the i'th element of a by x.
+   Raises Subscript if i &lt; 0.
+
+   [<A NAME="default-val"><B>default</B></A> a] returns the default value of the array a.
+
+   [<A NAME="bound-val"><B>bound</B></A> a] returns an upper bound on the indices of non-default values.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

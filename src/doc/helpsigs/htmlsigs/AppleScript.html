@@ -1,0 +1,57 @@
+<HTML><HEAD><TITLE>Structure AppleScript</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure AppleScript</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* AppleScript -- Apple MacOS scripting *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>type OSAID
+<A NAME="line3"></A>type OSAerr = int
+<A NAME="line4"></A>
+<A NAME="line5"></A>exception AppleScriptErr of OSAerr * string
+<A NAME="line6"></A>
+<A NAME="line7"></A>val <A HREF="#as_compile-val">as_compile</A>    : string -&gt; OSAID
+<A NAME="line8"></A>val <A HREF="#as_dispose-val">as_dispose</A>    : OSAID -&gt; unit
+<A NAME="line9"></A>val <A HREF="#as_run_script-val">as_run_script</A> : OSAID -&gt; string
+<A NAME="line10"></A>val <A HREF="#as_run_text-val">as_run_text</A>   : string -&gt; string
+<A NAME="line11"></A>
+<A NAME="line12"></A>(*
+<A NAME="line13"></A>   These Mac specific functions provide the capability to compile 
+<A NAME="line14"></A>   and run AppleScript programs.
+<A NAME="line15"></A>
+<A NAME="line16"></A>   The exception AppleScriptErr is raised in the event of an error.
+<A NAME="line17"></A>
+   [<A NAME="as_compile-val"><B>as_compile</B></A> str] compiles AppleScript source code text, returning
+   an abstract token of type OSAID. This token may be used to run
+   the script. The token may be used repeatedly until it is returned
+   with as_dispose or until mosml exits.
+
+   [<A NAME="as_dispose-val"><B>as_dispose</B></A> tok] disposes of the resources associated with the 
+   OSAID token so that they may be reused by the AppleScript system.
+   AppleScriptErr is raised upon any attemp to reuse a disposed token.
+
+   [<A NAME="as_run_script-val"><B>as_run_script</B></A> tok] runs the script associated with the token.
+   This typically involves AppleEvent communication with other 
+   programs running on the Mac, or networked Macs. The AppleScript
+   result is returned as a string.
+
+   [<A NAME="as_run_text-val"><B>as_run_text</B></A> str] compiles and runs the AppleScript source code text,
+   disposing all resources allocated in the process, and returns the
+   AppleScript result as a string.
+
+
+   References:
+
+   Inside Macintosh: Interapplication Communication, Chapter 10
+   AppleScript Language Guide English Edition,
+   available at http://applescript.apple.com/support.html
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

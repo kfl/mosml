@@ -1,0 +1,36 @@
+<HTML><HEAD><TITLE>Structure OS</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure OS</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* OS -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>signature OS = sig
+<A NAME="line3"></A>
+<A NAME="line4"></A>type syserror = syserror
+<A NAME="line5"></A>
+<A NAME="line6"></A>exception SysErr of string * syserror option
+<A NAME="line7"></A>
+<A NAME="line8"></A>val <A HREF="#errorMsg-val">errorMsg</A>      : syserror -&gt; string
+<A NAME="line9"></A>
+<A NAME="line10"></A>structure FileSys : FileSys
+<A NAME="line11"></A>structure Path    : Path
+<A NAME="line12"></A>structure Process : Process
+<A NAME="line13"></A>
+<A NAME="line14"></A>end
+<A NAME="line15"></A>
+<A NAME="line16"></A>(*  Various functions for interacting with the operating system.
+<A NAME="line17"></A>
+   [<A NAME="errorMsg-val"><B>errorMsg</B></A> err] returns a string explaining the error message system
+   error code err, as found in a SysErr exception.  The precise form
+   of the string depends on the operating system.  
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

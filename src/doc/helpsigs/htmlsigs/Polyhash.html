@@ -1,0 +1,112 @@
+<HTML><HEAD><TITLE>Structure Polyhash</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Polyhash</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Polyhash -- polymorphic hashtables as in the SML/NJ Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>type ('key, 'data) <A HREF="#hash_table-typ">hash_table</A>
+<A NAME="line3"></A>
+<A NAME="line4"></A>val <A HREF="#mkTable-val">mkTable</A>     : ('_key -&gt; int) * ('_key * '_key -&gt; bool) -&gt; int * exn 
+<A NAME="line5"></A>                  -&gt; ('_key, '_data) hash_table
+<A NAME="line6"></A>val <A HREF="#numItems-val">numItems</A>    : ('key, 'data) hash_table -&gt; int
+<A NAME="line7"></A>val <A HREF="#insert-val">insert</A>      : ('_key, '_data) hash_table -&gt; '_key * '_data -&gt; unit
+<A NAME="line8"></A>val <A HREF="#peekInsert-val">peekInsert</A>  : ('_key, '_data) hash_table -&gt; '_key * '_data 
+<A NAME="line9"></A>                  -&gt; '_data option
+<A NAME="line10"></A>val <A HREF="#find-val">find</A>        : ('key, 'data) hash_table -&gt; 'key -&gt; 'data
+<A NAME="line11"></A>val <A HREF="#peek-val">peek</A>        : ('key, 'data) hash_table -&gt; 'key -&gt; 'data option
+<A NAME="line12"></A>val <A HREF="#remove-val">remove</A>      : ('key, 'data) hash_table -&gt; 'key -&gt; 'data
+<A NAME="line13"></A>val <A HREF="#listItems-val">listItems</A>   : ('key, 'data) hash_table -&gt; ('key * 'data) list
+<A NAME="line14"></A>val <A HREF="#apply-val">apply</A>       : ('key * 'data -&gt; unit) -&gt; ('key, 'data) hash_table -&gt; unit
+<A NAME="line15"></A>val <A HREF="#map-val">map</A>         : ('_key * 'data -&gt; '_res) -&gt; ('_key, 'data) hash_table 
+<A NAME="line16"></A>                  -&gt; ('_key, '_res) hash_table
+<A NAME="line17"></A>val <A HREF="#filter-val">filter</A>      : ('key * 'data -&gt; bool) -&gt; ('key, 'data) hash_table -&gt; unit
+<A NAME="line18"></A>val <A HREF="#transform-val">transform</A>   : ('data -&gt; '_res) -&gt; ('_key, 'data) hash_table 
+<A NAME="line19"></A>                  -&gt; ('_key, '_res) hash_table
+<A NAME="line20"></A>val <A HREF="#copy-val">copy</A>        : ('_key, '_data) hash_table -&gt; ('_key, '_data) hash_table
+<A NAME="line21"></A>val <A HREF="#bucketSizes-val">bucketSizes</A> : ('key, 'data) hash_table -&gt; int list
+<A NAME="line22"></A>
+<A NAME="line23"></A>(* Polymorphic hash primitives from Caml Light *)
+<A NAME="line24"></A>
+<A NAME="line25"></A>val <A HREF="#hash-val">hash</A>        : 'key -&gt; int
+<A NAME="line26"></A>val <A HREF="#hash_param-val">hash_param</A>  : int -&gt; int -&gt; 'key -&gt; int
+<A NAME="line27"></A>val <A HREF="#mkPolyTable-val">mkPolyTable</A> : int * exn -&gt; (''_key, '_data) hash_table
+<A NAME="line28"></A>
+<A NAME="line29"></A>(* 
+   [('key, 'data) <A NAME="hash_table-typ"><B>hash_table</B></A>] is the type of hashtables with keys of type
+   'key and data values of type 'data.
+
+   [<A NAME="mkTable-val"><B>mkTable</B></A> (hashVal, sameKey) (sz, exc)] returns a new hashtable,
+   using hash function hashVal and equality predicate sameKey.  The sz
+   is a size hint, and exc is the exception raised by function find.
+   It must be the case that sameKey(k1, k2) implies hashVal(k1) =
+   hashVal(k2) for all k1,k2.
+
+   [<A NAME="numItems-val"><B>numItems</B></A> htbl] is the number of items in the hash table.
+
+   [<A NAME="insert-val"><B>insert</B></A> htbl (k, d)] inserts data d for key k.  If k already had an
+   item associated with it, then the old item is overwritten.
+
+   [<A NAME="find-val"><B>find</B></A> htbl k] returns d, where d is the data item associated with key k, 
+   or raises the exception (given at creation of htbl) if there is no such d.
+
+   [<A NAME="peek-val"><B>peek</B></A> htbl k] returns SOME d, where d is the data item associated with 
+   key k, or NONE if there is no such d.
+
+   [<A NAME="peekInsert-val"><B>peekInsert</B></A> htbl (k, d)] inserts data d for key k, if k is not
+   already in the table, returning NONE.  If k is already in the
+   table, and the associated data value is d', then returns SOME d'
+   and leaves the table unmodified.
+
+   [<A NAME="remove-val"><B>remove</B></A> htbl k] returns d, where d is the data item associated with key k, 
+   removing d from the table; or raises the exception if there is no such d.
+
+   [<A NAME="listItems-val"><B>listItems</B></A> htbl] returns a list of the (key, data) pairs in the hashtable.
+
+   [<A NAME="apply-val"><B>apply</B></A> f htbl] applies function f to all (key, data) pairs in the 
+   hashtable, in some order.
+
+   [<A NAME="map-val"><B>map</B></A> f htbl] returns a new hashtable, whose data items have been
+   obtained by applying f to the (key, data) pairs in htbl.  The new
+   tables have the same keys, hash function, equality predicate, and
+   exception, as htbl.
+
+   [<A NAME="filter-val"><B>filter</B></A> p htbl] deletes from htbl all data items which do not
+   satisfy predicate p.
+
+   [<A NAME="transform-val"><B>transform</B></A> f htbl] as map, but only the (old) data values are used
+   when computing the new data values.
+
+   [<A NAME="copy-val"><B>copy</B></A> htbl] returns a complete copy of htbl.
+
+   [<A NAME="bucketSizes-val"><B>bucketSizes</B></A> htbl] returns a list of the sizes of the buckets.
+   This is to allow users to gauge the quality of their hashing
+   function.  
+
+   [<A NAME="hash-val"><B>hash</B></A> k] returns the hash value of k, as a positive integer. If
+   k1=k2 then hash(k1) = hash(k2), so this function can be used when
+   creating hashtables.  The application hash(k) always terminates,
+   even on cyclic structures.  (From the Caml Light implementation).
+
+   [<A NAME="hash_param-val"><B>hash_param</B></A> n m k] computes a hash value for k with the same
+   properties as for hash. The parameters n and m give more precise
+   control over hashing.  Hashing performs a depth-first,
+   right-to-left traversal of the structure k, stopping after n
+   meaningful nodes were encountered, or m nodes, meaningful or not,
+   were encountered. Meaningful nodes are: integers, floating-point
+   numbers, strings, characters, booleans, references, and constant
+   constructors. 
+
+   [<A NAME="mkPolyTable-val"><B>mkPolyTable</B></A> (sz, exc)] creates a new hashtable using the
+   polymorphic hash function (hash) and ML equality (op =); the integer 
+   sz is a size hint and the exception exc is to be raised by find.  
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

@@ -1,0 +1,59 @@
+<HTML><HEAD><TITLE>Structure Word8Array</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Word8Array</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Word8Array -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>eqtype <A HREF="#array-typ">array</A>
+<A NAME="line3"></A>type elem   = Word8.word
+<A NAME="line4"></A>type vector = Word8Vector.vector
+<A NAME="line5"></A>
+<A NAME="line6"></A>val maxLen   : int
+<A NAME="line7"></A>
+<A NAME="line8"></A>val array    : int * elem -&gt; array
+<A NAME="line9"></A>val tabulate : int * (int -&gt; elem) -&gt; array
+<A NAME="line10"></A>val fromList : elem list -&gt; array
+<A NAME="line11"></A>
+<A NAME="line12"></A>val length   : array -&gt; int
+<A NAME="line13"></A>val sub      : array * int -&gt; elem
+<A NAME="line14"></A>val update   : array * int * elem -&gt; unit
+<A NAME="line15"></A>val vector   : array -&gt; vector
+<A NAME="line16"></A>
+<A NAME="line17"></A>val copy     : {src: array,  dst: array, di: int} -&gt; unit
+<A NAME="line18"></A>val copyVec  : {src: vector, dst: array, di: int} -&gt; unit
+<A NAME="line19"></A>
+<A NAME="line20"></A>val find     : (elem -&gt; bool) -&gt; array -&gt; elem option
+<A NAME="line21"></A>val exists   : (elem -&gt; bool) -&gt; array -&gt; bool
+<A NAME="line22"></A>val all      : (elem -&gt; bool) -&gt; array -&gt; bool
+<A NAME="line23"></A>
+<A NAME="line24"></A>val app      : (elem -&gt; unit) -&gt; array -&gt; unit
+<A NAME="line25"></A>val foldl    : (elem * 'b -&gt; 'b) -&gt; 'b -&gt; array -&gt; 'b
+<A NAME="line26"></A>val foldr    : (elem * 'b -&gt; 'b) -&gt; 'b -&gt; array -&gt; 'b
+<A NAME="line27"></A>val modify   : (elem -&gt; elem) -&gt; array -&gt; unit
+<A NAME="line28"></A>
+<A NAME="line29"></A>val findi    : (int * elem -&gt; bool) -&gt; array -&gt; (int * elem) option
+<A NAME="line30"></A>val appi     : (int * elem -&gt; unit) -&gt; array -&gt; unit
+<A NAME="line31"></A>val foldli   : (int * elem * 'b -&gt; 'b) -&gt; 'b -&gt; array -&gt; 'b
+<A NAME="line32"></A>val foldri   : (int * elem * 'b -&gt; 'b) -&gt; 'b -&gt; array -&gt; 'b
+<A NAME="line33"></A>val modifyi  : (int * elem -&gt; elem) -&gt; array -&gt; unit
+<A NAME="line34"></A>
+<A NAME="line35"></A>val collate  : (elem * elem -&gt; order) -&gt; array * array -&gt; order
+<A NAME="line36"></A>
+<A NAME="line37"></A>(* 
+   [<A NAME="array-typ"><B>array</B></A>] is the type of one-dimensional, mutable, zero-based
+   constant-time-access arrays with elements of type Word8.word, that
+   is, 8-bit words.  Arrays a1 and a2 are equal if both were created
+   by the same call to a primitive (array0, array, tabulate, fromList).
+
+   All operations are as for Array.array.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

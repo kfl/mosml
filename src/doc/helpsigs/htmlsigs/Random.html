@@ -1,0 +1,45 @@
+<HTML><HEAD><TITLE>Structure Random</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Random</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Random -- random number generator *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>type <A HREF="#generator-typ">generator</A>
+<A NAME="line3"></A>
+<A NAME="line4"></A>val <A HREF="#newgenseed-val">newgenseed</A> : real -&gt; generator
+<A NAME="line5"></A>val <A HREF="#newgen-val">newgen</A>     : unit -&gt; generator
+<A NAME="line6"></A>val <A HREF="#random-val">random</A>     : generator -&gt; real
+<A NAME="line7"></A>val <A HREF="#randomlist-val">randomlist</A> : int * generator -&gt; real list
+<A NAME="line8"></A>val <A HREF="#range-val">range</A>      : int * int -&gt; generator -&gt; int
+<A NAME="line9"></A>val <A HREF="#rangelist-val">rangelist</A>  : int * int -&gt; int * generator -&gt; int list
+<A NAME="line10"></A>
+<A NAME="line11"></A>(* 
+   [<A NAME="generator-typ"><B>generator</B></A>] is the type of random number generators, here the
+   linear congruential generators from Paulson 1991, 1996.
+
+   [<A NAME="newgenseed-val"><B>newgenseed</B></A> seed] returns a random number generator with the given seed.
+
+   [<A NAME="newgen-val"><B>newgen</B></A> ()] returns a random number generator, taking the seed from
+   the system clock.
+
+   [<A NAME="random-val"><B>random</B></A> gen] returns a random number in the interval [0..1).
+
+   [<A NAME="randomlist-val"><B>randomlist</B></A> (n, gen)] returns a list of n random numbers in the
+   interval [0,1).
+
+   [<A NAME="range-val"><B>range</B></A> (min, max) gen] returns an integral random number in the
+   range [min, max).  Raises Fail if min &gt; max.
+
+   [<A NAME="rangelist-val"><B>rangelist</B></A> (min, max) (n, gen)] returns a list of n integral random
+   numbers in the range [min, max).  Raises Fail if min &gt; max.  
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

@@ -1,0 +1,116 @@
+<HTML><HEAD><TITLE>Structure Time</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Time</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Time -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>eqtype <A HREF="#time-typ">time</A>
+<A NAME="line3"></A>
+<A NAME="line4"></A>exception Time
+<A NAME="line5"></A>
+<A NAME="line6"></A>val <A HREF="#zeroTime-val">zeroTime</A>         : time
+<A NAME="line7"></A>val <A HREF="#now-val">now</A>              : unit -&gt; time
+<A NAME="line8"></A>
+<A NAME="line9"></A>val <A HREF="#toSeconds-val">toSeconds</A>        : time -&gt; int
+<A NAME="line10"></A>val <A HREF="#toMilliseconds-val">toMilliseconds</A>   : time -&gt; int
+<A NAME="line11"></A>val <A HREF="#toMicroseconds-val">toMicroseconds</A>   : time -&gt; int
+<A NAME="line12"></A>val <A HREF="#fromSeconds-val">fromSeconds</A>      : int -&gt; time
+<A NAME="line13"></A>val <A HREF="#fromMilliseconds-val">fromMilliseconds</A> : int -&gt; time
+<A NAME="line14"></A>val <A HREF="#fromMicroseconds-val">fromMicroseconds</A> : int -&gt; time
+<A NAME="line15"></A>
+<A NAME="line16"></A>val <A HREF="#fromReal-val">fromReal</A>         : real -&gt; time
+<A NAME="line17"></A>val <A HREF="#toReal-val">toReal</A>           : time -&gt; real
+<A NAME="line18"></A>
+<A NAME="line19"></A>val <A HREF="#toString-val">toString</A>         : time -&gt; string	(* rounded to millisecond precision *)
+<A NAME="line20"></A>val <A HREF="#fmt-val">fmt</A>              : int -&gt; time -&gt; string
+<A NAME="line21"></A>val <A HREF="#fromString-val">fromString</A>       : string -&gt; time option
+<A NAME="line22"></A>val <A HREF="#scan-val">scan</A>             : (char, 'a) StringCvt.reader 
+<A NAME="line23"></A>                       -&gt; (time, 'a) StringCvt.reader
+<A NAME="line24"></A>
+<A NAME="line25"></A>val <A HREF="#%2B-val">+</A>       : time * time -&gt; time
+<A NAME="line26"></A>val <A HREF="#--val">-</A>       : time * time -&gt; time
+<A NAME="line27"></A>val <A HREF="#%3C-val"><</A>       : time * time -&gt; bool
+<A NAME="line28"></A>val <A HREF="#%3C%3D-val"><=</A>      : time * time -&gt; bool
+<A NAME="line29"></A>val <A HREF="#%3E-val">></A>       : time * time -&gt; bool
+<A NAME="line30"></A>val <A HREF="#%3E%3D-val">>=</A>      : time * time -&gt; bool
+<A NAME="line31"></A>
+<A NAME="line32"></A>val <A HREF="#compare-val">compare</A> : time * time -&gt; order
+<A NAME="line33"></A>
+<A NAME="line34"></A>(* 
+   [<A NAME="time-typ"><B>time</B></A>] is a type for representing durations as well as absolute
+   points in time (which can be thought of as durations since some
+   fixed time zero).  Times can be negative, zero, or positive.
+
+   [<A NAME="zeroTime-val"><B>zeroTime</B></A>] represents the 0-second duration, and the origin of time, 
+   so zeroTime + t = t + zeroTime = t for all t.
+
+   [<A NAME="now-val"><B>now</B></A> ()] returns the point in time at which the application occurs.
+
+   [<A NAME="fromSeconds-val"><B>fromSeconds</B></A> s] returns the time value corresponding to s seconds.  
+
+   [<A NAME="fromMilliseconds-val"><B>fromMilliseconds</B></A> ms] returns the time value corresponding to ms
+   milliseconds.  
+
+   [<A NAME="fromMicroseconds-val"><B>fromMicroseconds</B></A> us] returns the time value corresponding to us
+   microseconds.  
+
+   [<A NAME="toSeconds-val"><B>toSeconds</B></A> t] returns the number of seconds represented by t,
+   truncated (towards zero).  Raises Overflow if that number is not
+   representable as an int.
+
+   [<A NAME="toMilliseconds-val"><B>toMilliseconds</B></A> t] returns the number of milliseconds represented
+   by t, truncated (towards zero).  Raises Overflow if that number is
+   not representable as an int.
+
+   [<A NAME="toMicroseconds-val"><B>toMicroseconds</B></A> t] returns the number of microseconds represented
+   by t, truncated (towards zero).  Raises Overflow if t that number
+   is not representable as an int.
+
+   [<A NAME="fromReal-val"><B>fromReal</B></A> r] converts a real to a time value representing that many
+   seconds.  It holds that fromReal 0.0 = zeroTime.
+
+   [<A NAME="toReal-val"><B>toReal</B></A> t] converts a time to the number of seconds it represents;
+   hence fromReal and toReal are inverses of each other.
+
+   [<A NAME="fmt-val"><B>fmt</B></A> n t] returns as a string the number of seconds represented by
+   t, rounded to n decimal digits.  If n &lt;= 0, then no decimal digits
+   are reported.
+
+   [<A NAME="toString-val"><B>toString</B></A> t] returns as a string the number of seconds represented
+   by t, rounded to 3 decimal digits.  Equivalent to (fmt 3 t).  
+
+   [<A NAME="fromString-val"><B>fromString</B></A> s] returns SOME t where t is the time value represented
+   by the string s of form [\n\t ]*[+~-]?(([0-9]+(\.[0-9]+)?)|(\.[0-9]+)); 
+   or returns NONE if s cannot be parsed as a time value.
+
+   [<A NAME="scan-val"><B>scan</B></A> getc src], where getc is a character accessor, returns SOME
+   (t, rest) where t is a time and rest is rest of the input, or NONE
+   if s cannot be parsed as a time value.
+
+   [<A NAME="%2B-val"><B>+</B></A>] adds two time values. For reals r1, r2 &gt;= 0.0, it holds that
+   fromReal r1 + fromReal r2 = fromReal(Real.+(r1,r2)).  
+   Raises Overflow if the result is not representable as a time value.
+
+   [<A NAME="--val"><B>-</B></A>] subtracts a time value from another.  That is, t1 - t2 is the
+   duration from t2 to t1 (which may be negative).  
+   It holds that t - zeroTime = t.
+
+   [<A NAME="%3C-val"><B><</B></A>]
+   [<A NAME="%3C%3D-val"><B><=</B></A>]
+   [<A NAME="%3E-val"><B>></B></A>]
+   [<A NAME="%3E%3D-val"><B>>=</B></A>] compares time values.  For instance, for reals r1, r2 &gt;= 0.0 
+   it holds that  fromReal r1 &lt; fromReal r2  iff Real.&lt;(r1, r2)
+
+   [<A NAME="compare-val"><B>compare</B></A>(t1, t2)] returns LESS, EQUAL, or GREATER, according 
+   as t1 precedes, equals, or follows t2 in time.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

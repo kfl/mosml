@@ -1,0 +1,124 @@
+<HTML><HEAD><TITLE>Structure Vector</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Vector</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Vector -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>type 'a <A HREF="#vector-typ">vector</A> = 'a vector
+<A NAME="line3"></A>val <A HREF="#maxLen-val">maxLen</A>   : int
+<A NAME="line4"></A>
+<A NAME="line5"></A>val <A HREF="#fromList-val">fromList</A> : 'a list -&gt; 'a vector
+<A NAME="line6"></A>val <A HREF="#tabulate-val">tabulate</A> : int * (int -&gt; 'a) -&gt; 'a vector
+<A NAME="line7"></A>
+<A NAME="line8"></A>val <A HREF="#length-val">length</A>   : 'a vector -&gt; int
+<A NAME="line9"></A>val <A HREF="#sub-val">sub</A>      : 'a vector * int -&gt; 'a
+<A NAME="line10"></A>val <A HREF="#update-val">update</A>   : 'a vector * int * 'a -&gt; 'a vector
+<A NAME="line11"></A>val <A HREF="#concat-val">concat</A>   : 'a vector list -&gt; 'a vector
+<A NAME="line12"></A>
+<A NAME="line13"></A>val <A HREF="#find-val">find</A>     : ('a -&gt; bool) -&gt; 'a vector -&gt; 'a option
+<A NAME="line14"></A>val <A HREF="#exists-val">exists</A>   : ('a -&gt; bool) -&gt; 'a vector -&gt; bool
+<A NAME="line15"></A>val <A HREF="#all-val">all</A>      : ('a -&gt; bool) -&gt; 'a vector -&gt; bool
+<A NAME="line16"></A>
+<A NAME="line17"></A>val <A HREF="#app-val">app</A>      : ('a -&gt; unit) -&gt; 'a vector -&gt; unit
+<A NAME="line18"></A>val <A HREF="#map-val">map</A>      : ('a -&gt; 'b) -&gt; 'a vector -&gt; 'b vector
+<A NAME="line19"></A>val <A HREF="#foldl-val">foldl</A>    : ('a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a vector -&gt; 'b
+<A NAME="line20"></A>val <A HREF="#foldr-val">foldr</A>    : ('a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a vector -&gt; 'b
+<A NAME="line21"></A>
+<A NAME="line22"></A>val <A HREF="#findi-val">findi</A>    : (int * 'a -&gt; bool) -&gt; 'a vector -&gt; (int * 'a) option
+<A NAME="line23"></A>val <A HREF="#appi-val">appi</A>     : (int * 'a -&gt; unit) -&gt; 'a vector -&gt; unit
+<A NAME="line24"></A>val <A HREF="#mapi-val">mapi</A>     : (int * 'a -&gt; 'b) -&gt; 'a vector -&gt; 'b vector
+<A NAME="line25"></A>val <A HREF="#foldli-val">foldli</A>   : (int * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a vector -&gt; 'b
+<A NAME="line26"></A>val <A HREF="#foldri-val">foldri</A>   : (int * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a vector -&gt; 'b
+<A NAME="line27"></A>
+<A NAME="line28"></A>val <A HREF="#collate-val">collate</A>  : ('a * 'a -&gt; order) -&gt; 'a vector * 'a vector -&gt; order
+<A NAME="line29"></A>
+<A NAME="line30"></A>(* 
+   ['ty <A NAME="vector-typ"><B>vector</B></A>] is the type of one-dimensional, immutable, zero-based
+   constant-time-access vectors with elements of type 'ty.  
+   Type 'ty vector admits equality if 'ty does.  Vectors v1 and v2 are 
+   equal if they have the same length and their elements are equal.
+
+   [<A NAME="maxLen-val"><B>maxLen</B></A>] is the maximal number of elements in a vector.
+
+   [<A NAME="fromList-val"><B>fromList</B></A> xs] returns a vector whose elements are those of xs.
+   Raises Size if length xs &gt; maxLen.
+
+   [<A NAME="tabulate-val"><B>tabulate</B></A>(n, f)] returns a vector of length n whose elements
+   are f 0, f 1, ..., f (n-1), created from left to right.  Raises
+   Size if n&lt;0 or n&gt;maxLen.
+
+   [<A NAME="length-val"><B>length</B></A> v] returns the number of elements in v.
+
+   [<A NAME="sub-val"><B>sub</B></A>(v, i)] returns the i'th element of v, counting from 0.
+   Raises Subscript if i&lt;0 or i&gt;=length v.
+
+   [<A NAME="update-val"><B>update</B></A>(v, i, x)] creates a copy of v, sets position i to x, and
+   returns the new vector.  In contrast to Array.update, this is not a
+   constant-time operation, because it must copy the entire vector.
+   Raises Subscript if i&lt;0 or i&gt;=length v.
+
+   [<A NAME="concat-val"><B>concat</B></A> vs] returns a vector which is the concatenation from left
+   to right og the vectors in vs.  Raises Size if the sum of the
+   sizes of the vectors in vs is larger than maxLen.
+
+   [<A NAME="find-val"><B>find</B></A> p v] applies p to each element x of v, from left to right,
+   until p(x) evaluates to true; returns SOME x if such an x exists,
+   otherwise NONE.
+
+   [<A NAME="exists-val"><B>exists</B></A> p v] applies p to each element x of v, from left to right,
+   until p(x) evaluates to true; returns true if such an x exists,
+   otherwise false.
+
+   [<A NAME="all-val"><B>all</B></A> p v] applies p to each element x of v, from left to right,
+   until p(x) evaluates to false; returns false if such an x exists,
+   otherwise true.
+
+   [<A NAME="foldl-val"><B>foldl</B></A> f e v] folds function f over v from left to right.  That is,
+   computes f(v[len-1], f(v[len-2], ..., f(v[1], f(v[0], e)) ...)),
+   where len is the length of v.
+
+   [<A NAME="foldr-val"><B>foldr</B></A> f e v] folds function f over v from right to left.  That is,
+   computes f(v[0], f(v[1], ..., f(v[len-2], f(v[len-1], e)) ...)),
+   where len is the length of v.
+
+   [<A NAME="app-val"><B>app</B></A> f v] applies f to v[j] for j=0,1,...,length v-1.
+
+   [<A NAME="map-val"><B>map</B></A> f v] applies f to v[j] for j=0,1,...,length v-1 and returns a 
+   new vector containing the results.
+   
+   The following iterators generalize the above ones by passing also
+   the vector element index j to the function being iterated.
+
+   [<A NAME="findi-val"><B>findi</B></A> p a] applies f to successive pairs (j, a[j]) for j=0,1,...,n-1, 
+   until p(j, a[j]) evaluates to true; returns SOME (j, a[j]) if such
+   a pair exists, otherwise NONE.
+
+   [<A NAME="foldli-val"><B>foldli</B></A> f e v] folds function f over the vector from left to right.
+   That is, computes f(n-1, v[n-1], f(..., f(1, v[1], f(0, v[0], e)) ...))  
+   where n = length v.
+
+   [<A NAME="foldri-val"><B>foldri</B></A> f e v] folds function f over the vector from right to left.  
+   That is, computes f(0, v[0], f(1, v[1], ..., f(n-1, v[n-1], e) ...))
+   where n = length v.
+
+   [<A NAME="appi-val"><B>appi</B></A> f v] applies f to successive pairs (j, v[j]) for j=0,1,...,n-1
+   where n = length v.
+
+   [<A NAME="mapi-val"><B>mapi</B></A> f v] applies f to successive pairs (j, v[j]) for
+   j=0,1,...,n-1 where n = length v and returns a new vector
+   containing the results.  
+
+   [<A NAME="collate-val"><B>collate</B></A> cmp (xs, ys)] returns LESS, EQUAL or GREATER according as
+   xs precedes, equals or follows ys in the lexicographic ordering on
+   vectors induced by the ordering cmp on elements.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

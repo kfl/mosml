@@ -1,0 +1,136 @@
+<HTML><HEAD><TITLE>Structure Array</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Array</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Array -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>prim_EQtype 'a <A HREF="#array-typ">array</A>
+<A NAME="line3"></A>
+<A NAME="line4"></A>val <A HREF="#maxLen-val">maxLen</A>   : int
+<A NAME="line5"></A>
+<A NAME="line6"></A>val <A HREF="#array-val">array</A>    : int * '_a -&gt; '_a array
+<A NAME="line7"></A>val <A HREF="#tabulate-val">tabulate</A> : int * (int -&gt; '_a) -&gt; '_a array
+<A NAME="line8"></A>val <A HREF="#fromList-val">fromList</A> : '_a list -&gt; '_a array
+<A NAME="line9"></A>
+<A NAME="line10"></A>val <A HREF="#length-val">length</A>   : 'a array -&gt; int
+<A NAME="line11"></A>val <A HREF="#sub-val">sub</A>      : 'a array * int -&gt; 'a
+<A NAME="line12"></A>val <A HREF="#update-val">update</A>   : 'a array * int * 'a  -&gt; unit
+<A NAME="line13"></A>val vector   : 'a array -&gt; 'a Vector.vector
+<A NAME="line14"></A>
+<A NAME="line15"></A>val <A HREF="#copy-val">copy</A>     : {src: 'a array,  dst: 'a array, di: int} -&gt; unit
+<A NAME="line16"></A>val <A HREF="#copyVec-val">copyVec</A>  : {src: 'a vector, dst: 'a array, di: int} -&gt; unit
+<A NAME="line17"></A>
+<A NAME="line18"></A>val <A HREF="#find-val">find</A>     : ('a -&gt; bool) -&gt; 'a array -&gt; 'a option
+<A NAME="line19"></A>val <A HREF="#exists-val">exists</A>   : ('a -&gt; bool) -&gt; 'a array -&gt; bool
+<A NAME="line20"></A>val <A HREF="#all-val">all</A>      : ('a -&gt; bool) -&gt; 'a array -&gt; bool
+<A NAME="line21"></A>
+<A NAME="line22"></A>val <A HREF="#app-val">app</A>      : ('a -&gt; unit) -&gt; 'a array -&gt; unit
+<A NAME="line23"></A>val <A HREF="#foldl-val">foldl</A>    : ('a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array -&gt; 'b
+<A NAME="line24"></A>val <A HREF="#foldr-val">foldr</A>    : ('a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array -&gt; 'b
+<A NAME="line25"></A>val <A HREF="#modify-val">modify</A>   : ('a -&gt; 'a) -&gt; 'a array -&gt; unit
+<A NAME="line26"></A>
+<A NAME="line27"></A>val <A HREF="#findi-val">findi</A>    : (int * 'a -&gt; bool) -&gt; 'a array -&gt; (int * 'a) option
+<A NAME="line28"></A>val <A HREF="#appi-val">appi</A>     : (int * 'a -&gt; unit) -&gt; 'a array -&gt; unit
+<A NAME="line29"></A>val <A HREF="#foldli-val">foldli</A>   : (int * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array -&gt; 'b
+<A NAME="line30"></A>val <A HREF="#foldri-val">foldri</A>   : (int * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array -&gt; 'b
+<A NAME="line31"></A>val <A HREF="#modifyi-val">modifyi</A>  : (int * 'a -&gt; 'a) -&gt; 'a array -&gt; unit
+<A NAME="line32"></A>
+<A NAME="line33"></A>val <A HREF="#collate-val">collate</A>  : ('a * 'a -&gt; order) -&gt; 'a array * 'a array -&gt; order
+<A NAME="line34"></A>
+<A NAME="line35"></A>(* 
+   ['ty <A NAME="array-typ"><B>array</B></A>] is the type of one-dimensional, mutable, zero-based
+   constant-time-access arrays with elements of type 'ty.  Type 
+   'ty array admits equality even if 'ty does not.  Arrays a1 and a2 
+   are equal if both were created by the same call to a primitive
+   (array, tabulate, fromList).
+
+   Functions working on a slices (contiguous subsequence) of an array
+   are found in the ArraySlice structure.
+
+   [<A NAME="maxLen-val"><B>maxLen</B></A>] is the maximal number of elements in an array.
+
+   [<A NAME="array-val"><B>array</B></A>(n, x)] returns a new array of length n whose elements are all x.
+   Raises Size if n&lt;0 or n&gt;maxLen.
+
+   [<A NAME="tabulate-val"><B>tabulate</B></A>(n, f)] returns a new array of length n whose elements
+   are f 0, f 1, ..., f (n-1), created from left to right.  Raises
+   Size if n&lt;0 or n&gt;maxLen.
+
+   [<A NAME="fromList-val"><B>fromList</B></A> xs] returns an array whose elements are those of xs.
+   Raises Size if length xs &gt; maxLen.
+
+   [<A NAME="length-val"><B>length</B></A> a] returns the number of elements in a.
+
+   [<A NAME="sub-val"><B>sub</B></A>(a, i)] returns the i'th element of a, counting from 0.  
+   Raises Subscript if i&lt;0 or i&gt;=length a.  To make `sub' infix, use
+   the declaration 
+                             infix 9 sub
+
+   [<A NAME="update-val"><B>update</B></A>(a, i, x)] destructively replaces the i'th element of a by x.
+   Raises Subscript if i&lt;0 or i&gt;=length a.
+
+   [<A NAME="copy-val"><B>copy</B></A>{src, dst, di}] destructively copies the array src to dst,
+   starting at index di.  
+   Raises Subscript if di&lt;0, or if di + length src &gt; length dst.
+
+   [<A NAME="copyVec-val"><B>copyVec</B></A>{src, dst, di}] destructively copies the vector to dst,
+   starting at index di.  
+   Raises Subscript if di&lt;0, or if di + Vector.length src &gt; length dst.
+
+   [<A NAME="find-val"><B>find</B></A> p a] applies p to each element x of a, from left to right,
+   until p(x) evaluates to true; returns SOME x if such an x exists,
+   otherwise NONE.
+
+   [<A NAME="exists-val"><B>exists</B></A> p a] applies p to each element x of a, from left to right,
+   until p(x) evaluates to true; returns true if such an x exists,
+   otherwise false.
+
+   [<A NAME="all-val"><B>all</B></A> p a] applies p to each element x of a, from left to right,
+   until p(x) evaluates to false; returns false if such an x exists,
+   otherwise true.
+
+   [<A NAME="foldl-val"><B>foldl</B></A> f e a] folds function f over a from left to right.  That is,
+   computes f(a[len-1], f(a[len-2], ..., f(a[1], f(a[0], e)) ...)),
+   where len is the length of a.
+
+   [<A NAME="foldr-val"><B>foldr</B></A> f e a] folds function f over a from right to left.  That is,
+   computes f(a[0], f(a[1], ..., f(a[len-2], f(a[len-1], e)) ...)),
+   where len is the length of a.
+
+   [<A NAME="app-val"><B>app</B></A> f a] applies f to a[j] for j=0,1,...,length a-1.
+
+   [<A NAME="modify-val"><B>modify</B></A> f a] applies f to a[j] and updates a[j] with the result
+   f(a[j]) for j=0,1,...,length a-1. 
+
+   The following iterators generalize the above ones by passing also
+   the index j to the function being iterated.
+
+   [<A NAME="findi-val"><B>findi</B></A> p a] applies f to successive pairs (j, a[j]) for j=0,1,...,n-1, 
+   until p(j, a[j]) evaluates to true; returns SOME (j, a[j]) if such
+   a pair exists, otherwise NONE.
+
+   [<A NAME="foldli-val"><B>foldli</B></A> f e a] folds function f over the array from left to right.
+   That is, computes f(n-1, a[n-1], f(..., f(1, a[1], f(0, a[0], e)) ...)).  
+
+   [<A NAME="foldri-val"><B>foldri</B></A> f e a] folds function f over the array from right to left.  
+   That is, computes f(0, a[0], f(1, a[1], ..., f(n-1, a[n-1], e) ...)).
+
+   [<A NAME="appi-val"><B>appi</B></A> f a] applies f to successive pairs (j, a[j]) for j=0,1,...,n-1.  
+
+   [<A NAME="modifyi-val"><B>modifyi</B></A> f a] applies f to (j, a[j]) and updates a[j] with the
+   result f(j, a[j]) for j=0,1,...,n-1.
+
+   [<A NAME="collate-val"><B>collate</B></A> cmp (xs, ys)] returns LESS, EQUAL or GREATER according as
+   xs precedes, equals or follows ys in the lexicographic ordering on
+   arrays induced by the ordering cmp on elements.  
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

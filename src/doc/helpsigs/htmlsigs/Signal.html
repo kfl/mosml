@@ -1,0 +1,90 @@
+<HTML><HEAD><TITLE>Structure Signal</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Signal</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Signal -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>eqtype <A HREF="#signal-typ">signal</A>
+<A NAME="line3"></A>
+<A NAME="line4"></A>val <A HREF="#abrt-val">abrt</A> : signal 
+<A NAME="line5"></A>val <A HREF="#alrm-val">alrm</A> : signal 
+<A NAME="line6"></A>val <A HREF="#bus-val">bus</A>  : signal 
+<A NAME="line7"></A>val <A HREF="#fpe-val">fpe</A>  : signal 
+<A NAME="line8"></A>val <A HREF="#hup-val">hup</A>  : signal 
+<A NAME="line9"></A>val <A HREF="#ill-val">ill</A>  : signal 
+<A NAME="line10"></A>val <A HREF="#int-val">int</A>  : signal 
+<A NAME="line11"></A>val <A HREF="#kill-val">kill</A> : signal 
+<A NAME="line12"></A>val <A HREF="#pipe-val">pipe</A> : signal 
+<A NAME="line13"></A>val <A HREF="#quit-val">quit</A> : signal 
+<A NAME="line14"></A>val <A HREF="#segv-val">segv</A> : signal 
+<A NAME="line15"></A>val <A HREF="#term-val">term</A> : signal 
+<A NAME="line16"></A>val <A HREF="#usr1-val">usr1</A> : signal 
+<A NAME="line17"></A>val <A HREF="#usr2-val">usr2</A> : signal 
+<A NAME="line18"></A>val <A HREF="#chld-val">chld</A> : signal 
+<A NAME="line19"></A>val <A HREF="#cont-val">cont</A> : signal 
+<A NAME="line20"></A>val <A HREF="#stop-val">stop</A> : signal 
+<A NAME="line21"></A>val <A HREF="#tstp-val">tstp</A> : signal 
+<A NAME="line22"></A>val <A HREF="#ttin-val">ttin</A> : signal 
+<A NAME="line23"></A>val <A HREF="#ttou-val">ttou</A> : signal 
+<A NAME="line24"></A>
+<A NAME="line25"></A>val <A HREF="#toWord-val">toWord</A>   : signal -&gt; Word.word 
+<A NAME="line26"></A>val <A HREF="#fromWord-val">fromWord</A> : Word.word -&gt; signal 
+<A NAME="line27"></A>
+<A NAME="line28"></A>(* 
+   [<A NAME="signal-typ"><B>signal</B></A>] is the type of Unix/Posix-style signals, which can be sent
+   to another process.  
+
+   [<A NAME="toWord-val"><B>toWord</B></A> sig] returns the signal number as an unsigned word.
+
+   [<A NAME="fromWord-val"><B>fromWord</B></A> w] returns the signal whose number is w.
+
+   [<A NAME="abrt-val"><B>abrt</B></A>] is SIGABRT, the abort signal from abort(3).
+
+   [<A NAME="alrm-val"><B>alrm</B></A>] is SIGALRM, a timer signal from alarm(1).
+
+   [<A NAME="bus-val"><B>bus</B></A>]  is SIGBUS, a bus error.
+
+   [<A NAME="fpe-val"><B>fpe</B></A>]  is SIGFPE, a floating point exception.
+
+   [<A NAME="hup-val"><B>hup</B></A>]  is SIGHUP, a hangup.
+
+   [<A NAME="ill-val"><B>ill</B></A>]  is SIGILL, an illegal instruction.
+
+   [<A NAME="int-val"><B>int</B></A>]  is SIGINT, an interrupt.
+
+   [<A NAME="kill-val"><B>kill</B></A>] is SIGKILL, the kill signal.
+
+   [<A NAME="pipe-val"><B>pipe</B></A>] is SIGPIPE, a broken pipe.
+
+   [<A NAME="quit-val"><B>quit</B></A>] is SIGQUIT, a quit from keyboard.
+
+   [<A NAME="segv-val"><B>segv</B></A>] is SIGSEGV, a segmentation violation.
+
+   [<A NAME="term-val"><B>term</B></A>] is SIGTERM, the termination signal.
+
+   [<A NAME="usr1-val"><B>usr1</B></A>] is SIGUSR1, the first user signal.
+
+   [<A NAME="usr2-val"><B>usr2</B></A>] is SIGUSR2, the second user signal.
+   
+   [<A NAME="chld-val"><B>chld</B></A>] is SIGCHLD, child process stopped or terminated.
+
+   [<A NAME="cont-val"><B>cont</B></A>] is SIGCONT, continue if stopped.
+
+   [<A NAME="stop-val"><B>stop</B></A>] is SIGSTOP, signal to stop process.
+
+   [<A NAME="tstp-val"><B>tstp</B></A>] is SIGTSTP, a stop signal typed at the tty.
+
+   [<A NAME="ttin-val"><B>ttin</B></A>] is SIGTTIN, tty input for background process.
+
+   [<A NAME="ttou-val"><B>ttou</B></A>] is SIGTTOU, tty output for background process.
+ *) 
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

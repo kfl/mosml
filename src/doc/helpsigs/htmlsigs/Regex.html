@@ -1,0 +1,270 @@
+<HTML><HEAD><TITLE>Structure Regex</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Regex</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Regex -- regular expressions a la POSIX 1003.2 -- requires Dynlib *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>exception Regex of string
+<A NAME="line3"></A>
+<A NAME="line4"></A>type regex                      (* A compiled regular expression         *)
+<A NAME="line5"></A>
+<A NAME="line6"></A>datatype <A HREF="#cflag-typ">cflag</A> = 
+<A NAME="line7"></A>    Extended                    (* Compile POSIX extended REs            *)
+<A NAME="line8"></A>  | Icase                       (* Compile case-insensitive match        *)
+<A NAME="line9"></A>  | Newline                     (* Treat \n in target string as new line *)
+<A NAME="line10"></A>
+<A NAME="line11"></A>datatype <A HREF="#eflag-typ">eflag</A> = 
+<A NAME="line12"></A>    Notbol                      (* Do not match ^ at beginning of string *)
+<A NAME="line13"></A>  | Noteol                      (* Do not match $ at end of string       *)
+<A NAME="line14"></A>
+<A NAME="line15"></A>val <A HREF="#regcomp-val">regcomp</A>      : string -&gt; cflag list -&gt; regex
+<A NAME="line16"></A>
+<A NAME="line17"></A>val <A HREF="#regexec-val">regexec</A>      : regex -&gt; eflag list -&gt; string -&gt; substring vector option
+<A NAME="line18"></A>val <A HREF="#regexecBool-val">regexecBool</A>  : regex -&gt; eflag list -&gt; string -&gt; bool
+<A NAME="line19"></A>
+<A NAME="line20"></A>val <A HREF="#regnexec-val">regnexec</A>     : regex -&gt; eflag list -&gt; substring 
+<A NAME="line21"></A>                   -&gt; substring vector option
+<A NAME="line22"></A>val <A HREF="#regnexecBool-val">regnexecBool</A> : regex -&gt; eflag list -&gt; substring -&gt; bool
+<A NAME="line23"></A>
+<A NAME="line24"></A>val <A HREF="#regmatch-val">regmatch</A>     : { pat : string, tgt : string } -&gt; cflag list 
+<A NAME="line25"></A>                     -&gt; eflag list -&gt; substring vector option
+<A NAME="line26"></A>val <A HREF="#regmatchBool-val">regmatchBool</A> : { pat : string, tgt : string } -&gt; cflag list 
+<A NAME="line27"></A>                     -&gt; eflag list -&gt; bool
+<A NAME="line28"></A>
+<A NAME="line29"></A>datatype replacer =
+<A NAME="line30"></A>    Str of string                       (* A literal string             *)
+<A NAME="line31"></A>  | Sus of int                          (* The i'th parenthesized group *)
+<A NAME="line32"></A>  | Tr  of (string -&gt; string) * int     (* Transformation of i'th group *)
+<A NAME="line33"></A>  | Trs of substring vector -&gt; string   (* Transformation of all groups *)
+<A NAME="line34"></A>
+<A NAME="line35"></A>val <A HREF="#replace1-val">replace1</A>     : regex -&gt; replacer list -&gt; string -&gt; string
+<A NAME="line36"></A>val <A HREF="#replace-val">replace</A>      : regex -&gt; replacer list -&gt; string -&gt; string
+<A NAME="line37"></A>
+<A NAME="line38"></A>val <A HREF="#substitute1-val">substitute1</A>  : regex -&gt; (string -&gt; string) -&gt; string -&gt; string
+<A NAME="line39"></A>val <A HREF="#substitute-val">substitute</A>   : regex -&gt; (string -&gt; string) -&gt; string -&gt; string
+<A NAME="line40"></A>
+<A NAME="line41"></A>val <A HREF="#tokens-val">tokens</A>       : regex -&gt; string -&gt; substring list
+<A NAME="line42"></A>val <A HREF="#fields-val">fields</A>       : regex -&gt; string -&gt; substring list
+<A NAME="line43"></A>
+<A NAME="line44"></A>val <A HREF="#map-val">map</A>          : regex -&gt; (substring vector -&gt; 'a) -&gt; string -&gt; 'a list
+<A NAME="line45"></A>val <A HREF="#app-val">app</A>          : regex -&gt; (substring vector -&gt; unit) -&gt; string -&gt; unit
+<A NAME="line46"></A>val <A HREF="#fold-val">fold</A>         : regex 
+<A NAME="line47"></A>                   -&gt; (substring * 'a -&gt; 'a) * (substring vector * 'a -&gt; 'a) 
+<A NAME="line48"></A>                   -&gt; 'a -&gt; string -&gt; 'a
+<A NAME="line49"></A>
+<A NAME="line50"></A>(* 
+<A NAME="line51"></A>   This structure provides pattern matching with POSIX 1003.2 regular
+<A NAME="line52"></A>   expressions.  
+<A NAME="line53"></A>
+<A NAME="line54"></A>   The form and meaning of Extended and Basic regular expressions are
+<A NAME="line55"></A>   described below.  Here R and S denote regular expressions; m and n
+<A NAME="line56"></A>   denote natural numbers; L denotes a character list; and d denotes a
+<A NAME="line57"></A>   decimal digit:
+<A NAME="line58"></A>
+<A NAME="line59"></A>        Extended    Basic       Meaning
+<A NAME="line60"></A>       ---------------------------------------------------------------
+<A NAME="line61"></A>        c           c           Match the character c
+<A NAME="line62"></A>        .           .           Match any character
+<A NAME="line63"></A>        R*          R*          Match R zero or more times
+<A NAME="line64"></A>        R+          R\+         Match R one or more times
+<A NAME="line65"></A>        R|S         R\|S        Match R or S
+<A NAME="line66"></A>        R?          R\?         Match R or the empty string
+<A NAME="line67"></A>        R{m}        R\{m\}      Match R exactly m times
+<A NAME="line68"></A>        R{m,}       R\{m,\}     Match R at least m times
+<A NAME="line69"></A>        R{m,n}      R\{m,n\}    Match R at least m and at most n times
+<A NAME="line70"></A>        [L]         [L]         Match any character in L
+<A NAME="line71"></A>        [^L]        [^L]        Match any character not in L
+<A NAME="line72"></A>        ^           ^           Match at string's beginning
+<A NAME="line73"></A>        $           $           Match at string's end
+<A NAME="line74"></A>        (R)         \(R\)       Match R as a group; save the match
+<A NAME="line75"></A>        \d          \d          Match the same as previous group d
+<A NAME="line76"></A>        \\          \\          Match \ --- similarly for *.[]^$
+<A NAME="line77"></A>        \+          +           Match + --- similarly for |?{}()
+<A NAME="line78"></A>
+<A NAME="line79"></A>   Some example character lists L:
+<A NAME="line80"></A>
+<A NAME="line81"></A>        [aeiou]         Match vowel: a or e or i or o or u
+<A NAME="line82"></A>        [0-9]           Match digit: 0 or 1 or 2 or ... or 9
+<A NAME="line83"></A>        [^0-9]          Match non-digit
+<A NAME="line84"></A>        [-+*/^]         Match - or + or * or / or ^
+<A NAME="line85"></A>        [-a-z]          Match lowercase letter or hyphen (-)
+<A NAME="line86"></A>        [0-9a-fA-F]     Match hexadecimal digit
+<A NAME="line87"></A>        [[:alnum:]]     Match letter or digit
+<A NAME="line88"></A>        [[:alpha:]]     Match letter 
+<A NAME="line89"></A>        [[:cntrl:]]     Match ASCII control character
+<A NAME="line90"></A>        [[:digit:]]     Match decimal digit; same as [0-9]
+<A NAME="line91"></A>        [[:graph:]]     Same as [:print:] but not [:space:]
+<A NAME="line92"></A>        [[:lower:]]     Match lowercase letter
+<A NAME="line93"></A>        [[:print:]]     Match printable character
+<A NAME="line94"></A>        [[:punct:]]     Match punctuation character
+<A NAME="line95"></A>        [[:space:]]     Match SML #" ", #"\r", #"\n", #"\t", #"\v", #"\f"
+<A NAME="line96"></A>        [[:upper:]]     Match uppercase letter
+<A NAME="line97"></A>        [[:xdigit:]]    Match hexadecimal digit; same as [0-9a-fA-F]
+<A NAME="line98"></A>        [[:lower:]זרו]  Match lowercase Danish letters (ISO Latin 1)
+<A NAME="line99"></A>
+<A NAME="line100"></A>   Remember that backslash (\) must be escaped as "\\" in SML strings.
+<A NAME="line101"></A>
+   [<A NAME="regcomp-val"><B>regcomp</B></A> pat cflags] returns a compiled representation of the
+   regular expression pat.  Raises Regex in case of failure.  
+
+   [<A NAME="cflag-typ"><B>cflag</B></A>] is the type of compilation flags with the following meanings:
+
+   [<A NAME="Extended-con"><B>Extended</B></A>] : compile as POSIX extended regular expression.
+   [<A NAME="Icase-con"><B>Icase</B></A>]    : compile case-insensitive match.
+   [<A NAME="Newline-con"><B>Newline</B></A>]  : make the newline character \n significant, so ^ matches 
+                just after newline (\n), and $ matches just before \n.
+
+   Example: Match SML integer constant:
+   regcomp "^~?[0-9]+$" [Extended] 
+
+   Example: Match SML alphanumeric identifier:
+   regcomp "^[a-zA-Z0-9][a-zA-Z0-9'_]*$" [Extended]
+
+   Example: Match SML floating-point constant:
+   regcomp "^[+~]?[0-9]+(\\.[0-9]+|(\\.[0-9]+)?[eE][+~]?[0-9]+)$" [Extended]
+
+   Example: Match any HTML start tag; make the tag's name into a group:
+   regcomp "&lt;([[:alnum:]]+)[^&gt;]*&gt;" [Extended]
+
+   [<A NAME="regexec-val"><B>regexec</B></A> regex eflags s] returns SOME(vec) if some substring of s
+   matches regex, NONE otherwise.  In case of success, vec is the
+   match vector, a vector of substrings such that vec[0] is the
+   (longest leftmost) substring of s matching regex, and vec[1],
+   vec[2], ... are substrings matching the parenthesized groups in pat
+   (numbered 1, 2, ... from left to right in the order of their
+   opening parentheses).  For a group that does not take part in the
+   match, such as (ab) in "(ab)|(cd)" when matched against the string
+   "xcdy", the corresponding substring is the empty substring at the
+   beginning of the underlying string.  For a group that takes part in
+   the match repeatedly, such as the group (b+) in "(a(b+))*" when
+   matched against "babbabbb", the corresponding substring is the last
+   (rightmost) one matched.  
+
+   [<A NAME="eflag-typ"><B>eflag</B></A>] is the type of end flags with the following meaning:
+
+   [<A NAME="Notbol-con"><B>Notbol</B></A>] : do not match ^ at beginning of string.
+   [<A NAME="Noteol-con"><B>Noteol</B></A>] : do not match $ at end of string.
+
+   [<A NAME="regexecBool-val"><B>regexecBool</B></A> regex eflags s] returns true if some substring of s
+   matches regex, false otherwise.  Equivalent to, but faster than, 
+   Option.isSome(regexec regexec eflags s).
+
+   [<A NAME="regnexec-val"><B>regnexec</B></A> regex eflags sus] returns SOME(vec) if some substring of
+   sus matches regex, NONE otherwise.  The substrings returned in the
+   vector vec will have the same base string as sus.  Useful e.g. for
+   splitting a string into fragments separated by substrings matching
+   some regular expression.
+
+   [<A NAME="regnexecBool-val"><B>regnexecBool</B></A> regex eflags sus] returns true if some substring of
+   sus matches regex, false otherwise.  Equivalent to, but faster than, 
+   Option.isSome(regnexec regexec eflags sus).
+
+   [<A NAME="regmatch-val"><B>regmatch</B></A> { pat, tgt } cflags eflags] is equivalent to 
+         regexec (regcomp pat cflags) eflags tgt
+   but more efficient when the compiled regex is used only once.
+
+   [<A NAME="regmatchBool-val"><B>regmatchBool</B></A> { pat, tgt } cflags eflags] is equivalent to 
+         regexecBool (regcomp pat cflags) eflags tgt 
+   but more efficient when the compiled regex is used only once.
+
+   [<A NAME="replace-val"><B>replace</B></A> regex repl s] finds the (disjoint) substrings of s
+   matching regex from left to right, and returns the string obtained
+   from s by applying the replacer list repl to every such substring
+   (see below).  Raises Regex if it fails to make progress in
+   decomposing s, that is, if regex matches an empty string at the
+   head of s or immediately after a previous regex match.
+   Example use: delete all HTML tags from s: 
+        replace (regcomp "&lt;[^&gt;]+&gt;" [Extended]) [] s
+
+   [<A NAME="replace1-val"><B>replace1</B></A> regex repl s] finds the leftmost substring b1 of s
+   matching regex, and returns the string resulting from s by applying
+   the replacer list repl to the match vector vec1 (see below).
+
+   Let x0 be a substring matching the entire regex and xi be the
+   substring matching the i'th parenthesized group in regex; thus xi =
+   vec[i] where vec is the match vector (see regexec above).  Then a
+   single replacer evaluates to a string as follows:
+
+   [<A NAME="Str-con"><B>Str</B></A> s]      gives the string  s
+   [<A NAME="Sus-con"><B>Sus</B></A> i]      gives the string  xi
+   [<A NAME="Tr-con"><B>Tr</B></A> (f, i)]  gives the string  f(xi)
+   [<A NAME="Trs-con"><B>Trs</B></A> f]      gives the string  f(vec)
+
+   A replacer list repl evaluates to the concatenation of the results
+   of the replacers.  The replacers are applied from left to right.
+
+   [<A NAME="substitute-val"><B>substitute</B></A> regex f s] finds the (disjoint) substrings b1, ..., bn
+   of s matching regex from left to right, and returns the string
+   obtained from s by replacing every bi by f(bi).  Function f is
+   applied to the matching substrings from left to right.  Raises
+   Regex if it fails to make progress in decomposing s.  Equivalent to
+        replace regex [Tr (f, 0)] s
+
+   [<A NAME="substitute1-val"><B>substitute1</B></A> regex f s] finds the leftmost substring b of s
+   matching regex, and returns the string obtained from s by replacing
+   that substring by f(b).  Equivalent to 
+        replace1 regex [Tr (f, 0)] s
+
+   [<A NAME="map-val"><B>map</B></A> regex f s] finds the (disjoint) substrings of s matching regex
+   from left to right, applies f to the match vectors vec1, ..., vecn,
+   and returns the list [f(vec1), ..., f(vecn)].  Raises Regex if it
+   fails to make progress in decomposing s.
+
+   [<A NAME="app-val"><B>app</B></A> regex f s] finds the (disjoint) substrings of s matching regex
+   from left to right, and applies f to the match vectors vec1, ...,
+   vecn.  Raises Regex if the regex fails to make progress in
+   decomposing s.
+
+   [<A NAME="fields-val"><B>fields</B></A> regex s] returns the list of fields in s, from left to
+   right.  A field is a (possibly empty) maximal substring of s not
+   containing any delimiter.  A delimiter is a maximal substring that
+   matches regex.  The eflags Notbol and Noteol are set.  Raises Regex
+   if it fails to make progress in decomposing s.
+   Example use: 
+        fields (regcomp " *; *" []) "56; 23 ; 22;; 89; 99"
+
+   [<A NAME="tokens-val"><B>tokens</B></A> regex s] returns the list of tokens in s, from left to
+   right.  A token is a non-empty maximal substring of s not
+   containing any delimiter.  A delimiter is a maximal substring that
+   matches regex.  The eflags Notbol and Noteol are set.  Raises Regex
+   if it fails to make progress in decomposing s.  Equivalent to 
+        List.filter (not o Substring.isEmpty) (fields regex s)
+
+   Two tokens may be separated by more than one delimiter, whereas two
+   fields are separated by exactly one delimiter.  If the only delimiter 
+   is the character #"|", then
+        "abc||def" contains three fields: "abc" and "" and "def"
+        "abc||def" contains two tokens:   "abc" and "def"
+
+   [<A NAME="fold-val"><B>fold</B></A> regex (fa, fb) e s] finds the (disjoint) substrings b1, ...,
+   bn of s matching regex from left to right, and splits s into the
+   substrings 
+        a0, b1, a1, b2, a2, ..., bn, an         
+   where n &gt;= 0 and where a0 is the (possibly empty) substring of s
+   preceding the first match, and ai is the (possibly empty) substring
+   between the matches bi and b(i+1).  Then it computes and returns
+        fa(an, fb(vecn, ..., fa(a1, fb(vec1, fa(a0, e))) ...))  
+   where veci is the match vector corresponding to bi.  Raises Regex
+   if it fails to make progress in decomposing s.
+
+   If we define the auxiliary functions
+        fun fapp f (x, r) = f x :: r
+        fun get i vec = Substring.string(Vector.sub(vec, i))
+   then 
+        map regex f s  = List.rev (fold regex (#2, fapp f) [] s)
+        app regex f s  = fold regex (ignore, f o #1) () s
+        fields regex s = List.rev (fold regex (op ::, #2) [] s)
+        substitute regex f s = 
+           Substring.concat(List.rev 
+              (fold regex (op ::, fapp (Substring.all o f o get 0)) [] s))
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

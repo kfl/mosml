@@ -1,0 +1,306 @@
+<HTML><HEAD><TITLE>Structure Socket</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Socket</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Socket -- SML Basis Library -- requires Dynlib *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>type ('addressfam, 'socktype) <A HREF="#sock-typ">sock</A>
+<A NAME="line3"></A>type 'addressfam <A HREF="#sock_addr-typ">sock_addr</A>
+<A NAME="line4"></A>
+<A NAME="line5"></A>(* Socket types *)
+<A NAME="line6"></A>type dgram                              (* A datagram socket             *)
+<A NAME="line7"></A>type 'a stream                          (* A stream socket               *)
+<A NAME="line8"></A>type passive                            (* A passive stream              *)
+<A NAME="line9"></A>type active                             (* An active, connected, stream  *)
+<A NAME="line10"></A>
+<A NAME="line11"></A>(* Socket protocol families *)
+<A NAME="line12"></A>type pf_file                            (* The Unix file protocol family *)
+<A NAME="line13"></A>type pf_inet                            (* The Internet protocol family  *)
+<A NAME="line14"></A>
+<A NAME="line15"></A>(* Address constructors *)
+<A NAME="line16"></A>val <A HREF="#fileAddr-val">fileAddr</A>   : string -&gt; pf_file sock_addr
+<A NAME="line17"></A>val <A HREF="#inetAddr-val">inetAddr</A>   : string -&gt; int -&gt; pf_inet sock_addr
+<A NAME="line18"></A>
+<A NAME="line19"></A>(* Socket constructors *)
+<A NAME="line20"></A>val <A HREF="#fileStream-val">fileStream</A> : unit -&gt; (pf_file, 'a stream) sock
+<A NAME="line21"></A>val <A HREF="#fileDgram-val">fileDgram</A>  : unit -&gt; (pf_file, dgram) sock
+<A NAME="line22"></A>val <A HREF="#inetStream-val">inetStream</A> : unit -&gt; (pf_inet, 'a stream) sock
+<A NAME="line23"></A>val <A HREF="#inetDgram-val">inetDgram</A>  : unit -&gt; (pf_inet, dgram) sock
+<A NAME="line24"></A>
+<A NAME="line25"></A>val <A HREF="#accept-val">accept</A>     : ('a, passive stream) sock 
+<A NAME="line26"></A>                 -&gt; ('a, active stream) sock * 'a sock_addr
+<A NAME="line27"></A>val <A HREF="#bind-val">bind</A>       : ('a, 'b) sock * 'a sock_addr -&gt; unit
+<A NAME="line28"></A>val <A HREF="#connect-val">connect</A>    : ('a, 'b) sock * 'a sock_addr -&gt; unit
+<A NAME="line29"></A>val <A HREF="#listen-val">listen</A>     : ('a, passive stream) sock * int -&gt; unit
+<A NAME="line30"></A>val <A HREF="#close-val">close</A>      : ('a, 'b) sock -&gt; unit
+<A NAME="line31"></A>
+<A NAME="line32"></A>(* Socket management *)
+<A NAME="line33"></A>datatype shutdown_mode = 
+<A NAME="line34"></A>    NO_RECVS                            (* No further receives   *)
+<A NAME="line35"></A>  | NO_SENDS                            (* No further sends      *)
+<A NAME="line36"></A>  | NO_RECVS_OR_SENDS                   (* No receives nor sends *)
+<A NAME="line37"></A>
+<A NAME="line38"></A>val <A HREF="#shutdown-val">shutdown</A>   : ('a, 'b stream) sock * shutdown_mode -&gt; unit
+<A NAME="line39"></A>
+<A NAME="line40"></A>type sock_desc
+<A NAME="line41"></A>
+<A NAME="line42"></A>val <A HREF="#sockDesc-val">sockDesc</A>   : ('a, 'b) sock -&gt; sock_desc
+<A NAME="line43"></A>val <A HREF="#sameDesc-val">sameDesc</A>   : sock_desc * sock_desc -&gt; bool
+<A NAME="line44"></A>val <A HREF="#compare-val">compare</A>    : sock_desc * sock_desc -&gt; order
+<A NAME="line45"></A>val <A HREF="#select-val">select</A>     : 
+<A NAME="line46"></A>    { rds : sock_desc list, wrs : sock_desc list, exs : sock_desc list, 
+<A NAME="line47"></A>      timeout : Time.time option } 
+<A NAME="line48"></A>    -&gt; { rds : sock_desc list, wrs : sock_desc list, exs : sock_desc list }
+<A NAME="line49"></A>
+<A NAME="line50"></A>val <A HREF="#getinetaddr-val">getinetaddr</A> : pf_inet sock_addr -&gt; string
+<A NAME="line51"></A>
+<A NAME="line52"></A>(* Sock I/O option types *)
+<A NAME="line53"></A>type <A HREF="#out_flags-typ">out_flags</A> = { don't_route : bool, oob : bool }
+<A NAME="line54"></A>type <A HREF="#in_flags-typ">in_flags</A>  = { peek : bool, oob : bool }
+<A NAME="line55"></A>
+<A NAME="line56"></A>type 'a <A HREF="#buf-typ">buf</A> = { buf : 'a, ofs : int, size : int option }
+<A NAME="line57"></A>
+<A NAME="line58"></A>
+<A NAME="line59"></A>(* Socket output operations *)
+<A NAME="line60"></A>val <A HREF="#sendVec-val">sendVec</A>    : ('a, active stream) sock * Word8Vector.vector buf -&gt; int
+<A NAME="line61"></A>val <A HREF="#sendArr-val">sendArr</A>    : ('a, active stream) sock * Word8Array.array buf -&gt; int
+<A NAME="line62"></A>val <A HREF="#sendVec%27-val">sendVec'</A>   : ('a, active stream) sock * Word8Vector.vector buf 
+<A NAME="line63"></A>                 * out_flags -&gt; int
+<A NAME="line64"></A>val <A HREF="#sendArr%27-val">sendArr'</A>   : ('a, active stream) sock * Word8Array.array buf 
+<A NAME="line65"></A>                 * out_flags -&gt; int
+<A NAME="line66"></A>val <A HREF="#sendVecTo-val">sendVecTo</A>  : ('a, dgram) sock * 'a sock_addr * Word8Vector.vector buf
+<A NAME="line67"></A>                 -&gt; int
+<A NAME="line68"></A>val <A HREF="#sendArrTo-val">sendArrTo</A>  : ('a, dgram) sock * 'a sock_addr * Word8Array.array buf 
+<A NAME="line69"></A>                 -&gt; int
+<A NAME="line70"></A>val <A HREF="#sendVecTo%27-val">sendVecTo'</A> : ('a, dgram) sock * 'a sock_addr * Word8Vector.vector buf
+<A NAME="line71"></A>                 * out_flags -&gt; int
+<A NAME="line72"></A>val <A HREF="#sendArrTo%27-val">sendArrTo'</A> : ('a, dgram) sock * 'a sock_addr * Word8Array.array buf
+<A NAME="line73"></A>                 * out_flags -&gt; int
+<A NAME="line74"></A>
+<A NAME="line75"></A>(* Socket input operations *)
+<A NAME="line76"></A>val <A HREF="#recvVec-val">recvVec</A>      : ('a, active stream) sock * int -&gt; Word8Vector.vector
+<A NAME="line77"></A>val <A HREF="#recvArr-val">recvArr</A>      : ('a, active stream) sock * Word8Array.array buf -&gt; int
+<A NAME="line78"></A>val <A HREF="#recvVec%27-val">recvVec'</A>     : ('a, active stream) sock * int * in_flags
+<A NAME="line79"></A>                   -&gt; Word8Vector.vector
+<A NAME="line80"></A>val <A HREF="#recvArr%27-val">recvArr'</A>     : ('a, active stream) sock * Word8Array.array buf * in_flags
+<A NAME="line81"></A>                   -&gt; int
+<A NAME="line82"></A>val <A HREF="#recvVecFrom-val">recvVecFrom</A>  : ('a, dgram) sock * int 
+<A NAME="line83"></A>                   -&gt; Word8Vector.vector * 'a sock_addr
+<A NAME="line84"></A>val <A HREF="#recvArrFrom-val">recvArrFrom</A>  : ('a, dgram) sock * Word8Array.array buf 
+<A NAME="line85"></A>                   -&gt; int * 'a sock_addr
+<A NAME="line86"></A>val <A HREF="#recvVecFrom%27-val">recvVecFrom'</A> : ('a, dgram) sock * int * in_flags
+<A NAME="line87"></A>                   -&gt; Word8Vector.vector * 'a sock_addr
+<A NAME="line88"></A>val <A HREF="#recvArrFrom%27-val">recvArrFrom'</A> : ('a, dgram) sock * Word8Array.array buf * in_flags
+<A NAME="line89"></A>                   -&gt; int * 'a sock_addr
+<A NAME="line90"></A>
+<A NAME="line91"></A>(* 
+<A NAME="line92"></A>   Structure Socket defines functions for creating and using sockets,
+<A NAME="line93"></A>   a means for communication between SML processes on the same machine
+<A NAME="line94"></A>   or via a network.
+<A NAME="line95"></A>
+   [('addressfam, 'socktype) <A NAME="sock-typ"><B>sock</B></A>] is the type of sockets with address
+   family 'addressfam and having type 'socktype.
+
+   ['addressfam <A NAME="sock_addr-typ"><B>sock_addr</B></A>] is the type of sockets addresses.
+
+   The possible address (protocol) families are 
+
+        type pf_file    The Unix address family (file)
+        type pf_inet    The Internet address family
+
+   The possible socket types are 
+        type dgram      datagram sockets
+        type 'a stream  stream sockets
+        type passive    passive stream sockets
+        type active     active, or connected, stream sockets
+
+   [<A NAME="fileAddr-val"><B>fileAddr</B></A> fname] returns a socket address for the Unix protocol
+   family, created from the given file name fname.
+
+   [<A NAME="inetAddr-val"><B>inetAddr</B></A> inetaddr portno] returns a socket address for the
+   Internet protocol family, created from the given Internet number
+   (e.g. "130.225.40.253") and port number (e.g. 8080).
+
+   [<A NAME="fileStream-val"><B>fileStream</B></A> ()] returns a new stream socket for the Unix protocol
+   family.
+
+   [<A NAME="fileDgram-val"><B>fileDgram</B></A> ()] returns a new datagram socket for the Unix protocol
+   family.
+
+   [<A NAME="inetStream-val"><B>inetStream</B></A> ()] returns a new stream socket for the Internet
+   protocol family.
+
+   [<A NAME="inetDgram-val"><B>inetDgram</B></A> ()] returns a new datagram socket for the Internet
+   protocol family.
+
+   [<A NAME="accept-val"><B>accept</B></A> sock] extracts the first connection on the queue of pending
+   connections to sock.  Returns (sock', addr) where sock' is a copy
+   of the socket sock, bound to that connection, and addr is the
+   address of the communications counterpart (the other end of the
+   connection).  Blocks if no connections are pending.  The stream
+   socket sock must have been assigned a name (with bind) and must be
+   listening for connections (following a call to listen).
+
+   [<A NAME="bind-val"><B>bind</B></A> sock addr] binds the socket sock to the address addr, that
+   is, assigns the name addr to the socket.  Binding a name in the
+   Unix protocol family creates a socket in the file system that must
+   be deleted when it is no longer needed
+
+   [<A NAME="connect-val"><B>connect</B></A> (sock, addr)] attempts to connect socket sock to the
+   communications peer at address addr.  If sock is a datagram socket,
+   then addr is the address to which datagrams is to be sent, and the
+   only address from which datagrams will be accepted.  If sock is a
+   stream socket, then addr specifies another socket to which to
+   connect.
+
+   [<A NAME="listen-val"><B>listen</B></A> (sock, queuelen)] enables the passive stream socket sock to
+   accept incoming connections.  The parameter queuelen specifies the
+   maximal number of pending connections.  Further connections from
+   clients may be refused when this limit is reached.
+
+   [<A NAME="close-val"><B>close</B></A> sock] closes the socket.
+
+   [<A NAME="shutdown-val"><B>shutdown</B></A> sock shutdown_mode] shuts down socket sock for further
+   communication, as specified by the shutdown_mode parameter:
+
+   [<A NAME="NO_RECVS-con"><B>NO_RECVS</B></A>]           no further receives are allowed;
+
+   [<A NAME="NO_SENDS-con"><B>NO_SENDS</B></A>]           no further sends are allowed;
+
+   [<A NAME="NO_RECVS_OR_SENDS-con"><B>NO_RECVS_OR_SENDS</B></A>]  no further receives or sends are allowed.
+
+   [<A NAME="getinetaddr-val"><B>getinetaddr</B></A> addr] returns the Internet number
+   (e.g. "130.225.40.253") of the Internet socket address addr.
+
+   ['a <A NAME="buf-typ"><B>buf</B></A>] is the type of records { buf, ofs, size } which represent
+   subvectors or subarrays:
+   if size = SOME s it represents buf[ofs..ofs+s-1];
+   if size = NONE   it represents buf[ofs..len-1] where len is buf's length.
+   When the subbuffer is used in a call, exception Subscript will be raised 
+   if ofs &lt; 0 or size &lt; 0 or ofs+size &gt; len.   
+
+   [<A NAME="sendVec-val"><B>sendVec</B></A> (sock, vecbuf)] transmits the bytes from buffer vecbuf on
+   the active stream socket sock.  Returns the number of bytes sent.
+   Blocks until sufficient space is available at the socket.
+
+   [<A NAME="sendArr-val"><B>sendArr</B></A> (sock, arrbuf)] is analogous til sendVec.
+
+   [<A NAME="sendVec%27-val"><B>sendVec'</B></A> (sock, vecbuf, out_flags)] transmits the bytes from
+   buffer vecbuf on the active stream socket sock, observing the
+   out_flags.  Returns the number of bytes sent.  Blocks until
+   sufficient space is available at the socket.
+
+   [<A NAME="out_flags-typ"><B>out_flags</B></A>] is the type of records { don't_route, oob } in which
+   the field don't_route specifies whether routing should be bypassed,
+   and the field oob specifies whether data should be sent out-of-band.
+
+   [<A NAME="sendArr%27-val"><B>sendArr'</B></A> (sock, arrbuf, out_flags)] is analogous til sendVec'.
+
+   [<A NAME="sendVecTo-val"><B>sendVecTo</B></A> (sock, addr, vecbuf)] transmits the bytes from buffer
+   vecbuf on the datagram socket sock to the target address addr.
+   Returns the number of bytes sent.  Blocks until sufficient space is
+   available at the socket.
+
+   [<A NAME="sendArrTo-val"><B>sendArrTo</B></A> (sock, addr, arrbuf)] is analogous til sendVecTo.
+
+   [<A NAME="sendVecTo%27-val"><B>sendVecTo'</B></A> (sock, addr, vecbuf, out_flags)] transmits the bytes
+   from buffer vecbuf on the datagram socket sock to the target
+   address addr, observing the out_flags.  Returns the number of bytes
+   sent.  Blocks until sufficient space is available at the socket.
+   See above for a description of vecbuf and out_flags.
+
+   [<A NAME="sendArrTo%27-val"><B>sendArrTo'</B></A> (sock, addr, arrbuf, out_flags)] is analogous til sendVecTo'.
+
+   [<A NAME="recvVec-val"><B>recvVec</B></A> (sock, n)] receives up to n bytes from the active stream
+   socket sock.  Returns a byte vector containing the bytes actually
+   received.  Blocks until some data become available at the socket,
+   then returns any available data, up to n bytes.  Excess data are
+   not lost; they are available for subsequent receive calls.
+
+   [<A NAME="recvArr-val"><B>recvArr</B></A> (sock, arrbuf)] receives bytes from the active stream
+   socket sock into the subarray arrbuf, up to the available space.
+   If #size(arrbuf) = SOME(s) the available space is s bytes; if
+   #size(arrbuf) = NONE the available space is len - #ofs(arrbuf)
+   bytes.  Returns the number of bytes actually received.  Blocks
+   until some data become available at the socket.  Excess data are
+   not lost; they are available for subsequent receive calls.
+
+   [<A NAME="recvVec%27-val"><B>recvVec'</B></A> (sock, n, in_flags)] receives up to n bytes from the
+   active stream socket sock, observing the in_flags.  Returns a byte
+   vector containing the bytes actually received.  Blocks until some
+   data become available at the socket, then returns any available
+   data, up to n bytes.  Data in excess of n bytes are not lost; they
+   are available for subsequent receive calls.
+
+   [<A NAME="in_flags-typ"><B>in_flags</B></A>] is the type of records { peek, oob } in which the field
+   peek specifies that the data read should not be removed from the
+   receive queue, and the field oob specifies that data may be
+   received out-of-band.
+
+   [<A NAME="recvArr%27-val"><B>recvArr'</B></A> (sock, arrbuf, in_flags)] receives bytes from the active
+   stream socket sock into the subarray arrbuf, observing the
+   in_flags, up to the available space..  Returns the number of bytes
+   actually received.  Blocks until some data become available at the
+   socket.  Excess data are not lost; they are available for
+   subsequent receive calls.
+
+   [<A NAME="recvVecFrom-val"><B>recvVecFrom</B></A> (sock, n)] receives up to n bytes from the datagram
+   socket sock.  Returns a byte vector containing the bytes actually
+   received.  Blocks until some data become available at the socket,
+   then returns any available data, up to n bytes.
+
+   [<A NAME="recvArrFrom-val"><B>recvArrFrom</B></A> (sock, arrbuf)] receives bytes from the datagram
+   socket sock into the subarray arrbuf.  Returns the number of bytes
+   actually received.  Blocks until some data become available at the
+   socket.
+
+   [<A NAME="recvVecFrom%27-val"><B>recvVecFrom'</B></A> (sock, n, in_flags)] receives up to n bytes from the
+   datagram socket sock, observing the in_flags (see above).  Returns
+   (vec, addr) where vec is a byte vector containing the bytes
+   actually received, and addr is the source address of the message.
+   Blocks until some data become available at the socket, then returns
+   any available data, up to n bytes.
+
+   [<A NAME="recvArrFrom%27-val"><B>recvArrFrom'</B></A> (sock, arrbuf, in_flags)] receives bytes from the
+   datagram socket sock into the array buffer arrbuf, observing the
+   in_flags (see above).  Returns (n, addr) where n is the number of
+   bytes actually received, and addr is the source address of the
+   message.  Blocks until some data become available at the socket.
+
+   [<A NAME="sockDesc-val"><B>sockDesc</B></A> sock] returns a descriptor for the socket sock, to be
+   used in a call to select.
+
+   [<A NAME="compare-val"><B>compare</B></A> (sd1, sd2)] compares sd1 and sd2 according to an
+   unspecified total ordering, and returns LESS if sd1 precedes sd2,
+   returns GREATER is sd1 precedes sd2, and returns EQUAL otherwise.
+   
+   [<A NAME="sameDesc-val"><B>sameDesc</B></A> (sd1, sd2)] returns true if sd1 and sd2 describe the same
+   socket.  Equivalent to compare(sd1, sd2) = EQUAL.  
+
+   [<A NAME="select-val"><B>select</B></A> { rds, wrs, exs, timeout }] blocks the calling process
+   until some input/output operations become possible on some sockets.
+   The call will check the sockets described in rds for reading, those
+   in wrs for writing, and those in exs for exceptional conditions.
+   Returns { rds, wrs, exs } where rds now is a list of descriptors of
+   sockets ready for reading, wrs are ready for writing, and exs have
+   exceptional conditions.  The order of the socket descriptors in the
+   results is the same as their order in the corresponding arguments.
+   If timeout is NONE then the call blocks until some input/output
+   operations become possible; if timeout is SOME(t) then the call
+   blocks for at most time t.
+
+   A server socket is considered ready for reading if there is a
+   pending connection which can be accepted with `accept'.  A client
+   socket is ready for writing when its connection is fully
+   established.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

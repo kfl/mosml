@@ -1,0 +1,69 @@
+<HTML><HEAD><TITLE>Structure Process</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Process</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* OS.Process -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>type status
+<A NAME="line3"></A>
+<A NAME="line4"></A>val <A HREF="#success-val">success</A>   : status
+<A NAME="line5"></A>val <A HREF="#failure-val">failure</A>   : status
+<A NAME="line6"></A>
+<A NAME="line7"></A>val <A HREF="#isSuccess-val">isSuccess</A> : status -&gt; bool
+<A NAME="line8"></A>
+<A NAME="line9"></A>val <A HREF="#system-val">system</A>    : string -&gt; status
+<A NAME="line10"></A>
+<A NAME="line11"></A>val <A HREF="#atExit-val">atExit</A>    : (unit -&gt; unit) -&gt; unit
+<A NAME="line12"></A>val <A HREF="#exit-val">exit</A>      : status -&gt; 'a
+<A NAME="line13"></A>val <A HREF="#terminate-val">terminate</A> : status -&gt; 'a
+<A NAME="line14"></A>val <A HREF="#sleep-val">sleep</A>     : Time.time -&gt; unit 
+<A NAME="line15"></A>
+<A NAME="line16"></A>val <A HREF="#getEnv-val">getEnv</A>    : string -&gt; string option
+<A NAME="line17"></A>
+<A NAME="line18"></A>(* 
+<A NAME="line19"></A>   Portable functions for manipulating processes.
+<A NAME="line20"></A>
+   [<A NAME="success-val"><B>success</B></A>] is the unique status value that signifies successful
+   termination of a process.  Note: MS DOS (sometimes) believes that
+   all processes are successful.
+
+   [<A NAME="failure-val"><B>failure</B></A>] is a status value that signifies an error during
+   execution of a process.  Note that in contrast to the success
+   value, there may be several distinct failure values.  Use function
+   isSuccess to reliably test for success.
+
+   [<A NAME="isSuccess-val"><B>isSuccess</B></A> sv] returns true if the status value sv represents a
+   successful execution, false otherwise.  It holds that 
+   isSuccess success = true and isSuccess failure = false.
+
+   [<A NAME="system-val"><B>system</B></A> cmd] asks the operating system to execute command cmd, and
+   returns a status value.
+
+   [<A NAME="atExit-val"><B>atExit</B></A> act] registers the action act to be executed when the
+   current SML program calls Process.exit.  Actions will be executed
+   in reverse order of registration.
+
+   [<A NAME="exit-val"><B>exit</B></A> i] executes all registered actions, then terminates the SML
+   process with completion code i.
+
+   [<A NAME="terminate-val"><B>terminate</B></A> i] terminates the SML process with completion code i 
+   (but without executing the registered actions).
+
+   [<A NAME="sleep-val"><B>sleep</B></A> t] suspends this process for approximately the time
+   indicated by t.  The actual time slept depends on the capabilities
+   of the underlying system and the system load.  Does not sleep at
+   all if t &lt;= Time.zeroTime.
+
+   [<A NAME="getEnv-val"><B>getEnv</B></A> evar] returns SOME s if the environment variable evar is
+   defined and is associated with the string s; otherwise NONE.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

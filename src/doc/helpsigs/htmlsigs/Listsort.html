@@ -1,0 +1,27 @@
+<HTML><HEAD><TITLE>Structure Listsort</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Listsort</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Listsort *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>val <A HREF="#sort-val">sort</A>   : ('a * 'a -&gt; order) -&gt; 'a list -&gt; 'a list
+<A NAME="line3"></A>val <A HREF="#sorted-val">sorted</A> : ('a * 'a -&gt; order) -&gt; 'a list -&gt; bool
+<A NAME="line4"></A>
+<A NAME="line5"></A>(* 
+   [<A NAME="sort-val"><B>sort</B></A> ordr xs] sorts the list xs in nondecreasing order, using the
+   given ordering.  Uses Richard O'Keefe's smooth applicative merge
+   sort.
+
+   [<A NAME="sorted-val"><B>sorted</B></A> ordr xs] checks that the list xs is sorted in nondecreasing
+   order, in the given ordering.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

@@ -1,0 +1,128 @@
+<HTML><HEAD><TITLE>Structure ListPair</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure ListPair</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* ListPair -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>val <A HREF="#zip-val">zip</A>    : 'a list * 'b list -&gt; ('a * 'b) list
+<A NAME="line3"></A>val <A HREF="#unzip-val">unzip</A>  : ('a * 'b) list -&gt; 'a list * 'b list
+<A NAME="line4"></A>val <A HREF="#map-val">map</A>    : ('a * 'b -&gt; 'c)   -&gt; 'a list * 'b list -&gt; 'c list
+<A NAME="line5"></A>val <A HREF="#app-val">app</A>    : ('a * 'b -&gt; unit) -&gt; 'a list * 'b list -&gt; unit
+<A NAME="line6"></A>val <A HREF="#all-val">all</A>    : ('a * 'b -&gt; bool) -&gt; 'a list * 'b list -&gt; bool
+<A NAME="line7"></A>val <A HREF="#exists-val">exists</A> : ('a * 'b -&gt; bool) -&gt; 'a list * 'b list -&gt; bool
+<A NAME="line8"></A>val <A HREF="#foldr-val">foldr</A>  : ('a * 'b * 'c -&gt; 'c) -&gt; 'c -&gt; 'a list * 'b list -&gt; 'c
+<A NAME="line9"></A>val <A HREF="#foldl-val">foldl</A>  : ('a * 'b * 'c -&gt; 'c) -&gt; 'c -&gt; 'a list * 'b list -&gt; 'c
+<A NAME="line10"></A>
+<A NAME="line11"></A>val <A HREF="#allEq-val">allEq</A>    : ('a * 'b -&gt; bool) -&gt; 'a list * 'b list -&gt; bool
+<A NAME="line12"></A>
+<A NAME="line13"></A>exception UnequalLengths
+<A NAME="line14"></A>
+<A NAME="line15"></A>val <A HREF="#zipEq-val">zipEq</A>    : ('a list * 'b list) -&gt; ('a * 'b) list
+<A NAME="line16"></A>val <A HREF="#mapEq-val">mapEq</A>    : ('a * 'b -&gt; 'c) -&gt; 'a list * 'b list -&gt; 'c list
+<A NAME="line17"></A>val <A HREF="#appEq-val">appEq</A>    : ('a * 'b -&gt; 'c) -&gt; 'a list * 'b list -&gt; unit
+<A NAME="line18"></A>val <A HREF="#foldrEq-val">foldrEq</A>  : ('a * 'b * 'c -&gt; 'c) -&gt; 'c -&gt; 'a list * 'b list -&gt; 'c
+<A NAME="line19"></A>val <A HREF="#foldlEq-val">foldlEq</A>  : ('a * 'b * 'c -&gt; 'c) -&gt; 'c -&gt; 'a list * 'b list -&gt; 'c
+<A NAME="line20"></A>
+<A NAME="line21"></A>(* 
+<A NAME="line22"></A>   These functions process pairs (xs, ys) of lists.  
+<A NAME="line23"></A>   There are three groups of functions:
+<A NAME="line24"></A>
+<A NAME="line25"></A>     * zip, map, app, all, exists, foldr and foldl raise no exception
+<A NAME="line26"></A>       when the argument lists are found to be of unequal length; the
+<A NAME="line27"></A>       excess elements from the longer list are simply disregarded.
+<A NAME="line28"></A>
+<A NAME="line29"></A>     * zipEq, mapEq, appEq, foldrEq and foldlEq raise exception
+<A NAME="line30"></A>       UnequalLengths when the argument lists are found to be of
+<A NAME="line31"></A>       unequal length.
+<A NAME="line32"></A>
+<A NAME="line33"></A>     * allEq raises no exception but returns false if the lists are
+<A NAME="line34"></A>       found to have unequal lengths (after traversing the lists).
+<A NAME="line35"></A>
+   [<A NAME="zip-val"><B>zip</B></A> (xs, ys)] returns the list of pairs of corresponding elements
+   from xs and ys.  
+
+   [<A NAME="unzip-val"><B>unzip</B></A> xys] returns a pair (xs, ys), where xs is the list of first
+   components of xys, and ys is the list of second components from
+   xys.  Hence zip (unzip xys) has the same result and effect as xys.
+
+   [<A NAME="map-val"><B>map</B></A> f (xs, ys)] applies function f to the pairs of corresponding
+   elements of xs and ys from left to right and returns the list of
+   results.  Hence map f (xs, ys) has the same result and effect as
+   List.map f (zip (xs, ys)).
+
+   [<A NAME="app-val"><B>app</B></A> f (xs, ys)] applies function f to the pairs of corresponding
+   elements of xs and ys from left to right and returns ().  Hence 
+   app f (xs, ys) has the same result and effect as 
+   List.app f (zip (xs, ys)).
+
+   [<A NAME="all-val"><B>all</B></A> p (xs, ys)] applies predicate p to the pairs of corresponding
+   elements of xs and ys from left to right until p evaluates to false
+   or one or both lists is exhausted; returns true if p is true of all
+   such pairs; otherwise false.  Hence all p (xs, ys) has the same
+   result and effect as List.all p (zip (xs, ys)).
+
+   [<A NAME="exists-val"><B>exists</B></A> p (xs, ys)] applies predicate p to the pairs of
+   corresponding elements of xs and ys from left to right until p
+   evaluates to true or one or both lists is exhausted; returns true
+   if p is true of any such pair; otherwise false.  
+   Hence exists p (xs, ys) has the same result and effect as 
+   List.exists p (zip (xs, ys)).  Also, exists p (xs, ys) is equivalent 
+   to not(all (not o p) (xs, ys)).
+
+   [<A NAME="foldr-val"><B>foldr</B></A> f e (xs, ys)] evaluates f(x1, y1, f(x2, y2, f(..., f(xn, yn, e))))
+   where xs = [x1, x2, ..., x(n-1), xn, ...],
+         ys = [y1, y2, ..., y(n-1), yn, ...], 
+   and    n = min(length xs, length ys).
+   Equivalent to List.foldr (fn ((x, y), r) =&gt; f(x, y, r)) e (zip(xs, ys)).
+
+   [<A NAME="foldl-val"><B>foldl</B></A> f e (xs, ys)] evaluates f(xn, yn, f( ..., f(x2, y2, f(x1, y1, e))))
+   where xs = [x1, x2, ..., x(n-1), xn, ...], 
+         ys = [y1, y2, ..., y(n-1), yn, ...], 
+   and    n = min(length xs, length ys).
+   Equivalent to List.foldl (fn ((x, y), r) =&gt; f(x, y, r)) e (zip(xs, ys)).
+
+   [<A NAME="zipEq-val"><B>zipEq</B></A> (xs, ys)] returns the list of pairs of corresponding
+   elements from xs and ys.  Raises UnequalLengths if xs and ys do not
+   have the same length.
+
+   [<A NAME="mapEq-val"><B>mapEq</B></A> f (xs, ys)] applies function f to pairs of corresponding
+   elements of xs and ys from left to right, and then returns the list
+   of results if xs and ys have the same length, otherwise raises
+   UnequalLengths.  If f has no side effects and terminates, then
+   it is equivalent to List.map f (zipEq (xs, ys)).
+
+   [<A NAME="appEq-val"><B>appEq</B></A> f (xs, ys)] applies function f to pairs of corresponding
+   elements of xs and ys from left to right, and then raises
+   UnequalLengths if xs and ys have the same length. 
+
+   [<A NAME="foldrEq-val"><B>foldrEq</B></A> f e (xs, ys)] raises UnequalLengths if xs and ys do not
+   have the same length.  Otherwise evaluates 
+         f(x1, y1, f(x2, y2, f(..., f(xn, yn, e))))
+   where xs = [x1, x2, ..., x(n-1), xn],
+         ys = [y1, y2, ..., y(n-1), yn], 
+   and n = length xs = length ys.
+   Equivalent to List.foldr (fn ((x,y),r) =&gt; f(x,y,r)) e (zipEq(xs, ys)).
+
+   [<A NAME="foldlEq-val"><B>foldlEq</B></A> f e (xs, ys)] evaluates 
+   f(xn, yn, f( ..., f(x2, y2, f(x1, y1, e))))
+   where xs = [x1, x2, ..., x(n-1), xn, ...], 
+         ys = [y1, y2, ..., y(n-1), yn, ...], 
+   and    n = min(length xs, length ys).
+   Then raises UnequalLengths if xs and ys do not have the same
+   length.  If f has no side effects and terminates normally, then it is
+   equivalent to List.foldl (fn ((x,y),r) =&gt; f(x,y,r)) e (zipEq(xs, ys)).
+
+   [<A NAME="allEq-val"><B>allEq</B></A> p (xs, ys)] works as all p (xs, ys) but returns false if xs
+   and ys do not have the same length.  Equivalent to 
+       all p (xs, ys) andalso length xs = length ys.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

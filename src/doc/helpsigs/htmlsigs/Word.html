@@ -1,0 +1,165 @@
+<HTML><HEAD><TITLE>Structure Word</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Word</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Word -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>type <A HREF="#word-typ">word</A> = word
+<A NAME="line3"></A>
+<A NAME="line4"></A>val <A HREF="#wordSize-val">wordSize</A>   : int
+<A NAME="line5"></A>
+<A NAME="line6"></A>val <A HREF="#orb-val">orb</A>        : word * word -&gt; word
+<A NAME="line7"></A>val <A HREF="#andb-val">andb</A>       : word * word -&gt; word
+<A NAME="line8"></A>val <A HREF="#xorb-val">xorb</A>       : word * word -&gt; word
+<A NAME="line9"></A>val <A HREF="#notb-val">notb</A>       : word -&gt; word
+<A NAME="line10"></A>val <A HREF="#%7E-val">~</A>          : word -&gt; word
+<A NAME="line11"></A>
+<A NAME="line12"></A>val <A HREF="#%3C%3C-val"><<</A>         : word * word -&gt; word
+<A NAME="line13"></A>val <A HREF="#%3E%3E-val">>></A>         : word * word -&gt; word
+<A NAME="line14"></A>val <A HREF="#%7E%3E%3E-val">~>></A>        : word * word -&gt; word
+<A NAME="line15"></A>
+<A NAME="line16"></A>val <A HREF="#%2B-val">+</A>          : word * word -&gt; word
+<A NAME="line17"></A>val <A HREF="#--val">-</A>          : word * word -&gt; word
+<A NAME="line18"></A>val <A HREF="#%2A-val">*</A>          : word * word -&gt; word
+<A NAME="line19"></A>val <A HREF="#div-val">div</A>        : word * word -&gt; word
+<A NAME="line20"></A>val <A HREF="#mod-val">mod</A>        : word * word -&gt; word
+<A NAME="line21"></A>
+<A NAME="line22"></A>val <A HREF="#%3E-val">></A>          : word * word -&gt; bool
+<A NAME="line23"></A>val <A HREF="#%3C-val"><</A>          : word * word -&gt; bool
+<A NAME="line24"></A>val <A HREF="#%3E%3D-val">>=</A>         : word * word -&gt; bool
+<A NAME="line25"></A>val <A HREF="#%3C%3D-val"><=</A>         : word * word -&gt; bool
+<A NAME="line26"></A>val <A HREF="#compare-val">compare</A>    : word * word -&gt; order
+<A NAME="line27"></A>
+<A NAME="line28"></A>val <A HREF="#min-val">min</A>        : word * word -&gt; word
+<A NAME="line29"></A>val <A HREF="#max-val">max</A>        : word * word -&gt; word
+<A NAME="line30"></A>
+<A NAME="line31"></A>val <A HREF="#toString-val">toString</A>   : word -&gt; string
+<A NAME="line32"></A>val <A HREF="#fromString-val">fromString</A> : string -&gt; word option
+<A NAME="line33"></A>val <A HREF="#scan-val">scan</A>       : StringCvt.radix 
+<A NAME="line34"></A>                -&gt; (char, 'a) StringCvt.reader -&gt; (word, 'a) StringCvt.reader
+<A NAME="line35"></A>val <A HREF="#fmt-val">fmt</A>        : StringCvt.radix -&gt; word -&gt; string
+<A NAME="line36"></A>
+<A NAME="line37"></A>val <A HREF="#toInt-val">toInt</A>      : word -&gt; int
+<A NAME="line38"></A>val <A HREF="#toIntX-val">toIntX</A>     : word -&gt; int            (* with sign extension *)
+<A NAME="line39"></A>val <A HREF="#fromInt-val">fromInt</A>    : int -&gt; word
+<A NAME="line40"></A>
+<A NAME="line41"></A>val <A HREF="#toLargeWord-val">toLargeWord</A>   : word -&gt; word
+<A NAME="line42"></A>val <A HREF="#toLargeWordX-val">toLargeWordX</A>  : word -&gt; word        (* with sign extension *)
+<A NAME="line43"></A>val <A HREF="#fromLargeWord-val">fromLargeWord</A> : word -&gt; word
+<A NAME="line44"></A>
+<A NAME="line45"></A>val <A HREF="#toLargeInt-val">toLargeInt</A>    : word -&gt; int
+<A NAME="line46"></A>val <A HREF="#toLargeIntX-val">toLargeIntX</A>   : word -&gt; int         (* with sign extension *)
+<A NAME="line47"></A>val <A HREF="#fromLargeInt-val">fromLargeInt</A>  : int -&gt; word
+<A NAME="line48"></A>
+<A NAME="line49"></A>(* 
+   [<A NAME="word-typ"><B>word</B></A>] is the type of n-bit words, or n-bit unsigned integers.
+
+   [<A NAME="wordSize-val"><B>wordSize</B></A>] is the value of n above.  In Moscow ML, n=31 on 32-bit
+   machines and n=63 on 64-bit machines.
+
+   [<A NAME="orb-val"><B>orb</B></A>(w1, w2)] returns the bitwise `or' of w1 and w2.
+
+   [<A NAME="andb-val"><B>andb</B></A>(w1, w2)] returns the bitwise `and' of w1 and w2.
+
+   [<A NAME="xorb-val"><B>xorb</B></A>(w1, w2)] returns the bitwise `exclusive or' or w1 and w2.
+
+   [<A NAME="notb-val"><B>notb</B></A> w] returns the bitwise negation (one's complement) of w.
+
+   [<A NAME="%7E-val"><B>~</B></A> w] returns the arithmetic negation (two's complement) of w.
+
+   [<A NAME="%3C%3C-val"><B><<</B></A>(w, k)] returns the word resulting from shifting w left by k
+   bits.  The bits shifted in are zero, so this is a logical shift.
+   Consequently, the result is 0-bits when k &gt;= wordSize.
+
+   [<A NAME="%3E%3E-val"><B>>></B></A>(w, k)] returns the word resulting from shifting w right by k
+   bits.  The bits shifted in are zero, so this is a logical shift.
+   Consequently, the result is 0-bits when k &gt;= wordSize.
+
+   [<A NAME="%7E%3E%3E-val"><B>~>></B></A>(w, k)] returns the word resulting from shifting w right by k
+   bits.  The bits shifted in are replications of the left-most bit:
+   the `sign bit', so this is an arithmetical shift.  Consequently,
+   for k &gt;= wordSize and wordToInt w &gt;= 0 the result is all 0-bits, and 
+   for k &gt;= wordSize and wordToInt w &lt;  0 the result is all 1-bits.
+
+   To make &lt;&lt;, &gt;&gt;, and ~&gt;&gt; infix, use the declaration 
+                          infix 5 &lt;&lt; &gt;&gt; ~&gt;&gt;
+
+   [<A NAME="%2B-val"><B>+</B></A>]
+   [<A NAME="--val"><B>-</B></A>]
+   [<A NAME="%2A-val"><B>*</B></A>]
+   [<A NAME="div-val"><B>div</B></A>]
+   [<A NAME="mod-val"><B>mod</B></A>] represent unsigned integer addition, subtraction,
+   multiplication, division, and remainder, modulus 2 raised to the n'th 
+   power, where n=wordSize.  The operations (i div j) and (i mod j)
+   raise Div when j=0.  Otherwise no exceptions are raised.
+
+   [<A NAME="%3C-val"><B><</B></A>]
+   [<A NAME="%3C%3D-val"><B><=</B></A>]
+   [<A NAME="%3E-val"><B>></B></A>]
+   [<A NAME="%3E%3D-val"><B>>=</B></A>] compare words as unsigned integers.
+
+   [<A NAME="compare-val"><B>compare</B></A>(w1, w2)] returns LESS, EQUAL, or GREATER, according 
+   as w1 is less than, equal to, or greater than w2 (as unsigned integers).
+
+   [<A NAME="min-val"><B>min</B></A>(w1, w2)] returns the smaller of w1 and w2 (as unsigned integers).
+
+   [<A NAME="max-val"><B>max</B></A>(w1, w2)] returns the larger of w1 and w2 (as unsigned integers).
+
+   [<A NAME="fmt-val"><B>fmt</B></A> radix w] returns a string representing w, in the radix (base)
+   specified by radix.
+
+     radix    description                     output format  
+     ------------------------------------------------------  
+      BIN     unsigned binary      (base  2)  [01]+         
+      OCT     unsigned octal       (base  8)  [0-7]+          
+      DEC     unsigned decimal     (base 10)  [0-9]+          
+      HEX     unsigned hexadecimal (base 16)  [0-9A-F]+       
+
+   [<A NAME="toString-val"><B>toString</B></A> w] returns a string representing w in unsigned
+   hexadecimal format.  Equivalent to (fmt HEX w).
+   
+   [<A NAME="fromString-val"><B>fromString</B></A> s] returns SOME(w) if a hexadecimal unsigned numeral
+   can be scanned from a prefix of string s, ignoring any initial
+   whitespace; returns NONE otherwise.  Raises Overflow if the scanned 
+   number cannot be represented as a word.  An unsigned hexadecimal
+   numeral must have form, after possible initial whitespace:
+        [0-9a-fA-F]+
+
+   [<A NAME="scan-val"><B>scan</B></A> radix getc charsrc] attempts to scan an unsigned numeral from
+   the character source charsrc, using the accessor getc, and ignoring
+   any initial whitespace.  The radix argument specifies the base of
+   the numeral (BIN, OCT, DEC, HEX).  If successful, it returns
+   SOME(w, rest) where w is the value of the numeral scanned, and rest
+   is the unused part of the character source.  Raises Overflow if the
+   scanned number cannot be represented as a word.  A numeral must
+   have form, after possible initial whitespace:
+
+     radix    input format 
+     -------------------------------------
+      BIN     (0w)?[0-1]+
+      OCT     (0w)?[0-7]+
+      DEC     (0w)?[0-9]+
+      HEX     (0wx|0wX|0x|0X)?[0-9a-fA-F]+
+
+   [<A NAME="toInt-val"><B>toInt</B></A> w] returns the (signed) integer represented by bit-pattern w.
+   [<A NAME="toIntX-val"><B>toIntX</B></A> w] returns the (signed) integer represented by bit-pattern w.
+   [<A NAME="fromInt-val"><B>fromInt</B></A> i] returns the word representing integer i.
+
+   [<A NAME="toLargeInt-val"><B>toLargeInt</B></A> w] returns the (signed) integer represented by bit-pattern w.
+   [<A NAME="toLargeIntX-val"><B>toLargeIntX</B></A> w] returns the (signed) integer represented by bit-pattern w.
+   [<A NAME="fromLargeInt-val"><B>fromLargeInt</B></A> i] returns the word representing integer i.
+
+   [<A NAME="toLargeWord-val"><B>toLargeWord</B></A> w] returns w.
+   [<A NAME="toLargeWordX-val"><B>toLargeWordX</B></A> w] returns w.
+   [<A NAME="fromLargeWord-val"><B>fromLargeWord</B></A> w] returns w.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>
