@@ -75,9 +75,9 @@ val app5    : cptr -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
    retrieved from C code under the name nam.  If nam has previously
    been registered and then unregistered, it will be reregistered with
    the new value.  The new value immediately becomes visible to the C
-   side, both via get_valueptr nam and via any ML value pointer
-   previously obtained for nam.  Raises exception Fail if nam has
-   been registered and not yet unregistered.
+   side, both via get_valueptr(nam) and via any ML value pointer
+   previously obtained for nam.  Raises exception Fail if nam has been
+   registered and not yet unregistered.
 
    [unregister nam] deletes the registration.  This prevents C code
    from obtaining an ML value pointer for nam and from using an ML
