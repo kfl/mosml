@@ -35,7 +35,7 @@ val compare : time * time -> order
 (* 
    [time] is a type for representing durations as well as absolute
    points in time (which can be thought of as durations since some
-   fixed time zero).
+   fixed time zero).  Times can be negative, zero, or positive.
 
    [zeroTime] represents the 0-second duration, and the origin of time, 
    so zeroTime + t = t + zeroTime = t for all t.
@@ -43,43 +43,40 @@ val compare : time * time -> order
    [now ()] returns the point in time at which the application occurs.
 
    [fromSeconds s] returns the time value corresponding to s seconds.  
-   Raises Time if s < 0.
 
    [fromMilliseconds ms] returns the time value corresponding to ms
-   milliseconds.  Raises Time if ms < 0.
+   milliseconds.  
 
    [fromMicroseconds us] returns the time value corresponding to us
-   microseconds.  Raises Time if us < 0.
+   microseconds.  
 
    [toSeconds t] returns the number of seconds represented by t,
-   truncated.  Raises Overflow if that number is not representable as
-   an int.
-
-   [toMilliseconds t] returns the number of milliseconds
-   represented by t, truncated.  Raises Overflow if that number is not
+   truncated (towards zero).  Raises Overflow if that number is not
    representable as an int.
 
-   [toMicroseconds t] returns the number of microseconds
-   represented by t, truncated.  Raises Overflow if t that number is
+   [toMilliseconds t] returns the number of milliseconds represented
+   by t, truncated (towards zero).  Raises Overflow if that number is
    not representable as an int.
 
-   [fromReal r] converts a real to a time value representing that
-   many seconds.  Raises Time if r < 0 or if r is not representable
-   as a time value.  It holds that realToTime 0.0 = zeroTime.  
+   [toMicroseconds t] returns the number of microseconds represented
+   by t, truncated (towards zero).  Raises Overflow if t that number
+   is not representable as an int.
 
-   [toReal t] converts a time the number of seconds it represents;
-   hence realToTime and timeToReal are inverses of each other when 
-   defined.  Raises Overflow if t is not representable as a real.
+   [fromReal r] converts a real to a time value representing that many
+   seconds.  It holds that fromReal 0.0 = zeroTime.
+
+   [toReal t] converts a time to the number of seconds it represents;
+   hence fromReal and toReal are inverses of each other.
 
    [fmt n t] returns as a string the number of seconds represented by
    t, rounded to n decimal digits.  If n <= 0, then no decimal digits
-   are reported. 
+   are reported.
 
    [toString t] returns as a string the number of seconds represented
    by t, rounded to 3 decimal digits.  Equivalent to (fmt 3 t).  
 
    [fromString s] returns SOME t where t is the time value represented
-   by the string s of form [\n\t ]*([0-9]+(\.[0-9]+)?)|(\.[0-9]+); 
+   by the string s of form [\n\t ]*[+~-]?([0-9]+(\.[0-9]+)?)|(\.[0-9]+); 
    or returns NONE if s cannot be parsed as a time value.
 
    [scan getc src], where getc is a character accessor, returns SOME
@@ -87,18 +84,18 @@ val compare : time * time -> order
    if s cannot be parsed as a time value.
 
    [+] adds two time values. For reals r1, r2 >= 0.0, it holds that
-   realToTime r1 + realToTime r2 = realToTime(Real.+(r1,r2)).  
+   fromReal r1 + fromReal r2 = fromReal(Real.+(r1,r2)).  
    Raises Overflow if the result is not representable as a time value.
 
    [-] subtracts a time value from another.  That is, t1 - t2 is the
-   duration from t2 to t1.  Raises Time if t1 < t2 or if the result is
-   not representable as a time value.  It holds that t - zeroTime = t.
+   duration from t2 to t1 (which may be negative).  
+   It holds that t - zeroTime = t.
 
    [<]
    [<=]
    [>]
    [>=] compares time values.  For instance, for reals r1, r2 >= 0.0 
-   it holds that realToTime r1 < realToTime r2 iff Real.<(r1, r2)
+   it holds that  fromReal r1 < fromReal r2  iff Real.<(r1, r2)
 
    [compare(t1, t2)] returns LESS, EQUAL, or GREATER, according 
    as t1 precedes, equals, or follows t2 in time.

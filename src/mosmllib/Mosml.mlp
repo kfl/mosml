@@ -79,8 +79,9 @@ fun time f arg =
 	val cputimer  = startCPUTimer ()
 	val realtimer = startRealTimer ()
 	fun report () = 
-	    let val {usr, sys, gc} = checkCPUTimer cputimer;
-		val rea = checkRealTimer realtimer;
+	    let val {usr, sys} = checkCPUTime cputimer;
+		val gc = checkGCTime cputimer;
+		val rea = checkRealTime realtimer;
 		fun format t = Time.toString t
 	    in TextIO.print("User: "     ^ format usr ^
 			    "  System: " ^ format sys ^ 

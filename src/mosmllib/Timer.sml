@@ -20,17 +20,22 @@ in
 	    gc  = fromSeconds gcSec  + fromMicroseconds gcUsec}
 	end
 
-    fun checkCPUTimer {usr, sys, gc} = 
+    fun checkCPUTime {usr, sys, gc} = 
 	let val {gcSec, gcUsec, sysSec, sysUsec, usrSec, usrUsec} 
 	        = getrutime_ () 
-	in {usr = fromSeconds usrSec + fromMicroseconds usrUsec - usr,
-	    sys = fromSeconds sysSec + fromMicroseconds sysUsec - sys,
-	    gc  = fromSeconds gcSec  + fromMicroseconds gcUsec  - gc}
+	in 
+	    {usr = fromSeconds usrSec + fromMicroseconds usrUsec - usr,
+	     sys = fromSeconds sysSec + fromMicroseconds sysUsec - sys }
 	end
+
+    fun checkGCTime {usr, sys, gc} = 
+	let val {gcSec, gcUsec, sysSec, sysUsec, usrSec, usrUsec} 
+	        = getrutime_ () 
+	in fromSeconds gcSec  + fromMicroseconds gcUsec - gc end
 
     fun startRealTimer () = now ();
 
-    fun checkRealTimer time1 = now () - time1;
+    fun checkRealTime time1 = now () - time1;
 
 (* Removed 1995-11-03, added again 1997-03-07 *)
 

@@ -66,6 +66,14 @@ val test8c = checkrange (~1000,1000)
     (fn i => let val r = w2i (notb (i2w i)) 
 	     in 0 <= r andalso r < 256 end);
 
+val test8d = check (0 = w2i (~ (i2w 0)));
+val test8e = check (1 = w2i (~ (i2w ~1)));
+val test8f = check (2 = w2i (~ (i2w ~2))); 
+val test8g = check (127 = w2i (~ (i2w ~127))); 
+val test8h = checkrange (~1000,1000)
+    (fn i => let val r = w2i (~ (i2w i)) 
+	     in 0 <= r andalso r < 256 end);
+
 val test9a = checkrange (0,7)
     (fn k => pwr2 k = w2i (<< (i2w 1, i2W k)));
 val test9b = checkrange (8,70)

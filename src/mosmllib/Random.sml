@@ -1,4 +1,4 @@
-(* Random -- Moscow ML library 1995-04-23, 1999-02-24 *)
+(* Random -- Moscow ML library 1995-04-23, 1999-02-24, 2000-10-24 *)
 
 type generator = {seedref : real ref}
 
@@ -14,10 +14,11 @@ fun newgenseed seed =
     {seedref = ref (nextrand seed)};
 
 fun newgen () =
-    let prim_val getrealtime_ : unit -> {sec : int, usec : int} 
-                                = 1 "sml_getrealtime"
-        val {sec, usec} = getrealtime_ ()
-    in newgenseed (real sec + real usec) end
+    let prim_val getrealtime_ : unit -> real = 1 "sml_getrealtime"
+	val r    = getrealtime_ ()
+	val sec  = real (trunc(r/1000000.0))
+	val usec = trunc(r - 1000000.0 * sec);
+    in newgenseed (sec + real usec) end;
 
 fun random {seedref as ref seed} = 
     (seedref := nextrand seed; seed / m);

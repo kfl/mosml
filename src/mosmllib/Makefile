@@ -23,7 +23,8 @@ all: Array.uo Array2.uo ArraySlice.uo Arraysort.uo \
      Strbase.uo String.uo StringCvt.uo Substring.uo Susp.uo \
      TextIO.uo Time.uo Timer.uo \
      Unix.uo Vector.uo VectorSlice.uo \
-     Weak.uo Word.uo Word8.uo Word8Array.uo Word8Vector.uo
+     Weak.uo Word.uo Word8.uo Word8Array.uo Word8ArraySlice.uo \
+     Word8Vector.uo Word8VectorSlice.uo
 
 # Make with the current compiler
 current:
@@ -61,31 +62,26 @@ depend: Array.sml FileSys.sml Help.sml Int.sml Mosml.sml Path.sml \
 OS.ui: FileSys.ui Path.ui Process.ui
 
 ### DO NOT DELETE THIS LINE
-VectorSlice.uo: VectorSlice.ui Vector.ui 
-VectorSlice.ui: Vector.ui 
-ArraySlice.uo: ArraySlice.ui Vector.ui Array.ui VectorSlice.ui 
-ArraySlice.ui: Vector.ui Array.ui VectorSlice.ui 
+Word8ArraySlice.uo: Word8ArraySlice.ui Word8Array.ui Word8.ui \
+    Word8Vector.ui Word8VectorSlice.ui 
+Word8ArraySlice.ui: Word8Array.ui Word8.ui Word8Vector.ui \
+    Word8VectorSlice.ui 
+Word8VectorSlice.uo: Word8VectorSlice.ui Word8.ui Word8Vector.ui 
+Word8VectorSlice.ui: Word8.ui Word8Vector.ui 
 Word8Vector.uo: Word8Vector.ui String.ui List.ui Word8.ui 
 Word8Array.uo: Word8Array.ui List.ui Word8.ui Word8Vector.ui 
+ArraySlice.uo: ArraySlice.ui Vector.ui Array.ui VectorSlice.ui 
+ArraySlice.ui: Vector.ui Array.ui VectorSlice.ui 
 Word.uo: Word.ui String.ui StringCvt.ui Char.ui 
-Weak.uo: Weak.ui 
-Vector.uo: Vector.ui List.ui 
-Strbase.uo: Strbase.ui List.ui 
-Process.uo: Process.ui List.ui BasicIO.ui 
-Path.uo: Path.ui String.ui List.ui Substring.ui 
-Mosml.uo: Mosml.ui Timer.ui FileSys.ui BinIO.ui String.ui List.ui Vector.ui \
-    Word8.ui Process.ui Byte.ui TextIO.ui Word8Vector.ui Time.ui 
-Int.uo: Int.ui String.ui StringCvt.ui Char.ui 
-Help.uo: Help.ui String.ui StringCvt.ui List.ui BasicIO.ui Vector.ui \
-    TextIO.ui Char.ui 
-OS.uo: OS.ui 
-FileSys.uo: FileSys.ui Path.ui List.ui Time.ui 
 Gdimage.uo: Gdimage.ui Dynlib.ui Vector.ui 
+Weak.uo: Weak.ui 
 Signal.uo: Signal.ui Word.ui 
 Signal.ui: Word.ui 
 Unix.uo: Unix.ui Signal.ui Word.ui Dynlib.ui Option.ui Vector.ui Process.ui \
     TextIO.ui Obj.uo 
 Unix.ui: Signal.ui Process.ui TextIO.ui 
+Vector.uo: Vector.ui List.ui 
+Strbase.uo: Strbase.ui List.ui 
 Socket.uo: Socket.ui Word.ui Dynlib.ui Word8Array.ui Vector.ui \
     Word8Vector.ui Time.ui 
 Socket.ui: Word8Array.ui Word8Vector.ui Time.ui 
@@ -102,6 +98,17 @@ Mosmlcookie.uo: Mosmlcookie.ui String.ui List.ui Date.ui Option.ui \
 Mosmlcookie.ui: Date.ui 
 Msp.uo: Msp.ui String.ui StringCvt.ui List.ui Option.ui Vector.ui TextIO.ui \
     Int.ui Mosmlcgi.ui Char.ui 
+Process.uo: Process.ui List.ui BasicIO.ui 
+Path.uo: Path.ui String.ui List.ui Substring.ui 
+Mosml.uo: Mosml.ui Timer.ui FileSys.ui BinIO.ui String.ui List.ui Vector.ui \
+    Word8.ui Process.ui Byte.ui TextIO.ui Word8Vector.ui Time.ui 
+Int.uo: Int.ui String.ui StringCvt.ui Char.ui 
+Help.uo: Help.ui String.ui StringCvt.ui List.ui BasicIO.ui Vector.ui \
+    TextIO.ui Char.ui 
+FileSys.uo: FileSys.ui Path.ui List.ui Time.ui 
+OS.uo: OS.ui 
+VectorSlice.uo: VectorSlice.ui Vector.ui 
+VectorSlice.ui: Vector.ui 
 Word8Vector.ui: Word8.ui 
 Word8Array.ui: Word8.ui Word8Vector.ui 
 Word8.uo: Word8.ui Word.ui String.ui StringCvt.ui Char.ui 
@@ -109,7 +116,7 @@ Word8.ui: Word.ui StringCvt.ui
 Word.ui: StringCvt.ui 
 Timer.uo: Timer.ui Time.ui 
 Timer.ui: Time.ui 
-Time.uo: Time.ui String.ui StringCvt.ui Char.ui 
+Time.uo: Time.ui Real.ui StringCvt.ui Char.ui 
 Time.ui: StringCvt.ui 
 TextIO.uo: TextIO.ui String.ui Char.ui 
 TextIO.ui: StringCvt.ui Char.ui 

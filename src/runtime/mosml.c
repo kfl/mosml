@@ -613,10 +613,6 @@ value sml_makestring_of_string(value arg)      /* ML */
 #pragma mpwc_newline off
 #endif
 
-/* The following must agree with timebase in mosmllib/Time.sml: */
-
-#define TIMEBASE (-1073741824)
-
 /* There is another problem on the Mac: with a time base of 1904,
    most times are simply out of range of mosml integers. So, I added
    the macros below to compensate. 07Sep95 e
@@ -628,6 +624,8 @@ value sml_makestring_of_string(value arg)      /* ML */
 #define SMLtoSYStime
 
 #endif
+
+/* Return time as (double) number of usec since the epoch */
 
 value sml_getrealtime (value v) /* ML */
 {
@@ -648,19 +646,12 @@ value sml_getrealtime (value v) /* ML */
   */
 
   ftime(&t);
-  res = alloc (2, 0);
-  Field (res, 0) = Val_long (t.time + TIMEBASE);
-  Field (res, 1) = Val_long (((long) t.millitm) * 1000);
-  return res;
+  return copy_double(t.time*1000000.0 + t.millitm*1000.0);
 #else
-  value res;
   struct timeval tp;
 
   gettimeofday(&tp, NULL);
-  res = alloc (2, 0);
-  Field (res, 0) = Val_long (SYStoSMLtime(tp.tv_sec)+TIMEBASE);
-  Field (res, 1) = Val_long (tp.tv_usec);
-  return res;
+  return copy_double((SYStoSMLtime(tp.tv_sec))*1000000.0 + (double)tp.tv_usec);
 #endif
 }
 

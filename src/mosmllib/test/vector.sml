@@ -56,11 +56,42 @@ fun chkiteri iter f vec reslast =
 	       val res = iter (fn (i, x) => (last := i; f x)) vec
 	   in (res, !last) = reslast end)
 
+fun chkfold fold f start vec reslast =
+    check'(fn _ =>
+	   let val last = ref ~1
+	       val res = fold (fn (x, r) => (last := x; f(x, r))) start vec
+	   in (res, !last) = reslast end)
+fun chkfoldi fold f start vec reslast =
+    check'(fn _ =>
+	   let val last = ref ~1
+	       val res = fold (fn (i, x, r) => (last := i; f(x, r))) start vec
+	   in (res, !last) = reslast end)
+
 val test10a = 
     chkiter map (fn x => 2*x) b (fromList [88,110,132], 66)
+val test10b = 
+    chkiter app (fn x => ignore(2*x)) b ((), 66)
+val test10c = 
+    chkiter find (fn x => false) b (NONE, 66)
+val test10d = 
+    chkiter exists (fn x => false) b (false, 66)
+val test10e = 
+    chkiter all (fn x => true) b (true, 66)
+val test10f = 
+    chkfold foldl (op +) 0 b (165, 66)
+val test10g = 
+    chkfold foldr (op +) 0 b (165, 44)
 
 val test11a = 
     chkiteri mapi (fn x => 2*x) b (fromList [88,110,132], 2)
+val test11b = 
+    chkiteri appi (fn x => ignore(2*x)) b ((), 2)
+val test11c = 
+    chkiteri findi (fn x => false) b (NONE, 2)
+val test11d = 
+    chkfoldi foldli (op +) 0 b (165, 2)
+val test11e = 
+    chkfoldi foldri (op +) 0 b (165, 0)
 
 val test12a = 
     check'(fn _ => 

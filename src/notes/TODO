@@ -633,12 +633,15 @@ size -A mlsexe kan fortaelle hvor store de enkelte sektioner er.
 + zillions of changes already made
 * Word8Array, CharArray   -- remove and simplify
 * Word8Vector, CharVector -- remove and simplify
-* test/vector.sml -- many missing cases
++ test/vector.sml -- many missing cases
 * Word8ArraySlice, CharArraySlice -- add
 * Word8VectorSlice, CharVectorSlice -- adda
-* Negative Time values -- how?
++ Negative Time values -- how?  Use reals, represent time as 
+  whole number of microseconds since the epoch (possibly negative).  
+  This gives exact times in a range of 2^52 = 4.503.599.627.370.496, 
+  that is, microsecond resolution from 1828 till 2112.
 * Extended date offset range?
-* ~ (ones-complement) in Word, Word8
++ ~ (ones-complement) in Word, Word8
 * Timer -- do not include GC time, add new function
 * Process.status not equality type
 * Unix structure -- various changes

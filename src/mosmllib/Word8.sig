@@ -8,6 +8,7 @@ val orb        : word * word -> word
 val andb       : word * word -> word
 val xorb       : word * word -> word
 val notb       : word -> word
+val ~          : word -> word
 
 val <<         : word * Word.word -> word
 val >>         : word * Word.word -> word
@@ -58,7 +59,9 @@ val fromLargeWord : Word.word -> word
 
    [xorb(w1, w2)] returns the bitwise `exclusive or' or w1 and w2.
 
-   [notb w] returns the bitwise negation of w.
+   [notb w] returns the bitwise negation (one's complement) of w.
+
+   [~ w] returns the arithmetic negation (two's complement) of w.
 
    [<<(w, k)] returns the word resulting from shifting w left by k
    bits.  The bits shifted in are zero, so this is a logical shift.
