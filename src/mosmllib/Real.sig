@@ -64,12 +64,11 @@ val fmt        : StringCvt.realfmt -> real -> string
    [ceil r] is the smallest integer >= r (rounds towards plus infinity).
    May raise Overflow.
 
-   [trunc r] is numerically largest integer between r and zero (rounds
-   towards zero).  May raise Overflow.
+   [trunc r] is the numerically largest integer between r and zero
+   (rounds towards zero).  May raise Overflow.
 
    [round r] is the integer nearest to r, using the default rounding
-   mode.  NOTE: This isn't the required behaviour: it should round to
-   nearest even integer in case of a tie.  May raise Overflow.
+   mode.  May raise Overflow.
 
    [==(x, y)] is equivalent to x=y in Moscow ML (because of the
    absence of NaNs and Infs).

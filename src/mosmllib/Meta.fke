@@ -145,12 +145,12 @@ val system      : string -> int
    if it is a variable, a special constant, a function, a tuple or 
    record of non-expansive expressions, a parenthesized or typed 
    non-expansive expression, or the application of an exception or value 
-   constructor (other than ref) to a non-expansive expression.
+   constructor (other than ref) to a non-expansive expression.  
         If valuepoly is false, then the type checker will distinguish 
    imperative and applicative type variables, generalize all applicative 
    type variables, and generalize imperative type variables only in
-   non-expansive expressions.  This is the default, required by the
-   1990 Definition of Standard ML, Section 4.8.
+   non-expansive expressions.  
+	Valuepoly is true by default.
 
    [system "com"] causes the command com to be executed by the
    operating system.  If a non-zero integer is returned, this must

@@ -1,81 +1,210 @@
-(* General and top-level *)
+(* SML Basis Libray and Moscow ML top-level declarations *)
 
+(* SML Basis Library types *)
+
+type     exn
+eqtype   unit
+datatype order = LESS | EQUAL | GREATER
+
+(* Additional Moscow ML top-level types *)
+
+datatype bool = false | true
 eqtype char
-type   exn
 eqtype int
+datatype 'a option = NONE | SOME of 'a
+type ppstream
 eqtype real
 eqtype string
-eqtype unit
+type substring
+type syserror
+type 'a vector
+eqtype word
+eqtype word8
+datatype 'a list = nil | op :: of 'a * 'a list
+datatype 'a ref  = ref of 'a 
+datatype 'a frag = QUOTE of string | ANTIQUOTE of 'a
 
-datatype bool      = false | true
-datatype 'a list   = nil | op :: of 'a * 'a list
-datatype order     = LESS | EQUAL | GREATER
-datatype 'a ref    = ref of 'a 
+(* SML Basis Library exceptions *)
 
 exception Bind
-exception Match
-exception Interrupt
-
-exception Subscript
-exception Size
-exception Fail of string
-
-exception Overflow
+exception Chr
 exception Div
 exception Domain
+exception Fail of string
+exception Match
+exception Overflow
+exception Subscript
+exception Size
 
-val =   : ''a * ''a -> bool
-val <>  : ''a * ''a -> bool
+(* Additional Moscow ML top-level exceptions *)
+
+exception Graphic of string
+exception Interrupt
+exception Invalid_argument of string
+exception Io of {function : string, name : string, cause : exn }
+exception Out_of_memory
+exception SysErr of string * syserror option
+
+(* SML Basis Library values *)
+
+val !          : 'a ref -> 'a
+val :=         : 'a ref * 'a -> unit
+
+val o          : ('b -> 'c) * ('a -> 'b) -> ('a -> 'c)
+val ignore     : 'a -> unit
+val before     : 'a * 'b -> 'a
+
+val exnName    : exn -> string
+val exnMessage : exn -> string
+
+(* Additional Moscow ML top-level values *)
+
+val not    : bool -> bool
+val ^      : string * string -> string
+
+val =      : ''a * ''a -> bool
+val <>     : ''a * ''a -> bool
+
+val ceil   : real -> int                (* round towards plus infinity  *)
+val floor  : real -> int                (* round towards minus infinity *)
+val real   : int -> real                (* equals Real.fromInt          *)
+val round  : real -> int                (* round to nearest even        *)
+val trunc  : real -> int                (* round towards zero           *)
+
+val vector : 'a list -> 'a vector
 
 (* Below, numtxt is int, Word.word, Word8.word, real, char, string: *)
+
 val <   : numtxt * numtxt -> bool
 val <=  : numtxt * numtxt -> bool
 val >   : numtxt * numtxt -> bool
 val >=  : numtxt * numtxt -> bool
 
+val makestring : numtxt -> string
+
 (* Below, realint is int or real:                                       *)
+
 val ~   : realint -> realint            (* raises Overflow              *)
 val abs : realint -> realint            (* raises Overflow              *)
                                                                         
 (* Below, num is int, Word.word, Word8.word, or real:                   *)
+
 val +   : num * num -> num              (* raises Overflow              *)
 val -   : num * num -> num              (* raises Overflow              *)
 val *   : num * num -> num              (* raises Overflow              *)
 val /   : real * real -> real           (* raises Div, Overflow         *)
                                                                         
 (* Below, wordint is int, Word.word or Word8.word:                      *)
+
 val div : wordint * wordint -> wordint  (* raises Div, Overflow         *)
 val mod : wordint * wordint -> wordint  (* raises Div                   *)
-                                                                        
-val real   : int -> real                (* equals Real.fromInt          *)
-val floor  : real -> int                (* round towards minus infinity *)
-val ceil   : real -> int                (* round towards plus infinity  *)
-val trunc  : real -> int                (* round towards zero           *)
-val round  : real -> int                (* round to nearest even        *)
 
-val o      : ('b -> 'c) * ('a -> 'b) -> ('a -> 'c)
-val ignore : 'a -> unit
-val before : 'a * 'b -> 'a
-
-val !      : 'a ref -> 'a
-val :=     : 'a ref * 'a -> unit
-
-val vector : 'a list -> 'a vector
-
-
-val exnName    : exn -> string
-val exnMessage : exn -> string
-
-
-(* Non-standard types and exceptions *)
-
-datatype 'a frag = QUOTE of string | ANTIQUOTE of 'a
-
-exception Io of {function : string, name : string, cause : exn }
-exception Graphic_failure of string
-exception Out_of_memory
 
 (*
+   [exn] is the type of exceptions.
+ 
+   [unit] is the type containing the empty tuple () which equals the 
+   empty record { }.
+
+   [order] is used as the return type of comparison functions.
+
+   [bool] is the type of booleans, false and true.  Equals Bool.bool.
+
+   [char] is the type of characters such as #"A".  Equals Char.char.
+
+   [int] is the type of integers.  Equals Int.int.
+
+   [option] is the type of optional values.  Equals Option.option.
+
+   [ppstream] is the type of pretty-printing streams, see structure PP.  
+   Pretty-printers may be installed in the top-level by function 
+   Meta.installPP; see the Moscow ML Owner's Manual.
+
+   [real] is the type of floating-point numbers.  Equals Real.real.
+
+   [string] is the type of character strings.  Equals String.string.
+
+   [substring] is the type of substrings.  Equals Substring.substring.
+
+   [syserror] is the abstract type of system error codes.  
+   Equals OS.syserror. 
+
+   [vector] is the type of immutable vectors.  Equals Vector.vector.
+   
+   [word] is the type of unsigned words.  Equals Word.word.
+
+   [word8] is the type of unsigned bytes.  Equals Word8.word.
+
+   [list] is the type of lists.  Equals List.list.
+
+   [ref] is the type of mutable references.
+
+   [frag] is the type of quotation fragments, resulting from the
+   parsing of quotations ` ... ` and antiquotations.  See the Moscow
+   ML Owner's Manual.
+
+   [Bind] is the exception raised when the right-hand side value in a
+   valbind does not match the left-hand side pattern.
+
+   [Chr] signals an attempt to produce an unrepresentable character.
+
+   [Div] signals an attempt to divide by zero.
+   
+   [Domain] signals an attempt to apply a function outside its domain
+   of definition; such as computing Math.sqrt(~1).
+
+   [Fail] signals the failure of some function, usually in the Moscow
+   ML specific library structures.
+
+   [Match] signals the failure to match a value against the patterns
+   in a case, handle, or function application.
+
+   [Overflow] signals the attempt to compute an unrepresentable number.
+
+   [Subscript] signals the attempt to use an illegal index in an
+   array, dynarray, list, string, substring, vector or weak array.
+
+   [Size] signals the attempt to create an array, string or vector
+   that is too large for the implementation.
+
+   [Graphic] signals the failure of Graphics primitives (DOS only).
+
+   [Interrupt] signals user interrupt of the computation.
+
+   [Invalid_argument] signals the failure of a function in the runtime 
+   system. 
+
+   [Io { function, name, cause }] signals the failure of an
+   input/output operation (function) when operating on a file (name).
+   The third field (cause) may give a reason for the failure.
+
+   [Out_of_memory] signals an attempt to create a data structure too
+   large for the implementation, or the failure to extend the heap or
+   stack.
+
+   [SysErr (msg, err)] signals a system error, described by msg.  A
+   system error code may be given by err.  If so, it will usually hold
+   that msg = OS.errorMsg err.
+  
+
+   SML Basis Library values 
+
+   [! rf] returns the value pointed to by reference rf.
+
+   [:=(rf, e)] evaluates rf and e, then makes the reference rf point to
+   the value of e.  Since := has infix status, this is usually written
+        rf := e
+
+   [o(f, g)] computes the functional composition of f and g, that is,
+   fn x => f(g x).  Since  o  has infix status, this is usually written
+        f o g
+
+   [ignore e] evaluates e, discards its value, and returns () : unit.
+
+   [before(e1, e2)] evaluates e1, then evaluates e2, then returns the
+   value of e1.  Since  before  has infix status, this is usually written
+        e1 before e2
+
    [exnName exn] returns a name for the exception constructor in exn.  
    Never raises an exception itself.  The name returned may be that of
    any exception constructor aliasing with exn.  For instance,
@@ -85,4 +214,68 @@ exception Out_of_memory
    [exnMessage exn] formats and returns a message corresponding to
    exception exn.  For the exceptions defined in the SML Basis Library, 
    the message will include the argument carried by the exception.
+
+
+   Additional Moscow ML top-level values
+
+   [not b] returns the logical negation of b.
+
+   [s1 ^ s2] returns the concatenation of s1 and s2.
+
+   [=(e1, e2)] returns true when e1 and e2 are equal; otherwise false.
+
+   [<>(e1, e2)] returns false when e1 and e2 are equal; otherwise true.
+
+   [ceil r] is the smallest integer >= r (rounds towards plus infinity).
+   May raise Overflow.
+
+   [floor r] is the largest integer <= r (rounds towards minus infinity).
+   May raise Overflow.
+
+   [real i] is the floating-point number representing integer i.
+   Equivalent to Real.fromInt.
+
+   [round r] is the integer nearest to r, using the default rounding
+   mode.  May raise Overflow.
+
+   [trunc r] is the numerically largest integer between r and zero
+   (rounds towards zero).  May raise Overflow.
+
+   [vector [x1, ..., xn]] returns the vector #[x1, ..., xn].
+
+   [< (x1, x2)] 
+   [<=(x1, x2)]
+   [> (x1, x2)]
+   [>=(x1, x2)]
+
+   These are the standard comparison operators for arguments of type
+   int, Word.word, Word8.word, real, char or string.
+
+   [makestring v] returns a representation of value v as a string, for
+   v of type int, Word.word, Word8.word, real, char or string.
+
+   [~ x] is the numeric negation of x (of type real or int).  May
+   raise Overflow.
+
+   [abs x] is the absolute value of x (of type real or int).  May raise
+   Overflow.
+                                                                        
+   [+ (e1, e2)]
+   [- (e1, e2)]
+   [* (e1, e2)]
+
+   These are the standard arithmetic operations for arguments of type
+   int, Word.word, Word8.word, and real.  They are unsigned in the
+   case of Word.word and Word8.word.  May raise Overflow.
+
+   [/ (e1, e2)] is the floating-point result of dividing e1 by e2.
+   May raise Div and Overflow.
+                                                                        
+   [div(e1, e2)] is the integral quotient of dividing e1 by e2 for
+   arguments of type int, Word.word, and Word8.word.  See Int.div and
+   Word.div for more details.  May raise Div, Overflow.
+
+   [mod(e1, e2)] is the remainder when dividing e1 by e2, for
+   arguments of type int, Word.word, and Word8.word.  See Int.mod and
+   Word.mod for more details.  May raise Div.
 *)
