@@ -795,7 +795,7 @@ AtomicTy :
   | TyVar                       { mkLoc(TYVARty $1) }
   | LBRACE TyRow_opt RBRACE     { mkLoc(RECty $2) }
   | LBRACKET SigExp  RBRACKET       { mkLoc(PACKty $2) }
-  | LPAREN Ty RPAREN            { $2 }
+  | LPAREN Ty RPAREN            { mkLoc(PARty($2)) }
 ;
 
 TyRow_opt :

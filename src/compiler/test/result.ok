@@ -1842,7 +1842,8 @@ Enter `quit();' to quit.
 !     op F:functor X:sig type t end -> sig type u end;
 !     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor t of the domain is specified as admitting equality in the module
+! Equality type mismatch: type constructor t of the domain
+! is specified as admitting equality in the module
 !   type t = t
 ! but its declaration does not admit equality in the signature
 !   type t = t'
@@ -1850,7 +1851,8 @@ Enter `quit();' to quit.
 !     op F:functor X:sig eqtype t end -> sig eqtype u end;
 !     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor u of the range is specified as admitting equality in the signature
+! Equality type mismatch: type constructor u of the range
+! is specified as admitting equality in the signature
 !   type u = (u'''' t)
 ! but its declaration does not admit equality in the module
 !   type u = (u''''' t)
@@ -1902,7 +1904,8 @@ Enter `quit();' to quit.
 !     in [structure struct val x = x end as S ]
 !        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the structure does not match the signature ...
-! Scheme mismatch: value identifier x is specified with type scheme 
+! Scheme mismatch: value identifier x
+! is specified with type scheme 
 !   val 'a' x : 'a'
 ! in the signature
 ! but its declaration has the unrelated type scheme 
@@ -1913,7 +1916,8 @@ Enter `quit();' to quit.
 !     in [structure struct val x = x end as S ]
 !        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the structure does not match the signature ...
-! Scheme mismatch: value identifier x is specified with type scheme 
+! Scheme mismatch: value identifier x
+! is specified with type scheme 
 !   val 'b x : 'b
 ! in the signature
 ! but its declaration has the unrelated type scheme 
@@ -1948,7 +1952,8 @@ Enter `quit();' to quit.
 ! structure X = struct open General end: sig val + : (int * int) -> int end;
 !               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier + is specified with type scheme 
+! Scheme mismatch: value identifier +
+! is specified with type scheme 
 !   val + : int * int -> int
 ! in the signature
 ! but its declaration has the unrelated type scheme 
@@ -1959,7 +1964,8 @@ Enter `quit();' to quit.
 ! structure X = struct val x = fn 1 => Div end : sig exception x of int end;
 !               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Status mismatch: identifier x is specified as an exception in the signature
+! Status mismatch: identifier x
+! is specified as an exception in the signature
 !   exn x : int -> exn
 ! but declared as an ordinary value in the module
 !   val x : int -> exn
@@ -1967,7 +1973,8 @@ Enter `quit();' to quit.
 ! structure X = struct val x = fn y => y end : sig prim_val  x : 'a ->'a = 1 "identity" end;
 !               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Status mismatch: identifier x is specified as a primitive in the signature
+! Status mismatch: identifier x
+! is specified as a primitive in the signature
 !   val 'a x : 'a -> 'a
 ! but declared as an ordinary value in the module
 !   val 'a x : 'a -> 'a
@@ -1977,7 +1984,8 @@ Enter `quit();' to quit.
 ! structure X = struct val x = fn 1 => 1 end : sig val x : 'a -> 'a end;
 !               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier x is specified with type scheme 
+! Scheme mismatch: value identifier x
+! is specified with type scheme 
 !   val 'a x : 'a -> 'a
 ! in the signature
 ! but its declaration has the unrelated type scheme 
@@ -1988,7 +1996,8 @@ Enter `quit();' to quit.
 ! structure X = struct val x = fn 1 => Div end : sig exception x of int end;
 !               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Status mismatch: identifier x is specified as an exception in the signature
+! Status mismatch: identifier x
+! is specified as an exception in the signature
 !   exn x : int -> exn
 ! but declared as an ordinary value in the module
 !   val x : int -> exn
@@ -1996,7 +2005,8 @@ Enter `quit();' to quit.
 ! structure X = struct val x = fn y => y end : sig prim_val  x : 'a ->'a = 1 "identity" end;
 !               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Status mismatch: identifier x is specified as a primitive in the signature
+! Status mismatch: identifier x
+! is specified as a primitive in the signature
 !   val 'a x : 'a -> 'a
 ! but declared as an ordinary value in the module
 !   val 'a x : 'a -> 'a
@@ -2004,7 +2014,8 @@ Enter `quit();' to quit.
 ! structure X = struct datatype t = C of int end : sig datatype t = C of bool end;
 !               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier C is specified with type scheme 
+! Scheme mismatch: value identifier C
+! is specified with type scheme 
 !   con C : bool -> t
 ! in the signature
 ! but its declaration has the unrelated type scheme 
@@ -2015,7 +2026,8 @@ Enter `quit();' to quit.
 ! signature S = sig type t end where type 'a t = int;
 !                                    ^^^^^^^^^^^^^^^
 ! Illegal where constraint: the type constructor t cannot be constrained in this way because ...
-! Arity mismatch: type constructor t is specified with arity 0 in the signature
+! Arity mismatch: type constructor t
+! is specified with arity 0 in the signature
 !   type t = t
 ! but declared with arity 1 in the constraint
 !   type 'a t = int
@@ -2024,7 +2036,8 @@ Enter `quit();' to quit.
 ! signature S = sig structure X : sig type t end end where type 'a X.t = int;
 !                                                          ^^^^^^^^^^^^^^^^^
 ! Illegal where constraint: the type constructor X.t cannot be constrained in this way because ...
-! Arity mismatch: type constructor X.t is specified with arity 0 in the signature
+! Arity mismatch: type constructor X.t
+! is specified with arity 0 in the signature
 !   type t = t
 ! but declared with arity 1 in the constraint
 !   type 'a t = int
@@ -2033,7 +2046,8 @@ Enter `quit();' to quit.
 ! signature S = sig structure Y : sig structure X : sig type t end end end where type 'a Y.X.t = int;
 !                                                                                ^^^^^^^^^^^^^^^^^^^
 ! Illegal where constraint: the type constructor Y.X.t cannot be constrained in this way because ...
-! Arity mismatch: type constructor Y.X.t is specified with arity 0 in the signature
+! Arity mismatch: type constructor Y.X.t
+! is specified with arity 0 in the signature
 !   type t = t
 ! but declared with arity 1 in the constraint
 !   type 'a t = int
@@ -2054,25 +2068,29 @@ Enter `quit();' to quit.
 ! functor X = (functor(X:sig end)=>struct end): functor(X:sig end)->functor(X:sig end)->sig end;
 !             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Module mismatch: the range is specified as a functor in the signature
+! Module mismatch: the range
+! is specified as a functor in the signature
 ! but declared as a structure in the module
 - ! Toplevel input:
 ! functor X = (functor(X:sig end)=>functor(X:sig end)=>struct end): functor(X:sig end)->sig end;
 !             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Module mismatch: the range is specified as a structure in the signature
+! Module mismatch: the range
+! is specified as a structure in the signature
 ! but declared as a functor in the module
 - ! Toplevel input:
 ! functor X = (functor(X:functor(X:sig end)->sig end)=>struct end): functor(X:sig end)->sig end;
 !             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Module mismatch: the domain is specified as a functor in the module
+! Module mismatch: the domain
+! is specified as a functor in the module
 ! but declared as a structure in the signature
 - ! Toplevel input:
 ! functor X = (functor(X:sig end)=>struct end): functor(F:functor(X:sig end)->sig end)->sig end;
 !             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Module mismatch: the domain is specified as a structure in the module
+! Module mismatch: the domain
+! is specified as a structure in the module
 ! but declared as a functor in the signature
 - > signature G = {type t = unit}
 - > signature L = {}
@@ -2344,7 +2362,8 @@ Enter `quit();' to quit.
 !   L:G;
 !   ^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier x is specified with type scheme 
+! Scheme mismatch: value identifier x
+! is specified with type scheme 
 !   val 'a x : 'a -> 'a
 ! in the signature
 ! but its declaration has the unrelated type scheme 
@@ -2355,7 +2374,8 @@ Enter `quit();' to quit.
 !   LL:functor(L:L)->G;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier x of the range is specified with type scheme 
+! Scheme mismatch: value identifier x of the range
+! is specified with type scheme 
 !   val 'a x : 'a -> 'a
 ! in the signature
 ! but its declaration has the unrelated type scheme 
@@ -2366,7 +2386,8 @@ Enter `quit();' to quit.
 !   GL:functor(L:L)->L;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier x of the domain is specified with type scheme 
+! Scheme mismatch: value identifier x of the domain
+! is specified with type scheme 
 !   val 'a x : 'a -> 'a
 ! in the module
 ! but its declaration has the unrelated type scheme 
@@ -2377,7 +2398,8 @@ Enter `quit();' to quit.
 !   YL:sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier Y.x is specified with type scheme 
+! Scheme mismatch: value identifier Y.x
+! is specified with type scheme 
 !   val 'a x : 'a -> 'a
 ! in the signature
 ! but its declaration has the unrelated type scheme 
@@ -2388,7 +2410,8 @@ Enter `quit();' to quit.
 !   L_YL:functor(L:L)->sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier Y.x of the range is specified with type scheme 
+! Scheme mismatch: value identifier Y.x of the range
+! is specified with type scheme 
 !   val 'a x : 'a -> 'a
 ! in the signature
 ! but its declaration has the unrelated type scheme 
@@ -2399,7 +2422,8 @@ Enter `quit();' to quit.
 !   YG_L:functor(YL:sig structure Y: L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier Y.x of the domain is specified with type scheme 
+! Scheme mismatch: value identifier Y.x of the domain
+! is specified with type scheme 
 !   val 'a x : 'a -> 'a
 ! in the module
 ! but its declaration has the unrelated type scheme 
@@ -2410,7 +2434,8 @@ Enter `quit();' to quit.
 !   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier Y.x of the domain of the range is specified with type scheme 
+! Scheme mismatch: value identifier Y.x of the domain of the range
+! is specified with type scheme 
 !   val 'a x : 'a -> 'a
 ! in the module
 ! but its declaration has the unrelated type scheme 
@@ -2421,7 +2446,8 @@ Enter `quit();' to quit.
 !   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier Y.x of the domain of the range of F is specified with type scheme 
+! Scheme mismatch: value identifier Y.x of the domain of the range of F
+! is specified with type scheme 
 !   val 'a x : 'a -> 'a
 ! in the module
 ! but its declaration has the unrelated type scheme 
@@ -2432,7 +2458,8 @@ Enter `quit();' to quit.
 ! 	  L:G;
 ! 	  ^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier x is specified with type scheme 
+! Scheme mismatch: value identifier x
+! is specified with type scheme 
 !   val 'a x : ('a -> 'a) -> 'a -> 'a
 ! in the signature
 ! but its declaration has the unrelated type scheme 
@@ -2443,7 +2470,8 @@ Enter `quit();' to quit.
 ! 	  LL:functor(L:L)->G;
 ! 	  ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier x of the range is specified with type scheme 
+! Scheme mismatch: value identifier x of the range
+! is specified with type scheme 
 !   val 'a x : ('a -> 'a) -> 'a -> 'a
 ! in the signature
 ! but its declaration has the unrelated type scheme 
@@ -2454,7 +2482,8 @@ Enter `quit();' to quit.
 ! 	  GL:functor(L:L)->L;
 ! 	  ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier x of the domain is specified with type scheme 
+! Scheme mismatch: value identifier x of the domain
+! is specified with type scheme 
 !   val 'a x : ('a -> 'a) -> 'a -> 'a
 ! in the module
 ! but its declaration has the unrelated type scheme 
@@ -2465,7 +2494,8 @@ Enter `quit();' to quit.
 ! 	  YL:sig structure Y: G end;
 ! 	  ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier Y.x is specified with type scheme 
+! Scheme mismatch: value identifier Y.x
+! is specified with type scheme 
 !   val 'a x : ('a -> 'a) -> 'a -> 'a
 ! in the signature
 ! but its declaration has the unrelated type scheme 
@@ -2476,7 +2506,8 @@ Enter `quit();' to quit.
 ! 	  L_YL:functor(L:L)->sig structure Y: G end;
 ! 	  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier Y.x of the range is specified with type scheme 
+! Scheme mismatch: value identifier Y.x of the range
+! is specified with type scheme 
 !   val 'a x : ('a -> 'a) -> 'a -> 'a
 ! in the signature
 ! but its declaration has the unrelated type scheme 
@@ -2487,7 +2518,8 @@ Enter `quit();' to quit.
 ! 	  YG_L:functor(YL:sig structure Y: L end)->L;
 ! 	  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier Y.x of the domain is specified with type scheme 
+! Scheme mismatch: value identifier Y.x of the domain
+! is specified with type scheme 
 !   val 'a x : ('a -> 'a) -> 'a -> 'a
 ! in the module
 ! but its declaration has the unrelated type scheme 
@@ -2498,7 +2530,8 @@ Enter `quit();' to quit.
 ! 	  L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
 ! 	  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier Y.x of the domain of the range is specified with type scheme 
+! Scheme mismatch: value identifier Y.x of the domain of the range
+! is specified with type scheme 
 !   val 'a x : ('a -> 'a) -> 'a -> 'a
 ! in the module
 ! but its declaration has the unrelated type scheme 
@@ -2509,7 +2542,8 @@ Enter `quit();' to quit.
 ! 	  FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
 ! 	  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Scheme mismatch: value identifier Y.x of the domain of the range of F is specified with type scheme 
+! Scheme mismatch: value identifier Y.x of the domain of the range of F
+! is specified with type scheme 
 !   val 'a x : ('a -> 'a) -> 'a -> 'a
 ! in the module
 ! but its declaration has the unrelated type scheme 
@@ -2522,7 +2556,8 @@ Enter `quit();' to quit.
 !   L:G;
 !   ^^^
 ! Signature mismatch: the module does not match the signature ...
-! Status mismatch: identifier x is specified as an exception in the signature
+! Status mismatch: identifier x
+! is specified as an exception in the signature
 !   exn x : exn
 ! but declared as an ordinary value in the module
 !   val x : exn
@@ -2530,7 +2565,8 @@ Enter `quit();' to quit.
 !   LL:functor(L:L)->G;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Status mismatch: identifier x of the range is specified as an exception in the signature
+! Status mismatch: identifier x of the range
+! is specified as an exception in the signature
 !   exn x : exn
 ! but declared as an ordinary value in the module
 !   val x : exn
@@ -2538,7 +2574,8 @@ Enter `quit();' to quit.
 !   GL:functor(L:L)->L;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Status mismatch: identifier x of the domain is specified as an exception in the module
+! Status mismatch: identifier x of the domain
+! is specified as an exception in the module
 !   exn x : exn
 ! but declared as an ordinary value in the signature
 !   val x : exn
@@ -2546,7 +2583,8 @@ Enter `quit();' to quit.
 !   YL:sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Status mismatch: identifier Y.x is specified as an exception in the signature
+! Status mismatch: identifier Y.x
+! is specified as an exception in the signature
 !   exn x : exn
 ! but declared as an ordinary value in the module
 !   val x : exn
@@ -2554,7 +2592,8 @@ Enter `quit();' to quit.
 !   L_YL:functor(L:L)->sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Status mismatch: identifier Y.x of the range is specified as an exception in the signature
+! Status mismatch: identifier Y.x of the range
+! is specified as an exception in the signature
 !   exn x : exn
 ! but declared as an ordinary value in the module
 !   val x : exn
@@ -2562,7 +2601,8 @@ Enter `quit();' to quit.
 !   YG_L:functor(YL:sig structure Y: L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Status mismatch: identifier Y.x of the domain is specified as an exception in the module
+! Status mismatch: identifier Y.x of the domain
+! is specified as an exception in the module
 !   exn x : exn
 ! but declared as an ordinary value in the signature
 !   val x : exn
@@ -2570,7 +2610,8 @@ Enter `quit();' to quit.
 !   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Status mismatch: identifier Y.x of the domain of the range is specified as an exception in the module
+! Status mismatch: identifier Y.x of the domain of the range
+! is specified as an exception in the module
 !   exn x : exn
 ! but declared as an ordinary value in the signature
 !   val x : exn
@@ -2578,7 +2619,8 @@ Enter `quit();' to quit.
 !   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Status mismatch: identifier Y.x of the domain of the range of F is specified as an exception in the module
+! Status mismatch: identifier Y.x of the domain of the range of F
+! is specified as an exception in the module
 !   exn x : exn
 ! but declared as an ordinary value in the signature
 !   val x : exn
@@ -2588,7 +2630,8 @@ Enter `quit();' to quit.
 !   L:G;
 !   ^^^
 ! Signature mismatch: the module does not match the signature ...
-! Datatype mismatch: type constructor t is specified as the datatype
+! Datatype mismatch: type constructor t
+! is specified as the datatype
 !   datatype t = (t,{con C : int -> t})
 ! in the signature
 ! but declared as the different datatype
@@ -2599,7 +2642,8 @@ Enter `quit();' to quit.
 !   LL:functor(L:L)->G;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Datatype mismatch: type constructor t of the range is specified as the datatype
+! Datatype mismatch: type constructor t of the range
+! is specified as the datatype
 !   datatype t = (t,{con C : int -> t})
 ! in the signature
 ! but declared as the different datatype
@@ -2610,7 +2654,8 @@ Enter `quit();' to quit.
 !   GL:functor(L:L)->L;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Datatype mismatch: type constructor t of the domain is specified as the datatype
+! Datatype mismatch: type constructor t of the domain
+! is specified as the datatype
 !   datatype t = (t,{con C : int -> t})
 ! in the module
 ! but declared as the different datatype
@@ -2621,7 +2666,8 @@ Enter `quit();' to quit.
 !   YL:sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Datatype mismatch: type constructor Y.t is specified as the datatype
+! Datatype mismatch: type constructor Y.t
+! is specified as the datatype
 !   datatype t = (t,{con C : int -> t})
 ! in the signature
 ! but declared as the different datatype
@@ -2632,7 +2678,8 @@ Enter `quit();' to quit.
 !   L_YL:functor(L:L)->sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Datatype mismatch: type constructor Y.t of the range is specified as the datatype
+! Datatype mismatch: type constructor Y.t of the range
+! is specified as the datatype
 !   datatype t = (t,{con C : int -> t})
 ! in the signature
 ! but declared as the different datatype
@@ -2643,7 +2690,8 @@ Enter `quit();' to quit.
 !   YG_L:functor(YL:sig structure Y: L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Datatype mismatch: type constructor Y.t of the domain is specified as the datatype
+! Datatype mismatch: type constructor Y.t of the domain
+! is specified as the datatype
 !   datatype t = (t,{con C : int -> t})
 ! in the module
 ! but declared as the different datatype
@@ -2654,7 +2702,8 @@ Enter `quit();' to quit.
 !   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Datatype mismatch: type constructor Y.t of the domain of the range is specified as the datatype
+! Datatype mismatch: type constructor Y.t of the domain of the range
+! is specified as the datatype
 !   datatype t = (t,{con C : int -> t})
 ! in the module
 ! but declared as the different datatype
@@ -2665,7 +2714,8 @@ Enter `quit();' to quit.
 !   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Datatype mismatch: type constructor Y.t of the domain of the range of F is specified as the datatype
+! Datatype mismatch: type constructor Y.t of the domain of the range of F
+! is specified as the datatype
 !   datatype t = (t,{con C : int -> t})
 ! in the module
 ! but declared as the different datatype
@@ -2678,7 +2728,8 @@ Enter `quit();' to quit.
 !   L:G;
 !   ^^^
 ! Signature mismatch: the module does not match the signature ...
-! Arity mismatch: type constructor t is specified with arity 0 in the signature
+! Arity mismatch: type constructor t
+! is specified with arity 0 in the signature
 !   type t = unit
 ! but declared with arity 1 in the module
 !   type 'a t = unit
@@ -2687,7 +2738,8 @@ Enter `quit();' to quit.
 !   LL:functor(L:L)->G;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Arity mismatch: type constructor t of the range is specified with arity 0 in the signature
+! Arity mismatch: type constructor t of the range
+! is specified with arity 0 in the signature
 !   type t = unit
 ! but declared with arity 1 in the module
 !   type 'a t = unit
@@ -2696,7 +2748,8 @@ Enter `quit();' to quit.
 !   GL:functor(L:L)->L;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Arity mismatch: type constructor t of the domain is specified with arity 0 in the module
+! Arity mismatch: type constructor t of the domain
+! is specified with arity 0 in the module
 !   type t = unit
 ! but declared with arity 1 in the signature
 !   type 'a t = unit
@@ -2705,7 +2758,8 @@ Enter `quit();' to quit.
 !   YL:sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Arity mismatch: type constructor Y.t is specified with arity 0 in the signature
+! Arity mismatch: type constructor Y.t
+! is specified with arity 0 in the signature
 !   type t = unit
 ! but declared with arity 1 in the module
 !   type 'a t = unit
@@ -2714,7 +2768,8 @@ Enter `quit();' to quit.
 !   L_YL:functor(L:L)->sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Arity mismatch: type constructor Y.t of the range is specified with arity 0 in the signature
+! Arity mismatch: type constructor Y.t of the range
+! is specified with arity 0 in the signature
 !   type t = unit
 ! but declared with arity 1 in the module
 !   type 'a t = unit
@@ -2723,7 +2778,8 @@ Enter `quit();' to quit.
 !   YG_L:functor(YL:sig structure Y: L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Arity mismatch: type constructor Y.t of the domain is specified with arity 0 in the module
+! Arity mismatch: type constructor Y.t of the domain
+! is specified with arity 0 in the module
 !   type t = unit
 ! but declared with arity 1 in the signature
 !   type 'a t = unit
@@ -2732,7 +2788,8 @@ Enter `quit();' to quit.
 !   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Arity mismatch: type constructor Y.t of the domain of the range is specified with arity 0 in the module
+! Arity mismatch: type constructor Y.t of the domain of the range
+! is specified with arity 0 in the module
 !   type t = unit
 ! but declared with arity 1 in the signature
 !   type 'a t = unit
@@ -2741,7 +2798,8 @@ Enter `quit();' to quit.
 !   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Arity mismatch: type constructor Y.t of the domain of the range of F is specified with arity 0 in the module
+! Arity mismatch: type constructor Y.t of the domain of the range of F
+! is specified with arity 0 in the module
 !   type t = unit
 ! but declared with arity 1 in the signature
 !   type 'a t = unit
@@ -2752,7 +2810,8 @@ Enter `quit();' to quit.
 !   L:G;
 !   ^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor myref is specified as a `prim_EQtype' in the signature
+! Equality type mismatch: type constructor myref
+! is specified as a `prim_EQtype' in the signature
 !   type 'a myref = 'a ref
 ! but is not declared as a `prim_EQtype' in the module
 !   type 'a myref = 'a
@@ -2760,7 +2819,8 @@ Enter `quit();' to quit.
 !   LL:functor(L:L)->G;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor myref of the range is specified as a `prim_EQtype' in the signature
+! Equality type mismatch: type constructor myref of the range
+! is specified as a `prim_EQtype' in the signature
 !   type 'a myref = 'a ref
 ! but is not declared as a `prim_EQtype' in the module
 !   type 'a myref = 'a
@@ -2768,7 +2828,8 @@ Enter `quit();' to quit.
 !   GL:functor(L:L)->L;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor myref of the domain is specified as a `prim_EQtype' in the module
+! Equality type mismatch: type constructor myref of the domain
+! is specified as a `prim_EQtype' in the module
 !   type 'a myref = 'a ref
 ! but is not declared as a `prim_EQtype' in the signature
 !   type 'a myref = 'a
@@ -2776,7 +2837,8 @@ Enter `quit();' to quit.
 !   YL:sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.myref is specified as a `prim_EQtype' in the signature
+! Equality type mismatch: type constructor Y.myref
+! is specified as a `prim_EQtype' in the signature
 !   type 'a myref = 'a ref
 ! but is not declared as a `prim_EQtype' in the module
 !   type 'a myref = 'a
@@ -2784,7 +2846,8 @@ Enter `quit();' to quit.
 !   L_YL:functor(L:L)->sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.myref of the range is specified as a `prim_EQtype' in the signature
+! Equality type mismatch: type constructor Y.myref of the range
+! is specified as a `prim_EQtype' in the signature
 !   type 'a myref = 'a ref
 ! but is not declared as a `prim_EQtype' in the module
 !   type 'a myref = 'a
@@ -2792,7 +2855,8 @@ Enter `quit();' to quit.
 !   YG_L:functor(YL:sig structure Y: L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.myref of the domain is specified as a `prim_EQtype' in the module
+! Equality type mismatch: type constructor Y.myref of the domain
+! is specified as a `prim_EQtype' in the module
 !   type 'a myref = 'a ref
 ! but is not declared as a `prim_EQtype' in the signature
 !   type 'a myref = 'a
@@ -2800,7 +2864,8 @@ Enter `quit();' to quit.
 !   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.myref of the domain of the range is specified as a `prim_EQtype' in the module
+! Equality type mismatch: type constructor Y.myref of the domain of the range
+! is specified as a `prim_EQtype' in the module
 !   type 'a myref = 'a ref
 ! but is not declared as a `prim_EQtype' in the signature
 !   type 'a myref = 'a
@@ -2808,7 +2873,8 @@ Enter `quit();' to quit.
 !   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.myref of the domain of the range of F is specified as a `prim_EQtype' in the module
+! Equality type mismatch: type constructor Y.myref of the domain of the range of F
+! is specified as a `prim_EQtype' in the module
 !   type 'a myref = 'a ref
 ! but is not declared as a `prim_EQtype' in the signature
 !   type 'a myref = 'a
@@ -2818,7 +2884,8 @@ Enter `quit();' to quit.
 !   L:G;
 !   ^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor t is specified as a `prim_EQtype' in the signature
+! Equality type mismatch: type constructor t
+! is specified as a `prim_EQtype' in the signature
 !   type t = t
 ! but is not declared as a `prim_EQtype' in the module
 !   type t = t'
@@ -2826,7 +2893,8 @@ Enter `quit();' to quit.
 !   LL:functor(L:L)->G;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor t of the range is specified as a `prim_EQtype' in the signature
+! Equality type mismatch: type constructor t of the range
+! is specified as a `prim_EQtype' in the signature
 !   type t = t
 ! but is not declared as a `prim_EQtype' in the module
 !   type t = t'
@@ -2834,7 +2902,8 @@ Enter `quit();' to quit.
 !   GL:functor(L:L)->L;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor t of the domain is specified as a `prim_EQtype' in the module
+! Equality type mismatch: type constructor t of the domain
+! is specified as a `prim_EQtype' in the module
 !   type t = t
 ! but is not declared as a `prim_EQtype' in the signature
 !   type t = t'
@@ -2842,7 +2911,8 @@ Enter `quit();' to quit.
 !   YL:sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t is specified as a `prim_EQtype' in the signature
+! Equality type mismatch: type constructor Y.t
+! is specified as a `prim_EQtype' in the signature
 !   type t = t
 ! but is not declared as a `prim_EQtype' in the module
 !   type t = t'
@@ -2850,7 +2920,8 @@ Enter `quit();' to quit.
 !   L_YL:functor(L:L)->sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t of the range is specified as a `prim_EQtype' in the signature
+! Equality type mismatch: type constructor Y.t of the range
+! is specified as a `prim_EQtype' in the signature
 !   type t = t
 ! but is not declared as a `prim_EQtype' in the module
 !   type t = t'
@@ -2858,7 +2929,8 @@ Enter `quit();' to quit.
 !   YG_L:functor(YL:sig structure Y: L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t of the domain is specified as a `prim_EQtype' in the module
+! Equality type mismatch: type constructor Y.t of the domain
+! is specified as a `prim_EQtype' in the module
 !   type t = t
 ! but is not declared as a `prim_EQtype' in the signature
 !   type t = t'
@@ -2866,7 +2938,8 @@ Enter `quit();' to quit.
 !   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t of the domain of the range is specified as a `prim_EQtype' in the module
+! Equality type mismatch: type constructor Y.t of the domain of the range
+! is specified as a `prim_EQtype' in the module
 !   type t = t
 ! but is not declared as a `prim_EQtype' in the signature
 !   type t = t'
@@ -2874,7 +2947,8 @@ Enter `quit();' to quit.
 !   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t of the domain of the range of F is specified as a `prim_EQtype' in the module
+! Equality type mismatch: type constructor Y.t of the domain of the range of F
+! is specified as a `prim_EQtype' in the module
 !   type t = t
 ! but is not declared as a `prim_EQtype' in the signature
 !   type t = t'
@@ -2884,7 +2958,8 @@ Enter `quit();' to quit.
 !   L:G;
 !   ^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor t is specified as admitting equality in the signature
+! Equality type mismatch: type constructor t
+! is specified as admitting equality in the signature
 !   type t = t
 ! but its declaration does not admit equality in the module
 !   type t = unit -> unit
@@ -2892,7 +2967,8 @@ Enter `quit();' to quit.
 !   LL:functor(L:L)->G;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor t of the range is specified as admitting equality in the signature
+! Equality type mismatch: type constructor t of the range
+! is specified as admitting equality in the signature
 !   type t = t
 ! but its declaration does not admit equality in the module
 !   type t = unit -> unit
@@ -2900,7 +2976,8 @@ Enter `quit();' to quit.
 !   GL:functor(L:L)->L;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor t of the domain is specified as admitting equality in the module
+! Equality type mismatch: type constructor t of the domain
+! is specified as admitting equality in the module
 !   type t = t
 ! but its declaration does not admit equality in the signature
 !   type t = unit -> unit
@@ -2908,7 +2985,8 @@ Enter `quit();' to quit.
 !   YL:sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t is specified as admitting equality in the signature
+! Equality type mismatch: type constructor Y.t
+! is specified as admitting equality in the signature
 !   type t = t
 ! but its declaration does not admit equality in the module
 !   type t = unit -> unit
@@ -2916,15 +2994,17 @@ Enter `quit();' to quit.
 !   L_YL:functor(L:L)->sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t of the range is specified as admitting equality in the signature
+! Equality type mismatch: type constructor Y.t of the range
+! is specified as admitting equality in the signature
 !   type t = t
 ! but its declaration does not admit equality in the module
 !   type t = unit -> unit
 - ! Toplevel input:
-!   YG_L:functor(YL:sig structure Y: L end)->L;<EOF>
-!   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+!   YG_L:functor(YL:sig structure Y: L end)->L;
+!   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t of the domain is specified as admitting equality in the module
+! Equality type mismatch: type constructor Y.t of the domain
+! is specified as admitting equality in the module
 !   type t = t
 ! but its declaration does not admit equality in the signature
 !   type t = unit -> unit
@@ -2932,7 +3012,8 @@ Enter `quit();' to quit.
 !   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t of the domain of the range is specified as admitting equality in the module
+! Equality type mismatch: type constructor Y.t of the domain of the range
+! is specified as admitting equality in the module
 !   type t = t
 ! but its declaration does not admit equality in the signature
 !   type t = unit -> unit
@@ -2940,7 +3021,8 @@ Enter `quit();' to quit.
 !   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t of the domain of the range of F is specified as admitting equality in the module
+! Equality type mismatch: type constructor Y.t of the domain of the range of F
+! is specified as admitting equality in the module
 !   type t = t
 ! but its declaration does not admit equality in the signature
 !   type t = unit -> unit
@@ -2950,7 +3032,8 @@ Enter `quit();' to quit.
 !   L:G;
 !   ^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor t is specified as admitting equality in the signature
+! Equality type mismatch: type constructor t
+! is specified as admitting equality in the signature
 !   type t = unit
 ! but its declaration does not admit equality in the module
 !   type t = unit -> unit
@@ -2958,7 +3041,8 @@ Enter `quit();' to quit.
 !   LL:functor(L:L)->G;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor t of the range is specified as admitting equality in the signature
+! Equality type mismatch: type constructor t of the range
+! is specified as admitting equality in the signature
 !   type t = unit
 ! but its declaration does not admit equality in the module
 !   type t = unit -> unit
@@ -2966,7 +3050,8 @@ Enter `quit();' to quit.
 !   GL:functor(L:L)->L;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor t of the domain is specified as admitting equality in the module
+! Equality type mismatch: type constructor t of the domain
+! is specified as admitting equality in the module
 !   type t = unit
 ! but its declaration does not admit equality in the signature
 !   type t = unit -> unit
@@ -2974,7 +3059,8 @@ Enter `quit();' to quit.
 !   YL:sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t is specified as admitting equality in the signature
+! Equality type mismatch: type constructor Y.t
+! is specified as admitting equality in the signature
 !   type t = unit
 ! but its declaration does not admit equality in the module
 !   type t = unit -> unit
@@ -2982,7 +3068,8 @@ Enter `quit();' to quit.
 !   L_YL:functor(L:L)->sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t of the range is specified as admitting equality in the signature
+! Equality type mismatch: type constructor Y.t of the range
+! is specified as admitting equality in the signature
 !   type t = unit
 ! but its declaration does not admit equality in the module
 !   type t = unit -> unit
@@ -2990,7 +3077,8 @@ Enter `quit();' to quit.
 !   YG_L:functor(YL:sig structure Y: L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t of the domain is specified as admitting equality in the module
+! Equality type mismatch: type constructor Y.t of the domain
+! is specified as admitting equality in the module
 !   type t = unit
 ! but its declaration does not admit equality in the signature
 !   type t = unit -> unit
@@ -2998,7 +3086,8 @@ Enter `quit();' to quit.
 !   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t of the domain of the range is specified as admitting equality in the module
+! Equality type mismatch: type constructor Y.t of the domain of the range
+! is specified as admitting equality in the module
 !   type t = unit
 ! but its declaration does not admit equality in the signature
 !   type t = unit -> unit
@@ -3006,7 +3095,8 @@ Enter `quit();' to quit.
 !   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Equality type mismatch: type constructor Y.t of the domain of the range of F is specified as admitting equality in the module
+! Equality type mismatch: type constructor Y.t of the domain of the range of F
+! is specified as admitting equality in the module
 !   type t = unit
 ! but its declaration does not admit equality in the signature
 !   type t = unit -> unit
@@ -3016,7 +3106,8 @@ Enter `quit();' to quit.
 !   L:G;
 !   ^^^
 ! Signature mismatch: the module does not match the signature ...
-! Datatype mismatch: type constructor t is specified as a datatype in the signature
+! Datatype mismatch: type constructor t
+! is specified as a datatype in the signature
 !   datatype t = (unit,{con C : unit})
 ! but not declared as a datatype in the module
 !   type t = unit
@@ -3025,7 +3116,8 @@ Enter `quit();' to quit.
 !   LL:functor(L:L)->G;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Datatype mismatch: type constructor t of the range is specified as a datatype in the signature
+! Datatype mismatch: type constructor t of the range
+! is specified as a datatype in the signature
 !   datatype t = (unit,{con C : unit})
 ! but not declared as a datatype in the module
 !   type t = unit
@@ -3034,7 +3126,8 @@ Enter `quit();' to quit.
 !   GL:functor(L:L)->L;
 !   ^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Datatype mismatch: type constructor t of the domain is specified as a datatype in the module
+! Datatype mismatch: type constructor t of the domain
+! is specified as a datatype in the module
 !   datatype t = (unit,{con C : unit})
 ! but not declared as a datatype in the signature
 !   type t = unit
@@ -3043,7 +3136,8 @@ Enter `quit();' to quit.
 !   YL:sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Datatype mismatch: type constructor Y.t is specified as a datatype in the signature
+! Datatype mismatch: type constructor Y.t
+! is specified as a datatype in the signature
 !   datatype t = (unit,{con C : unit})
 ! but not declared as a datatype in the module
 !   type t = unit
@@ -3052,7 +3146,8 @@ Enter `quit();' to quit.
 !   L_YL:functor(L:L)->sig structure Y: G end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Datatype mismatch: type constructor Y.t of the range is specified as a datatype in the signature
+! Datatype mismatch: type constructor Y.t of the range
+! is specified as a datatype in the signature
 !   datatype t = (unit,{con C : unit})
 ! but not declared as a datatype in the module
 !   type t = unit
@@ -3061,7 +3156,8 @@ Enter `quit();' to quit.
 !   YG_L:functor(YL:sig structure Y: L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Datatype mismatch: type constructor Y.t of the domain is specified as a datatype in the module
+! Datatype mismatch: type constructor Y.t of the domain
+! is specified as a datatype in the module
 !   datatype t = (unit,{con C : unit})
 ! but not declared as a datatype in the signature
 !   type t = unit
@@ -3070,7 +3166,8 @@ Enter `quit();' to quit.
 !   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Datatype mismatch: type constructor Y.t of the domain of the range is specified as a datatype in the module
+! Datatype mismatch: type constructor Y.t of the domain of the range
+! is specified as a datatype in the module
 !   datatype t = (unit,{con C : unit})
 ! but not declared as a datatype in the signature
 !   type t = unit
@@ -3079,7 +3176,8 @@ Enter `quit();' to quit.
 !   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
 !   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Signature mismatch: the module does not match the signature ...
-! Datatype mismatch: type constructor Y.t of the domain of the range of F is specified as a datatype in the module
+! Datatype mismatch: type constructor Y.t of the domain of the range of F
+! is specified as a datatype in the module
 !   datatype t = (unit,{con C : unit})
 ! but not declared as a datatype in the signature
 !   type t = unit
@@ -3420,7 +3518,8 @@ Enter `quit();' to quit.
 !                      datatype b = Ab | Bb of Fail.a
 !                  end.
 ! Illegal recursive signature: the body does not match the forward specification...
-! Equality type mismatch: type constructor b is specified as admitting equality in the forward specification
+! Equality type mismatch: type constructor b
+! is specified as admitting equality in the forward specification
 !   type b = b
 ! but its declaration does not admit equality in the body
 !   datatype b = (b',{con Ab : b', con Bb : a -> b'})
@@ -3832,6 +3931,453 @@ Enter `quit();' to quit.
 - > val heap = ?{H}(1, <Heap' T'>) : T'
 - > val test1 = true : bool
 - > val test2 = true : bool
+- 
+Moscow ML version 1.99 (internal release)
+Enter `quit();' to quit.
+- > New type names: =a
+  datatype a = (a,{con A : a})
+  con A = A : a
+- > New type names: =b
+  datatype b = (b,{con B : b})
+  con B = B : b
+- > signature G =
+  /\=d.
+    {datatype d = (d,{con C : a * b -> d, con D : d}),
+     con C : a * b -> d,
+     con D : d}
+- > signature L =
+  /\=d.
+    {datatype d = (d,{con C : (a * b) -> d, con D : d}),
+     con C : (a * b) -> d,
+     con D : d}
+- ! Toplevel input:
+!   L:G;
+!   ^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  C
+! is specified as a constructor carrying 2 fields of a tuple in the signature
+!   con C : a * b -> d
+! but declared as a constructor carrying a tuple with 2 fields in the module
+!   con C : (a * b) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the signature, enclose the argument type of the constructor in parentheses:
+!   change "C of  <ty_1> * <ty_2>"
+!   to     "C of (<ty_1> * <ty_2>)"
+! OR: edit the declaration to match the specification: 
+! - in the module, re-express the argument type of the constructor as a syntactic tuple:
+!   change "C of <ty>"
+!   to     "C of <ty_1> * <ty_2>"
+- ! Toplevel input:
+!   LL:functor(L:L)->G;
+!   ^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  C of the range
+! is specified as a constructor carrying 2 fields of a tuple in the signature
+!   con C : a * b -> d
+! but declared as a constructor carrying a tuple with 2 fields in the module
+!   con C : (a * b) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the signature, enclose the argument type of the constructor in parentheses:
+!   change "C of  <ty_1> * <ty_2>"
+!   to     "C of (<ty_1> * <ty_2>)"
+! OR: edit the declaration to match the specification: 
+! - in the module, re-express the argument type of the constructor as a syntactic tuple:
+!   change "C of <ty>"
+!   to     "C of <ty_1> * <ty_2>"
+- ! Toplevel input:
+!   GL:functor(L:L)->L;
+!   ^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  C of the domain
+! is specified as a constructor carrying 2 fields of a tuple in the module
+!   con C : a * b -> d
+! but declared as a constructor carrying a tuple with 2 fields in the signature
+!   con C : (a * b) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the module, enclose the argument type of the constructor in parentheses:
+!   change "C of  <ty_1> * <ty_2>"
+!   to     "C of (<ty_1> * <ty_2>)"
+! OR: edit the declaration to match the specification: 
+! - in the signature, re-express the argument type of the constructor as a syntactic tuple:
+!   change "C of <ty>"
+!   to     "C of <ty_1> * <ty_2>"
+- ! Toplevel input:
+!   YL:sig structure Y: G end;
+!   ^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  Y.C
+! is specified as a constructor carrying 2 fields of a tuple in the signature
+!   con C : a * b -> d
+! but declared as a constructor carrying a tuple with 2 fields in the module
+!   con C : (a * b) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the signature, enclose the argument type of the constructor in parentheses:
+!   change "C of  <ty_1> * <ty_2>"
+!   to     "C of (<ty_1> * <ty_2>)"
+! OR: edit the declaration to match the specification: 
+! - in the module, re-express the argument type of the constructor as a syntactic tuple:
+!   change "C of <ty>"
+!   to     "C of <ty_1> * <ty_2>"
+- ! Toplevel input:
+!   L_YL:functor(L:L)->sig structure Y: G end;
+!   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  Y.C of the range
+! is specified as a constructor carrying 2 fields of a tuple in the signature
+!   con C : a * b -> d
+! but declared as a constructor carrying a tuple with 2 fields in the module
+!   con C : (a * b) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the signature, enclose the argument type of the constructor in parentheses:
+!   change "C of  <ty_1> * <ty_2>"
+!   to     "C of (<ty_1> * <ty_2>)"
+! OR: edit the declaration to match the specification: 
+! - in the module, re-express the argument type of the constructor as a syntactic tuple:
+!   change "C of <ty>"
+!   to     "C of <ty_1> * <ty_2>"
+- ! Toplevel input:
+!   YG_L:functor(YL:sig structure Y: L end)->L;
+!   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  Y.C of the domain
+! is specified as a constructor carrying 2 fields of a tuple in the module
+!   con C : a * b -> d
+! but declared as a constructor carrying a tuple with 2 fields in the signature
+!   con C : (a * b) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the module, enclose the argument type of the constructor in parentheses:
+!   change "C of  <ty_1> * <ty_2>"
+!   to     "C of (<ty_1> * <ty_2>)"
+! OR: edit the declaration to match the specification: 
+! - in the signature, re-express the argument type of the constructor as a syntactic tuple:
+!   change "C of <ty>"
+!   to     "C of <ty_1> * <ty_2>"
+- ! Toplevel input:
+!   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
+!   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  Y.C of the domain of the range
+! is specified as a constructor carrying 2 fields of a tuple in the module
+!   con C : a * b -> d
+! but declared as a constructor carrying a tuple with 2 fields in the signature
+!   con C : (a * b) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the module, enclose the argument type of the constructor in parentheses:
+!   change "C of  <ty_1> * <ty_2>"
+!   to     "C of (<ty_1> * <ty_2>)"
+! OR: edit the declaration to match the specification: 
+! - in the signature, re-express the argument type of the constructor as a syntactic tuple:
+!   change "C of <ty>"
+!   to     "C of <ty_1> * <ty_2>"
+- ! Toplevel input:
+!   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
+!   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  Y.C of the domain of the range of F
+! is specified as a constructor carrying 2 fields of a tuple in the module
+!   con C : a * b -> d
+! but declared as a constructor carrying a tuple with 2 fields in the signature
+!   con C : (a * b) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the module, enclose the argument type of the constructor in parentheses:
+!   change "C of  <ty_1> * <ty_2>"
+!   to     "C of (<ty_1> * <ty_2>)"
+! OR: edit the declaration to match the specification: 
+! - in the signature, re-express the argument type of the constructor as a syntactic tuple:
+!   change "C of <ty>"
+!   to     "C of <ty_1> * <ty_2>"
+- > signature G =
+  /\=d.
+    {datatype d = (d,{con C : {a : a} -> d, con D : d}),
+     con C : {a : a} -> d,
+     con D : d}
+- > signature L =
+  /\=d.
+    {datatype d = (d,{con C : ({a : a}) -> d, con D : d}),
+     con C : ({a : a}) -> d,
+     con D : d}
+- ! Toplevel input:
+!   L:G;
+!   ^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  C
+! is specified as a constructor carrying one field of a record in the signature
+!   con C : {a : a} -> d
+! but declared as a constructor carrying a record with one field in the module
+!   con C : ({a : a}) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the signature, enclose the argument type of the constructor in parentheses:
+!   change "C of  {a : <ty_1>}"
+!   to     "C of ({a : <ty_1>})"
+! OR: edit the declaration to match the specification: 
+! - in the module, re-express the argument type of the constructor as a syntactic record:
+!   change "C of <ty>"
+!   to     "C of {a : <ty_1>}"
+- ! Toplevel input:
+!   LL:functor(L:L)->G;
+!   ^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  C of the range
+! is specified as a constructor carrying one field of a record in the signature
+!   con C : {a : a} -> d
+! but declared as a constructor carrying a record with one field in the module
+!   con C : ({a : a}) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the signature, enclose the argument type of the constructor in parentheses:
+!   change "C of  {a : <ty_1>}"
+!   to     "C of ({a : <ty_1>})"
+! OR: edit the declaration to match the specification: 
+! - in the module, re-express the argument type of the constructor as a syntactic record:
+!   change "C of <ty>"
+!   to     "C of {a : <ty_1>}"
+- ! Toplevel input:
+!   GL:functor(L:L)->L;
+!   ^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  C of the domain
+! is specified as a constructor carrying one field of a record in the module
+!   con C : {a : a} -> d
+! but declared as a constructor carrying a record with one field in the signature
+!   con C : ({a : a}) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the module, enclose the argument type of the constructor in parentheses:
+!   change "C of  {a : <ty_1>}"
+!   to     "C of ({a : <ty_1>})"
+! OR: edit the declaration to match the specification: 
+! - in the signature, re-express the argument type of the constructor as a syntactic record:
+!   change "C of <ty>"
+!   to     "C of {a : <ty_1>}"
+- ! Toplevel input:
+!   YL:sig structure Y: G end;
+!   ^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  Y.C
+! is specified as a constructor carrying one field of a record in the signature
+!   con C : {a : a} -> d
+! but declared as a constructor carrying a record with one field in the module
+!   con C : ({a : a}) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the signature, enclose the argument type of the constructor in parentheses:
+!   change "C of  {a : <ty_1>}"
+!   to     "C of ({a : <ty_1>})"
+! OR: edit the declaration to match the specification: 
+! - in the module, re-express the argument type of the constructor as a syntactic record:
+!   change "C of <ty>"
+!   to     "C of {a : <ty_1>}"
+- ! Toplevel input:
+!   L_YL:functor(L:L)->sig structure Y: G end;
+!   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  Y.C of the range
+! is specified as a constructor carrying one field of a record in the signature
+!   con C : {a : a} -> d
+! but declared as a constructor carrying a record with one field in the module
+!   con C : ({a : a}) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the signature, enclose the argument type of the constructor in parentheses:
+!   change "C of  {a : <ty_1>}"
+!   to     "C of ({a : <ty_1>})"
+! OR: edit the declaration to match the specification: 
+! - in the module, re-express the argument type of the constructor as a syntactic record:
+!   change "C of <ty>"
+!   to     "C of {a : <ty_1>}"
+- ! Toplevel input:
+!   YG_L:functor(YL:sig structure Y: L end)->L;
+!   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  Y.C of the domain
+! is specified as a constructor carrying one field of a record in the module
+!   con C : {a : a} -> d
+! but declared as a constructor carrying a record with one field in the signature
+!   con C : ({a : a}) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the module, enclose the argument type of the constructor in parentheses:
+!   change "C of  {a : <ty_1>}"
+!   to     "C of ({a : <ty_1>})"
+! OR: edit the declaration to match the specification: 
+! - in the signature, re-express the argument type of the constructor as a syntactic record:
+!   change "C of <ty>"
+!   to     "C of {a : <ty_1>}"
+- ! Toplevel input:
+!   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
+!   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  Y.C of the domain of the range
+! is specified as a constructor carrying one field of a record in the module
+!   con C : {a : a} -> d
+! but declared as a constructor carrying a record with one field in the signature
+!   con C : ({a : a}) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the module, enclose the argument type of the constructor in parentheses:
+!   change "C of  {a : <ty_1>}"
+!   to     "C of ({a : <ty_1>})"
+! OR: edit the declaration to match the specification: 
+! - in the signature, re-express the argument type of the constructor as a syntactic record:
+!   change "C of <ty>"
+!   to     "C of {a : <ty_1>}"
+- ! Toplevel input:
+!   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
+!   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  Y.C of the domain of the range of F
+! is specified as a constructor carrying one field of a record in the module
+!   con C : {a : a} -> d
+! but declared as a constructor carrying a record with one field in the signature
+!   con C : ({a : a}) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the module, enclose the argument type of the constructor in parentheses:
+!   change "C of  {a : <ty_1>}"
+!   to     "C of ({a : <ty_1>})"
+! OR: edit the declaration to match the specification: 
+! - in the signature, re-express the argument type of the constructor as a syntactic record:
+!   change "C of <ty>"
+!   to     "C of {a : <ty_1>}"
+- > signature G =
+  /\=d.
+    {datatype d = (d,{con C : {a : a, b : b} -> d, con D : d}),
+     con C : {a : a, b : b} -> d,
+     con D : d}
+- > signature L =
+  /\=d.
+    {datatype d = (d,{con C : ({a : a, b : b}) -> d, con D : d}),
+     con C : ({a : a, b : b}) -> d,
+     con D : d}
+- ! Toplevel input:
+!   L:G;
+!   ^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  C
+! is specified as a constructor carrying 2 fields of a record in the signature
+!   con C : {a : a, b : b} -> d
+! but declared as a constructor carrying a record with 2 fields in the module
+!   con C : ({a : a, b : b}) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the signature, enclose the argument type of the constructor in parentheses:
+!   change "C of  {a : <ty_1>, b : <ty_2>}"
+!   to     "C of ({a : <ty_1>, b : <ty_2>})"
+! OR: edit the declaration to match the specification: 
+! - in the module, re-express the argument type of the constructor as a syntactic record:
+!   change "C of <ty>"
+!   to     "C of {a : <ty_1>, b : <ty_2>}"
+- ! Toplevel input:
+!   LL:functor(L:L)->G;
+!   ^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  C of the range
+! is specified as a constructor carrying 2 fields of a record in the signature
+!   con C : {a : a, b : b} -> d
+! but declared as a constructor carrying a record with 2 fields in the module
+!   con C : ({a : a, b : b}) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the signature, enclose the argument type of the constructor in parentheses:
+!   change "C of  {a : <ty_1>, b : <ty_2>}"
+!   to     "C of ({a : <ty_1>, b : <ty_2>})"
+! OR: edit the declaration to match the specification: 
+! - in the module, re-express the argument type of the constructor as a syntactic record:
+!   change "C of <ty>"
+!   to     "C of {a : <ty_1>, b : <ty_2>}"
+- ! Toplevel input:
+!   GL:functor(L:L)->L;
+!   ^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  C of the domain
+! is specified as a constructor carrying 2 fields of a record in the module
+!   con C : {a : a, b : b} -> d
+! but declared as a constructor carrying a record with 2 fields in the signature
+!   con C : ({a : a, b : b}) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the module, enclose the argument type of the constructor in parentheses:
+!   change "C of  {a : <ty_1>, b : <ty_2>}"
+!   to     "C of ({a : <ty_1>, b : <ty_2>})"
+! OR: edit the declaration to match the specification: 
+! - in the signature, re-express the argument type of the constructor as a syntactic record:
+!   change "C of <ty>"
+!   to     "C of {a : <ty_1>, b : <ty_2>}"
+- ! Toplevel input:
+!   YL:sig structure Y: G end;
+!   ^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  Y.C
+! is specified as a constructor carrying 2 fields of a record in the signature
+!   con C : {a : a, b : b} -> d
+! but declared as a constructor carrying a record with 2 fields in the module
+!   con C : ({a : a, b : b}) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the signature, enclose the argument type of the constructor in parentheses:
+!   change "C of  {a : <ty_1>, b : <ty_2>}"
+!   to     "C of ({a : <ty_1>, b : <ty_2>})"
+! OR: edit the declaration to match the specification: 
+! - in the module, re-express the argument type of the constructor as a syntactic record:
+!   change "C of <ty>"
+!   to     "C of {a : <ty_1>, b : <ty_2>}"
+- ! Toplevel input:
+!   L_YL:functor(L:L)->sig structure Y: G end;
+!   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  Y.C of the range
+! is specified as a constructor carrying 2 fields of a record in the signature
+!   con C : {a : a, b : b} -> d
+! but declared as a constructor carrying a record with 2 fields in the module
+!   con C : ({a : a, b : b}) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the signature, enclose the argument type of the constructor in parentheses:
+!   change "C of  {a : <ty_1>, b : <ty_2>}"
+!   to     "C of ({a : <ty_1>, b : <ty_2>})"
+! OR: edit the declaration to match the specification: 
+! - in the module, re-express the argument type of the constructor as a syntactic record:
+!   change "C of <ty>"
+!   to     "C of {a : <ty_1>, b : <ty_2>}"
+- ! Toplevel input:
+!   YG_L:functor(YL:sig structure Y: L end)->L;
+!   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  Y.C of the domain
+! is specified as a constructor carrying 2 fields of a record in the module
+!   con C : {a : a, b : b} -> d
+! but declared as a constructor carrying a record with 2 fields in the signature
+!   con C : ({a : a, b : b}) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the module, enclose the argument type of the constructor in parentheses:
+!   change "C of  {a : <ty_1>, b : <ty_2>}"
+!   to     "C of ({a : <ty_1>, b : <ty_2>})"
+! OR: edit the declaration to match the specification: 
+! - in the signature, re-express the argument type of the constructor as a syntactic record:
+!   change "C of <ty>"
+!   to     "C of {a : <ty_1>, b : <ty_2>}"
+- ! Toplevel input:
+!   L_YG_L:functor(L:L)->functor(YL:sig structure Y:L end)->L;
+!   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  Y.C of the domain of the range
+! is specified as a constructor carrying 2 fields of a record in the module
+!   con C : {a : a, b : b} -> d
+! but declared as a constructor carrying a record with 2 fields in the signature
+!   con C : ({a : a, b : b}) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the module, enclose the argument type of the constructor in parentheses:
+!   change "C of  {a : <ty_1>, b : <ty_2>}"
+!   to     "C of ({a : <ty_1>, b : <ty_2>})"
+! OR: edit the declaration to match the specification: 
+! - in the signature, re-express the argument type of the constructor as a syntactic record:
+!   change "C of <ty>"
+!   to     "C of {a : <ty_1>, b : <ty_2>}"
+- ! Toplevel input:
+!   FLYGL:sig functor F: functor(L:L)->functor(YL:sig structure Y:L end)->L end;
+!   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Status mismatch: constructor  Y.C of the domain of the range of F
+! is specified as a constructor carrying 2 fields of a record in the module
+!   con C : {a : a, b : b} -> d
+! but declared as a constructor carrying a record with 2 fields in the signature
+!   con C : ({a : a, b : b}) -> d
+! EITHER: edit the specification to match the declaration: 
+! - in the module, enclose the argument type of the constructor in parentheses:
+!   change "C of  {a : <ty_1>, b : <ty_2>}"
+!   to     "C of ({a : <ty_1>, b : <ty_2>})"
+! OR: edit the declaration to match the specification: 
+! - in the signature, re-express the argument type of the constructor as a syntactic record:
+!   change "C of <ty>"
+!   to     "C of {a : <ty_1>, b : <ty_2>}"
 - 
 Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.

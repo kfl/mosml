@@ -66,7 +66,7 @@ datatype reason =
   | UnifyTup | UnifyRec of Lab | UnifyOther
   | UnifyImperative (* cvr *)
   | UnifyMod of matchReason option * matchReason option
-  | UnifyScope of (TypeVar * ScopeViolation)
+  | UnifyScope of TypeVar * ScopeViolation
 and matchReason = 
     MissingValue of path * string * VarInfo
 |   MissingStructure of path * string * ModInfo
@@ -86,6 +86,7 @@ and matchReason =
 |   PatternMismatch of path * string * TyStr * TyStr * TyName * ScopeViolation
 |   CircularMismatch of path * string * TyStr * TyStr * TyName
 |   DatatypeMismatch of path * string * TyInfo * TyInfo
+    (* cvr: TODO GlobalMismatch appears to be redundant *)
 |   GlobalMismatch of path * string * string * string * string
                      (* longmodid * id * desc * infQual * specQual *)
 |   ModuleMismatch  of path * string * string
@@ -3179,6 +3180,21 @@ and prVarInfo prVal id info =
 			   | OVL1TXXo => msgString "'a -> 'a "
 			   | OVL1TPUo => msgString "(ppstream -> 'a -> unit) -> unit "
 			   | OVL2EEBo => msgString  "''a * ''a -> bool ")
+                      | CONname ci =>
+			  (if (#conIsGreedy(!ci)) orelse (#conSpan(!ci) = 1)
+			       then prType 0 tscBody
+			   else case tscBody of
+				  ARROWt(t,t') =>
+				    (case normType t of   
+					 RECt (ref {fields=(_::_),...}) =>
+					     (msgString "("; msgIBlock 0;
+					      prType 0 t;
+					      msgEBlock ();
+					      msgString ")";
+					      msgString " -> "; 
+					      prType 0 t')
+				     | _ => prType 0 tscBody)
+		                | _ => prType 0 tscBody)
 		     | _ => prType 0 tscBody)))
                  info
 and prTyInfo id (tyfun,conenv) = 
@@ -3534,7 +3550,8 @@ let fun prInf path =
 	under_binder (fn info => 
 		      (collectExplicitVarsInObj freeVarsInfo info;	     
 		       msgIBlock 0;
-		       errPrompt "Missing declaration: ";msgString s;prPath (DOTpath(path,id));msgEOL();
+		       errPrompt "Missing declaration: ";msgString s;
+		       prPath (DOTpath(path,id));msgEOL();
 		       errPrompt "is specified in the ";
 		       prSpec path;msgString " as ";
 		       msgEOL();
@@ -3579,7 +3596,7 @@ in
   | InfixStatusMismatch (path,id,infInfo,specInfo) =>
        	    (msgIBlock 0;
 	     errPrompt "Infix status mismatch: value identifier";
-	     prPath(DOTpath(path,id));
+	     prPath(DOTpath(path,id));msgEOL();
 	     errPrompt "is specified with fixity status ";msgEOL();
 	     errPrompt "  ";prInfixStatus id specInfo;msgEOL();
 	     errPrompt "in the ";prSpec path;msgEOL();
@@ -3594,8 +3611,8 @@ in
 	     collectExplicitVarsInObj freeVarsSigInfo infInfo;
 	     msgIBlock 0;
 	     errPrompt "Signature mismatch: signature identifier";
-	     prPath(DOTpath(path,id));
-	     msgString " is specified as ";msgEOL();
+	     prPath(DOTpath(path,id));msgEOL();
+	     errPrompt "is specified as ";msgEOL();
 	     errPrompt "  ";prSigInfo id specInfo;msgEOL();
 	     errPrompt "in the ";prSpec path;msgEOL();
 	     errPrompt "but is declared as";
@@ -3620,6 +3637,124 @@ in
 	     msgEOL();
 	     msgEBlock()))
             ()
+    (* cvr: we trap this StatusMismatch for two constructors 
+       to report representation mismatches better *)
+  | StatusMismatch (path,id,infInfo as {info=(_,CONname infConInfo),...},
+			    specInfo as {info=(_,CONname specConInfo),...})=>
+	let val (argdesc,fs) = 
+	    (case specInfo of
+		{info = (TypeScheme {tscBody = ARROWt(t,t'),...},_),...} =>
+		    (case normType t of   
+			 RECt (ref {fields = fs,...}) =>
+			     (if isTupleRow fs then ("tuple",fs) else ("record",fs))
+		       | _ => ("record",[]))
+	      | _ => ("record",[]))
+	    fun describeConInfo (ref {conArity=thisArity,
+				    conIsGreedy=thisIsGreedy,
+				    conTag=thisTag,
+				    conSpan=thisSpan,
+				    ...}) 
+	                           (ref {conArity=otherArity,
+				    conIsGreedy=otherIsGreedy,
+				    conTag=otherTag,
+				    conSpan=otherSpan,
+				    ...}) = 
+            (if otherArity <> thisArity andalso thisIsGreedy
+	     then (msgString "a constructor carrying ";msgInt thisArity; 
+		   msgString " fields of a "; msgString argdesc)
+             else if otherArity <> thisArity andalso not(thisIsGreedy)
+	     then (msgString "a constructor carrying a ";msgString argdesc;msgString " with ";msgInt otherArity; 
+		   msgString " fields")
+             else if not(otherIsGreedy) andalso thisIsGreedy
+	     then (msgString "a constructor carrying one field of a ";msgString argdesc)
+	     else if otherIsGreedy andalso not(thisIsGreedy)		  
+             then msgString "a constructor carrying a record with one field"
+             else if otherTag <> thisTag
+	     then (msgString "a constructor ";msgInt thisTag; msgString " of ";
+		   msgInt thisSpan; msgString "constructors")
+             else (* otherSpan <> thisSpan *)
+	          (msgString "one constructor out of ";
+		   msgInt thisSpan; msgString "constructors"))
+           fun prFields fs = 
+	       let fun prTy_ n = (msgString "<ty_";msgInt n;msgString ">")
+		   fun prRow fs n =
+		   case fs of
+		       [] => ()
+		     | [(lab,t)] =>
+			   (msgIBlock 0; printLab lab; msgString " :";
+			    msgBreak(1, 2); 
+			    prTy_ n;
+			    msgEBlock())
+		     | (lab,t) :: rest =>
+		       (msgIBlock 0; printLab lab; msgString " :"; msgBreak(1, 2);
+			prTy_ n;
+			msgString ","; msgEBlock(); msgBreak(1, 0); 
+			prRow rest (n+1))
+		   fun prTuple fs n =
+		   case fs of
+		       [] => ()
+		     | [(lab,t)] =>
+			   (msgIBlock 0; 
+			    prTy_ n; msgEBlock())
+		     | (lab,t) :: rest =>
+		       (msgIBlock 0; 
+			prTy_ n;
+			msgString " *"; msgEBlock(); msgBreak(1,0);
+                        prTuple rest (n+1))
+	       in
+		   if isTupleRow fs 
+		       then prTuple fs 1
+		   else (msgString "{";prRow fs 1;msgString "}")
+	       end
+           fun rectifyConInfo msg prDesc (ref {conArity=thisArity,
+				    conIsGreedy=thisIsGreedy,
+				    conTag=thisTag,
+				    conSpan=thisSpan,
+				    ...}) 
+	                           (ref {conArity=otherArity,
+				    conIsGreedy=otherIsGreedy,
+				    conTag=otherTag,
+				    conSpan=otherSpan,
+				    ...}) = 
+            (if otherArity <> thisArity orelse otherIsGreedy <> thisIsGreedy
+	     then if thisIsGreedy
+                  then (errPrompt msg;msgEOL();
+			errPrompt "- in the ";prDesc path;
+			msgString ", enclose the argument type of the constructor in parentheses:";msgEOL();
+			errPrompt "  change \"";msgString id;msgString " of  ";
+			                        prFields fs; msgString "\""; msgEOL();
+			errPrompt "  to     \"";msgString id;msgString " of (";
+                                                prFields fs; msgString ")\"";
+			    msgEOL())
+		  else (errPrompt msg;msgEOL();
+			errPrompt "- in the ";prDesc path; 
+			msgString", re-express the argument type of the constructor as a syntactic ";
+			msgString argdesc;msgString ":";msgEOL();
+			errPrompt "  change \"";msgString id;msgString " of ";
+					 msgString "<ty>"; msgString "\""; msgEOL();
+			errPrompt "  to     \"";msgString id;msgString " of ";
+			                 prFields fs; msgString "\"";msgEOL())
+	     else ())
+       in
+       under_binder (fn () =>
+	    (collectExplicitVarsInObj freeVarsVarInfo specInfo;	     
+	     collectExplicitVarsInObj freeVarsVarInfo infInfo;	     
+	     msgIBlock 0;
+	     errPrompt "Status mismatch: constructor ";
+	     prPath(DOTpath(path,id));msgEOL();
+	     errPrompt "is specified as ";
+	     describeConInfo specConInfo infConInfo;
+	     msgString " in the ";prSpec path;msgEOL();
+	     errPrompt "  ";prVarInfo (fn info => ()) id specInfo;msgEOL();
+             errPrompt "but declared as ";
+             describeConInfo infConInfo specConInfo;
+	     msgString " in the ";prInf path;msgEOL();
+	     errPrompt "  ";prVarInfo (fn info => ()) id infInfo;msgEOL();
+	     rectifyConInfo "EITHER: edit the specification to match the declaration: " prSpec specConInfo infConInfo;
+	     rectifyConInfo "OR: edit the declaration to match the specification: "  prInf infConInfo specConInfo;
+	     msgEBlock())) 
+             ()
+       end
   | StatusMismatch (path,id,infInfo as {info=(_,infStatus),...},
 			    specInfo as {info=(_,specStatus),...})=>
        under_binder (fn () =>
@@ -3627,8 +3762,8 @@ in
 	     collectExplicitVarsInObj freeVarsVarInfo infInfo;	     
 	     msgIBlock 0;
 	     errPrompt "Status mismatch: identifier";
-	     prPath(DOTpath(path,id));
-	     msgString " is specified as ";
+	     prPath(DOTpath(path,id));msgEOL();
+	     errPrompt "is specified as ";
 	     msgString (case (infStatus,specStatus) of
 			    (VARname _ ,VARname _) => "an ordinary value"
 			  | (_         ,VARname _)=> "a value"
@@ -3684,8 +3819,8 @@ in
 	     collectExplicitVarsInObj freeVarsTyStr infTyStr;
 	     msgIBlock 0;
 	     errPrompt "Datatype mismatch: type constructor";
-	     prPath(DOTpath(path,id));
-	     msgString " is specified as the datatype";msgEOL();
+	     prPath(DOTpath(path,id));msgEOL();
+	     errPrompt "is specified as the datatype";msgEOL();
 	     errPrompt "  ";prTyInfo id specTyStr;msgEOL();
 	     errPrompt "in the ";prSpec path;msgEOL();
 	     errPrompt "but declared as the different datatype";msgEOL();
@@ -3703,8 +3838,8 @@ in
 	     collectExplicitVarsInObj freeVarsVarInfo infInfo;
 	     msgIBlock 0;
 	     errPrompt "Scheme mismatch: value identifier";
-	     prPath(DOTpath(path,id));
-	     msgString " is specified with type scheme ";msgEOL();
+	     prPath(DOTpath(path,id));msgEOL();
+	     errPrompt "is specified with type scheme ";msgEOL();
 	     errPrompt "  ";prVarInfo (fn info => ()) id specInfo;msgEOL();
 	     errPrompt "in the ";prSpec path;msgEOL();
 	     errPrompt "but its declaration has the unrelated type scheme ";
@@ -3721,7 +3856,8 @@ in
 	     collectExplicitVarsInObj freeVarsTyStr infTyStr;
 	     msgIBlock 0;
 	     errPrompt "Arity mismatch: type constructor";
-	     prPath(DOTpath(path,id));msgString " is specified with arity ";
+	     prPath(DOTpath(path,id));msgEOL();
+	     errPrompt "is specified with arity ";
 	     msgInt (specArity);msgString " in the ";prSpec path;msgEOL();              
 	     errPrompt "  ";prTyInfo id specTyStr;msgEOL();
 	     errPrompt "but declared with arity ";msgInt (infArity);
@@ -3736,7 +3872,8 @@ in
 	     collectExplicitVarsInObj freeVarsTyStr infTyStr;
 	     msgIBlock 0;
 	     errPrompt "Equality type mismatch: type constructor";
-	     prPath(DOTpath(path,id));msgString " is specified as a `prim_EQtype' in the ";
+	     prPath(DOTpath(path,id));msgEOL();
+	     errPrompt "is specified as a `prim_EQtype' in the ";
 	     prSpec path;msgEOL();              
 	     errPrompt "  ";prTyInfo id specTyStr;msgEOL();
 	     errPrompt "but is not declared as a `prim_EQtype' in the ";
@@ -3750,7 +3887,8 @@ in
 	     collectExplicitVarsInObj freeVarsTyStr infTyStr;
 	     msgIBlock 0;
 	     errPrompt "Equality type mismatch: type constructor";
-	     prPath(DOTpath(path,id));msgString " is specified as admitting equality in the ";
+	     prPath(DOTpath(path,id));msgEOL();
+	     errPrompt "is specified as admitting equality in the ";
 	     prSpec path;msgEOL();              
 	     errPrompt "  ";prTyInfo id specTyStr;msgEOL();
 	     errPrompt "but its declaration does not admit equality in the ";
@@ -3764,7 +3902,8 @@ in
 	     collectExplicitVarsInObj freeVarsTyStr infTyStr;
 	     msgIBlock 0;
 	     errPrompt "Type mismatch: type constructor";
-	     prPath(DOTpath(path,id));msgString " is specified as one abbreviation in the ";
+	     prPath(DOTpath(path,id));msgEOL();
+	     errPrompt "is specified as one abbreviation in the ";
 	     prSpec path;msgEOL();              
 	     errPrompt "  ";prTyInfo id specTyStr;msgEOL();
 	     errPrompt "but declared as a different abbreviation in the ";
@@ -3837,8 +3976,8 @@ in
 	     collectExplicitVarsInObj freeVarsTyStr infTyStr;
 	     msgIBlock 0;
 	     errPrompt "Datatype mismatch: type constructor";
-	     prPath(DOTpath(path,id));
-	     msgString " is specified as a datatype in the ";
+	     prPath(DOTpath(path,id));msgEOL();
+	     errPrompt "is specified as a datatype in the ";
 	     prSpec path;msgEOL();
 	     errPrompt "  ";prTyInfo id specTyStr;msgEOL();
 	     errPrompt "but not declared as a datatype in the ";prInf path;msgEOL();
@@ -3848,9 +3987,9 @@ in
             ()
   | GlobalMismatch (path,id,desc,infQual,specQual) => 
 	     (msgIBlock 0;
-	      errPrompt "The ";msgString desc;
-	      prPath (DOTpath(path,id));	      
-	      msgString " is specified ";
+	      errPrompt "Global mismatch: ";msgString desc;
+	      prPath (DOTpath(path,id));msgEOL();	      
+	      errPrompt "is specified ";
               (case specQual of 
 		   "" => 
 		      (msgString "as a local ";
@@ -3884,8 +4023,8 @@ in
   | ModuleMismatch (path,infDesc,specDesc) => 
 	     (msgIBlock 0;
 	      errPrompt "Module mismatch:";
-	      prPath path;
-	      msgString " is specified as a ";msgString specDesc;
+	      prPath path;msgEOL();
+	      errPrompt "is specified as a ";msgString specDesc;
 	      msgString " in the ";prSpec path;msgEOL();
 	      errPrompt "but declared as a " ;msgString infDesc;
 	      msgString " in the ";prInf path;msgEOL();

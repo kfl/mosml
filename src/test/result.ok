@@ -112,14 +112,14 @@ Enter `quit();' to quit.
 > New type names: =arex
   datatype 'a arex =
   ('a arex,
-   {con 'a ADD : 'a arex * 'a arex -> 'a arex,
-    con 'a SUB : 'a arex * 'a arex -> 'a arex,
+   {con 'a ADD : ('a arex * 'a arex) -> 'a arex,
+    con 'a SUB : ('a arex * 'a arex) -> 'a arex,
     con 'a MINUS : 'a arex -> 'a arex,
     con 'a TIP : 'a -> 'a arex})
   type 'a binary = 'a arex * 'a arex
   type 'a unary = 'a arex
-  con 'a ADD = fn : 'a arex * 'a arex -> 'a arex
-  con 'a SUB = fn : 'a arex * 'a arex -> 'a arex
+  con 'a ADD = fn : ('a arex * 'a arex) -> 'a arex
+  con 'a SUB = fn : ('a arex * 'a arex) -> 'a arex
   con 'a MINUS = fn : 'a arex -> 'a arex
   con 'a TIP = fn : 'a -> 'a arex
 > val a1 = MINUS(ADD(TIP 1, SUB(TIP 2, TIP 5))) : int arex
@@ -497,10 +497,10 @@ ba> val it = CONSab{a = "a", b = "b"} : (string, string) AB
 > val eew1 = true : bool
 > val eec1 = true : bool
 > val eeg1 = true : bool
-User: 1.190  System: 0.010  GC: 0.000  Real: 1.217
+User: 1.000  System: 0.000  GC: 0.000  Real: 1.002
 > val it = 7 : int
 > val loop2 = fn : int -> int
-User: 1.240  System: 0.010  GC: 0.000  Real: 1.245
+User: 0.960  System: 0.000  GC: 0.000  Real: 0.960
 > val it = 7 : int
 > val maxi = fn : int array -> int * int
 [closing file "ovlsucc.sml"]

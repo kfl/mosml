@@ -53,6 +53,7 @@ and Ty' =
   | CONty of Ty list * TyConPath
   | FNty of Ty * Ty
   | PACKty of SigExp 
+  | PARty of Ty
 
 
 and InfixPat =

@@ -474,6 +474,8 @@ and resolveOvlTy firstpass (_, ty') =
        resolveOvlTy firstpass ty2)
   | PACKty(sigexp) =>
        resolveOvlSigExp firstpass sigexp
+  | PARty(ty) =>
+       resolveOvlTy firstpass ty
 and resolveOvlSigExp firstpass (_,sigexp) =
   case sigexp of
     SPECsigexp spec => resolveOvlSpec firstpass spec

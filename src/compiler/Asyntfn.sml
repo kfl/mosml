@@ -187,6 +187,7 @@ fun varsOfTyAcc (_, ty') iis =
   | FNty(ty, ty') =>
       varsOfTyAcc ty (varsOfTyAcc ty' iis)
   | PACKty(sigexp) => iis   
+  | PARty(ty) => varsOfTyAcc ty iis  
 ;
 (* cvr: TODO remove *)
 fun varsOfTy ty = varsOfTyAcc ty [];
@@ -245,6 +246,9 @@ and printTy (_, ty') =
   | PACKty sigexp => 
       (msgString "{";  printSigExp sigexp;
        msgString "}")    
+  | PARty ty => 
+      (msgString "(";  printTy ty;
+       msgString ")")    
 
 and printRecTyField (lab, ty) =
   (msgIBlock 0; printLab lab; msgString " :"; msgBreak(1, 2); printTy ty;

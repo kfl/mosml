@@ -345,7 +345,7 @@ and resolveTyOp iBas (_,ty') =
     | FNty (ty1,ty2) => 
         (resolveTyOp iBas ty1; resolveTyOp iBas ty2)
     | PACKty sigexp =>  resolveSigExpOp iBas sigexp
-
+    | PARty ty => resolveTyOp iBas ty
 
 and resolveTyConPathOp iBas (_,tyconpath) = 
     case tyconpath of

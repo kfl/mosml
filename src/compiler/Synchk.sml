@@ -660,6 +660,8 @@ and compliantTy (loc, ty') =
   | PACKty(sigexp) =>
       (complianceMsg loc "<ty> ::= [<sigexp>]"; 
        compliantSigExp sigexp)
+  | PARty(ty) =>
+       compliantTy ty
 and compliantModBind (MODBINDmodbind(modid,modexp)) =
       compliantModExp modexp
   | compliantModBind (ASmodbind(modid,sigexp,exp)) =

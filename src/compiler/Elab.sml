@@ -373,6 +373,8 @@ and unguardedTy (_, ty') =
       unguardedTy ty1 U unguardedTy ty2
   | PACKty(sigexp) =>
       unguardedSigExp sigexp
+  | PARty(ty) =>
+      unguardedTy ty
 and unguardedModBind (MODBINDmodbind(modid,modexp)) =
       unguardedModExp modexp
   | unguardedModBind (ASmodbind(modid,sigexp,exp)) =
@@ -1428,6 +1430,8 @@ fun elabTy (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv) (VE:VarEnv) (TE : TyE
       in
 	  PACKt (EXISTSexmod(T,M))
       end
+  | PARty(ty) =>
+      elabTy ME FE GE UE VE TE ty
 ;
 
 fun elabSCon (INTscon i,    _     ) = type_int

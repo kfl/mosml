@@ -29,6 +29,7 @@ all:
 	$(MOSML) -P full < inf.sml >> result 2>&1        
 	$(MOSML) -P full < recmod.sml >> result 2>&1        
 	$(MOSML) -P full < okasaki.sml >> result 2>&1        
+	$(MOSML) -P full < greederr.sml >> result 2>&1        
 	#this one last as its slow
 	$(MOSML) -P full test.sml >> result 2>&1
 	diff result result.ok
