@@ -1,3 +1,78 @@
+all:
+    cd crypt
+    nmake
+    cd ..
+
+    cd interface
+    nmake
+    cd ..
+
+#    cd intinf
+#    nmake
+#    cd ..
+
+    cd mgd
+    nmake
+    cd ..
+
+    cd mgdbm
+    nmake
+    cd ..
+
+#    cd mmysql
+#    nmake
+#    cd ..
+
+#    cd mpq
+#    nmake
+#    cd ..
+
+    cd mregex
+    nmake
+    cd ..
+
+    cd msocket
+    nmake
+    cd ..
+
+#    cd munix
+#    nmake
+#    cd ..
+
+install:
+    cd mgd
+    nmake install
+    cd ..
+
+    cd mgdbm
+    nmake install
+    cd ..
+
+    cd mregex
+    nmake install
+    cd ..
+
+    cd msocket
+    nmake install
+    cd ..
+
+test:
+    cd interface
+    nmake test
+    cd ..
+
+    cd mgd
+    nmake test
+    cd ..
+
+    cd mgdbm
+    nmake test
+    cd ..
+
+    cd mregex
+    nmake test
+    cd ..
+
 clean:
     cd crypt
     nmake clean
@@ -7,10 +82,6 @@ clean:
     nmake clean
     cd ..
 
-#    cd intinf
-#    nmake clean
-#    cd ..
-
     cd mgd
     nmake clean
     cd ..
@@ -18,14 +89,6 @@ clean:
     cd mgdbm
     nmake clean
     cd ..
-
-#    cd mmysql
-#    nmake clean
-#    cd ..
-
-#    cd mpq
-#    nmake clean
-#    cd ..
 
     cd mregex
     nmake clean

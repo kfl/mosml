@@ -5,34 +5,30 @@
 
 # Where to find gd header file and compiled library
 
-GDDIR=..\gd1.3.w32
+GDDIR=w32gd
 
-CC=cl
-OPTS= /nologo /Za /LD /MT /W1 /GB /O2 /Oy- /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"
+#CC=cl
+#OPTS= /nologo /Za /LD /MT /W1 /GB /O2 /Oy- /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"
 #OPTS= /nologo /Za /LD /MTd /W1 /GB /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS"
 
 !include ..\..\Makedefs.w32
 
-CFLAGS= -Dunix $(OPTS) /I ..\..\runtime /I $(GDDIR)
-LIBS= $(GDDIR)\libgd.lib ..\..\runtime\camlrt.lib
+#CFLAGS= -Dunix $(OPTS) /I ..\..\runtime /I $(GDHDIR)
+#LIBS= $(GDDIR)\libgd.lib ..\..\runtime\camlrt.lib
 
-MOSMLHOME=$(HOME)\mosml
 MOSMLTOOLS=camlrunm $(MOSMLHOME)\tools
 MOSMLC=mosmlc -c
 MOSMLL=mosmlc
 MOSMLLEX=mosmllex
 MOSMLYACC=mosmlyac
 
-all: libmgd.so Gdimage.uo Graphs.uo
+all: libmgd.so Graphs.uo
     @echo
     @echo "Now type  nmake install "
 
-libmgd.so: $(GDDIR)\libgd.lib mgd.obj
-    $(CC) $(CFLAGS) /Felibmgd.so mgd.obj $(LIBS) /link /subsystem:console
-
-$(GDDIR)\libgd.lib:
+libmgd.so:
     cd $(GDDIR)
-    nmake -f libgd.mak CFG="libgd - Win32 Release"
+    nmake -f libmgd.mak CFG="libmgd - Win32 Release"
     cd $(MOSMLHOME)\src\dynlibs\mgd
 
 test:
@@ -40,23 +36,20 @@ test:
 
 install:
 	copy /b libmgd.so $(BINDIR)\libmgd.so
-	copy /b Gdimage.sig $(LIBDIR)\Gdimage.sig
-	copy /b Gdimage.ui $(LIBDIR)\Gdimage.ui
-	copy /b Gdimage.uo $(LIBDIR)\Gdimage.uo
 	@echo
 	@echo "Then execute  mosml testgdimage.sml"
 
 clean:
     cd $(GDDIR)
-    nmake -f libgd.mak CFG="libgd - Win32 Release" CLEAN
+    nmake -f libmgd.mak CFG="libmgd - Win32 Release" CLEAN
     cd $(MOSMLHOME)\src\dynlibs\mgd
-    del *.obj
-    del *.so
-    del *.exp
-    del *.lib
-    del *.ui
-    del *.uo
-    del *.gif
+    -del *.obj
+    -del *.so
+    -del *.exp
+    -del *.lib
+    -del *.ui
+    -del *.uo
+    -del *.png
 
 .sig.ui:
     $(MOSMLC) $<
@@ -70,8 +63,5 @@ depend:
     $(MOSMLTOOLS)\cutdeps < Makefile.bak > Makefile
     $(MOSMLTOOLS)\mosmldep >> Makefile
 
-mgd.obj: mgd.c
-
 ### EVERYTHING THAT GOES BEYOND THIS COMMENT WILL BE ERASED WITHOUT WARNING
 ### DO NOT DELETE THIS LINE
-Gdimage.uo: Gdimage.ui 

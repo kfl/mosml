@@ -14,10 +14,10 @@ libcside.dll: cside.obj
 	$(CC) $(CFLAGS) /Felibcside.so cside.obj $(LIBS) /link /subsystem:console
 
 clean:
-	del *.so
-	del *.exp
-	del *.lib
-	del *.obj
+	-del *.so
+	-del *.exp
+	-del *.lib
+	-del *.obj
 
 ### EVERYTHING THAT GOES BEYOND THIS COMMENT WILL BE ERASED WITHOUT WARNING
 ### DO NOT DELETE THIS LINE

@@ -39,13 +39,13 @@ clean:
     cd $(GDBMDIR)
     NMAKE /f "gdbm.mak" CFG="gdbm - Win32 Release" CLEAN
     cd $(MOSMLHOME)\src\dynlibs\mgdbm
-    del *.so
-    del *.exp
-    del *.lib
-    del *.obj
-    del empty
-    del testdb
-    del monthnames
+    -del *.so
+    -del *.exp
+    -del *.lib
+    -del *.obj
+    -del empty
+    -del testdb
+    -del monthnames
 
 ### EVERYTHING THAT GOES BEYOND THIS COMMENT WILL BE ERASED WITHOUT WARNING
 ### DO NOT DELETE THIS LINE

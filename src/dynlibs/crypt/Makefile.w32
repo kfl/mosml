@@ -34,10 +34,10 @@ clean:
     cd $(CRYPTDIR)
     nmake -f crypt.mak CFG="crypt - Win32 Release" CLEAN
     cd $(MOSMLHOME)\src\dynlibs\crypt
-    del *.so
-    del *.exp
-    del *.lib
-    del *.obj
+    -del *.so
+    -del *.exp
+    -del *.lib
+    -del *.obj
 
 depend: 
     del Makefile.bak
