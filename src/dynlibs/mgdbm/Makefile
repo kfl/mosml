@@ -5,10 +5,13 @@
 
 # Where to find GDBM header file and compiled library
 
-GDBMDIR=${HOME}/c/gdbm-1.7.3
+GDBMLIBDIR=${HOME}/c/gdbm-1.7.3
+GDBMINCDIR=${HOME}/c/gdbm-1.7.3
+#GDBMLIBDIR=/usr/lib
+#GDBMINCDIR=/usr/include
 
 OPTS=-fno-defer-pop
-CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I../../runtime -I ${GDBMDIR}
+CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I../../runtime -I ${GDBMINCDIR}
 BASELIBS=-lm -ldl
 
 include ../../Makefile.inc
@@ -22,7 +25,7 @@ mgdbm.o: mgdbm.c
 	$(CC) $(CFLAGS) -c -o mgdbm.o mgdbm.c 
 
 libmgdbm.so: mgdbm.o
-	$(DYNLD) -o libmgdbm.so mgdbm.o ${GDBMDIR}/libgdbm.a
+	$(DYNLD) -o libmgdbm.so mgdbm.o ${GDBMLIBDIR}/libgdbm.a
 
 test:
 	mosml -P full testgdbm.sml

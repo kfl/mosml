@@ -32,3 +32,5 @@ val res = map wr [2, 1999, 18762341, 76523, 666273];
 val _ = kill(p, Signal.term);
 
 val _ = reap p;
+
+val _ = quit();

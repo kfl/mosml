@@ -23,9 +23,6 @@ The interface consists of the following files:
         mmysql.c        Implements the dynamic library libmmysql.so which 
                         interfaces Moscow ML to the MySQL library.
 
-	Mysql.sig	Moscow ML's view of the MySQL system.
-	Mysql.sml	
-
 You must have the following components:
         
         MySQL           Can be found many places on the Internet, such as
@@ -45,7 +42,7 @@ of foreign functions (edit mosml/src/Makefile.inc to achieve this).
 to the directories contain the MySQL runtime library and the MySQL
 include files.
 
-2. Compile mmysql.c, Mysql.sig, and Mysql.sml:
+2. Compile mmysql.c:
 
         make
 

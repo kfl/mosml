@@ -181,4 +181,8 @@ val test18 =
 	   andalso toInt(pow(fromInt ~1 , ~1)) = ~1
 	   andalso toInt(pow(fromInt  2 , ~1)) = 0
 	   andalso toInt(pow(fromInt ~2 , ~1)) = 0)
-end
+end;
+
+val _ = quit();
+
+

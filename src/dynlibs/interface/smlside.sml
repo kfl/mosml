@@ -108,3 +108,5 @@ val test12 = (8, true) = frtup 17;
 val test13 = {half = 8, odd = true} = frrec 17;
 
 val test14 = "abcdef" = fconcat "abc" "def";
+
+val _ = quit();

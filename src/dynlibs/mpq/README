@@ -19,9 +19,6 @@ The interface consists of the following files:
         mpq.c           Implements the dynamic library libmpq.so which 
                         interfaces Moscow ML to the Postgres libpq library.
 
-        Postgres.sig    Moscow ML's view of the PostgreSQL system.
-        Postgres.sml    
-
 You must have the following components:
         
         PostgreSQL      Can be found many places on the Internet, such as
@@ -40,7 +37,7 @@ of foreign functions (edit mosml/src/Makefile.inc to achieve this).
 1. Edit the mpq/Makefile to make PGSQLDIR point to the directory in
    which you installed PostgreSQL.
 
-2. Compile mpq.c, Postgres.sig, and Postgres.sml:
+2. Compile mpq.c:
 
         make
 

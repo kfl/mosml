@@ -13,15 +13,6 @@ The following files are included:
                         provides the execute, executeInEnv, kill, and reap 
                         implementations.
 
-        Unix.sig        The Unix signature, with documentation.
-
-        Unix.sml        The Unix structure (with calls to the C functions
-                        in libmunix.so).
-
-        Signal.sig      The Signal signature, with documentation.
-
-        Signal.sml      The Signal structure (using the Posix signal names).
-
         sieve.c         A C program used for testing the Unix structure.
 
         testunix.sml    *Very* rudimentary test of the Unix structure.

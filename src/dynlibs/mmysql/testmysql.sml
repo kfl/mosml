@@ -290,3 +290,5 @@ fun gettuplist dbres (getfields : int -> 'a) : 'a list =
 fun gettupvec dbres (getfields : int -> 'a) : 'a Vector.vector =
     Vector.tabulate(ntuples dbres, getfields)
 *)
+
+val _ = quit();

@@ -32,7 +32,7 @@ of foreign functions (edit mosml/src/Makefile.inc to achieve this).
 1. Edit the mgdbm/Makefile to make GDBMDIR point to the directory in
    which you installed gdbm.
 
-2. Compile mgdbm:
+2. Compile mgdbm.c:
 
         make
 

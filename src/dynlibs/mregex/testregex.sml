@@ -461,4 +461,6 @@ val test16a =
 val test16b = 
     (fold (regcomp "" []) (op::, #2) [] ""; "WRONG")
     handle Regex _ => "OK" | _ => "WRONG"
-end
+end;
+
+val _ = quit();

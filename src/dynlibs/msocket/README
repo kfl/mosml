@@ -14,12 +14,6 @@ It consists of the following files:
         msocket.c       Implements the dynamic library libmsocket.so which 
                         provides socket primitives for Moscow ML.
 
-	Socket.sig      The signature of the ML socket primitives, with
-			documentation.
-
-	Socket.sml      The implementation of the ML socket primitives
-			(mostly calls to the C functions in libmsocket.so).
-
 You must have the following components:
         
         Dynlib          The Moscow ML foreign (C) function interface.
@@ -29,11 +23,12 @@ You must have the following components:
 The runtime system must be compiled with support for dynamic linking
 of foreign functions (edit mosml/src/Makefile.inc to achieve this).
 
-1. Compile msocket, Socket.sig, and Socket.sml:
+1. Compile msocket.c:
 
         make
 
-2. Install msocket in the directory determined by BINDIR in src/Makefile.inc:
+2. Install libmsocket.so in the directory determined by BINDIR in 
+   src/Makefile.inc:
 
         make install
 

@@ -20,6 +20,7 @@ install:
 	cd munix; make install 
 
 test:
+	cd interface; make test 
 	cd intinf; make test 
 	cd mgd; make test 
 	cd mgdbm; make test 

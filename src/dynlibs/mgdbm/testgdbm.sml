@@ -173,5 +173,6 @@ val test3c = check'(fn _ =>
 val test3d = check'(fn _ => 
     (withtable ("empty", READER) 
      (fn db1 => withtable ("empty", WRITER) (fn db => false)))
-    handle GdbmError "Can't be writer" => true | _ => false)
+    handle GdbmError "Can't be writer" => true | _ => false);
 
+val _ = quit();

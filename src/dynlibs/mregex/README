@@ -9,9 +9,6 @@ The interface consists of the following files:
         mregex.c        Implements the dynamic library libmregex.so which 
                         interfaces Moscow ML to the GNU regex library.
 
-	Regex.sig	Moscow ML's view of regular expressions.
-	Regex.sml	
-
 	regex-0.12	Contains the GNU regex library.
 	
 You must have the following components:
@@ -23,7 +20,7 @@ You must have the following components:
 The runtime system must be compiled with support for dynamic linking
 of foreign functions (edit mosml/src/Makefile.inc to achieve this).
 
-1. Compile mregex.c, Regex.sig, Regex.sml, and GNU regex library:
+1. Compile mregex.c and the GNU regex library:
 
         make
 

@@ -33,7 +33,7 @@ clean:
 	rm -f *.o
 	rm -f *.so
 	rm -f Makefile.bak
-	(cd regex-0.12; make clean)
+#	(cd regex-0.12; make clean)
 
 depend: 
 	rm -f Makefile.bak

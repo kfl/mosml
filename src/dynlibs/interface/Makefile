@@ -18,5 +18,8 @@ clean:
 	rm -f *.o
 	rm -f *.so
 
+test:
+	mosml smlside.sml
+
 ### EVERYTHING THAT GOES BEYOND THIS COMMENT WILL BE ERASED WITHOUT WARNING
 ### DO NOT DELETE THIS LINE
