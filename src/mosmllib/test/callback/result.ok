@@ -1,29 +1,33 @@
+gcc -Dunix -O2 -fno-defer-pop  -I../../../runtime -c -o cside.o cside.c
+ld -shared -o libcside.so cside.o
 mosml testcallback.sml
-Moscow ML version 1.44 (August 1999)
+Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
 [opening file "testcallback.sml"]
 > val it = () : unit
 [opening file "../auxil.sml"]
 > infix 1 seq
-  val seq = fn : 'a * 'b -> 'b
+  val ('a, 'b) seq = fn : 'a * 'b -> 'b
 > val check = fn : bool -> string
 > val check' = fn : (unit -> bool) -> string
 > val range = fn : int * int -> (int -> bool) -> bool
-> val checkrange = fn : int * int -> ((int -> bool) -> string)
+> val checkrange = fn : int * int -> (int -> bool) -> string
 [closing file "../auxil.sml"]
 > val it = () : unit
-> type cptr
-  val app1 = fn : cptr -> 'a1 -> 'b
-  val app2 = fn : cptr -> 'a1 -> 'a2 -> 'b
-  val app3 = fn : cptr -> 'a1 -> 'a2 -> 'a3 -> 'b
-  val app4 = fn : cptr -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'b
+> type cptr = cptr
+  val ('a1, 'b) app1 = fn : cptr -> 'a1 -> 'b
+  val ('a1, 'a2, 'b) app2 = fn : cptr -> 'a1 -> 'a2 -> 'b
+  val ('a1, 'a2, 'a3, 'b) app3 = fn : cptr -> 'a1 -> 'a2 -> 'a3 -> 'b
+  val ('a1, 'a2, 'a3, 'a4, 'b) app4 = fn :
+  cptr -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'b
   val getcptr = fn : string -> cptr
-  val app5 = fn : cptr -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
+  val ('a1, 'a2, 'a3, 'a4, 'a5, 'b) app5 = fn :
+  cptr -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
   val isRegistered = fn : string -> bool
-  val register = fn : string -> 'a -> unit
+  val 'a register = fn : string -> 'a -> unit
   val unregister = fn : string -> unit
-  val var = fn : cptr -> 'b
-> val dlh = <dlHandle> : Dynlib.dlHandle
+  val 'b var = fn : cptr -> 'b
+> val dlh = <dlHandle> : dlHandle
 > val fu = fn : unit -> unit
 > val fi = fn : int -> int
 > val fc = fn : char -> char
@@ -33,10 +37,12 @@ Enter `quit();' to quit.
 > val fcur = fn : int -> char -> real -> string -> bool -> int
 > val ftup = fn : int * char * real -> int
 > val frec = fn : {age : int, givenname : string, surname : string} -> bool
-> datatype t
-  con Lf = Lf : t
+> New type names: =t
+  datatype t =
+  (t,{con Br : int * t * t -> t, con Brs : t list -> t, con Lf : t})
   con Br = fn : int * t * t -> t
   con Brs = fn : t list -> t
+  con Lf = Lf : t
   val fdat = fn : t -> int
 > val ffun = fn : (int -> real) -> int -> string
 > val frtup = fn : int -> int * bool
@@ -60,10 +66,5 @@ Enter `quit();' to quit.
 > val test16 = true : bool
 > val test17 = true : bool
 > val test18 = true : bool
-User: 2.950  System: 0.000  GC: 0.000  Real: 3.036
-User: 1.480  System: 0.000  GC: 0.000  Real: 1.508
-> val mkfun = fn : real -> (real -> real)
-  val test19 = true : bool
-  val test20 = true : bool
-[closing file "testcallback.sml"]
-- 
+User: 0.450  System: 0.000  GC: 0.000  Real: 0.451
+User: 0.350  System: 0.000  GC: 0.000  Real: 0.353

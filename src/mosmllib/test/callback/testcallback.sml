@@ -154,4 +154,4 @@ val test20 =
 	val expected = a * b + c 
     in expected = res end 
 
-
+val _ = quit();
