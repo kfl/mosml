@@ -1,0 +1,120 @@
+Calling .Net static methods from Moscow ML .Net programs
+--------------------------------------------------------
+
+External (.Net) static methods can be accessed and called through the
+prim_val mechanism.  For instance (from src/mosmllib/Math.sml):
+
+   prim_val sqrt : real -> real = 1 "sml_sqrt";
+
+This binds variable sqrt to a 1-argument function of type real ->
+real, implemented by a static method 
+
+   public static double sml_sqrt(double x) { ... }
+
+in class Mosml.Stdlib, whose source is found in src/runtime/Stdlib.cs.
+
+Class Stdlib is a container for static methods to be referenced as
+prim_vals in the standard library. A prim_val defined with a fname not
+containing an assembly ref or namespace part will point to a method in
+this class.
+
+If the method name on the prim_val right-hand side contains an
+assembly ref or a namespace part, then a static method in a class in
+that assembly and/or namespace will be called. 
+
+For example, this binds variable rtcg_create_assembly to the method
+create_assembly from class RTCG in namespace Mosml:
+
+  prim_val rtcg_create_assembly : string -> rtcg_t = 1 "RTCG::create_assembly";
+
+Similarly, this binds variable Mosml_load_one to the method load_one
+from class main in namespace Mosml.Top:
+
+  prim_val Mosml_load_one : string -> unit = 1 "Top.main::load_one";
+
+More generally, you can specify the assembly, the namespace and the
+class that declares the method that you need.  For instance, the full
+specification of the sml_sqrt method indicated above would be:
+
+   prim_val sqrt : real -> real = 1 "[Mosml.Runtime]Mosml.Stdlib.sml_sqrt";
+
+Here, the assembly is Mosml.Runtime (in file Mosml.Runtime.dll), the
+namespace is Mosml, the class us Stdlib, and sml_sqrt is the method.
+
+
+An example
+----------
+
+Assume that the C# file Hello.cs contains this class declaration:
+
+   using System;
+   using Mosml;
+
+   public class MyTest {
+     public static Value Print(Value v) {
+       System.Console.WriteLine(v);
+       return Value.unit;
+     }
+   }
+
+This file contains a reference to the Mosml namespace in the
+Mosml.Runtime assembly.  To compile it into a library (a .dll file),
+use:
+
+   csc /target:library /reference:c:\mosmlnet\bin\Mosml.Runtime.dll Hello.cs
+
+Assume the SML file hello.sml contains the following declarations:
+
+   prim_val hello : string -> unit = 1 "[Hello]MyTest::Print";
+
+   val _ = hello "Hello, world!\n";
+
+Then running 
+
+   mosmlnet hello.sml
+
+in the directory holding Hello.dll will produce this result:
+
+   C:\tmp>mosmlnet hello.sml
+   Moscow dot ML version 0.8.0 (June 2003)
+   Enter `quit();' to quit.
+   [opening file "hello.sml"]
+   > val hello = fn : string -> unit
+   Hello, world!
+
+   [closing file "hello.sml"]
+
+
+Passing arguments and using results
+-----------------------------------
+
+Arguments are passed by value (not ref or out), as objects of
+subclasses of class Value from namespace Mosml, declared in
+file src/runtime/Values.cs.  The ML value class hierarchy is
+
+     Value                      All Moscow ML .Net values (abstract)
+       MLInt                    32-bit integers (SML int and char, C# int)
+       MLFloat                  64-bit floating-point (SML real, C# double)
+       MLAbstractString         (Internal use) (abstract)
+         MLString               Strings (SML string, C# String)
+         MLByteArray            (Internal use)
+         MLCharArray            (Internal use)
+       MLVector                 Vectors (SML 'a vector, C# Value[])
+       MLBlock0                 Tuples, records, datatypes
+         MLBlock1               Tuples, records, datatypes
+           ...			...
+             MLBlock6           Tuples, records, datatypes
+               MLBlockInf       Tuples, records, datatypes
+       MLInChannel              Input channel (abstract)
+         MLInFileStream		SML BinIO.in_channel
+         MLTextReader		SML {TextIO,BasicIO}.in_channel
+       MLOutChannel             Output channel (abstract)
+         MLOutFileStream	SML BinIO.out_channel
+         MLTextWriter		SML {TextIO,BasicIO}.out_channel
+       MLClosure_		SML functions (abstract)
+         Concrete closures
+       ANY
+       MLDirHandle
+       MLExcReturn 
+
+Niels Jørgen Kokholm and Peter Sestoft * 2003-06-25
