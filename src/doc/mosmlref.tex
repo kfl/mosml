@@ -7,7 +7,13 @@
 \documentclass[fleqn,a4paper]{article}
 
 \def\allttcdots{\ensuremath{\cdots}}
-\newcommand{\x}[1][]{{\bf{*}#1}}
+
+% this is a hack to get the bullets to hyperlink to a comment: there must be a simpler way
+\newcounter{extension}
+\renewcommand{\theextension}{$\bullet$}
+\newcommand{\x}[1][]{\ref{extension}{#1}}
+
+%\newcommand{\x}[1][]{\ref{extension}{\bf{*}#1}}
 
 \nonstopmode
 \usepackage{alltt}
@@ -85,7 +91,7 @@ and {\tt -liberal}, which cause the compiler and interactive system to respectiv
 extensions of Standard ML. The default compliance level
 is {\tt -conservative}. In the interactive system,
 the compliance level may be set interactively using the functions 
-{\tt orthodox}, {\tt conservative} and {\tt liberal}. 
+{\tt orthodox}, {\tt conservative} and {\tt liberal} of type {\tt unit -> unit}. 
 
 \section{Reserved words}
 \label{sec-reserved-words}
@@ -367,11 +373,11 @@ right-associative operators of the same precedence.
 
 \item Moscow ML phrases that are non-compliant 
       extensions of Standard ML syntax are
-      marked with an asterisk (\x) in the margin.
+      marked with an bullet (\x) in the margin.
       
     \item Moscow ML phrases that are non-compliant generalisations of
       Standard ML syntax, but have instances that comply with Standard
-      ML, are marked with an an asterisk and a number (\x[$N$]) in the
+      ML, are marked with an an bullet and a number (\x[$N$]) in the
       margin, where $N$ refers to an explanatory comment that appears
       in Section \ref{sec-SMLrestrictions}.
 \end{itemize}
@@ -420,7 +426,7 @@ application\\[2ex]
 & & {\tt let {\it dec\/} in {\it exp\/}\et; $\cdots$ ; {\it exp\/}\n\
   end} & local declaration, $n\geq 1$\\
 & & {\tt [ structure {\it modexp\/} as {\it sigexp\/} ]} & structure package & \x \\
-& & {\tt [ functor {\it modexp\/} as {\it sigexp\/} ]} & functor package & \x\\
+& & {\tt [ functor {\it modexp\/} as {\it sigexp\/} ]} & functor package & \x \\
 & & {\tt  ( {\it exp\/} ) }\\[2ex]
 
 {\it exprow\/} & ::= & {\tt {\it lab\/} = {\it exp\/} \la\ , {\it
@@ -772,9 +778,9 @@ The Moscow ML Modules language is a superset of the full Standard ML Modules lan
 {\tt ( {\it modid\/} :\ {\it sigexp} )} or 
 {\tt {\it modid\/} :\ {\it sigexp} }, 
 if {\it sigexp}
-specifies a structure then {\tt modid} binds the equivalent
-structure identifier {\it strid/};
-if  {\it sigexp} specifies a functor, then {\tt modid}
+specifies a structure then {\it modid} binds the equivalent
+structure identifier {\it strid};
+if  {\it sigexp} specifies a functor, then {\it modid}
 binds the equivalent functor identifier {\it funid}.
 
 
@@ -908,6 +914,11 @@ The semantics of
    - use "unitid.sml";
 \end{alltt}
 
+Note that the unit interface {\tt unitid.sig}, if present, should be {\tt use}'ed in the interactive system,
+since the interface declares a signature that is referred to in {\tt unitid.sml}, and may be referred to
+in other units that depend on unit {\tt unitid}.
+A structure-mode unit interface has two effects: it (a) declares a signature and (b)
+serves to constrain the structure defined in the unit implementation.
 
 \subsubsection*{Structure-mode unit implementation (in file {\tt unitid.sml})}
 
@@ -1038,7 +1049,7 @@ The semantics of
    - load "unitid";
 \end{alltt}
 
-\noindent is roughly equivalent to
+\noindent Provided the compilation of {\tt unit.sml} issues no warnings (see below), this is equivalent to
 
 \begin{alltt}
    - load "unitid\et";
@@ -1046,6 +1057,19 @@ The semantics of
    - load "unitid\n";
    - use "unitid.sml";
 \end{alltt}
+
+Note that the unit interface {\tt unitid.sig}, if present, should not be {\tt use}'ed in the interactive system.
+Unlike the interface of structure-mode unit, which declares a signature, {\tt unitid.sig} does not contain a declaration,
+but merely the specification of the declarations in {\tt unitid.sml}. 
+The only purpose of  the interface file is to support the separate compilation of units that depend on the unit
+{\tt unitid} (for instance, in the absence of file {\tt unit.sml}). Since  {\tt use}ing the implementation, as
+opposed to {\tt load}ing  the compiled unit,
+can potentially (a)  declare identifiers that are not specified in
+the interface, or (b) declare constructors and exceptions, that are only specified as ordinary values in the interface,
+and both (a) and (b) may affect the meaning of subsequent code, when compiling a toplevel-mode implementation 
+against its interface, Moscow ML will issue warning whenever (a) or (b) occurs.
+
+
 
 
 \subsubsection*{Toplevel-mode unit implementation (in file {\tt unitid.sml})}
@@ -1073,18 +1097,20 @@ are required to ensure compliance with Standard ML.
 
 \begin{itemize}
 
-\item Any instance of a Moscow ML phrase that is marked with a plain \x\ in the grammar is illegal.
+\item \refstepcounter{extension}
+      \label{extension} 
+      Any instance of a Moscow ML phrase that is marked with a plain \x\ in the grammar is illegal Standard ML.
      
 
-\item Any instance of a Moscow ML phrase that is marked with a \x[$N$] in the grammar is illegal unless it satisfies restriction $N$ below:
+\item Any instance of a Moscow ML phrase that is marked with a \x[$N$] in the grammar is illegal Standard ML unless it satisfies restriction $N$ below:
 
 \begin{enumerate}
- \item\label{strdec} 
+\item\label{strdec} 
   A structure declaration   {\tt structure {\it strbind\/}}
   may only occur at top level, within the declarations of a structure, or within
   a declaration local to the declarations of a structure, but not within a Core {  \tt let}-expression.
 
- \item\label{topdec} 
+\item\label{topdec} 
   A functor declaration   {\tt functor {\it funbind\/}} or
   signature declaration   {\tt signature {\it sigbind\/}}
   may only occur at the top level of a program, but not within the 
@@ -1420,7 +1446,7 @@ indicated as follows:
 \end{tabular}
 \end{center}
 
-\noindent For more information about the Moscow ML library, see:
+\noindent To find more information about the Moscow ML library:
 
 \begin{itemize}
 %\item The index in Section~\ref{sec-libindex}
