@@ -1,4 +1,4 @@
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 [opening file "test.sml"]
 [opening file "test1.sml"]
@@ -497,10 +497,10 @@ ba> val it = CONSab{a = "a", b = "b"} : (string, string) AB
 > val eew1 = true : bool
 > val eec1 = true : bool
 > val eeg1 = true : bool
-User: 0.550  System: 0.000  GC: 0.000  Real: 0.551
+User: 0.390  System: 0.000  GC: 0.000  Real: 0.390
 > val it = 7 : int
 > val loop2 = fn : int -> int
-User: 0.510  System: 0.000  GC: 0.000  Real: 0.512
+User: 0.400  System: 0.000  GC: 0.000  Real: 0.391
 > val it = 7 : int
 > val maxi = fn : int array -> int * int
 [closing file "ovlsucc.sml"]
@@ -942,7 +942,7 @@ File "recsucc.sml", line 47, characters 21-22:
 > val h = so far so good<installed prettyprinter failed: PP7> : int
 [closing file "testpp.sml"]
 > val it = () : unit
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > type word8 = word8
 - ! Toplevel input:
@@ -1076,7 +1076,7 @@ Enter `quit();' to quit.
 !                  ^^^^^
 ! Word8.word constant is too large
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - ! Toplevel input:
 ! val fail1 = ~1073741825;
@@ -1135,7 +1135,7 @@ Enter `quit();' to quit.
 !              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Lexical error: word constant is too large.
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - ! Toplevel input:
 ! datatype t = true;
@@ -1282,7 +1282,7 @@ Enter `quit();' to quit.
 !             ^^^
 ! Illegal rebinding or respecification
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > val ('a, 'b) it = fn : 'a -> ('a -> 'b) -> 'b
 - ! Toplevel input:
@@ -1332,7 +1332,7 @@ Enter `quit();' to quit.
 !   'b
 ! because of circularity
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - ! Toplevel input:
 ! fun f1 x = (x=x, x 1);
@@ -1478,7 +1478,7 @@ Enter `quit();' to quit.
 !   'a -> 'a
 ! cannot have explicit type 'a
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - ! Toplevel input:
 ! fun true x  = x;

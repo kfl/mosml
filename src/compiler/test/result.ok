@@ -1,4 +1,4 @@
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - linking values
 OK: a
@@ -272,7 +272,7 @@ functor OK: b
 functor OK: X.x
 functor OK: B.y- 
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > structure A :
   {structure a : {val v : string},
@@ -716,7 +716,7 @@ functor OK: b
 functor OK: X.x
 functor OK: B.y- 
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > val it = () : unit
 - > val it = () : unit
@@ -996,7 +996,7 @@ functor OK: X.x
 functor OK: B.y
 > val it = () : unit
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > signature Array =
   /\array.
@@ -1058,7 +1058,7 @@ Enter `quit();' to quit.
   int list
   val test2 = "OK" : string
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > signature Array =
   /\array.
@@ -1120,7 +1120,7 @@ Enter `quit();' to quit.
   int list
   val test2 = "OK" : string
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > val divides = fn : int -> int -> bool
 - > val succ = fn : int -> int
@@ -1184,7 +1184,7 @@ Enter `quit();' to quit.
      503, 509, 521, 523, 541] : int list
 - > val test = "OK" : string
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > signature POLY =
   /\nat.
@@ -1323,7 +1323,7 @@ Enter `quit();' to quit.
       val z : nat},
    val eval : nat -> nat list -> nat}
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > functor F : {val a : unit}->{val b : unit}->{val c : unit}->{}
 - > structure A : {val a : unit}
@@ -1414,7 +1414,7 @@ Enter `quit();' to quit.
         con 'a C : 'a -> 'a (u/1 t w x),
         con 'b D : 'b -> 'b (v/1 t w x)}
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > functor ok :
   !u.(!t.{type t = t}->{type u = (u t)})->!t.{type t = t}->?u/1.{type u = u/1}
@@ -1634,7 +1634,7 @@ Enter `quit();' to quit.
   val x = D(B{l = (1, false), r = (1, false)}) :
   (int * bool) (x int bool (/\'a.{l : 'a, r : 'a}))
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > structure A :
   {structure B : {val b : bool, val c : string},
@@ -1663,7 +1663,7 @@ Enter `quit();' to quit.
 !             ^^^^^^^^^^^^^^^^^
 ! Illegal projection: this projection causes an existential type constructor to escape its scope
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > signature Collection =
   /\e t.{type e = e, type t = t, val empty : t, val add : e -> t -> t}
@@ -1716,7 +1716,7 @@ Enter `quit();' to quit.
 ! cannot have type
 !   (t/2 bool)
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > structure X : {type 'a r = 'a ref}
 - > type 'a r = 'a ref
@@ -1724,7 +1724,7 @@ Enter `quit();' to quit.
 - > structure Z : {type 'a r = 'a ref}
   type 'a r = 'a ref
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > New type names: =u
   structure A :
@@ -1889,7 +1889,7 @@ Enter `quit();' to quit.
 ! but its declaration does not admit equality in the constraint
 !   type 'b' t = 'a' -> 'b'
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > val 'a ok = fn : 'a -> 'a
 - > val ('a, 'b) ok = fn : ('a -> 'b) -> 'a -> 'b
@@ -2221,12 +2221,12 @@ Enter `quit();' to quit.
 ! that is declared within the scope of 'k
 - > val 'b' ok = fn : 'b' -> 'b' list ref
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > New type names: =v, =u, =t
   val matchsuc = "OK" : string
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - ! Toplevel input:
 ! structure X = struct open General end: sig val + : (int * int) -> int end;
@@ -3590,7 +3590,7 @@ Enter `quit();' to quit.
 ! the type constructor u/1 is a parameter 
 ! that is declared within the scope of u.
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > signature OK = {type t = int}
 - > signature OK = {structure X : {type t = int}}
@@ -3611,7 +3611,7 @@ Enter `quit();' to quit.
           {structure X : {type t = t, type u = u}, type u = u/1, type v = v}},
      structure W : {type u = u/1, type v = v}}
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > structure X : {exn e : int -> exn}
 - > structure Y : {val e : int -> exn}
@@ -3624,7 +3624,7 @@ Enter `quit();' to quit.
 - > exn s = s : exn
 - > val it = (s, s) : exn * exn
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > signature S = {}
 - > signature F = {}->{}
@@ -3704,7 +3704,7 @@ Enter `quit();' to quit.
 - > functor Ok : ({}->{})->{}->{}
 - > functor OK : ({}->{})->{}->{}
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > val integer = fn : int -> int
 - > val ok = fn : int -> int
@@ -3733,7 +3733,7 @@ Enter `quit();' to quit.
 ! the type constructor b is a parameter 
 ! that is declared within the scope of 'a
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - ! Toplevel input:
 ! ..................rec(Fail: sig type a; type b end)
@@ -4157,7 +4157,7 @@ Enter `quit();' to quit.
 ! refers to a transparent type specification
 ! but should refer to an opaque type or datatype specification
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > signature ORDERED = /\T.{type T = T, val leq : T * T -> bool}
 - > signature HEAP =
@@ -4264,7 +4264,7 @@ Enter `quit();' to quit.
 - > val test1 = true : bool
 - > val test2 = true : bool
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > New type names: =a
   datatype a = (a,{con A : a})
@@ -4711,7 +4711,7 @@ Enter `quit();' to quit.
 !   change "C of <ty>"
 !   to     "C of {a : <ty_1>, b : <ty_2>}"
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > signature S = /\t.{type t = t, type v = t}
 - > New type names: t
@@ -4965,7 +4965,7 @@ Enter `quit();' to quit.
          con ('a, 'b) PAIR :
            'a * 'b * ('a, 'b) pairlist/1 -> ('a, 'b) pairlist/1}}}
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > New type names: =t
   datatype t = (t,{con C : t -> t})
@@ -5205,7 +5205,7 @@ Enter `quit();' to quit.
 ! in the constraint
 ! The declared type scheme should be at least as general as the specified type scheme
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 [opening file "test.sml"]
 > structure Real :
@@ -8816,7 +8816,7 @@ Reached end of file.
 > val it = () : unit
 [closing file "test10.sml"]
 > val it = () : unit
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > signature S = /\t.{type t = t, val x : t, val f : t -> unit}
 - ! Toplevel input:
@@ -8824,7 +8824,7 @@ Enter `quit();' to quit.
 !                 ^^^
 ! Illegal applicative functor argument: the signature specifies a generative functor in a positive position
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - ! Toplevel input:
 ! functor WrongApp X:sig end = struct structure X as sig type t end = [structure struct  type t = int end as sig type t end] end;
@@ -8835,7 +8835,7 @@ Enter `quit();' to quit.
 !                                                   ^
 ! Illegal structure binding: a structure value cannot be opened in a functor body
 - 
-Moscow ML version 2.00 (June 2000)
+Moscow ML version 2.01a (January 2004)
 Enter `quit();' to quit.
 - > signature S = {val 'a x : ('a -> 'a) ref}
 - ! Toplevel input:

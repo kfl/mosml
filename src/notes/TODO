@@ -1524,3 +1524,27 @@ Tried this but failed:
 /* %left COLON COLONGT */
 /* %left     WHERE */
 
++ 2004-05-24: Thu, 20 May 2004 22:34:41 +0200 Andrzej Wasowski
+   <wasowski@data.pl>
+
+structure C = struct
+        datatype 'a t1 = T1 of 'a * 'a t2 list
+             and 'a t2 = T2 of 'a t1 list
+
+        fun f (T1 (a,ls)) = T1 (a, map g ls)
+        and g (T2 ls    ) = T2 (map f ls   )
+end
+
+
+structure B = struct
+        structure D = C
+end
+
+Fails with complaint about non-generalized type variable.  Claudio: my
+suspicion is that the problem is due to the inferred type schemes for
+f and g having a shared bound type variable, (generalization doesn't
+rename the bound variables) which subsequently could confuse the
+renaming code that assumes all bound variables are distinct.  
+
+Changed closeValBindVE in Elab.sml to copy the type scheme before
+closing the valbind.

@@ -232,13 +232,7 @@ val lookupVEofEnv : Environment -> string -> (int*  (TypeScheme *
 val protectCurrentTypes: (unit -> 'a) -> unit;
 val resetTypes: unit -> unit;
 
+val copyTypeScheme : (TyName * TyApp) list -> (TypeVar * Type) list 
+                     -> TypeScheme -> TypeScheme
+
 end;
-
-
-
-
-
-
-
-
-

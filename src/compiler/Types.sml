@@ -828,6 +828,8 @@ in
 	#4 (copyExMod bns bvs X)
     val copySig = fn bns => fn bvs => fn G => 
 	#4 (copySig bns bvs G)
+    val copyTypeScheme = fn bns => fn bvs => fn scheme => 
+	#4 (copyTypeScheme bns bvs scheme)
 end;
 
 (* free variables (type names, type vars and rho vars) *)

@@ -571,12 +571,27 @@ fun expansiveIdsInValBind (ValBind(ref pat, exp)) acc =
   if (isExpansiveExp exp) then (domPatAcc pat acc) else acc
 ;
 
+(* Bug fix 2004-05-24 from Claudio; bug from Andrzej Wasowski *)
+
+fun renameScheme scheme = Types.copyTypeScheme [] [] scheme
+
+fun closeValBindVE loc (pvbs: ValBind list) VE =
+  let val exIds = foldR expansiveIdsInValBind [] pvbs in
+    mapEnv (fn id => fn {qualid, info = (t,sc)} =>
+        {qualid=qualid,info = (renameScheme(generalization (member id
+exIds) t),sc)}) VE
+  end
+;
+
+
+(*
 fun closeValBindVE loc (pvbs: ValBind list) VE =
   let val exIds = foldR expansiveIdsInValBind [] pvbs in
     mapEnv (fn id => fn {qualid, info = (t,sc)} => 
         {qualid=qualid,info = (generalization (member id exIds) t,sc)}) VE
   end
 ;
+*)
 
 fun findAndMentionStrSig loc i = 
     let  val cu = findAndMentionSig loc i 
