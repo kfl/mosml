@@ -24,8 +24,7 @@ fun emit_phrase os (phr : Instruct.ZamPhrase) =
             end
         val cfuns = List.map makeFun funcs
         val pp = ppProgram cfuns
-        val s  = Wpp.toString 74 pp
-    in  Misc.print s
+    in  Wpp.toOutStream 74 TextIO.stdOut pp
     end
 
 fun end_emit_phrase
