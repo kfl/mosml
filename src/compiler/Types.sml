@@ -2335,9 +2335,11 @@ fun prTyName showTnEqu tn =
 	end
 ;
 
-fun arrowsToList (ARROWt(t, t')) = t :: arrowsToList t'
-  | arrowsToList t = [t]
-;
+fun arrowsToList tau =
+    case normType tau of
+	ARROWt(t, t') => t :: arrowsToList t'
+      | t => [t]
+;	    
 
 fun prEnv prInfo env initial =
     foldEnv (fn k => fn v => fn initial => 
@@ -2433,6 +2435,7 @@ and prTyNameSet T sep  = (* cvr:TODO *)
         (prTyName true tn; msgString sep; msgBreak(1, 1);
          prTyNameSet T' sep)
 and prTypeRow fs =
+(* cvr: post 144 merge
   case fs of
       [] => ()
     | [(lab,t)] =>
@@ -2440,6 +2443,16 @@ and prTypeRow fs =
     | (lab,t) :: rest =>
         (printLab lab; msgString " :"; msgBreak(1, 2); prType 0 t;
          msgString ","; msgBreak(1, 0); prTypeRow rest)
+*)
+  case fs of
+      [] => ()
+    | [(lab,t)] =>
+        (msgIBlock 0; printLab lab; msgString " :";
+         msgBreak(1, 2); prType 0 t; msgEBlock())
+    | (lab,t) :: rest =>
+        (msgIBlock 0; printLab lab; msgString " :"; msgBreak(1, 2);
+         prType 0 t;
+         msgString ","; msgEBlock(); msgBreak(1, 0); prTypeRow rest)
 and prTypeScheme sch = under_binder 
     (fn (TypeScheme {tscParameters,tscBody})  =>
      (case tscParameters of
