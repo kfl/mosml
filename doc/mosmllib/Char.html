@@ -8,59 +8,59 @@
 <PRE>
 <A NAME="line1"></A>(* Char -- SML Basis Library *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>type char = char
+<A NAME="line3"></A>type <A NAME="line3"></A><A HREF="#char">char</A> = char
 <A NAME="line4"></A>
 <A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#minChar">minChar</A> : char
 <A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#maxChar">maxChar</A> : char
 <A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#maxOrd">maxOrd</A>  : int       
 <A NAME="line8"></A>
-<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#chr">chr</A>     : int  -> char         (* may raise Chr *)
-<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#ord">ord</A>     : char -> int
-<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#succ">succ</A>    : char -> char         (* may raise Chr *)
-<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#pred">pred</A>    : char -> char         (* may raise Chr *)
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#chr">chr</A>     : int  -&gt; char         (* may raise Chr *)
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#ord">ord</A>     : char -&gt; int
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#succ">succ</A>    : char -&gt; char         (* may raise Chr *)
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#pred">pred</A>    : char -&gt; char         (* may raise Chr *)
 <A NAME="line13"></A>
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#isLower">isLower</A>     : char -> bool   (* contains "abcdefghijklmnopqrstuvwxyz"  *)
-<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#isUpper">isUpper</A>     : char -> bool   (* contains "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  *)
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#isDigit">isDigit</A>     : char -> bool   (* contains "0123456789"                  *)
-<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#isAlpha">isAlpha</A>     : char -> bool   (* isUpper orelse isLower                 *)
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#isHexDigit">isHexDigit</A>  : char -> bool   (* isDigit orelse contains "abcdefABCDEF" *)
-<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#isAlphaNum">isAlphaNum</A>  : char -> bool   (* isAlpha orelse isDigit                 *)
-<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#isPrint">isPrint</A>     : char -> bool   (* any printable character (incl. #" ")   *)
-<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#isSpace">isSpace</A>     : char -> bool   (* contains " \t\r\n\v\f"                 *)
-<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#isPunct">isPunct</A>     : char -> bool   (* printable, not space or alphanumeric   *) 
-<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#isGraph">isGraph</A>     : char -> bool   (* (not isSpace) andalso isPrint          *)
-<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#isAscii">isAscii</A>     : char -> bool   (* ord c < 128                            *)
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#isCntrl">isCntrl</A>     : char -> bool   (* control character                      *)
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#isLower">isLower</A>     : char -&gt; bool   (* contains "abcdefghijklmnopqrstuvwxyz"  *)
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#isUpper">isUpper</A>     : char -&gt; bool   (* contains "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  *)
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#isDigit">isDigit</A>     : char -&gt; bool   (* contains "0123456789"                  *)
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#isAlpha">isAlpha</A>     : char -&gt; bool   (* isUpper orelse isLower                 *)
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#isHexDigit">isHexDigit</A>  : char -&gt; bool   (* isDigit orelse contains "abcdefABCDEF" *)
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#isAlphaNum">isAlphaNum</A>  : char -&gt; bool   (* isAlpha orelse isDigit                 *)
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#isPrint">isPrint</A>     : char -&gt; bool   (* any printable character (incl. #" ")   *)
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#isSpace">isSpace</A>     : char -&gt; bool   (* contains " \t\r\n\v\f"                 *)
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#isPunct">isPunct</A>     : char -&gt; bool   (* printable, not space or alphanumeric   *) 
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#isGraph">isGraph</A>     : char -&gt; bool   (* (not isSpace) andalso isPrint          *)
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#isAscii">isAscii</A>     : char -&gt; bool   (* ord c &lt; 128                            *)
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#isCntrl">isCntrl</A>     : char -&gt; bool   (* control character                      *)
 <A NAME="line26"></A>
-<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#toLower">toLower</A>     : char -> char
-<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#toUpper">toUpper</A>     : char -> char
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#toLower">toLower</A>     : char -&gt; char
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#toUpper">toUpper</A>     : char -&gt; char
 <A NAME="line29"></A>
-<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#fromString">fromString</A>  : string -> char option       (* ML escape sequences *)
-<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#toString">toString</A>    : char -> string              (* ML escape sequences *)
+<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#fromString">fromString</A>  : string -&gt; char option       (* ML escape sequences *)
+<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#toString">toString</A>    : char -&gt; string              (* ML escape sequences *)
 <A NAME="line32"></A>
-<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#fromCString">fromCString</A> : string -> char option       (* C escape sequences  *)
-<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#toCString">toCString</A>   : char -> string              (* C escape sequences  *)
+<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#fromCString">fromCString</A> : string -&gt; char option       (* C escape sequences  *)
+<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#toCString">toCString</A>   : char -&gt; string              (* C escape sequences  *)
 <A NAME="line35"></A>
-<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#contains">contains</A>    : string -> char -> bool
-<A NAME="line37"></A>val <A NAME="line37"></A><A HREF="#notContains">notContains</A> : string -> char -> bool
+<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#contains">contains</A>    : string -&gt; char -&gt; bool
+<A NAME="line37"></A>val <A NAME="line37"></A><A HREF="#notContains">notContains</A> : string -&gt; char -&gt; bool
 <A NAME="line38"></A>
-<A NAME="line39"></A>val <A NAME="line39"></A><A HREF="#<"><</A>  : char * char -> bool
-<A NAME="line40"></A>val <A NAME="line40"></A><= : char * char -> bool
-<A NAME="line41"></A>val <A NAME="line41"></A>>  : char * char -> bool
-<A NAME="line42"></A>val <A NAME="line42"></A>>= : char * char -> bool
-<A NAME="line43"></A>val <A NAME="line43"></A><A HREF="#compare">compare</A> : char * char -> order
+<A NAME="line39"></A>val <A NAME="line39"></A><A HREF="#&lt;">&lt;</A>  : char * char -&gt; bool
+<A NAME="line40"></A>val <A NAME="line40"></A>&lt;= : char * char -&gt; bool
+<A NAME="line41"></A>val <A NAME="line41"></A>&gt;  : char * char -&gt; bool
+<A NAME="line42"></A>val <A NAME="line42"></A>&gt;= : char * char -&gt; bool
+<A NAME="line43"></A>val <A NAME="line43"></A><A HREF="#compare">compare</A> : char * char -&gt; order
 <A NAME="line44"></A>
 <A NAME="line45"></A>(* 
    [<A NAME="char"><B>char</B></A>] is the type of characters.  
 
-   [<A NAME="minChar"><B>minChar</B></A>] is the least character in the ordering <.
+   [<A NAME="minChar"><B>minChar</B></A>] is the least character in the ordering &lt;.
 
-   [<A NAME="maxChar"><B>maxChar</B></A>] is the greatest character in the ordering <.
+   [<A NAME="maxChar"><B>maxChar</B></A>] is the greatest character in the ordering &lt;.
 
    [<A NAME="maxOrd"><B>maxOrd</B></A>] is the greatest character code; equals ord(maxChar).
 
    [<A NAME="chr"><B>chr</B></A> i] returns the character whose code is i.  Raises Chr if
-   i<0 or i>maxOrd.
+   i&lt;0 or i&gt;maxOrd.
 
    [<A NAME="ord"><B>ord</B></A> c] returns the code of character c.
 
@@ -98,7 +98,7 @@
    [<A NAME="isCntrl"><B>isCntrl</B></A> c] returns true if c is a control character, that is, if
    not (isPrint c).
 
-   [<A NAME="isAscii"><B>isAscii</B></A> c] returns true if 0 <= ord c <= 127.
+   [<A NAME="isAscii"><B>isAscii</B></A> c] returns true if 0 &lt;= ord c &lt;= 127.
 
    [<A NAME="toLower"><B>toLower</B></A> c] returns the lowercase letter corresponding to c,
    if c is a letter (a to z or A to Z); otherwise returns c.
@@ -178,11 +178,11 @@
              toString (chr 127) equals "\\177"
              toString (chr 128) equals "\\200"
 
-   [<A NAME="<"><B><</B></A>] compares character codes.  That is, c1 < c2 returns true 
-   if ord(c1) < ord(c2), and similarly for <=, >, >=.  
+   [<A NAME="&lt;"><B>&lt;</B></A>] compares character codes.  That is, c1 &lt; c2 returns true 
+   if ord(c1) &lt; ord(c2), and similarly for &lt;=, &gt;, &gt;=.  
 
    [<A NAME="compare"><B>compare</B></A>(c1, c2)] returns LESS, EQUAL, or GREATER, according as c1 is
-   precedes, equals, or follows c2 in the ordering Char.< .
+   precedes, equals, or follows c2 in the ordering Char.&lt; .
 *)
 
 </PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>

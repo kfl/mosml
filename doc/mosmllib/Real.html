@@ -8,46 +8,46 @@
 <PRE>
 <A NAME="line1"></A>(* Real -- SML Basis Library *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>type real = real
+<A NAME="line3"></A>type <A NAME="line3"></A>real = real
 <A NAME="line4"></A>
 <A NAME="line5"></A>exception Div
 <A NAME="line6"></A>and Overflow
 <A NAME="line7"></A>
-<A NAME="line8"></A>val <A NAME="line8"></A>~    : real -> real
-<A NAME="line9"></A>val <A NAME="line9"></A>+    : real * real -> real
-<A NAME="line10"></A>val <A NAME="line10"></A>-    : real * real -> real
-<A NAME="line11"></A>val <A NAME="line11"></A>*    : real * real -> real
-<A NAME="line12"></A>val <A NAME="line12"></A>/    : real * real -> real
-<A NAME="line13"></A>val <A NAME="line13"></A>abs  : real -> real
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#min">min</A>  : real * real -> real
-<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#max">max</A>  : real * real -> real
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#sign">sign</A> : real -> int
-<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#compare">compare</A> : real * real -> order
+<A NAME="line8"></A>val <A NAME="line8"></A>~    : real -&gt; real
+<A NAME="line9"></A>val <A NAME="line9"></A>+    : real * real -&gt; real
+<A NAME="line10"></A>val <A NAME="line10"></A>-    : real * real -&gt; real
+<A NAME="line11"></A>val <A NAME="line11"></A>*    : real * real -&gt; real
+<A NAME="line12"></A>val <A NAME="line12"></A>/    : real * real -&gt; real
+<A NAME="line13"></A>val <A NAME="line13"></A>abs  : real -&gt; real
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#min">min</A>  : real * real -&gt; real
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#max">max</A>  : real * real -&gt; real
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#sign">sign</A> : real -&gt; int
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#compare">compare</A> : real * real -&gt; order
 <A NAME="line18"></A>
-<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#sameSign">sameSign</A>    : real * real -> bool
-<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#toDefault">toDefault</A>   : real -> real
-<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#fromDefault">fromDefault</A> : real -> real
-<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#fromInt">fromInt</A>     : int -> real
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#sameSign">sameSign</A>    : real * real -&gt; bool
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#toDefault">toDefault</A>   : real -&gt; real
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#fromDefault">fromDefault</A> : real -&gt; real
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#fromInt">fromInt</A>     : int -&gt; real
 <A NAME="line23"></A>
-<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#floor">floor</A> : real -> int
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#ceil">ceil</A>  : real -> int
-<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#trunc">trunc</A> : real -> int
-<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#round">round</A> : real -> int
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#floor">floor</A> : real -&gt; int
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#ceil">ceil</A>  : real -&gt; int
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#trunc">trunc</A> : real -&gt; int
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#round">round</A> : real -&gt; int
 <A NAME="line28"></A>
-<A NAME="line29"></A>val <A NAME="line29"></A>>     : real * real -> bool
-<A NAME="line30"></A>val <A NAME="line30"></A>>=    : real * real -> bool
-<A NAME="line31"></A>val <A NAME="line31"></A><     : real * real -> bool
-<A NAME="line32"></A>val <A NAME="line32"></A><=    : real * real -> bool
-<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#==">==</A>    : real * real -> bool
-<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#!=">!=</A>    : real * real -> bool
-<A NAME="line35"></A>val <A NAME="line35"></A><A HREF="#?=">?=</A>    : real * real -> bool
+<A NAME="line29"></A>val <A NAME="line29"></A>&gt;     : real * real -&gt; bool
+<A NAME="line30"></A>val <A NAME="line30"></A>&gt;=    : real * real -&gt; bool
+<A NAME="line31"></A>val <A NAME="line31"></A>&lt;     : real * real -&gt; bool
+<A NAME="line32"></A>val <A NAME="line32"></A>&lt;=    : real * real -&gt; bool
+<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#==">==</A>    : real * real -&gt; bool
+<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#!=">!=</A>    : real * real -&gt; bool
+<A NAME="line35"></A>val <A NAME="line35"></A><A HREF="#?=">?=</A>    : real * real -&gt; bool
 <A NAME="line36"></A>
-<A NAME="line37"></A>val <A NAME="line37"></A><A HREF="#toString">toString</A>   : real -> string
-<A NAME="line38"></A>val <A NAME="line38"></A><A HREF="#fromString">fromString</A> : string -> real option
-<A NAME="line39"></A>val <A NAME="line39"></A><A HREF="#scan">scan</A>       : (char, 'a) StringCvt.reader -> (real, 'a) StringCvt.reader
-<A NAME="line40"></A>val <A NAME="line40"></A><A HREF="#fmt">fmt</A>        : StringCvt.realfmt -> real -> string
+<A NAME="line37"></A>val <A NAME="line37"></A><A HREF="#toString">toString</A>   : real -&gt; string
+<A NAME="line38"></A>val <A NAME="line38"></A><A HREF="#fromString">fromString</A> : string -&gt; real option
+<A NAME="line39"></A>val <A NAME="line39"></A><A HREF="#scan">scan</A>       : (char, 'a) StringCvt.reader -&gt; (real, 'a) StringCvt.reader
+<A NAME="line40"></A>val <A NAME="line40"></A><A HREF="#fmt">fmt</A>        : StringCvt.realfmt -&gt; real -&gt; string
 <A NAME="line41"></A>
-<A NAME="line42"></A>(* [~, *, /, +, -, >, >=, <, <=, abs] are the usual operations on reals.
+<A NAME="line42"></A>(* [~, *, /, +, -, &gt;, &gt;=, &lt;, &lt;=, abs] are the usual operations on reals.
 <A NAME="line43"></A>
    [<A NAME="min"><B>min</B></A>(x, y)] is the smaller of x and y.
 
@@ -66,10 +66,10 @@
 
    [<A NAME="fromInt"><B>fromInt</B></A> i] is the floating-point number representing integer i.
 
-   [<A NAME="floor"><B>floor</B></A> r] is the largest integer <= r (rounds towards minus infinity).
+   [<A NAME="floor"><B>floor</B></A> r] is the largest integer &lt;= r (rounds towards minus infinity).
    May raise Overflow.
 
-   [<A NAME="ceil"><B>ceil</B></A> r] is the smallest integer >= r (rounds towards plus infinity).
+   [<A NAME="ceil"><B>ceil</B></A> r] is the smallest integer &gt;= r (rounds towards plus infinity).
    May raise Overflow.
 
    [<A NAME="trunc"><B>trunc</B></A> r] is numerically largest integer between r and zero (rounds
@@ -82,7 +82,7 @@
    [<A NAME="=="><B>==</B></A>(x, y)] is equivalent to x=y in Moscow ML (because of the
    absence of NaNs and Infs).
 
-   [<A NAME="!="><B>!=</B></A>(x, y)] is equivalent to x<>y in Moscow ML (because of the
+   [<A NAME="!="><B>!=</B></A>(x, y)] is equivalent to x&lt;&gt;y in Moscow ML (because of the
    absence of NaNs and Infs).
 
    [<A NAME="?="><B>?=</B></A>(x, y)] is false in Moscow ML (because of the absence of NaNs
@@ -90,7 +90,7 @@
 
    [<A NAME="fmt"><B>fmt</B></A> spec r] returns a string representing r, in the format
    specified by spec (see below).  The requested number of digits must
-   be >= 0 in the SCI and FIX formats and > 0 in the GEN format;
+   be &gt;= 0 in the SCI and FIX formats and &gt; 0 in the GEN format;
    otherwise Size is raised, even in a partial application fmt(spec).
 
       spec          description                            C printf 

@@ -8,20 +8,20 @@
 <PRE>
 <A NAME="line1"></A>(* Mosml -- some Moscow ML specific functions *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>val <A NAME="line3"></A><A HREF="#argv">argv</A>      : unit -> string list
-<A NAME="line4"></A>val <A NAME="line4"></A><A HREF="#time">time</A>      : ('a -> 'b) -> ('a -> 'b)
-<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#listDir">listDir</A>   : string -> string list
-<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#doubleVec">doubleVec</A> : real -> Word8Vector.vector
-<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#vecDouble">vecDouble</A> : Word8Vector.vector -> real
-<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#floatVec">floatVec</A>  : real -> Word8Vector.vector
-<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#vecFloat">vecFloat</A>  : Word8Vector.vector -> real
-<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#md5sum">md5sum</A>    : string -> string
+<A NAME="line3"></A>val <A NAME="line3"></A><A HREF="#argv">argv</A>      : unit -&gt; string list
+<A NAME="line4"></A>val <A NAME="line4"></A><A HREF="#time">time</A>      : ('a -&gt; 'b) -&gt; ('a -&gt; 'b)
+<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#listDir">listDir</A>   : string -&gt; string list
+<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#doubleVec">doubleVec</A> : real -&gt; Word8Vector.vector
+<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#vecDouble">vecDouble</A> : Word8Vector.vector -&gt; real
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#floatVec">floatVec</A>  : real -&gt; Word8Vector.vector
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#vecFloat">vecFloat</A>  : Word8Vector.vector -&gt; real
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#md5sum">md5sum</A>    : string -&gt; string
 <A NAME="line11"></A>
-<A NAME="line12"></A>datatype runresult = 
+<A NAME="line12"></A>datatype <A NAME="line12"></A>runresult = 
 <A NAME="line13"></A>    Success of string
 <A NAME="line14"></A>  | Failure of string
 <A NAME="line15"></A>
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#run">run</A> : string -> string list -> string -> runresult
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#run">run</A> : string -&gt; string list -&gt; string -&gt; runresult
 <A NAME="line17"></A>
 <A NAME="line18"></A>(* 
    [<A NAME="argv"><B>argv</B></A> ()] returns the command line strings of the current process.

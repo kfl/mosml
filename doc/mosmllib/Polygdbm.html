@@ -10,7 +10,7 @@
 <A NAME="line2"></A>   Version 0.0, 1997-11-09
 <A NAME="line3"></A>*)
 <A NAME="line4"></A>
-<A NAME="line5"></A>type ('key, 'data) table 
+<A NAME="line5"></A>type <A NAME="line5"></A>('key, 'data) table 
 <A NAME="line6"></A>
 <A NAME="line7"></A>(* Read-only access is non-exclusive; read/write access excludes others *)
 <A NAME="line8"></A>
@@ -20,21 +20,21 @@
 <A NAME="line12"></A>exception Closed
 <A NAME="line13"></A>exception GdbmError of string
 <A NAME="line14"></A>
-<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#withtable">withtable</A>  : string * Gdbm.openmode -> (('key, 'data) table -> 'a) -> 'a
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#add">add</A>        : ('key, 'data) table -> 'key * 'data -> unit 
-<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#insert">insert</A>     : ('key, 'data) table -> 'key * 'data -> unit
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#find">find</A>       : ('key, 'data) table -> 'key -> 'data
-<A NAME="line19"></A>val <A NAME="line19"></A>peek       : ('key, 'data) table -> 'key -> 'data option
-<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#hasKey">hasKey</A>     : ('key, 'data) table -> 'key -> bool
-<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#remove">remove</A>     : ('key, 'data) table -> 'key -> unit
-<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#listKeys">listKeys</A>   : ('key, 'data) table -> 'key list
-<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#numItems">numItems</A>   : ('key, 'data) table -> int
-<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#listItems">listItems</A>  : ('key, 'data) table -> ('key * 'data) list
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#app">app</A>        : ('key * 'data -> unit) -> ('key, 'data) table -> unit
-<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#map">map</A>        : ('key * 'data -> 'a) -> ('key, 'data) table -> 'a list
-<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#fold">fold</A>       : ('key * 'data * 'a -> 'a) -> 'a -> ('key, 'data) table -> 'a
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#withtable">withtable</A>  : string * Gdbm.openmode -&gt; (('key, 'data) table -&gt; 'a) -&gt; 'a
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#add">add</A>        : ('key, 'data) table -&gt; 'key * 'data -&gt; unit 
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#insert">insert</A>     : ('key, 'data) table -&gt; 'key * 'data -&gt; unit
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#find">find</A>       : ('key, 'data) table -&gt; 'key -&gt; 'data
+<A NAME="line19"></A>val <A NAME="line19"></A>peek       : ('key, 'data) table -&gt; 'key -&gt; 'data option
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#hasKey">hasKey</A>     : ('key, 'data) table -&gt; 'key -&gt; bool
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#remove">remove</A>     : ('key, 'data) table -&gt; 'key -&gt; unit
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#listKeys">listKeys</A>   : ('key, 'data) table -&gt; 'key list
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#numItems">numItems</A>   : ('key, 'data) table -&gt; int
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#listItems">listItems</A>  : ('key, 'data) table -&gt; ('key * 'data) list
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#app">app</A>        : ('key * 'data -&gt; unit) -&gt; ('key, 'data) table -&gt; unit
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#map">map</A>        : ('key * 'data -&gt; 'a) -&gt; ('key, 'data) table -&gt; 'a list
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#fold">fold</A>       : ('key * 'data * 'a -&gt; 'a) -&gt; 'a -&gt; ('key, 'data) table -&gt; 'a
 <A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#fastwrite">fastwrite</A>  : bool ref    
-<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#reorganize">reorganize</A> : ('key, 'data) table -> unit
+<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#reorganize">reorganize</A> : ('key, 'data) table -&gt; unit
 <A NAME="line30"></A>
 <A NAME="line31"></A>(* 
 <A NAME="line32"></A>
@@ -86,7 +86,7 @@
 
    [<A NAME="listItems"><B>listItems</B></A> db] returns a list of all (key, value) pairs in db in some 
    order.  Equivalent to 
-        List.map (fn key => (key, find(db,key))) (listKeys db)
+        List.map (fn key =&gt; (key, find(db,key))) (listKeys db)
 
    [<A NAME="app"><B>app</B></A> f db] is equivalent to List.app f (listItems db), provided the
    function f does not change the set of keys in the table.
@@ -97,7 +97,7 @@
    Otherwise the result and effect are unpredictable.
    
    [<A NAME="fold"><B>fold</B></A> f a db] is equivalent to 
-        List.foldr (fn ((k, v), r) => f(k, v, r)) a (listItems db)
+        List.foldr (fn ((k, v), r) =&gt; f(k, v, r)) a (listItems db)
    provided the function f does not change the set of keys in the 
    table. Otherwise the result and effect are unpredictable.
 

@@ -10,16 +10,16 @@
 <A NAME="line2"></A>
 <A NAME="line3"></A>exception Option
 <A NAME="line4"></A>
-<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#getOpt">getOpt</A>         : 'a option * 'a -> 'a 
-<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#isSome">isSome</A>         : 'a option -> bool 
-<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#valOf">valOf</A>          : 'a option -> 'a 
-<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#filter">filter</A>         : ('a -> bool) -> 'a -> 'a option 
-<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#map">map</A>            : ('a -> 'b) -> 'a option -> 'b option
-<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#app">app</A>            : ('a -> unit) -> 'a option -> unit
-<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#join">join</A>           : 'a option option -> 'a option
-<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#compose">compose</A>        : ('a -> 'b) * ('c -> 'a option) -> ('c -> 'b option)
-<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#mapPartial">mapPartial</A>     : ('a -> 'b option) -> ('a option -> 'b option)
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#composePartial">composePartial</A> : ('a -> 'b option) * ('c -> 'a option) -> ('c -> 'b option)
+<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#getOpt">getOpt</A>         : 'a option * 'a -&gt; 'a 
+<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#isSome">isSome</A>         : 'a option -&gt; bool 
+<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#valOf">valOf</A>          : 'a option -&gt; 'a 
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#filter">filter</A>         : ('a -&gt; bool) -&gt; 'a -&gt; 'a option 
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#map">map</A>            : ('a -&gt; 'b) -&gt; 'a option -&gt; 'b option
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#app">app</A>            : ('a -&gt; unit) -&gt; 'a option -&gt; unit
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#join">join</A>           : 'a option option -&gt; 'a option
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#compose">compose</A>        : ('a -&gt; 'b) * ('c -&gt; 'a option) -&gt; ('c -&gt; 'b option)
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#mapPartial">mapPartial</A>     : ('a -&gt; 'b option) -&gt; ('a option -&gt; 'b option)
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#composePartial">composePartial</A> : ('a -&gt; 'b option) * ('c -&gt; 'a option) -&gt; ('c -&gt; 'b option)
 <A NAME="line15"></A>
 <A NAME="line16"></A>(* 
    [<A NAME="getOpt"><B>getOpt</B></A> (xopt, d)] returns x if xopt is SOME x; returns d otherwise.

@@ -9,8 +9,8 @@
 <A NAME="line1"></A>(* Mysql -- Moscow ML interface to the MySQL database server *)
 <A NAME="line2"></A>(* This module requires Dynlib and MySQL to be installed     *)
 <A NAME="line3"></A>
-<A NAME="line4"></A>type dbconn;                            (* A connection to the server *)
-<A NAME="line5"></A>type dbresult;                          (* The result of a query      *)
+<A NAME="line4"></A>type <A NAME="line4"></A>dbconn;                            (* A connection to the server *)
+<A NAME="line5"></A>type <A NAME="line5"></A>dbresult;                          (* The result of a query      *)
 <A NAME="line6"></A>
 <A NAME="line7"></A>exception Closed;                       (* The connection is closed   *)
 <A NAME="line8"></A>exception Null;                         (* The field's value is NULL  *)
@@ -24,23 +24,23 @@
 <A NAME="line16"></A>                 dbpwd     : string option, (* user passwd          *)
 <A NAME="line17"></A>                 dbtty     : string option, (* (not used by MySQL)  *)
 <A NAME="line18"></A>                 dbuser    : string option  (* database user        *)
-<A NAME="line19"></A>               } -> dbconn
+<A NAME="line19"></A>               } -&gt; dbconn
 <A NAME="line20"></A>
-<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#closebase">closebase</A>    : dbconn -> unit
-<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#db">db</A>           : dbconn -> string
-<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#host">host</A>         : dbconn -> string option
-<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#options">options</A>      : dbconn -> string
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#port">port</A>         : dbconn -> string
-<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#tty">tty</A>          : dbconn -> string
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#closebase">closebase</A>    : dbconn -&gt; unit
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#db">db</A>           : dbconn -&gt; string
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#host">host</A>         : dbconn -&gt; string option
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#options">options</A>      : dbconn -&gt; string
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#port">port</A>         : dbconn -&gt; string
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#tty">tty</A>          : dbconn -&gt; string
 <A NAME="line27"></A>
-<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#status">status</A>       : dbconn -> bool
-<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#reset">reset</A>        : dbconn -> unit
-<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#errormessage">errormessage</A> : dbconn -> string option
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#status">status</A>       : dbconn -&gt; bool
+<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#reset">reset</A>        : dbconn -&gt; unit
+<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#errormessage">errormessage</A> : dbconn -&gt; string option
 <A NAME="line31"></A>
 <A NAME="line32"></A>
 <A NAME="line33"></A>(* Query execution and result set information *)
 <A NAME="line34"></A>
-<A NAME="line35"></A>datatype dbresultstatus =
+<A NAME="line35"></A>datatype <A NAME="line35"></A>dbresultstatus =
 <A NAME="line36"></A>    Empty_query
 <A NAME="line37"></A>  | Command_ok          (* The query was a command                *)
 <A NAME="line38"></A>  | Tuples_ok           (* The query successfully returned tuples *)
@@ -50,27 +50,27 @@
 <A NAME="line42"></A>  | Nonfatal_error
 <A NAME="line43"></A>  | Fatal_error         (* (not used by mysql)                    *)
 <A NAME="line44"></A>
-<A NAME="line45"></A>val <A NAME="line45"></A><A HREF="#execute">execute</A>      : dbconn -> string -> dbresult
-<A NAME="line46"></A>val <A NAME="line46"></A><A HREF="#resultstatus">resultstatus</A> : dbresult -> dbresultstatus
-<A NAME="line47"></A>val <A NAME="line47"></A><A HREF="#ntuples">ntuples</A>      : dbresult -> int
-<A NAME="line48"></A>val <A NAME="line48"></A><A HREF="#cmdtuples">cmdtuples</A>    : dbresult -> int
-<A NAME="line49"></A>val <A NAME="line49"></A><A HREF="#nfields">nfields</A>      : dbresult -> int
-<A NAME="line50"></A>val <A NAME="line50"></A><A HREF="#fname">fname</A>        : dbresult -> int -> string
-<A NAME="line51"></A>val <A NAME="line51"></A><A HREF="#fnames">fnames</A>       : dbresult -> string vector
-<A NAME="line52"></A>val <A NAME="line52"></A><A HREF="#fnumber">fnumber</A>      : dbresult -> string -> int option
+<A NAME="line45"></A>val <A NAME="line45"></A><A HREF="#execute">execute</A>      : dbconn -&gt; string -&gt; dbresult
+<A NAME="line46"></A>val <A NAME="line46"></A><A HREF="#resultstatus">resultstatus</A> : dbresult -&gt; dbresultstatus
+<A NAME="line47"></A>val <A NAME="line47"></A><A HREF="#ntuples">ntuples</A>      : dbresult -&gt; int
+<A NAME="line48"></A>val <A NAME="line48"></A><A HREF="#cmdtuples">cmdtuples</A>    : dbresult -&gt; int
+<A NAME="line49"></A>val <A NAME="line49"></A><A HREF="#nfields">nfields</A>      : dbresult -&gt; int
+<A NAME="line50"></A>val <A NAME="line50"></A><A HREF="#fname">fname</A>        : dbresult -&gt; int -&gt; string
+<A NAME="line51"></A>val <A NAME="line51"></A><A HREF="#fnames">fnames</A>       : dbresult -&gt; string vector
+<A NAME="line52"></A>val <A NAME="line52"></A><A HREF="#fnumber">fnumber</A>      : dbresult -&gt; string -&gt; int option
 <A NAME="line53"></A>
 <A NAME="line54"></A>(* Accessing the fields of a resultset *)
 <A NAME="line55"></A>
-<A NAME="line56"></A>val <A NAME="line56"></A><A HREF="#getint">getint</A>       : dbresult -> int -> int -> int
-<A NAME="line57"></A>val <A NAME="line57"></A><A HREF="#getreal">getreal</A>      : dbresult -> int -> int -> real
-<A NAME="line58"></A>val <A NAME="line58"></A><A HREF="#getstring">getstring</A>    : dbresult -> int -> int -> string
-<A NAME="line59"></A>val <A NAME="line59"></A><A HREF="#getdate">getdate</A>      : dbresult -> int -> int -> int * int * int (* Y M D *)
-<A NAME="line60"></A>val <A NAME="line60"></A><A HREF="#gettime">gettime</A>      : dbresult -> int -> int -> int * int * int (* H M S *)
-<A NAME="line61"></A>val <A NAME="line61"></A><A HREF="#getdatetime">getdatetime</A>  : dbresult -> int -> int -> Date.date
-<A NAME="line62"></A>val <A NAME="line62"></A><A HREF="#getbool">getbool</A>      : dbresult -> int -> int -> bool
-<A NAME="line63"></A>val <A NAME="line63"></A><A HREF="#isnull">isnull</A>       : dbresult -> int -> int -> bool
+<A NAME="line56"></A>val <A NAME="line56"></A><A HREF="#getint">getint</A>       : dbresult -&gt; int -&gt; int -&gt; int
+<A NAME="line57"></A>val <A NAME="line57"></A><A HREF="#getreal">getreal</A>      : dbresult -&gt; int -&gt; int -&gt; real
+<A NAME="line58"></A>val <A NAME="line58"></A><A HREF="#getstring">getstring</A>    : dbresult -&gt; int -&gt; int -&gt; string
+<A NAME="line59"></A>val <A NAME="line59"></A><A HREF="#getdate">getdate</A>      : dbresult -&gt; int -&gt; int -&gt; int * int * int (* Y M D *)
+<A NAME="line60"></A>val <A NAME="line60"></A><A HREF="#gettime">gettime</A>      : dbresult -&gt; int -&gt; int -&gt; int * int * int (* H M S *)
+<A NAME="line61"></A>val <A NAME="line61"></A><A HREF="#getdatetime">getdatetime</A>  : dbresult -&gt; int -&gt; int -&gt; Date.date
+<A NAME="line62"></A>val <A NAME="line62"></A><A HREF="#getbool">getbool</A>      : dbresult -&gt; int -&gt; int -&gt; bool
+<A NAME="line63"></A>val <A NAME="line63"></A><A HREF="#isnull">isnull</A>       : dbresult -&gt; int -&gt; int -&gt; bool
 <A NAME="line64"></A>
-<A NAME="line65"></A>datatype dynval =
+<A NAME="line65"></A>datatype <A NAME="line65"></A>dynval =
 <A NAME="line66"></A>    Int of int                          (* MySQL int4            *)
 <A NAME="line67"></A>  | Real of real                        (* MySQL float8 (float4) *)
 <A NAME="line68"></A>  | String of string                    (* MySQL text (varchar)  *)
@@ -79,18 +79,18 @@
 <A NAME="line71"></A>  | DateTime of Date.date               (* MySQL datetime        *)
 <A NAME="line72"></A>  | NullVal                             (* MySQL NULL value      *)
 <A NAME="line73"></A>
-<A NAME="line74"></A>val <A NAME="line74"></A><A HREF="#getdynfield">getdynfield</A>  : dbresult -> int -> (int -> dynval)
-<A NAME="line75"></A>val <A NAME="line75"></A><A HREF="#getdyntup">getdyntup</A>    : dbresult -> (int -> dynval vector)
-<A NAME="line76"></A>val <A NAME="line76"></A><A HREF="#getdyntups">getdyntups</A>   : dbresult -> dynval vector vector 
+<A NAME="line74"></A>val <A NAME="line74"></A><A HREF="#getdynfield">getdynfield</A>  : dbresult -&gt; int -&gt; (int -&gt; dynval)
+<A NAME="line75"></A>val <A NAME="line75"></A><A HREF="#getdyntup">getdyntup</A>    : dbresult -&gt; (int -&gt; dynval vector)
+<A NAME="line76"></A>val <A NAME="line76"></A><A HREF="#getdyntups">getdyntups</A>   : dbresult -&gt; dynval vector vector 
 <A NAME="line77"></A>
 <A NAME="line78"></A>(* Bulk copying to or from a table *)
 <A NAME="line79"></A>
-<A NAME="line80"></A>val <A NAME="line80"></A><A HREF="#copytableto">copytableto</A>   : dbconn * string * (string -> unit) -> unit
-<A NAME="line81"></A>val <A NAME="line81"></A><A HREF="#copytablefrom">copytablefrom</A> : dbconn * string * ((string -> unit) -> unit) -> unit
+<A NAME="line80"></A>val <A NAME="line80"></A><A HREF="#copytableto">copytableto</A>   : dbconn * string * (string -&gt; unit) -&gt; unit
+<A NAME="line81"></A>val <A NAME="line81"></A><A HREF="#copytablefrom">copytablefrom</A> : dbconn * string * ((string -&gt; unit) -&gt; unit) -&gt; unit
 <A NAME="line82"></A>
 <A NAME="line83"></A>(* Some standard ML and MySQL types: *)
 <A NAME="line84"></A>
-<A NAME="line85"></A>datatype dyntype = 
+<A NAME="line85"></A>datatype <A NAME="line85"></A>dyntype = 
 <A NAME="line86"></A>    IntTy               (* ML int               MySQL int4              *)
 <A NAME="line87"></A>  | RealTy              (* ML real              MySQL float8, float4    *)
 <A NAME="line88"></A>  | StringTy            (* ML string            MySQL text, varchar     *) 
@@ -99,11 +99,11 @@
 <A NAME="line91"></A>  | DateTimeTy          (* ML Date.date         MySQL datetime, abstime *)
 <A NAME="line92"></A>  | UnknownTy
 <A NAME="line93"></A>
-<A NAME="line94"></A>val <A NAME="line94"></A><A HREF="#fromtag">fromtag</A> : dyntype -> string
-<A NAME="line95"></A>val <A NAME="line95"></A><A HREF="#ftype">ftype</A>   : dbresult -> int -> dyntype
-<A NAME="line96"></A>val <A NAME="line96"></A><A HREF="#ftypes">ftypes</A>  : dbresult -> dyntype Vector.vector
+<A NAME="line94"></A>val <A NAME="line94"></A><A HREF="#fromtag">fromtag</A> : dyntype -&gt; string
+<A NAME="line95"></A>val <A NAME="line95"></A><A HREF="#ftype">ftype</A>   : dbresult -&gt; int -&gt; dyntype
+<A NAME="line96"></A>val <A NAME="line96"></A><A HREF="#ftypes">ftypes</A>  : dbresult -&gt; dyntype Vector.vector
 <A NAME="line97"></A>
-<A NAME="line98"></A>val <A NAME="line98"></A><A HREF="#applyto">applyto</A> : 'a -> ('a -> 'b) -> 'b
+<A NAME="line98"></A>val <A NAME="line98"></A><A HREF="#applyto">applyto</A> : 'a -&gt; ('a -&gt; 'b) -&gt; 'b
 <A NAME="line99"></A>
 <A NAME="line100"></A>(*
 <A NAME="line101"></A>   Type [dbconn] is the type of connections to a MySQL database.

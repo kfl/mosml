@@ -16,24 +16,24 @@
 <A NAME="line8"></A>(* 1. Accessing the fields or parameters of a CGI call *)
 <A NAME="line9"></A>
 <A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#cgi_fieldnames">cgi_fieldnames</A>    : string list
-<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#cgi_field_strings">cgi_field_strings</A> : string -> string list;
-<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#cgi_field_string">cgi_field_string</A>  : string -> string option;
-<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#cgi_field_integer">cgi_field_integer</A> : string * int -> int;
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#cgi_field_strings">cgi_field_strings</A> : string -&gt; string list;
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#cgi_field_string">cgi_field_string</A>  : string -&gt; string option;
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#cgi_field_integer">cgi_field_integer</A> : string * int -&gt; int;
 <A NAME="line14"></A>
 <A NAME="line15"></A>(* 2. Accessing parts in multipart/form-data; form-based file upload *)
 <A NAME="line16"></A>
 <A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#cgi_partnames">cgi_partnames</A> : string list
 <A NAME="line18"></A>
-<A NAME="line19"></A>type part
-<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#cgi_part">cgi_part</A>  : string -> part option
-<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#cgi_parts">cgi_parts</A> : string -> part list
+<A NAME="line19"></A>type <A NAME="line19"></A>part
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#cgi_part">cgi_part</A>  : string -&gt; part option
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#cgi_parts">cgi_parts</A> : string -&gt; part list
 <A NAME="line22"></A>
-<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#part_fieldnames">part_fieldnames</A>    : part -> string list
-<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#part_type">part_type</A>          : part -> string option
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#part_data">part_data</A>          : part -> string
-<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#part_field_strings">part_field_strings</A> : part -> string -> string list
-<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#part_field_string">part_field_string</A>  : part -> string -> string option
-<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#part_field_integer">part_field_integer</A> : part -> string * int -> int
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#part_fieldnames">part_fieldnames</A>    : part -&gt; string list
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#part_type">part_type</A>          : part -&gt; string option
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#part_data">part_data</A>          : part -&gt; string
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#part_field_strings">part_field_strings</A> : part -&gt; string -&gt; string list
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#part_field_string">part_field_string</A>  : part -&gt; string -&gt; string option
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#part_field_integer">part_field_integer</A> : part -&gt; string * int -&gt; int
 <A NAME="line29"></A>
 <A NAME="line30"></A>(* 3. Administrative information *)
 <A NAME="line31"></A>
@@ -83,7 +83,7 @@
 <A NAME="line75"></A>
    [<A NAME="cgi_fieldnames"><B>cgi_fieldnames</B></A>] is a list of the names of fields present in the
    CGI call message.  If field name fnm is in cgi_fieldnames, then
-   cgi_field_string fnm <> NONE.
+   cgi_field_string fnm &lt;&gt; NONE.
 
    [<A NAME="cgi_field_strings"><B>cgi_field_strings</B></A> fnm] is a (possibly empty) list of the strings
    bound to field fnm.
@@ -91,8 +91,8 @@
    [<A NAME="cgi_field_string"><B>cgi_field_string</B></A> fnm] returns SOME(s) where s is a string bound to
    field name fnm, if any; otherwise NONE.  Equivalent to 
 	case cgi_field_strings fnm of 
-             []     => NONE 
-           | s :: _ => SOME s
+             []     =&gt; NONE 
+           | s :: _ =&gt; SOME s
 
    [<A NAME="cgi_field_integer"><B>cgi_field_integer</B></A> (fnm, deflt)] attempts to parse an integer from
    field fnm.  Returns i if cgi_field_string(fnm) = SOME(s) and an
@@ -114,8 +114,8 @@
    [<A NAME="cgi_part"><B>cgi_part</B></A> pnm] is SOME(prt) where prt is a part called pnm, if any;
    otherwise NONE.  Equivalent to
 	case cgi_parts pnm of 
-             []       => NONE 
-           | prt :: _ => SOME prt
+             []       =&gt; NONE 
+           | prt :: _ =&gt; SOME prt
 
    [<A NAME="part_fieldnames"><B>part_fieldnames</B></A> prt] is the list of field names in part pnm.
 
@@ -132,8 +132,8 @@
    bound to field name fnm in part prt, if any; otherwise NONE.
    Equivalent to 
 	case part_field_strings prt fnm of 
-	     []     => NONE 
-	   | s :: _ => SOME s
+	     []     =&gt; NONE 
+	   | s :: _ =&gt; SOME s
 
    [<A NAME="part_field_integer"><B>part_field_integer</B></A> prt (fnm, deflt)] attempts to parse an integer
    from field fnm of part prt.  Returns i if part_field_string prt fnm

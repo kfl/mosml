@@ -9,36 +9,36 @@
 <A NAME="line1"></A>(* Binaryset -- sets, implemented by ordered balanced binary trees.
 <A NAME="line2"></A> *
 <A NAME="line3"></A> * Modified for Moscow ML 1995-04-22 from SML/NJ lib 0.2 file ordset-sig.sml.
-<A NAME="line4"></A> * COPYRIGHT (c) 1993 by AT&T Bell Laboratories.  
+<A NAME="line4"></A> * COPYRIGHT (c) 1993 by AT&amp;T Bell Laboratories.  
 <A NAME="line5"></A> * See file mosml/copyrght/copyrght.att for details.
 <A NAME="line6"></A> * Original implementation due to Stephen Adams, Southampton, UK.
 <A NAME="line7"></A> *)
 <A NAME="line8"></A>
-<A NAME="line9"></A>type 'item set
+<A NAME="line9"></A>type <A NAME="line9"></A>'item set
 <A NAME="line10"></A>
 <A NAME="line11"></A>exception NotFound
 <A NAME="line12"></A>
-<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#empty">empty</A>        : ('item * 'item -> order) -> 'item set
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#singleton">singleton</A>    : ('item * 'item -> order) -> 'item -> 'item set
-<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#add">add</A>          : 'item set * 'item -> 'item set
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#addList">addList</A>      : 'item set * 'item list -> 'item set
-<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#retrieve">retrieve</A>     : 'item set * 'item -> 'item
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#peek">peek</A>         : 'item set * 'item -> 'item option
-<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#isEmpty">isEmpty</A>      : 'item set -> bool
-<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#equal">equal</A>        : 'item set * 'item set -> bool
-<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#isSubset">isSubset</A>     : 'item set * 'item set -> bool
-<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#member">member</A>       : 'item set * 'item -> bool
-<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#delete">delete</A>       : 'item set * 'item -> 'item set
-<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#numItems">numItems</A>     : 'item set ->  int
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#union">union</A>        : 'item set * 'item set -> 'item set
-<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#intersection">intersection</A> : 'item set * 'item set -> 'item set
-<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#difference">difference</A>   : 'item set * 'item set -> 'item set
-<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#listItems">listItems</A>    : 'item set -> 'item list
-<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#app">app</A>          : ('item -> unit) -> 'item set -> unit
-<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#revapp">revapp</A>       : ('item -> unit) -> 'item set -> unit
-<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#foldr">foldr</A>        : ('item * 'b -> 'b) -> 'b -> 'item set -> 'b
-<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#foldl">foldl</A>        : ('item * 'b -> 'b) -> 'b -> 'item set -> 'b
-<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#find">find</A>         : ('item -> bool) -> 'item set -> 'item option
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#empty">empty</A>        : ('item * 'item -&gt; order) -&gt; 'item set
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#singleton">singleton</A>    : ('item * 'item -&gt; order) -&gt; 'item -&gt; 'item set
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#add">add</A>          : 'item set * 'item -&gt; 'item set
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#addList">addList</A>      : 'item set * 'item list -&gt; 'item set
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#retrieve">retrieve</A>     : 'item set * 'item -&gt; 'item
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#peek">peek</A>         : 'item set * 'item -&gt; 'item option
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#isEmpty">isEmpty</A>      : 'item set -&gt; bool
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#equal">equal</A>        : 'item set * 'item set -&gt; bool
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#isSubset">isSubset</A>     : 'item set * 'item set -&gt; bool
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#member">member</A>       : 'item set * 'item -&gt; bool
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#delete">delete</A>       : 'item set * 'item -&gt; 'item set
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#numItems">numItems</A>     : 'item set -&gt;  int
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#union">union</A>        : 'item set * 'item set -&gt; 'item set
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#intersection">intersection</A> : 'item set * 'item set -&gt; 'item set
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#difference">difference</A>   : 'item set * 'item set -&gt; 'item set
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#listItems">listItems</A>    : 'item set -&gt; 'item list
+<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#app">app</A>          : ('item -&gt; unit) -&gt; 'item set -&gt; unit
+<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#revapp">revapp</A>       : ('item -&gt; unit) -&gt; 'item set -&gt; unit
+<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#foldr">foldr</A>        : ('item * 'b -&gt; 'b) -&gt; 'b -&gt; 'item set -&gt; 'b
+<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#foldl">foldl</A>        : ('item * 'b -&gt; 'b) -&gt; 'b -&gt; 'item set -&gt; 'b
+<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#find">find</A>         : ('item -&gt; bool) -&gt; 'item set -&gt; 'item option
 <A NAME="line34"></A>
 <A NAME="line35"></A>(* This unit implements sets of ordered elements.  Every set is
 <A NAME="line36"></A>   equipped with an ordering relation; the ordering relation is used

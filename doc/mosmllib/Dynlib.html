@@ -8,22 +8,22 @@
 <PRE>
 <A NAME="line1"></A>signature Dynlib =
 <A NAME="line2"></A>sig
-<A NAME="line3"></A>    type dlHandle
-<A NAME="line4"></A>    type symHandle
+<A NAME="line3"></A>    type <A NAME="line3"></A>dlHandle
+<A NAME="line4"></A>    type <A NAME="line4"></A>symHandle
 <A NAME="line5"></A>        
 <A NAME="line6"></A>    exception Closed
 <A NAME="line7"></A>    
-<A NAME="line8"></A>    datatype flag = RTLD_LAZY | RTLD_NOW
-<A NAME="line9"></A>    val <A NAME="line9"></A><A HREF="#dlopen">dlopen</A>  : { lib : string, flag : flag, global : bool } -> dlHandle
-<A NAME="line10"></A>    val <A NAME="line10"></A><A HREF="#dlsym">dlsym</A>   : dlHandle -> string -> symHandle
-<A NAME="line11"></A>    val <A NAME="line11"></A><A HREF="#dlclose">dlclose</A> : dlHandle -> unit
+<A NAME="line8"></A>    datatype <A NAME="line8"></A>flag = RTLD_LAZY | RTLD_NOW
+<A NAME="line9"></A>    val <A NAME="line9"></A><A HREF="#dlopen">dlopen</A>  : { lib : string, flag : flag, global : bool } -&gt; dlHandle
+<A NAME="line10"></A>    val <A NAME="line10"></A><A HREF="#dlsym">dlsym</A>   : dlHandle -&gt; string -&gt; symHandle
+<A NAME="line11"></A>    val <A NAME="line11"></A><A HREF="#dlclose">dlclose</A> : dlHandle -&gt; unit
 <A NAME="line12"></A>
-<A NAME="line13"></A>    val <A NAME="line13"></A><A HREF="#var">var</A>  : symHandle -> 'b                            
-<A NAME="line14"></A>    val <A NAME="line14"></A><A HREF="#app1">app1</A> : symHandle -> 'a1 -> 'b                     
-<A NAME="line15"></A>    val <A NAME="line15"></A><A HREF="#app2">app2</A> : symHandle -> 'a1 -> 'a2 -> 'b              
-<A NAME="line16"></A>    val <A NAME="line16"></A><A HREF="#app3">app3</A> : symHandle -> 'a1 -> 'a2 -> 'a3 -> 'b       
-<A NAME="line17"></A>    val <A NAME="line17"></A><A HREF="#app4">app4</A> : symHandle -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'b
-<A NAME="line18"></A>    val <A NAME="line18"></A><A HREF="#app5">app5</A> : symHandle -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
+<A NAME="line13"></A>    val <A NAME="line13"></A><A HREF="#var">var</A>  : symHandle -&gt; 'b                            
+<A NAME="line14"></A>    val <A NAME="line14"></A><A HREF="#app1">app1</A> : symHandle -&gt; 'a1 -&gt; 'b                     
+<A NAME="line15"></A>    val <A NAME="line15"></A><A HREF="#app2">app2</A> : symHandle -&gt; 'a1 -&gt; 'a2 -&gt; 'b              
+<A NAME="line16"></A>    val <A NAME="line16"></A><A HREF="#app3">app3</A> : symHandle -&gt; 'a1 -&gt; 'a2 -&gt; 'a3 -&gt; 'b       
+<A NAME="line17"></A>    val <A NAME="line17"></A><A HREF="#app4">app4</A> : symHandle -&gt; 'a1 -&gt; 'a2 -&gt; 'a3 -&gt; 'a4 -&gt; 'b
+<A NAME="line18"></A>    val <A NAME="line18"></A><A HREF="#app5">app5</A> : symHandle -&gt; 'a1 -&gt; 'a2 -&gt; 'a3 -&gt; 'a4 -&gt; 'a5 -&gt; 'b
 <A NAME="line19"></A>end
 <A NAME="line20"></A>
 <A NAME="line21"></A>(* 

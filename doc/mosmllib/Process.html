@@ -8,18 +8,18 @@
 <PRE>
 <A NAME="line1"></A>(* OS.Process -- SML Basis Library *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>eqtype status
+<A NAME="line3"></A>eqtype <A NAME="line3"></A>status
 <A NAME="line4"></A>
 <A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#success">success</A>   : status
 <A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#failure">failure</A>   : status
 <A NAME="line7"></A>
-<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#system">system</A>    : string -> status
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#system">system</A>    : string -&gt; status
 <A NAME="line9"></A>
-<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#atExit">atExit</A>    : (unit -> unit) -> unit
-<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#exit">exit</A>      : status -> 'a
-<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#terminate">terminate</A> : status -> 'a
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#atExit">atExit</A>    : (unit -&gt; unit) -&gt; unit
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#exit">exit</A>      : status -&gt; 'a
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#terminate">terminate</A> : status -&gt; 'a
 <A NAME="line13"></A>
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#getEnv">getEnv</A>    : string -> string option
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#getEnv">getEnv</A>    : string -&gt; string option
 <A NAME="line15"></A>
 <A NAME="line16"></A>(* Portable functions for manipulating processes.
 <A NAME="line17"></A>

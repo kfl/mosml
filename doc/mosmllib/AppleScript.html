@@ -9,15 +9,15 @@
 <A NAME="line1"></A>(* AppleScript.sig *)
 <A NAME="line2"></A>(* 1997 Jul 04  e  *)
 <A NAME="line3"></A>
-<A NAME="line4"></A>type OSAID
-<A NAME="line5"></A>type OSAerr = int
+<A NAME="line4"></A>type <A NAME="line4"></A>OSAID
+<A NAME="line5"></A>type <A NAME="line5"></A>OSAerr = int
 <A NAME="line6"></A>
 <A NAME="line7"></A>exception AppleScriptErr of OSAerr * string
 <A NAME="line8"></A>
-<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#as_compile">as_compile</A>    : string -> OSAID
-<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#as_dispose">as_dispose</A>    :  OSAID -> unit
-<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#as_run_script">as_run_script</A> :  OSAID -> string
-<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#as_run_text">as_run_text</A>   : string -> string
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#as_compile">as_compile</A>    : string -&gt; OSAID
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#as_dispose">as_dispose</A>    :  OSAID -&gt; unit
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#as_run_script">as_run_script</A> :  OSAID -&gt; string
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#as_run_text">as_run_text</A>   : string -&gt; string
 <A NAME="line13"></A>
 <A NAME="line14"></A>(*
 <A NAME="line15"></A>   These Mac specific functions provide the capability to compile 

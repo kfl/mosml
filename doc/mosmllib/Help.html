@@ -8,7 +8,7 @@
 <PRE>
 <A NAME="line1"></A>(* Help *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>val <A NAME="line3"></A><A HREF="#help">help</A> : string -> unit
+<A NAME="line3"></A>val <A NAME="line3"></A><A HREF="#help">help</A> : string -&gt; unit
 <A NAME="line4"></A>
 <A NAME="line5"></A>(* Configuration *)
 <A NAME="line6"></A>
@@ -17,8 +17,8 @@
 <A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#indexfiles">indexfiles</A>     : string list ref
 <A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#specialfiles">specialfiles</A>   : {term : string, file : string, title : string} list ref
 <A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#welcome">welcome</A>        : string vector ref
-<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#browser">browser</A>        : (string -> unit) ref
-<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#defaultBrowser">defaultBrowser</A> : string -> unit
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#browser">browser</A>        : (string -&gt; unit) ref
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#defaultBrowser">defaultBrowser</A> : string -&gt; unit
 <A NAME="line14"></A>
 <A NAME="line15"></A>(* 
    [<A NAME="help"><B>help</B></A> s] provides on-line help on the topic indicated by string s.  

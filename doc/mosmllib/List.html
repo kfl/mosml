@@ -8,44 +8,44 @@
 <PRE>
 <A NAME="line1"></A>(* List -- SML Basis Library *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>type 'a list = 'a list
+<A NAME="line3"></A>type <A NAME="line3"></A>'a list = 'a list
 <A NAME="line4"></A>
 <A NAME="line5"></A>exception Empty  (* Subscript and Size *)
 <A NAME="line6"></A>
-<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#null">null</A>       : 'a list -> bool
-<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#hd">hd</A>         : 'a list -> 'a                          (* Empty     *)
-<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#tl">tl</A>         : 'a list -> 'a list                     (* Empty     *)
-<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#last">last</A>       : 'a list -> 'a                          (* Empty     *)
+<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#null">null</A>       : 'a list -&gt; bool
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#hd">hd</A>         : 'a list -&gt; 'a                          (* Empty     *)
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#tl">tl</A>         : 'a list -&gt; 'a list                     (* Empty     *)
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#last">last</A>       : 'a list -&gt; 'a                          (* Empty     *)
 <A NAME="line11"></A>
-<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#nth">nth</A>        : 'a list * int -> 'a                    (* Subscript *)
-<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#take">take</A>       : 'a list * int -> 'a list               (* Subscript *)
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#drop">drop</A>       : 'a list * int -> 'a list               (* Subscript *)
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#nth">nth</A>        : 'a list * int -&gt; 'a                    (* Subscript *)
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#take">take</A>       : 'a list * int -&gt; 'a list               (* Subscript *)
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#drop">drop</A>       : 'a list * int -&gt; 'a list               (* Subscript *)
 <A NAME="line15"></A>
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#length">length</A>     : 'a list -> int 
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#length">length</A>     : 'a list -&gt; int 
 <A NAME="line17"></A>
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#rev">rev</A>        : 'a list -> 'a list 
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#rev">rev</A>        : 'a list -&gt; 'a list 
 <A NAME="line19"></A>
-<A NAME="line20"></A>val <A NAME="line20"></A>@          : 'a list * 'a list -> 'a list
-<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#concat">concat</A>     : 'a list list -> 'a list
-<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#revAppend">revAppend</A>  : 'a list * 'a list -> 'a list
+<A NAME="line20"></A>val <A NAME="line20"></A>@          : 'a list * 'a list -&gt; 'a list
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#concat">concat</A>     : 'a list list -&gt; 'a list
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#revAppend">revAppend</A>  : 'a list * 'a list -&gt; 'a list
 <A NAME="line23"></A>
-<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#app">app</A>        : ('a -> unit) -> 'a list -> unit
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#map">map</A>        : ('a -> 'b) -> 'a list -> 'b list
-<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#mapPartial">mapPartial</A> : ('a -> 'b option) -> 'a list -> 'b list
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#app">app</A>        : ('a -&gt; unit) -&gt; 'a list -&gt; unit
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#map">map</A>        : ('a -&gt; 'b) -&gt; 'a list -&gt; 'b list
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#mapPartial">mapPartial</A> : ('a -&gt; 'b option) -&gt; 'a list -&gt; 'b list
 <A NAME="line27"></A>
-<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#find">find</A>       : ('a -> bool) -> 'a list -> 'a option
-<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#filter">filter</A>     : ('a -> bool) -> 'a list -> 'a list
-<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#partition">partition</A>  : ('a -> bool ) -> 'a list -> ('a list * 'a list)
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#find">find</A>       : ('a -&gt; bool) -&gt; 'a list -&gt; 'a option
+<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#filter">filter</A>     : ('a -&gt; bool) -&gt; 'a list -&gt; 'a list
+<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#partition">partition</A>  : ('a -&gt; bool ) -&gt; 'a list -&gt; ('a list * 'a list)
 <A NAME="line31"></A>
-<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#foldr">foldr</A>      : ('a * 'b -> 'b) -> 'b -> 'a list -> 'b
-<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#foldl">foldl</A>      : ('a * 'b -> 'b) -> 'b -> 'a list -> 'b
+<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#foldr">foldr</A>      : ('a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a list -&gt; 'b
+<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#foldl">foldl</A>      : ('a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a list -&gt; 'b
 <A NAME="line34"></A>
-<A NAME="line35"></A>val <A NAME="line35"></A><A HREF="#exists">exists</A>     : ('a -> bool) -> 'a list -> bool
-<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#all">all</A>        : ('a -> bool) -> 'a list -> bool
+<A NAME="line35"></A>val <A NAME="line35"></A><A HREF="#exists">exists</A>     : ('a -&gt; bool) -&gt; 'a list -&gt; bool
+<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#all">all</A>        : ('a -&gt; bool) -&gt; 'a list -&gt; bool
 <A NAME="line37"></A>
-<A NAME="line38"></A>val <A NAME="line38"></A><A HREF="#tabulate">tabulate</A>   : int * (int -> 'a) -> 'a list           (* Size      *)
+<A NAME="line38"></A>val <A NAME="line38"></A><A HREF="#tabulate">tabulate</A>   : int * (int -&gt; 'a) -&gt; 'a list           (* Size      *)
 <A NAME="line39"></A>
-<A NAME="line40"></A>val <A NAME="line40"></A><A HREF="#getItem">getItem</A>    : 'a list -> ('a * 'a list) option
+<A NAME="line40"></A>val <A NAME="line40"></A><A HREF="#getItem">getItem</A>    : 'a list -&gt; ('a * 'a list) option
 <A NAME="line41"></A>
 <A NAME="line42"></A>(* 
    [<A NAME="null"><B>null</B></A> xs] is true iff xs is nil.
@@ -58,14 +58,14 @@
    [<A NAME="last"><B>last</B></A> xs] returns the last element of xs.  Raises Empty if xs is nil.
 
    [<A NAME="nth"><B>nth</B></A>(xs, i)] returns the i'th element of xs, counting from 0.
-   Raises Subscript if i<0 or i>=length xs.
+   Raises Subscript if i&lt;0 or i&gt;=length xs.
 
    [<A NAME="take"><B>take</B></A>(xs, i)] returns the first i elements of xs.  Raises Subscript
-   if i<0 or i>length xs.
+   if i&lt;0 or i&gt;length xs.
 
    [<A NAME="drop"><B>drop</B></A>(xs, i)] returns what is left after dropping the first i
-   elements of xs.  Raises Subscript if i<0 or i>length xs.  
-   It holds that take(xs, i) @ drop(xs, i) = xs when 0 <= i <= length xs.
+   elements of xs.  Raises Subscript if i&lt;0 or i&gt;length xs.  
+   It holds that take(xs, i) @ drop(xs, i) = xs when 0 &lt;= i &lt;= length xs.
 
    [<A NAME="length"><B>length</B></A> xs] returns the number of elements in xs.
 
@@ -116,7 +116,7 @@
 
    [<A NAME="tabulate"><B>tabulate</B></A>(n, f)] returns a list of length n whose elements are
    f(0), f(1), ..., f(n-1), created from left to right.  Raises Size
-   if n<0.
+   if n&lt;0.
 
    [<A NAME="getItem"><B>getItem</B></A> xs] attempts to extract an element from the list xs.  It
    returns NONE if xs is empty, and returns SOME (x, xr) if xs=x::xr.

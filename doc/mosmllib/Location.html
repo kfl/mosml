@@ -11,29 +11,29 @@
 <A NAME="line3"></A> * Based on src/compiler/location from the Caml Light 0.6 distribution.
 <A NAME="line4"></A> *)
 <A NAME="line5"></A>
-<A NAME="line6"></A>datatype Location =  (* Source file positions                            *)
+<A NAME="line6"></A>datatype <A NAME="line6"></A>Location =  (* Source file positions                            *)
 <A NAME="line7"></A>    Loc of int       (* Position of the first character                  *)
 <A NAME="line8"></A>         * int       (* Position of the character following the last one *)
 <A NAME="line9"></A>
 <A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#errLocation">errLocation</A> : string * BasicIO.instream * Lexing.lexbuf 
-<A NAME="line11"></A>                  -> Location -> unit
+<A NAME="line11"></A>                  -&gt; Location -&gt; unit
 <A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#errMsg">errMsg</A>      : string * BasicIO.instream * Lexing.lexbuf 
-<A NAME="line13"></A>                  -> Location -> string -> 'a
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#errPrompt">errPrompt</A> : string -> unit; 
+<A NAME="line13"></A>                  -&gt; Location -&gt; string -&gt; 'a
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#errPrompt">errPrompt</A> : string -&gt; unit; 
 <A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#nilLocation">nilLocation</A> : Location
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#getCurrentLocation">getCurrentLocation</A> : unit -> Location
-<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#mkLoc">mkLoc</A> : 'a -> Location * 'a
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#xLR">xLR</A>   : Location * 'a -> Location
-<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#xL">xL</A>    : Location * 'a -> int
-<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#xR">xR</A>    : Location * 'a -> int
-<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#xxLR">xxLR</A>  : Location * 'a -> Location * 'b -> Location
-<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#xxRL">xxRL</A>  : Location * 'a -> Location * 'b -> Location
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#getCurrentLocation">getCurrentLocation</A> : unit -&gt; Location
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#mkLoc">mkLoc</A> : 'a -&gt; Location * 'a
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#xLR">xLR</A>   : Location * 'a -&gt; Location
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#xL">xL</A>    : Location * 'a -&gt; int
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#xR">xR</A>    : Location * 'a -&gt; int
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#xxLR">xxLR</A>  : Location * 'a -&gt; Location * 'b -&gt; Location
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#xxRL">xxRL</A>  : Location * 'a -&gt; Location * 'b -&gt; Location
 <A NAME="line23"></A>
 <A NAME="line24"></A>(* 
    [<A NAME="errLocation"><B>errLocation</B></A> (file, stream, lexbuf) loc] prints the part of the lexer 
    input which is indicated by location loc.  
    
-   If file <> "" then it is assumed to be the name of the file from
+   If file &lt;&gt; "" then it is assumed to be the name of the file from
    which the lexer reads, the stream is assumed to be an open input
    stream associated with this file, and lexbuf is the lexer buffer
    used to read from the stream.  Under MS DOS (and presumably

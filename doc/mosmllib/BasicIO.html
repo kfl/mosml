@@ -8,31 +8,31 @@
 <PRE>
 <A NAME="line1"></A>(* BasicIO -- non-standard, will be replaced by BinIO and TextIO *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>type instream and outstream;
+<A NAME="line3"></A>type <A NAME="line3"></A>instream and outstream;
 <A NAME="line4"></A>
 <A NAME="line5"></A>val <A NAME="line5"></A>std_in        : instream;
-<A NAME="line6"></A>val <A NAME="line6"></A>open_in       : string -> instream;
-<A NAME="line7"></A>val <A NAME="line7"></A>open_in_bin   : string -> instream;
-<A NAME="line8"></A>val <A NAME="line8"></A>input         : instream * int -> string;
-<A NAME="line9"></A>val <A NAME="line9"></A>inputc        : instream -> int -> string;
-<A NAME="line10"></A>val <A NAME="line10"></A>lookahead     : instream -> string;
-<A NAME="line11"></A>val <A NAME="line11"></A>close_in      : instream -> unit;
-<A NAME="line12"></A>val <A NAME="line12"></A>end_of_stream : instream -> bool;
+<A NAME="line6"></A>val <A NAME="line6"></A>open_in       : string -&gt; instream;
+<A NAME="line7"></A>val <A NAME="line7"></A>open_in_bin   : string -&gt; instream;
+<A NAME="line8"></A>val <A NAME="line8"></A>input         : instream * int -&gt; string;
+<A NAME="line9"></A>val <A NAME="line9"></A>inputc        : instream -&gt; int -&gt; string;
+<A NAME="line10"></A>val <A NAME="line10"></A>lookahead     : instream -&gt; string;
+<A NAME="line11"></A>val <A NAME="line11"></A>close_in      : instream -&gt; unit;
+<A NAME="line12"></A>val <A NAME="line12"></A>end_of_stream : instream -&gt; bool;
 <A NAME="line13"></A>
 <A NAME="line14"></A>val <A NAME="line14"></A>std_out       : outstream;
 <A NAME="line15"></A>val <A NAME="line15"></A>std_err       : outstream;
-<A NAME="line16"></A>val <A NAME="line16"></A>open_out      : string -> outstream;
-<A NAME="line17"></A>val <A NAME="line17"></A>open_out_bin  : string -> outstream;
-<A NAME="line18"></A>val <A NAME="line18"></A>output        : outstream * string -> unit;
-<A NAME="line19"></A>val <A NAME="line19"></A>outputc       : outstream -> string -> unit;
-<A NAME="line20"></A>val <A NAME="line20"></A>close_out     : outstream -> unit;
-<A NAME="line21"></A>val <A NAME="line21"></A>flush_out     : outstream -> unit;
-<A NAME="line22"></A>val <A NAME="line22"></A>input_line    : instream -> string;
-<A NAME="line23"></A>val <A NAME="line23"></A>can_input     : instream * int -> bool;
-<A NAME="line24"></A>val <A NAME="line24"></A>open_append   : string -> outstream;
+<A NAME="line16"></A>val <A NAME="line16"></A>open_out      : string -&gt; outstream;
+<A NAME="line17"></A>val <A NAME="line17"></A>open_out_bin  : string -&gt; outstream;
+<A NAME="line18"></A>val <A NAME="line18"></A>output        : outstream * string -&gt; unit;
+<A NAME="line19"></A>val <A NAME="line19"></A>outputc       : outstream -&gt; string -&gt; unit;
+<A NAME="line20"></A>val <A NAME="line20"></A>close_out     : outstream -&gt; unit;
+<A NAME="line21"></A>val <A NAME="line21"></A>flush_out     : outstream -&gt; unit;
+<A NAME="line22"></A>val <A NAME="line22"></A>input_line    : instream -&gt; string;
+<A NAME="line23"></A>val <A NAME="line23"></A>can_input     : instream * int -&gt; bool;
+<A NAME="line24"></A>val <A NAME="line24"></A>open_append   : string -&gt; outstream;
 <A NAME="line25"></A>
-<A NAME="line26"></A>val <A NAME="line26"></A>exit  : int -> 'a
-<A NAME="line27"></A>val <A NAME="line27"></A>print : string -> unit
+<A NAME="line26"></A>val <A NAME="line26"></A>exit  : int -&gt; 'a
+<A NAME="line27"></A>val <A NAME="line27"></A>print : string -&gt; unit
 <A NAME="line28"></A>
 </PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
 <TH><A HREF="idIndex.html">Identifier index</A>

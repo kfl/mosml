@@ -8,47 +8,47 @@
 <PRE>
 <A NAME="line1"></A>(* TextIO -- SML Basis Library *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>type elem   = Char.char
-<A NAME="line4"></A>type vector = string
+<A NAME="line3"></A>type <A NAME="line3"></A>elem   = Char.char
+<A NAME="line4"></A>type <A NAME="line4"></A>vector = string
 <A NAME="line5"></A>
 <A NAME="line6"></A>(* Text input: *)
 <A NAME="line7"></A>
-<A NAME="line8"></A>type instream 
+<A NAME="line8"></A>type <A NAME="line8"></A>instream 
 <A NAME="line9"></A>
-<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#openIn">openIn</A>       : string -> instream
-<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#closeIn">closeIn</A>      : instream -> unit
-<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#input">input</A>        : instream -> vector
-<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#inputAll">inputAll</A>     : instream -> vector
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#inputNoBlock">inputNoBlock</A> : instream -> vector option
-<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#input1">input1</A>       : instream -> elem option
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#inputN">inputN</A>       : instream * int -> vector
-<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#inputLine">inputLine</A>    : instream -> string
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#endOfStream">endOfStream</A>  : instream -> bool
-<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#lookahead">lookahead</A>    : instream -> elem option
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#openIn">openIn</A>       : string -&gt; instream
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#closeIn">closeIn</A>      : instream -&gt; unit
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#input">input</A>        : instream -&gt; vector
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#inputAll">inputAll</A>     : instream -&gt; vector
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#inputNoBlock">inputNoBlock</A> : instream -&gt; vector option
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#input1">input1</A>       : instream -&gt; elem option
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#inputN">inputN</A>       : instream * int -&gt; vector
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#inputLine">inputLine</A>    : instream -&gt; string
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#endOfStream">endOfStream</A>  : instream -&gt; bool
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#lookahead">lookahead</A>    : instream -&gt; elem option
 <A NAME="line20"></A>
-<A NAME="line21"></A>type cs (* character source state *)
+<A NAME="line21"></A>type <A NAME="line21"></A>cs (* character source state *)
 <A NAME="line22"></A>
-<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#scanStream">scanStream</A>   : ((char, cs) StringCvt.reader -> ('a, cs) StringCvt.reader) 
-<A NAME="line24"></A>                   -> instream -> 'a option
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#scanStream">scanStream</A>   : ((char, cs) StringCvt.reader -&gt; ('a, cs) StringCvt.reader) 
+<A NAME="line24"></A>                   -&gt; instream -&gt; 'a option
 <A NAME="line25"></A>
 <A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#stdIn">stdIn</A>        : instream
 <A NAME="line27"></A>
 <A NAME="line28"></A>(* Text output: *)
 <A NAME="line29"></A>
-<A NAME="line30"></A>type outstream
+<A NAME="line30"></A>type <A NAME="line30"></A>outstream
 <A NAME="line31"></A>
-<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#openOut">openOut</A>      : string -> outstream
-<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#openAppend">openAppend</A>   : string -> outstream
-<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#closeOut">closeOut</A>     : outstream -> unit
-<A NAME="line35"></A>val <A NAME="line35"></A><A HREF="#output">output</A>       : outstream * vector -> unit
-<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#output1">output1</A>      : outstream * elem -> unit
-<A NAME="line37"></A>val <A NAME="line37"></A>outputSubstr : outstream * substring -> unit
-<A NAME="line38"></A>val <A NAME="line38"></A><A HREF="#flushOut">flushOut</A>     : outstream -> unit
+<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#openOut">openOut</A>      : string -&gt; outstream
+<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#openAppend">openAppend</A>   : string -&gt; outstream
+<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#closeOut">closeOut</A>     : outstream -&gt; unit
+<A NAME="line35"></A>val <A NAME="line35"></A><A HREF="#output">output</A>       : outstream * vector -&gt; unit
+<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#output1">output1</A>      : outstream * elem -&gt; unit
+<A NAME="line37"></A>val <A NAME="line37"></A>outputSubstr : outstream * substring -&gt; unit
+<A NAME="line38"></A>val <A NAME="line38"></A><A HREF="#flushOut">flushOut</A>     : outstream -&gt; unit
 <A NAME="line39"></A>
 <A NAME="line40"></A>val <A NAME="line40"></A><A HREF="#stdOut">stdOut</A>       : outstream
 <A NAME="line41"></A>val <A NAME="line41"></A><A HREF="#stdErr">stdErr</A>       : outstream
 <A NAME="line42"></A>
-<A NAME="line43"></A>val <A NAME="line43"></A>print        : string -> unit
+<A NAME="line43"></A>val <A NAME="line43"></A>print        : string -&gt; unit
 <A NAME="line44"></A>
 <A NAME="line45"></A>(* This structure provides input/output functions on text streams.
 <A NAME="line46"></A>   The functions are state-based: reading from or writing to a stream
@@ -65,7 +65,7 @@
 <A NAME="line57"></A>   streams.
 <A NAME="line58"></A>
 <A NAME="line59"></A>   Type elem is the type char of characters, and type vector is the
-<A NAME="line60"></A>   type of character vectors (strings).
+<A NAME="line60"></A>   type <A NAME="line60"></A>of character vectors (strings).
 <A NAME="line61"></A>
 <A NAME="line62"></A>
 <A NAME="line63"></A>   TEXT INPUT:

@@ -8,14 +8,14 @@
 <PRE>
 <A NAME="line1"></A>(* ListPair -- SML Basis Library *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>val <A NAME="line3"></A><A HREF="#zip">zip</A>    : 'a list * 'b list -> ('a * 'b) list
-<A NAME="line4"></A>val <A NAME="line4"></A><A HREF="#unzip">unzip</A>  : ('a * 'b) list -> 'a list * 'b list
-<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#map">map</A>    : ('a * 'b -> 'c)   -> 'a list * 'b list -> 'c list
-<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#app">app</A>    : ('a * 'b -> unit) -> 'a list * 'b list -> unit
-<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#all">all</A>    : ('a * 'b -> bool) -> 'a list * 'b list -> bool
-<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#exists">exists</A> : ('a * 'b -> bool) -> 'a list * 'b list -> bool
-<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#foldr">foldr</A>  : ('a * 'b * 'c -> 'c) -> 'c -> 'a list * 'b list -> 'c
-<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#foldl">foldl</A>  : ('a * 'b * 'c -> 'c) -> 'c -> 'a list * 'b list -> 'c
+<A NAME="line3"></A>val <A NAME="line3"></A><A HREF="#zip">zip</A>    : 'a list * 'b list -&gt; ('a * 'b) list
+<A NAME="line4"></A>val <A NAME="line4"></A><A HREF="#unzip">unzip</A>  : ('a * 'b) list -&gt; 'a list * 'b list
+<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#map">map</A>    : ('a * 'b -&gt; 'c)   -&gt; 'a list * 'b list -&gt; 'c list
+<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#app">app</A>    : ('a * 'b -&gt; unit) -&gt; 'a list * 'b list -&gt; unit
+<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#all">all</A>    : ('a * 'b -&gt; bool) -&gt; 'a list * 'b list -&gt; bool
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#exists">exists</A> : ('a * 'b -&gt; bool) -&gt; 'a list * 'b list -&gt; bool
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#foldr">foldr</A>  : ('a * 'b * 'c -&gt; 'c) -&gt; 'c -&gt; 'a list * 'b list -&gt; 'c
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#foldl">foldl</A>  : ('a * 'b * 'c -&gt; 'c) -&gt; 'c -&gt; 'a list * 'b list -&gt; 'c
 <A NAME="line11"></A>
 <A NAME="line12"></A>
 <A NAME="line13"></A>(* These functions process pairs of lists.  No exception is raised
@@ -53,13 +53,13 @@
    where xs = [x1, x2, ..., x(n-1), xn, ...],
          ys = [y1, y2, ..., y(n-1), yn, ...], 
    and    n = min(length xs, length ys).
-   Equivalent to List.foldr (fn ((x, y), r) => f(x, y, r)) e (zip(xs, ys)).
+   Equivalent to List.foldr (fn ((x, y), r) =&gt; f(x, y, r)) e (zip(xs, ys)).
 
    [<A NAME="foldl"><B>foldl</B></A> f e (xs, ys)] evaluates f(xn, yn, f( ..., f(x2, y2, f(x1, y1, e))))
    where xs = [x1, x2, ..., x(n-1), xn, ...], 
          ys = [y1, y2, ..., y(n-1), yn, ...], 
    and    n = min(length xs, length ys).
-   Equivalent to List.foldl (fn ((x, y), r) => f(x, y, r)) e (zip(xs, ys)).
+   Equivalent to List.foldl (fn ((x, y), r) =&gt; f(x, y, r)) e (zip(xs, ys)).
 *)
 
 </PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>

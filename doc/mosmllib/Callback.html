@@ -10,32 +10,32 @@
 <A NAME="line2"></A>
 <A NAME="line3"></A>(* Registering ML values for access from C code: *)
 <A NAME="line4"></A>
-<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#register">register</A>     : string -> 'a -> unit
-<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#unregister">unregister</A>   : string -> unit
-<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#isRegistered">isRegistered</A> : string -> bool
+<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#register">register</A>     : string -&gt; 'a -&gt; unit
+<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#unregister">unregister</A>   : string -&gt; unit
+<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#isRegistered">isRegistered</A> : string -&gt; bool
 <A NAME="line8"></A>
 <A NAME="line9"></A>
 <A NAME="line10"></A>(* Accessing C variables and functions from ML: *)
 <A NAME="line11"></A>
-<A NAME="line12"></A>type cptr
+<A NAME="line12"></A>type <A NAME="line12"></A><A HREF="#cptr">cptr</A>
 <A NAME="line13"></A>
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#getcptr">getcptr</A> : string -> cptr
-<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#var">var</A>     : cptr -> 'b                            
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#app1">app1</A>    : cptr -> 'a1 -> 'b                     
-<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#app2">app2</A>    : cptr -> 'a1 -> 'a2 -> 'b              
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#app3">app3</A>    : cptr -> 'a1 -> 'a2 -> 'a3 -> 'b       
-<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#app4">app4</A>    : cptr -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'b
-<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#app5">app5</A>    : cptr -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#getcptr">getcptr</A> : string -&gt; cptr
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#var">var</A>     : cptr -&gt; 'b                            
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#app1">app1</A>    : cptr -&gt; 'a1 -&gt; 'b                     
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#app2">app2</A>    : cptr -&gt; 'a1 -&gt; 'a2 -&gt; 'b              
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#app3">app3</A>    : cptr -&gt; 'a1 -&gt; 'a2 -&gt; 'a3 -&gt; 'b       
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#app4">app4</A>    : cptr -&gt; 'a1 -&gt; 'a2 -&gt; 'a3 -&gt; 'a4 -&gt; 'b
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#app5">app5</A>    : cptr -&gt; 'a1 -&gt; 'a2 -&gt; 'a3 -&gt; 'a4 -&gt; 'a5 -&gt; 'b
 <A NAME="line21"></A>
 <A NAME="line22"></A>(* 
 <A NAME="line23"></A>   REGISTERING ML VALUES FOR ACCESS FROM C CODE
 <A NAME="line24"></A>   --------------------------------------------
 <A NAME="line25"></A>
-<A NAME="line26"></A>   This example shows how to register the ML function (fn n => 2*n) so
+<A NAME="line26"></A>   This example shows how to register the ML function (fn n =&gt; 2*n) so
 <A NAME="line27"></A>   that it may be called from C code.
 <A NAME="line28"></A>
 <A NAME="line29"></A>   (0) The ML side registers the function:
-<A NAME="line30"></A>          Callback.register "myfun" (fn n => 2*n)               
+<A NAME="line30"></A>          Callback.register "myfun" (fn n =&gt; 2*n)               
 <A NAME="line31"></A>
 <A NAME="line32"></A>   (1) The C side first obtains an ML value pointer:
 <A NAME="line33"></A>          valueptr mvp = get_valueptr("myfun");
@@ -114,7 +114,7 @@
 
    (1) The ML side obtains a C pointer and defines an ML function
        via that pointer: 
-          val sillycfun = app1 (getcptr "mycfun") : real -> real
+          val sillycfun = app1 (getcptr "mycfun") : real -&gt; real
        The type ascription is needed to ensure any type safety whatsoever.
        Mistakes in the types will lead to crashes, as usual with C.
 

@@ -9,38 +9,38 @@
 <A NAME="line1"></A>(* String -- SML Basis Library *)
 <A NAME="line2"></A>
 <A NAME="line3"></A>local 
-<A NAME="line4"></A>    type char = Char.char
+<A NAME="line4"></A>    type <A NAME="line4"></A>char = Char.char
 <A NAME="line5"></A>in
-<A NAME="line6"></A>    type string = string
+<A NAME="line6"></A>    type <A NAME="line6"></A>string = string
 <A NAME="line7"></A>    val <A NAME="line7"></A><A HREF="#maxSize">maxSize</A>   : int
-<A NAME="line8"></A>    val <A NAME="line8"></A><A HREF="#size">size</A>      : string -> int
-<A NAME="line9"></A>    val <A NAME="line9"></A><A HREF="#sub">sub</A>       : string * int -> char
-<A NAME="line10"></A>    val <A NAME="line10"></A><A HREF="#substring">substring</A> : string * int * int -> string
-<A NAME="line11"></A>    val <A NAME="line11"></A><A HREF="#extract">extract</A>   : string * int * int option -> string
-<A NAME="line12"></A>    val <A NAME="line12"></A><A HREF="#concat">concat</A>    : string list -> string
-<A NAME="line13"></A>    val <A NAME="line13"></A>^         : string * string -> string
-<A NAME="line14"></A>    val <A NAME="line14"></A><A HREF="#str">str</A>       : char -> string
-<A NAME="line15"></A>    val <A NAME="line15"></A><A HREF="#implode">implode</A>   : char list -> string 
-<A NAME="line16"></A>    val <A NAME="line16"></A><A HREF="#explode">explode</A>   : string -> char list
+<A NAME="line8"></A>    val <A NAME="line8"></A><A HREF="#size">size</A>      : string -&gt; int
+<A NAME="line9"></A>    val <A NAME="line9"></A><A HREF="#sub">sub</A>       : string * int -&gt; char
+<A NAME="line10"></A>    val <A NAME="line10"></A><A HREF="#substring">substring</A> : string * int * int -&gt; string
+<A NAME="line11"></A>    val <A NAME="line11"></A><A HREF="#extract">extract</A>   : string * int * int option -&gt; string
+<A NAME="line12"></A>    val <A NAME="line12"></A><A HREF="#concat">concat</A>    : string list -&gt; string
+<A NAME="line13"></A>    val <A NAME="line13"></A>^         : string * string -&gt; string
+<A NAME="line14"></A>    val <A NAME="line14"></A><A HREF="#str">str</A>       : char -&gt; string
+<A NAME="line15"></A>    val <A NAME="line15"></A><A HREF="#implode">implode</A>   : char list -&gt; string 
+<A NAME="line16"></A>    val <A NAME="line16"></A><A HREF="#explode">explode</A>   : string -&gt; char list
 <A NAME="line17"></A>
-<A NAME="line18"></A>    val <A NAME="line18"></A><A HREF="#map">map</A>       : (char -> char) -> string -> string 
-<A NAME="line19"></A>    val <A NAME="line19"></A><A HREF="#translate">translate</A> : (char -> string) -> string -> string
-<A NAME="line20"></A>    val <A NAME="line20"></A><A HREF="#tokens">tokens</A>    : (char -> bool) -> string -> string list
-<A NAME="line21"></A>    val <A NAME="line21"></A><A HREF="#fields">fields</A>    : (char -> bool) -> string -> string list
-<A NAME="line22"></A>    val <A NAME="line22"></A><A HREF="#isPrefix">isPrefix</A>  : string -> string -> bool
+<A NAME="line18"></A>    val <A NAME="line18"></A><A HREF="#map">map</A>       : (char -&gt; char) -&gt; string -&gt; string 
+<A NAME="line19"></A>    val <A NAME="line19"></A><A HREF="#translate">translate</A> : (char -&gt; string) -&gt; string -&gt; string
+<A NAME="line20"></A>    val <A NAME="line20"></A><A HREF="#tokens">tokens</A>    : (char -&gt; bool) -&gt; string -&gt; string list
+<A NAME="line21"></A>    val <A NAME="line21"></A><A HREF="#fields">fields</A>    : (char -&gt; bool) -&gt; string -&gt; string list
+<A NAME="line22"></A>    val <A NAME="line22"></A><A HREF="#isPrefix">isPrefix</A>  : string -&gt; string -&gt; bool
 <A NAME="line23"></A>
-<A NAME="line24"></A>    val <A NAME="line24"></A><A HREF="#compare">compare</A>   : string * string -> order
-<A NAME="line25"></A>    val <A NAME="line25"></A><A HREF="#collate">collate</A>   : (char * char -> order) -> string * string -> order
+<A NAME="line24"></A>    val <A NAME="line24"></A><A HREF="#compare">compare</A>   : string * string -&gt; order
+<A NAME="line25"></A>    val <A NAME="line25"></A><A HREF="#collate">collate</A>   : (char * char -&gt; order) -&gt; string * string -&gt; order
 <A NAME="line26"></A>
-<A NAME="line27"></A>    val <A NAME="line27"></A><A HREF="#fromString">fromString</A>  : string -> string option     (* ML escape sequences *)
-<A NAME="line28"></A>    val <A NAME="line28"></A><A HREF="#toString">toString</A>    : string -> string            (* ML escape sequences *)
-<A NAME="line29"></A>    val <A NAME="line29"></A><A HREF="#fromCString">fromCString</A> : string -> string option     (* C escape sequences *)
-<A NAME="line30"></A>    val <A NAME="line30"></A><A HREF="#toCString">toCString</A>   : string -> string            (* C escape sequences *)
+<A NAME="line27"></A>    val <A NAME="line27"></A><A HREF="#fromString">fromString</A>  : string -&gt; string option     (* ML escape sequences *)
+<A NAME="line28"></A>    val <A NAME="line28"></A><A HREF="#toString">toString</A>    : string -&gt; string            (* ML escape sequences *)
+<A NAME="line29"></A>    val <A NAME="line29"></A><A HREF="#fromCString">fromCString</A> : string -&gt; string option     (* C escape sequences *)
+<A NAME="line30"></A>    val <A NAME="line30"></A><A HREF="#toCString">toCString</A>   : string -&gt; string            (* C escape sequences *)
 <A NAME="line31"></A>
-<A NAME="line32"></A>    val <A NAME="line32"></A><A HREF="#<"><</A>  : string * string -> bool
-<A NAME="line33"></A>    val <A NAME="line33"></A><= : string * string -> bool
-<A NAME="line34"></A>    val <A NAME="line34"></A>>  : string * string -> bool
-<A NAME="line35"></A>    val <A NAME="line35"></A>>= : string * string -> bool
+<A NAME="line32"></A>    val <A NAME="line32"></A><A HREF="#&lt;">&lt;</A>  : string * string -&gt; bool
+<A NAME="line33"></A>    val <A NAME="line33"></A>&lt;= : string * string -&gt; bool
+<A NAME="line34"></A>    val <A NAME="line34"></A>&gt;  : string * string -&gt; bool
+<A NAME="line35"></A>    val <A NAME="line35"></A>&gt;= : string * string -&gt; bool
 <A NAME="line36"></A>end
 <A NAME="line37"></A>
 <A NAME="line38"></A>(* The type [string] is the type of strings of characters.
@@ -50,16 +50,16 @@
    [<A NAME="size"><B>size</B></A> s] is the number of characters in string s.
 
    [<A NAME="sub"><B>sub</B></A>(s, i)] is the i'th character of s, counting from zero.  
-   Raises Subscript if i<0 or i>=size s.
+   Raises Subscript if i&lt;0 or i&gt;=size s.
 
    [<A NAME="substring"><B>substring</B></A>(s, i, n)] is the string s[i..i+n-1].  Raises Subscript
-   if i<0 or n<0 or i+n>size s.  Equivalent to extract(s, i, SOME n).
+   if i&lt;0 or n&lt;0 or i+n&gt;size s.  Equivalent to extract(s, i, SOME n).
 
    [<A NAME="extract"><B>extract</B></A> (s, i, NONE)] is the string s[i..size s-1].
-   Raises Subscript if i<0 or i>size s. 
+   Raises Subscript if i&lt;0 or i&gt;size s. 
 
    [<A NAME="extract"><B>extract</B></A> (s, i, SOME n)] is the string s[i..i+n-1].
-   Raises Subscript if i<0 or n<0 or i+n>size s. 
+   Raises Subscript if i&lt;0 or n&lt;0 or i+n&gt;size s. 
 
    [<A NAME="concat"><B>concat</B></A> ss] is the concatenation of all the strings in ss.
    Raises Size if the sum of their sizes is greater than maxSize.
@@ -124,7 +124,7 @@
    [<A NAME="collate"><B>collate</B></A> cmp (s1, s2)] performs lexicographic comparison, using the 
    given ordering cmp on characters.  
 
-   [<A NAME="<"><B><</B></A>], [<=], [>], and [>=] compare strings lexicographically.
+   [<A NAME="&lt;"><B>&lt;</B></A>], [&lt;=], [&gt;], and [&gt;=] compare strings lexicographically.
 *)
 
 

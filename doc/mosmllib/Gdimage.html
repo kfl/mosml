@@ -9,15 +9,15 @@
 <A NAME="line1"></A>(* Gdimage -- Moscow ML interface to Thomas Boutell's gd image package *)
 <A NAME="line2"></A>(* This module requires Dynlib and the gd package to be installed      *)
 <A NAME="line3"></A>
-<A NAME="line4"></A>type image
+<A NAME="line4"></A>type <A NAME="line4"></A><A HREF="#image">image</A>
 <A NAME="line5"></A>
-<A NAME="line6"></A>type color
+<A NAME="line6"></A>type <A NAME="line6"></A><A HREF="#color">color</A>
 <A NAME="line7"></A>
-<A NAME="line8"></A>datatype style = 
+<A NAME="line8"></A>datatype <A NAME="line8"></A>style = 
 <A NAME="line9"></A>    ColorS of color
 <A NAME="line10"></A>  | TransparentS
 <A NAME="line11"></A>
-<A NAME="line12"></A>datatype mode = 
+<A NAME="line12"></A>datatype <A NAME="line12"></A>mode = 
 <A NAME="line13"></A>    Color of color
 <A NAME="line14"></A>  | Transparent
 <A NAME="line15"></A>  | Brushed of image
@@ -25,55 +25,55 @@
 <A NAME="line17"></A>  | StyledBrushed of bool vector * image
 <A NAME="line18"></A>  | Tiled of image
 <A NAME="line19"></A>
-<A NAME="line20"></A>datatype font = 
+<A NAME="line20"></A>datatype <A NAME="line20"></A>font = 
 <A NAME="line21"></A>    Tiny 
 <A NAME="line22"></A>  | Small
 <A NAME="line23"></A>  | MediumBold
 <A NAME="line24"></A>  | Large 
 <A NAME="line25"></A>  | Giant
 <A NAME="line26"></A>
-<A NAME="line27"></A>type rgb = int * int * int           (* RGB color components, 0..255   *)
-<A NAME="line28"></A>type xy  = int * int                 (* points (x, y) and sizes (w, h) *)
+<A NAME="line27"></A>type <A NAME="line27"></A><A HREF="#rgb">rgb</A> = int * int * int           (* RGB color components, 0..255   *)
+<A NAME="line28"></A>type <A NAME="line28"></A>xy  = int * int                 (* points (x, y) and sizes (w, h) *)
 <A NAME="line29"></A>
-<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#image">image</A>     : xy -> rgb -> image
-<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#fromGif">fromGif</A>   : string -> image
-<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#toGif">toGif</A>     : image -> string -> unit
-<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#stdoutGif">stdoutGif</A> : image -> unit 
-<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#size">size</A>      : image -> xy
+<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#image">image</A>     : xy -&gt; rgb -&gt; image
+<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#fromGif">fromGif</A>   : string -&gt; image
+<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#toGif">toGif</A>     : image -&gt; string -&gt; unit
+<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#stdoutGif">stdoutGif</A> : image -&gt; unit 
+<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#size">size</A>      : image -&gt; xy
 <A NAME="line35"></A>
-<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#color">color</A>          : image -> rgb -> color
-<A NAME="line37"></A>val <A NAME="line37"></A><A HREF="#rgb">rgb</A>            : image -> color -> rgb
-<A NAME="line38"></A>val <A NAME="line38"></A><A HREF="#htmlcolors">htmlcolors</A>     : image -> { aqua : color, black : color, blue : color,
+<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#color">color</A>          : image -&gt; rgb -&gt; color
+<A NAME="line37"></A>val <A NAME="line37"></A><A HREF="#rgb">rgb</A>            : image -&gt; color -&gt; rgb
+<A NAME="line38"></A>val <A NAME="line38"></A><A HREF="#htmlcolors">htmlcolors</A>     : image -&gt; { aqua : color, black : color, blue : color,
 <A NAME="line39"></A>                                fuchsia : color, gray : color, 
 <A NAME="line40"></A>                                green : color, lime : color, maroon : color,
 <A NAME="line41"></A>                                navy : color, olive : color, purple : color,
 <A NAME="line42"></A>                                red : color, silver : color, teal : color,
 <A NAME="line43"></A>                                white : color, yellow : color }
-<A NAME="line44"></A>val <A NAME="line44"></A><A HREF="#getTransparent">getTransparent</A> : image -> color option 
-<A NAME="line45"></A>val <A NAME="line45"></A><A HREF="#setTransparent">setTransparent</A> : image -> color -> unit
-<A NAME="line46"></A>val <A NAME="line46"></A><A HREF="#noTransparent">noTransparent</A>  : image -> unit 
+<A NAME="line44"></A>val <A NAME="line44"></A><A HREF="#getTransparent">getTransparent</A> : image -&gt; color option 
+<A NAME="line45"></A>val <A NAME="line45"></A><A HREF="#setTransparent">setTransparent</A> : image -&gt; color -&gt; unit
+<A NAME="line46"></A>val <A NAME="line46"></A><A HREF="#noTransparent">noTransparent</A>  : image -&gt; unit 
 <A NAME="line47"></A>
-<A NAME="line48"></A>val <A NAME="line48"></A><A HREF="#drawPixel">drawPixel</A>   : image -> mode -> xy -> unit
-<A NAME="line49"></A>val <A NAME="line49"></A><A HREF="#drawLine">drawLine</A>    : image -> mode -> xy * xy -> unit
-<A NAME="line50"></A>val <A NAME="line50"></A><A HREF="#drawRect">drawRect</A>    : image -> mode -> xy * xy -> unit
-<A NAME="line51"></A>val <A NAME="line51"></A><A HREF="#fillRect">fillRect</A>    : image -> mode -> xy * xy -> unit
-<A NAME="line52"></A>val <A NAME="line52"></A><A HREF="#drawPolygon">drawPolygon</A> : image -> mode -> xy vector -> unit
-<A NAME="line53"></A>val <A NAME="line53"></A><A HREF="#fillPolygon">fillPolygon</A> : image -> mode -> xy vector -> unit
-<A NAME="line54"></A>val <A NAME="line54"></A><A HREF="#drawArc">drawArc</A>     : image -> mode -> { c : xy, wh : xy, from : int, to : int }
-<A NAME="line55"></A>                  -> unit
-<A NAME="line56"></A>val <A NAME="line56"></A><A HREF="#fill">fill</A>        : image -> mode -> xy -> unit
-<A NAME="line57"></A>val <A NAME="line57"></A><A HREF="#fillBorder">fillBorder</A>  : image -> mode -> xy -> color -> unit
+<A NAME="line48"></A>val <A NAME="line48"></A><A HREF="#drawPixel">drawPixel</A>   : image -&gt; mode -&gt; xy -&gt; unit
+<A NAME="line49"></A>val <A NAME="line49"></A><A HREF="#drawLine">drawLine</A>    : image -&gt; mode -&gt; xy * xy -&gt; unit
+<A NAME="line50"></A>val <A NAME="line50"></A><A HREF="#drawRect">drawRect</A>    : image -&gt; mode -&gt; xy * xy -&gt; unit
+<A NAME="line51"></A>val <A NAME="line51"></A><A HREF="#fillRect">fillRect</A>    : image -&gt; mode -&gt; xy * xy -&gt; unit
+<A NAME="line52"></A>val <A NAME="line52"></A><A HREF="#drawPolygon">drawPolygon</A> : image -&gt; mode -&gt; xy vector -&gt; unit
+<A NAME="line53"></A>val <A NAME="line53"></A><A HREF="#fillPolygon">fillPolygon</A> : image -&gt; mode -&gt; xy vector -&gt; unit
+<A NAME="line54"></A>val <A NAME="line54"></A><A HREF="#drawArc">drawArc</A>     : image -&gt; mode -&gt; { c : xy, wh : xy, from : int, to : int }
+<A NAME="line55"></A>                  -&gt; unit
+<A NAME="line56"></A>val <A NAME="line56"></A><A HREF="#fill">fill</A>        : image -&gt; mode -&gt; xy -&gt; unit
+<A NAME="line57"></A>val <A NAME="line57"></A><A HREF="#fillBorder">fillBorder</A>  : image -&gt; mode -&gt; xy -&gt; color -&gt; unit
 <A NAME="line58"></A> 
 <A NAME="line59"></A>val <A NAME="line59"></A><A HREF="#copy">copy</A>        : { src : image, srcxy : xy, srcwh : xy,
-<A NAME="line60"></A>                    dst : image, dstxy : xy } -> unit
+<A NAME="line60"></A>                    dst : image, dstxy : xy } -&gt; unit
 <A NAME="line61"></A>val <A NAME="line61"></A><A HREF="#copyResize">copyResize</A>  : { src : image, srcxy : xy, srcwh : xy,
-<A NAME="line62"></A>                    dst : image, dstxy : xy, dstwh : xy } -> unit
+<A NAME="line62"></A>                    dst : image, dstxy : xy, dstwh : xy } -&gt; unit
 <A NAME="line63"></A>
-<A NAME="line64"></A>val <A NAME="line64"></A><A HREF="#char">char</A>        : image -> color -> font -> xy -> char -> unit
-<A NAME="line65"></A>val <A NAME="line65"></A><A HREF="#charUp">charUp</A>      : image -> color -> font -> xy -> char -> unit
-<A NAME="line66"></A>val <A NAME="line66"></A><A HREF="#string">string</A>      : image -> color -> font -> xy -> string -> unit
-<A NAME="line67"></A>val <A NAME="line67"></A><A HREF="#stringUp">stringUp</A>    : image -> color -> font -> xy -> string -> unit
-<A NAME="line68"></A>val <A NAME="line68"></A><A HREF="#charsize">charsize</A>    : font -> xy
+<A NAME="line64"></A>val <A NAME="line64"></A><A HREF="#char">char</A>        : image -&gt; color -&gt; font -&gt; xy -&gt; char -&gt; unit
+<A NAME="line65"></A>val <A NAME="line65"></A><A HREF="#charUp">charUp</A>      : image -&gt; color -&gt; font -&gt; xy -&gt; char -&gt; unit
+<A NAME="line66"></A>val <A NAME="line66"></A><A HREF="#string">string</A>      : image -&gt; color -&gt; font -&gt; xy -&gt; string -&gt; unit
+<A NAME="line67"></A>val <A NAME="line67"></A><A HREF="#stringUp">stringUp</A>    : image -&gt; color -&gt; font -&gt; xy -&gt; string -&gt; unit
+<A NAME="line68"></A>val <A NAME="line68"></A><A HREF="#charsize">charsize</A>    : font -&gt; xy
 <A NAME="line69"></A>
 <A NAME="line70"></A>(* Type image is the abstract type of images being drawn.  They can be
 <A NAME="line71"></A>   created from scratch, imported from GIF files, and exported to GIF

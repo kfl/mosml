@@ -8,27 +8,27 @@
 <PRE>
 <A NAME="line1"></A>(* StringCvt -- SML Basis Library *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>datatype radix = BIN | OCT | DEC | HEX;
+<A NAME="line3"></A>datatype <A NAME="line3"></A>radix = BIN | OCT | DEC | HEX;
 <A NAME="line4"></A>
-<A NAME="line5"></A>datatype realfmt = 
+<A NAME="line5"></A>datatype <A NAME="line5"></A>realfmt = 
 <A NAME="line6"></A>    SCI of int option   (* scientific,  arg = # dec. digits, dflt=6 *)
 <A NAME="line7"></A>  | FIX of int option   (* fixed-point, arg = # dec. digits, dflt=6 *)
 <A NAME="line8"></A>  | GEN of int option   (* auto choice of the above,                *)
 <A NAME="line9"></A>                        (* arg = # significant digits, dflt=12      *)
 <A NAME="line10"></A>
-<A NAME="line11"></A>type cs                 (* character source state *)
+<A NAME="line11"></A>type <A NAME="line11"></A>cs                 (* character source state *)
 <A NAME="line12"></A>
-<A NAME="line13"></A>type ('a, 'b) reader = 'b -> ('a * 'b) option
+<A NAME="line13"></A>type <A NAME="line13"></A>('a, 'b) reader = 'b -&gt; ('a * 'b) option
 <A NAME="line14"></A>
-<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#scanString">scanString</A> : ((char, cs) reader -> ('a, cs) reader) -> string -> 'a option
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#scanString">scanString</A> : ((char, cs) reader -&gt; ('a, cs) reader) -&gt; string -&gt; 'a option
 <A NAME="line16"></A>
-<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#splitl">splitl</A>     : (char -> bool) -> (char, 'a) reader -> 'a -> string * 'a
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#takel">takel</A>      : (char -> bool) -> (char, 'a) reader -> 'a -> string 
-<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#dropl">dropl</A>      : (char -> bool) -> (char, 'a) reader -> 'a -> 'a 
-<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#skipWS">skipWS</A>     : (char, 'a) reader -> 'a -> 'a 
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#splitl">splitl</A>     : (char -&gt; bool) -&gt; (char, 'a) reader -&gt; 'a -&gt; string * 'a
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#takel">takel</A>      : (char -&gt; bool) -&gt; (char, 'a) reader -&gt; 'a -&gt; string 
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#dropl">dropl</A>      : (char -&gt; bool) -&gt; (char, 'a) reader -&gt; 'a -&gt; 'a 
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#skipWS">skipWS</A>     : (char, 'a) reader -&gt; 'a -&gt; 'a 
 <A NAME="line21"></A>
-<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#padLeft">padLeft</A>    : char -> int -> string -> string
-<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#padRight">padRight</A>   : char -> int -> string -> string
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#padLeft">padLeft</A>    : char -&gt; int -&gt; string -&gt; string
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#padRight">padRight</A>   : char -&gt; int -&gt; string -&gt; string
 <A NAME="line24"></A>
 <A NAME="line25"></A>
 <A NAME="line26"></A>(* This structure presents tools for scanning strings and values from
@@ -71,11 +71,11 @@
    [<A NAME="skipWS"><B>skipWS</B></A> getc src] drops any leading whitespace from src.
    Equivalent to dropl Char.isSpace.
 
-   [<A NAME="padLeft"><B>padLeft</B></A> c n s] returns the string s if size s >= n, otherwise pads
+   [<A NAME="padLeft"><B>padLeft</B></A> c n s] returns the string s if size s &gt;= n, otherwise pads
    s with (n - size s) copies of the character c on the left.  
    In other words, right-justifies s in a field n characters wide.
 
-   [<A NAME="padRight"><B>padRight</B></A> c n s] returns the string s if size s >= n, otherwise pads
+   [<A NAME="padRight"><B>padRight</B></A> c n s] returns the string s if size s &gt;= n, otherwise pads
    s with (n - size s) copies of the character c on the right.
    In other words, left-justifies s in a field n characters wide.
 *)

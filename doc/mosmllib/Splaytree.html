@@ -9,18 +9,18 @@
 <A NAME="line1"></A>(* Splaytree -- Splay tree structure supporting Splaymap and Splayset.
 <A NAME="line2"></A> * 
 <A NAME="line3"></A> * Modified for Moscow ML from SML/NJ library which is 
-<A NAME="line4"></A> * COPYRIGHT (c) 1993 by AT&T Bell Laboratories.  
+<A NAME="line4"></A> * COPYRIGHT (c) 1993 by AT&amp;T Bell Laboratories.  
 <A NAME="line5"></A> * See file mosml/copyrght/copyrght.att for details.
 <A NAME="line6"></A> *)
 <A NAME="line7"></A>
-<A NAME="line8"></A>datatype 'a splay = 
+<A NAME="line8"></A>datatype <A NAME="line8"></A>'a splay = 
 <A NAME="line9"></A>    SplayObj of {value : 'a,
 <A NAME="line10"></A>		 right : 'a splay,
 <A NAME="line11"></A>		 left  : 'a splay}
 <A NAME="line12"></A>  | SplayNil
 <A NAME="line13"></A>
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#splay">splay</A> : ('a -> order) * 'a splay -> order * 'a splay
-<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#join">join</A>  : 'a splay * 'a splay -> 'a splay
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#splay">splay</A> : ('a -&gt; order) * 'a splay -&gt; order * 'a splay
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#join">join</A>  : 'a splay * 'a splay -&gt; 'a splay
 <A NAME="line16"></A>
 <A NAME="line17"></A>(* 
    [<A NAME="splay"><B>splay</B></A> (cmp,tree)] returns (r,tree') 

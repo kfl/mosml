@@ -8,68 +8,68 @@
 <PRE>
 <A NAME="line1"></A>(* Substring -- SML Basis Library *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>type substring
+<A NAME="line3"></A>type <A NAME="line3"></A><A HREF="#substring">substring</A>
 <A NAME="line4"></A>
-<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#substring">substring</A> : string * int * int -> substring
-<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#extract">extract</A>   : string * int * int option -> substring
-<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#all">all</A>       : string -> substring
-<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#string">string</A>    : substring -> string
-<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#base">base</A>      : substring -> (string * int * int)
+<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#substring">substring</A> : string * int * int -&gt; substring
+<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#extract">extract</A>   : string * int * int option -&gt; substring
+<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#all">all</A>       : string -&gt; substring
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#string">string</A>    : substring -&gt; string
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#base">base</A>      : substring -&gt; (string * int * int)
 <A NAME="line10"></A>
-<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#isEmpty">isEmpty</A>   : substring -> bool
-<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#getc">getc</A>      : substring -> (char * substring) option
-<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#first">first</A>     : substring -> char option
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#triml">triml</A>     : int -> substring -> substring
-<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#trimr">trimr</A>     : int -> substring -> substring
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#sub">sub</A>       : substring * int -> char
-<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#size">size</A>      : substring -> int
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#slice">slice</A>     : substring * int * int option -> substring
-<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#concat">concat</A>    : substring list -> string
-<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#explode">explode</A>   : substring -> char list
-<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#isPrefix">isPrefix</A>  : string -> substring -> bool
-<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#compare">compare</A>   : substring * substring -> order
-<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#collate">collate</A>   : (char * char -> order) -> substring * substring -> order
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#isEmpty">isEmpty</A>   : substring -&gt; bool
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#getc">getc</A>      : substring -&gt; (char * substring) option
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#first">first</A>     : substring -&gt; char option
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#triml">triml</A>     : int -&gt; substring -&gt; substring
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#trimr">trimr</A>     : int -&gt; substring -&gt; substring
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#sub">sub</A>       : substring * int -&gt; char
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#size">size</A>      : substring -&gt; int
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#slice">slice</A>     : substring * int * int option -&gt; substring
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#concat">concat</A>    : substring list -&gt; string
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#explode">explode</A>   : substring -&gt; char list
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#isPrefix">isPrefix</A>  : string -&gt; substring -&gt; bool
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#compare">compare</A>   : substring * substring -&gt; order
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#collate">collate</A>   : (char * char -&gt; order) -&gt; substring * substring -&gt; order
 <A NAME="line24"></A>
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#dropl">dropl</A>     : (char -> bool) -> substring -> substring
-<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#dropr">dropr</A>     : (char -> bool) -> substring -> substring
-<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#takel">takel</A>     : (char -> bool) -> substring -> substring
-<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#taker">taker</A>     : (char -> bool) -> substring -> substring
-<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#splitl">splitl</A>    : (char -> bool) -> substring -> substring * substring
-<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#splitr">splitr</A>    : (char -> bool) -> substring -> substring * substring
-<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#splitAt">splitAt</A>   : substring * int -> substring * substring
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#dropl">dropl</A>     : (char -&gt; bool) -&gt; substring -&gt; substring
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#dropr">dropr</A>     : (char -&gt; bool) -&gt; substring -&gt; substring
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#takel">takel</A>     : (char -&gt; bool) -&gt; substring -&gt; substring
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#taker">taker</A>     : (char -&gt; bool) -&gt; substring -&gt; substring
+<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#splitl">splitl</A>    : (char -&gt; bool) -&gt; substring -&gt; substring * substring
+<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#splitr">splitr</A>    : (char -&gt; bool) -&gt; substring -&gt; substring * substring
+<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#splitAt">splitAt</A>   : substring * int -&gt; substring * substring
 <A NAME="line32"></A>
-<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#position">position</A>  : string -> substring -> substring * substring
+<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#position">position</A>  : string -&gt; substring -&gt; substring * substring
 <A NAME="line34"></A>
 <A NAME="line35"></A>exception Span
-<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#span">span</A>      : substring * substring -> substring
+<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#span">span</A>      : substring * substring -&gt; substring
 <A NAME="line37"></A>
-<A NAME="line38"></A>val <A NAME="line38"></A><A HREF="#translate">translate</A> : (char -> string) -> substring -> string
+<A NAME="line38"></A>val <A NAME="line38"></A><A HREF="#translate">translate</A> : (char -&gt; string) -&gt; substring -&gt; string
 <A NAME="line39"></A>
-<A NAME="line40"></A>val <A NAME="line40"></A><A HREF="#tokens">tokens</A>    : (char -> bool) -> substring -> substring list
-<A NAME="line41"></A>val <A NAME="line41"></A><A HREF="#fields">fields</A>    : (char -> bool) -> substring -> substring list
+<A NAME="line40"></A>val <A NAME="line40"></A><A HREF="#tokens">tokens</A>    : (char -&gt; bool) -&gt; substring -&gt; substring list
+<A NAME="line41"></A>val <A NAME="line41"></A><A HREF="#fields">fields</A>    : (char -&gt; bool) -&gt; substring -&gt; substring list
 <A NAME="line42"></A>
-<A NAME="line43"></A>val <A NAME="line43"></A><A HREF="#foldl">foldl</A>     : (char * 'a -> 'a) -> 'a -> substring -> 'a
-<A NAME="line44"></A>val <A NAME="line44"></A><A HREF="#foldr">foldr</A>     : (char * 'a -> 'a) -> 'a -> substring -> 'a
-<A NAME="line45"></A>val <A NAME="line45"></A><A HREF="#app">app</A>       : (char -> unit) -> substring -> unit
+<A NAME="line43"></A>val <A NAME="line43"></A><A HREF="#foldl">foldl</A>     : (char * 'a -&gt; 'a) -&gt; 'a -&gt; substring -&gt; 'a
+<A NAME="line44"></A>val <A NAME="line44"></A><A HREF="#foldr">foldr</A>     : (char * 'a -&gt; 'a) -&gt; 'a -&gt; substring -&gt; 'a
+<A NAME="line45"></A>val <A NAME="line45"></A><A HREF="#app">app</A>       : (char -&gt; unit) -&gt; substring -&gt; unit
 <A NAME="line46"></A>
 <A NAME="line47"></A>(* A substring is an abstract representation of a piece of a string.
 <A NAME="line48"></A>   The type [substring] is the abstract type of substrings of a basestring.
-<A NAME="line49"></A>   A substring (s,i,n) is valid if 0 <= i <= i+n <= size s, 
-<A NAME="line50"></A>                  or equivalently, 0 <= i and 0 <= n and i+n <= size s.  
+<A NAME="line49"></A>   A substring (s,i,n) is valid if 0 &lt;= i &lt;= i+n &lt;= size s, 
+<A NAME="line50"></A>                  or equivalently, 0 &lt;= i and 0 &lt;= n and i+n &lt;= size s.  
 <A NAME="line51"></A>   A valid substring (s, i, n) represents the string s[i...i+n-1].  
 <A NAME="line52"></A>   Invariant in the implementation: Any value of type substring is valid.
 <A NAME="line53"></A>
    [<A NAME="substring"><B>substring</B></A>(s, i, n)] creates the substring (s, i, n), consisting of
    the substring of s with length n starting at i.  Raises Subscript
-   if i<0 or n<0 or i+n > size s.  Equivalent to extract(s, i, SOME n).
+   if i&lt;0 or n&lt;0 or i+n &gt; size s.  Equivalent to extract(s, i, SOME n).
 
    [<A NAME="extract"><B>extract</B></A>(s, i, NONE)] creates the substring (s, i, size s-i)
    consisting of the tail of s starting at i.  
-   Raises Subscript if i<0 or i > size s.
+   Raises Subscript if i&lt;0 or i &gt; size s.
 
    [<A NAME="extract"><B>extract</B></A>(s, i, SOME n)] creates the substring (s, i, n),
    consisting of the substring of s with length n starting at i.
-   Raises Subscript if i<0 or n<0 or i+n > size s.
+   Raises Subscript if i&lt;0 or n&lt;0 or i+n &gt; size s.
 
    [<A NAME="all"><B>all</B></A> s] is the substring (s, 0, size s).
 
@@ -91,22 +91,22 @@
 
    [<A NAME="triml"><B>triml</B></A> k sus] returns sus less its leftmost k characters; or the
    empty string at the end of sus if it has less than k characters.
-   Raises Subscript if k < 0, even in the partial application triml(k). 
+   Raises Subscript if k &lt; 0, even in the partial application triml(k). 
 
    [<A NAME="trimr"><B>trimr</B></A> k sus] returns sus less its rightmost k characters; or the
    empty string at the beginning of sus if it has less than k characters.  
-   Raises Subscript if k < 0, even in the partial application triml(k).
+   Raises Subscript if k &lt; 0, even in the partial application triml(k).
 
    [<A NAME="sub"><B>sub</B></A> (sus, k)] returns the k'th character of the substring; that is,
-   s(i+k) where sus = (s, i, n).  Raises Subscript if k<0 or k>=n.
+   s(i+k) where sus = (s, i, n).  Raises Subscript if k&lt;0 or k&gt;=n.
 
    [<A NAME="size"><B>size</B></A> (s, i, n)] returns the size of the substring, that is, n.
 
    [<A NAME="slice"><B>slice</B></A> (sus, i', NONE)] returns the substring (s, i+i', n-i'), where
-   sus = (s, i, n).  Raises Subscript if i' < 0 or i' > n.
+   sus = (s, i, n).  Raises Subscript if i' &lt; 0 or i' &gt; n.
 
    [<A NAME="slice"><B>slice</B></A> (sus, i', SOME n')] returns the substring (s, i+i', n'), where
-   sus = (s, i, n).  Raises Subscript if i' < 0 or n' < 0 or i'+n' >= n.
+   sus = (s, i, n).  Raises Subscript if i' &lt; 0 or n' &lt; 0 or i'+n' &gt;= n.
 
    [<A NAME="concat"><B>concat</B></A> suss] returns a string consisting of the concatenation of
    the substrings.  Equivalent to String.concat (List.map string suss).
@@ -177,7 +177,7 @@
 
    [<A NAME="splitAt"><B>splitAt</B></A> (sus, k)] returns the pair (sus1, sus2) of substrings,
    where sus1 contains the first k characters of sus, and sus2
-   contains the rest.  Raises Subscript if k < 0 or k > size sus.
+   contains the rest.  Raises Subscript if k &lt; 0 or k &gt; size sus.
 
    [<A NAME="position"><B>position</B></A> s (s',i,n)] splits the substring into a pair (pref, suff)
    of substrings, where suff is the longest suffix of (s', i, n) which
@@ -192,7 +192,7 @@
    must not be to the right of the end of sus2; otherwise raises Span.
 
    More precisely, if base(sus1) = (s,i,n) and base(sus2) = (s',i',n') 
-   and s = s' and i <= i'+n', then base(join(sus1, sus2)) = (s, i, i'+n'-i).
+   and s = s' and i &lt;= i'+n', then base(join(sus1, sus2)) = (s, i, i'+n'-i).
    This may be used to compute `span', `union', and `intersection'.
 
    [<A NAME="translate"><B>translate</B></A> f sus] applies f to every character of sus, from left to

@@ -8,33 +8,33 @@
 <PRE>
 <A NAME="line1"></A>(* BinIO -- SML Basis Library *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>type elem   = Word8.word
-<A NAME="line4"></A>type vector = Word8Vector.vector
+<A NAME="line3"></A>type <A NAME="line3"></A>elem   = Word8.word
+<A NAME="line4"></A>type <A NAME="line4"></A>vector = Word8Vector.vector
 <A NAME="line5"></A>
 <A NAME="line6"></A>(* Binary input: *)
 <A NAME="line7"></A>
-<A NAME="line8"></A>type instream 
+<A NAME="line8"></A>type <A NAME="line8"></A>instream 
 <A NAME="line9"></A>
-<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#openIn">openIn</A>       : string -> instream
-<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#closeIn">closeIn</A>      : instream -> unit
-<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#input">input</A>        : instream -> vector
-<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#inputAll">inputAll</A>     : instream -> vector
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#inputNoBlock">inputNoBlock</A> : instream -> vector option
-<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#input1">input1</A>       : instream -> elem option
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#inputN">inputN</A>       : instream * int -> vector
-<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#endOfStream">endOfStream</A>  : instream -> bool
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#lookahead">lookahead</A>    : instream -> elem option
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#openIn">openIn</A>       : string -&gt; instream
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#closeIn">closeIn</A>      : instream -&gt; unit
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#input">input</A>        : instream -&gt; vector
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#inputAll">inputAll</A>     : instream -&gt; vector
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#inputNoBlock">inputNoBlock</A> : instream -&gt; vector option
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#input1">input1</A>       : instream -&gt; elem option
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#inputN">inputN</A>       : instream * int -&gt; vector
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#endOfStream">endOfStream</A>  : instream -&gt; bool
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#lookahead">lookahead</A>    : instream -&gt; elem option
 <A NAME="line19"></A>
 <A NAME="line20"></A>(* Binary output: *)
 <A NAME="line21"></A>
-<A NAME="line22"></A>type outstream
+<A NAME="line22"></A>type <A NAME="line22"></A>outstream
 <A NAME="line23"></A>
-<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#openOut">openOut</A>      : string -> outstream
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#openAppend">openAppend</A>   : string -> outstream
-<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#closeOut">closeOut</A>     : outstream -> unit
-<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#output">output</A>       : outstream * vector -> unit
-<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#output1">output1</A>      : outstream * elem -> unit
-<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#flushOut">flushOut</A>     : outstream -> unit
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#openOut">openOut</A>      : string -&gt; outstream
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#openAppend">openAppend</A>   : string -&gt; outstream
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#closeOut">closeOut</A>     : outstream -&gt; unit
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#output">output</A>       : outstream * vector -&gt; unit
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#output1">output1</A>      : outstream * elem -&gt; unit
+<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#flushOut">flushOut</A>     : outstream -&gt; unit
 <A NAME="line30"></A>
 <A NAME="line31"></A>(* This structure provides input/output functions on byte streams.
 <A NAME="line32"></A>   The functions are state-based: reading from or writing to a stream
@@ -43,10 +43,10 @@
 <A NAME="line35"></A>   device.
 <A NAME="line36"></A>
 <A NAME="line37"></A>   Type instream is the type of state-based byte input streams, and
-<A NAME="line38"></A>   type outstream is the type of state-based byte output streams.
+<A NAME="line38"></A>   type <A NAME="line38"></A>outstream is the type of state-based byte output streams.
 <A NAME="line39"></A>
 <A NAME="line40"></A>   Type elem is the type Word8.word of bytes, and type vector is the
-<A NAME="line41"></A>   type of Word8Vector.vector (byte vectors).
+<A NAME="line41"></A>   type <A NAME="line41"></A>of Word8Vector.vector (byte vectors).
 <A NAME="line42"></A>
 <A NAME="line43"></A>
 <A NAME="line44"></A>   BYTE INPUT:

@@ -14,29 +14,29 @@
 <A NAME="line6"></A>
 <A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#maxLen">maxLen</A>   : int
 <A NAME="line8"></A>
-<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#array">array</A>    : int * '_a -> '_a array
-<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#tabulate">tabulate</A> : int * (int -> '_a) -> '_a array
-<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#fromList">fromList</A> : '_a list -> '_a array
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#array">array</A>    : int * '_a -&gt; '_a array
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#tabulate">tabulate</A> : int * (int -&gt; '_a) -&gt; '_a array
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#fromList">fromList</A> : '_a list -&gt; '_a array
 <A NAME="line12"></A>
-<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#length">length</A>  : 'a array -> int
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#sub">sub</A>     : 'a array * int -> 'a
-<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#update">update</A>  : 'a array * int * 'a  -> unit
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#extract">extract</A> : 'a array * int * int option -> 'a Vector.vector
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#length">length</A>  : 'a array -&gt; int
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#sub">sub</A>     : 'a array * int -&gt; 'a
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#update">update</A>  : 'a array * int * 'a  -&gt; unit
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#extract">extract</A> : 'a array * int * int option -&gt; 'a Vector.vector
 <A NAME="line17"></A>
 <A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#copy">copy</A>    : {src: 'a array,  si: int, len: int option,
-<A NAME="line19"></A>               dst: 'a array, di: int} -> unit
+<A NAME="line19"></A>               dst: 'a array, di: int} -&gt; unit
 <A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#copyVec">copyVec</A> : {src: 'a vector, si: int, len: int option, 
-<A NAME="line21"></A>               dst: 'a array, di: int} -> unit
+<A NAME="line21"></A>               dst: 'a array, di: int} -&gt; unit
 <A NAME="line22"></A>
-<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#app">app</A>     : ('a -> unit) -> 'a array -> unit
-<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#foldl">foldl</A>   : ('a * 'b -> 'b) -> 'b -> 'a array -> 'b
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#foldr">foldr</A>   : ('a * 'b -> 'b) -> 'b -> 'a array -> 'b
-<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#modify">modify</A>  : ('a -> 'a) -> 'a array -> unit
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#app">app</A>     : ('a -&gt; unit) -&gt; 'a array -&gt; unit
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#foldl">foldl</A>   : ('a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array -&gt; 'b
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#foldr">foldr</A>   : ('a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array -&gt; 'b
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#modify">modify</A>  : ('a -&gt; 'a) -&gt; 'a array -&gt; unit
 <A NAME="line27"></A>
-<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#appi">appi</A>    : (int * 'a -> unit) -> 'a array * int * int option -> unit
-<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#foldli">foldli</A>  : (int * 'a * 'b -> 'b) -> 'b -> 'a array * int * int option -> 'b
-<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#foldri">foldri</A>  : (int * 'a * 'b -> 'b) -> 'b -> 'a array * int * int option -> 'b
-<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#modifyi">modifyi</A> : (int * 'a -> 'a) -> 'a array * int * int option -> unit
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#appi">appi</A>    : (int * 'a -&gt; unit) -&gt; 'a array * int * int option -&gt; unit
+<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#foldli">foldli</A>  : (int * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array * int * int option -&gt; 'b
+<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#foldri">foldri</A>  : (int * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array * int * int option -&gt; 'b
+<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#modifyi">modifyi</A> : (int * 'a -&gt; 'a) -&gt; 'a array * int * int option -&gt; unit
 <A NAME="line32"></A>end
 <A NAME="line33"></A>
 <A NAME="line34"></A>(* Type [ty array] is the type of one-dimensional, mutable, zero-based
@@ -49,11 +49,11 @@
 <A NAME="line41"></A>
 <A NAME="line42"></A>   The slice (a, i, SOME n) denotes the subarray a[i..i+n-1].  That is,
 <A NAME="line43"></A>   a[i] is the first element of the slice, and n is the length of the
-<A NAME="line44"></A>   slice.  Valid only if 0 <= i <= i+n <= length a.
+<A NAME="line44"></A>   slice.  Valid only if 0 &lt;= i &lt;= i+n &lt;= length a.
 <A NAME="line45"></A>
 <A NAME="line46"></A>   The slice (a, i, NONE) denotes the subarray a[i..length a-1].  That
 <A NAME="line47"></A>   is, the slice denotes the suffix of the array starting at i.  Valid
-<A NAME="line48"></A>   only if 0 <= i <= length a.  Equivalent to (a, i, SOME(length a - i)).
+<A NAME="line48"></A>   only if 0 &lt;= i &lt;= length a.  Equivalent to (a, i, SOME(length a - i)).
 <A NAME="line49"></A>
 <A NAME="line50"></A>       slice             meaning 
 <A NAME="line51"></A>       ----------------------------------------------------------
@@ -65,51 +65,51 @@
    [<A NAME="maxLen"><B>maxLen</B></A>] is the maximal number of elements in an array.
 
    [<A NAME="array"><B>array</B></A>(n, x)] returns a new array of length n whose elements are all x.
-   Raises Size if n<0 or n>maxLen.
+   Raises Size if n&lt;0 or n&gt;maxLen.
 
    [<A NAME="tabulate"><B>tabulate</B></A>(n, f)] returns a new array of length n whose elements
    are f 0, f 1, ..., f (n-1), created from left to right.  Raises
-   Size if n<0 or n>maxLen.
+   Size if n&lt;0 or n&gt;maxLen.
 
    [<A NAME="fromList"><B>fromList</B></A> xs] returns an array whose elements are those of xs.
-   Raises Size if length xs > maxLen.
+   Raises Size if length xs &gt; maxLen.
 
    [<A NAME="array0"><B>array0</B></A>] is a zero-length array.
 
    [<A NAME="length"><B>length</B></A> a] returns the number of elements in a.
 
    [<A NAME="sub"><B>sub</B></A>(a, i)] returns the i'th element of a, counting from 0.  
-   Raises Subscript if i<0 or i>=length a.  To make `sub' infix, use
+   Raises Subscript if i&lt;0 or i&gt;=length a.  To make `sub' infix, use
    the declaration 
                              infix 9 sub
 
    [<A NAME="update"><B>update</B></A>(a, i, x)] destructively replaces the i'th element of a by x.
-   Raises Subscript if i<0 or i>=length a.
+   Raises Subscript if i&lt;0 or i&gt;=length a.
 
    [<A NAME="extract"><B>extract</B></A>(a, i, NONE)] returns a vector of the elements a[i..length a-1] 
-   of a.  Raises Subscript if i<0 or i>length a.
+   of a.  Raises Subscript if i&lt;0 or i&gt;length a.
 
    [<A NAME="extract"><B>extract</B></A>(a, i, SOME len)] returns a vector of the elements a[i..i+len-1] 
-   of a.  Raises Subscript if i<0 or len<0 or i+len>length a or
-   len>Vector.maxLen.
+   of a.  Raises Subscript if i&lt;0 or len&lt;0 or i+len&gt;length a or
+   len&gt;Vector.maxLen.
 
    [<A NAME="copy"><B>copy</B></A>{src, si, len, dst, di}] destructively copies the slice
    (src, si, len) to dst, starting at index di.  More precisely:
    If len=NONE and n=length src, it copies src[si..n-1] to dst[di..di+n-si].
    If len=SOME k, it copies src[si..si+k-1] to dst[di..di+k-1].  
    Works also if src and dst are the same and the segments overlap.
-   Raises Subscript if si < 0 or di < 0, 
-   or if len=NONE and di + length src - si > length dst,
-   or if len=SOME k and k < 0 or si + k > length src or di + k > length dst.
+   Raises Subscript if si &lt; 0 or di &lt; 0, 
+   or if len=NONE and di + length src - si &gt; length dst,
+   or if len=SOME k and k &lt; 0 or si + k &gt; length src or di + k &gt; length dst.
 
    [<A NAME="copyVec"><B>copyVec</B></A>{src, si, len, dst, di}] destructively copies the slice
    (src, si, len) to dst, starting at index di.  More precisely:
    If len=NONE and n=length src, it copies src[si..n-1] to dst[di..di+n-si].
    If len=SOME k, it copies src[si..si+k-1] to dst[di..di+k-1].  
    Works also if src and dst are the same and the segments overlap.
-   Raises Subscript if si < 0 or di < 0, 
-   or if len=NONE and di + length src - si > length dst,
-   or if len=SOME k and k < 0 or si + k > length src or di + k > length dst.
+   Raises Subscript if si &lt; 0 or di &lt; 0, 
+   or if len=NONE and di + length src - si &gt; length dst,
+   or if len=SOME k and k &lt; 0 or si + k &gt; length src or di + k &gt; length dst.
 
    [<A NAME="foldl"><B>foldl</B></A> f e a] folds function f over a from left to right.  That is,
    computes f(a[len-1], f(a[len-2], ..., f(a[1], f(a[0], e)) ...)),
@@ -132,37 +132,37 @@
    [<A NAME="foldli"><B>foldli</B></A> f e (a, i, SOME n)] folds function f over the subarray
    a[i..i+n-1] from left to right.  That is, computes 
    f(i+n-1, a[i+n-1], f(..., f(i+1, a[i+1], f(i, a[i], e)) ...)).  
-   Raises Subscript if i<0 or n<0 or i+n > length a.
+   Raises Subscript if i&lt;0 or n&lt;0 or i+n &gt; length a.
 
    [<A NAME="foldli"><B>foldli</B></A> f e (a, i, NONE)] folds function f over the subarray
    a[i..len-1] from left to right, where len =  length a.  That is, 
    computes f(len-1, a[len-1], f(..., f(i+1, a[i+1], f(i, a[i], e)) ...)).  
-   Raises Subscript if i<0 or i > length a.
+   Raises Subscript if i&lt;0 or i &gt; length a.
 
    [<A NAME="foldri"><B>foldri</B></A> f e (a, i, SOME n)] folds function f over the subarray
    a[i..i+n-1] from right to left.  That is, computes 
    f(i, a[i], f(i+1, a[i+1], ..., f(i+n-1, a[i+n-1], e) ...)).
-   Raises Subscript if i<0 or n<0 or i+n > length a.
+   Raises Subscript if i&lt;0 or n&lt;0 or i+n &gt; length a.
 
    [<A NAME="foldri"><B>foldri</B></A> f e (a, i, NONE)] folds function f over the subarray
    a[i..len-1] from right to left, where len = length a.  That is, 
    computes f(i, a[i], f(i+1, a[i+1], ..., f(len-1, a[len-1], e) ...)).
-   Raises Subscript if i<0 or i > length a.
+   Raises Subscript if i&lt;0 or i &gt; length a.
 
    [<A NAME="appi"><B>appi</B></A> f (a, i, SOME n)] applies f to successive pairs (j, a[j]) for
-   j=i,i+1,...,i+n-1.  Raises Subscript if i<0 or n<0 or i+n > length a.
+   j=i,i+1,...,i+n-1.  Raises Subscript if i&lt;0 or n&lt;0 or i+n &gt; length a.
 
    [<A NAME="appi"><B>appi</B></A> f (a, i, NONE)] applies f to successive pairs (j, a[j]) for
-   j=i,i+1,...,len-1, where len = length a.  Raises Subscript if i<0
-   or i > length a.
+   j=i,i+1,...,len-1, where len = length a.  Raises Subscript if i&lt;0
+   or i &gt; length a.
 
    [<A NAME="modifyi"><B>modifyi</B></A> f (a, i, SOME n)] applies f to (j, a[j]) and updates a[j]
    with the result f(j, a[j]) for j=i,i+1,...,i+n-1.  Raises Subscript
-   if i<0 or n<0 or i+n > length a.
+   if i&lt;0 or n&lt;0 or i+n &gt; length a.
 
    [<A NAME="modifyi"><B>modifyi</B></A> f (a, i, NONE)] applies f to (j, a[j]) and updates a[j]
    with the result f(j, a[j]) for j=i,i+1,...,len-1.  Raises Subscript
-   if i<0 or i > length a.
+   if i&lt;0 or i &gt; length a.
 *)
 
 </PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>

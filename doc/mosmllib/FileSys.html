@@ -8,38 +8,38 @@
 <PRE>
 <A NAME="line1"></A>(* OS.FileSys -- SML Basis Library *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>type dirstream
-<A NAME="line4"></A>datatype access = A_READ | A_WRITE | A_EXEC
+<A NAME="line3"></A>type <A NAME="line3"></A>dirstream
+<A NAME="line4"></A>datatype <A NAME="line4"></A><A HREF="#access">access</A> = A_READ | A_WRITE | A_EXEC
 <A NAME="line5"></A>
-<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#openDir">openDir</A>   : string -> dirstream
-<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#readDir">readDir</A>   : dirstream -> string option
-<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#rewindDir">rewindDir</A> : dirstream -> unit
-<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#closeDir">closeDir</A>  : dirstream -> unit
+<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#openDir">openDir</A>   : string -&gt; dirstream
+<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#readDir">readDir</A>   : dirstream -&gt; string option
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#rewindDir">rewindDir</A> : dirstream -&gt; unit
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#closeDir">closeDir</A>  : dirstream -&gt; unit
 <A NAME="line10"></A>
-<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#chDir">chDir</A>     : string -> unit
-<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#getDir">getDir</A>    : unit -> string
-<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#mkDir">mkDir</A>     : string -> unit
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#rmDir">rmDir</A>     : string -> unit
-<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#isDir">isDir</A>     : string -> bool
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#chDir">chDir</A>     : string -&gt; unit
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#getDir">getDir</A>    : unit -&gt; string
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#mkDir">mkDir</A>     : string -&gt; unit
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#rmDir">rmDir</A>     : string -&gt; unit
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#isDir">isDir</A>     : string -&gt; bool
 <A NAME="line16"></A>
-<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#realPath">realPath</A>  : string -> string
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#fullPath">fullPath</A>  : string -> string
-<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#isLink">isLink</A>    : string -> bool
-<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#readLink">readLink</A>  : string -> string
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#realPath">realPath</A>  : string -&gt; string
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#fullPath">fullPath</A>  : string -&gt; string
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#isLink">isLink</A>    : string -&gt; bool
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#readLink">readLink</A>  : string -&gt; string
 <A NAME="line21"></A>
-<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#modTime">modTime</A>   : string -> Time.time
-<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#setTime">setTime</A>   : string * Time.time option -> unit
-<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#remove">remove</A>    : string -> unit
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#rename">rename</A>    : {old: string, new: string} -> unit
-<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#access">access</A>    : string * access list -> bool
-<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#fileSize">fileSize</A>  : string -> int
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#modTime">modTime</A>   : string -&gt; Time.time
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#setTime">setTime</A>   : string * Time.time option -&gt; unit
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#remove">remove</A>    : string -&gt; unit
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#rename">rename</A>    : {old: string, new: string} -&gt; unit
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#access">access</A>    : string * access list -&gt; bool
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#fileSize">fileSize</A>  : string -&gt; int
 <A NAME="line28"></A>
-<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#tmpName">tmpName</A>   : unit -> string
+<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#tmpName">tmpName</A>   : unit -&gt; string
 <A NAME="line30"></A>
-<A NAME="line31"></A>eqtype file_id;
-<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#fileId">fileId</A>    : string -> file_id
-<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#hash">hash</A>      : file_id -> word
-<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#compare">compare</A>   : file_id * file_id -> order
+<A NAME="line31"></A>eqtype <A NAME="line31"></A><A HREF="#file_id">file_id</A>;
+<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#fileId">fileId</A>    : string -&gt; file_id
+<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#hash">hash</A>      : file_id -&gt; word
+<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#compare">compare</A>   : file_id * file_id -&gt; order
 <A NAME="line35"></A>
 <A NAME="line36"></A>(* These functions operate on the file system.  They raise OS.SysErr
 <A NAME="line37"></A>   in case of errors.

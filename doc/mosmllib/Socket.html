@@ -12,94 +12,94 @@
 <A NAME="line4"></A>signature Socket =
 <A NAME="line5"></A>sig
 <A NAME="line6"></A>
-<A NAME="line7"></A>type ('addressfam, 'socktype) sock
-<A NAME="line8"></A>type 'addressfam sock_addr
+<A NAME="line7"></A>type <A NAME="line7"></A>('addressfam, 'socktype) sock
+<A NAME="line8"></A>type <A NAME="line8"></A>'addressfam sock_addr
 <A NAME="line9"></A>
 <A NAME="line10"></A>(* Socket types *)
-<A NAME="line11"></A>type dgram                              (* A datagram socket             *)
-<A NAME="line12"></A>type 'a stream                          (* A stream socket               *)
-<A NAME="line13"></A>type passive                            (* A passive stream              *)
-<A NAME="line14"></A>type active                             (* An active, connected, stream  *)
+<A NAME="line11"></A>type <A NAME="line11"></A>dgram                              (* A datagram socket             *)
+<A NAME="line12"></A>type <A NAME="line12"></A>'a stream                          (* A stream socket               *)
+<A NAME="line13"></A>type <A NAME="line13"></A>passive                            (* A passive stream              *)
+<A NAME="line14"></A>type <A NAME="line14"></A>active                             (* An active, connected, stream  *)
 <A NAME="line15"></A>
 <A NAME="line16"></A>(* Socket protocol families *)
-<A NAME="line17"></A>type pf_file                            (* The Unix file protocol family *)
-<A NAME="line18"></A>type pf_inet                            (* The Internet protocol family  *)
+<A NAME="line17"></A>type <A NAME="line17"></A>pf_file                            (* The Unix file protocol family *)
+<A NAME="line18"></A>type <A NAME="line18"></A>pf_inet                            (* The Internet protocol family  *)
 <A NAME="line19"></A>
 <A NAME="line20"></A>(* Address constructors *)
-<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#fileAddr">fileAddr</A> : string -> pf_file sock_addr
-<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#inetAddr">inetAddr</A> : string -> int -> pf_inet sock_addr
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#fileAddr">fileAddr</A> : string -&gt; pf_file sock_addr
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#inetAddr">inetAddr</A> : string -&gt; int -&gt; pf_inet sock_addr
 <A NAME="line23"></A>
 <A NAME="line24"></A>(* Socket constructors *)
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#fileStream">fileStream</A> : unit -> (pf_file, 'a stream) sock
-<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#fileDgram">fileDgram</A>  : unit -> (pf_file, dgram) sock
-<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#inetStream">inetStream</A> : unit -> (pf_inet, 'a stream) sock
-<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#inetDgram">inetDgram</A>  : unit -> (pf_inet, dgram) sock
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#fileStream">fileStream</A> : unit -&gt; (pf_file, 'a stream) sock
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#fileDgram">fileDgram</A>  : unit -&gt; (pf_file, dgram) sock
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#inetStream">inetStream</A> : unit -&gt; (pf_inet, 'a stream) sock
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#inetDgram">inetDgram</A>  : unit -&gt; (pf_inet, dgram) sock
 <A NAME="line29"></A>
 <A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#accept">accept</A>   : ('a, passive stream) sock 
-<A NAME="line31"></A>               -> ('a, active stream) sock * 'a sock_addr
-<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#bind">bind</A>     : ('a, 'b) sock * 'a sock_addr -> unit
-<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#connect">connect</A>  : ('a, 'b) sock * 'a sock_addr -> unit
-<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#listen">listen</A>   : ('a, passive stream) sock * int -> unit
-<A NAME="line35"></A>val <A NAME="line35"></A><A HREF="#close">close</A>    : ('a, 'b) sock -> unit
+<A NAME="line31"></A>               -&gt; ('a, active stream) sock * 'a sock_addr
+<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#bind">bind</A>     : ('a, 'b) sock * 'a sock_addr -&gt; unit
+<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#connect">connect</A>  : ('a, 'b) sock * 'a sock_addr -&gt; unit
+<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#listen">listen</A>   : ('a, passive stream) sock * int -&gt; unit
+<A NAME="line35"></A>val <A NAME="line35"></A><A HREF="#close">close</A>    : ('a, 'b) sock -&gt; unit
 <A NAME="line36"></A>
 <A NAME="line37"></A>(* Socket management *)
-<A NAME="line38"></A>datatype shutdown_mode = 
+<A NAME="line38"></A>datatype <A NAME="line38"></A>shutdown_mode = 
 <A NAME="line39"></A>    NO_RECVS                            (* No further receives   *)
 <A NAME="line40"></A>  | NO_SENDS                            (* No further sends      *)
 <A NAME="line41"></A>  | NO_RECVS_OR_SENDS                   (* No receives nor sends *)
 <A NAME="line42"></A>
-<A NAME="line43"></A>val <A NAME="line43"></A><A HREF="#shutdown">shutdown</A> : ('a, 'b stream) sock * shutdown_mode -> unit
+<A NAME="line43"></A>val <A NAME="line43"></A><A HREF="#shutdown">shutdown</A> : ('a, 'b stream) sock * shutdown_mode -&gt; unit
 <A NAME="line44"></A>
-<A NAME="line45"></A>type sock_desc
+<A NAME="line45"></A>type <A NAME="line45"></A>sock_desc
 <A NAME="line46"></A>
-<A NAME="line47"></A>val <A NAME="line47"></A><A HREF="#sockDesc">sockDesc</A> : ('a, 'b) sock -> sock_desc
-<A NAME="line48"></A>val <A NAME="line48"></A><A HREF="#sameDesc">sameDesc</A> : sock_desc * sock_desc -> bool
-<A NAME="line49"></A>val <A NAME="line49"></A><A HREF="#compare">compare</A>  : sock_desc * sock_desc -> order
+<A NAME="line47"></A>val <A NAME="line47"></A><A HREF="#sockDesc">sockDesc</A> : ('a, 'b) sock -&gt; sock_desc
+<A NAME="line48"></A>val <A NAME="line48"></A><A HREF="#sameDesc">sameDesc</A> : sock_desc * sock_desc -&gt; bool
+<A NAME="line49"></A>val <A NAME="line49"></A><A HREF="#compare">compare</A>  : sock_desc * sock_desc -&gt; order
 <A NAME="line50"></A>val <A NAME="line50"></A><A HREF="#select">select</A> : 
 <A NAME="line51"></A>    { rds : sock_desc list, wrs : sock_desc list, exs : sock_desc list, 
 <A NAME="line52"></A>      timeout : Time.time option } 
-<A NAME="line53"></A>    -> { rds : sock_desc list, wrs : sock_desc list, exs : sock_desc list }
+<A NAME="line53"></A>    -&gt; { rds : sock_desc list, wrs : sock_desc list, exs : sock_desc list }
 <A NAME="line54"></A>
-<A NAME="line55"></A>val <A NAME="line55"></A><A HREF="#getinetaddr">getinetaddr</A> : pf_inet sock_addr -> string
+<A NAME="line55"></A>val <A NAME="line55"></A><A HREF="#getinetaddr">getinetaddr</A> : pf_inet sock_addr -&gt; string
 <A NAME="line56"></A>
 <A NAME="line57"></A>(* Sock I/O option types *)
-<A NAME="line58"></A>type out_flags = { don't_route : bool, oob : bool }
-<A NAME="line59"></A>type in_flags  = { peek : bool, oob : bool }
+<A NAME="line58"></A>type <A NAME="line58"></A><A HREF="#out_flags">out_flags</A> = { don't_route : bool, oob : bool }
+<A NAME="line59"></A>type <A NAME="line59"></A><A HREF="#in_flags">in_flags</A>  = { peek : bool, oob : bool }
 <A NAME="line60"></A>
-<A NAME="line61"></A>type 'a buf = { buf : 'a, ofs : int, size : int option }
+<A NAME="line61"></A>type <A NAME="line61"></A>'a buf = { buf : 'a, ofs : int, size : int option }
 <A NAME="line62"></A>
 <A NAME="line63"></A>
 <A NAME="line64"></A>(* Socket output operations *)
-<A NAME="line65"></A>val <A NAME="line65"></A><A HREF="#sendVec">sendVec</A>    : ('a, active stream) sock * Word8Vector.vector buf -> int
-<A NAME="line66"></A>val <A NAME="line66"></A><A HREF="#sendArr">sendArr</A>    : ('a, active stream) sock * Word8Array.array buf -> int
+<A NAME="line65"></A>val <A NAME="line65"></A><A HREF="#sendVec">sendVec</A>    : ('a, active stream) sock * Word8Vector.vector buf -&gt; int
+<A NAME="line66"></A>val <A NAME="line66"></A><A HREF="#sendArr">sendArr</A>    : ('a, active stream) sock * Word8Array.array buf -&gt; int
 <A NAME="line67"></A>val <A NAME="line67"></A><A HREF="#sendVec'">sendVec'</A>   : ('a, active stream) sock * Word8Vector.vector buf 
-<A NAME="line68"></A>                 * out_flags -> int
+<A NAME="line68"></A>                 * out_flags -&gt; int
 <A NAME="line69"></A>val <A NAME="line69"></A><A HREF="#sendArr'">sendArr'</A>   : ('a, active stream) sock * Word8Array.array buf 
-<A NAME="line70"></A>                 * out_flags -> int
+<A NAME="line70"></A>                 * out_flags -&gt; int
 <A NAME="line71"></A>val <A NAME="line71"></A><A HREF="#sendVecTo">sendVecTo</A>  : ('a, dgram) sock * 'a sock_addr * Word8Vector.vector buf
-<A NAME="line72"></A>                 -> int
+<A NAME="line72"></A>                 -&gt; int
 <A NAME="line73"></A>val <A NAME="line73"></A><A HREF="#sendArrTo">sendArrTo</A>  : ('a, dgram) sock * 'a sock_addr * Word8Array.array buf 
-<A NAME="line74"></A>                 -> int
+<A NAME="line74"></A>                 -&gt; int
 <A NAME="line75"></A>val <A NAME="line75"></A><A HREF="#sendVecTo'">sendVecTo'</A> : ('a, dgram) sock * 'a sock_addr * Word8Vector.vector buf
-<A NAME="line76"></A>                 * out_flags -> int
+<A NAME="line76"></A>                 * out_flags -&gt; int
 <A NAME="line77"></A>val <A NAME="line77"></A><A HREF="#sendArrTo'">sendArrTo'</A> : ('a, dgram) sock * 'a sock_addr * Word8Array.array buf
-<A NAME="line78"></A>                 * out_flags -> int
+<A NAME="line78"></A>                 * out_flags -&gt; int
 <A NAME="line79"></A>
 <A NAME="line80"></A>(* Socket input operations *)
-<A NAME="line81"></A>val <A NAME="line81"></A><A HREF="#recvVec">recvVec</A>      : ('a, active stream) sock * int -> Word8Vector.vector
-<A NAME="line82"></A>val <A NAME="line82"></A><A HREF="#recvArr">recvArr</A>      : ('a, active stream) sock * Word8Array.array buf -> int
+<A NAME="line81"></A>val <A NAME="line81"></A><A HREF="#recvVec">recvVec</A>      : ('a, active stream) sock * int -&gt; Word8Vector.vector
+<A NAME="line82"></A>val <A NAME="line82"></A><A HREF="#recvArr">recvArr</A>      : ('a, active stream) sock * Word8Array.array buf -&gt; int
 <A NAME="line83"></A>val <A NAME="line83"></A><A HREF="#recvVec'">recvVec'</A>     : ('a, active stream) sock * int * in_flags
-<A NAME="line84"></A>                   -> Word8Vector.vector
+<A NAME="line84"></A>                   -&gt; Word8Vector.vector
 <A NAME="line85"></A>val <A NAME="line85"></A><A HREF="#recvArr'">recvArr'</A>     : ('a, active stream) sock * Word8Array.array buf * in_flags
-<A NAME="line86"></A>                   -> int
+<A NAME="line86"></A>                   -&gt; int
 <A NAME="line87"></A>val <A NAME="line87"></A><A HREF="#recvVecFrom">recvVecFrom</A>  : ('a, dgram) sock * int 
-<A NAME="line88"></A>                   -> Word8Vector.vector * 'a sock_addr
+<A NAME="line88"></A>                   -&gt; Word8Vector.vector * 'a sock_addr
 <A NAME="line89"></A>val <A NAME="line89"></A><A HREF="#recvArrFrom">recvArrFrom</A>  : ('a, dgram) sock * Word8Array.array buf 
-<A NAME="line90"></A>                   -> int * 'a sock_addr
+<A NAME="line90"></A>                   -&gt; int * 'a sock_addr
 <A NAME="line91"></A>val <A NAME="line91"></A><A HREF="#recvVecFrom'">recvVecFrom'</A> : ('a, dgram) sock * int * in_flags
-<A NAME="line92"></A>                   -> Word8Vector.vector * 'a sock_addr
+<A NAME="line92"></A>                   -&gt; Word8Vector.vector * 'a sock_addr
 <A NAME="line93"></A>val <A NAME="line93"></A><A HREF="#recvArrFrom'">recvArrFrom'</A> : ('a, dgram) sock * Word8Array.array buf * in_flags
-<A NAME="line94"></A>                   -> int * 'a sock_addr
+<A NAME="line94"></A>                   -&gt; int * 'a sock_addr
 <A NAME="line95"></A>end
 <A NAME="line96"></A>
 <A NAME="line97"></A>(* 
@@ -111,14 +111,14 @@
 <A NAME="line103"></A>   address family 'addressfam and having type 'socktype.  
 <A NAME="line104"></A>
 <A NAME="line105"></A>   The possible protocol families are 
-<A NAME="line106"></A>        type pf_file    The Unix address family (file)
-<A NAME="line107"></A>        type pf_inet    The Internet address family
+<A NAME="line106"></A>        type <A NAME="line106"></A>pf_file    The Unix address family (file)
+<A NAME="line107"></A>        type <A NAME="line107"></A>pf_inet    The Internet address family
 <A NAME="line108"></A>
 <A NAME="line109"></A>   The possible socket types are 
-<A NAME="line110"></A>        type dgram      datagram sockets
-<A NAME="line111"></A>        type 'a stream  stream sockets
-<A NAME="line112"></A>        type passive    passive stream sockets
-<A NAME="line113"></A>        type active     active, or connected, stream sockets
+<A NAME="line110"></A>        type <A NAME="line110"></A>dgram      datagram sockets
+<A NAME="line111"></A>        type <A NAME="line111"></A>'a stream  stream sockets
+<A NAME="line112"></A>        type <A NAME="line112"></A>passive    passive stream sockets
+<A NAME="line113"></A>        type <A NAME="line113"></A>active     active, or connected, stream sockets
 <A NAME="line114"></A>
    [<A NAME="fileAddr"><B>fileAddr</B></A> fname] returns a socket address for the Unix protocol
    family, created from the given file name fname.
@@ -182,7 +182,7 @@
    if size = SOME s it means buf[ofs..ofs+s-1];
    if size = NONE   it means buf[ofs..len-1] where len is the length of buf.
    When the subbuffer is used in a call, exception Subscript will be raised 
-   if ofs < 0 or size < 0 or ofs+size > len.   
+   if ofs &lt; 0 or size &lt; 0 or ofs+size &gt; len.   
 
    [<A NAME="sendVec"><B>sendVec</B></A> (sock, vecbuf)] transmits the bytes from buffer vecbuf on
    the active stream socket sock.  Returns the number of bytes sent.

@@ -14,8 +14,8 @@
 <A NAME="line6"></A>
 <A NAME="line7"></A>(* The following functions can be called by user code. *)
 <A NAME="line8"></A>
-<A NAME="line9"></A>val <A NAME="line9"></A>symbolStart : unit -> int;
-<A NAME="line10"></A>val <A NAME="line10"></A>symbolEnd : unit -> int;
+<A NAME="line9"></A>val <A NAME="line9"></A>symbolStart : unit -&gt; int;
+<A NAME="line10"></A>val <A NAME="line10"></A>symbolEnd : unit -&gt; int;
 <A NAME="line11"></A>        (* [symbolStart] and [symbolEnd] are to be called in the action part
 <A NAME="line12"></A>           of a grammar rule only. They return the position of the string that
 <A NAME="line13"></A>           matches the left-hand side of the rule: [symbolStart()] returns
@@ -23,14 +23,14 @@
 <A NAME="line15"></A>           position of the last character, plus one. The first character
 <A NAME="line16"></A>           in a file is at position 0. *)
 <A NAME="line17"></A>
-<A NAME="line18"></A>val <A NAME="line18"></A>rhsStart: int -> int;
-<A NAME="line19"></A>val <A NAME="line19"></A>rhsEnd: int -> int;
+<A NAME="line18"></A>val <A NAME="line18"></A>rhsStart: int -&gt; int;
+<A NAME="line19"></A>val <A NAME="line19"></A>rhsEnd: int -&gt; int;
 <A NAME="line20"></A>        (* Same as [symbol_start] and [symbol_end] above, but return then
 <A NAME="line21"></A>           position of the string matching the [n]th item on the
 <A NAME="line22"></A>           right-hand side of the rule, where [n] is the integer parameter
 <A NAME="line23"></A>           to [lhs_start] and [lhs_end]. [n] is 1 for the leftmost item. *)
 <A NAME="line24"></A>
-<A NAME="line25"></A>val <A NAME="line25"></A>clearParser : unit -> unit;
+<A NAME="line25"></A>val <A NAME="line25"></A>clearParser : unit -&gt; unit;
 <A NAME="line26"></A>        (* Empty the parser stack. Call it just after a parsing function
 <A NAME="line27"></A>           has returned, to remove all pointers from the parser stack
 <A NAME="line28"></A>           to structures that were built by semantic actions during parsing.
@@ -42,8 +42,8 @@
 <A NAME="line34"></A>(* The following definitions are used by the generated parsers only.
 <A NAME="line35"></A>   They are not intended to be used by user programs. *)
 <A NAME="line36"></A>
-<A NAME="line37"></A>type parseTables =
-<A NAME="line38"></A>    (* actions *)    (unit -> obj) vector  *
+<A NAME="line37"></A>type <A NAME="line37"></A>parseTables =
+<A NAME="line38"></A>    (* actions *)    (unit -&gt; obj) vector  *
 <A NAME="line39"></A>    (* transl *)     int vector *
 <A NAME="line40"></A>    (* lhs *)        string *
 <A NAME="line41"></A>    (* len *)        string *
@@ -58,10 +58,10 @@
 <A NAME="line50"></A>;
 <A NAME="line51"></A>
 <A NAME="line52"></A>exception yyexit of obj;
-<A NAME="line53"></A>exception ParseError of (obj -> bool);
+<A NAME="line53"></A>exception ParseError of (obj -&gt; bool);
 <A NAME="line54"></A>
-<A NAME="line55"></A>val <A NAME="line55"></A>yyparse : parseTables -> int -> (lexbuf -> 'a) -> lexbuf -> 'b;
-<A NAME="line56"></A>val <A NAME="line56"></A>peekVal : int -> 'a;
+<A NAME="line55"></A>val <A NAME="line55"></A>yyparse : parseTables -&gt; int -&gt; (lexbuf -&gt; 'a) -&gt; lexbuf -&gt; 'b;
+<A NAME="line56"></A>val <A NAME="line56"></A>peekVal : int -&gt; 'a;
 <A NAME="line57"></A>
 <A NAME="line58"></A>end;
 <A NAME="line59"></A>

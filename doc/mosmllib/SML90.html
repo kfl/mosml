@@ -10,20 +10,20 @@
 <A NAME="line2"></A>
 <A NAME="line3"></A>(* Math *)
 <A NAME="line4"></A>
-<A NAME="line5"></A>val <A NAME="line5"></A>sqrt : real -> real
-<A NAME="line6"></A>val <A NAME="line6"></A>sin : real -> real
-<A NAME="line7"></A>val <A NAME="line7"></A>cos : real -> real
-<A NAME="line8"></A>val <A NAME="line8"></A>arctan : real -> real
-<A NAME="line9"></A>val <A NAME="line9"></A>exp : real -> real
-<A NAME="line10"></A>val <A NAME="line10"></A>ln  : real -> real
+<A NAME="line5"></A>val <A NAME="line5"></A>sqrt : real -&gt; real
+<A NAME="line6"></A>val <A NAME="line6"></A>sin : real -&gt; real
+<A NAME="line7"></A>val <A NAME="line7"></A>cos : real -&gt; real
+<A NAME="line8"></A>val <A NAME="line8"></A>arctan : real -&gt; real
+<A NAME="line9"></A>val <A NAME="line9"></A>exp : real -&gt; real
+<A NAME="line10"></A>val <A NAME="line10"></A>ln  : real -&gt; real
 <A NAME="line11"></A>
 <A NAME="line12"></A>(* Strings *)
 <A NAME="line13"></A>
-<A NAME="line14"></A>val <A NAME="line14"></A>chr : int -> string
-<A NAME="line15"></A>val <A NAME="line15"></A>ord : string -> int
+<A NAME="line14"></A>val <A NAME="line14"></A>chr : int -&gt; string
+<A NAME="line15"></A>val <A NAME="line15"></A>ord : string -&gt; int
 <A NAME="line16"></A>
-<A NAME="line17"></A>val <A NAME="line17"></A>explode : string -> string list
-<A NAME="line18"></A>val <A NAME="line18"></A>implode : string list -> string
+<A NAME="line17"></A>val <A NAME="line17"></A>explode : string -&gt; string list
+<A NAME="line18"></A>val <A NAME="line18"></A>implode : string list -&gt; string
 <A NAME="line19"></A>
 <A NAME="line20"></A>exception Abs  
 <A NAME="line21"></A>      and Diff 
@@ -37,19 +37,19 @@
 <A NAME="line29"></A>
 <A NAME="line30"></A>(* Input/output *)
 <A NAME="line31"></A>
-<A NAME="line32"></A>type instream and outstream;
+<A NAME="line32"></A>type <A NAME="line32"></A>instream and outstream;
 <A NAME="line33"></A>
 <A NAME="line34"></A>val <A NAME="line34"></A>std_in        : instream;
-<A NAME="line35"></A>val <A NAME="line35"></A>open_in       : string -> instream;
-<A NAME="line36"></A>val <A NAME="line36"></A>input         : instream * int -> string;
-<A NAME="line37"></A>val <A NAME="line37"></A>lookahead     : instream -> string;
-<A NAME="line38"></A>val <A NAME="line38"></A>close_in      : instream -> unit;
-<A NAME="line39"></A>val <A NAME="line39"></A>end_of_stream : instream -> bool;
+<A NAME="line35"></A>val <A NAME="line35"></A>open_in       : string -&gt; instream;
+<A NAME="line36"></A>val <A NAME="line36"></A>input         : instream * int -&gt; string;
+<A NAME="line37"></A>val <A NAME="line37"></A>lookahead     : instream -&gt; string;
+<A NAME="line38"></A>val <A NAME="line38"></A>close_in      : instream -&gt; unit;
+<A NAME="line39"></A>val <A NAME="line39"></A>end_of_stream : instream -&gt; bool;
 <A NAME="line40"></A>
 <A NAME="line41"></A>val <A NAME="line41"></A>std_out       : outstream;
-<A NAME="line42"></A>val <A NAME="line42"></A>open_out      : string -> outstream;
-<A NAME="line43"></A>val <A NAME="line43"></A>output        : outstream * string -> unit;
-<A NAME="line44"></A>val <A NAME="line44"></A>close_out     : outstream -> unit;
+<A NAME="line42"></A>val <A NAME="line42"></A>open_out      : string -&gt; outstream;
+<A NAME="line43"></A>val <A NAME="line43"></A>output        : outstream * string -&gt; unit;
+<A NAME="line44"></A>val <A NAME="line44"></A>close_out     : outstream -&gt; unit;
 <A NAME="line45"></A>
 </PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
 <TH><A HREF="idIndex.html">Identifier index</A>

@@ -9,32 +9,32 @@
 <A NAME="line1"></A>(* Binarymap -- applicative maps implemented by balanced ordered binary trees.
 <A NAME="line2"></A> *
 <A NAME="line3"></A> * Modified for Moscow ML from SML/NJ library v. 0.2 which is 
-<A NAME="line4"></A> * COPYRIGHT (c) 1993 by AT&T Bell Laboratories.  
+<A NAME="line4"></A> * COPYRIGHT (c) 1993 by AT&amp;T Bell Laboratories.  
 <A NAME="line5"></A> * See file mosml/copyrght/copyrght.att for details.
 <A NAME="line6"></A> * Original implementation due to Stephen Adams, Southampton, UK.
 <A NAME="line7"></A> *)
 <A NAME="line8"></A>
-<A NAME="line9"></A>type ('key, 'a) dict
+<A NAME="line9"></A>type <A NAME="line9"></A>('key, 'a) dict
 <A NAME="line10"></A>
 <A NAME="line11"></A>exception NotFound
 <A NAME="line12"></A>
-<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#mkDict">mkDict</A>    : ('key * 'key -> order) -> ('key, 'a) dict
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#insert">insert</A>    : ('key, 'a) dict * 'key * 'a -> ('key, 'a) dict
-<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#find">find</A>      : ('key, 'a) dict * 'key -> 'a
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#peek">peek</A>      : ('key, 'a) dict * 'key -> 'a option
-<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#remove">remove</A>    : ('key, 'a) dict * 'key -> ('key, 'a) dict * 'a
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#numItems">numItems</A>  : ('key, 'a) dict -> int
-<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#listItems">listItems</A> : ('key, 'a) dict -> ('key * 'a) list
-<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#app">app</A>       : ('key * 'a -> unit) -> ('key,'a) dict -> unit
-<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#revapp">revapp</A>    : ('key * 'a -> unit) -> ('key,'a) dict -> unit
-<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#foldr">foldr</A>     : ('key * 'a * 'b -> 'b)-> 'b -> ('key,'a) dict -> 'b
-<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#foldl">foldl</A>     : ('key * 'a * 'b -> 'b) -> 'b -> ('key,'a) dict -> 'b
-<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#map">map</A>       : ('key * 'a -> 'b) -> ('key,'a) dict -> ('key, 'b) dict
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#transform">transform</A> : ('a -> 'b) -> ('key,'a) dict -> ('key, 'b) dict
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#mkDict">mkDict</A>    : ('key * 'key -&gt; order) -&gt; ('key, 'a) dict
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#insert">insert</A>    : ('key, 'a) dict * 'key * 'a -&gt; ('key, 'a) dict
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#find">find</A>      : ('key, 'a) dict * 'key -&gt; 'a
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#peek">peek</A>      : ('key, 'a) dict * 'key -&gt; 'a option
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#remove">remove</A>    : ('key, 'a) dict * 'key -&gt; ('key, 'a) dict * 'a
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#numItems">numItems</A>  : ('key, 'a) dict -&gt; int
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#listItems">listItems</A> : ('key, 'a) dict -&gt; ('key * 'a) list
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#app">app</A>       : ('key * 'a -&gt; unit) -&gt; ('key,'a) dict -&gt; unit
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#revapp">revapp</A>    : ('key * 'a -&gt; unit) -&gt; ('key,'a) dict -&gt; unit
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#foldr">foldr</A>     : ('key * 'a * 'b -&gt; 'b)-&gt; 'b -&gt; ('key,'a) dict -&gt; 'b
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#foldl">foldl</A>     : ('key * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; ('key,'a) dict -&gt; 'b
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#map">map</A>       : ('key * 'a -&gt; 'b) -&gt; ('key,'a) dict -&gt; ('key, 'b) dict
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#transform">transform</A> : ('a -&gt; 'b) -&gt; ('key,'a) dict -&gt; ('key, 'b) dict
 <A NAME="line26"></A>
 <A NAME="line27"></A>
 <A NAME="line28"></A>(* Type ('key, 'a) dict is the type of applicative maps from domain
-<A NAME="line29"></A>   type 'key to range type 'a, or equivalently, applicative
+<A NAME="line29"></A>   type <A NAME="line29"></A>'key to range type 'a, or equivalently, applicative
 <A NAME="line30"></A>   dictionaries with keys of type 'key and values of type 'a.  They
 <A NAME="line31"></A>   are implemented as ordered balanced binary trees.
 <A NAME="line32"></A>

@@ -8,32 +8,32 @@
 <PRE>
 <A NAME="line1"></A>(* Polyhash -- polymorphic hashtables as in the SML/NJ Library *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>type ('key, 'data) hash_table
+<A NAME="line3"></A>type <A NAME="line3"></A>('key, 'data) hash_table
 <A NAME="line4"></A>
-<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#mkTable">mkTable</A>     : ('_key -> int) * ('_key * '_key -> bool) -> int * exn 
-<A NAME="line6"></A>                  -> ('_key, '_data) hash_table
-<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#numItems">numItems</A>    : ('key, 'data) hash_table -> int
-<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#insert">insert</A>      : ('_key, '_data) hash_table -> '_key * '_data -> unit
-<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#peekInsert">peekInsert</A>  : ('_key, '_data) hash_table -> '_key * '_data 
-<A NAME="line10"></A>                  -> '_data option
-<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#find">find</A>        : ('key, 'data) hash_table -> 'key -> 'data
-<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#peek">peek</A>        : ('key, 'data) hash_table -> 'key -> 'data option
-<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#remove">remove</A>      : ('key, 'data) hash_table -> 'key -> 'data
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#listItems">listItems</A>   : ('key, 'data) hash_table -> ('key * 'data) list
-<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#apply">apply</A>       : ('key * 'data -> unit) -> ('key, 'data) hash_table -> unit
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#map">map</A>         : ('_key * 'data -> '_res) -> ('_key, 'data) hash_table 
-<A NAME="line17"></A>                  -> ('_key, '_res) hash_table
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#filter">filter</A>      : ('key * 'data -> bool) -> ('key, 'data) hash_table -> unit
-<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#transform">transform</A>   : ('data -> '_res) -> ('_key, 'data) hash_table 
-<A NAME="line20"></A>                  -> ('_key, '_res) hash_table
-<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#copy">copy</A>        : ('_key, '_data) hash_table -> ('_key, '_data) hash_table
-<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#bucketSizes">bucketSizes</A> : ('key, 'data) hash_table -> int list
+<A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#mkTable">mkTable</A>     : ('_key -&gt; int) * ('_key * '_key -&gt; bool) -&gt; int * exn 
+<A NAME="line6"></A>                  -&gt; ('_key, '_data) hash_table
+<A NAME="line7"></A>val <A NAME="line7"></A><A HREF="#numItems">numItems</A>    : ('key, 'data) hash_table -&gt; int
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#insert">insert</A>      : ('_key, '_data) hash_table -&gt; '_key * '_data -&gt; unit
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#peekInsert">peekInsert</A>  : ('_key, '_data) hash_table -&gt; '_key * '_data 
+<A NAME="line10"></A>                  -&gt; '_data option
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#find">find</A>        : ('key, 'data) hash_table -&gt; 'key -&gt; 'data
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#peek">peek</A>        : ('key, 'data) hash_table -&gt; 'key -&gt; 'data option
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#remove">remove</A>      : ('key, 'data) hash_table -&gt; 'key -&gt; 'data
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#listItems">listItems</A>   : ('key, 'data) hash_table -&gt; ('key * 'data) list
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#apply">apply</A>       : ('key * 'data -&gt; unit) -&gt; ('key, 'data) hash_table -&gt; unit
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#map">map</A>         : ('_key * 'data -&gt; '_res) -&gt; ('_key, 'data) hash_table 
+<A NAME="line17"></A>                  -&gt; ('_key, '_res) hash_table
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#filter">filter</A>      : ('key * 'data -&gt; bool) -&gt; ('key, 'data) hash_table -&gt; unit
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#transform">transform</A>   : ('data -&gt; '_res) -&gt; ('_key, 'data) hash_table 
+<A NAME="line20"></A>                  -&gt; ('_key, '_res) hash_table
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#copy">copy</A>        : ('_key, '_data) hash_table -&gt; ('_key, '_data) hash_table
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#bucketSizes">bucketSizes</A> : ('key, 'data) hash_table -&gt; int list
 <A NAME="line23"></A>
 <A NAME="line24"></A>(*** Polymorphic hash primitives from Caml Light *)
 <A NAME="line25"></A>
-<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#hash">hash</A>        : 'key -> int
-<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#hash_param">hash_param</A>  : int -> int -> 'key -> int
-<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#mkPolyTable">mkPolyTable</A> : int * exn -> (''_key, '_data) hash_table
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#hash">hash</A>        : 'key -&gt; int
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#hash_param">hash_param</A>  : int -&gt; int -&gt; 'key -&gt; int
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#mkPolyTable">mkPolyTable</A> : int * exn -&gt; (''_key, '_data) hash_table
 <A NAME="line29"></A>
 <A NAME="line30"></A>
 <A NAME="line31"></A>(* [('key, 'data) hash_table] is the type of hashtables with keys of type

@@ -9,27 +9,27 @@
 <A NAME="line1"></A>(* Intmap -- Applicative maps with integer keys.
 <A NAME="line2"></A> *
 <A NAME="line3"></A> * Modified for Moscow ML from SML/NJ library v. 0.2 which is 
-<A NAME="line4"></A> * COPYRIGHT (c) 1993 by AT&T Bell Laboratories.
+<A NAME="line4"></A> * COPYRIGHT (c) 1993 by AT&amp;T Bell Laboratories.
 <A NAME="line5"></A> * Original implementation due to Stephen Adams, Southampton, UK.
 <A NAME="line6"></A> *)
 <A NAME="line7"></A>
-<A NAME="line8"></A>type 'a intmap
+<A NAME="line8"></A>type <A NAME="line8"></A>'a intmap
 <A NAME="line9"></A>
 <A NAME="line10"></A>exception NotFound
 <A NAME="line11"></A>
-<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#empty">empty</A>     : unit -> 'a intmap
-<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#insert">insert</A>    : 'a intmap * int * 'a -> 'a intmap
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#retrieve">retrieve</A>  : 'a intmap * int -> 'a
-<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#peek">peek</A>      : 'a intmap * int -> 'a option
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#remove">remove</A>    : 'a intmap * int -> 'a intmap * 'a
-<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#numItems">numItems</A>  : 'a intmap ->  int
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#listItems">listItems</A> : 'a intmap -> (int * 'a) list
-<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#app">app</A>       : (int * 'a -> unit) -> 'a intmap -> unit
-<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#revapp">revapp</A>    : (int * 'a -> unit) -> 'a intmap -> unit
-<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#foldr">foldr</A>     : (int * 'a * 'b -> 'b) -> 'b -> 'a intmap -> 'b
-<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#foldl">foldl</A>     : (int * 'a * 'b -> 'b) -> 'b -> 'a intmap -> 'b
-<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#map">map</A>       : (int * 'a -> 'b) -> 'a intmap -> 'b intmap
-<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#transform">transform</A> : ('a -> 'b) -> 'a intmap -> 'b intmap
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#empty">empty</A>     : unit -&gt; 'a intmap
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#insert">insert</A>    : 'a intmap * int * 'a -&gt; 'a intmap
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#retrieve">retrieve</A>  : 'a intmap * int -&gt; 'a
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#peek">peek</A>      : 'a intmap * int -&gt; 'a option
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#remove">remove</A>    : 'a intmap * int -&gt; 'a intmap * 'a
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#numItems">numItems</A>  : 'a intmap -&gt;  int
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#listItems">listItems</A> : 'a intmap -&gt; (int * 'a) list
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#app">app</A>       : (int * 'a -&gt; unit) -&gt; 'a intmap -&gt; unit
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#revapp">revapp</A>    : (int * 'a -&gt; unit) -&gt; 'a intmap -&gt; unit
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#foldr">foldr</A>     : (int * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a intmap -&gt; 'b
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#foldl">foldl</A>     : (int * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a intmap -&gt; 'b
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#map">map</A>       : (int * 'a -&gt; 'b) -&gt; 'a intmap -&gt; 'b intmap
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#transform">transform</A> : ('a -&gt; 'b) -&gt; 'a intmap -&gt; 'b intmap
 <A NAME="line25"></A>
 <A NAME="line26"></A>
 <A NAME="line27"></A>(* Type 'a intmap is the type of applicative maps from int to 'a.

@@ -10,17 +10,17 @@
 <A NAME="line2"></A>   1997, 1998-04-20, sestoft@dina.kvl.dk.  Idea: Jonas Barklund
 <A NAME="line3"></A>*)
 <A NAME="line4"></A>
-<A NAME="line5"></A>type table 
+<A NAME="line5"></A>type <A NAME="line5"></A>table 
 <A NAME="line6"></A>
 <A NAME="line7"></A>(* Read-only access is non-exclusive; read/write access excludes others *)
 <A NAME="line8"></A>
-<A NAME="line9"></A>datatype openmode =
+<A NAME="line9"></A>datatype <A NAME="line9"></A>openmode =
 <A NAME="line10"></A>    READER                              (* read-only access                *)
 <A NAME="line11"></A>  | WRITER                              (* read/write, table must exist    *)
 <A NAME="line12"></A>  | WRCREAT                             (* read/write, create if necessary *)
 <A NAME="line13"></A>  | NEWDB                               (* read/write, create empty table  *)
 <A NAME="line14"></A>
-<A NAME="line15"></A>type datum = string
+<A NAME="line15"></A>type <A NAME="line15"></A>datum = string
 <A NAME="line16"></A>
 <A NAME="line17"></A>exception NotFound
 <A NAME="line18"></A>exception AlreadyThere
@@ -28,22 +28,22 @@
 <A NAME="line20"></A>exception Closed
 <A NAME="line21"></A>exception GdbmError of string
 <A NAME="line22"></A>
-<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#withtable">withtable</A>  : string * openmode -> (table -> 'a) -> 'a
-<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#withtables">withtables</A> : (string * openmode) list -> (table list -> 'a) -> 'a
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#add">add</A>        : table -> datum * datum -> unit 
-<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#insert">insert</A>     : table -> datum * datum -> unit
-<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#find">find</A>       : table -> datum -> datum
-<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#peek">peek</A>       : table -> datum -> datum option
-<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#hasKey">hasKey</A>     : table -> datum -> bool
-<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#remove">remove</A>     : table -> datum -> unit
-<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#listKeys">listKeys</A>   : table -> datum list
-<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#numItems">numItems</A>   : table -> int
-<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#listItems">listItems</A>  : table -> (datum * datum) list
-<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#app">app</A>        : (datum * datum -> unit) -> table -> unit
-<A NAME="line35"></A>val <A NAME="line35"></A><A HREF="#map">map</A>        : (datum * datum -> 'a) -> table -> 'a list
-<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#fold">fold</A>       : (datum * datum * 'a -> 'a) -> 'a -> table -> 'a
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#withtable">withtable</A>  : string * openmode -&gt; (table -&gt; 'a) -&gt; 'a
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#withtables">withtables</A> : (string * openmode) list -&gt; (table list -&gt; 'a) -&gt; 'a
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#add">add</A>        : table -&gt; datum * datum -&gt; unit 
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#insert">insert</A>     : table -&gt; datum * datum -&gt; unit
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#find">find</A>       : table -&gt; datum -&gt; datum
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#peek">peek</A>       : table -&gt; datum -&gt; datum option
+<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#hasKey">hasKey</A>     : table -&gt; datum -&gt; bool
+<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#remove">remove</A>     : table -&gt; datum -&gt; unit
+<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#listKeys">listKeys</A>   : table -&gt; datum list
+<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#numItems">numItems</A>   : table -&gt; int
+<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#listItems">listItems</A>  : table -&gt; (datum * datum) list
+<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#app">app</A>        : (datum * datum -&gt; unit) -&gt; table -&gt; unit
+<A NAME="line35"></A>val <A NAME="line35"></A><A HREF="#map">map</A>        : (datum * datum -&gt; 'a) -&gt; table -&gt; 'a list
+<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#fold">fold</A>       : (datum * datum * 'a -&gt; 'a) -&gt; 'a -&gt; table -&gt; 'a
 <A NAME="line37"></A>val <A NAME="line37"></A><A HREF="#fastwrite">fastwrite</A>  : bool ref    
-<A NAME="line38"></A>val <A NAME="line38"></A><A HREF="#reorganize">reorganize</A> : table -> unit
+<A NAME="line38"></A>val <A NAME="line38"></A><A HREF="#reorganize">reorganize</A> : table -&gt; unit
 <A NAME="line39"></A>
 <A NAME="line40"></A>(* 
 <A NAME="line41"></A>   The type [table] is the type of an opened table.  Note that it can
@@ -65,8 +65,8 @@
 
    [<A NAME="withtables"><B>withtables</B></A> nammod f], where nammod = [(nam1, mod1), ..., (namn, modn)], 
    is equivalent to 
-        withtable (nam1, mod1) (fn db1 => 
-            withtable (nam2, mod2) (fn db2 => 
+        withtable (nam1, mod1) (fn db1 =&gt; 
+            withtable (nam2, mod2) (fn db2 =&gt; 
                 ...
                     f [db1, db2, ...]))
    That is, first opens the databases db1, db2, ... in that order in
@@ -104,7 +104,7 @@
 
    [<A NAME="listItems"><B>listItems</B></A> db] returns a list of all (key, value) pairs in db in some 
    order.  Equivalent to 
-        List.map (fn key => (key, find(db,key))) (listKeys db)
+        List.map (fn key =&gt; (key, find(db,key))) (listKeys db)
 
    [<A NAME="app"><B>app</B></A> f db] is equivalent to List.app f (listItems db), provided the
    function f does not change the set of keys in the table.
@@ -115,7 +115,7 @@
    Otherwise the result and effect are unpredictable.
    
    [<A NAME="fold"><B>fold</B></A> f a db] is equivalent to 
-        List.foldr (fn ((k, v), r) => f(k, v, r)) a (listItems db)
+        List.foldr (fn ((k, v), r) =&gt; f(k, v, r)) a (listItems db)
    provided the function f does not change the set of keys in the 
    table. Otherwise the result and effect are unpredictable.
 

@@ -10,27 +10,27 @@
 <A NAME="line2"></A>
 <A NAME="line3"></A>local open BasicIO in
 <A NAME="line4"></A>
-<A NAME="line5"></A>val <A NAME="line5"></A>open_in_bin : string -> instream;
-<A NAME="line6"></A>val <A NAME="line6"></A>buff_input : instream -> CharArray.array -> int -> int -> int;
-<A NAME="line7"></A>val <A NAME="line7"></A>input_char : instream -> char; (* May raise Size *)
-<A NAME="line8"></A>val <A NAME="line8"></A>input_binary_int : instream -> int;
-<A NAME="line9"></A>val <A NAME="line9"></A>input_value : instream -> 'a;
-<A NAME="line10"></A>val <A NAME="line10"></A>seek_in : instream -> int -> unit;
-<A NAME="line11"></A>val <A NAME="line11"></A>pos_in : instream -> int;
-<A NAME="line12"></A>val <A NAME="line12"></A>in_stream_length : instream -> int;
-<A NAME="line13"></A>val <A NAME="line13"></A>fast_really_input : instream -> string -> int ->  int -> unit;
+<A NAME="line5"></A>val <A NAME="line5"></A>open_in_bin : string -&gt; instream;
+<A NAME="line6"></A>val <A NAME="line6"></A>buff_input : instream -&gt; CharArray.array -&gt; int -&gt; int -&gt; int;
+<A NAME="line7"></A>val <A NAME="line7"></A>input_char : instream -&gt; char; (* May raise Size *)
+<A NAME="line8"></A>val <A NAME="line8"></A>input_binary_int : instream -&gt; int;
+<A NAME="line9"></A>val <A NAME="line9"></A>input_value : instream -&gt; 'a;
+<A NAME="line10"></A>val <A NAME="line10"></A>seek_in : instream -&gt; int -&gt; unit;
+<A NAME="line11"></A>val <A NAME="line11"></A>pos_in : instream -&gt; int;
+<A NAME="line12"></A>val <A NAME="line12"></A>in_stream_length : instream -&gt; int;
+<A NAME="line13"></A>val <A NAME="line13"></A>fast_really_input : instream -&gt; string -&gt; int -&gt;  int -&gt; unit;
 <A NAME="line14"></A>
-<A NAME="line15"></A>val <A NAME="line15"></A>open_out_bin : string -> outstream;
-<A NAME="line16"></A>val <A NAME="line16"></A>open_out_exe : string -> outstream;
-<A NAME="line17"></A>val <A NAME="line17"></A>output_char : outstream -> Char.char -> unit;
-<A NAME="line18"></A>val <A NAME="line18"></A>output_byte : outstream -> int -> unit;
-<A NAME="line19"></A>val <A NAME="line19"></A>buff_output : outstream -> CharArray.array -> int -> int -> unit;
-<A NAME="line20"></A>val <A NAME="line20"></A>output_binary_int : outstream -> int -> unit;
-<A NAME="line21"></A>val <A NAME="line21"></A>output_value : outstream -> 'a -> unit;
-<A NAME="line22"></A>val <A NAME="line22"></A>seek_out : outstream -> int -> unit;
-<A NAME="line23"></A>val <A NAME="line23"></A>pos_out : outstream -> int;
+<A NAME="line15"></A>val <A NAME="line15"></A>open_out_bin : string -&gt; outstream;
+<A NAME="line16"></A>val <A NAME="line16"></A>open_out_exe : string -&gt; outstream;
+<A NAME="line17"></A>val <A NAME="line17"></A>output_char : outstream -&gt; Char.char -&gt; unit;
+<A NAME="line18"></A>val <A NAME="line18"></A>output_byte : outstream -&gt; int -&gt; unit;
+<A NAME="line19"></A>val <A NAME="line19"></A>buff_output : outstream -&gt; CharArray.array -&gt; int -&gt; int -&gt; unit;
+<A NAME="line20"></A>val <A NAME="line20"></A>output_binary_int : outstream -&gt; int -&gt; unit;
+<A NAME="line21"></A>val <A NAME="line21"></A>output_value : outstream -&gt; 'a -&gt; unit;
+<A NAME="line22"></A>val <A NAME="line22"></A>seek_out : outstream -&gt; int -&gt; unit;
+<A NAME="line23"></A>val <A NAME="line23"></A>pos_out : outstream -&gt; int;
 <A NAME="line24"></A>
-<A NAME="line25"></A>val <A NAME="line25"></A>file_exists : string -> bool;
+<A NAME="line25"></A>val <A NAME="line25"></A>file_exists : string -&gt; bool;
 <A NAME="line26"></A>
 <A NAME="line27"></A>end;
 <A NAME="line28"></A>

@@ -8,17 +8,17 @@
 <PRE>
 <A NAME="line1"></A>(* General and top-level *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>eqtype char
-<A NAME="line4"></A>type   exn
-<A NAME="line5"></A>eqtype int
-<A NAME="line6"></A>eqtype real
-<A NAME="line7"></A>eqtype string
-<A NAME="line8"></A>eqtype unit
+<A NAME="line3"></A>eqtype <A NAME="line3"></A>char
+<A NAME="line4"></A>type   <A NAME="line4"></A>exn
+<A NAME="line5"></A>eqtype <A NAME="line5"></A>int
+<A NAME="line6"></A>eqtype <A NAME="line6"></A>real
+<A NAME="line7"></A>eqtype <A NAME="line7"></A>string
+<A NAME="line8"></A>eqtype <A NAME="line8"></A>unit
 <A NAME="line9"></A>
-<A NAME="line10"></A>datatype bool      = false | true
-<A NAME="line11"></A>datatype 'a list   = nil | op :: of 'a * 'a list
-<A NAME="line12"></A>datatype order     = LESS | EQUAL | GREATER
-<A NAME="line13"></A>datatype 'a ref    = ref of 'a 
+<A NAME="line10"></A>datatype <A NAME="line10"></A>bool      = false | true
+<A NAME="line11"></A>datatype <A NAME="line11"></A>'a list   = nil | op :: of 'a * 'a list
+<A NAME="line12"></A>datatype <A NAME="line12"></A>order     = LESS | EQUAL | GREATER
+<A NAME="line13"></A>datatype <A NAME="line13"></A>'a ref    = ref of 'a 
 <A NAME="line14"></A>
 <A NAME="line15"></A>exception Bind
 <A NAME="line16"></A>exception Match
@@ -32,47 +32,47 @@
 <A NAME="line24"></A>exception Div
 <A NAME="line25"></A>exception Domain
 <A NAME="line26"></A>
-<A NAME="line27"></A>val <A NAME="line27"></A>=   : ''a * ''a -> bool
-<A NAME="line28"></A>val <A NAME="line28"></A><>  : ''a * ''a -> bool
+<A NAME="line27"></A>val <A NAME="line27"></A>=   : ''a * ''a -&gt; bool
+<A NAME="line28"></A>val <A NAME="line28"></A>&lt;&gt;  : ''a * ''a -&gt; bool
 <A NAME="line29"></A>
 <A NAME="line30"></A>(* Below, numtxt is int, Word.word, Word8.word, real, char, string: *)
-<A NAME="line31"></A>val <A NAME="line31"></A><   : numtxt * numtxt -> bool
-<A NAME="line32"></A>val <A NAME="line32"></A><=  : numtxt * numtxt -> bool
-<A NAME="line33"></A>val <A NAME="line33"></A>>   : numtxt * numtxt -> bool
-<A NAME="line34"></A>val <A NAME="line34"></A>>=  : numtxt * numtxt -> bool
+<A NAME="line31"></A>val <A NAME="line31"></A>&lt;   : numtxt * numtxt -&gt; bool
+<A NAME="line32"></A>val <A NAME="line32"></A>&lt;=  : numtxt * numtxt -&gt; bool
+<A NAME="line33"></A>val <A NAME="line33"></A>&gt;   : numtxt * numtxt -&gt; bool
+<A NAME="line34"></A>val <A NAME="line34"></A>&gt;=  : numtxt * numtxt -&gt; bool
 <A NAME="line35"></A>
 <A NAME="line36"></A>(* Below, realint is int or real:                                       *)
-<A NAME="line37"></A>val <A NAME="line37"></A>~   : realint -> realint            (* raises Overflow              *)
-<A NAME="line38"></A>val <A NAME="line38"></A>abs : realint -> realint            (* raises Overflow              *)
+<A NAME="line37"></A>val <A NAME="line37"></A>~   : realint -&gt; realint            (* raises Overflow              *)
+<A NAME="line38"></A>val <A NAME="line38"></A>abs : realint -&gt; realint            (* raises Overflow              *)
 <A NAME="line39"></A>                                                                        
 <A NAME="line40"></A>(* Below, num is int, Word.word, Word8.word, or real:                   *)
-<A NAME="line41"></A>val <A NAME="line41"></A>+   : num * num -> num              (* raises Overflow              *)
-<A NAME="line42"></A>val <A NAME="line42"></A>-   : num * num -> num              (* raises Overflow              *)
-<A NAME="line43"></A>val <A NAME="line43"></A>*   : num * num -> num              (* raises Overflow              *)
-<A NAME="line44"></A>val <A NAME="line44"></A>/   : real * real -> real           (* raises Div, Overflow         *)
+<A NAME="line41"></A>val <A NAME="line41"></A>+   : num * num -&gt; num              (* raises Overflow              *)
+<A NAME="line42"></A>val <A NAME="line42"></A>-   : num * num -&gt; num              (* raises Overflow              *)
+<A NAME="line43"></A>val <A NAME="line43"></A>*   : num * num -&gt; num              (* raises Overflow              *)
+<A NAME="line44"></A>val <A NAME="line44"></A>/   : real * real -&gt; real           (* raises Div, Overflow         *)
 <A NAME="line45"></A>                                                                        
 <A NAME="line46"></A>(* Below, wordint is int, Word.word or Word8.word:                      *)
-<A NAME="line47"></A>val <A NAME="line47"></A>div : wordint * wordint -> wordint  (* raises Div, Overflow         *)
-<A NAME="line48"></A>val <A NAME="line48"></A>mod : wordint * wordint -> wordint  (* raises Div                   *)
+<A NAME="line47"></A>val <A NAME="line47"></A>div : wordint * wordint -&gt; wordint  (* raises Div, Overflow         *)
+<A NAME="line48"></A>val <A NAME="line48"></A>mod : wordint * wordint -&gt; wordint  (* raises Div                   *)
 <A NAME="line49"></A>                                                                        
-<A NAME="line50"></A>val <A NAME="line50"></A>real   : int -> real                (* equals Real.fromInt          *)
-<A NAME="line51"></A>val <A NAME="line51"></A>floor  : real -> int                (* round towards minus infinity *)
-<A NAME="line52"></A>val <A NAME="line52"></A>ceil   : real -> int                (* round towards plus infinity  *)
-<A NAME="line53"></A>val <A NAME="line53"></A>trunc  : real -> int                (* round towards zero           *)
-<A NAME="line54"></A>val <A NAME="line54"></A>round  : real -> int                (* round to nearest even        *)
+<A NAME="line50"></A>val <A NAME="line50"></A>real   : int -&gt; real                (* equals Real.fromInt          *)
+<A NAME="line51"></A>val <A NAME="line51"></A>floor  : real -&gt; int                (* round towards minus infinity *)
+<A NAME="line52"></A>val <A NAME="line52"></A>ceil   : real -&gt; int                (* round towards plus infinity  *)
+<A NAME="line53"></A>val <A NAME="line53"></A>trunc  : real -&gt; int                (* round towards zero           *)
+<A NAME="line54"></A>val <A NAME="line54"></A>round  : real -&gt; int                (* round to nearest even        *)
 <A NAME="line55"></A>
-<A NAME="line56"></A>val <A NAME="line56"></A>o      : ('b -> 'c) * ('a -> 'b) -> ('a -> 'c)
-<A NAME="line57"></A>val <A NAME="line57"></A>ignore : 'a -> unit
-<A NAME="line58"></A>val <A NAME="line58"></A>before : 'a * 'b -> 'a
+<A NAME="line56"></A>val <A NAME="line56"></A>o      : ('b -&gt; 'c) * ('a -&gt; 'b) -&gt; ('a -&gt; 'c)
+<A NAME="line57"></A>val <A NAME="line57"></A>ignore : 'a -&gt; unit
+<A NAME="line58"></A>val <A NAME="line58"></A>before : 'a * 'b -&gt; 'a
 <A NAME="line59"></A>
-<A NAME="line60"></A>val <A NAME="line60"></A>!      : 'a ref -> 'a
-<A NAME="line61"></A>val <A NAME="line61"></A>:=     : 'a ref * 'a -> unit
+<A NAME="line60"></A>val <A NAME="line60"></A>!      : 'a ref -&gt; 'a
+<A NAME="line61"></A>val <A NAME="line61"></A>:=     : 'a ref * 'a -&gt; unit
 <A NAME="line62"></A>
-<A NAME="line63"></A>val <A NAME="line63"></A>vector : 'a list -> 'a vector
+<A NAME="line63"></A>val <A NAME="line63"></A>vector : 'a list -&gt; 'a vector
 <A NAME="line64"></A>
 <A NAME="line65"></A>(* Non-standard types and exceptions *)
 <A NAME="line66"></A>
-<A NAME="line67"></A>datatype 'a frag = QUOTE of string | ANTIQUOTE of 'a
+<A NAME="line67"></A>datatype <A NAME="line67"></A>'a frag = QUOTE of string | ANTIQUOTE of 'a
 <A NAME="line68"></A>
 <A NAME="line69"></A>exception Io of {function : string, name : string, cause : exn }
 <A NAME="line70"></A>exception Graphic_failure of string

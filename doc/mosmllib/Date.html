@@ -8,12 +8,12 @@
 <PRE>
 <A NAME="line1"></A>(* Date -- SML Basis Library *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>datatype weekday = Mon | Tue | Wed | Thu | Fri | Sat | Sun
+<A NAME="line3"></A>datatype <A NAME="line3"></A>weekday = Mon | Tue | Wed | Thu | Fri | Sat | Sun
 <A NAME="line4"></A>
-<A NAME="line5"></A>datatype month = Jan | Feb | Mar | Apr | May | Jun
+<A NAME="line5"></A>datatype <A NAME="line5"></A><A HREF="#month">month</A> = Jan | Feb | Mar | Apr | May | Jun
 <A NAME="line6"></A>               | Jul | Aug | Sep | Oct | Nov | Dec
 <A NAME="line7"></A>
-<A NAME="line8"></A>type date
+<A NAME="line8"></A>type <A NAME="line8"></A><A HREF="#date">date</A>
 <A NAME="line9"></A>
 <A NAME="line10"></A>exception Date
 <A NAME="line11"></A>
@@ -25,30 +25,30 @@
 <A NAME="line17"></A>             minute : int,              (* 0-59                          *)
 <A NAME="line18"></A>             second : int,              (* 0-61, permitting leap seconds *)
 <A NAME="line19"></A>             offset : Time.time option  (* time zone west of UTC         *)
-<A NAME="line20"></A>           } -> date
+<A NAME="line20"></A>           } -&gt; date
 <A NAME="line21"></A>
-<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#year">year</A>    : date -> int
-<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#month">month</A>   : date -> month
-<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#day">day</A>     : date -> int
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#hour">hour</A>    : date -> int
-<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#minute">minute</A>  : date -> int
-<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#second">second</A>  : date -> int
-<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#weekDay">weekDay</A> : date -> weekday
-<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#yearDay">yearDay</A> : date -> int
-<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#isDst">isDst</A>   : date -> bool option
-<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#offset">offset</A>  : date -> Time.time option
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#year">year</A>    : date -&gt; int
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#month">month</A>   : date -&gt; month
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#day">day</A>     : date -&gt; int
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#hour">hour</A>    : date -&gt; int
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#minute">minute</A>  : date -&gt; int
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#second">second</A>  : date -&gt; int
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#weekDay">weekDay</A> : date -&gt; weekday
+<A NAME="line29"></A>val <A NAME="line29"></A><A HREF="#yearDay">yearDay</A> : date -&gt; int
+<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#isDst">isDst</A>   : date -&gt; bool option
+<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#offset">offset</A>  : date -&gt; Time.time option
 <A NAME="line32"></A>
-<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#fromTimeLocal">fromTimeLocal</A> : Time.time -> date
-<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#fromTimeUniv">fromTimeUniv</A>  : Time.time -> date
-<A NAME="line35"></A>val <A NAME="line35"></A><A HREF="#toTime">toTime</A>        : date -> Time.time
-<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#localOffset">localOffset</A>   : unit -> Time.time
+<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#fromTimeLocal">fromTimeLocal</A> : Time.time -&gt; date
+<A NAME="line34"></A>val <A NAME="line34"></A><A HREF="#fromTimeUniv">fromTimeUniv</A>  : Time.time -&gt; date
+<A NAME="line35"></A>val <A NAME="line35"></A><A HREF="#toTime">toTime</A>        : date -&gt; Time.time
+<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#localOffset">localOffset</A>   : unit -&gt; Time.time
 <A NAME="line37"></A>
-<A NAME="line38"></A>val <A NAME="line38"></A><A HREF="#compare">compare</A>    : date * date -> order
+<A NAME="line38"></A>val <A NAME="line38"></A><A HREF="#compare">compare</A>    : date * date -&gt; order
 <A NAME="line39"></A>
-<A NAME="line40"></A>val <A NAME="line40"></A><A HREF="#toString">toString</A>   : date -> string
-<A NAME="line41"></A>val <A NAME="line41"></A><A HREF="#fmt">fmt</A>        : string -> date -> string
-<A NAME="line42"></A>val <A NAME="line42"></A><A HREF="#fromString">fromString</A> : string -> date option
-<A NAME="line43"></A>val <A NAME="line43"></A><A HREF="#scan">scan</A>       : (char, 'a) StringCvt.reader -> (date, 'a) StringCvt.reader
+<A NAME="line40"></A>val <A NAME="line40"></A><A HREF="#toString">toString</A>   : date -&gt; string
+<A NAME="line41"></A>val <A NAME="line41"></A><A HREF="#fmt">fmt</A>        : string -&gt; date -&gt; string
+<A NAME="line42"></A>val <A NAME="line42"></A><A HREF="#fromString">fromString</A> : string -&gt; date option
+<A NAME="line43"></A>val <A NAME="line43"></A><A HREF="#scan">scan</A>       : (char, 'a) StringCvt.reader -&gt; (date, 'a) StringCvt.reader
 <A NAME="line44"></A>
 <A NAME="line45"></A>(* These functions convert times to dates and vice versa, and format
 <A NAME="line46"></A>   and scan dates.
@@ -57,9 +57,9 @@
 <A NAME="line49"></A>   zone.  If the offset is NONE, then the date is in the local time
 <A NAME="line50"></A>   zone.  If the offset is SOME t, then t is the offset of the main
 <A NAME="line51"></A>   timezone (ignoring daylight savings time) west of UTC.  
-<A NAME="line52"></A>        When 0 hours <= t < 12 hours, the represented time is to the
+<A NAME="line52"></A>        When 0 hours &lt;= t &lt; 12 hours, the represented time is to the
 <A NAME="line53"></A>   west of UTC and the local time is UTC-t.  
-<A NAME="line54"></A>        When 12 hours <= t < 23 hours, the represented time is to the
+<A NAME="line54"></A>        When 12 hours &lt;= t &lt; 23 hours, the represented time is to the
 <A NAME="line55"></A>   East of UTC and the local time is UTC+(24-t).
 <A NAME="line56"></A>
    [<A NAME="date"><B>date</B></A> { year, month, day, hour, minute, second, offset }] returns a
@@ -119,7 +119,7 @@
    function `mktime'.
 
    [<A NAME="localOffset"><B>localOffset</B></A> ()] is the local time zone offset west of UTC.  
-   It holds that 0 hours <= localOffset () < 24 hours.
+   It holds that 0 hours &lt;= localOffset () &lt; 24 hours.
 
    [<A NAME="compare"><B>compare</B></A>(dt1, dt2)] returns LESS, EQUAL, or GREATER, according as
    date dt1 precedes, equals, or follows dt2 in time.

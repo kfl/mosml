@@ -8,25 +8,25 @@
 <PRE>
 <A NAME="line1"></A>(* PP -- from the SML/NJ library *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>type ppconsumer = {consumer  : string -> unit,
+<A NAME="line3"></A>type <A NAME="line3"></A>ppconsumer = {consumer  : string -&gt; unit,
 <A NAME="line4"></A>                   linewidth : int,
-<A NAME="line5"></A>                   flush     : unit -> unit}
+<A NAME="line5"></A>                   flush     : unit -&gt; unit}
 <A NAME="line6"></A>
-<A NAME="line7"></A>datatype break_style = 
+<A NAME="line7"></A>datatype <A NAME="line7"></A>break_style = 
 <A NAME="line8"></A>    CONSISTENT
 <A NAME="line9"></A>  | INCONSISTENT
 <A NAME="line10"></A>
-<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#mk_ppstream">mk_ppstream</A>    : ppconsumer -> ppstream
-<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#dest_ppstream">dest_ppstream</A>  : ppstream -> ppconsumer
-<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#add_break">add_break</A>      : ppstream -> int * int -> unit
-<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#add_newline">add_newline</A>    : ppstream -> unit
-<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#add_string">add_string</A>     : ppstream -> string -> unit
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#begin_block">begin_block</A>    : ppstream -> break_style -> int -> unit
-<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#end_block">end_block</A>      : ppstream -> unit
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#clear_ppstream">clear_ppstream</A> : ppstream -> unit
-<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#flush_ppstream">flush_ppstream</A> : ppstream -> unit
-<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#with_pp">with_pp</A>        : ppconsumer -> (ppstream -> unit) -> unit
-<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#pp_to_string">pp_to_string</A>   : int -> (ppstream -> 'a -> unit) -> 'a -> string
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#mk_ppstream">mk_ppstream</A>    : ppconsumer -&gt; ppstream
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#dest_ppstream">dest_ppstream</A>  : ppstream -&gt; ppconsumer
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#add_break">add_break</A>      : ppstream -&gt; int * int -&gt; unit
+<A NAME="line14"></A>val <A NAME="line14"></A><A HREF="#add_newline">add_newline</A>    : ppstream -&gt; unit
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#add_string">add_string</A>     : ppstream -&gt; string -&gt; unit
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#begin_block">begin_block</A>    : ppstream -&gt; break_style -&gt; int -&gt; unit
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#end_block">end_block</A>      : ppstream -&gt; unit
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#clear_ppstream">clear_ppstream</A> : ppstream -&gt; unit
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#flush_ppstream">flush_ppstream</A> : ppstream -&gt; unit
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#with_pp">with_pp</A>        : ppconsumer -&gt; (ppstream -&gt; unit) -&gt; unit
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#pp_to_string">pp_to_string</A>   : int -&gt; (ppstream -&gt; 'a -&gt; unit) -&gt; 'a -&gt; string
 <A NAME="line22"></A>
 <A NAME="line23"></A>(* This unit provides tools for creating customized Oppen-style
 <A NAME="line24"></A>   pretty-printers, based on the type ppstream.  A ppstream is an
@@ -41,9 +41,9 @@
 <A NAME="line33"></A>   end_block must be properly nested (dynamically).
 <A NAME="line34"></A>
 <A NAME="line35"></A>   A ppconsumer is a record 
-<A NAME="line36"></A>                 {consumer  : string -> unit,
+<A NAME="line36"></A>                 {consumer  : string -&gt; unit,
 <A NAME="line37"></A>                  linewidth : int,
-<A NAME="line38"></A>                  flush     : unit -> unit}
+<A NAME="line38"></A>                  flush     : unit -&gt; unit}
 <A NAME="line39"></A>   of a string consumer, a specified linewidth, and a flush function
 <A NAME="line40"></A>   which is called whenever flush_ppstream is called.
 <A NAME="line41"></A>
@@ -51,7 +51,7 @@
 <A NAME="line43"></A>   addition, a prettyprinter for a nullary datatype ty can be
 <A NAME="line44"></A>   installed in the top-level system.  Then the installed
 <A NAME="line45"></A>   prettyprinter will be invoked automatically whenever a value of
-<A NAME="line46"></A>   type ty is to be printed.
+<A NAME="line46"></A>   type <A NAME="line46"></A>ty is to be printed.
 <A NAME="line47"></A>
    [<A NAME="type"><B>type</B></A> break_style] determines the way a block is broken into
    lines.  Style CONSISTENT means that if any line break occurs
@@ -120,26 +120,26 @@
    Now one may define a ppstream to print to, and exercise it:
 
        val ppstrm = PP.mk_ppstream {consumer  = 
-                                    fn s => TextIO.output(TextIO.stdOut, s), 
+                                    fn s =&gt; TextIO.output(TextIO.stdOut, s), 
                                     linewidth = 72,
                                     flush     = 
-				     fn () => TextIO.flushOut TextIO.stdOut};
+				     fn () =&gt; TextIO.flushOut TextIO.stdOut};
 
        fun ppb b = (ppbool ppstrm b; PP.flush_ppstream ppstrm);
 
        - ppb false;
-       wrong> val it = () : unit   
+       wrong&gt; val it = () : unit   
 
    The prettyprinter may also be installed in the toplevel system;
    then it will be used to print all expressions of type bool
    subsequently computed:
 
        - installPP ppbool;
-       > val it = () : unit
+       &gt; val it = () : unit
        - 1=0;
-       > val it = wrong : bool
+       &gt; val it = wrong : bool
        - 1=1;
-       > val it = right : bool
+       &gt; val it = right : bool
 
    See library Meta for a description of installPP.
 

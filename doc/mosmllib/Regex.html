@@ -10,51 +10,51 @@
 <A NAME="line2"></A>
 <A NAME="line3"></A>exception Regex of string
 <A NAME="line4"></A>
-<A NAME="line5"></A>type regex                      (* A compiled regular expression         *)
+<A NAME="line5"></A>type <A NAME="line5"></A>regex                      (* A compiled regular expression         *)
 <A NAME="line6"></A>
-<A NAME="line7"></A>datatype cflag = 
+<A NAME="line7"></A>datatype <A NAME="line7"></A>cflag = 
 <A NAME="line8"></A>    Extended                    (* Compile POSIX extended REs            *)
 <A NAME="line9"></A>  | Icase                       (* Compile case-insensitive match        *)
 <A NAME="line10"></A>  | Newline                     (* Treat \n in target string as new line *)
 <A NAME="line11"></A>
-<A NAME="line12"></A>datatype eflag = 
+<A NAME="line12"></A>datatype <A NAME="line12"></A>eflag = 
 <A NAME="line13"></A>    Notbol                      (* Do not match ^ at beginning of string *)
 <A NAME="line14"></A>  | Noteol                      (* Do not match $ at end of string       *)
 <A NAME="line15"></A>
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#regcomp">regcomp</A>      : string -> cflag list -> regex
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#regcomp">regcomp</A>      : string -&gt; cflag list -&gt; regex
 <A NAME="line17"></A>
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#regexec">regexec</A>      : regex -> eflag list -> string -> substring vector option
-<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#regexecBool">regexecBool</A>  : regex -> eflag list -> string -> bool
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#regexec">regexec</A>      : regex -&gt; eflag list -&gt; string -&gt; substring vector option
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#regexecBool">regexecBool</A>  : regex -&gt; eflag list -&gt; string -&gt; bool
 <A NAME="line20"></A>
-<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#regnexec">regnexec</A>     : regex -> eflag list -> substring 
-<A NAME="line22"></A>                   -> substring vector option
-<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#regnexecBool">regnexecBool</A> : regex -> eflag list -> substring -> bool
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#regnexec">regnexec</A>     : regex -&gt; eflag list -&gt; substring 
+<A NAME="line22"></A>                   -&gt; substring vector option
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#regnexecBool">regnexecBool</A> : regex -&gt; eflag list -&gt; substring -&gt; bool
 <A NAME="line24"></A>
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#regmatch">regmatch</A>     : { pat : string, tgt : string } -> cflag list 
-<A NAME="line26"></A>                     -> eflag list -> substring vector option
-<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#regmatchBool">regmatchBool</A> : { pat : string, tgt : string } -> cflag list 
-<A NAME="line28"></A>                     -> eflag list -> bool
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#regmatch">regmatch</A>     : { pat : string, tgt : string } -&gt; cflag list 
+<A NAME="line26"></A>                     -&gt; eflag list -&gt; substring vector option
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#regmatchBool">regmatchBool</A> : { pat : string, tgt : string } -&gt; cflag list 
+<A NAME="line28"></A>                     -&gt; eflag list -&gt; bool
 <A NAME="line29"></A>
-<A NAME="line30"></A>datatype replacer =
+<A NAME="line30"></A>datatype <A NAME="line30"></A>replacer =
 <A NAME="line31"></A>    Str of string                       (* A literal string             *)
 <A NAME="line32"></A>  | Sus of int                          (* The i'th parenthesized group *)
-<A NAME="line33"></A>  | Tr  of (string -> string) * int     (* Transformation of i'th group *)
-<A NAME="line34"></A>  | Trs of substring vector -> string   (* Transformation of all groups *)
+<A NAME="line33"></A>  | Tr  of (string -&gt; string) * int     (* Transformation of i'th group *)
+<A NAME="line34"></A>  | Trs of substring vector -&gt; string   (* Transformation of all groups *)
 <A NAME="line35"></A>
-<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#replace1">replace1</A>    : regex -> replacer list -> string -> string
-<A NAME="line37"></A>val <A NAME="line37"></A><A HREF="#replace">replace</A>     : regex -> replacer list -> string -> string
+<A NAME="line36"></A>val <A NAME="line36"></A><A HREF="#replace1">replace1</A>    : regex -&gt; replacer list -&gt; string -&gt; string
+<A NAME="line37"></A>val <A NAME="line37"></A><A HREF="#replace">replace</A>     : regex -&gt; replacer list -&gt; string -&gt; string
 <A NAME="line38"></A>
-<A NAME="line39"></A>val <A NAME="line39"></A><A HREF="#substitute1">substitute1</A> : regex -> (string -> string) -> string -> string
-<A NAME="line40"></A>val <A NAME="line40"></A><A HREF="#substitute">substitute</A>  : regex -> (string -> string) -> string -> string
+<A NAME="line39"></A>val <A NAME="line39"></A><A HREF="#substitute1">substitute1</A> : regex -&gt; (string -&gt; string) -&gt; string -&gt; string
+<A NAME="line40"></A>val <A NAME="line40"></A><A HREF="#substitute">substitute</A>  : regex -&gt; (string -&gt; string) -&gt; string -&gt; string
 <A NAME="line41"></A>
-<A NAME="line42"></A>val <A NAME="line42"></A><A HREF="#tokens">tokens</A>      : regex -> string -> substring list
-<A NAME="line43"></A>val <A NAME="line43"></A><A HREF="#fields">fields</A>      : regex -> string -> substring list
+<A NAME="line42"></A>val <A NAME="line42"></A><A HREF="#tokens">tokens</A>      : regex -&gt; string -&gt; substring list
+<A NAME="line43"></A>val <A NAME="line43"></A><A HREF="#fields">fields</A>      : regex -&gt; string -&gt; substring list
 <A NAME="line44"></A>
-<A NAME="line45"></A>val <A NAME="line45"></A><A HREF="#map">map</A>         : regex -> (substring vector -> 'a) -> string -> 'a list
-<A NAME="line46"></A>val <A NAME="line46"></A><A HREF="#app">app</A>         : regex -> (substring vector -> unit) -> string -> unit
+<A NAME="line45"></A>val <A NAME="line45"></A><A HREF="#map">map</A>         : regex -&gt; (substring vector -&gt; 'a) -&gt; string -&gt; 'a list
+<A NAME="line46"></A>val <A NAME="line46"></A><A HREF="#app">app</A>         : regex -&gt; (substring vector -&gt; unit) -&gt; string -&gt; unit
 <A NAME="line47"></A>val <A NAME="line47"></A><A HREF="#fold">fold</A>        : regex 
-<A NAME="line48"></A>                  -> (substring * 'a -> 'a) * (substring vector * 'a -> 'a) 
-<A NAME="line49"></A>                  -> 'a -> string -> 'a
+<A NAME="line48"></A>                  -&gt; (substring * 'a -&gt; 'a) * (substring vector * 'a -&gt; 'a) 
+<A NAME="line49"></A>                  -&gt; 'a -&gt; string -&gt; 'a
 <A NAME="line50"></A>
 <A NAME="line51"></A>(* 
 <A NAME="line52"></A>   This structure provides pattern matching with POSIX 1003.2 regular
@@ -127,7 +127,7 @@
    regcomp "^[+~]?[0-9]+(\\.[0-9]+|(\\.[0-9]+)?[eE][+~]?[0-9]+)$" [Extended]
 
    Example: Match any HTML start tag; make the tag's name into a group:
-   regcomp "<([[:alnum:]]+)[^>]*>" [Extended]
+   regcomp "&lt;([[:alnum:]]+)[^&gt;]*&gt;" [Extended]
 
    [<A NAME="regexec"><B>regexec</B></A> regex eflags s] returns SOME(vec) if some substring of s
    matches regex, NONE otherwise.  In case of success, vec is the
@@ -175,7 +175,7 @@
    decomposing s, that is, if regex matches an empty string at the
    head of s or immediately after a previous regex match.
    Example use: delete all HTML tags from s: 
-        replace (regcomp "<[^>]+>" [Extended]) [] s
+        replace (regcomp "&lt;[^&gt;]+&gt;" [Extended]) [] s
 
    [<A NAME="replace1"><B>replace1</B></A> regex repl s] finds the leftmost substring b1 of s
    matching regex, and returns the string resulting from s by applying
@@ -241,7 +241,7 @@
    bn of s matching regex from left to right, and splits s into the
    substrings 
         a0, b1, a1, b2, a2, ..., bn, an         
-   where n >= 0 and where a0 is the (possibly empty) substring of s
+   where n &gt;= 0 and where a0 is the (possibly empty) substring of s
    preceding the first match, and ai is the (possibly empty) substring
    between the matches bi and b(i+1).  Then it computes and returns
         fa(an, fb(vecn, ..., fa(a1, fb(vec1, fa(a0, e))) ...))  

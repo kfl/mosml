@@ -12,11 +12,11 @@
 <A NAME="line4"></A>
 <A NAME="line5"></A>(* Weak pointers *)
 <A NAME="line6"></A>
-<A NAME="line7"></A>type 'a weak
-<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#weak">weak</A>    : 'a -> 'a weak
-<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#set">set</A>     : 'a weak * 'a -> unit
-<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#get">get</A>     : 'a weak -> 'a                  (* Raises Fail *)
-<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#isweak">isweak</A>  : 'a weak -> bool
+<A NAME="line7"></A>type <A NAME="line7"></A>'a weak
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#weak">weak</A>    : 'a -&gt; 'a weak
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#set">set</A>     : 'a weak * 'a -&gt; unit
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#get">get</A>     : 'a weak -&gt; 'a                  (* Raises Fail *)
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#isweak">isweak</A>  : 'a weak -&gt; bool
 <A NAME="line12"></A>
 <A NAME="line13"></A>(* Arrays of weak pointers *)
 <A NAME="line14"></A>
@@ -24,23 +24,23 @@
 <A NAME="line16"></A>
 <A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#maxLen">maxLen</A>  : int
 <A NAME="line18"></A>
-<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#array">array</A>   : int -> '_a array               (* Raises Size               *)
-<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#sub">sub</A>     : 'a array * int -> 'a           (* Raises Fail and Subscript *)
-<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#update">update</A>  : 'a array * int * 'a -> unit    (* Raises Subscript          *)
-<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#isdead">isdead</A>  : 'a array * int -> bool         (* Raises Subscript          *)
-<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#length">length</A>  : 'a array -> int
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#array">array</A>   : int -&gt; '_a array               (* Raises Size               *)
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#sub">sub</A>     : 'a array * int -&gt; 'a           (* Raises Fail and Subscript *)
+<A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#update">update</A>  : 'a array * int * 'a -&gt; unit    (* Raises Subscript          *)
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#isdead">isdead</A>  : 'a array * int -&gt; bool         (* Raises Subscript          *)
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#length">length</A>  : 'a array -&gt; int
 <A NAME="line24"></A>
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#app">app</A>     : ('a -> unit) -> 'a array -> unit
-<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#foldl">foldl</A>   : ('a * 'b -> 'b) -> 'b -> 'a array -> 'b
-<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#foldr">foldr</A>   : ('a * 'b -> 'b) -> 'b -> 'a array -> 'b
-<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#modify">modify</A>  : ('a -> 'a) -> 'a array -> unit
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#app">app</A>     : ('a -&gt; unit) -&gt; 'a array -&gt; unit
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#foldl">foldl</A>   : ('a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array -&gt; 'b
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#foldr">foldr</A>   : ('a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array -&gt; 'b
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#modify">modify</A>  : ('a -&gt; 'a) -&gt; 'a array -&gt; unit
 <A NAME="line29"></A>
-<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#appi">appi</A>    : (int * 'a -> unit) -> 'a array * int * int option -> unit
-<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#foldli">foldli</A>  : (int * 'a * 'b -> 'b) -> 'b -> 'a array * int * int option 
-<A NAME="line32"></A>              -> 'b
-<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#foldri">foldri</A>  : (int * 'a * 'b -> 'b) -> 'b -> 'a array * int * int option 
-<A NAME="line34"></A>              -> 'b
-<A NAME="line35"></A>val <A NAME="line35"></A><A HREF="#modifyi">modifyi</A> : (int * 'a -> 'a) -> 'a array * int * int option -> unit
+<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#appi">appi</A>    : (int * 'a -&gt; unit) -&gt; 'a array * int * int option -&gt; unit
+<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#foldli">foldli</A>  : (int * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array * int * int option 
+<A NAME="line32"></A>              -&gt; 'b
+<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#foldri">foldri</A>  : (int * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array * int * int option 
+<A NAME="line34"></A>              -&gt; 'b
+<A NAME="line35"></A>val <A NAME="line35"></A><A HREF="#modifyi">modifyi</A> : (int * 'a -&gt; 'a) -&gt; 'a array * int * int option -&gt; unit
 <A NAME="line36"></A>
 <A NAME="line37"></A>end
 <A NAME="line38"></A>
@@ -80,7 +80,7 @@
    because evaluation of the list append may cause w to die.
 
    The value of isweak w is the same as that of
-         (get w; false) handle Fail _ => true
+         (get w; false) handle Fail _ =&gt; true
    but evaluating the latter expression may have the side effect of
    keeping w alive for slightly longer, because a pointer to w is
    returned by get w.
@@ -101,11 +101,11 @@
    0) of the array a, if it is live.  Raises Fail "Dangling weak
    pointer" if cell i has never been updated or if the object pointed
    to has been deallocated by the garbage collector.  Raises Subscript
-   if i<0 or i>=length a.  To make `sub' infix, use the declaration
+   if i&lt;0 or i&gt;=length a.  To make `sub' infix, use the declaration
                              infix 9 sub
 
    [<A NAME="update"><B>update</B></A>(a, i, v)] updates cell i of array a to point (weakly) to
-   the value v.  Raises Subscript if i<0 or i>=length a.
+   the value v.  Raises Subscript if i&lt;0 or i&gt;=length a.
 
    [<A NAME="isdead"><B>isdead</B></A>(a, i)] returns true if the object in cell i of array a is
    dead, and false otherwise.  Analogous to isweak; see above.
@@ -137,11 +137,11 @@
 
    The slice (a, i, SOME n) denotes the subarray a[i..i+n-1].  That is,
    a[i] is the first element of the slice, and n is the length of the
-   slice.  Valid only if 0 <= i <= i+n <= length a.
+   slice.  Valid only if 0 &lt;= i &lt;= i+n &lt;= length a.
 
    The slice (a, i, NONE) denotes the subarray a[i..length a-1].  That
    is, the slice denotes the suffix of the array starting at i.  Valid
-   only if 0 <= i <= length a.  Equivalent to (a, i, SOME(length a - i)).
+   only if 0 &lt;= i &lt;= length a.  Equivalent to (a, i, SOME(length a - i)).
 
        slice             meaning 
        ----------------------------------------------------------
@@ -152,35 +152,35 @@
 
    [<A NAME="foldli"><B>foldli</B></A> f e (a, i, SOME n)] folds function f over the live elements
    of the subarray a[i..i+n-1] from left to right.  Raises Subscript
-   if i<0 or n<0 or i+n > length a.
+   if i&lt;0 or n&lt;0 or i+n &gt; length a.
 
    [<A NAME="foldli"><B>foldli</B></A> f e (a, i, NONE)] folds function f over the live elements
    of the subarray a[i..len-1] from left to right, where len = length
-   a.  Raises Subscript if i<0 or i > length a.
+   a.  Raises Subscript if i&lt;0 or i &gt; length a.
 
    [<A NAME="foldri"><B>foldri</B></A> f e (a, i, SOME n)] folds function f over the live elements
    of the subarray a[i..i+n-1] from right to left.  Raises Subscript
-   if i<0 or n<0 or i+n > length a.
+   if i&lt;0 or n&lt;0 or i+n &gt; length a.
 
    [<A NAME="foldri"><B>foldri</B></A> f e (a, i, NONE)] folds function f over the live elements
    of the subarray a[i..len-1] from right to left, where len = length
-   a.  Raises Subscript if i<0 or i > length a.
+   a.  Raises Subscript if i&lt;0 or i &gt; length a.
 
    [<A NAME="appi"><B>appi</B></A> f (a, i, SOME n)] applies f to successive pairs (j, a[j]) for
-   j=i,i+1,...,i+n-1, provided a[j] is live.  Raises Subscript if i<0
-   or n<0 or i+n > length a.
+   j=i,i+1,...,i+n-1, provided a[j] is live.  Raises Subscript if i&lt;0
+   or n&lt;0 or i+n &gt; length a.
 
    [<A NAME="appi"><B>appi</B></A> f (a, i, NONE)] applies f to successive pairs (j, a[j]) for
    j=i,i+1,...,len-1, where len = length a, provided a[j] is live.
-   Raises Subscript if i<0 or i > length a.
+   Raises Subscript if i&lt;0 or i &gt; length a.
 
    [<A NAME="modifyi"><B>modifyi</B></A> f (a, i, SOME n)] applies f to (j, a[j]) and updates a[j]
    with the result f(j, a[j]) for j=i,i+1,...,i+n-1, provided a[j] is
-   live.  Raises Subscript if i<0 or n<0 or i+n > length a.
+   live.  Raises Subscript if i&lt;0 or n&lt;0 or i+n &gt; length a.
 
    [<A NAME="modifyi"><B>modifyi</B></A> f (a, i, NONE)] applies f to (j, a[j]) and updates a[j]
    with the result f(j, a[j]) for j=i,i+1,...,len-1, provided a[j] is
-   live.  Raises Subscript if i<0 or i > length a.  
+   live.  Raises Subscript if i&lt;0 or i &gt; length a.  
 *)
 
 </PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>

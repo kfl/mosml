@@ -13,32 +13,32 @@
 <A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#parentArc">parentArc</A>    : string
 <A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#currentArc">currentArc</A>   : string
 <A NAME="line7"></A>
-<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#fromString">fromString</A>   : string -> {isAbs : bool, vol : string, arcs : string list}
-<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#toString">toString</A>     : {isAbs : bool, vol : string, arcs : string list} -> string
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#fromString">fromString</A>   : string -&gt; {isAbs : bool, vol : string, arcs : string list}
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#toString">toString</A>     : {isAbs : bool, vol : string, arcs : string list} -&gt; string
 <A NAME="line10"></A>
-<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#getVolume">getVolume</A>    : string -> string 
-<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#validVolume">validVolume</A>  : {isAbs : bool, vol : string} -> bool
-<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#getParent">getParent</A>    : string -> string
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#getVolume">getVolume</A>    : string -&gt; string 
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#validVolume">validVolume</A>  : {isAbs : bool, vol : string} -&gt; bool
+<A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#getParent">getParent</A>    : string -&gt; string
 <A NAME="line14"></A>
-<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#isAbsolute">isAbsolute</A>   : string -> bool
-<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#isRelative">isRelative</A>   : string -> bool
-<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#mkAbsolute">mkAbsolute</A>   : string * string -> string
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#mkRelative">mkRelative</A>   : string * string -> string
+<A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#isAbsolute">isAbsolute</A>   : string -&gt; bool
+<A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#isRelative">isRelative</A>   : string -&gt; bool
+<A NAME="line17"></A>val <A NAME="line17"></A><A HREF="#mkAbsolute">mkAbsolute</A>   : string * string -&gt; string
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#mkRelative">mkRelative</A>   : string * string -&gt; string
 <A NAME="line19"></A>
-<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#concat">concat</A>       : string * string -> string
+<A NAME="line20"></A>val <A NAME="line20"></A><A HREF="#concat">concat</A>       : string * string -&gt; string
 <A NAME="line21"></A>
-<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#mkCanonical">mkCanonical</A>  : string -> string
-<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#isCanonical">isCanonical</A>  : string -> bool
+<A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#mkCanonical">mkCanonical</A>  : string -&gt; string
+<A NAME="line23"></A>val <A NAME="line23"></A><A HREF="#isCanonical">isCanonical</A>  : string -&gt; bool
 <A NAME="line24"></A>
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#splitDirFile">splitDirFile</A> : string -> {dir : string, file : string}
-<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#joinDirFile">joinDirFile</A>  : {dir : string, file : string} -> string
-<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#dir">dir</A>          : string -> string
-<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#file">file</A>         : string -> string
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#splitDirFile">splitDirFile</A> : string -&gt; {dir : string, file : string}
+<A NAME="line26"></A>val <A NAME="line26"></A><A HREF="#joinDirFile">joinDirFile</A>  : {dir : string, file : string} -&gt; string
+<A NAME="line27"></A>val <A NAME="line27"></A><A HREF="#dir">dir</A>          : string -&gt; string
+<A NAME="line28"></A>val <A NAME="line28"></A><A HREF="#file">file</A>         : string -&gt; string
 <A NAME="line29"></A>
-<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#splitBaseExt">splitBaseExt</A> : string -> {base : string, ext : string option}
-<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#joinBaseExt">joinBaseExt</A>  : {base : string, ext: string option} -> string
-<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#base">base</A>         : string -> string    
-<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#ext">ext</A>          : string -> string option
+<A NAME="line30"></A>val <A NAME="line30"></A><A HREF="#splitBaseExt">splitBaseExt</A> : string -&gt; {base : string, ext : string option}
+<A NAME="line31"></A>val <A NAME="line31"></A><A HREF="#joinBaseExt">joinBaseExt</A>  : {base : string, ext: string option} -&gt; string
+<A NAME="line32"></A>val <A NAME="line32"></A><A HREF="#base">base</A>         : string -&gt; string    
+<A NAME="line33"></A>val <A NAME="line33"></A><A HREF="#ext">ext</A>          : string -&gt; string option
 <A NAME="line34"></A>
 <A NAME="line35"></A>
 <A NAME="line36"></A>(* This module provides OS-independent functions for manipulating

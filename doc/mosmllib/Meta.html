@@ -8,29 +8,29 @@
 <PRE>
 <A NAME="line1"></A>(* Meta -- functions for use in an interactive Moscow ML session *)
 <A NAME="line2"></A>
-<A NAME="line3"></A>val <A NAME="line3"></A><A HREF="#printVal">printVal</A>    : 'a -> 'a
+<A NAME="line3"></A>val <A NAME="line3"></A><A HREF="#printVal">printVal</A>    : 'a -&gt; 'a
 <A NAME="line4"></A>val <A NAME="line4"></A><A HREF="#printDepth">printDepth</A>  : int ref
 <A NAME="line5"></A>val <A NAME="line5"></A><A HREF="#printLength">printLength</A> : int ref
-<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#installPP">installPP</A>   : (ppstream -> 'a -> unit) -> unit
+<A NAME="line6"></A>val <A NAME="line6"></A><A HREF="#installPP">installPP</A>   : (ppstream -&gt; 'a -&gt; unit) -&gt; unit
 <A NAME="line7"></A>
-<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#use">use</A>         : string -> unit
-<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#compile">compile</A>     : string -> unit
-<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#load">load</A>        : string -> unit
-<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#loadOne">loadOne</A>     : string -> unit
-<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#loaded">loaded</A>      : unit -> string list
+<A NAME="line8"></A>val <A NAME="line8"></A><A HREF="#use">use</A>         : string -&gt; unit
+<A NAME="line9"></A>val <A NAME="line9"></A><A HREF="#compile">compile</A>     : string -&gt; unit
+<A NAME="line10"></A>val <A NAME="line10"></A><A HREF="#load">load</A>        : string -&gt; unit
+<A NAME="line11"></A>val <A NAME="line11"></A><A HREF="#loadOne">loadOne</A>     : string -&gt; unit
+<A NAME="line12"></A>val <A NAME="line12"></A><A HREF="#loaded">loaded</A>      : unit -&gt; string list
 <A NAME="line13"></A>val <A NAME="line13"></A><A HREF="#loadPath">loadPath</A>    : string list ref
 <A NAME="line14"></A>
 <A NAME="line15"></A>val <A NAME="line15"></A><A HREF="#quietdec">quietdec</A>    : bool ref
 <A NAME="line16"></A>val <A NAME="line16"></A><A HREF="#verbose">verbose</A>     : bool ref
 <A NAME="line17"></A>
-<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#exnName">exnName</A>     : exn -> string
-<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#exnMessage">exnMessage</A>  : exn -> string
+<A NAME="line18"></A>val <A NAME="line18"></A><A HREF="#exnName">exnName</A>     : exn -&gt; string
+<A NAME="line19"></A>val <A NAME="line19"></A><A HREF="#exnMessage">exnMessage</A>  : exn -&gt; string
 <A NAME="line20"></A>
 <A NAME="line21"></A>val <A NAME="line21"></A><A HREF="#quotation">quotation</A>   : bool ref
 <A NAME="line22"></A>val <A NAME="line22"></A><A HREF="#valuepoly">valuepoly</A>   : bool ref
 <A NAME="line23"></A>
-<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#quit">quit</A>        : unit -> 'a
-<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#system">system</A>      : string -> int
+<A NAME="line24"></A>val <A NAME="line24"></A><A HREF="#quit">quit</A>        : unit -&gt; 'a
+<A NAME="line25"></A>val <A NAME="line25"></A><A HREF="#system">system</A>      : string -&gt; int
 <A NAME="line26"></A>
 <A NAME="line27"></A>(* 
    [<A NAME="printVal"><B>printVal</B></A> e] prints the value of expression e to standard output
@@ -39,7 +39,7 @@
    a simple debugging aid.  The effect of printVal is similar to that
    of `print' in Edinburgh ML or Umeaa ML.  For string arguments, the 
    effect of SML/NJ print can be achieved by the function 
-   TextIO.print : string -> unit.
+   TextIO.print : string -&gt; unit.
 
    [<A NAME="printDepth"><B>printDepth</B></A>] determines the depth (in terms of nested constructors,
    records, tuples, lists, and vectors) to which values are printed by
@@ -60,7 +60,7 @@
    [<A NAME="quit"><B>quit</B></A> ()] quits Moscow ML immediately.
 
    [<A NAME="installPP"><B>installPP</B></A> pp] installs the prettyprinter pp at type ty, provided
-   pp has type ppstream -> ty -> unit.  The type ty must be a nullary
+   pp has type ppstream -&gt; ty -&gt; unit.  The type ty must be a nullary
    (parameter-less) type constructor representing a datatype, either
    built-in (such as bool) or user-defined.  Whenever a value of type
    ty is about to be printed by the interactive system, or function
