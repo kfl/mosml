@@ -483,7 +483,7 @@ fun compileAndEmit context uname uident umode filename specSig_opt elab decs =
     handle x => (close_out os; remove_file filename_uo;restorePrState();raise x)
   end;
 
-(* cvr: TODO consider removing reference hasSpecifiedSignature,
+(* cvr: TODO
         match modes *before* compiling, to catch this error early on 
 	warn on deprecated syntax
 *)
@@ -497,17 +497,14 @@ fun compileUnitBody context uname umode filename =
       fun compileStruct (AnonStruct decs) = 
 	  (* cvr: TODO warn *)
 	  if file_exists filename_sig then
-	      (hasSpecifiedSignature := true;
-	       checkExists filename_ui filename_sig filename_sml;
+	      (checkExists filename_ui filename_sig filename_sml;
 	       compileAndEmit context uname uname umode filename (SOME (readSig uname)) elabStrDec decs)
 	  else 
-	      (hasSpecifiedSignature := false;
-	       remove_file filename_ui;
+	      (remove_file filename_ui;
 	       compileAndEmit context uname uname umode filename NONE elabStrDec decs)
 	| compileStruct (NamedStruct{locstrid as (_,strid), locsigid = NONE, decs}) =
 	  (checkUnitId "structure" locstrid uname;
 	   checkNotExists filename_sig filename_sml;
-	   hasSpecifiedSignature := false;
 	   remove_file filename_ui;
 	   compileAndEmit context uname strid umode filename NONE elabStrDec decs)
 	 (* cvr: TODO remove locsigid field from NamedStruct *)
@@ -516,17 +513,14 @@ fun compileUnitBody context uname umode filename =
 	  (checkUnitId "structure" locstrid uname;
 	   checkUnitId "signature" locsigid uname;
 	   checkExists filename_ui filename_sig filename_sml;
-	   hasSpecifiedSignature := true;
 	   compileAndEmit context uname strid umode filename (SOME (readSig uname)) elabStrDec decs
 )
 	| compileStruct (TopDecs decs) = 
 	  if file_exists filename_sig then
-	      (hasSpecifiedSignature := true;
-	       checkExists filename_ui filename_sig filename_sml;
+	      (checkExists filename_ui filename_sig filename_sml;
 	       compileAndEmit context uname "" umode  filename (SOME (readSig uname)) elabToplevelDec decs)
 	  else 
-	      (hasSpecifiedSignature := false;
-	       remove_file filename_ui;
+	      (remove_file filename_ui;
 	       compileAndEmit context uname "" umode filename NONE elabToplevelDec decs)
   in
       input_name := filename_sml;

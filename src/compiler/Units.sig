@@ -47,7 +47,6 @@ val currentSigTable : SigTable ref;
 val newSig : (* uName *) string -> (* uIdent *) string ->  Mode -> CSig;
 val currentSig : CSig ref;
 val currentRenEnv : (string, int) Hasht.t ref;
-val hasSpecifiedSignature : bool ref;
 val readSig : string -> CSig;
 val readAndMentionSig : string -> CSig;
 val findSig : Location -> string -> CSig;

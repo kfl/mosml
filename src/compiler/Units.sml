@@ -90,7 +90,6 @@ val currentValStamp = ref 0;
 val dummyRenEnv = (Hasht.new 0 : (string, int) Hasht.t);
 
 val currentRenEnv = ref dummyRenEnv;
-val hasSpecifiedSignature = ref false;
 
 (* To load a signature from a file *)
 
