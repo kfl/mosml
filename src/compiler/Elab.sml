@@ -746,13 +746,12 @@ fun findLongModIdInStr S loc q =
   case q of 
      {qual, id = []} => fatalError "findLongModIdInStr"         
   |  {qual, id = [i] } => 
-	  let val (field,modglobal) = lookupMEofStr S i
-	  in if isGlobalName (#qualid modglobal) 
-	     then ([],modglobal) 
-	     else ([field],modglobal)
-		 handle Subscript => 
-		     errorMsg loc ("Unbound structure component: "^(showQualId q))
-	  end
+      (let val (field,modglobal) = lookupMEofStr S i
+       in if isGlobalName (#qualid modglobal) 
+          then ([],modglobal) 
+	  else ([field],modglobal)
+       end handle Subscript => 
+       errorMsg loc ("Unbound structure component: "^(showQualId q)))
  | {qual, id = i::id} =>
      let val (fields,{qualid = {qual = qual',id = id'}, info = RS'}) =
 	 findLongModIdInStr S loc {qual = qual,id = id} 
@@ -2630,6 +2629,10 @@ and elabModExp expectation (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE : UEnv)
 		   errMatchReason "module" "signature" matchReason; (* cvr: TODO improve descs*)
 		   raise Toplevel));
            refreshTyNameSet PARAMETERts T'; (* forget the realisation *)
+           (* cvr: REVIEW forgetting the realisation *only* works if
+	      we haven't done path compression on any realised type names in M that
+	      pointed to T' (usually because of sharing constraints), otherwise
+	      those names won't have their realisations forgotten *)
            decrBindingLevel();
            let val X' = EXISTSexmod(T',normMod M') (* re-introduce the quantifier *)
            in

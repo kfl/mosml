@@ -4317,6 +4317,261 @@ Enter `quit();' to quit.
 - 
 Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
+- > signature S = /\t.{type t = t, type v = t}
+- > New type names: t
+  structure X : {type t = t, type v = t}
+- > New type names: t'
+  structure Y : {type t = t', type v = t'}
+- > New type names: t''
+  structure Z : {type t = t'', type v = t''}
+- > functor F :
+  !t'''.{type t = t''', type v = t'''}->?t''''.{type t = t'''', type v = t''''}
+- > functor G :
+  !t'''.
+   {type t = t''', type v = t'''}->
+       ?t'''' t''''' t''''''.{type t = t'''''', type v = t''''''}
+- > functor H :
+  !t'''.{type t = t''', type v = t'''}->?t''''.{type t = t'''', type v = t''''}
+- > signature LR_TABLE =
+  /\=pairlist.
+    {datatype ('a, 'b) pairlist =
+       (('a, 'b) pairlist,
+        {con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+         con ('a, 'b) PAIR :
+           'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}),
+     con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+     con ('a, 'b) PAIR : 'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}
+- > signature TOKEN =
+  /\=pairlist.
+    {structure LrTable :
+       {datatype ('a, 'b) pairlist =
+          (('a, 'b) pairlist,
+           {con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+            con ('a, 'b) PAIR :
+              'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}),
+        con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+        con ('a, 'b) PAIR : 'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}}
+- > signature LR_PARSER =
+  /\=pairlist.
+    {structure LrTable :
+       {datatype ('a, 'b) pairlist =
+          (('a, 'b) pairlist,
+           {con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+            con ('a, 'b) PAIR :
+              'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}),
+        con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+        con ('a, 'b) PAIR : 'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist},
+     structure Token :
+       {structure LrTable :
+          {datatype ('a, 'b) pairlist =
+             (('a, 'b) pairlist,
+              {con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+               con ('a, 'b) PAIR :
+                 'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}),
+           con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+           con ('a, 'b) PAIR :
+             'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}}}
+- > signature PARSER_DATA =
+  /\=pairlist.
+    {structure LrTable :
+       {datatype ('a, 'b) pairlist =
+          (('a, 'b) pairlist,
+           {con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+            con ('a, 'b) PAIR :
+              'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}),
+        con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+        con ('a, 'b) PAIR : 'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist},
+     structure Token :
+       {structure LrTable :
+          {datatype ('a, 'b) pairlist =
+             (('a, 'b) pairlist,
+              {con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+               con ('a, 'b) PAIR :
+                 'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}),
+           con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+           con ('a, 'b) PAIR :
+             'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}}}
+- > signature PARSER =
+  /\=pairlist.
+    {structure Token :
+       {structure LrTable :
+          {datatype ('a, 'b) pairlist =
+             (('a, 'b) pairlist,
+              {con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+               con ('a, 'b) PAIR :
+                 'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}),
+           con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+           con ('a, 'b) PAIR :
+             'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}}}
+- > functor Join :
+  !=pairlist.
+   {structure ParserData :
+      {structure LrTable :
+         {datatype ('a, 'b) pairlist =
+            (('a, 'b) pairlist,
+             {con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+              con ('a, 'b) PAIR :
+                'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}),
+          con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+          con ('a, 'b) PAIR :
+            'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist},
+       structure Token :
+         {structure LrTable :
+            {datatype ('a, 'b) pairlist =
+               (('a, 'b) pairlist,
+                {con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+                 con ('a, 'b) PAIR :
+                   'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}),
+             con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+             con ('a, 'b) PAIR :
+               'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}}},
+    structure LrParser :
+      {structure LrTable :
+         {datatype ('a, 'b) pairlist =
+            (('a, 'b) pairlist,
+             {con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+              con ('a, 'b) PAIR :
+                'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}),
+          con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+          con ('a, 'b) PAIR :
+            'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist},
+       structure Token :
+         {structure LrTable :
+            {datatype ('a, 'b) pairlist =
+               (('a, 'b) pairlist,
+                {con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+                 con ('a, 'b) PAIR :
+                   'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}),
+             con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+             con ('a, 'b) PAIR :
+               'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}}}}->
+       {structure Token :
+          {structure LrTable :
+             {datatype ('a, 'b) pairlist =
+                (('a, 'b) pairlist,
+                 {con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+                  con ('a, 'b) PAIR :
+                    'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}),
+              con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+              con ('a, 'b) PAIR :
+                'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}}}
+- > New type names: =pairlist
+  structure LrTable :
+  {datatype ('a, 'b) pairlist =
+     (('a, 'b) pairlist,
+      {con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+       con ('a, 'b) PAIR : 'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}),
+   con ('a, 'b) EMPTY : ('a, 'b) pairlist,
+   con ('a, 'b) PAIR : 'a * 'b * ('a, 'b) pairlist -> ('a, 'b) pairlist}
+- > New type names: =pairlist'
+  structure LrParser :
+  {structure LrTable :
+     {datatype ('a, 'b) pairlist =
+        (('a, 'b) pairlist',
+         {con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+          con ('a, 'b) PAIR :
+            'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'}),
+      con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+      con ('a, 'b) PAIR : 'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'},
+   structure Token :
+     {structure LrTable :
+        {datatype ('a, 'b) pairlist =
+           (('a, 'b) pairlist',
+            {con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+             con ('a, 'b) PAIR :
+               'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'}),
+         con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+         con ('a, 'b) PAIR :
+           'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'}}}
+- > signature Fol_LRVALS =
+  /\=pairlist''.
+    {structure ParserData :
+       {structure LrTable :
+          {datatype ('a, 'b) pairlist =
+             (('a, 'b) pairlist'',
+              {con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+               con ('a, 'b) PAIR :
+                 'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''}),
+           con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+           con ('a, 'b) PAIR :
+             'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''},
+        structure Token :
+          {structure LrTable :
+             {datatype ('a, 'b) pairlist =
+                (('a, 'b) pairlist'',
+                 {con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+                  con ('a, 'b) PAIR :
+                    'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''}),
+              con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+              con ('a, 'b) PAIR :
+                'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''}}}}
+- > functor FolLrValsFun :
+  !=pairlist''.
+   {structure Token :
+      {structure LrTable :
+         {datatype ('a, 'b) pairlist =
+            (('a, 'b) pairlist'',
+             {con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+              con ('a, 'b) PAIR :
+                'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''}),
+          con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+          con ('a, 'b) PAIR :
+            'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''}}}->
+       {structure ParserData :
+          {structure LrTable :
+             {datatype ('a, 'b) pairlist =
+                (('a, 'b) pairlist'',
+                 {con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+                  con ('a, 'b) PAIR :
+                    'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''}),
+              con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+              con ('a, 'b) PAIR :
+                'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''},
+           structure Token :
+             {structure LrTable :
+                {datatype ('a, 'b) pairlist =
+                   (('a, 'b) pairlist'',
+                    {con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+                     con ('a, 'b) PAIR :
+                       'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''}),
+                 con ('a, 'b) EMPTY : ('a, 'b) pairlist'',
+                 con ('a, 'b) PAIR :
+                   'a * 'b * ('a, 'b) pairlist'' -> ('a, 'b) pairlist''}}}}
+- > structure FolLrVals :
+  {structure ParserData :
+     {structure LrTable :
+        {datatype ('a, 'b) pairlist =
+           (('a, 'b) pairlist',
+            {con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+             con ('a, 'b) PAIR :
+               'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'}),
+         con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+         con ('a, 'b) PAIR :
+           'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'},
+      structure Token :
+        {structure LrTable :
+           {datatype ('a, 'b) pairlist =
+              (('a, 'b) pairlist',
+               {con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+                con ('a, 'b) PAIR :
+                  'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'}),
+            con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+            con ('a, 'b) PAIR :
+              'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'}}}}
+- > structure FolParser :
+  {structure Token :
+     {structure LrTable :
+        {datatype ('a, 'b) pairlist =
+           (('a, 'b) pairlist',
+            {con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+             con ('a, 'b) PAIR :
+               'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'}),
+         con ('a, 'b) EMPTY : ('a, 'b) pairlist',
+         con ('a, 'b) PAIR :
+           'a * 'b * ('a, 'b) pairlist' -> ('a, 'b) pairlist'}}}
+- 
+Moscow ML version 1.99 (internal release)
+Enter `quit();' to quit.
 [opening file "test.sml"]
 > structure Real :
   {type real = real,

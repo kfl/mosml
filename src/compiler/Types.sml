@@ -557,6 +557,34 @@ and copyTyApp bns bvs tyapp  =
     case tyapp of
        NAMEtyapp tyname => 
          (let val ctyapp = lookup tyname bns
+	  in
+		 (bns,bvs,false,ctyapp)
+	  end
+          handle Subscript =>
+             (case #tnSort(!(#info(tyname))) of
+		  VARIABLEts => (bns,bvs,true,tyapp)
+		| PARAMETERts => (bns,bvs,true,tyapp)
+		| REAts tyfun =>
+		      let 
+			  val (bns,bvs,styfun,ctyfun) = 
+			      copyTyFun bns bvs tyfun 
+		      in
+			  if styfun then
+			      let val ctyname = 
+				      copyAndRealiseTyName tyname tyfun
+				  val ctyapp = NAMEtyapp ctyname
+			      in ((tyname,ctyapp)::bns,bvs,false,ctyapp)
+			      end 
+			  else
+			      let val ctyname = 
+				      copyAndRealiseTyName tyname ctyfun
+				  val ctyapp = NAMEtyapp ctyname
+			      in ((tyname,ctyapp)::bns,bvs,false,ctyapp)
+			      end
+		      end))
+(* cvr: TODO remove
+       NAMEtyapp tyname => 
+         (let val ctyapp = lookup tyname bns
 	      val styapp = 
 		  case ctyapp of 
 		      NAMEtyapp tyname' => tyname = tyname'
@@ -588,6 +616,7 @@ and copyTyApp bns bvs tyapp  =
 			      in ((tyname,ctyapp)::bns,bvs,false,ctyapp)
 			      end
 		      end))
+*)
     |  APPtyapp (tyapp',tyfun) =>  
 	    let val (bns,bvs,styapp',ctyapp') = copyTyApp bns bvs tyapp'
 		val (bns,bvs,styfun,ctyfun) = copyTyFun bns bvs tyfun
@@ -1168,11 +1197,16 @@ and normTyApp tyapp =
   case tyapp of
       NAMEtyapp tn =>
         (case #tnSort (!(#info tn)) of
+(*  cvr: TODO Review path compression invalidates the hack of forgetting realisations... because we identify shared type names by swinging pointers,
+instead of copying. Which do we want?
               REAts tyfun => 
                let val tyfun' = normTyFun tyfun in
                    setTnSort (#info tn) (REAts tyfun');
                    tyfun'
                end
+*)
+              REAts tyfun => 
+             	   normTyFun tyfun 
             | _ => APPtyfun tyapp
          )
       | APPtyapp (tyapp,tyfun) =>

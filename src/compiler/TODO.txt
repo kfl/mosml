@@ -1,3 +1,60 @@
+---------
+sharing constraints.
+
+
+previously:
+0.	type names are pointer to realistions.
+
+1.	mosml represented sharing constraints by making the shared
+	type names point to the representative type names.
+
+2.	mosml compressed realisations by compressing pointer chains during
+	type normalisation (function normTyApp).
+
+3.	mosml checked abstractions (including first-class modules)
+	by taking a copy of the signature, matching the target against
+	the signature and then hiding the realisation by *updating*
+	the realised type names to be parameters. It then used the copied
+	signature  directly as the type of the phrase.
+
+Unfortunately, 3) inderacts badly with 1) and 2). In the presence
+of sharing constraints. 
+Consider
+
+signature S = sig type t type y sharing type t = u  end
+
+By 3) u is tyname that point to the tyname t.
+
+structure X = struct type t = int type u = int end:>S.
+
+When we the structure againts S, t in S is realised to int, then, by 2) u is compressed to point directly at int, by passing t. After resetting t to hide its
+realistion, u still points to int, causing a loss of abstraction. Moreover,
+X.t and X.u no longer share, though they should.
+
+Possible solutions:
+
+A. Do sharing constraints not by swinging pointers but by substitution (taking a fresh copy modulo the substitution),
+ie relace u directly by t, instead of making t point to u.
+This slows down the elaboration of sharing constraints.
+
+B. Take (another) copy of the signature before matching, use it for matching, but
+return the original as the type of the phrase. This means that
+any path compression only affects the copy. It also means that copying must
+copy realised names too!
+
+C. Don't to path compression at all, 
+Copying, again, has to copy realised
+names too (I think).
+
+I've adopted C. as its simplest, although it does increase the size
+of the ui files by around 1%. I think path compression is less important
+in type name realisation than it is during type variable unification, 
+but I may be wrong.
+
+This should probably be reviewed!
+
+-c
+---------
 clean trToplevelDec --- the obscure mangling code could be improved 
 remove patch directory
 -------------------------
