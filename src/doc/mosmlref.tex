@@ -6,18 +6,8 @@
 
 \documentclass[fleqn]{article}
 
-
-% cvr:  we use color's to highlight insertions/deletions
-
-\usepackage{color}
-\def\insert#1{{\color{blue}{#1}}}
-\def\delete#1{{\color{red}{#1}}}
-\def\revise#1{{\color{green}{#1}}}
-\def\replace#1#2{\delete{#1} \insert{#2}}
 \def\allttcdots{\ensuremath{\cdots}}
-\newcommand{\x}[1][]{\insert{\bf{*}#1}}
-\newenvironment{insertion}{\color{blue}}{}
-\newenvironment{deletion}{\color{red}}{}
+\newcommand{\x}[1][]{{\bf{*}#1}}
 
 \nonstopmode
 \usepackage{alltt}
@@ -42,38 +32,24 @@
 
 {\huge\bf Moscow ML Language Overview}\\[0.5cm]
 
-{Version 1.44 of August 1999}\\[1cm]
+{Version 2.00 of June 2000}\\[1cm]
 
 Sergei Romanenko, Russian Academy of Sciences, Moscow, Russia\\
 Claudio Russo, Cambridge University, Cambridge, United Kingdom\\
 Peter Sestoft, Royal Veterinary and Agricultural University, 
 Copenhagen, Denmark
-\delete{\begin{tabular}{ccc}
-\large Sergei Romanenko && \large Peter Sestoft\\[0.1cm]
-Russian Academy of Sciences && Royal Veterinary and Agricultural University\\
-Moscow, Russia && Copenhagen, Denmark
-\end{tabular}}
 \end{center}
 
-\vspace{1cm}
-
 \noindent This is a compact reference to the language implemented by
-Moscow ML, a \replace{subset}{superset} of Standard ML\@.  For reference material on
+Moscow ML, a superset of Standard ML\@.  For reference material on
 Standard ML, see Milner, Tofte, Harper and MacQueen: {\em The
-  Definition of Standard ML\/}, The MIT Press 1997.  Moscow ML
-implements parts of the SML Basis Library.  
-\delete{Section~\ref{sec-libindex}
-of this manual lists all structure, type, constructor, value,
-function, and exception identifiers defined by Moscow ML.}
+  Definition of Standard ML\/}, The MIT Press 1997. 
 
-{\bf Acknowledgement:} The present document owes a lot to the {\em
-  Definition\/}. 
-  \insert{Thanks to Don Sannella at LFCS,
-	  Division of Informatics, University of Edinburgh for 
-	  funding C. Russo under
-	  EPSRC grant GR/K63795 .} 
 
-\vfill
+% {\bf Acknowledgements:} The present document owes a lot to the {\em
+%   Definition\/}.Thanks to Don Sannella at LFCS, Division of
+%   Informatics, University of Edinburgh for funding C. Russo under
+%   EPSRC grant GR/K63795 .
 
 \tableofcontents
 
@@ -88,6 +64,25 @@ function, and exception identifiers defined by Moscow ML.}
 
 \newpage 
 
+\section{Moscow ML's relation to Standard ML}\label{sec-SMLcompliance}
+
+Moscow ML implements a proper extension of Standard ML, 
+as  defined in the 1997 {\em Definition of Standard ML\/}.
+This document describes the language implemented by Moscow ML, not Standard ML 
+\emph{per se}: users seeking an orthodox Standard ML reference should look elsewhere.
+Having said that, Moscow ML is specifically designed to be backwards compatible with Standard ML. Thus every valid Standard ML program should be a valid
+Moscow ML program, and Moscow ML may be used as if it were simply
+a Standard ML compiler. Any deviation from this behaviour should be reported
+as a bug.
+
+To facilitate the production of code that complies with Standard ML,
+both the batch compiler {\tt mosmlc} and the interactive system {\tt mosml}
+accept the command line options {\tt -orthodox}, {\tt -conservative}
+and {\tt -liberal}, which cause the compiler and interactive system to respectively reject, deprecate with a warning, or silently accept any Moscow ML  specific 
+extensions of Standard ML. The default compliance level
+is {\tt -conservative}. In the interactive system,
+the compliance level may be set interactively using the functions 
+{\tt orthodox}, {\tt conservative} and {\tt liberal}. 
 
 \section{Reserved words}
 \label{sec-reserved-words}
@@ -100,10 +95,10 @@ function, and exception identifiers defined by Moscow ML.}
 % \end{verbatim}}
 
 {\small\begin{alltt} 
-      abstype  and  andalso  as  case  do  datatype  else  end \insert{eqtype} exception  fn  fun  \insert{functor} 
-      handle  if  in  \insert{include}  infix  infixr  let  local  nonfix  of  op  open  orelse  raise  rec  
-      \insert{sharing}  sig  signature  struct  structure  then  type  val  \insert{where}  with  withtype  while  
-      (  )  [  ]  {  }  ,  :  :>  ;  ...    _  |  =  =>  ->  #
+abstype  and  andalso  as  case  do  datatype  else  end eqtype exception  fn  fun  functor 
+handle  if  in  include  infix  infixr  let  local  nonfix  of  op  open  orelse  raise  rec  
+sharing  sig  signature  struct  structure  then  type  val  where  with  withtype  while  
+(  )  [  ]  {  }  ,  :  :>  ;  ...    _  |  =  =>  ->  #
 \end{alltt}}
 
 
@@ -231,28 +226,17 @@ excluded.  This means that for example \verb$#$ and \verb#|# are not
 identifiers, but \verb$##$ and \verb#|=|# are identifiers.  There are
 several classes of identifiers:
 
-\replace{\begin{center}
-\begin{tabular}{@{}lll}
-    var       &  (value variables)           &    long\\
-    con       &  (value constructors)        &    long\\
-    excon     &  (exception constructors)    &    long\\
-    tyvar     &  (type variables)\\
-    tycon     &  (type constructors)         &    long\\
-    lab       &  (record labels)\\
-    unitid    &  (unit identifiers)
-\end{tabular}
-\end{center}}
 {\begin{center}
 \begin{tabular}{@{}lll}
-    vid       &  (value identifiers)           &    long\\
-    tyvar     &  (type variables)\\
-    tycon     &  (type constructors)         &    long\\
-    lab       &  (record labels)\\
-    strid     &  (structure identifiers)         &    long\\
-    funid     &  (functor identifiers)         &    long\\
-    modid     &  (module identifiers)         &    long\\
-    sigid     &  (signature identifiers)\\
-  \revise{unitid}    &  \revise{(unit identifiers)}
+{\it vid }  &  (value identifiers)           &    long\\
+{\it tyvar} &  (type variables)\\
+{\it tycon} &  (type constructors)         &    long\\
+{\it lab}   &  (record labels)\\
+{\it strid} &  (structure identifiers)         &    long\\
+{\it funid} &  (functor identifiers)         &    long\\
+{\it modid} &  (module identifiers)         &    long\\
+{\it sigid} &  (signature identifiers)\\
+{\it unitid} &  (unit identifiers)
 \end{tabular}
 \end{center}}
 
@@ -271,15 +255,6 @@ several classes of identifiers:
 \item A label lab is an identifier, or a positive integral numeral
   \verb#1 2 3 #\ldots\ not starting with \verb#0#.  
 
-\replace{\item For each identifier class X marked `long' above there is a class
-  longX of long identifiers, which may have a qualifier consisting of
-  a long structure identifier followed by a dot `\texttt{.}' :
-  \begin{center}
-      \begin{tabular}{llll}
-    {\it longx\/} & ::= &  {\it x\/}         & identifier\\
-          &     &  {\it unitid\/}\texttt{.}{\it x\/}  & qualified identifier
-  \end{tabular}
-  \end{center}}{
 \item For each identifier class X marked `long' above there is a class
   longX of long identifiers, which may have a qualifier consisting of
   a long structure identifier followed by a dot `\texttt{.}' :
@@ -289,67 +264,40 @@ several classes of identifiers:
           &     &  {\it longstrid\/}\texttt{.}{\it x\/}  & qualified identifier
   \end{tabular}
   \end{center}
-}
-\insert{%
+
 \item 
-Although structure and functor identifiers reside in separate name-spaces,
-the syntax of structure and functor identifiers is identical.
-In the grammar, a module identifier {\it longmodid} may stand for either a structure identifier
-{\it longstrid} or a functor identifier {\it longfunid}.
-Thus, {\sl a priori}, the module expression \opop\ \longmodid\
-may refer to a either a functor or a structure and the compiler
-must resolve this ambiguity (\opop\ is an optional prefix of the keyword \op).
-Fortunately,
-the context of the phrase often rules out one
-alternative, on the grounds that choosing that alternative 
-would force type checking to fail. In particular,
-if \opop\ \longmodid\ occurs as the right hand side of a structure
-(functor) binding, then \longmodid\ must be interpreted as a
-structure (functor) identifier; if
-\opop\ \longmodid\ occurs in the functor position of an application, then
-\longmodid\ must be interpreted as a functor identifier; if
-\opop\ \longmodid\ is constrained by a signature
-then the signature 
-forces a unique interpretation 
-on \longmodid\ (depending on whether the signature specificies a structure or functor).
-Similarly, if \opop\ \longmodid\ occurs as the argument of a functor application,
-then the functor's domain forces a unique interpretation 
-on \longmodid.
-Indeed, the only ambiguity that remains occurs when \opop\ \longmodid\ is the body of a functor. In this case, the optional prefix \opop\ is used to resolve
-the ambiguity:  the {\sl absence} of \op\ signals
-that \longmodid\ refers to structure; the {\sl presence} of \op\ signals that
-\op~\longmodid\ refers to a functor. 
-When the interpretation of \opop\ \longmodid\ is already
-determined by the context, the optional prefix \opop\ has {\sl no} effect.
-(This method of disambiguation relies on type information and is performed during
-type checking.)
-}
-\revise{\item 
-% An occurrence of a structure identifier that is not bound in the current context is assumed
-% to refer to the structure defined in the unit of the same name.
-% The unit's implementation (and interface, if any) must have been compiled in \emph{structure} mode.
- Any occurrence of a structure identifier {\it strid} that is not bound in the current context refers to the unit implementation  {\it unitid.uo} 
-of the same name (ie. {\it unitid} = {\it strid}).
- At compile time, the unit's compiled interface {\it unitid.ui} must exist and have been  compiled in \emph{structure} mode.
- At link time, the unit's compiled implementation {\it unitid.uo} must exist and have been  compiled in \emph{structure} mode.
-}
-\revise{\item 
-% An occurrence of a signature identifier
-% that is not bound in the current context is assumed
-% to refer to the signature defined in the interface of the unit with the same name. 
-% The interface of the unit must exist and have been compiled in \emph{structure} mode.
- Any occurrence of a signature identifier {\it sigid} that is not bound in the current context refers to the compiled unit interface {\it unitid.ui} of the same name (ie. {\it unitid} = {\it sigid}).
- The file {\it unitid.ui} must have been compiled
- in \emph{structure} mode  from
- an explicit interface {\it unitid.sig}.
-}
+ Although structure and functor identifiers reside in separate name-spaces,
+ the syntax of structure and functor identifiers is identical. The
+ set of identifiers
+ {\it modid} ranges over the union of {\it strid} and {\it funid};
+ {\it longmodid} ranges over the union  of {\it longstrid} and {\it longfunid}.
+ Moscow ML uses type information to resolve each occurrence of a 
+ {\it modid} or {\it longmodid} 
+ to a structure or functor identifier during type checking, using
+ the optional keyword \op\ to resolve any remaining ambiguities.
+ See the comments at the end of Section \ref{sec-modules}.
+
+\item Any occurrence of a structure identifier {\it strid\/} that is not
+bound in the current context refers to the unit implementation {\tt unitid.uo\/}
+of the same name (ie. {\tt unitid} = {\it strid}).  At
+compile time, the unit's compiled interface {\tt unitid.ui\/} must exist
+and have been compiled in \emph{structure} mode.  At link time, the
+unit's compiled implementation {\tt unitid.uo\/} must exist and have
+been compiled in \emph{structure} mode.
+
+\item Any occurrence of a signature identifier {\it sigid\/} that is not
+bound in the current context refers to the compiled unit interface
+{\tt unitid.ui\/} of the same name (ie. {\tt unitid} = {\it sigid}).
+The file {\tt unitid.ui\/} must have been compiled in \emph{structure}
+mode from an explicit interface {\tt unitid.sig}.
+
 \end{itemize}
 
 \section{Infixed operators}
 \label{sec-infixed-operators}
 
 An identifier may be given infix status by the {\tt infix} or {\tt
-  infixr} directive, which may occur as a declaration \insert{or specification}.  If identifier
+  infixr} directive, which may occur as a declaration or specification.  If identifier
 {\it id\/} has infix status, then {\it exp\/}$_1$ {\it id\/} {\it
   exp\/}$_2$ may occur, in parentheses if necessary, wherever the
 application {\it id\/}\verb#(#{\it exp\/}\et\verb#,# {\it
@@ -373,11 +321,10 @@ indicating binding precedence.  A higher value of $d$ indicates
 tighter binding; the default is \verb#0#.  Fixity directives are
 subject to the usual scope rules governing visibility of identifiers
 declared inside {\tt let} and {\tt local}. 
-\insert{
 Fixity directives occurring within {\it dec} in a structure expression 
 {\tt struct {\it dec\/} end} are local to {\it dec}.
 Fixity directives occurring within {\it spec} in a signature 
-{\tt sig {\it spec\/} end} are local to {\it spec}.}
+{\tt sig {\it spec\/} end} are local to {\it spec}.
 
 Mixed left-associative operators of the same precedence associate to
 the left, mixed right-associative operators of the same precedence
@@ -393,7 +340,7 @@ right-associative operators of the same precedence.
 
 \item The brackets \la\ and \ra\ enclose optional phrases.
 
-\newpage
+%\newpage
 \item For any syntax class X (over which {\it x\/} ranges) we define the syntax
   class Xseq (over which {\it xseq\/} ranges) as follows:
 
@@ -410,12 +357,26 @@ right-associative operators of the same precedence.
 \item L and R indicate left and right association.
 
 \item The syntax of types binds more tightly than that of expressions.
+
 \item Each iterated construct (e.g.\ {\it match\/}) extends as far to
   the right as possible.  Hence a {\tt case} inside a {\tt case}, {\tt
     fn}, or {\tt fun} may have to be enclosed in parentheses.
+
+\item Moscow ML phrases that are non-compliant 
+      extensions of Standard ML syntax are
+      marked with an \x\ in the margin, eg:
+
+\item Moscow ML phrases that are non-compliant 
+      generalisations of Standard ML syntax,
+      but have instances that comply with Standard ML, are 
+      marked with an \x[$N$]\ in the margin, where
+      $N$ refers to an explanatory comment that appears in
+      Section \ref{sec-SMLrestrictions}.
 \end{itemize}
 
-\section{Grammar for the \replace{Standard ML}{Moscow ML} Core language}
+\newpage
+
+\section{Grammar for the Moscow ML Core language}
 \label{sec-grammar-core}
 
 \subsubsection*{Expressions and matches}
@@ -442,10 +403,7 @@ application\\[2ex]
 
 {\it atexp\/} & ::= & {\it scon\/} &  special constant 
 (see Section~\ref{sec-special-constants})\\
-& & \delete{\la{\tt op}\ra\ {\it longvar\/}} & \delete{value variable}\\
-& & \delete{\la{\tt op}\ra\ {\it longcon\/}} & \delete{value constructor}\\
-& & \delete{\la{\tt op}\ra\ {\it longexcon\/}} &\delete{exception constructor}\\
-& & \insert{\la{\tt op}\ra\ {\it longvid\/}} &\insert{value identifier}\\
+& & \la{\tt op}\ra\ {\it longvid\/} & value identifier\\
 & & \verb#{# \la\ {\it exprow\/} \ra\ \verb#}# & record\\
 & & \verb$#$ {\it lab\/} & record selector\\
 & & \verb#()# &           0-tuple\\
@@ -459,8 +417,8 @@ application\\[2ex]
 & sequence, $n\geq 2$\\
 & & {\tt let {\it dec\/} in {\it exp\/}\et; $\cdots$ ; {\it exp\/}\n\
   end} & local declaration, $n\geq 1$\\
-& & \insert{{\tt [ structure {\it modexp\/} as {\it sigexp\/} ]}} &\insert{structure package} & \x \\
-& &\insert{{\tt [ functor {\it modexp\/} as {\it sigexp\/} ]}} & \insert{functor package} & \x\\
+& & {\tt [ structure {\it modexp\/} as {\it sigexp\/} ]} & structure package & \x \\
+& & {\tt [ functor {\it modexp\/} as {\it sigexp\/} ]} & functor package & \x\\
 & & {\tt  ( {\it exp\/} ) }\\[2ex]
 
 {\it exprow\/} & ::= & {\tt {\it lab\/} = {\it exp\/} \la\ , {\it
@@ -480,24 +438,22 @@ application\\[2ex]
 & & {\tt type {\it typbind\/}} & type declaration\\
 & & {\tt datatype {\it datbind\/} \la\ withtype {\it typbind\/} \ra} 
 & datatype declaration\\
-& & \insert{{\tt datatype {\it tycon\/} = datatype {\it tyconpath\/}}}
-& \insert{datatype replication}\\
+& & {\tt datatype {\it tycon\/} = datatype {\it tyconpath\/}}
+& datatype replication\\
 & & {\tt abstype {\it datbind\/} \la\ withtype {\it typbind\/} \ra}
 & abstype declaration\\
 & & \hspace{1.5cm}{\tt with {\it dec\/} end}\\
 & & {\tt exception {\it exbind\/}} & exception declaration\\
 & & {\tt local {\it dec\/}\et\ in {\it dec\/}\to\ end} 
 & local declaration\\
-& & \delete{{\tt open {\it unitid\/}\et\ $\cdots$ {\it unitid\/}\n}}
-& \delete{open declaration, $n\geq 1$}\\
-& & \insert{{\tt open {\it longstrid\/}\et\ $\cdots$ {\it longstrid\/}\n}}
-& \insert{open declaration, $n\geq 1$}\\
-& & \insert{{\tt structure {\it strbind}}}
-& \insert{structure declaration} & \x[\ref{strdec}]\\
-& & \insert{{\tt functor {\it funbind}}}
-& \insert{functor declaration} & \x[\ref{topdec}]\\
-& & \insert{{\tt signature {\it sigbind}}}
-& \insert{signature declaration} & \x[\ref{topdec}]\\\\
+& & {\tt open {\it longstrid\/}\et\ $\cdots$ {\it longstrid\/}\n}
+& open declaration, $n\geq 1$\\
+& & {\tt structure {\it strbind}}
+& structure declaration & \x[\ref{strdec}]\\
+& & {\tt functor {\it funbind}}
+& functor declaration & \x[\ref{topdec}]\\
+& & {\tt signature {\it sigbind}}
+& signature declaration & \x[\ref{topdec}]\\
 & & & empty declaration\\
 & & {\tt {\it dec\/}\et\ \la;\ra\ {\it dec\/}\to} 
 & sequential declaration\\
@@ -525,16 +481,16 @@ application\\[2ex]
   \end{tabular} & $m,n\geq 1$\\[12ex]
 
 {\it typbind\/} & ::= & {\tt {\it tyvarseq\/} {\it tycon\/} = {\it
-    ty\/} \la\ and {\it typbind\/} \ra}\\[2ex]
+    ty\/} \la\ and {\it typbind\/} \ra} & \x[\ref{closure}]\\[2ex]
 
 {\it datbind\/} & ::= & {\tt {\it tyvarseq\/} {\it tycon\/} = {\it
-    conbind\/} \la\ and {\it datbind\/} \ra}\\[2ex]
+    conbind\/} \la\ and {\it datbind\/} \ra} & \x[\ref{closure}]\\[2ex]
 
-{\it conbind\/} & ::= & {\tt \opop\ {\it \replace{con}{vid}\/} \la{of} {\it ty\/}\ra\ \la\ | {\it conbind\/} \ra}\\[2ex]
+{\it conbind\/} & ::= & {\tt \opop\ {\it vid\/} \la{of} {\it ty\/}\ra\ \la\ | {\it conbind\/} \ra}\\[2ex]
 
-{\it exbind\/} & ::= & {\tt \opop\ {\it \replace{excon}{vid}\/} \la{of} 
+{\it exbind\/} & ::= & {\tt \opop\ {\it vid\/} \la{of} 
 {\it ty\/}\ra\ \la\ and {\it exbind\/} \ra}\\
-& & {\tt \opop\ {\it \replace{excon}{vid}\/} = \opop\ {\it \replace{longexcon}{longvid}\/} \la\ and {\it
+& & {\tt \opop\ {\it vid\/} = \opop\ {\it longvid\/} \la\ and {\it
   exbind\/} \ra}\\[2ex]
 \end{tabular}
 
@@ -548,17 +504,16 @@ dropped if `{\tt :{\it ty\/}}' or `{\tt =}' follows immediately.
 \subsubsection*{Type expressions}
 
 \begin{tabular}{@{}lllll}
-\insert{{\it tyconpath\/}} & \insert{::=} & \insert{{\it longtycon\/}} &\insert{long type constructor}\\
-& & \insert{{\tt {\it longtycon\/} where {\it strid\/} = {\it modexp\/}}}& \insert{type constructor projection} &\x\\[2ex]
+{\it tyconpath\/} & ::= & {\it longtycon\/} & long type constructor\\
+& & {\tt {\it longtycon\/} where {\it strid\/} = {\it modexp\/}}& type constructor projection &\x\\[2ex]
 
 {\it ty\/} & ::= & {\it tyvar\/} & type variable\\
 & & {\tt \{ \la\ {\it tyrow\/} \ra\ \}} & record type expression\\
-& & {\tt {\it tyseq\/} \replace{{\it longtycon\/}}{{\it tyconpath\/}}} & type construction & %\x
-\\
+& & {\tt {\it tyseq\/} {\it tyconpath\/}} & type construction & \\
 & & {\tt {\it ty\/}\et\ * $\cdots$ * {\it ty\/}\n} & tuple type,
 $n\geq 2$\\
 & & {\tt {\it ty\/}\et\ -> {\it ty\/}\to} & function type expression\\
-& & \insert{{\tt [ {\it sigexp} ]}} & \insert{package type expression} & \x\\
+& & {\tt [ {\it sigexp} ]} & package type expression & \x\\
 & & {\tt ( {\it ty\/} )}\\[2ex]
 
 {\it tyrow\/} & ::= & {\tt {\it lab\/} :\ {\it ty\/} \la\ , {\it
@@ -571,10 +526,7 @@ $n\geq 2$\\
 \begin{tabular}{@{}llll}
 {\it atpat\/} & ::= & \verb#_# & wildcard\\
 & & {\it scon\/} & special constant (see Section~\ref{sec-special-constants})\\
-& & \delete{{\tt \opop\ {\it var\/}}} & \delete{variable}\\
-& & \delete{{\tt \opop\ {\it longcon\/}}} & \delete{constructor} \\
-& & \delete{{\tt \opop\ {\it longexcon\/}}} & \delete{exception constructor}\\
-& & \insert{{\tt \opop\ {\it longvid\/}}} & \insert{value identifier}\\
+& & {\tt \opop\ {\it longvid\/}} & value identifier\\
 & & {\tt \{ \la\ {\it patrow\/} \ra\ \}} & record\\
 & & {\tt ()} & 0-tuple\\
 & & {\tt ({\it pat\/}\et, $\cdots$ , {\it pat\/}\n)} & $n$-tuple,
@@ -590,15 +542,9 @@ pattern row\\
 \la\ , {\it patrow\/} \ra} &  label as variable\\[2ex]
 
 {\it pat\/} & ::= & {\it atpat\/} & atomic pattern\\
-& &\delete{\tt \opop\ {\it longcon\/} {\it atpat\/}} & \delete{value construction}\\
-& & \delete{{\tt \opop\ {\it longexcon\/} {\it atpat\/}}} & \delete{exception construction}\\
 & & {\tt \opop\ {\it longvid\/} {\it atpat\/}} & constructed value\\
-& & \delete{{\tt {\it pat\/}\et\ {\it con\/} {\it pat\/}\to}} & 
-\delete{infixed value construction}\\
-& & \delete{{\tt {\it pat\/}\et\ {\it excon\/} {\it pat\/}\to}} & 
-\delete{infixed exception construction}\\
-& & \insert{{\tt {\it pat\/}\et\ {\it vid\/} {\it pat\/}\to}} & 
-\insert{infixed value construction}\\
+& & {\tt {\it pat\/}\et\ {\it vid\/} {\it pat\/}\to} & 
+infixed value construction\\
 & & {\tt {\it pat\/} :\ {\it ty\/}} & typed\\
 & & {\tt \opop\ {\it var\/} \la{:}{\it ty\/}\ra\ as {\it pat\/}} & layered
 \end{tabular}
@@ -617,13 +563,10 @@ pattern row\\
 \item In the left side {\it tyvarseq tycon\/} of any {\it typbind\/}
   or {\it datbind\/}, {\it tyvarseq\/} must not contain the same {\it
     tyvar\/} twice.  
-  \replace{Any {\it tyvar\/} occurring within the right side
-  must occur in {\it tyvarseq\/}.}{
-   For Standard ML compliance (enforced by in Moscow ML's \emph{orthodox} mode),
-   any {\it tyvar\/} occurring within the right side
-   must occur in {\it tyvarseq\/}. Otherwise, Moscow ML merely
-   requires that   any {\it tyvar\/} occurring within the right side
-   must be in scope (either explictly or implicitly)}.
+    Moscow ML 
+    requires that   any {\it tyvar\/} occurring within the right side
+    is in scope (either explictly or implicitly), but not necessarily in
+    {\it tyvarseq} (cf. Section \ref{sec-SMLrestrictions}, restriction \ref{closure}).
 
 \item For each value binding {\tt {\it pat\/} = {\it exp\/}} within
   {\tt rec}, {\it exp\/} must be of the form {\tt fn {\it match\/}},
@@ -634,18 +577,6 @@ pattern row\\
     true}, {\tt false}, {\tt nil}, {\tt ::}, or {\tt ref}.  No {\it
     datbind} or {\it exbind} may bind {\tt it}.
 
-\item\label{strdec} \insert{
-  For Standard ML compliance (enforced by  Moscow ML's \emph{orthodox} mode),
-  the structure declaration   {\tt structure {\it strbind\/}}
-  may only occur at top level, within the declarations of a structure, or within
-  a declaration local to the declarations of a structure, but not within a Core {\tt let}-expression.}
-
-\item\label{topdec} \insert{
-  For Standard ML compliance (enforced by  Moscow ML's \emph{orthodox} mode),
-  the functor declaration   {\tt functor {\it funbind\/}} and
-  signature declaration   {\tt signature {\it sigbind\/}}
-  may only occur at the top level of a program, but not within the declarations of a structure or Core 
-  {\tt let}-expression.}
 
 \end{enumerate}
 
@@ -667,9 +598,10 @@ batch-compiled unit, write {\tt val it = {\tt exp}} or {\tt val \verb#_# =
 \newpage
 
 
-\section{Grammar for the Moscow ML \replace{module}{Modules} language}
+\section{Grammar for the Moscow ML Modules language}
+\label{sec-modules}
 
-The Moscow ML \replace{module}{Modules} language is a \replace{simplified form}{superset} of the full Standard ML Modules language.
+The Moscow ML Modules language is a superset of the full Standard ML Modules language.
 
 \subsubsection*{Module Expressions}
 
@@ -725,14 +657,14 @@ The Moscow ML \replace{module}{Modules} language is a \replace{simplified form}{
 \begin{tabular}{@{}lllll}
 {\it sigexp\/} & ::= & {\tt sig {\it spec\/} end}& basic\\
 & & {\tt {\it sigid\/}} & signature identifier \\ 
-%& & {\tt {\it sigexp\/} where type {\it tyvarseq\/} {\it longtycon} = {\it ty}} & type realisation \\ 
+%& & {\tt {\it sigexp\/} where type {\it tyvarseq\/} {\it longtycon} = {\it ty}} & type realisation & \x[\ref{closure}]\\ 
 & & {\tt {\it sigexp\/} where  {\it typreal\/}}& type realisation \\ 
 & & {\tt functor ( {\it modid\/} :\ {\it sigexp} ) -> {\it sigexp}}  & opaque functor signature & \x \\
 & & {\tt functor {\it modid\/} :\ {\it sigexp\/} -> {\it sigexp}}  & transparent functor signature & \x \\
 & & {\tt rec ( {\it strid\/} :\ {\it sigexp} ) {\it sigexp}}  & recursive structure signature & \x \\[2ex]
 
 {\it typreal\/} & ::= & {\tt type {\it tyvarseq\/} {\it longtycon\/} = {\it ty\/}
-\la\ and {\it typreal\/} \ra} & type realisation
+\la\ and {\it typreal\/} \ra}  & type realisation & \x[\ref{closure}]
 \end{tabular}
 
 \subsubsection*{Specifications and Descriptions}
@@ -775,8 +707,8 @@ The Moscow ML \replace{module}{Modules} language is a \replace{simplified form}{
                                         & (local) open & \x \\
 & & {\tt type} {\it typbind}            & type abbreviation & \x \\
 & & {\tt local} {\it lspec\/} {\tt in} {\it lspec} {\tt end}
-        & local specifications & \x \\
-& &                                             & empty & \x\\
+        & local specifications & \\
+& &                                             & empty & \x \\
 & & {\tt {\it lspec\/} $\langle${;}$\rangle$ {\it lspec\/}} & sequential& \x\\[2ex]
 
 {\it valdesc\/} & ::= & {\tt {\it vid\/} :\ {\it ty\/} \la\ and {\it
@@ -786,7 +718,7 @@ The Moscow ML \replace{module}{Modules} language is a \replace{simplified form}{
   {\it typdesc\/} \ra} & type constructor description\\[2ex]
         
 {\it datdesc\/} & ::= & {\tt {\it tyvarseq\/} {\it tycon\/} = {\it
-    condesc\/} \la\ and {\it datdesc\/} \ra} & datatype description\\[2ex]
+    condesc\/} \la\ and {\it datdesc\/} \ra} & datatype description & \x[\ref{closure}] \\[2ex]
 
 {\it condesc\/} & ::= & {\tt {\it vid\/} \la{of} {\it ty\/}\ra\ 
 \la\ | {\it condesc\/} \ra} & constructor description\\[2ex]
@@ -801,6 +733,53 @@ The Moscow ML \replace{module}{Modules} language is a \replace{simplified form}{
 \la\ and {\it fundesc\/} \ra} & functor description\\[2ex]
 \end{tabular}
 
+\begin{itemize}
+
+ \item 
+ Although structure and functor identifiers reside in separate name-spaces,
+ the syntax of structure and functor identifiers is identical.
+ In the grammar, a module identifier {\it longmodid} may stand for either a 
+ structure identifier {\it longstrid} or a functor identifier {\it longfunid}.
+ Thus, {\sl a priori}, the module expression \opop\ \longmodid\
+ may refer to a either a functor or a structure and the compiler
+ must resolve this ambiguity (\opop\ is an optional prefix of the keyword \op).
+ Fortunately,
+ the context of the phrase often rules out one
+ alternative, on the grounds that choosing that alternative 
+ would force type checking to fail. In particular,
+ if \opop\ \longmodid\ occurs as the right hand side of a structure
+ (functor) binding, then \longmodid\ must be interpreted as a
+ structure (functor) identifier; if
+ \opop\ \longmodid\ occurs in the functor position of an application, then
+ \longmodid\ must be interpreted as a functor identifier; if
+ \opop\ \longmodid\ is constrained by a signature
+ then the signature 
+ forces a unique interpretation 
+ on \longmodid\ (depending on whether the signature specificies a structure or functor).
+ Similarly, if \opop\ \longmodid\ occurs as the argument of a functor application,
+ then the functor's domain forces a unique interpretation 
+ on \longmodid.
+ Indeed, the only ambiguity that remains occurs when \opop\ \longmodid\ is the body of a functor. In this case, the optional prefix \opop\ is used to resolve
+ the ambiguity:  the {\sl absence} of \op\ signals
+ that \longmodid\ refers to structure; the {\sl presence} of \op\ signals that
+ \op~\longmodid\ refers to a functor. 
+ When the interpretation of \opop\ \longmodid\ is already
+ determined by the context, the optional prefix \opop\ has {\sl no} effect.
+ (This method of disambiguation relies on type information and is performed during
+ type checking.)
+
+\item In a structure expression {\tt struct {\it dec\/} end}, any
+signature declared in {\it dec\/} is local to {\it dec\/}: it does not
+define a component of the structure {\tt struct {\it dec\/} end}, nor
+is it visible in the type of {\tt struct {\it dec\/} end}.
+(Note that the syntax for signature identifiers is not long, in
+the sense of Section \ref{sec-identifiers}.)
+\item In a signature expression {\tt sig {\it spec\/} end}, any
+signature declared in {\it spec\/} is local to {\it spec\/}: in particular,
+such a declaration does \emph{not}
+specify that a structure matching {\tt sig {\it spec\/} end} should
+also declare that signature.
+\end{itemize}
 
 \subsubsection*{Syntactic restrictions}
 
@@ -816,21 +795,14 @@ The Moscow ML \replace{module}{Modules} language is a \replace{simplified form}{
   {\it typbind\/}, {\it datdesc\/}, or {\it typreal},
   or specification {\tt val {\it tyvarseq valdesc}}, {\it tyvarseq\/} must not
   contain the same {\it tyvar\/} twice. 
- \replace{ Any {\it tyvar\/} occurring
-  within the right side of a {\it typbind\/}, {\it datdesc\/} or {\it typreal} 
-  must
-  occur in {\it tyvarseq\/.}}{
-  For Standard ML compliance (enforced by  Moscow ML's \emph{orthodox} mode),
-  any {\it tyvar\/} occurring within the right side
-  of a {\it typbind\/}, {\it datdesc\/} or {\it typreal} must occur in {\it tyvarseq\/}. 
-  Otherwise, Moscow ML merely
+  Moscow ML
   requires that   any {\it tyvar\/} occurring within the right side
-  must be in scope (either explictly or implicitly).}
+  is in scope (either explictly or implicitly), but not necessarily in
+  {\it tyvarseq} (cf. Section \ref{sec-SMLrestrictions}, restriction \ref{closure}).
 
  
-\item \replace{No type, value, or exception may be specified twice at top-level
-  in a signature.}{No sequential specification 
-  may specify the same {\it tycon}, {\it vid}, {\it strid}, {\it funid}, {\it  sigid} or {\it id} (in a fixity specification) twice.}
+\item No sequential specification 
+  may specify the same {\it tycon}, {\it vid}, {\it strid}, {\it funid}, {\it  sigid} or {\it id} (in a fixity specification) twice.
   
 \item No {\it valdesc}, {\it datdesc}, or {\it exdesc} may specify
   {\tt true}, {\tt false}, {\tt nil}, {\tt ::}, or {\tt ref}.  No {\it
@@ -847,94 +819,35 @@ excluding those bindings that occur within a Core {\tt let}-expression.
 This restriction also applies to the bodies of functors declared in a {\it funbind}.
 
 
-\item\label{atmodexp} \insert{
-  For Standard ML compliance (enforced by Moscow ML's \emph{orthodox} mode),
-  the phrase must be an application of a functor identifier to a single argument of the form:}
-
-  \insert{\begin{tabular}{l}
-  {\tt {\it funid\/} ( {\it atmodexp\/} )}\\
-  {\tt {\it funid\/} ( {\it dec\/} )}
-  \end{tabular}}
-
-\item\label{funbind} \insert{
-  For Standard ML compliance (enforced by Moscow ML's \emph{orthodox} mode),
-  the phrase must define a one-argument, generative functor and be of the form:}
-
-  \insert{\begin{tabular}{l}
-  {\tt {\it funid\/}  ( {\it modid\/} :\ {\it sigexp} ) \la\ {\it con\/} \ra\ = {\it modexp}}\\
-  \quad {\tt \la\ and {\it funbind} \ra} 
-  \end{tabular}}
-
-\item\label{valspec} \insert{
-  For Standard ML compliance (enforced by Moscow ML's \emph{orthodox} mode),
-  in a value specification {\tt val} {\it tyvarseq\/} {\it valdesc\/},
-  {\it tyvarseq\/} must be empty, and the specification of the form:}
-
-  \insert{\begin{tabular}{l}
-	{\tt val} {\it valdesc}
-  \end{tabular}}
 
 \end{enumerate}
-%\newpage
+
+\newpage
 
 \section{Grammar for the Moscow ML Unit language}
 
-\delete{The Moscow ML module language is a simplified form of the full
-Standard ML Modules language.}
 
-\delete{The equivalent of a Standard ML structure is a unit.  A unit U
-consists of a unit interface in file U.sig (corresponding to an SML
-signature) and a unit body in file U.sml (corresponding to an SML
-structure).  The unit signature can be left out.}
+Moscow ML supports the separate compilation of named program fragments
+called \emph{units}.  A unit {\tt unitid} consists of an optional
+\emph{unit interface} in file {\tt unitid.sig}.  Each unit can be
+compiled in one of two \emph{modes}: \emph{structure} mode and
+\emph{toplevel} mode.  A unit's implementation and interface files
+must be compiled in the \emph{same} mode.
 
-\begin{insertion}
- Moscow ML supports the separate compilation of named program fragments called \emph{units}.
- A unit {\tt unitid} consists of an optional \emph{unit interface} in file {\tt unitid.sig} \delete{(corresponding to an SML
- signature)} and a \emph{unit implementation}  in file {\tt unitid.sml} \delete{(corresponding to an SML
- structure)}.  
- Each unit can be compiled in one of two \emph{modes}: \emph{structure} mode and \emph{toplevel} mode.
- A unit's implementation and interface files must be compiled in the \emph{same} mode. 
+In the batch compiler {\tt mosmlc}, a unit's compilation mode is
+specified by preceding it with the command-line argument {\tt -structure} 
+(the default) or {\tt -toplevel}.  In the interactive
+system {\tt mosml}, the compilation mode of a unit is determined by
+the function with which it is compiled: {\tt compile} and 
+{\tt compileStructure} compile in \emph{structure} mode; 
+{\tt compileToplevel} compiles in \emph{toplevel} mode.
 
- In the batch compiler {\tt mosmlc}, a unit's compilation mode is specified by
- preceding it with the command-line argument {\tt -structure} (the default) or {\tt -toplevel}.
- In the interactive system {\tt mosml}, the compilation mode of a unit is determined
- by the function with which it is compiled: {\tt compile} and {\tt compileStructure}
- compile in \emph{structure} mode; {\tt compileToplevel} compiles in \emph{toplevel} mode.
+Note that the intended mode of a unit is not determined by file name
+extension or by file content: the mode must be explicitly indicated
+to the batch compiler and interactive system.
 
- Note that the intended mode of a unit is not determined by file name extension or by file
- content: the mode  must be explicitly indicated to the batch compiler and interactive system.
-
- The syntax and semantics of a unit's interface and implementation files depends on the mode 
- and is described in the following sections.
-
-%  The Modules equivalent of a Moscow ML \emph{unit} depends on the mode in the unit was compiled.
-%  In either case, a unit
-%  consists of a \emph{unit interface} in file {\tt unitid.sig} \delete{(corresponding to an SML
-%  signature)} and a \emph{unit implementation}  in file {\tt unitid.sml} \delete{(corresponding to an SML
-%  structure)}.  The unit interface may omitted.
-
-%Units can be compiled in one of two modes: \emph{structure} mode and \emph{toplevel} mode.
-%A unit's implementation and interface files must be compiled in the 
-%\emph{same} mode. 
-
-% In \emph{structure} mode, the unit interface in file U.sig is a single Moscow ML signature declaration, and the unit implementation in file U.sml is a single Moscow ML structure binding. 
-
-% In \emph{toplevel} mode, the unit interface in file U.sig is a Moscow ML specification, and the unit implementation of file U.sml is a Moscow ML declaration.
-
-% The files U.sig and U.sml are compiled in \emph{structure} mode if their filenames are preceded by the command line argument {\tt -structure}, eg:
-
-% \begin{alltt}
-% mosmlc -structure \mbox{U.sig} \mbox{U.sml} 
-% \end{alltt}
-
-% The files U.sig and U.sml are compiled in \emph{toplevel} mode if their filenames are preceded by the command line argument {\tt -toplevel}.
-
-% \begin{alltt}
-% mosmlc -toplevel \mbox{U.sig} \mbox{U.sml} 
-% \end{alltt}
-
-% If there is no command line argument {\tt -structure} or {\tt -toplevel} preceding U.sig or U.sml on the command line, 
-% then the mode defaults to  \emph{structure} mode.
+The syntax and semantics of a unit's interface and implementation
+files depends on the mode and is described in the following sections.
 
 
 \subsection{Syntax and Semantics for Units Compiled in \emph{Structure} Mode}
@@ -964,7 +877,7 @@ and {\tt compileStructure}.
 
 The semantics of
 \begin{alltt}
-- compileStructure ["unitid\et",\allttcdots,"unitid\n"] "unitid.sig"; (* if unitid.sig exists *) 
+- compileStructure ["unitid\et",\allttcdots,"unitid\n"] "unitid.sig";(* if unitid.sig exists *) 
 - compileStructure ["unitid\et",\allttcdots,"unitid\n"] "unitid.sml";
 - load "unitid";
 \end{alltt}
@@ -992,18 +905,16 @@ is roughly equivalent to
 & & {\tt type {\it typbind\/}} & type declaration\\
 & & {\tt datatype {\it datbind\/} \la\ withtype {\it typbind\/} \ra} 
 & datatype declaration\\
-& & \insert{{\tt datatype {\it tycon\/} = datatype {\it tyconpath\/}}}
-& \insert{datatype replication}\\
+& & {\tt datatype {\it tycon\/} = datatype {\it tyconpath\/}}
+& datatype replication\\
 & & {\tt abstype {\it datbind\/} \la\ withtype {\it typbind\/} \ra}
 & abstype declaration\\
 & & \hspace{1.5cm}{\tt with {\it dec\/} end}\\
 & & {\tt exception {\it exbind\/}} & exception declaration\\
 & & {\tt local {\it dec\/}\et\ in {\it dec\/}\to\ end} 
 & local declaration\\
-& & \delete{{\tt open {\it unitid\/}\et\ $\cdots$ {\it unitid\/}\n}}
-& \delete{open declaration, $n\geq 1$}\\
-& & \insert{{\tt open {\it longstrid\/}\et\ $\cdots$ {\it longstrid\/}\n}}
-& \insert{open declaration, $n\geq 1$}\\
+& & {\tt open {\it longstrid\/}\et\ $\cdots$ {\it longstrid\/}\n}
+& open declaration, $n\geq 1$\\
 & & & empty declaration\\
 & & {\tt {\it cdec\/}\et\ \la;\ra\ {\it cdec\/}\to} 
 & sequential declaration\\
@@ -1048,8 +959,9 @@ is roughly equivalent to
 \subsubsection*{Syntactic restrictions}
 
 \begin{enumerate}
-\item In Moscow ML, the {\tt unitid}, if specified in the unit interface
-  or unit implementation, must agree with the filename. 
+\item In Moscow ML, the {\it unitid}, if specified in the unit interface
+  or unit implementation, must agree with the filename ({\tt {\it unitid}.sig} or
+  {\tt {\it unitid}.sml}). 
   In the unit implementation, the name of the
   constraining signature, if any, must equal that of the structure.
 
@@ -1123,11 +1035,79 @@ is roughly equivalent to
 \subsubsection*{Unit Interface (in file {\tt unitid.sig})}
 
 \begin{tabular}{lllll}
-{\it unitint\/} & ::=   & {\it spec\/} & specification & \x
+{\it unitint\/} & ::=   & {\it spec\/} & specification \\
 \end{tabular}
 
-\end{insertion}
-%\newpage
+\newpage
+
+\section{Further restrictions imposed for Standard ML compliance}\label{sec-SMLrestrictions}
+
+In addition to the syntactic restrictions imposed by Moscow ML,
+compiling programs in {\tt orthodox} or {\tt conservative} mode (see Section
+\ref{sec-SMLcompliance}),
+imposes the following additional restrictions. These
+are required to ensure compliance with Standard ML.
+
+
+\begin{itemize}
+
+\item Any instance of a Moscow ML phrase that is marked with a plain \x\ in the grammar is illegal.
+     
+
+\item Any instance of a Moscow ML phrase that is marked with a \x[$N$] in the grammar is illegal unless it satisfies restriction $N$ below:
+
+\begin{enumerate}
+ \item\label{strdec} 
+  A structure declaration   {\tt structure {\it strbind\/}}
+  may only occur at top level, within the declarations of a structure, or within
+  a declaration local to the declarations of a structure, but not within a Core {  \tt let}-expression.
+
+ \item\label{topdec} 
+  A functor declaration   {\tt functor {\it funbind\/}} or
+  signature declaration   {\tt signature {\it sigbind\/}}
+  may only occur at the top level of a program, but not within the 
+  declarations of a structure or Core 
+  {\tt let}-expression.
+
+\item\label{closure} 
+  In any {\it typbind\/}, {\it datbind\/}, {\it datdesc} or {it typreal},
+  any {\it tyvar\/} occurring within the right side
+  must occur in the {\it tyvarseq\/} of the left side. 
+
+ \item\label{atmodexp} 
+  A functor application {\tt appmodexp atmodexp} 
+  must be an application of a functor
+  identifier to a single argument of the form:
+
+  \begin{tabular}{lr}
+  {\tt {\it funid\/} ( {\it atmodexp\/} )} &  or\\
+  {\tt {\it funid\/} ( {\it dec\/} )}
+  \end{tabular}
+
+  The parenthesised structure expressions {\tt ( {\it atmodexp\/} )} and
+  {\tt( {\it dec\/} )}, although otherwise illegal, are legal 
+  when occurring as a functor argument.
+
+ \item\label{funbind} 
+  A functor binding must define a one-argument, generative functor 
+  and be of the form:
+
+  \begin{tabular}{l}
+  {\tt {\it funid\/}  ( {\it modid\/} :\ {\it sigexp} )  \la\ {\it con\/} \ra\ =        {\it modexp}}\\
+  \quad {\tt \la\ and {\it funbind} \ra} 
+  \end{tabular}
+
+  \item\label{valspec} 
+  In a value specification {\tt val} {\it tyvarseq\/} {\it valdesc\/},
+  {\it tyvarseq\/} must be empty, so that the specification is of the form:
+
+  \begin{tabular}{l}
+	{\tt val} {\it valdesc}
+  \end{tabular}
+\end{enumerate}
+\end{itemize}
+
+\newpage
 
 \section{Built-in types, constructors and exceptions}
 \label{sec-builtin}
@@ -1278,8 +1258,8 @@ size        & {\tt string -> int} &         length of string\\
 
 str         & {\tt char -> string} &        create one-character string\\
 
-\insert{substring}   & \insert{\tt string * int * int -> string} & get substring
-$(s, first, len)$ & \insert{\tt Subscript}\\
+substring   & {\tt string * int * int -> string} & get substring
+$(s, first, len)$ & {\tt Subscript}\\
 
 tl          & {\tt 'a list -> 'a list}    & tail of list & {\tt Empty}\\
 
@@ -1338,19 +1318,17 @@ before & {\tt 'a * 'b -> 'a} & return first argument\\\hline
 compile        & {\tt string -> unit} & compile unit (U.sig or U.sml)
 & {\tt Fail}\\
 & & (in \emph{structure} mode) \\
-%\insert{compileStructure} & {\tt string list -> string -> unit} & compile unit (U.sig or U.sml) in context
-\insert{compileStructure} & {\tt string list ->} & In context U\et, $\ldots$, U\n, & {\tt Fail}\\
+compileStructure & {\tt string list ->} & In context U\et, $\ldots$, U\n, & {\tt Fail}\\
 & {\tt string -> unit} & compile unit (U.sig or U.sml) \\
 & & (in \emph{structure} mode) \\
-%%\insert{compileToplevel} & {\tt string list -> string -> unit} & compile unit (U.sig or U.sml) in context & {\tt Fail}\\
-\insert{compileToplevel} & {\tt string list ->} & In context U\et, $\ldots$, U\n, & {\tt Fail}\\
+compileToplevel & {\tt string list ->} & In context U\et, $\ldots$, U\n, & {\tt Fail}\\
 & {\tt string -> unit} & compile unit (U.sig or U.sml) \\
 & & (in \emph{toplevel} mode) \\
-\insert{conservative} & {\tt unit -> unit} & deprecate all Moscow ML extensions\\
+conservative & {\tt unit -> unit} & deprecate all Moscow ML extensions\\
 %installPP      & {\tt (ppstream->'a->unit)->unit} & install prettyprinter \\
 installPP      & {\tt (ppstream->'a->unit)} & install prettyprinter\\
             & {\tt -> unit} & \\
-\insert{liberal} & {\tt unit -> unit} & accept all Moscow ML extensions\\
+liberal & {\tt unit -> unit} & accept all Moscow ML extensions\\
 load        & {\tt string -> unit} & load unit U and any units it needs
                & {\tt Fail}\\
 loaded        & {\tt unit -> string list} & return list of loaded units
@@ -1359,7 +1337,7 @@ loadOne        & {\tt string -> unit} & load unit U (only)
                & {\tt Fail}\\
 loadPath       & {\tt string list ref} & search path for {\tt load}, 
                 {\tt loadOne}, {\tt use}\\ 
-\insert{orthodox} & {\tt unit -> unit} & reject any Moscow ML extensions\\
+orthodox & {\tt unit -> unit} & reject any Moscow ML extensions\\
 printVal       & {\tt 'a -> 'a}  & print value on \verb#stdOut#\\
 printDepth     & {\tt int ref}   & limit printed data depth\\
 printLength    & {\tt int ref}   & limit printed list and vector length\\
@@ -1376,17 +1354,18 @@ verbose        & {\tt bool ref}   & permit feedback from {\tt
 \begin{itemize}
 % \item These functions are not part of the SML Basis Library.
 \item The Moscow ML Owner's Manual describes how to use {\tt compile},
-  \insert{{\tt compileStructure}}, \newline \insert{{\tt compileToplevel}}
+  {\tt compileStructure}, \newline {\tt compileToplevel}
   and {\tt load} to perform separate compilation, and how to use
   quotations.  Evaluating {\tt load {\rm U}} automatically loads any
   units needed by U, and does nothing if U is already loaded; whereas
   {\tt loadOne {\rm U}} fails if any unit needed by U is not loaded,
   or if U is already loaded.  The {\tt loadPath} variable determines
   where {\tt load}, {\tt loadOne}, and {\tt use} will look for files.
-  \insert{The commands {\tt orthodox}, {\tt conservative} and {\tt liberal}
-  cause Moscow ML to enforce, monitor or ignore compliance to Standard ML.}
+  The commands {\tt orthodox}, {\tt conservative} and {\tt liberal}
+  cause Moscow ML to enforce, monitor or ignore compliance to Standard ML.
 \end{itemize}
 
+\newpage
 \section{List of all library units}
 
 A table of Mosml ML's predefined library units is given on
@@ -1413,9 +1392,9 @@ indicated as follows:
 \noindent For more information about the Moscow ML library, see:
 
 \begin{itemize}
-\item The index in Section~\ref{sec-libindex}
-  (page~\pageref{sec-libindex}) lists all identifiers defined in
-  Moscow ML library units.
+%\item The index in Section~\ref{sec-libindex}
+%  (page~\pageref{sec-libindex}) lists all identifiers defined in
+%  Moscow ML library units.
 
 \item Typing {\tt help "lib";} in a {\tt mosml} session gives a list of
   all library units.
@@ -1426,9 +1405,16 @@ indicated as follows:
 \item Typing {\tt help "{\it id\/}";} in a {\tt mosml} session gives
   information about identifier {\it id\/}, regardless which library
   unit(s) it is defined in.
-  
-\item In your Moscow ML installation, you find the same documentation
-  in HTML-format at
+
+\item In your Moscow ML installation, consult the library documentation 
+(in printable format):
+\begin{verbatim}
+    mosml/doc/mosmllib.ps
+    mosml/doc/mosmllib.pdf
+\end{verbatim}
+
+\item In your Moscow ML installation, you may find the same documentation
+  in HTML-format at 
 
 \begin{verbatim}
     mosml/doc/mosmllib/index.html
