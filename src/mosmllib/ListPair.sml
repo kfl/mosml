@@ -63,13 +63,7 @@ fun appEq f (xs, ys) =
 fun allEq p (xs, ys) = 
     let fun h (x::xr) (y::yr) = p(x, y) andalso h xr yr
 	  | h []      []      = true
-	  | h _       _       = raise UnequalLengths
-    in h xs ys end;
-
-fun existsEq p (xs, ys) = 
-    let fun h (x::xr) (y::yr) = p(x, y) orelse h xr yr	
-	  | h []      []      = false
-	  | h _       _       = raise UnequalLengths
+	  | h _       _       = false
     in h xs ys end;
 
 fun foldrEq f e (xs, ys) = 

@@ -6,6 +6,7 @@
 app use
 ["array.sml",
  "array2.sml",
+ "arrayslice.sml",
  "arraysort.sml",			(* MOSML *)
  "bytechar.sml",
  "callback.sml",			(* MOSML *)
@@ -27,6 +28,7 @@ app use
  "timer.sml",
  "unixpath.sml",
  "vector.sml",
+ "vectorslice.sml",
  "weak.sml",				(* MOSML *)
  "word.sml",
  "word8.sml",

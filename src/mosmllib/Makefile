@@ -61,25 +61,8 @@ depend: Array.sml FileSys.sml Help.sml Int.sml Mosml.sml Path.sml \
 OS.ui: FileSys.ui Path.ui Process.ui
 
 ### DO NOT DELETE THIS LINE
-VectorSlice.uo: VectorSlice.ui Vector.ui 
-VectorSlice.ui: Vector.ui 
-ArraySlice.uo: ArraySlice.ui Vector.ui Array.ui VectorSlice.ui 
-ArraySlice.ui: Vector.ui Array.ui VectorSlice.ui 
-Word8Vector.uo: Word8Vector.ui String.ui List.ui Word8.ui 
-Word8Array.uo: Word8Array.ui List.ui Word8.ui Word8Vector.ui 
-Word.uo: Word.ui String.ui StringCvt.ui Char.ui 
-Weak.uo: Weak.ui 
-Vector.uo: Vector.ui List.ui 
-Strbase.uo: Strbase.ui List.ui 
-Process.uo: Process.ui List.ui BasicIO.ui 
-Path.uo: Path.ui String.ui List.ui Substring.ui 
-Mosml.uo: Mosml.ui Timer.ui FileSys.ui BinIO.ui String.ui List.ui Vector.ui \
-    Word8.ui Process.ui Byte.ui TextIO.ui Word8Vector.ui Time.ui 
-Int.uo: Int.ui String.ui StringCvt.ui Char.ui 
-Help.uo: Help.ui String.ui StringCvt.ui List.ui BasicIO.ui Vector.ui \
-    TextIO.ui Char.ui 
-OS.uo: OS.ui 
-FileSys.uo: FileSys.ui Path.ui List.ui Time.ui 
+ArraySlice.uo: ArraySlice.ui Vector.ui Array.ui 
+ArraySlice.ui: Vector.ui Array.ui 
 Gdimage.uo: Gdimage.ui Dynlib.ui Vector.ui 
 Signal.uo: Signal.ui Word.ui 
 Signal.ui: Word.ui 
@@ -102,6 +85,21 @@ Mosmlcookie.uo: Mosmlcookie.ui String.ui List.ui Date.ui Option.ui \
 Mosmlcookie.ui: Date.ui 
 Msp.uo: Msp.ui String.ui StringCvt.ui List.ui Option.ui Vector.ui TextIO.ui \
     Int.ui Mosmlcgi.ui Char.ui 
+OS.uo: OS.ui 
+Weak.uo: Weak.ui 
+Word8Vector.uo: Word8Vector.ui String.ui List.ui Word8.ui 
+Word8Array.uo: Word8Array.ui List.ui Word8.ui Word8Vector.ui 
+Word.uo: Word.ui String.ui StringCvt.ui Char.ui 
+Vector.uo: Vector.ui List.ui 
+Strbase.uo: Strbase.ui List.ui 
+Process.uo: Process.ui List.ui BasicIO.ui 
+Path.uo: Path.ui String.ui List.ui Substring.ui 
+Mosml.uo: Mosml.ui Timer.ui FileSys.ui BinIO.ui String.ui List.ui Vector.ui \
+    Word8.ui Process.ui Byte.ui TextIO.ui Word8Vector.ui Time.ui 
+Int.uo: Int.ui String.ui StringCvt.ui Char.ui 
+Help.uo: Help.ui String.ui StringCvt.ui List.ui BasicIO.ui Vector.ui \
+    TextIO.ui Char.ui 
+FileSys.uo: FileSys.ui Path.ui List.ui Time.ui 
 Word8Vector.ui: Word8.ui 
 Word8Array.ui: Word8.ui Word8Vector.ui 
 Word8.uo: Word8.ui Word.ui String.ui StringCvt.ui Char.ui 
