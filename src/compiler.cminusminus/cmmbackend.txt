@@ -1,0 +1,109 @@
+A C-- backend for Moscow ML
+===========================
+Ken Friis Larsen <kfl@it.edu>, 2001-02-11
+
+
+New Files:
+----------
+Wpp.{sig,sml}           A Wadler style pretty printer
+CmmAST.sml              Abstract syntax for C--, nicked from cmmc and modified
+CmmPrint.{sig,sml}      Pretty print of C--
+CmmEmitcode.sml         Translate Zam instructions to C--
+
+
+Modified files:
+---------------
+Instruct.sml            Added some new instructions for more information
+Back.sml                Minor changes, use new instructions.
+Emit_phr.sml            Use CmmEmitcode rather than Emitcode
+
+
+Minor changes:
+--------------
+Pr_zam.sml              Modified to give less compact output
+Compiler.{sig,sml}      Extra options to control if lambda or zam IR
+Mainc.sml               should be printed.  (-dlambda and -dzam) 
+
+
+
+Compilation
+-----------
+We compile Instruct.ZamInstruction to C-- statements.  That is, we
+manage a stack of our own.
+
+
+Functions:
+Each SML function is compiled to a C-- function of the form
+
+name(bits32 sp, bits32 accu, bits32 env, bits32 extra_args){
+  ...
+  return (sp, accu, env, extra_args);
+}
+
+Do we need to transfer accu, env, and extra_args?
+
+
+Exceptions:
+Straight forward translation of pushtrap and poptrap, raise is
+translated to C--'s cut to.
+
+
+Garbage collection:
+Dodge, dodge.  We don't use any of C--'s GC features.  For now all we
+have done for GC is translating the Setup_for_gc and Restore_after_gc
+macros.
+
+
+Compilation unit:
+A mosml CU is translated to a C-- file (a C-- CU).  Each CU will have
+a special init function which the toplevel calls to execute the side
+effects of loading the module.[*] The functions getglobal and
+setglobal are problematic, because we no longer do our own linking.  A
+quick and dirty hack solution is to have a C-- data section with a
+"jump table" that the init function initalizes.  Not only functions
+goes into the "jump table".  This approch is obfuscated
+
+[*] When batch-compiling to stand-alones we need to collect all the
+init functions and call them from the (automatic generated) main
+function.
+
+
+Potential Bugs:
+---------------
+Plenty :-)
+
+* The compilation of functions need to be examined carefully,
+  especially the translation of apply, appterm, push_retaddr, and
+  return.  Is it necessary to transfer env and extra_args both on the
+  stack and as arguments?
+
+* Labels in C-- have global scope in a CU.
+
+
+Future work:
+------------
+Some optimizations/improvements not implemented.
+
+* The Zam "return" instruction results in a lot of dublicated C--
+  code. Maybe we should only have the C-- code once and then "goto" to
+  the that code.  (See also below).
+
+* The C-- code resulting from even simple SML expressions is big.
+  This size can be brought down by making a C-- function corresponding
+  to each Zam instruction (or just some of the more rare/big
+  instructions).
+
+* Unroll "for" loops.  The functions CmmEmitcode.for{Up,Down} could be
+  modified so they unroll loops for small n.
+
+* Translate from Lambda instructions rather than Zam stack machine
+  instructions.  Instead of translating directly to C-- we should
+  define a register machine (Yam) as an intermediate step.  The Yam
+  should have an unlimited number of registers, a stack, similar
+  primitives as Zam, and some special instructions for implementing
+  special ML constructs, for example: makeblock, raise, pushtrap,
+  poptrap.  What to do with GC?  Push temp registers to the stack, use
+  {Push,Pop}_roots, or use C-- GC interface.
+   
+
+ 

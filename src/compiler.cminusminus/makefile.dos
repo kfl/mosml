@@ -1,0 +1,245 @@
+# DOS Makefile for Moscow ML compiler
+
+COMPFLAGS=
+LINKFLAGS=-g -noheader
+
+!include "..\makefile.inc"
+
+COMP_OBJS = \
+    miscsys.uo printexc.uo filename.uo fnlib.uo sort.uo stack.uo \
+    arg.uo hasht.uo memory.uo config.uo mixture.uo \
+    const.uo prim.uo instruct.uo \
+    lambda.uo smlprim.uo globals.uo location.uo \
+    units.uo types.uo smlexc.uo smlperv.uo asynt.uo asyntfn.uo \
+    parser.uo lexer.uo primdec.uo infixst.uo ovlres.uo \
+    synchk.uo infixres.uo elab.uo tr_env.uo pr_lam.uo \
+    match.uo front.uo back.uo pr_zam.uo \
+    opcodes.uo prim_opc.uo buffcode.uo labels.uo code_dec.uo reloc.uo \
+    emitcode.uo emit_phr.uo sigmtch.uo compiler.uo
+
+C_LIBOBJS= \
+    list.uo strbase.uo char.uo string.uo basicio.uo textio.uo \
+    vector.uo array.uo misc.uo \
+    stringcvt.uo word.uo word8.uo word8vec.uo charvect.uo \
+    word8arr.uo chararra.uo obj.uo nonstdio.uo \
+    lexing.uo parsing.uo pp.uo
+
+C_OBJS= \
+    mainc.uo
+
+L_LIBOBJS = \
+    list.uo strbase.uo char.uo string.uo basicio.uo textio.uo \
+    vector.uo array.uo misc.uo \
+    stringcvt.uo word.uo word8.uo word8vec.uo charvect.uo \
+    word8arr.uo chararra.uo obj.uo nonstdio.uo pp.uo
+
+L_OBJS= \
+    miscsys.uo printexc.uo filename.uo \
+    fnlib.uo arg.uo hasht.uo config.uo mixture.uo const.uo \
+    opcodes.uo code_dec.uo \
+    predef.uo prim_c.uo symtable.uo patch.uo tr_const.uo \
+    link.uo readword.uo mainl.uo
+
+T_LIBOBJS= \
+  list.uo strbase.uo char.uo string.uo basicio.uo textio.uo \
+  vector.uo array.uo misc.uo \
+  stringcvt.uo word.uo word8.uo word8vec.uo charvect.uo \
+  word8arr.uo chararra.uo obj.uo nonstdio.uo \
+  substrin.uo path.uo time.uo os.uo filesys.uo \
+  lexing.uo parsing.uo pp.uo
+
+T_OBJS= \
+    predef.uo prim_c.uo symtable.uo patch.uo tr_const.uo \
+    rtvals.uo load_phr.uo exec_phr.uo smltop.uo maint.uo
+
+all: mosmlcmp mosmllnk mosmltop
+
+mosmlcmp: $(COMP_OBJS) $(C_OBJS)
+	$(MOSMLL) $(LINKFLAGS) -o mosmlcmp -files &&|
+$(C_LIBOBJS)
+$(COMP_OBJS)
+$(C_OBJS)
+|
+
+opcodes.sml: $(CAMLRT)\instruct.h
+	perl $(MOSMLTOOLS)\mksmlopc $(CAMLRT)\instruct.h > opcodes.sml
+
+parser.sml parser.sig: parser.grm
+	$(MOSMLYACC) parser.grm
+
+mosmllnk: $(L_OBJS)
+	$(MOSMLL) $(LINKFLAGS) -o mosmllnk -files &&|
+$(L_LIBOBJS)
+$(L_OBJS)
+|
+
+predef.sml : $(CAMLRT)\globals.h $(CAMLRT)\fail.h
+	perl $(MOSMLTOOLS)\mksmlpre $(CAMLRT)\globals.h $(CAMLRT)\fail.h > predef.sml
+
+prim_c.sml : $(CAMLRT)\prims
+	perl $(MOSMLTOOLS)\mksmlprc $(CAMLRT)\prims > prim_c.sml
+
+mosmltop: $(COMP_OBJS) $(T_OBJS)
+	$(MOSMLL) $(LINKFLAGS) -o mosmltop -files &&|
+$(T_LIBOBJS)
+$(COMP_OBJS)
+$(T_OBJS)
+|
+
+clean:
+	del *.exe
+	del mosmlcmp
+	del mosmllnk
+	del mosmltop
+	del *.ui
+	del *.uo
+	del opcodes.sml
+	del parser.sml
+	del parser.sig
+	del lexer.sml
+	del config.sml
+	del filename.sml
+	del predef.sml
+	del prim_c.sml
+	del makefile.bak
+
+install:
+	copy /b mosmlcmp $(LIBDIR)
+	copy /b mosmllnk $(LIBDIR)
+	copy /b mosmltop $(LIBDIR)
+
+depend: filename.sml config.sml opcodes.sml parser.sml parser.sig lexer.sml \
+    predef.sml prim_c.sml
+	del makefile.bak
+	ren makefile makefile.bak
+        $(MOSMLCUT) < makefile.bak > makefile
+        $(MOSMLDEP) >> makefile
+
+### DO NOT DELETE THIS LINE
+predef.uo: const.uo 
+lexer.uo: lexer.ui parser.ui const.uo fnlib.ui config.uo stack.ui \
+    mixture.ui hasht.ui memory.uo 
+parser.ui: asynt.uo const.uo 
+parser.uo: parser.ui asynt.uo const.uo fnlib.ui config.uo types.ui \
+    asyntfn.ui globals.uo location.ui mixture.ui 
+config.uo: fnlib.ui 
+filename.uo: filename.ui 
+lexer.ui: parser.ui 
+units.uo: units.ui const.uo fnlib.ui config.uo globals.uo location.ui \
+    mixture.ui hasht.ui 
+types.uo: types.ui const.uo fnlib.ui globals.uo smlprim.uo location.ui \
+    mixture.ui units.ui 
+tr_env.uo: tr_env.ui asynt.uo const.uo fnlib.ui prim.uo types.ui asyntfn.ui \
+    globals.uo mixture.ui units.ui hasht.ui lambda.uo 
+tr_const.uo: const.uo symtable.ui 
+synchk.uo: synchk.ui asynt.uo const.uo fnlib.ui asyntfn.ui globals.uo \
+    location.ui mixture.ui units.ui 
+symtable.uo: symtable.ui const.uo fnlib.ui config.uo predef.uo prim_c.uo \
+    mixture.ui hasht.ui miscsys.ui 
+stack.uo: stack.ui 
+sort.uo: sort.ui 
+smltop.uo: smltop.ui compiler.ui const.uo fnlib.ui patch.uo emit_phr.uo \
+    rtvals.ui config.uo code_dec.uo lexer.ui types.ui globals.uo smlprim.uo \
+    smlexc.uo smlperv.ui opcodes.uo location.ui symtable.ui emitcode.ui \
+    mixture.ui units.ui load_phr.ui hasht.ui miscsys.ui memory.uo \
+    filename.ui exec_phr.ui 
+smlprim.uo: const.uo prim.uo 
+smlperv.uo: smlperv.ui const.uo fnlib.ui prim.uo types.ui globals.uo \
+    smlprim.uo smlexc.uo units.ui hasht.ui 
+smlexc.uo: const.uo config.uo types.ui mixture.ui 
+sigmtch.uo: sigmtch.ui front.ui const.uo back.ui fnlib.ui emit_phr.uo \
+    prim.uo types.ui globals.uo mixture.ui units.ui hasht.ui lambda.uo 
+rtvals.uo: rtvals.ui const.uo fnlib.ui config.uo types.ui globals.uo \
+    smlexc.uo symtable.ui location.ui mixture.ui units.ui miscsys.ui \
+    memory.uo 
+reloc.uo: const.uo buffcode.uo code_dec.uo 
+pr_zam.uo: asynt.uo const.uo fnlib.ui config.uo pr_lam.ui instruct.uo \
+    mixture.ui 
+pr_lam.uo: pr_lam.ui asynt.uo const.uo prim.uo mixture.ui lambda.uo 
+printexc.uo: printexc.ui miscsys.ui 
+prim_opc.uo: fnlib.ui prim.uo opcodes.uo 
+primdec.uo: const.uo fnlib.ui prim.uo smlprim.uo 
+prim.uo: const.uo 
+patch.uo: code_dec.uo symtable.ui 
+ovlres.uo: ovlres.ui asynt.uo const.uo fnlib.ui prim.uo types.ui globals.uo \
+    smlprim.uo location.ui mixture.ui units.ui 
+mixture.uo: mixture.ui fnlib.ui config.uo hasht.ui miscsys.ui filename.ui 
+miscsys.uo: miscsys.ui 
+match.uo: match.ui asynt.uo const.uo fnlib.ui prim.uo types.ui asyntfn.ui \
+    globals.uo smlexc.uo tr_env.ui location.ui mixture.ui hasht.ui \
+    lambda.uo 
+maint.uo: maint.ui compiler.ui fnlib.ui rtvals.ui config.uo arg.ui \
+    printexc.ui smlperv.ui location.ui smltop.ui mixture.ui units.ui \
+    miscsys.ui memory.uo 
+mainl.uo: fnlib.ui config.uo arg.ui printexc.ui link.ui symtable.ui \
+    readword.uo mixture.ui miscsys.ui filename.ui 
+mainc.uo: mainc.ui compiler.ui fnlib.ui config.uo lexer.ui arg.ui \
+    printexc.ui smlperv.ui location.ui mixture.ui units.ui miscsys.ui \
+    filename.ui 
+location.uo: location.ui fnlib.ui config.uo mixture.ui 
+load_phr.uo: load_phr.ui const.uo reloc.uo fnlib.ui buffcode.uo patch.uo \
+    rtvals.ui types.ui opcodes.uo symtable.ui labels.uo emitcode.ui \
+    instruct.uo tr_const.uo mixture.ui memory.uo 
+link.uo: link.ui const.uo fnlib.ui patch.uo config.uo code_dec.uo \
+    opcodes.uo symtable.ui tr_const.uo mixture.ui hasht.ui miscsys.ui \
+    filename.ui 
+lambda.uo: const.uo prim.uo instruct.uo 
+labels.uo: fnlib.ui buffcode.uo instruct.uo 
+instruct.uo: const.uo config.uo prim.uo 
+infixst.uo: infixst.ui asynt.uo const.uo fnlib.ui globals.uo location.ui \
+    mixture.ui 
+infixres.uo: infixres.ui asynt.uo primdec.uo synchk.ui const.uo fnlib.ui \
+    infixst.ui types.ui asyntfn.ui globals.uo smlprim.uo smlexc.uo \
+    location.ui mixture.ui units.ui 
+hasht.uo: hasht.ui 
+globals.uo: const.uo fnlib.ui smlprim.uo mixture.ui 
+front.uo: front.ui asynt.uo const.uo fnlib.ui config.uo prim.uo types.ui \
+    asyntfn.ui globals.uo smlprim.uo smlexc.uo tr_env.ui location.ui \
+    match.ui mixture.ui units.ui lambda.uo 
+fnlib.uo: fnlib.ui 
+exec_phr.uo: exec_phr.ui asynt.uo front.ui compiler.ui back.ui fnlib.ui \
+    pr_zam.uo infixst.ui elab.ui rtvals.ui types.ui ovlres.ui globals.uo \
+    tr_env.ui symtable.ui mixture.ui units.ui load_phr.ui infixres.ui \
+    miscsys.ui 
+emit_phr.uo: const.uo reloc.uo buffcode.uo code_dec.uo labels.uo \
+    emitcode.ui instruct.uo mixture.ui 
+emitcode.uo: emitcode.ui const.uo reloc.uo fnlib.ui buffcode.uo config.uo \
+    prim.uo opcodes.uo labels.uo instruct.uo mixture.ui prim_opc.uo 
+elab.uo: elab.ui asynt.uo const.uo fnlib.ui config.uo types.ui asyntfn.ui \
+    globals.uo smlexc.uo location.ui mixture.ui units.ui 
+const.uo: fnlib.ui config.uo mixture.ui 
+compiler.uo: compiler.ui asynt.uo front.ui parser.ui const.uo back.ui \
+    fnlib.ui pr_zam.uo elab.ui emit_phr.uo lexer.ui sigmtch.ui types.ui \
+    ovlres.ui globals.uo smlperv.ui tr_env.ui location.ui mixture.ui \
+    units.ui infixres.ui hasht.ui 
+code_dec.uo: const.uo mixture.ui hasht.ui 
+buffcode.uo: fnlib.ui config.uo opcodes.uo mixture.ui 
+back.uo: back.ui sort.ui const.uo fnlib.ui prim.uo instruct.uo stack.ui \
+    mixture.ui lambda.uo 
+asyntfn.uo: asyntfn.ui asynt.uo const.uo fnlib.ui types.ui globals.uo \
+    location.ui mixture.ui 
+asynt.uo: const.uo fnlib.ui types.ui globals.uo location.ui mixture.ui 
+arg.uo: arg.ui fnlib.ui miscsys.ui 
+units.ui: const.uo fnlib.ui globals.uo location.ui mixture.ui hasht.ui 
+types.ui: const.uo fnlib.ui globals.uo smlprim.uo location.ui mixture.ui \
+    units.ui 
+tr_env.ui: asynt.uo const.uo mixture.ui lambda.uo 
+synchk.ui: asynt.uo 
+symtable.ui: const.uo 
+sigmtch.ui: units.ui 
+rtvals.ui: const.uo types.ui globals.uo 
+pr_lam.ui: prim.uo lambda.uo 
+ovlres.ui: asynt.uo 
+mixture.ui: hasht.ui 
+match.ui: asynt.uo tr_env.ui location.ui lambda.uo 
+load_phr.ui: instruct.uo 
+infixst.ui: asynt.uo fnlib.ui globals.uo location.ui mixture.ui 
+infixres.ui: asynt.uo globals.uo 
+front.ui: asynt.uo globals.uo smlprim.uo tr_env.ui lambda.uo 
+exec_phr.ui: asynt.uo 
+emitcode.ui: instruct.uo 
+elab.ui: asynt.uo globals.uo 
+compiler.ui: asynt.uo globals.uo mixture.ui 
+back.ui: instruct.uo lambda.uo 
+asyntfn.ui: asynt.uo const.uo fnlib.ui types.ui globals.uo location.ui \
+    mixture.ui 

@@ -1,0 +1,1172 @@
+%{
+ 
+open Fnlib Config Mixture Const Globals Location Types Asynt Asyntfn;
+
+fun rev acc [] = acc
+|   rev acc (h::t) = rev (h::acc) t;
+
+val anonId = "?";
+val anonQualId = {qual = "",id =[anonId]};
+
+val mkDerivedfunbind = fn (funid,funsort,modid,sigexp,modexp) =>
+	FUNBINDfunbind(funid,(xxLR modid modexp,
+	                      (FUNCTORmodexp(funsort,modid,ref VARik,sigexp,modexp),ref NONE)))
+
+local
+  fun flattenDec (dec as (loc,dec')) acc =
+      case dec' of
+	  SEQdec (dec1,dec2) => flattenDec dec1 (flattenDec dec2 acc)
+        | _ => dec::acc
+in
+fun mkDerivedDecs (locmodexp as (loc,(modexp',_))) =
+	case modexp' of
+	  DECmodexp dec => flattenDec dec []
+        | _ => [(loc,LOCALdec ((loc,STRUCTUREdec [MODBINDmodbind((loc,anonId),locmodexp)]),
+			  (loc,OPENdec [(mkIdInfo (loc,anonQualId) false,ref NONE)])))]
+end
+;
+	
+%}
+
+%token ABSTYPE
+%token AND
+%token ANDALSO
+%token ARROW
+%token AS
+%token BAR
+%token CASE
+%token <char> CHAR
+%token COLON
+%token COLONGT
+%token COMMA
+%token DARROW
+%token DATATYPE
+%token DLBRACE
+%token DO
+%token DOTDOTDOT
+%token DRBRACE
+%token ELSE
+%token END
+%token EOF
+%token EQTYPE
+%token EQUALS
+%token EXCEPTION
+%token FN
+%token FUN
+%token FUNCTOR
+%token HANDLE
+%token HASH
+%token HASHLBRACKET
+%token <string> ID
+%token IF
+%token IN
+%token INCLUDE
+%token INFIX
+%token INFIXR
+%token LBRACE
+%token LBRACKET
+%token LET
+%token LOCAL
+%token LPAREN
+%token <int> NEGINT
+%token NONFIX
+%token <int> NZDIGIT
+%token <int> NZPOSINT2
+%token OF
+%token OP
+%token OPEN
+%token ORELSE
+%token PRIM_EQTYPE
+%token PRIM_REFTYPE
+%token PRIM_TYPE
+%token PRIM_VAL
+%token <Const.QualifiedIdent> QUAL_ID
+%token <Const.QualifiedIdent> QUAL_STAR
+%token QUOTEL
+%token <string> QUOTEM
+%token <string> QUOTER
+%token RAISE
+%token RBRACE
+%token RBRACKET
+%token <real> REAL
+%token REC
+%token RPAREN
+%token SEMICOLON
+%token SHARING
+%token SIG
+%token SIGNATURE
+%token STAR
+%token <string> STRING
+%token STRUCT
+%token STRUCTURE
+%token THEN
+%token TYPE
+%token <string> TYVAR
+%token UNDERBAR
+%token VAL
+%token WHERE
+%token WHILE
+%token WITH
+%token WITHTYPE
+%token <word> WORD
+%token <int> ZDIGIT 
+%token <int> ZPOSINT2
+
+%right    AND
+%nonassoc DARROW
+%nonassoc BAR
+%nonassoc ELSE
+%nonassoc DO
+%nonassoc RAISE
+%right    HANDLE
+%right    ORELSE
+%right    ANDALSO
+%right    AS
+
+/* cvr: in Mosml144, COLON was nonassociative but this conflicts 
+   with the modexp COLON SigExp production */
+/* %nonassoc COLON  */
+
+%right    ARROW
+%nonassoc ID EQUALS
+%right    STAR
+
+
+
+%start ToplevelPhrase
+%type <Asynt.Dec * bool> ToplevelPhrase
+
+%start SigFile
+%type <Asynt.Sig> SigFile
+
+%start StructFile 
+%type <Asynt.Struct> StructFile 
+
+%start TopSpecFile
+%type <Asynt.Sig> TopSpecFile
+
+%start TopDecFile
+%type <Asynt.Struct> TopDecFile
+
+
+%type <bool> EOPh
+%type <string> Ident EqIdent 
+%type <Location.Location * string> IdentWithLoc 
+%type <Asynt.IdInfo> OpIdent TypeIdent LongTypeIdent
+%type <Asynt.IdInfo> LongIdent LongOpIdent LongOpEqIdent
+%type <Asynt.TyVar> TyVar
+%type <Asynt.TyCon> TyCon
+%type <Asynt.ModId> ModId
+%type <Asynt.SigId> SigId
+
+
+
+%type <string list> EqIdent_seq1 
+%type <int> DIGIT_opt Integer NumLabel Arity
+%type <unit> SemiEof
+%type <Mixture.Lab> Label
+%type <Const.SCon> SCon
+%type <Asynt.Dec> Dec KWDec_seq1 KWDec KWCoreDec KWModuleDec
+%type <Asynt.Dec list> KWDec_seq KWCoreDec_seq 
+%type <Asynt.ValBind list * Asynt.ValBind list> ValBind AndValBind_opt
+%type <Asynt.PrimValBind list> PrimValBind AndPrimValBind_opt
+%type <Asynt.ValBind list> FnValBind AndFnValBind_opt
+%type <Asynt.TypBind list> TypBind AndTypBind_opt
+%type <Asynt.TypDesc list> TypDesc AndTypDesc_opt
+%type <Asynt.DatBind list> DatBind AndDatBind_opt DatBind_0 DatBind_n
+%type <Asynt.ConBind list> ConBind BarConBind_opt
+%type <Asynt.TypBind list option> WithType_opt
+%type <Asynt.ExBind list> ExBind AndExBind_opt
+%type <Asynt.ExDesc list> ExDesc AndExDesc_opt
+%type <Asynt.Ty option> OfTy_opt ColonTy_opt
+%type <Asynt.FValBind list> FValBind AndFValBind_opt
+%type <Asynt.FValBind> FClauseWithLoc
+%type <Asynt.FClause list> FClause BarFClause_opt
+%type <Asynt.VIdPathInfo> VIdPathInfo
+%type <Asynt.InfixExp> InfixExp
+%type <Asynt.Exp> AtExp Exp
+%type <Asynt.Exp list> ExpComma_seq0 ExpComma_seq1 ExpComma_seq2
+	QuoteTail ExpQuoteTail 
+%type <Asynt.Exp list> ExpSemicolon_seq2
+%type <Asynt.Exp list> AtExp_seq1
+%type <Asynt.Exp Mixture.Row> ExpRow_opt ExpRow CommaExpRow_opt
+%type <Asynt.Match> Match
+%type <Location.Location * Asynt.Match> MatchWithLoc
+%type <Asynt.MRule> MRule
+%type <Asynt.InfixPat> InfixPat
+%type <Asynt.Pat> Pat AtPat
+%type <Asynt.Pat list> AtPat_seq1
+%type <Asynt.Pat list> PatComma_seq0 PatComma_seq1 PatComma_seq2
+%type <Asynt.Pat Mixture.Row * bool> PatRow_opt PatRow CommaPatRow_opt
+%type <Asynt.Pat option> AsPat_opt
+%type <Asynt.TyConPath> TyConPath
+%type <Asynt.Ty> Ty Ty_sans_STAR AtomicTy
+%type <Asynt.Ty list> TupleTy TyComma_seq2
+%type <Asynt.Ty Mixture.Row> TyRow_opt TyRow CommaTyRow_opt
+%type <Asynt.TyVar list> TyVarSeq TyVarSeq1 TyVarComma_seq1
+%type <Asynt.Spec> Spec KWSpec KWCoreSpec KWModuleSpec
+%type <Asynt.Spec list> Spec_seq CoreSpec_seq
+%type <Asynt.ValDesc list> ValDesc AndValDesc_opt
+%type <Asynt.LongModId> LongModId
+%type <Asynt.LongModIdInfo list> LongModIdInfo_seq1
+%type <Asynt.ModBind list> ModBind_seq1 AndModBind_opt
+%type <Asynt.FunBind list> FunBind_seq1 AndFunBind_opt
+%type <Asynt.SigBind list> SigBind_seq1 AndSigBind_opt
+%type <Asynt.ModExp> AtModExp ModExp FunBindBody OptConEqualsModExp
+%type <Asynt.ModExp list> AtModExp_seq1
+%type <Asynt.ModDesc list> ModDesc_seq1 AndModDesc_opt
+%type <Asynt.FunDesc list> FunDesc_seq1 AndFunDesc_opt
+%type <Asynt.SigExp> SigExp FunDescBody 
+%type <Asynt.SigId list> SigId_seq2
+%type <Asynt.LongTyCon list> LongTyConEqn LongTyConEqnTail
+%type <Asynt.LongModId list> LongModIdEqnTail  LongModIdEqn 
+%type <Location * (Asynt.LongModId list)> LongModIdEqnWithLoc 
+%type <(Location * (Asynt.TyVarSeq * Asynt.LongTyCon * Asynt.Ty)) list> WhereType AndWhereType_opt
+%type <(Asynt.ModId * ModExp) option> WhereModBind_opt 
+%%
+
+
+
+Ident :
+    ID          { $1 }
+  | STAR        { "*" }
+;
+
+IdentWithLoc :
+    Ident       { mkLoc($1) }
+;
+
+OpIdent :
+    Ident       { mkIdInfo (mkLoc { qual="", id=[$1] }) false }
+  | OP Ident    { mkIdInfo (mkLoc { qual="", id=[$2] }) true }
+;
+
+EqIdent :
+    Ident       { $1 }
+  | EQUALS      { "=" }
+;
+
+
+ModId :
+    IdentWithLoc       { $1 }
+;
+
+SigId :
+    IdentWithLoc       { $1 }
+;
+
+TypeIdent :
+    ID          { mkIdInfo (mkLoc { qual="", id=[$1] }) false }
+;
+
+LongTypeIdent :
+    TypeIdent   { $1 }
+  | QUAL_ID     { mkIdInfo (mkLoc $1) false }
+;
+
+LongIdent :
+    Ident       { mkIdInfo (mkLoc { qual="", id=[$1] }) false }
+  | QUAL_ID     { mkIdInfo (mkLoc $1) false }
+  | QUAL_STAR   { mkIdInfo (mkLoc $1) false }
+;
+
+LongOpIdent :
+    LongIdent      { $1 }
+  | OP Ident       { mkIdInfo (mkLoc { qual="", id=[$2] }) true }
+  | OP QUAL_ID     { mkIdInfo (mkLoc $2) true }
+  | OP QUAL_STAR   { mkIdInfo (mkLoc $2) true }
+;
+
+LongOpEqIdent :
+    LongOpIdent    { $1 }
+  | EQUALS         { mkIdInfo (mkLoc { qual="", id=["="] }) false }
+  | OP EQUALS      { mkIdInfo (mkLoc { qual="", id=["="] }) true }
+;
+
+TyVar :
+    TYVAR    { mkIdInfo (mkLoc { qual="", id=[$1] }) false }
+;
+
+EqIdent_seq1 :
+    EqIdent EqIdent_seq1        { $1 :: $2 }
+  | EqIdent                     { [$1] }
+;
+
+LongModId : 
+    LongOpIdent                   {$1}
+
+LongModIdInfo_seq1 :
+    LongModId LongModIdInfo_seq1    { (($1,ref NONE)) :: $2 }
+  | LongModId                   { [($1, ref NONE)] }
+;
+
+DIGIT_opt :
+    ZDIGIT      { $1 }
+  | NZDIGIT     { $1 }
+  | /* */       { 0 }
+;
+
+Integer :
+    ZPOSINT2    { $1 }
+  | NZPOSINT2   { $1 }
+  | NEGINT      { $1 }
+  | ZDIGIT      { $1 }
+  | NZDIGIT     { $1 }
+;
+
+NumLabel :
+    NZPOSINT2   { $1 }
+  | NZDIGIT     { $1 }
+;
+
+Label :
+    Ident       { STRINGlab $1 }
+  | NumLabel    { INTlab $1 }
+;
+
+Arity :
+    ZPOSINT2    { $1 }
+  | NZPOSINT2   { $1 }
+  | ZDIGIT      { $1 }
+  | NZDIGIT     { $1 }
+;
+
+ToplevelPhrase :
+    Exp EOPh                    { (mkValIt $1, $2) }
+  | KWDec_seq1 EOPh             { ($1, $2) }
+  | EOPh                        { (mkLoc(EMPTYdec), $1) }
+;
+
+EOPh :
+    SEMICOLON		{ false }
+  | EOF			{ true }
+;
+
+SemiEof :
+    SEMICOLON SemiEof   { }
+  | EOF			{ }
+;
+
+Dec :
+    KWDec Dec           { mkLoc(SEQdec($1, $2)) }
+  | SEMICOLON Dec       { $2 }
+  | /* */               { mkLoc(EMPTYdec) }
+;
+
+KWDec_seq1 :
+    KWDec KWDec_seq1    { mkLoc(SEQdec($1,$2)) }
+  | KWDec               { $1 }
+;
+
+TopDecFile :
+    KWDec_seq EOF { TopDecs $1 }  /* cvr: TODO allow expressions? */
+;
+
+StructFile :
+    STRUCTURE ModId EQUALS ModExp SemiEof
+		{ NamedStruct{locstrid = $2, locsigid = NONE, decs = mkDerivedDecs $4} }
+  | STRUCTURE ModId COLONGT SigId EQUALS ModExp SemiEof
+		{ Abstraction{locstrid = $2, locsigid = $4, decs = mkDerivedDecs $6} }
+  | KWCoreDec_seq EOF { AnonStruct $1 }  /* backwards compatability mode * */
+;
+
+KWDec_seq :
+    KWDec KWDec_seq		{ $1 :: $2 }
+  | SEMICOLON KWDec_seq		{ $2 }
+  | /* */			{ [] }
+;
+
+KWCoreDec_seq :
+    KWCoreDec KWCoreDec_seq		{ $1 :: $2 }
+  | SEMICOLON KWCoreDec_seq		{ $2 }
+  | /* */			{ [] }
+;
+
+KWDec :
+  KWCoreDec	{$1}
+| KWModuleDec	{$1}
+;	
+
+KWModuleDec:
+    STRUCTURE ModBind_seq1      { mkLoc(STRUCTUREdec $2)}
+  | FUNCTOR FunBind_seq1         { mkLoc(FUNCTORdec $2)}
+  | SIGNATURE SigBind_seq1         { mkLoc(SIGNATUREdec $2)}
+;
+
+
+KWCoreDec :
+    VAL ValBind                 { mkLoc(VALdec ([], $2)) } /* cvr: REVIEW */
+  | VAL TyVarSeq1 ValBind       { mkLoc(VALdec ($2, $3)) } 
+  | PRIM_VAL PrimValBind        { mkLoc(PRIM_VALdec ([],$2)) } /* cvr: REVIEW */
+  | PRIM_VAL TyVarSeq1 PrimValBind
+	                        { mkLoc(PRIM_VALdec ($2,$3)) } 
+  | FUN FValBind                { mkLoc(FUNdec (ref (UNRESfundec([],  $2)))) }
+  | FUN TyVarSeq1 FValBind      { mkLoc(FUNdec (ref (UNRESfundec($2,  $3)))) }
+  | TYPE TypBind                { mkLoc(TYPEdec $2) }
+  | PRIM_TYPE TypDesc           { mkLoc(PRIM_TYPEdec(FALSEequ, $2)) }
+  | PRIM_EQTYPE TypDesc         { mkLoc(PRIM_TYPEdec(TRUEequ, $2)) }
+  | PRIM_REFTYPE TypDesc        { mkLoc(PRIM_TYPEdec(REFequ, $2)) }
+  | DATATYPE DatBind_0 WithType_opt
+                                { mkLoc(DATATYPEdec($2,$3)) } 
+  | DATATYPE DatBind_n WithType_opt
+                                { mkLoc(DATATYPEdec($2,$3)) } 
+/* cvr: this simpler production cause a shift/reduce conflict 
+	with datatype replication 
+  | DATATYPE DatBind WithType_opt
+                                { mkLoc(DATATYPEdec($2,$3)) } */
+  | DATATYPE TyCon EQUALS DATATYPE TyConPath
+                                { mkLoc(DATATYPErepdec($2,$5))}
+  | ABSTYPE DatBind WithType_opt WITH Dec END
+                                { mkLoc(ABSTYPEdec($2,$3,$5)) }
+  | EXCEPTION ExBind            { mkLoc(EXCEPTIONdec $2) }
+  | LOCAL Dec IN Dec END        { mkLoc(LOCALdec($2,$4)) }
+  | OPEN LongModIdInfo_seq1         { mkLoc(OPENdec $2) }
+  | INFIX DIGIT_opt EqIdent_seq1
+                                { mkLoc(FIXITYdec(INFIXst $2, $3)) }
+  | INFIXR DIGIT_opt EqIdent_seq1
+                                { mkLoc(FIXITYdec(INFIXRst $2, $3)) }
+  | NONFIX EqIdent_seq1
+                                { mkLoc(FIXITYdec(NONFIXst, $2)) }
+;
+
+ValBind :
+    Pat EQUALS Exp AndValBind_opt
+                { let val (pvbs, rvbs) = $4
+                  in (ValBind(ref $1, $3)::pvbs, rvbs) end }
+  | REC FnValBind
+                { ([], $2) }
+;
+
+AndValBind_opt :
+    AND ValBind         { $2 }
+  | /* */               { ([], []) }
+;
+
+PrimValBind :
+    OpIdent COLON Ty EQUALS Arity STRING AndPrimValBind_opt
+                        { ($1, $3, $5, $6) :: $7 }
+;
+
+AndPrimValBind_opt :
+    AND PrimValBind     { $2 }
+  | /* */               { [] }
+;
+
+FnValBind :
+    Pat EQUALS Exp AndFnValBind_opt
+                        { ValBind(ref $1, $3) :: $4 }
+  | REC FnValBind       { $2 }
+;
+
+AndFnValBind_opt :
+    AND FnValBind       { $2 }
+  | /* */               { [] }
+;
+
+TypBind :
+    TyVarSeq TyCon  EQUALS Ty AndTypBind_opt
+                        { ($1, $2, $4) :: $5 }
+;
+
+AndTypBind_opt :
+    AND TypBind         { $2 }
+  | /* */               { [] }
+;
+
+DatBind :
+    TyVarSeq TyCon EQUALS ConBind AndDatBind_opt
+                        { ($1, $2, $4) :: $5 }
+;
+
+DatBind_0 :
+    TyCon EQUALS ConBind AndDatBind_opt
+                        { ([], $1, $3) :: $4 }
+;
+
+DatBind_n :
+    TyVarSeq1 TyCon EQUALS ConBind AndDatBind_opt
+                        { ($1, $2, $4) :: $5 }
+;
+
+AndDatBind_opt :
+    AND DatBind         { $2 }
+  | /* */               { [] }
+;
+
+ConBind :
+    OpIdent OfTy_opt BarConBind_opt     { ConBind($1, $2) :: $3 }
+;
+
+BarConBind_opt :
+    BAR ConBind         { $2 }
+  | /* */               { [] }
+;
+
+WithType_opt :
+    WITHTYPE TypBind    { SOME $2 }
+  | /* */               { NONE }
+
+ExBind :
+    OpIdent OfTy_opt AndExBind_opt              { EXDECexbind($1,$2) :: $3 }
+  | OpIdent EQUALS LongOpEqIdent AndExBind_opt  { EXEQUALexbind($1,$3) :: $4 }
+;
+
+AndExBind_opt :
+    AND ExBind          { $2 }
+  | /* */               { [] }
+;
+
+ExDesc :
+    OpIdent OfTy_opt AndExDesc_opt              { ($1,$2) :: $3 }
+;
+
+AndExDesc_opt :
+    AND ExDesc          { $2 }
+  | /* */               { [] }
+;
+
+ColonTy_opt :
+    COLON Ty    { SOME $2 }
+  | /* */       { NONE }
+
+OfTy_opt :
+    OF Ty       { SOME $2 }
+  | /* */       { NONE }
+;
+
+FValBind :
+    FClauseWithLoc AndFValBind_opt     { $1 :: $2 }
+;
+
+AndFValBind_opt :
+    AND FValBind        { $2 }
+  | /* */               { [] }
+;
+
+FClauseWithLoc :
+    FClause             { mkLoc $1 }
+;
+
+FClause :
+    AtPat_seq1 ColonTy_opt EQUALS Exp BarFClause_opt
+        { let val rhs = (case $2 of
+                             SOME ty => (xxLR ty $4, TYPEDexp($4,ty))
+                           | NONE => $4)
+          in FClause(ref $1, rhs) :: $5 end }
+;
+
+BarFClause_opt :
+    BAR FClause         { $2 }
+  | /* */               { [] }
+;
+
+SCon :
+    Integer     { INTscon $1 }
+  | WORD        { WORDscon $1 }
+  | CHAR        { CHARscon $1 }
+  | REAL        { REALscon $1 }
+  | STRING      { STRINGscon $1 }
+;
+
+VIdPathInfo :
+    LongOpEqIdent  {RESvidpath $1}
+;
+
+AtExp :
+    SCon                { mkLoc(SCONexp($1, ref NONE)) }
+  | VIdPathInfo        { mkLoc(VIDPATHexp(ref $1)) }
+  | LET Dec IN Exp END  { mkLoc(LETexp($2,$4)) }
+  | HASH Label          { hashLabelExp(mkLoc $2) }
+  | LPAREN Exp RPAREN   { mkLoc(PARexp $2) }
+  | LPAREN RPAREN       { tupleExp(mkLoc []) }
+  | LPAREN ExpComma_seq2 RPAREN
+                        { tupleExp(mkLoc $2) }
+  | LPAREN ExpSemicolon_seq2 RPAREN
+                        { seqExp $2 }
+  | LBRACE ExpRow_opt RBRACE
+                        { mkLoc(RECexp(ref (RECre $2))) }
+  | LET Dec IN ExpSemicolon_seq2 END
+                        { mkLoc(LETexp($2, seqExp $4)) }
+  | LBRACKET STRUCTURE ModExp AS SigExp RBRACKET
+                        { mkLoc(STRUCTUREexp($3,$5,ref NONE)) }
+  | LBRACKET FUNCTOR ModExp AS SigExp RBRACKET
+                        { mkLoc(FUNCTORexp($3,$5,ref NONE)) }
+  | LBRACKET ExpComma_seq0 RBRACKET
+                        { listExp(mkLoc $2) }
+  | HASHLBRACKET ExpComma_seq0 RBRACKET
+                        { mkLoc(VECexp $2) }
+  | QUOTEL QuoteTail
+      { listExp(mkLoc $2) }
+;
+
+QuoteTail :
+    QUOTER
+      { [quoteExp(mkLoc(SCONexp(STRINGscon $1, ref NONE)))] }
+  | QUOTEM ExpQuoteTail
+      { quoteExp(mkLoc(SCONexp(STRINGscon $1, ref NONE))) :: $2 }
+;
+
+ExpQuoteTail :
+    Exp QuoteTail       { antiquoteExp($1) :: $2 }
+;
+
+ExpComma_seq0 :
+    ExpComma_seq1               { $1 }
+  | /* */                       { [] }
+;
+
+ExpComma_seq1 :
+    Exp COMMA ExpComma_seq1     { $1 :: $3 }
+  | Exp                         { [$1] }
+;
+
+ExpComma_seq2 :
+    Exp COMMA ExpComma_seq1     { $1 :: $3 }
+;
+
+ExpSemicolon_seq2 :
+    Exp SEMICOLON ExpSemicolon_seq2     { $1 :: $3 }
+  | Exp SEMICOLON Exp                   { [$1, $3] }
+
+AtExp_seq1 :
+    AtExp AtExp_seq1            { $1 :: $2 }
+  | AtExp                       { [$1] }
+;
+
+ExpRow_opt :
+    ExpRow      { $1 }
+  | /* */       { [] }
+;
+
+ExpRow :
+    Label EQUALS Exp CommaExpRow_opt    { ($1,$3)::$4 }
+;
+
+CommaExpRow_opt :
+    COMMA ExpRow        { $2 }
+  | /* */               { [] }
+;
+
+InfixExp : 
+    AtExp_seq1                  {UNRESinfixexp $1}
+Exp :
+    InfixExp                    { mkLoc(INFIXexp (ref $1)) }
+  | Exp COLON Ty                { mkLoc(TYPEDexp($1,$3)) }
+  | Exp ANDALSO Exp             { mkLoc(ANDALSOexp($1,$3)) }
+  | Exp ORELSE Exp              { mkLoc(ORELSEexp($1,$3)) }
+  | Exp HANDLE Match            { mkLoc(HANDLEexp($1,$3)) }
+  | RAISE Exp                   { mkLoc(RAISEexp $2) }
+  | IF Exp THEN Exp ELSE Exp    { mkLoc(IFexp($2,$4,$6)) }
+  | WHILE Exp DO Exp            { mkLoc(WHILEexp($2,$4)) }
+  | CASE Exp OF MatchWithLoc
+        { let val (loc, mrules) = $4
+          in mkLoc(APPexp((loc, FNexp mrules), $2)) end }
+  | FN Match                    { mkLoc(FNexp $2) }
+;
+
+MatchWithLoc :
+    Match       { mkLoc $1 }
+;
+
+Match :
+    MRule BAR Match             { $1 :: $3 }
+  | MRule       %prec DARROW    { [$1] }
+;
+
+MRule :
+    Pat DARROW Exp      { MRule(ref [$1],$3) }
+;
+
+InfixPat : 
+    AtPat_seq1          { UNRESinfixpat $1}
+Pat :
+    InfixPat            { mkLoc(INFIXpat (ref $1)) }
+  | Pat COLON Ty        { mkLoc(TYPEDpat($1,$3)) }
+  | Pat AS Pat          { mkLoc(LAYEREDpat($1,$3)) }
+;
+
+AtPat :
+    UNDERBAR                    { mkLoc(WILDCARDpat) }
+  | SCon                        { mkLoc(SCONpat($1, ref NONE)) }
+  | LongOpIdent                 { mkLoc(VARpat $1) }
+  | LBRACE PatRow_opt RBRACE
+        { let val (fs, flexible) = $2 in
+            if flexible then
+              mkLoc(RECpat(ref (RECrp(fs, SOME (fresh3DotType())))))
+            else
+              mkLoc(RECpat(ref (RECrp(fs, NONE))))
+          end }
+  | LPAREN Pat RPAREN           { mkLoc(PARpat $2) }
+  | LPAREN RPAREN               { tuplePat(mkLoc []) }
+  | LPAREN PatComma_seq2 RPAREN
+                        { tuplePat(mkLoc $2) }
+  | LBRACKET PatComma_seq0 RBRACKET
+                        { listPat(mkLoc $2) }
+  | HASHLBRACKET PatComma_seq0 RBRACKET
+                        { mkLoc(VECpat $2) }
+;
+
+PatRow_opt :
+    PatRow      { $1 }
+  | /* */       { ([], false) }
+;
+
+PatRow :
+    DOTDOTDOT   { ([],true) }
+  | Label EQUALS Pat CommaPatRow_opt
+        { let val (fs, flexible) = $4
+          in (($1,$3)::fs, flexible) end }
+  | IdentWithLoc ColonTy_opt AsPat_opt CommaPatRow_opt
+        { let val (fs, flexible) = $4
+          in (mkLabPatOfId $1 $2 $3::fs, flexible) end }
+;
+
+AsPat_opt :
+    AS Pat      { SOME $2 }
+  | /* */       { NONE }
+;
+
+CommaPatRow_opt :
+    COMMA PatRow        { $2 }
+  | /* */               { ([], false) }
+;
+
+AtPat_seq1 :
+    AtPat AtPat_seq1            { $1 :: $2 }
+  | AtPat                       { [$1] }
+;
+
+PatComma_seq0 :
+    PatComma_seq1               { $1 }
+  | /* */                       { [] }
+;
+
+PatComma_seq1 :
+    Pat COMMA PatComma_seq1     { $1 :: $3 }
+  | Pat                         { [$1] }
+;
+
+PatComma_seq2 :
+    Pat COMMA PatComma_seq1     { $1 :: $3 }
+;
+
+TyCon : 
+    ID              {mkLoc $1}
+;
+
+WhereModBind_opt :
+	WHERE  ModId OptConEqualsModExp  {SOME($2,$3)} 
+
+    |  /* */                        {NONE}
+	
+
+TyConPath : 
+      LongTypeIdent  WhereModBind_opt     {(case $2 of 
+	                             NONE => mkLoc(LONGtyconpath $1)
+	                           | SOME (modid,modexp) => 
+	                             mkLoc(WHEREtyconpath($1,modid,modexp))) }
+;
+
+Ty :
+    TupleTy ARROW Ty    { mkLoc(FNty( tupleTy $1, $3)) }
+  | TupleTy             { tupleTy $1 }
+;
+
+TupleTy :
+    Ty_sans_STAR                { [$1] }
+  | Ty_sans_STAR STAR TupleTy   { $1 :: $3 }
+;
+
+Ty_sans_STAR :
+    LPAREN TyComma_seq2 RPAREN TyConPath    { mkLoc(CONty($2, $4)) }
+  | Ty_sans_STAR TyConPath                  { mkLoc(CONty([$1], $2)) }
+  | AtomicTy                                    { $1 }
+;
+
+TyComma_seq2 :
+    Ty COMMA TyComma_seq2       { $1 :: $3 }
+  | Ty COMMA Ty                 { [$1, $3] }
+;
+
+AtomicTy :
+    TyConPath                   { mkLoc(CONty([], $1)) }
+  | TyVar                       { mkLoc(TYVARty $1) }
+  | LBRACE TyRow_opt RBRACE     { mkLoc(RECty $2) }
+  | LBRACKET SigExp  RBRACKET       { mkLoc(PACKty $2) }
+  | LPAREN Ty RPAREN            { mkLoc(PARty($2)) }
+;
+
+TyRow_opt :
+    TyRow       { $1 }
+  | /* */       { [] }
+;
+
+TyRow :
+    Label COLON Ty CommaTyRow_opt       { ($1,$3)::$4 }
+;
+
+CommaTyRow_opt :
+    COMMA TyRow         { $2 }
+  | /* */               { [] }
+;
+
+TyVarSeq :
+    TyVarSeq1                           { $1 }
+  | /* */                               { [] }
+;
+
+
+TyVarSeq1 :
+    TyVar                               { [$1] }
+  | LPAREN TyVarComma_seq1 RPAREN       { $2 }
+;
+
+TyVarComma_seq1 :
+    TyVar COMMA TyVarComma_seq1         { $1 :: $3 }
+  | TyVar                               { [$1] }
+;
+
+LongTyConEqnTail : 
+    LongTypeIdent                       { [$1]}
+  | LongTyConEqn                        { $1 }
+     
+LongTyConEqn :
+    LongTypeIdent EQUALS LongTyConEqnTail  {$1 :: $3}
+
+LongModIdEqnTail : 
+    LongModId	                        { [$1]}
+  | LongModIdEqn	                { $1 }
+;
+LongModIdEqn:
+    LongModId EQUALS LongModIdEqnTail  {$1 :: $3};
+;
+LongModIdEqnWithLoc :
+    LongModIdEqn  {mkLoc($1)}
+;
+
+Spec :
+    Spec KWSpec          { mkLoc(SEQspec($1, $2)) }
+  | Spec SHARING TYPE LongTyConEqn 
+                        {mkLoc(SHARINGTYPEspec($1,$4))} 
+  | Spec SHARING LongModIdEqnWithLoc 
+                        {mkLoc(SHARINGspec($1,$3))} 
+  | Spec SEMICOLON     { $1 }
+  | /* */               {mkLoc(EMPTYspec) }
+;
+
+
+TopSpecFile :
+    Spec_seq EOF	{ TopSpecs (rev [] $1) } 
+;
+
+SigFile :
+    SIGNATURE SigId EQUALS SigExp SemiEof
+                        { NamedSig{locsigid = $2, sigexp =  $4 } }
+  | CoreSpec_seq EOF	{ AnonSig (rev [] $1) } 
+;
+
+Spec_seq :
+    Spec_seq KWSpec       { $2 :: $1 }
+  | Spec_seq SEMICOLON    { $1 }
+  | /* */                 { [] }
+;
+
+CoreSpec_seq :
+    CoreSpec_seq KWCoreSpec       { $2 :: $1 }
+  | CoreSpec_seq SEMICOLON    { $1 }
+  | /* */                 { [] }
+;
+
+KWSpec :
+   KWCoreSpec {$1}
+ | KWModuleSpec {$1}
+;
+
+KWCoreSpec :
+    VAL TyVarSeq ValDesc                 { mkLoc(VALspec ($2,$3)) }
+  | PRIM_VAL PrimValBind        { mkLoc(PRIM_VALspec ([],$2)) } 
+  | PRIM_VAL TyVarSeq1 PrimValBind
+	                        { mkLoc(PRIM_VALspec ($2,$3)) } 
+  | TYPE TypBind                { mkLoc(TYPEspec $2) }
+  | TYPE TypDesc                { mkLoc(TYPEDESCspec(FALSEequ, $2)) }
+  | EQTYPE TypDesc              { mkLoc(TYPEDESCspec(TRUEequ, $2)) }
+  | PRIM_REFTYPE TypDesc        { mkLoc(TYPEDESCspec(REFequ, $2)) }
+  | DATATYPE DatBind_0 WithType_opt
+                                { mkLoc(DATATYPEspec($2,$3)) } 
+  | DATATYPE DatBind_n WithType_opt
+                                { mkLoc(DATATYPEspec($2,$3)) } 
+/* cvr: this simpler production cause a shift/reduce conflict 
+	with datatype replication 
+  | DATATYPE DatBind WithType_opt
+                                { mkLoc(DATATYPEspec($2,$3)) } */
+  | DATATYPE TyCon EQUALS DATATYPE TyConPath
+                                { mkLoc(DATATYPErepspec($2,$5))}
+  | EXCEPTION ExDesc            { mkLoc(EXCEPTIONspec $2) }
+  | LOCAL Spec IN Spec END      { mkLoc(LOCALspec($2,$4)) }
+  | OPEN LongModIdInfo_seq1         { mkLoc(OPENspec $2) }
+  | INFIX DIGIT_opt EqIdent_seq1
+                                { mkLoc(FIXITYspec(INFIXst $2, $3)) }
+  | INFIXR DIGIT_opt EqIdent_seq1
+                                { mkLoc(FIXITYspec(INFIXRst $2, $3)) }
+  | NONFIX EqIdent_seq1
+                                { mkLoc(FIXITYspec(NONFIXst, $2)) }
+;
+
+SigId_seq2 : 
+    SigId SigId_seq2          {$1::$2}
+  | SigId SigId               {[$1,$2]}
+;
+
+KWModuleSpec :
+    STRUCTURE ModDesc_seq1      { mkLoc(STRUCTUREspec $2)}
+  | FUNCTOR FunDesc_seq1        { mkLoc(FUNCTORspec $2)}
+  | INCLUDE SigExp   		{ mkLoc(INCLUDEspec $2)}
+  | INCLUDE SigId_seq2          /* derived form */
+	{ mkLoc(foldR (fn locsigid => fn spec => 
+		       (SEQspec(mkLoc(INCLUDEspec (xLR(locsigid),
+						   SIGIDsigexp locsigid)),
+				mkLoc(spec))))
+		      (EMPTYspec)
+		      ($2))} 
+  | SIGNATURE SigBind_seq1      { mkLoc(SIGNATUREspec $2)}
+;
+
+ValDesc :
+    OpIdent COLON Ty AndValDesc_opt
+                        { ($1, $3) :: $4 }
+;
+
+AndValDesc_opt :
+    AND ValDesc         { $2 }
+  | /* */               { [] }
+;
+
+TypDesc :
+    TyVarSeq TyCon AndTypDesc_opt
+                        { ($1, $2) :: $3 }
+;
+
+AndTypDesc_opt :
+    AND TypDesc         { $2 }
+  | /* */               { [] }
+;
+ 
+ModBind_seq1 :
+    ModId OptConEqualsModExp AndModBind_opt
+                        { (MODBINDmodbind($1, $2 )) :: $3 }
+ |  ModId AS SigExp EQUALS Exp AndModBind_opt
+                        { (ASmodbind($1,$3,$5)) :: $6 } 
+;
+
+AndModBind_opt :
+    AND ModBind_seq1     { $2 }
+  | /* */               { [] }
+;
+
+/* cvr: TODO for some reason, this rule introduces loads of shift_reduce conflicts */
+OptConEqualsModExp : 
+    EQUALS ModExp	 	 {$2}
+  | COLON SigExp EQUALS ModExp   {mkLoc((CONmodexp($4,$2)),ref NONE)} 
+  | COLONGT SigExp EQUALS ModExp {mkLoc((ABSmodexp($4,$2)),ref NONE)} 
+
+FunBind_seq1 : /* cvr: TODO rationalize */
+    ModId AS SigExp EQUALS Exp AndFunBind_opt
+                        { (ASfunbind($1,$3,$5)) :: $6 }
+|   ModId OptConEqualsModExp AndFunBind_opt
+                        { (FUNBINDfunbind($1, $2 )) :: $3 }
+|   ModId LPAREN ModId COLON SigExp RPAREN FunBindBody AndFunBind_opt
+	 {(FUNBINDfunbind($1,
+		mkLoc(FUNCTORmodexp(Generative true,$3,ref VARik,$5,$7),
+                      ref NONE))
+           ::$8)}
+|   ModId LPAREN Spec RPAREN OptConEqualsModExp AndFunBind_opt
+	  {let val modid = (xLR $3,anonId)
+	       val longmodidinfo = (mkIdInfo (xLR $3, anonQualId) false,ref NONE)
+	   in
+	       (mkDerivedfunbind($1,
+				 Generative true,
+				 modid,
+				 (xLR $3,SPECsigexp $3),
+				 (xLR $5,(LETmodexp((xLR $5,OPENdec([longmodidinfo])),
+						    $5),
+					  ref NONE))))
+	       :: $6
+	   end}
+|   ModId ModId COLON SigExp FunBindBody AndFunBind_opt
+	 {(FUNBINDfunbind($1,
+			   mkLoc(FUNCTORmodexp(Applicative,$2,ref VARik,$4,$5),
+				 ref NONE))
+	    ::$6)}
+
+|   ModId SIG Spec END OptConEqualsModExp AndFunBind_opt
+	  {let val modid = (xLR $3,anonId)
+	       val longmodidinfo = (mkIdInfo (xLR $3, anonQualId) false,ref NONE)
+	   in
+	       (mkDerivedfunbind($1,
+				 Applicative,
+				 modid,
+				 (xLR $3,SPECsigexp $3),
+				 (xLR $5,(LETmodexp((xLR $5,OPENdec([longmodidinfo])),
+						    $5),
+					  ref NONE))))
+	       :: $6
+	   end}
+/* cvr: the version below causes a shift/reduce conflict when spec is empty 
+|  FunId Spec  OptConEqualsModExp AndFunBind_opt
+	  {let val modid = (xLR $3,anonId)
+	       val longmodidinfo = (mkIdInfo (xLR $2, anonQualId) false,ref NONE)
+	   in
+	       (mkDerivedfunbind($1,
+				 Applicative,
+				 modid,
+				 (xLR $2,SPECsigexp $2),
+				 (xLR $3,(LETmodexp((xLR $3,OPENdec([longmodidinfo])),
+						    $3),
+					  ref NONE))))
+	       :: $4
+	   end} 
+*/
+;
+
+AndFunBind_opt :
+    AND FunBind_seq1     { $2 }
+  | /* */               { [] }
+;
+
+
+SigBind_seq1 :
+    SigId EQUALS SigExp AndSigBind_opt
+                  { (SIGBINDsigbind($1, $3)) :: $4}
+;
+
+AndSigBind_opt :
+    AND SigBind_seq1     { $2 }
+  | /* */               { [] }
+;
+
+
+FunBindBody :
+    OptConEqualsModExp {$1}
+  | LPAREN ModId COLON SigExp RPAREN FunBindBody
+	 { mkLoc(FUNCTORmodexp(Generative false,$2,ref VARik,$4,$6),ref NONE) }
+  | ModId COLON SigExp FunBindBody
+	 { mkLoc(FUNCTORmodexp(Applicative,$1,ref VARik,$3,$4),ref NONE) }
+;
+ 
+
+AtModExp : 
+    STRUCT Dec END               {mkLoc((DECmodexp $2,ref NONE))} 
+  | LongModId 	                 {mkLoc((LONGmodexp $1,ref NONE))}
+  | LET Dec IN ModExp END        {mkLoc((LETmodexp($2,$4),ref NONE))}
+  | LPAREN ModExp RPAREN         {mkLoc((PARmodexp($2),ref NONE))}
+  | LPAREN Dec RPAREN            {mkLoc((PARmodexp((xLR $2,(DECmodexp $2,ref NONE))),ref NONE))} /* derived form */
+
+;
+
+
+ModExp : 
+    AtModExp_seq1              
+	    {(case $1 of
+		  (atmodexp::atmodexps) => 
+		      foldL (fn locmodexp =>  
+			     fn locfunexp => 
+			     (xxLR locfunexp locmodexp,
+				   (APPmodexp(locfunexp,locmodexp),ref NONE)))
+		             atmodexp 
+		             atmodexps
+	       | [] => fatalError "Parser.ModExp")}
+  | ModExp COLONGT SigExp        {mkLoc((ABSmodexp($1,$3),ref NONE))} 
+  | ModExp COLON SigExp          {mkLoc((CONmodexp($1,$3),ref NONE))} 
+  | FUNCTOR ModId COLON SigExp DARROW ModExp 
+                                 {mkLoc((FUNCTORmodexp(Applicative,$2,ref VARik,$4,$6),ref NONE))}
+  | FUNCTOR LPAREN ModId COLON SigExp RPAREN DARROW ModExp 
+                                 {mkLoc((FUNCTORmodexp(Generative false,$3,ref VARik,$5,$8),ref NONE))}
+  | REC LPAREN ModId COLON SigExp RPAREN ModExp 
+                                 {mkLoc((RECmodexp($3,ref NONE,$5,$7),ref NONE))}
+;
+	    
+AtModExp_seq1 :
+    AtModExp AtModExp_seq1            { $1:: $2 }
+  | AtModExp                       { [$1] }
+;
+
+ModDesc_seq1 :
+    ModId COLON SigExp AndModDesc_opt
+                        { (MODDESCmoddesc($1, $3 )) :: $4 }
+;
+
+AndModDesc_opt :
+    AND ModDesc_seq1     { $2 }
+  | /* */               { [] }
+;
+
+FunDescBody :
+    COLON SigExp        {$2}
+  | LPAREN ModId COLON SigExp RPAREN FunDescBody
+	 {mkLoc(FUNSIGsigexp(Generative false,$2,$4,$6))}
+  | ModId COLON SigExp FunDescBody
+         {mkLoc(FUNSIGsigexp(Applicative,$1,$3,$4)) }
+;
+FunDesc_seq1 :
+     ModId FunDescBody AndFunDesc_opt
+                      { (FUNDESCfundesc($1, $2)) :: $3 }
+;
+
+AndFunDesc_opt :
+    AND FunDesc_seq1    { $2 }
+  | /* */               { [] }
+;
+
+/*
+ AtSigExp : 
+    SIG Spec END   {mkLoc(SPECsigexp $2)} 
+  | SigId          {mkLoc(SIGIDsigexp $1)} 
+*/
+
+SigExp : 
+    SIG Spec END   {mkLoc(SPECsigexp $2)} 
+  | SigId          {mkLoc(SIGIDsigexp $1)}
+  | SigExp WHERE WhereType
+	{ foldL (fn (loc,(tyvarseq,longtycon,ty)) => fn sigexp =>
+              (loc,WHEREsigexp(sigexp,tyvarseq,longtycon,ty)))
+	                                     ($1)
+                                             ($3)} 
+  | FUNCTOR LPAREN ModId  COLON SigExp RPAREN ARROW SigExp 
+                    {mkLoc(FUNSIGsigexp(Generative false,$3,$5,$8))}
+  | FUNCTOR ModId COLON SigExp ARROW SigExp 
+                   {mkLoc(FUNSIGsigexp(Applicative,$2,$4,$6))} 
+  | REC LPAREN ModId COLON SigExp RPAREN SigExp 
+                    {mkLoc(RECsigexp($3,$5,$7))}
+;
+
+
+WhereType :
+    TYPE TyVarSeq LongTypeIdent EQUALS Ty AndWhereType_opt
+                        { mkLoc(($2,$3,$5)) :: $6 }
+;
+
+AndWhereType_opt :
+    AND WhereType         { $2 }
+  |                { [] }
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
