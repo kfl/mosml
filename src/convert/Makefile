@@ -15,6 +15,8 @@ GENPMOBJS = Deplex.uo Deppars.uo GenPm.uo
 LEXYACC = Scanner.sml Parser.sml Parser.sig Deplex.sml Deppars.sig Deppars.sml
 LEXYACCSML = Scanner.sml Parser.sml Deplex.sml Deppars.sml
 
+BINUTILS = convert gen_pm
+
 .SUFFIXES :
 .SUFFIXES : .sig .sml .ui .uo .grm .lex
 
@@ -27,11 +29,7 @@ LEXYACCSML = Scanner.sml Parser.sml Deplex.sml Deppars.sml
 .lex.sml:
 	$(MOSMLLEX) $<
 
-.grm.sml:
-	$(MOSMLYACC) $<
-
-
-all: convert gen_pm
+all: $(BINUTILS)
 
 convert: $(CONVOBJS)
 	$(MOSMLL) -standalone -o convert Convert.uo
@@ -40,12 +38,19 @@ gen_pm: $(GENPMOBJS)
 	$(MOSMLL) -standalone -o gen_pm GenPm.uo
 
 
+Parser.sml Parser.sig: Parser.grm
+	$(MOSMLYACC) $<
+
+
+Deppars.sml Deppars.sig: Deppars.grm
+	$(MOSMLYACC) $<
+
 clean:
 	rm -f *.ui
 	rm -f *.uo
 	rm -f Makefile.bak
 	rm -f $(LEXYACC)
-	rm -f convert
+	rm -f $(BINUTILS)
 
 #install:
 #	${INSTALL_DATA} convert $(TOOLDIR)
@@ -61,5 +66,5 @@ Deppars.uo: Deppars.ui
 Deplex.uo: Deppars.ui 
 Parser.uo: Parser.ui 
 Scanner.uo: Parser.ui 
-Convert.uo: Parser.ui Scanner.uo 
 GenPm.uo: Deppars.ui Deplex.uo 
+Convert.uo: Parser.ui Scanner.uo 
