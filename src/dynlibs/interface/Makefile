@@ -7,8 +7,6 @@ BASELIBS=-lm -ldl
 include ../../Makefile.inc
 
 all: libcside.so
-	@echo
-	@echo "Now execute 'mosml smlside.sml' to test the C functions"
 
 cside.o: cside.c
 	$(CC) $(CFLAGS) -c -o cside.o cside.c

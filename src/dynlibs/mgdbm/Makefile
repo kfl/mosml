@@ -14,18 +14,9 @@ BASELIBS=-lm -ldl
 include ../../Makefile.inc
 
 all: libmgdbm.so
-	@echo
-	@echo "Now type  make install "
 
 install:
 	cp libmgdbm.so $(BINDIR)
-	@echo
-	@echo "You must set your LD_LIBRARY_PATH for Gdbm to find libmgdbm.so."
-	@echo "You need to do something like this:"
-	@echo " tcsh: setenv LD_LIBRARY_PATH ${BINDIR}"
-	@echo " bash: export LD_LIBRARY_PATH=${BINDIR}"
-	@echo 
-	@echo "Then try mosml example1.sml, followed by mosml example2.sml"
 
 mgdbm.o: mgdbm.c
 	$(CC) $(CFLAGS) -c -o mgdbm.o mgdbm.c 

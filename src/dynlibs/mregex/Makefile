@@ -14,8 +14,7 @@ MOSMLL=mosmlc
 MOSMLLEX=mosmllex
 MOSMLYACC=mosmlyac
 
-all: libmregex.so Regex.uo
-	@echo "Now execute 'mosml testregex.sml' to try regexp matching"
+all: libmregex.so
 
 mregex.o: mregex.c
 	$(CC) $(CFLAGS) -c -o mregex.o mregex.c
@@ -26,11 +25,6 @@ libmregex.so: mregex.o
 
 install:
 	cp libmregex.so $(BINDIR)
-	cp Regex.sig $(LIBDIR)
-	cp Regex.ui $(LIBDIR)
-	cp Regex.uo $(LIBDIR)
-	@echo
-	@echo "Then execute  mosml testregex.sml"
 
 test:
 	mosml testregex.sml
@@ -38,16 +32,8 @@ test:
 clean:
 	rm -f *.o
 	rm -f *.so
-	rm -f *.ui
-	rm -f *.uo
 	rm -f Makefile.bak
 	(cd regex-0.12; make clean)
-
-.sig.ui:
-	$(MOSMLC) $<
-
-.sml.uo:
-	$(MOSMLC) $<
 
 depend: 
 	rm -f Makefile.bak

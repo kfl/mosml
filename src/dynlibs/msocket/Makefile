@@ -14,8 +14,7 @@ MOSMLL=mosmlc
 MOSMLLEX=mosmllex
 MOSMLYACC=mosmlyac
 
-all: libmsocket.so Socket.uo
-	@echo "Now execute 'mosml testserver.sml'"
+all: libmsocket.so 
 
 msocket.o: msocket.c
 	$(CC) $(CFLAGS) -c -o msocket.o msocket.c
@@ -27,11 +26,6 @@ libmsocket.so: msocket.o
 
 install:
 	cp libmsocket.so $(BINDIR)
-	cp Socket.sig $(LIBDIR)
-	cp Socket.ui $(LIBDIR)
-	cp Socket.uo $(LIBDIR)
-	@echo
-	@echo "Then execute  mosml testserver.sml"
 
 test:
 	mosml testsocket.sml
@@ -39,15 +33,7 @@ test:
 clean:
 	rm -f *.o
 	rm -f *.so
-	rm -f *.ui
-	rm -f *.uo
 	rm -f Makefile.bak
-
-.sig.ui:
-	$(MOSMLC) $<
-
-.sml.uo:
-	$(MOSMLC) $<
 
 depend: 
 	rm -f Makefile.bak

@@ -12,7 +12,6 @@ include ../../Makefile.inc
 OPTS=-fno-defer-pop
 CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I../../runtime -I ${GMPDIR}
 
-MOSMLHOME=${HOME}/mosml
 MOSMLTOOLS=camlrunm $(MOSMLHOME)/tools
 MOSMLC=mosmlc -c
 MOSMLL=mosmlc
@@ -20,17 +19,9 @@ MOSMLLEX=mosmllex
 MOSMLYACC=mosmlyac
 
 all: libmgmp.so IntInf.uo
-	@echo "Now type  make install "
 
 install:
 	cp libmgmp.so $(BINDIR)
-	@echo
-	@echo "You must set your LD_LIBRARY_PATH for Intinf to find libmgmp.so."
-	@echo "You need to do something like this:"
-	@echo " tcsh: setenv LD_LIBRARY_PATH ${BINDIR}"
-	@echo " bash: export LD_LIBRARY_PATH=${BINDIR}"
-	@echo 
-	@echo "Then try  mosml fac.sml"
 
 intinf.o: intinf.c
 	$(CC) $(CFLAGS) -c -o intinf.o intinf.c

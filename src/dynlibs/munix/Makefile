@@ -13,8 +13,7 @@ MOSMLL=mosmlc
 MOSMLLEX=mosmllex
 MOSMLYACC=mosmlyac
 
-all: libmunix.so Unix.uo Signal.uo
-	@echo "Now execute 'make test'"
+all: libmunix.so 
 
 munix.o: munix.c
 	$(CC) $(CFLAGS) -c -o munix.o munix.c
@@ -24,11 +23,6 @@ libmunix.so: munix.o
 
 install:
 	cp libmunix.so $(BINDIR)
-	cp Signal.sig Unix.sig $(LIBDIR)
-	cp Signal.ui Unix.ui $(LIBDIR)
-	cp Signal.uo Unix.uo $(LIBDIR)
-	@echo
-	@echo "Then execute  'make test'"
 
 test:
 	gcc -O2 -o sieve sieve.c
@@ -37,16 +31,8 @@ test:
 clean:
 	rm -f *.o
 	rm -f *.so
-	rm -f *.ui
-	rm -f *.uo
 	rm -f sieve
 	rm -f Makefile.bak
-
-.sig.ui:
-	$(MOSMLC) $<
-
-.sml.uo:
-	$(MOSMLC) $<
 
 depend: 
 	rm -f Makefile.bak

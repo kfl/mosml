@@ -8,6 +8,7 @@ all:
 	cd mregex; make 
 	cd msocket; make 
 	cd munix; make 
+
 install:
 	cd intinf; make install 
 	cd mgd; make install 
@@ -17,6 +18,15 @@ install:
 	cd mregex; make install 
 	cd msocket; make install 
 	cd munix; make install 
+
+test:
+	cd intinf; make test 
+	cd mgd; make test 
+	cd mgdbm; make test 
+	cd mmysql; make test 
+	cd mpq; make test 
+	cd mregex; make test 
+	cd munix; make test 
 
 clean:
 	cd crypt; make clean

@@ -8,8 +8,8 @@
 
 PGSQLLIBDIR=/usr/lib
 PGSQLINCDIR=/usr/include/pgsql
-PGSQLLIBDIR=/usr/local/pgsql/lib
-PGSQLINCDIR=/usr/local/pgsql/include
+#PGSQLLIBDIR=/usr/local/pgsql/lib
+#PGSQLINCDIR=/usr/local/pgsql/include
 include ../../Makefile.inc
 
 OPTS=-fno-defer-pop
@@ -21,8 +21,7 @@ MOSMLL=mosmlc
 MOSMLLEX=mosmllex
 MOSMLYACC=mosmlyac
 
-all: libmpq.so Postgres.uo
-	@echo "Now execute 'mosml testpgsql.sml' to try PostgreSQL"
+all: libmpq.so
 
 mpq.o: mpq.c
 	$(CC) $(CFLAGS) -c -o mpq.o mpq.c
@@ -34,32 +33,14 @@ libmpq.so: mpq.o
 
 install:
 	cp libmpq.so $(BINDIR)
-	cp Postgres.sig $(LIBDIR)
-	cp Postgres.ui $(LIBDIR)
-	cp Postgres.uo $(LIBDIR)
-	@echo
-	@echo "You must set your LD_LIBRARY_PATH for Postgres to find libmpq.so."
-	@echo "You need to do something like this:"
-	@echo " tcsh: setenv LD_LIBRARY_PATH ${BINDIR}"
-	@echo " bash: export LD_LIBRARY_PATH=${BINDIR}"
-	@echo 
-	@echo "Then execute  mosml testpsql.sml"
 
 test:
-	mosml testpgsql.sml
+	mosml testpsql.sml
 
 clean:
 	rm -f *.o
 	rm -f *.so
-	rm -f *.ui
-	rm -f *.uo
 	rm -f Makefile.bak
-
-.sig.ui:
-	$(MOSMLC) $<
-
-.sml.uo:
-	$(MOSMLC) $<
 
 depend: 
 	rm -f Makefile.bak

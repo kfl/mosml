@@ -23,8 +23,7 @@ MOSMLL=mosmlc
 MOSMLLEX=mosmllex
 MOSMLYACC=mosmlyac
 
-all: libmmysql.so Mysql.uo
-	@echo "Now execute 'mosml testmysql.sml' to try Mysql"
+all: libmmysql.so 
 
 mmysql.o: mmysql.c
 	$(CC) $(CFLAGS) -c -o mmysql.o mmysql.c
@@ -35,16 +34,6 @@ libmmysql.so: mmysql.o
 
 install:
 	cp libmmysql.so $(BINDIR)
-	cp Mysql.sig $(LIBDIR)
-	cp Mysql.ui $(LIBDIR)
-	cp Mysql.uo $(LIBDIR)
-	@echo
-	@echo "You must set your LD_LIBRARY_PATH for Mysql to find libmmysql.so."
-	@echo "You need to do something like this:"
-	@echo " tcsh: setenv LD_LIBRARY_PATH ${BINDIR}"
-	@echo " bash: export LD_LIBRARY_PATH=${BINDIR}"
-	@echo 
-	@echo "Then execute  mosml testmysql.sml"
 
 test:
 	mosml testmysql.sml
@@ -53,15 +42,7 @@ clean:
 	rm -f *~
 	rm -f *.o
 	rm -f *.so
-	rm -f *.ui
-	rm -f *.uo
 	rm -f Makefile.bak
-
-.sig.ui:
-	$(MOSMLC) $<
-
-.sml.uo:
-	$(MOSMLC) $<
 
 depend: 
 	rm -f Makefile.bak
