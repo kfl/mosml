@@ -1,0 +1,32 @@
+Random notes from Ken's brain on the future of Mosml -*- indented-text -*-
+==========================================================================
+(legend: * means think about, + means completed, - means droped)
+
+
+2000-05-08:
+-----------
+ * Port to new O'Caml runtime to clearify license issues
+ 
+ * Investigate what needs to be done so as ml-{lex,yacc} can be used
+   with mosml 2.0
+
+ * Talk to Peter and Claudio about why mosml{,c} are shell-scripts
+   instead of plain mosml program.  The shell scripts are causing
+   problems with rpm.  
+ 
+   What is the O'Caml solution?
+
+ * Look at IO from the SML Basis Lib (SBL).  And Port it to mosml.
+
+ * Document which parts of SBL mosml implements, which parts mosml
+   does *not* implements, and where we diverge.
+
+ * Document PM and go over the current design (throw away the current
+   implementation and make a new more robust implementation)
+
+ * Write article to Dr. Dobbs or Linux Journal about SML and mosml in
+   Particular.
+
+ * Write a hackers tutorial to put on the Web.
+
+ * Make x86 native compiler (maybe just by translating .uo files)
