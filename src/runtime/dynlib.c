@@ -196,7 +196,7 @@ value dynlib_dlsym(value handle, value sym) /* ML */
 
   symhdl = dlsym((void *) handle, String_val(sym));
   {   
-    const char *error = dlerror();
+    char *error = dlerror();
     if (error != NULL)  
       failwith(error);
   }

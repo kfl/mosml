@@ -18,11 +18,10 @@ EXTERN Noreturn raiseprimitive1(int exnindex, value arg);
 EXTERN Noreturn raise_with_string(int exnindex, char * msg);
 EXTERN Noreturn failwith(char *);
 EXTERN Noreturn invalid_argument(char *);
-EXTERN Noreturn raise_overflow();
-EXTERN Noreturn raise_out_of_memory();
+EXTERN Noreturn raise_overflow(void);
+EXTERN Noreturn raise_out_of_memory(void);
 extern volatile int float_exn;
-Noreturn invalid_argument (char *);
-Noreturn raise_out_of_memory (void);
+
 extern double maxdouble;
 
 #endif /* _fail_ */
