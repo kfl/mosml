@@ -3477,19 +3477,9 @@ fun elabSigSpec (spec : Spec) =
      end )
 ;
 
-
-
 (* tie the knot *)
 
 (* cvr: TODO remove in favour of mutual recursion *)
 
 val () = elabSigExpRef := elabSigExp;
 val () = elabModExpRef := elabModExp;
-
-
-
-
-
-
-
-

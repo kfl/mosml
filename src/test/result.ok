@@ -38,9 +38,9 @@ Enter `quit();' to quit.
 > New type names: =Tree
   datatype 'a Tree =
   ('a Tree,
-   {con 'a Lf : 'a Tree, con 'a Br : 'a * 'a Tree * 'a Tree -> 'a Tree})
-  con 'a Lf = Lf : 'a Tree
+   {con 'a Br : 'a * 'a Tree * 'a Tree -> 'a Tree, con 'a Lf : 'a Tree})
   con 'a Br = fn : 'a * 'a Tree * 'a Tree -> 'a Tree
+  con 'a Lf = Lf : 'a Tree
 > val t1 = Br(2, Br(1, Lf, Lf), Br(3, Lf, Lf)) : int Tree
 > val ('a, 'b) foldTree = fn : ('a -> 'b -> 'b -> 'b) -> 'b -> 'a Tree -> 'b
 > val 'a revBranch = fn : 'a -> 'a Tree -> 'a Tree -> 'a Tree
@@ -113,14 +113,14 @@ Enter `quit();' to quit.
   datatype 'a arex =
   ('a arex,
    {con 'a ADD : ('a arex * 'a arex) -> 'a arex,
-    con 'a SUB : ('a arex * 'a arex) -> 'a arex,
     con 'a MINUS : 'a arex -> 'a arex,
+    con 'a SUB : ('a arex * 'a arex) -> 'a arex,
     con 'a TIP : 'a -> 'a arex})
   type 'a binary = 'a arex * 'a arex
   type 'a unary = 'a arex
   con 'a ADD = fn : ('a arex * 'a arex) -> 'a arex
-  con 'a SUB = fn : ('a arex * 'a arex) -> 'a arex
   con 'a MINUS = fn : 'a arex -> 'a arex
+  con 'a SUB = fn : ('a arex * 'a arex) -> 'a arex
   con 'a TIP = fn : 'a -> 'a arex
 > val a1 = MINUS(ADD(TIP 1, SUB(TIP 2, TIP 5))) : int arex
 [closing file "test8.sml"]
@@ -211,10 +211,10 @@ File "testb.sml", line 7, characters 2-17:
 > New type names: =AB
   datatype ('a, 'b) AB =
   (('a, 'b) AB,
-   {con ('a, 'b) NILab : ('a, 'b) AB,
-    con ('a, 'b) CONSab : {a : 'a, b : 'b} -> ('a, 'b) AB})
-  con ('a, 'b) NILab = NILab : ('a, 'b) AB
+   {con ('a, 'b) CONSab : {a : 'a, b : 'b} -> ('a, 'b) AB,
+    con ('a, 'b) NILab : ('a, 'b) AB})
   con ('a, 'b) CONSab = fn : {a : 'a, b : 'b} -> ('a, 'b) AB
+  con ('a, 'b) NILab = NILab : ('a, 'b) AB
 ab> val it = CONSab{a = "a", b = "b"} : (string, string) AB
 ba> val it = CONSab{a = "a", b = "b"} : (string, string) AB
 > val 'a f = fn : 'a -> 'a
@@ -497,10 +497,10 @@ ba> val it = CONSab{a = "a", b = "b"} : (string, string) AB
 > val eew1 = true : bool
 > val eec1 = true : bool
 > val eeg1 = true : bool
-User: 1.000  System: 0.000  GC: 0.000  Real: 1.002
+User: 0.580  System: 0.000  GC: 0.000  Real: 0.582
 > val it = 7 : int
 > val loop2 = fn : int -> int
-User: 0.960  System: 0.000  GC: 0.000  Real: 0.960
+User: 0.520  System: 0.000  GC: 0.000  Real: 0.528
 > val it = 7 : int
 > val maxi = fn : int array -> int * int
 [closing file "ovlsucc.sml"]

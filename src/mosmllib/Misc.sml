@@ -25,6 +25,7 @@ val explode = String.explode;
 val implode = String.implode;
 val concat = String.concat;
 val str = String.str;
+val substring = String.substring;
 
 exception Empty = List.Empty;
 val op @ = List.@;
