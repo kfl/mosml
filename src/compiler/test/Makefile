@@ -3,6 +3,7 @@
 # This works with bash
 
 MOSML=mosml -liberal
+MOSMLC=mosmlc -liberal
 
 # with the supplied compiler
 all:
@@ -34,12 +35,18 @@ all:
 	$(MOSML) -P full < wheretyp.sml >> result 2>&1        
 	#this one last as its slow
 	$(MOSML) -P full test.sml >> result 2>&1
+	#these are new and need to be validated
+	$(MOSML) -P full loophole.sml >> result 2>&1
+	$(MOSML) -P full fcmodulebug.sml >> result 2>&1
+	$(MOSMLC) -P full lvlbug.sml >> result 2>&1
+        $(MOSML) -P full matchbug.sml >> result 2>&1
+
 	diff result result.ok
 
 # with the current compiler
 current:
 	rm -f result
-	make all MOSML=../../camlrunm\ ../mosmltop\ -stdlib\ ../../mosmllib
+	make all MOSML=../../camlrunm\ ../mosmltop\ -stdlib\ ../../mosmllib MOSMLC=../../camlrunm\ ../mosmlcmp\ -stdlib\ ../../mosmllib
 
 clean:
 	rm -f result
