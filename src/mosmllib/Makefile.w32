@@ -6,7 +6,7 @@ COMPFLAGS=-imptypes
 !include ..\Makedefs.w32
 
 all: Array.uo Array2.uo Arraysort.uo \
-     BasicIO.uo Binaryset.uo Binarymap.uo BinIO.uo Bool.uo Byte.uo \
+     BasicIO.uo Binaryset.uo Binarymap.uo BinIO.uo Bool.uo Buffer.uo Byte.uo \
      Callback.uo Char.uo CharArray.uo CharVector.uo CommandLine.uo \
      Date.uo Dynarray.uo Dynlib.uo \
      FileSys.uo Gdbm.uo Gdimage.uo Help.uo \
@@ -16,7 +16,7 @@ all: Array.uo Array2.uo Arraysort.uo \
      NJ93.uo Nonstdio.uo \
      Obj.uo Option.uo OS.uo \
      Parsing.uo Path.uo Polygdbm.uo Polyhash.uo Postgres.uo PP.uo Process.uo \
-     Random.uo Real.uo Regex.uo \
+     Random.uo Real.uo Redblackmap.uo Redblackset.uo Regex.uo \
      Signal.uo SML90.uo Socket.uo Splaymap.uo Splayset.uo Splaytree.uo \
      Strbase.uo String.uo StringCvt.uo Substring.uo Susp.uo \
      TextIO.uo Time.uo Timer.uo \
