@@ -1864,7 +1864,12 @@ fun elabDatBind (ME:ModEnv) (FE:FunEnv) (GE:SigEnv) (UE:UEnv) (VE:VarEnv) (TE:Ty
 
     conbind_list = Sort.sort (fn ConBind(ii,_) => fn ConBind(ii',_) =>
                                  hd(#id(#qualid ii))<=hd(#id(#qualid ii'))) conbind_list
+
+    Enabled constructor sorting 2000-04-27 ps:
 *)
+      val conbind_list = 
+	  Sort.sort (fn ConBind(ii,_) => fn ConBind(ii',_) =>
+		     hd(#id(#qualid ii))<=hd(#id(#qualid ii'))) conbind_list
       val () = setTags conbind_list
       val () = incrBindingLevel()
       val vs = map (fn tv => newExplicitTypeVar tv) pars

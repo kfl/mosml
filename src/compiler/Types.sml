@@ -2228,31 +2228,31 @@ and infoSOME = mkSML "SOME"
   { conArity=1,   conIsGreedy=false,   conTag=1,   conSpan=2,
     conType= scheme_1u (fn a =>
       type_arrow a (type_option a)) }
-and infoLESS = mkSML "LESS"
+and infoEQUAL = mkSML "EQUAL"
   { conArity=0,   conIsGreedy=false,   conTag=0,   conSpan=3,
     conType=sc_order }
-and infoEQUAL = mkSML "EQUAL"
+and infoGREATER = mkSML "GREATER"
   { conArity=0,   conIsGreedy=false,   conTag=1,   conSpan=3,
     conType=sc_order }
-and infoGREATER = mkSML "GREATER"
+and infoLESS = mkSML "LESS"
   { conArity=0,   conIsGreedy=false,   conTag=2,   conSpan=3,
     conType=sc_order }
-and infoQUOTE = mkSML "QUOTE"
+and infoANTIQUOTE = mkSML "ANTIQUOTE"
   { conArity=1,   conIsGreedy=false,   conTag=0,   conSpan=2,
     conType= scheme_1u (fn a =>
-      type_arrow type_string (type_frag a)) }
-and infoANTIQUOTE = mkSML "ANTIQUOTE"
+      type_arrow a (type_frag a)) }
+and infoQUOTE = mkSML "QUOTE"
   { conArity=1,   conIsGreedy=false,   conTag=1,   conSpan=2,
     conType= scheme_1u (fn a =>
-      type_arrow a (type_frag a)) }
+      type_arrow type_string (type_frag a)) }
 ;
 end;
 
 val initial_bool_CE = ConEnv [infoFalse, infoTrue];
 val initial_list_CE = ConEnv [infoNil, infoCons];
 val initial_option_CE = ConEnv [infoNONE, infoSOME];
-val initial_order_CE = ConEnv [infoLESS, infoEQUAL, infoGREATER];
-val initial_frag_CE = ConEnv [infoQUOTE, infoANTIQUOTE];
+val initial_order_CE = ConEnv [infoEQUAL, infoGREATER, infoLESS];
+val initial_frag_CE = ConEnv [infoANTIQUOTE, infoQUOTE];
 
 val unit_General = newSig "General" "General" STRmode;
 

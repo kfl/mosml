@@ -4,7 +4,7 @@
 #include "mlvalues.h"
 #include "memory.h"
 
-struct parser_tables {    /* Mirrors parse_tables in ../lib/parsing.mli */
+struct parser_tables {    /* Mirrors parse_tables in ../mosmllib/Parsing.sml */
   value actions;
   value transl;
   char * lhs;
@@ -19,7 +19,7 @@ struct parser_tables {    /* Mirrors parse_tables in ../lib/parsing.mli */
   char * check;
 };
 
-struct parser_env {       /* Mirrors parser_env in ../lib/iparsing.mli */
+struct parser_env {       /* Mirrors parser_env in ../mosmllib/Parsing.sml */
   value s_stack;
   value v_stack;
   value symb_start_stack;
@@ -50,20 +50,22 @@ int parser_trace = 0;
 #endif
 
 /* Input codes */
+/* Mirrors parserInput in ../mosmllib/Parsing.sml */
 
-#define START 0            /* Mirrors parser_input in ../lib/iparsing.mli */
-#define TOKEN_READ 1
-#define STACKS_GROWN_1 2
-#define STACKS_GROWN_2 3
-#define SEMANTIC_ACTION_COMPUTED 4
+#define SEMANTIC_ACTION_COMPUTED 0
+#define STACKS_GROWN_1 1
+#define STACKS_GROWN_2 2
+#define START 3   
+#define TOKEN_READ 4
 
 /* Output codes */
+/* Mirrors parserOutput in ../mosmllib/Parsing.sml */
 
-#define READ_TOKEN Atom(0) /* Mirrors parser_output in ../lib/iparsing.mli */
-#define RAISE_PARSE_ERROR Atom(1)
-#define GROW_STACKS_1 Atom(2)
-#define GROW_STACKS_2 Atom(3)
-#define COMPUTE_SEMANTIC_ACTION Atom(4)
+#define COMPUTE_SEMANTIC_ACTION Atom(0)
+#define GROW_STACKS_1 Atom(1)
+#define GROW_STACKS_2 Atom(2)
+#define RAISE_PARSE_ERROR Atom(3)
+#define READ_TOKEN Atom(4) 
 
 /* The pushdown automata */
 

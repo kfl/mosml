@@ -1,6 +1,6 @@
 2000-01-18:
 
-* The amlazy file Data.sml containing a structure called Data: parse
++ The amlazy file Data.sml containing a structure called Data: parse
   as AnonStruct, then resolve in the compiler
 
 * Avoid shift/reduce and reduce/reduce conflicts in the parser.
@@ -90,7 +90,7 @@
   test7, because it doesn't pass the fifth argument (a boolean)
   correctly.  test 7 works if the number of arguments is reduced to 4.
   test10 fails as well, why?  NON-BUG.  A symbolic link had been
-  extended by corecursive file copying.
+  extended by recursive file copying.
 
 + Non-blocking IO in TextIO.  input calls fast_input, which is
   io.input in the runtime.  It calls getblock, which may call
@@ -243,14 +243,7 @@ value input_nonblocking(value channel, value buff, value start, value length) /*
   wseq-like structure) and having also a prsep style
   iterator-with-separator plus an prmap style iterator.
 
-* If we change constructor ordering, change also dynlibs/interface/cside.c  
-
-  Some change in runtime/sys.c and/or runtime/alloc.c wrt TextIO,
-  BasicIO, BinIO, Nonstdio.
-
-  Others?
-
-+ Meta.fke;  Meta.system
++ Meta.fke;  remove Meta.system
 
 * Meta.fke; documentation
 
@@ -260,9 +253,7 @@ value input_nonblocking(value channel, value buff, value start, value length) /*
 
 * mosmllib/README
 
-* Parser combinators: 
-
-* TextIO.scanStream -- get rid of cs?
++ TextIO.scanStream -- get rid of cs? -- no: cannot
 
 * Should gc time be subtracted from sys time?  (Timer, Mosml)
 
@@ -270,7 +261,7 @@ value input_nonblocking(value channel, value buff, value start, value length) /*
 
 http://www.dina.kvl.dk/~sestoft/sml/imperative-io.html#IMPERATIVE_IO:SIG:SPEC
 
-* 2000-04-26: Michael NorrishL this crashes mosml 1.44 (and 1.99):
++ 2000-04-26: Michael Norrish: this crashes mosml 1.44 (and 1.99):
 
 datatype 'a result =
     FIRST of 'a
@@ -298,7 +289,7 @@ val zz = () = (case FIRST 1 of
     FIRST _ => ()
   | _ => ());     
 
-But the generated code looks OK:
+The generated lambda code looks OK:
 
 (prim (set_global Top.zz/3) 
 	(prim (ccall2 sml_equal) (BLOCK 0:1 ) 
@@ -342,3 +333,114 @@ I'm afraid I introduced this optimization in 1997.  The reasoning was
 that if some branch of a switch evaluates to () : unit, then all
 branches do, and they are evaluated only for their side effects.  Not
 so.  
+
+* 2000-04-26: Constructor ordering.  Constructors should be sorted
+alphabetically so that the ordering in datatype declarations doesn't
+matter.  That is, this should elaborate:
+
+     signature SIG = 
+     sig
+	 datatype 'a t = Bt | Ct of int
+	 datatype 'a u = Cu of int | Bu 
+     end
+
+     structure S: SIG = 
+     struct
+	 datatype 'a t = Ct of int | Bt
+	 datatype 'a u = Bu | Cu of int
+     end
+
+     structure G : sig datatype order = EQUAL | GREATER | LESS end = General;
+     structure G : sig datatype order = GREATER | EQUAL | LESS end = General;
+
+   - should reorder the pervasive datatypes (order and frag) in Types.sml:
+
+and infoEQUAL = mkSML "EQUAL"
+  { conArity=0,   conIsGreedy=false,   conTag=0,   conSpan=3,
+    conType=sc_order }
+and infoGREATER = mkSML "GREATER"
+  { conArity=0,   conIsGreedy=false,   conTag=1,   conSpan=3,
+    conType=sc_order }
+and infoLESS = mkSML "LESS"
+  { conArity=0,   conIsGreedy=false,   conTag=2,   conSpan=3,
+    conType=sc_order }
+and infoANTIQUOTE = mkSML "ANTIQUOTE"
+  { conArity=1,   conIsGreedy=false,   conTag=0,   conSpan=2,
+    conType= scheme_1u (fn a =>
+      type_arrow a (type_frag a)) }
+and infoQUOTE = mkSML "QUOTE"
+  { conArity=1,   conIsGreedy=false,   conTag=1,   conSpan=2,
+    conType= scheme_1u (fn a =>
+      type_arrow type_string (type_frag a)) }
+
+val initial_order_CE = ConEnv [infoEQUAL, infoGREATER, infoLESS];
+val initial_frag_CE = ConEnv [infoANTIQUOTE, infoQUOTE];
+
+   - fix the corresponding extraction code in Smlperv.sml:
+
+val [infoFalse, infoTrue] = deConEnv initial_bool_CE
+and [infoNil, infoCons]   = deConEnv initial_list_CE   (* NOTE: NOT sorted *)
+and [infoNONE, infoSOME]  = deConEnv initial_option_CE
+and [infoEQUAL, infoGREATER, infoLESS] = deConEnv initial_order_CE
+and [infoANTIQUOTE, infoQUOTE] = deConEnv initial_frag_CE
+
+   - do we need to change only the conTag fields, or also the
+     initial_frag_CE etc (as above)?  Better order both.
+
+   - the bool and option datatypes are sorted already
+
+   - we do *not* fix the list datatype, since the constructors
+     nil and :: may not be respecified or redeclared.
+
+   - there is no corresponding runtime system code
+
+   - should reorder the constructors in mosmllib:
+
+	open_flag: BasicIO, BinIO, Nonstdio, TextIO
+        and runtime/sys.c variable sys_open_flags
+
+	dbresultstatus: Mysql, Postgres
+        and dynlibs/mmysql/mmysql.c function db_resultstatus
+        and dynlibs/mpq/mpq.c  
+
+	parserInput and parserOutput: Parsing
+        and the macroes START, TOKEN_READ, ... in parsing.c
+
+   - mosmlyac must sort the tokens (the token datatype), because the 
+     token tags are used as indexes into the parsetable, in parsing.c 
+     line 97. 
+
+   - dynlibs/interface/smlside.sml and cside.c: datatype t
+
+   - sort constructors in declarations as well as specifications:
+     uncomment line 1865 in Elab.sml, function elabDatBind (this takes 
+     care of declarations as well as specifications).  
+
+   - Sort tokens in the parsers generated by mosmlyac.  Strangely,
+     sorting the tokens in compiler/Parser.grm makes mosmlcmp shorter
+     by 1 K.  Should do the same to lex/Grammar.grm of course.  How
+     make mosmlyac sort tokens?  Tokens are stored in the same
+     (hashed, linked) symbol table as other grammar symbols.  The tag
+     of a token is used only as an index into the table yytransl, it
+     seems (parsing.c line 97).  Hence it suffices to (1) sort the  
+     tokens (by symbol_value) and their adapt the indexes (symbol_value). 
+
+   - loading of libraries still crashes.  This is because hashtables 
+     (Hasht) are used to represent signatures, and the mosmllib stuff 
+     was compiled with one constructor ordering in Hasht, and are loaded 
+     with another ordering.
+
+   - constructor sorting affects user programs Nonstdio.{input_value,
+     output_value}, string_mlval, mlval_string, and hence Polygdbm
+
+Bootstrapping:
+
+(1) Modify the core mosmllib .sml files and recompile.  The new
+compiler must be run with a new runtime system.  
+(2) Recompile with new compiler and runtime system.  Binaries should be 
+identical.
+(3) Fix Types and Smlperv.  Does not affect runtime.  Bootstrap.
+(4) Enable constructor sorting, reorder Hasht.bucket constructors, 
+sort tokens in grammar specifications.
+(5) Fix Mysql, Postgres, and their C code.
+(6) Fix dynlibs/interface

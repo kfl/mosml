@@ -51,15 +51,15 @@ prim_val caml_close_in : in_channel -> unit = 1 "close_in"
 type file_perm = int;
 
 datatype open_flag =
-    O_RDONLY                       (* `open' read-only *)
-  | O_WRONLY                       (* `open' write-only *)
-  | O_RDWR                         (* `open' for reading and writing *)
-  | O_APPEND                       (* `open' for appending *)
+    O_APPEND                       (* `open' for appending *)
+  | O_BINARY                       (* `open' in binary mode *)    
   | O_CREAT                        (* create the file if nonexistent *)
-  | O_TRUNC                        (* truncate the file to 0 if it exists *)
   | O_EXCL                         (* fails if the file exists *)
-  | O_BINARY                       (* `open' in binary mode *)
+  | O_RDONLY                       (* `open' read-only *)
+  | O_RDWR                         (* `open' for reading and writing *)
   | O_TEXT                         (* `open' in text mode *)
+  | O_TRUNC                        (* truncate the file to 0 if it exists *)
+  | O_WRONLY                       (* `open' write-only *)
 ;
 
 prim_val sys_open :
@@ -210,7 +210,7 @@ fun inputAll (is as ref {closed, ic, name}) =
 
 type cs = int (* character source state *)
 
-fun scanStream scan  (instrm as ref {closed, ic, name}) =
+fun scanStream scan (instrm as ref {closed, ic, name}) =
     let prim_eqtype array_
 	prim_val array_  : int -> array_                 = 1 "create_string";
 	prim_val sub_    : array_ -> int -> char         = 2 "get_nth_char";

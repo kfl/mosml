@@ -34,11 +34,18 @@ and infoNil   = hd(deConEnv initial_list_CE)
 and infoCons  = hd(tl(deConEnv initial_list_CE))
 and infoNONE  = hd(deConEnv initial_option_CE)
 and infoSOME  = hd(tl (deConEnv initial_option_CE))
+and infoEQUAL = hd(deConEnv initial_order_CE)
+and infoGREATER = hd(tl(deConEnv initial_order_CE))
+and infoLESS  = hd(tl(tl(deConEnv initial_order_CE)))
+and infoANTIQUOTE  = hd(deConEnv initial_frag_CE)
+and infoQUOTE      = hd(tl (deConEnv initial_frag_CE))
+
+(* ps 2000-04-27
 and infoLESS  = hd(deConEnv initial_order_CE)
 and infoEQUAL = hd(tl(deConEnv initial_order_CE))
 and infoGREATER = hd(tl (tl (deConEnv initial_order_CE)))
 and infoQUOTE      = hd(deConEnv initial_frag_CE)
-and infoANTIQUOTE  = hd(tl (deConEnv initial_frag_CE))
+and infoANTIQUOTE  = hd(tl (deConEnv initial_frag_CE)) *)
 ;
 
 (* *** Initial static environments *** *)

@@ -35,6 +35,9 @@ bucket **plhs;
 int name_pool_size;
 char *name_pool;
 
+bucket** sortedtokens;
+int ntruetokens;
+
 char line_format[] = "(* Line %d, file %s *)\n";
 
 
@@ -837,6 +840,9 @@ void declare_tokens(int assoc)
 	c = nextc();
 	if (c == EOF) unexpected_EOF();
 	value = UNDEFINED;
+	/* It makes no sense in mosmlyac to explicit specify the tag 
+	   number of a token or symbol (sestoft 2000-04-28):
+
 	if (isdigit(c))
 	{
 	    value = get_number();
@@ -846,6 +852,7 @@ void declare_tokens(int assoc)
 	    c = nextc();
 	    if (c == EOF) unexpected_EOF();
 	}
+	*/
     }
 }
 
@@ -946,18 +953,56 @@ void read_declarations(void)
     }
 }
 
+/* Order tokens lexicographically by modifying next-pointers, first_symbol */
+
+int tokcompare(const void* bpp1, const void* bpp2) 
+{ return strcmp((*((bucket**)bpp1))->name, (*((bucket**)bpp2))->name); }
+
+
+void sort_tokens() {
+  int i;
+  bucket *bp;
+
+  /* Count tokens */
+  ntruetokens = 0;
+  for (bp = first_symbol; bp; bp = bp->next) 
+    if (bp->class == TERM && bp->true_token) 
+      ++ntruetokens;
+  
+  sortedtokens = (bucket **) MALLOC(ntruetokens*sizeof(bucket *));
+  if (sortedtokens == 0) no_space();
+
+  i = 0;
+  for (bp = first_symbol; bp; bp = bp->next) 
+    if (bp->class == TERM && bp->true_token)
+      sortedtokens[i++] = bp;
+  assert(i == ntruetokens);
+
+  /* Sort sortedtokens[0..ntruetokens-1] in alphabetical order: */
+  
+  qsort(sortedtokens, ntruetokens, sizeof(bucket*), tokcompare);
+  
+  /* Assign explicit token values based on the alphabetical ordering: */
+  /* (... and pray that later code does not screw up these values)    */
+
+  for (i=0; i<ntruetokens; i++) 
+    sortedtokens[i]->value = i+257;
+}
+
 void output_token_type(FILE *output_file)
 {
   bucket * bp;
   int n, tyno;
+  int i;
+  bucket **sorted;
 
   fprintf(output_file, "local\n");
 
   /* Make type abbreviations for types that may be products or records: */
   tyno = 1;
-  for (bp = first_symbol; bp; bp = bp->next) {
-    if (bp->class == TERM && bp->true_token && bp->tag 
-        && (strchr(bp->tag, '*') || strchr(bp->tag, '{')))
+  for (i = 0; i<ntruetokens; i++) {
+    bp = sortedtokens[i];
+    if (bp->tag && (strchr(bp->tag, '*') || strchr(bp->tag, '{')))
     {
       fprintf(output_file, "type t__%d__ = %s\n", tyno, bp->tag);
       tyno++;
@@ -968,7 +1013,8 @@ void output_token_type(FILE *output_file)
   /* Output the token datatype, using the type abbreviations: */  
   fprintf(output_file, "datatype token =\n");
   n = 0; tyno = 1;
-  for (bp = first_symbol; bp; bp = bp->next) {
+  for (i = 0; i<ntruetokens; i++) {
+    bp = sortedtokens[i];
     if (bp->class == TERM && bp->true_token) {
       fprintf(output_file, "  %c %s", n == 0 ? ' ' : '|', bp->name);
       if (bp->tag) {
@@ -1506,7 +1552,7 @@ void pack_symbols(void)
 {
     register bucket *bp;
     register bucket **v;
-    register int i, j, k, n;
+    register int i, j, k, n, itrue;
 
     nsyms = 2;
     ntokens = 1;
@@ -1538,13 +1584,18 @@ void pack_symbols(void)
     v[start_symbol] = 0;
 
     i = 1;
+    itrue = 0;
     j = start_symbol + 1;
     for (bp = first_symbol; bp; bp = bp->next)
     {
-	if (bp->class == TERM)
-	    v[i++] = bp;
+      if (bp->class == TERM) {
+	if (bp->true_token) 
+	  v[i] = sortedtokens[itrue++];
 	else
-	    v[j++] = bp;
+	  v[i] = bp;
+	i++;
+      } else
+	v[j++] = bp;
     }
     assert(i == ntokens && j == nsyms);
 
@@ -1572,6 +1623,10 @@ void pack_symbols(void)
     }
 
     k = 0;
+    /* This (assigns and) sorts the symbol_value fields for tokens 
+       by insertion sort */
+    /* It appears to be pretty useless (or dangerous) in the context 
+       of mosmlyac */
     for (i = 1; i < ntokens; ++i)
     {
 	n = v[i]->value;
@@ -1779,8 +1834,9 @@ void reader(void)
 {
     create_symbol_table();
     read_declarations();
+    sort_tokens();
     output_token_type(interface_file);
-    output_token_type(code_file);
+    output_token_type(code_file); 
     read_grammar();
     make_goal();
     free_symbol_table();

@@ -28,41 +28,90 @@ end
 	
 %}
 
-
-%token ABSTYPE AND ANDALSO AS CASE DATATYPE DO ELSE END
-%token EQTYPE EXCEPTION
-%token FUNCTOR 
-%token INCLUDE
-%token FN FUN HANDLE IF IN INFIX INFIXR LET LOCAL
-%token NONFIX OF OP ORELSE RAISE REC SIG SIGNATURE STRUCT STRUCTURE
-%token SHARING
-%token THEN TYPE VAL WHILE WITH WITHTYPE
-%token WHERE
-
-%token EQUALS
-%token DOT
-%token COMMA ARROW DARROW BAR STAR HASH
-%token LBRACE RBRACE HASHLBRACKET LBRACKET RBRACKET LPAREN RPAREN
-%token COLON COLONGT SEMICOLON UNDERBAR DOTDOTDOT
-
-%token DLBRACE DRBRACE
-%token OPEN PRIM_VAL PRIM_TYPE PRIM_EQTYPE PRIM_REFTYPE
-
-%token <string> ID
-%token <Const.QualifiedIdent> QUAL_ID QUAL_STAR
-
-%token <int> ZDIGIT NZDIGIT ZPOSINT2 NZPOSINT2 NEGINT
-%token <word> WORD
+%token ABSTYPE
+%token AND
+%token ANDALSO
+%token ARROW
+%token AS
+%token BAR
+%token CASE
 %token <char> CHAR
-%token <real> REAL
-%token <string> STRING
-
-%token QUOTEL
-%token <string> QUOTER QUOTEM
-
-%token <string> TYVAR
-
+%token COLON
+%token COLONGT
+%token COMMA
+%token DARROW
+%token DATATYPE
+%token DLBRACE
+%token DO
+%token DOT
+%token DOTDOTDOT
+%token DRBRACE
+%token ELSE
+%token END
 %token EOF
+%token EQTYPE
+%token EQUALS
+%token EXCEPTION
+%token FN
+%token FUN
+%token FUNCTOR
+%token HANDLE
+%token HASH
+%token HASHLBRACKET
+%token <string> ID
+%token IF
+%token IN
+%token INCLUDE
+%token INFIX
+%token INFIXR
+%token LBRACE
+%token LBRACKET
+%token LET
+%token LOCAL
+%token LPAREN
+%token <int> NEGINT
+%token NONFIX
+%token <int> NZDIGIT
+%token <int> NZPOSINT2
+%token OF
+%token OP
+%token OPEN
+%token ORELSE
+%token PRIM_EQTYPE
+%token PRIM_REFTYPE
+%token PRIM_TYPE
+%token PRIM_VAL
+%token <Const.QualifiedIdent> QUAL_ID
+%token <Const.QualifiedIdent> QUAL_STAR
+%token QUOTEL
+%token <string> QUOTEM
+%token <string> QUOTER
+%token RAISE
+%token RBRACE
+%token RBRACKET
+%token <real> REAL
+%token REC
+%token RPAREN
+%token SEMICOLON
+%token SHARING
+%token SIG
+%token SIGNATURE
+%token STAR
+%token <string> STRING
+%token STRUCT
+%token STRUCTURE
+%token THEN
+%token TYPE
+%token <string> TYVAR
+%token UNDERBAR
+%token VAL
+%token WHERE
+%token WHILE
+%token WITH
+%token WITHTYPE
+%token <word> WORD
+%token <int> ZDIGIT 
+%token <int> ZPOSINT2
 
 %right    AND
 %nonassoc DARROW

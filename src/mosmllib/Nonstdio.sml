@@ -88,15 +88,15 @@ prim_val pos_out_ : out_channel -> int = 1 "pos_out";
 type file_perm = int;
 
 datatype open_flag =
-    O_RDONLY                       (* `open' read-only *)
-  | O_WRONLY                       (* `open' write-only *)
-  | O_RDWR                         (* `open' for reading and writing *)
-  | O_APPEND                       (* `open' for appending *)
+    O_APPEND                       (* `open' for appending *)
+  | O_BINARY                       (* `open' in binary mode *)    
   | O_CREAT                        (* create the file if nonexistent *)
-  | O_TRUNC                        (* truncate the file to 0 if it exists *)
   | O_EXCL                         (* fails if the file exists *)
-  | O_BINARY                       (* `open' in binary mode *)
+  | O_RDONLY                       (* `open' read-only *)
+  | O_RDWR                         (* `open' for reading and writing *)
   | O_TEXT                         (* `open' in text mode *)
+  | O_TRUNC                        (* truncate the file to 0 if it exists *)
+  | O_WRONLY                       (* `open' write-only *)
 ;
 
 prim_val sys_open :

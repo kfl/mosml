@@ -99,8 +99,8 @@ void sys_exit(value retcode)          /* ML */
 #endif
 
 static int sys_open_flags[] = {
-  O_RDONLY, O_WRONLY, O_RDWR, O_APPEND, O_CREAT, O_TRUNC, O_EXCL,
-  O_BINARY, O_TEXT
+  O_APPEND, O_BINARY, O_CREAT, O_EXCL, O_RDONLY, O_RDWR, 
+  O_TEXT, O_TRUNC, O_WRONLY
 };
 #ifdef macintosh
 static int sys_text_flags []  = { 0, 0, 0, 0, 0, 0, 0, 0, 1 };

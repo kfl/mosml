@@ -65,18 +65,18 @@ prim_val setRuleLen        : parserEnv -> int       -> unit = 2 "setfield10";
 prim_val setRuleNumber     : parserEnv -> int       -> unit = 2 "setfield11";
 
 datatype parserInput =
-    Start
-  | Token_read
+    Semantic_action_computed
   | Stacks_grown_1
   | Stacks_grown_2
-  | Semantic_action_computed
+  | Start
+  | Token_read
 
 and parserOutput =
-    Read_token
-  | Raise_parse_error
+    Compute_semantic_action    
   | Grow_stacks_1
   | Grow_stacks_2
-  | Compute_semantic_action
+  | Raise_parse_error
+  | Read_token
 ;
 
 prim_val parseEngine :

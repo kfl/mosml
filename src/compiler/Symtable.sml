@@ -12,29 +12,6 @@ type 'a numtable =
   num_tbl: ('a, int) Hasht.t     (* The table *)
 };
 
-(* cvr: added TODO remove 
-fun fromShortExnTagTable {num_cnt, num_tbl} = 
- {num_cnt = ref (!num_cnt), 
-  num_tbl = let val nt = (Hasht.new 57) 
-                val _ = Hasht.apply
-                        (fn ({qual,id},i) => fn j =>
-                        Hasht.insert nt ({qual = qual, id = [id]},i) j ) 
-                         num_tbl
-            in nt 
-            end};
-
-(* cvr: added TODO remove *)
-fun toShortExnTagTable {num_cnt, num_tbl} = 
- {num_cnt = ref (!num_cnt), 
-  num_tbl = let val nt = (Hasht.new 57) 
-                val _ = Hasht.apply
-                        (fn ({qual,id = [id]},i) => fn j =>
-                        Hasht.insert nt ({qual = qual, id = id},i) j ) 
-                         num_tbl
-            in nt 
-            end};
-*)
-
 fun new_numtable size =
   { num_cnt = ref 0, num_tbl = Hasht.new size }
 ;
@@ -270,13 +247,6 @@ fun load_linker_tables () =
       (* of Moscow ML system! *)
       global_table := new_numtable 263;
       #num_cnt (!global_table) := input_binary_int is
-(*
-      exn_tag_table := input_value is;
-      tag_exn_table := input_value is
-*)
-(* ps:      ; exn_tag_table := fromShortExnTagTable (input_value is);
-      tag_exn_table := fromShortTagExnTable (input_value is)
-*)
     end
   ) handle _ => fatalError "Unable to read linker tables from bytecode"
 ;
@@ -303,26 +273,17 @@ fun init_linker_tables () =
 fun protect_linker_tables fct =
   let val saved_global_table     = !global_table
       and saved_literal_table    = !literal_table
-(* ps:      and saved_exn_tag_table    = !exn_tag_table
-      and saved_tag_exn_table    = !tag_exn_table
-*)
       and saved_c_prim_table     = !c_prim_table
   in
     (fct();
-     global_table            := saved_global_table;
-     literal_table           := saved_literal_table;
-(* ps:     exn_tag_table           := saved_exn_tag_table;
-     tag_exn_table           := saved_tag_exn_table;
-*)
-     c_prim_table            := saved_c_prim_table
+     global_table  := saved_global_table;
+     literal_table := saved_literal_table;
+     c_prim_table  := saved_c_prim_table
      )
     handle x =>
-      (global_table            := saved_global_table;
-       literal_table           := saved_literal_table;
-(* ps:       exn_tag_table           := saved_exn_tag_table;
-       tag_exn_table           := saved_tag_exn_table;
-*)
-       c_prim_table            := saved_c_prim_table;
+      (global_table  := saved_global_table;
+       literal_table := saved_literal_table;
+       c_prim_table  := saved_c_prim_table;
        raise x)
   end
 

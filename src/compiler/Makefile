@@ -261,9 +261,9 @@ Emitcode.uo: Emitcode.ui Const.uo Reloc.uo Fnlib.ui Buffcode.uo Config.uo \
 Emitcode.ui: Instruct.uo 
 Emit_phr.uo: Const.uo Reloc.uo Buffcode.uo Code_dec.uo Labels.uo \
     Emitcode.ui Instruct.uo Mixture.ui 
-Elab.uo: Elab.ui Asynt.uo Primdec.uo Synchk.ui Const.uo Fnlib.ui Config.uo \
-    Types.ui Asyntfn.ui Globals.uo Smlprim.uo Smlexc.uo Location.ui \
-    Mixture.ui Units.ui 
+Elab.uo: Elab.ui Asynt.uo Primdec.uo Sort.ui Synchk.ui Const.uo Fnlib.ui \
+    Config.uo Types.ui Asyntfn.ui Globals.uo Smlprim.uo Smlexc.uo \
+    Location.ui Mixture.ui Units.ui 
 Elab.ui: Asynt.uo Globals.uo 
 Const.uo: Fnlib.ui Config.uo Mixture.ui 
 Compiler.uo: Compiler.ui Asynt.uo Front.ui Parser.ui Const.uo Back.ui \

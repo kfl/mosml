@@ -9,8 +9,8 @@ open Array;
 infix 9 sub;
 
 datatype ('a, 'b) bucketlist =
-    Empty
-  | Cons of 'a * int * 'b * ('a, 'b) bucketlist
+    Cons of 'a * int * 'b * ('a, 'b) bucketlist
+  | Empty
 ;
 
 type ('a, 'b) TCell =

@@ -373,7 +373,7 @@ void open_files(void)
 #include <console.h>
 #endif
 
-void main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 #if defined(THINK_C) || defined(__MWERKS__)
 	argc = ccommand(&argv);
@@ -389,4 +389,5 @@ void main(int argc, char *argv[])
     output();
     done(0);
     /*NOTREACHED*/
+    return 0;
 }
