@@ -8,6 +8,11 @@ struct
 
     fun parseFile lexbuf = Parser.Seq Scanner.Token lexbuf
 
+    val quiet = ref false
+    fun chat s = if !quiet then ()
+		 else (print s; print "\n")
+
+
     local 
 	open Parser Substring
 	val hasStruc = List.exists (fn STRUCTURE => true | _ => false)  
@@ -109,16 +114,28 @@ struct
 				 filename, "\n", msg, "\n"]
 		  end
 
+    fun getOpt option def ls =
+	let fun get (opt :: (rest as arg :: xs)) =
+		if opt = option then (arg, xs)
+		else let val (res, ls) = get rest
+		     in  (res, opt :: ls)
+		     end
+	      | get ls = (def, ls)
+	in  get ls
+	end
+
     fun main args =
 	let fun eq x y = x = y
 	    val (rb, args) = List.partition (eq "-rollback") args
 	    val rollback = not (null rb)
+	    val (q, args)  = List.partition (eq "-q") args
+	    val _ = quiet := not (null q)
 	    fun outdir ("-D" :: d :: ls) = (d, ls)
 	      | outdir (s :: ls)         = let val (d,ls) = outdir ls
 					   in  (d, s::ls)
 					   end
 	      | outdir []                = (".",[])
-	    val (dir, files) = outdir args
+	    val (dir, files) = getOpt "-D" "." args
 	in  app (processfile rollback dir) files
 	end
 
