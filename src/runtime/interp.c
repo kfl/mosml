@@ -56,9 +56,16 @@ static opcode_t byte_raise_break_exn[] =
 
 /* Code for callbacks from C to ML code: POP, 1, 0 means pop(1) */
 
+#if defined(MOSML_BIG_ENDIAN) && !defined(ALIGNMENT)
+static opcode_t byte_callback1_code[] = { ACC1, APPLY1, POP, 0, 1, STOP };
+static opcode_t byte_callback2_code[] = { ACC2, APPLY2, POP, 0, 1, STOP };
+static opcode_t byte_callback3_code[] = { ACC3, APPLY3, POP, 0, 1, STOP };
+#else
 static opcode_t byte_callback1_code[] = { ACC1, APPLY1, POP, 1, 0, STOP };
 static opcode_t byte_callback2_code[] = { ACC2, APPLY2, POP, 1, 0, STOP };
 static opcode_t byte_callback3_code[] = { ACC3, APPLY3, POP, 1, 0, STOP };
+#endif  
+
 #define CALLBACK_CODE_LEN 6
 
 CODE callback1_code;		/* Set by interprete on initialization */
