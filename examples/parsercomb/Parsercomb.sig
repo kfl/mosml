@@ -63,7 +63,7 @@ sig
 end
 
 (* 
-   ['elm stream] is the type of a lazy streams (sequences) of 'elm values.
+   ['elm stream] is the type of a lazy stream (sequence) of 'elm values.
 
    [('elm, 'res) parser] is the type of parsers that consume elements
    from an 'elm stream to produce a result of type 'res.  The attempt
