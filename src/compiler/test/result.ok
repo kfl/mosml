@@ -4600,83 +4600,218 @@ Enter `quit();' to quit.
    con 'a D : 'a -> 'a u,
    datatype ('a, 'b) v = (('a, 'b) v,{con ('a, 'b) E : 'a * 'b -> ('a, 'b) v}),
    con ('a, 'b) E : 'a * 'b -> ('a, 'b) v}
-- > signature WeirdButOk =
-  /\=u' =v'.
-    {datatype t = (int,{con C : int -> int}),
-     con C : int -> int,
-     datatype 'a u = ('a u',{con 'a D : 'a -> 'a u'}),
-     con 'a D : 'a -> 'a u',
-     datatype ('a, 'b) v =
-       (('a, 'b) v',{con ('a, 'b) E : 'a * 'b -> ('a, 'b) v'}),
-     con ('a, 'b) E : 'a * 'b -> ('a, 'b) v'}
+- ! Toplevel input:
+! signature FailWeirdButValidSML = S where type t = int;
+!                                          ^^^^^^^^^^^^
+! Illegal where constraint: the type constructor t
+! is specified as a datatype
+! but its constraint is not a datatype
 - ! Toplevel input:
 ! signature Fail = S where type t = int * int;
 !                          ^^^^^^^^^^^^^^^^^^
 ! Illegal where constraint: the type constructor t
 ! is specified as a datatype
-! but its realisation is not a type name
-- > signature WeirdButOk =
-  /\=t' =v'.
-    {datatype t = (t',{con C : t' -> t'}),
-     con C : t' -> t',
-     datatype 'a u = ('a list,{con 'a D : 'a -> 'a list}),
-     con 'a D : 'a -> 'a list,
-     datatype ('a, 'b) v =
-       (('a, 'b) v',{con ('a, 'b) E : 'a * 'b -> ('a, 'b) v'}),
-     con ('a, 'b) E : 'a * 'b -> ('a, 'b) v'}
+! but its constraint is not a datatype
+- ! Toplevel input:
+! signature FailWeirdButValidSML = S where type 'a u = 'a list;
+!                                          ^^^^^^^^^^^^^^^^^^^
+! Illegal where constraint: the datatype constructor u
+! cannot be constrained in this way because 
+! the constraint's constructor environment does not match the specification's constructor environment
+! Datatype mismatch: type constructor u
+! is specified as the datatype
+!   datatype 'a u = ('a list,{con 'a D : 'a -> 'a list})
+! in the specification
+! but declared as the different datatype
+!   datatype 'a u =
+  ('a list,{con 'a nil : 'a list, con 'a :: : 'a * 'a list -> 'a list})
+! in the constraint
+! The datatypes should agree on the names and the order of value constructors
 - ! Toplevel input:
 ! signature Fail = S where type 'a u = int u;
 !                          ^^^^^^^^^^^^^^^^^
 ! Illegal where constraint: the type constructor u
 ! is specified as a datatype
-! but its realisation is not a type name
+! but its constraint is not a datatype
 - ! Toplevel input:
 ! signature Fail = S where type 'a u = 'a * 'a;
 !                          ^^^^^^^^^^^^^^^^^^^
 ! Illegal where constraint: the type constructor u
 ! is specified as a datatype
-! but its realisation is not a type name
+! but its constraint is not a datatype
 - > New type names: =w
   datatype ('a, 'b) w = (('a, 'b) w,{con ('a, 'b) W : ('a, 'b) w})
   con ('a, 'b) W = W : ('a, 'b) w
 - > type ('a, 'b, 'c) x = ('a, 'b) w
 - > type ('a, 'b) y = ('a, 'a) w
-- > signature WeirdButOk =
-  /\=t' =u'.
-    {datatype t = (t',{con C : t' -> t'}),
-     con C : t' -> t',
-     datatype 'a u = ('a u',{con 'a D : 'a -> 'a u'}),
-     con 'a D : 'a -> 'a u',
-     datatype ('a, 'b) v =
-       (('a, 'b) w,{con ('a, 'b) E : 'a * 'b -> ('a, 'b) w}),
-     con ('a, 'b) E : 'a * 'b -> ('a, 'b) w}
-- > signature WeirdButOk =
-  /\=t' =u'.
-    {datatype t = (t',{con C : t' -> t'}),
-     con C : t' -> t',
-     datatype 'a u = ('a u',{con 'a D : 'a -> 'a u'}),
-     con 'a D : 'a -> 'a u',
-     datatype ('a, 'b) v =
-       (('a, 'b) w,{con ('a, 'b) E : 'a * 'b -> ('a, 'b) w}),
-     con ('a, 'b) E : 'a * 'b -> ('a, 'b) w}
+- ! Toplevel input:
+! signature FailWeirdButValidSML = S where type ('a,'b) v = ('a,'b) w;
+!                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Illegal where constraint: the datatype constructor v
+! cannot be constrained in this way because 
+! the constraint's constructor environment does not match the specification's constructor environment
+! Datatype mismatch: type constructor v
+! is specified as the datatype
+!   datatype ('a, 'b) v = (('a, 'b) w,{con ('a, 'b) E : 'a * 'b -> ('a, 'b) w})
+! in the specification
+! but declared as the different datatype
+!   datatype ('a, 'b) v = (('a, 'b) w,{con ('a, 'b) W : ('a, 'b) w})
+! in the constraint
+! The datatypes should agree on the names and the order of value constructors
+- ! Toplevel input:
+! signature FailWeirdButValidSML = S where type ('a,'b) v = ('a,'b,int) x;
+!                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Illegal where constraint: the datatype constructor v
+! cannot be constrained in this way because 
+! the constraint's constructor environment does not match the specification's constructor environment
+! Datatype mismatch: type constructor v
+! is specified as the datatype
+!   datatype ('a, 'b) v = (('a, 'b) w,{con ('a, 'b) E : 'a * 'b -> ('a, 'b) w})
+! in the specification
+! but declared as the different datatype
+!   datatype ('a, 'b) v = (('a, 'b) w,{con ('a, 'b) W : ('a, 'b) w})
+! in the constraint
+! The datatypes should agree on the names and the order of value constructors
 - ! Toplevel input:
 ! signature Fail = S where type ('a,'b) v = ('a,'a)w;
 !                          ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Illegal where constraint: the type constructor v
 ! is specified as a datatype
-! but its realisation is not a type name
+! but its constraint is not a datatype
 - ! Toplevel input:
 ! signature Fail = S where type ('a,'b) v = ('a,'a)w;
 !                          ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Illegal where constraint: the type constructor v
 ! is specified as a datatype
-! but its realisation is not a type name
+! but its constraint is not a datatype
 - ! Toplevel input:
 ! signature Fail = S where type ('a,'b) v = ('a,'b)y;
 !                          ^^^^^^^^^^^^^^^^^^^^^^^^^
 ! Illegal where constraint: the type constructor v
 ! is specified as a datatype
-! but its realisation is not a type name
+! but its constraint is not a datatype
+- > New type names: =t'
+  datatype t = (t',{con C : bool -> t', con D : int -> t'})
+  con C = fn : bool -> t'
+  con D = fn : int -> t'
+- ! Toplevel input:
+! signature Fail = sig datatype u = C of bool end where type u = t;
+!                                                       ^^^^^^^^^^
+! Illegal where constraint: the datatype constructor u
+! cannot be constrained in this way because 
+! the constraint's constructor environment does not match the specification's constructor environment
+! Datatype mismatch: type constructor u
+! is specified as the datatype
+!   datatype u = (t',{con C : bool -> t'})
+! in the specification
+! but declared as the different datatype
+!   datatype u = (t',{con C : bool -> t', con D : int -> t'})
+! in the constraint
+! The datatypes should agree on the names and the order of value constructors
+- ! Toplevel input:
+! signature Fail = sig datatype u = C of bool | D of bool end where type u = t;
+!                                                                   ^^^^^^^^^^
+! Illegal where constraint: the datatype constructor u
+! cannot be constrained in this way because 
+! the constraint's constructor environment does not match the specification's constructor environment
+! Scheme mismatch: value identifier D
+! is specified with type scheme 
+!   con D : bool -> t'
+! in the specification
+! but its declaration has the unrelated type scheme 
+!   con D : int -> t'
+! in the constraint
+! The declared type scheme should be at least as general as the specified type scheme
+- ! Toplevel input:
+! signature Fail = sig datatype u = C of bool | D of int end where type u = int;
+!                                                                  ^^^^^^^^^^^^
+! Illegal where constraint: the type constructor u
+! is specified as a datatype
+! but its constraint is not a datatype
+- > signature OK =
+  {datatype u = (t',{con C : bool -> t', con D : int -> t'}),
+   con C : bool -> t',
+   con D : int -> t'}
+- > type s = t'
+- ! Toplevel input:
+! signature Fail = sig datatype u = C of bool end where type u = s;
+!                                                       ^^^^^^^^^^
+! Illegal where constraint: the datatype constructor u
+! cannot be constrained in this way because 
+! the constraint's constructor environment does not match the specification's constructor environment
+! Datatype mismatch: type constructor u
+! is specified as the datatype
+!   datatype u = (t',{con C : bool -> t'})
+! in the specification
+! but declared as the different datatype
+!   datatype u = (t',{con C : bool -> t', con D : int -> t'})
+! in the constraint
+! The datatypes should agree on the names and the order of value constructors
+- ! Toplevel input:
+! signature Fail = sig datatype u = C of bool | D of bool end where type u = s;
+!                                                                   ^^^^^^^^^^
+! Illegal where constraint: the datatype constructor u
+! cannot be constrained in this way because 
+! the constraint's constructor environment does not match the specification's constructor environment
+! Scheme mismatch: value identifier D
+! is specified with type scheme 
+!   con D : bool -> t'
+! in the specification
+! but its declaration has the unrelated type scheme 
+!   con D : int -> t'
+! in the constraint
+! The declared type scheme should be at least as general as the specified type scheme
+- > signature OK =
+  {datatype u = (t',{con C : bool -> t', con D : int -> t'}),
+   con C : bool -> t',
+   con D : int -> t'}
+- ! Toplevel input:
+! signature Fail = sig datatype u = C of bool type v = u end where type v = t;
+!                                                                  ^^^^^^^^^^
+! Illegal where constraint: the datatype constructor v
+! cannot be constrained in this way because 
+! the constraint's constructor environment does not match the specification's constructor environment
+! Datatype mismatch: type constructor v
+! is specified as the datatype
+!   datatype v = (t',{con C : bool -> t'})
+! in the specification
+! but declared as the different datatype
+!   datatype v = (t',{con C : bool -> t', con D : int -> t'})
+! in the constraint
+! The datatypes should agree on the names and the order of value constructors
+- ! Toplevel input:
+! signature Fail = sig datatype u = C of bool | D of bool type v = u end where type v = t;
+!                                                                              ^^^^^^^^^^
+! Illegal where constraint: the datatype constructor v
+! cannot be constrained in this way because 
+! the constraint's constructor environment does not match the specification's constructor environment
+! Scheme mismatch: value identifier D
+! is specified with type scheme 
+!   con D : bool -> t'
+! in the specification
+! but its declaration has the unrelated type scheme 
+!   con D : int -> t'
+! in the constraint
+! The declared type scheme should be at least as general as the specified type scheme
+- > signature OK =
+  {datatype u = (u',{con C : bool -> u', con D : int -> u'}),
+   con C : bool -> u',
+   con D : int -> u',
+   type v = u'}
+- ! Toplevel input:
+!       signature Fail = sig datatype u = C of bool end where type u = t;
+!                                                             ^^^^^^^^^^
+! Illegal where constraint: the datatype constructor u
+! cannot be constrained in this way because 
+! the constraint's constructor environment does not match the specification's constructor environment
+! Scheme mismatch: value identifier C
+! is specified with type scheme 
+!   con C : bool -> t''
+! in the specification
+! but its declaration has the unrelated type scheme 
+!   con C : int -> t''
+! in the constraint
+! The declared type scheme should be at least as general as the specified type scheme
 - 
 Moscow ML version 1.99 (internal release)
 Enter `quit();' to quit.
