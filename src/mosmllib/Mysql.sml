@@ -1,4 +1,4 @@
-(* mosml/src/dynlibs/mmysql/Mysql.sml -- version 0.07 of 2000-02-03
+(* mosml/src/dynlibs/mmysql/Mysql.sml -- version 0.08 of 2000-02-24
    thomassi@dina.kvl.dk and sestoft@dina.kvl.dk *)
 
 open Dynlib;
@@ -553,3 +553,34 @@ fun copytablefrom (dconn as { conn, closed } : dbconn,
         (* Should we do something about possible left-overs in strbuf?  
 	   They must be missing their terminating newline...  *)
     end
+
+(* Formatting the result of database queries *)
+
+local
+    open Msp
+    infix &&
+in
+
+fun formattable (dbres : dbresult) = 
+    let fun (f o g) x = f (g x)
+	val fieldnms = prmap (th o $) (vec2list (fnames dbres))
+	fun fmtval dynval = 
+	    case dynval of
+		Int  _ => tda "ALIGN=RIGHT" ($ (dynval2s dynval))
+	      | Real _ => tda "ALIGN=RIGHT" ($ (dynval2s dynval))
+	      | _      => td ($ (dynval2s dynval))
+	fun fmtrow tuple = tr(prmap fmtval (vec2list tuple))
+	val tuples = vec2list (getdyntups dbres)
+    in
+	tablea "BORDER" (tr fieldnms && prsep Nl fmtrow tuples)
+    end
+
+fun showquery (dbconn : dbconn) (sql : string) : wseq = 
+    let val dbres = execute dbconn sql
+    in 
+	case resultstatus dbres of
+	    Tuples_ok => formattable dbres
+	  | _         => $ "Error: Database query failed or was not a SELECT"
+    end
+    handle Fail msg => $ msg
+end

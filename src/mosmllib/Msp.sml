@@ -1,5 +1,5 @@
 (* Msp.sml -- prelude for ML Server Pages
-   sestoft@dina.kvl.dk 2000-02-03 version 0.6
+   sestoft@dina.kvl.dk 2000-02-24 version 0.7
  *)
 
 (* Efficiently concatenable word sequences *)
@@ -37,6 +37,8 @@ fun printseq Empty      = ()
   | printseq ($ s)      = TextIO.print s
   | printseq ($$ ss)    = List.app TextIO.print ss
   | printseq (s1 && s2) = (printseq s1; printseq s2);
+    
+fun vec2list vec = Vector.foldr op:: [] vec
 
 (* CGI parameter access shorthands *)
 
@@ -219,59 +221,3 @@ fun htmlencode s : string =
 	  | encode #"&" = "&amp;"
 	  | encode c    = String.str c
     in String.translate encode s end
-
-(* Formatting the result of database queries *)
-
-fun vec2list vec = Vector.foldr op:: [] vec
-
-fun pgformattable (dbres : Postgres.dbresult) = 
-    let open Postgres 
-	fun (f o g) x = f (g x)
-	val fieldnms = prmap (th o $) (vec2list (fnames dbres))
-	fun fmtval dynval = 
-	    case dynval of
-		Int  _ => tda "ALIGN=RIGHT" ($ (dynval2s dynval))
-	      | Real _ => tda "ALIGN=RIGHT" ($ (dynval2s dynval))
-	      | _      => td ($ (dynval2s dynval))
-	fun fmtrow tuple = tr(prmap fmtval (vec2list tuple))
-	val tuples = vec2list (getdyntups dbres)
-    in
-	tablea "BORDER" (tr fieldnms && prsep Nl fmtrow tuples)
-    end
-
-fun pgshowquery (dbconn : Postgres.dbconn) (sql : string) : wseq = 
-    let open Postgres
-	val dbres = execute dbconn sql
-    in 
-	case resultstatus dbres of
-	    Tuples_ok => pgformattable dbres
-	  | _         => $ "Error: Database query failed or was not a SELECT"
-    end
-    handle Fail msg => $ msg
-
-fun myformattable (dbres : Mysql.dbresult) = 
-    let open Mysql
-	fun (f o g) x = f (g x)
-	val fieldnms = prmap (th o $) (vec2list (fnames dbres))
-	fun fmtval dynval = 
-	    case dynval of
-		Int  _ => tda "ALIGN=RIGHT" ($ (dynval2s dynval))
-	      | Real _ => tda "ALIGN=RIGHT" ($ (dynval2s dynval))
-	      | _      => td ($ (dynval2s dynval))
-	fun fmtrow tuple = tr(prmap fmtval (vec2list tuple))
-	val tuples = vec2list (getdyntups dbres)
-    in
-	tablea "BORDER" (tr fieldnms && prsep Nl fmtrow tuples)
-    end
-
-fun myshowquery (dbconn : Mysql.dbconn) (sql : string) : wseq = 
-    let open Mysql
-	val dbres = execute dbconn sql
-    in 
-	case resultstatus dbres of
-	    Tuples_ok => myformattable dbres
-	  | _         => $ "Error: Database query failed or was not a SELECT"
-    end
-    handle Fail msg => $ msg
-
-(* End of prelude *)

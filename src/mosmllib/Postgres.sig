@@ -104,6 +104,12 @@ val ftypes  : dbresult -> dyntype Vector.vector
 
 val applyto : 'a -> ('a -> 'b) -> 'b
 
+(* Formatting the result of a database query as an HTML table *)
+
+val formattable : dbresult -> Msp.wseq
+val showquery   : dbconn -> string -> Msp.wseq
+
+
 (*
    Type [dbconn] is the type of connections to a PostgreSQL database.
 
@@ -262,4 +268,14 @@ val applyto : 'a -> ('a -> 'b) -> 'b
       copytablefrom(dbconn, "t", useput).
    Note that TextIO.inputLine preserves the newline at the end of each 
    line.  
+
+   [formattable dbresult] returns a wseq representing an HTML table.
+   The HTML table has a column for every field in the dbresult.  The
+   first row is a table header giving the names of the fields in the
+   dbresult.  The remaining rows correspond to the tuples in the
+   dbresult, in the order they are provided by the database server.
+   Null fields are shown as NULL.
+
+   [showquery dbconn query] sends the SQL query to the database
+   server, then uses formattable to format the result of the query.
 *)

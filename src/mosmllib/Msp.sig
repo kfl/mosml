@@ -147,13 +147,6 @@ val framea     : { src : string, name : string } -> string -> wseq
 val urlencode  : string -> string
 val htmlencode : string -> string
 
-(* Formatting the result of database queries *)
-
-val pgformattable : Postgres.dbresult -> wseq
-val pgshowquery   : Postgres.dbconn -> string -> wseq
-val myformattable : Mysql.dbresult -> wseq
-val myshowquery   : Mysql.dbconn -> string -> wseq
-
 
 (* This module provides support functions for writing CGI scripts and
    ML Server Page scripts.
@@ -187,8 +180,8 @@ val myshowquery   : Mysql.dbconn -> string -> wseq
    building any new strings.
 
    [vec2list vec] is a list of the elements of vector vec.  Use it to
-   convert the results of a database query into a list, for processing
-   with prmap or prsep.
+   convert e.g. the results of a database query into a list, for
+   processing with prmap or prsep.
 
 
    Shorthands for accessing CGI parameters:
@@ -418,20 +411,4 @@ val myshowquery   : Mysql.dbconn -> string -> wseq
    are replaced by &lt; and &gt; respectively, and & is replaced by 
    &amp;
 
-
-   Formatting the result of database queries:
-
-   [pgformattable dbresult] returns a wseq representing an HTML table.
-   The HTML table has a column for every field in the dbresult.  The
-   first row is a table header giving the names of the fields in the
-   dbresult.  The remaining rows correspond to the tuples in the
-   dbresult, in the order they are provided by the database server.
-   Null fields are shown as NULL.
-
-   [pgshowquery dbconn query] sends the SQL query to the database
-   server, then uses pgformattable to format the result of the query.
-
-   [myformattable dbresult] is the Mysql analog of pgformattable.
-
-   [myshowquery dbconn query] is the Mysql analog of pgshowquery.
 *)

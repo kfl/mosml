@@ -1,5 +1,5 @@
 (* mosml/src/dynlibs/mpq/Postgres.sml.  
- sestoft@dina.kvl.dk -- 1998 -- version 0.03 of 2000-02-03 *)
+ sestoft@dina.kvl.dk -- 1998 -- version 0.04 of 2000-02-24 *)
 
 open Dynlib;
 
@@ -449,3 +449,33 @@ in
       | dynval2s NullVal        = "NULL"
 end
 
+(* Formatting the result of database queries *)
+
+local
+    open Msp
+    infix &&
+in
+
+fun formattable (dbres : dbresult) = 
+    let fun (f o g) x = f (g x)
+	val fieldnms = prmap (th o $) (vec2list (fnames dbres))
+	fun fmtval dynval = 
+	    case dynval of
+		Int  _ => tda "ALIGN=RIGHT" ($ (dynval2s dynval))
+	      | Real _ => tda "ALIGN=RIGHT" ($ (dynval2s dynval))
+	      | _      => td ($ (dynval2s dynval))
+	fun fmtrow tuple = tr(prmap fmtval (vec2list tuple))
+	val tuples = vec2list (getdyntups dbres)
+    in
+	tablea "BORDER" (tr fieldnms && prsep Nl fmtrow tuples)
+    end
+
+fun showquery (dbconn : dbconn) (sql : string) : wseq = 
+    let val dbres = execute dbconn sql
+    in 
+	case resultstatus dbres of
+	    Tuples_ok => formattable dbres
+	  | _         => $ "Error: Database query failed or was not a SELECT"
+    end
+    handle Fail msg => $ msg
+end
