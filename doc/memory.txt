@@ -1,0 +1,84 @@
+The garbage collector is Damien Doligez's garbage collector for Caml
+Light.  It is generational with stop-and-copy collection of the minor
+(young) generation and incremental mark-sweep collection of the
+(major) old generation.  It is described in the document
+garbagecollector.txt. 
+
+To see the current settings of the garbage collector, you can set the
+environment variable CAMLRUNPARAM:
+
+   sestoft@ellemose:/tmp$ export CAMLRUNPARAM="v=1"
+   sestoft@ellemose:/tmp$ mosml
+   Initial space overhead: 30%
+   Initial heap increment: 256k
+   Initial minor heap size: 128k
+   Growing heap to 512k
+   <>!<>.<>$<>$Moscow ML version 2.00 (June 2000)
+   Enter `quit();' to quit.
+   <>$<>!Growing heap to 768k
+   <>Growing gray_vals to 16k
+   !<>.- 
+
+The sizes of the young and old heap are reported in kilobytes (k).
+
+The funny symbols explain the garbage collection cycles:
+
+   <  signals the start of a minor collection
+   >  signals the end of a minor collection
+   !  signals one slice of a mark phase
+   .  signals one slice of a weak phase
+   $  signals one slice of a sweep phase
+
+To speed up the garbage collector, increase the size of the young
+generation from 128k, and increase the space overhead from 30%; for
+instance:
+
+   sestoft@ellemose:/tmp$ export CAMLRUNPARAM="o=60 s=4096 v=1"
+   sestoft@ellemose:/tmp$ mosml
+   Initial space overhead: 60%
+   Initial heap increment: 256k
+   Initial minor heap size: 16k
+   Growing heap to 512k
+   <>!<>.<>$<>$<>$<>$<>$<>$<>$<>$ref_table threshold crossed
+   <>$<>Growing gray_vals to 16k
+   !<>!<>!<>!<>!Moscow ML version 2.00 (June 2000)
+   Enter `quit();' to quit.
+   <>!<>!<>.<>$<>$<>$<>$<>$<>$<>$<>!<>!<>!<>!<>!<>!<>!<>!<>!<>!<>.<>$<>$<>$<>$<>$<>$<>$<>$<>$- 
+
+Apparently the initial minor heap size (s=4096) needs to be specified
+in kilobits (byt why?)
+
+It is suspicious for a program to spends more than 5 per cent of its
+time in garbage collection: in that case, it allocates too much in the
+heap.  The most frequent causes are:
+
+(A) Aggressive string concatenation:
+
+    fun g 0 = "" 
+      | g n = "abc" ^ g (n-1);
+
+    This has runtime \theta(n^2), and causes fragmentation in the heap
+    because ever longer strings are created.
+
+    Better build a list of strings and then use String.concat, or even
+    better, use the Msp.wseq type
+
+(B) Aggressive list concatenation:
+
+    fun h 0 = [] 
+      | h n = h(n-1) @ [n];
+
+    Again runtime \theta(n^2), heavy allocation and load on the
+    garbage collector (but no fragmentation because all cons cells
+    have the same size).  The length of the left-hand argument to (@)
+    determines the time and space consumption, so building the list in
+    a different order would remove the problem.  Even building a list
+    in the wrong order and then reversing it using List.rev would be
+    vastly better.  Or a tree structure similar to Msp.wseq could be
+    used.
+
+(C) Deep recursion (> 1000 calls) gives a deep stack and a large root
+    set that must be scanned at each minor garbage collection, hence
+    slow garbage collection.
+
+sestoft@dina.kvl.dk * 2003-08-18
