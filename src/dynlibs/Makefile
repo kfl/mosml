@@ -1,3 +1,23 @@
+
+all:
+	cd intinf; make 
+	cd mgd; make 
+	cd mgdbm; make 
+	cd mmysql; make 
+	cd mpq; make 
+	cd mregex; make 
+	cd msocket; make 
+	cd munix; make 
+install:
+	cd intinf; make install 
+	cd mgd; make install 
+	cd mgdbm; make install 
+	cd mmysql; make install 
+	cd mpq; make install 
+	cd mregex; make install 
+	cd msocket; make install 
+	cd munix; make install 
+
 clean:
 	cd crypt; make clean
 	cd interface; make clean
@@ -9,4 +29,3 @@ clean:
 	cd mregex; make clean
 	cd msocket; make clean
 	cd munix; make clean
-

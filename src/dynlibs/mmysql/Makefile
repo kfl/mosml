@@ -17,8 +17,6 @@ OPTS=-fno-defer-pop
 CFLAGS= -Dunix -O2 $(OPTS) -I ../../runtime -I ${MYSQLINCDIR}
 # CFLAGS= -Dunix -O2 $(OPTS) -I /usr/local/mosml/src/runtime -I ${MYSQLINCDIR}
 
-MOSMLHOME=${HOME}/mosml
-#MOSMLHOME=/usr/local/mosml
 MOSMLTOOLS=camlrunm $(MOSMLHOME)/tools
 MOSMLC=mosmlc -c
 MOSMLL=mosmlc

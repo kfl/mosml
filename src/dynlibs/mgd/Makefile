@@ -12,7 +12,6 @@ include ../../Makefile.inc
 OPTS=-fno-defer-pop
 CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I../../runtime -I ${GDDIR}
 
-MOSMLHOME=${HOME}/mosml
 MOSMLTOOLS=camlrunm $(MOSMLHOME)/tools
 MOSMLC=mosmlc -c
 MOSMLL=mosmlc
