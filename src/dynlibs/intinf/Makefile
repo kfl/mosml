@@ -39,12 +39,6 @@ clean:
 	rm -f *.uo
 	rm -f Makefile.bak
 
-.sig.ui:
-	$(MOSMLC) $<
-
-.sml.uo:
-	$(MOSMLC) $<
-
 depend: 
 	rm -f Makefile.bak
 	mv Makefile Makefile.bak

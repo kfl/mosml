@@ -38,6 +38,7 @@ install:
 clean:
 	rm -f *.o
 	rm -f *.so
+	rm -f *.ui *.uo
 	rm -f *.gif
 	rm -f Makefile.bak
 

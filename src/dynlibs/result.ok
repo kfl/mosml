@@ -1,0 +1,921 @@
+cd interface; make test 
+make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/interface'
+mosml smlside.sml
+Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Enter `quit();' to quit.
+[opening file "smlside.sml"]
+> val it = () : unit
+> datatype flag = (flag,{con RTLD_LAZY : flag, con RTLD_NOW : flag})
+  type symHandle = symHandle
+  type dlHandle = dlHandle
+  con RTLD_LAZY = RTLD_LAZY : flag
+  val ('a1, 'b) app1 = fn : symHandle -> 'a1 -> 'b
+  con RTLD_NOW = RTLD_NOW : flag
+  val ('a1, 'a2, 'b) app2 = fn : symHandle -> 'a1 -> 'a2 -> 'b
+  val ('a1, 'a2, 'a3, 'b) app3 = fn : symHandle -> 'a1 -> 'a2 -> 'a3 -> 'b
+  val ('a1, 'a2, 'a3, 'a4, 'b) app4 = fn :
+  symHandle -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'b
+  val dlclose = fn : dlHandle -> unit
+  val ('a1, 'a2, 'a3, 'a4, 'a5, 'b) app5 = fn :
+  symHandle -> 'a1 -> 'a2 -> 'a3 -> 'a4 -> 'a5 -> 'b
+  val dlsym = fn : dlHandle -> string -> symHandle
+  exn Closed = Closed : exn
+  val dlopen = fn : {flag : flag, global : bool, lib : string} -> dlHandle
+  val 'b var = fn : symHandle -> 'b
+> New type names: =t
+  datatype t =
+  (t,{con Lf : t, con Br : int * t * t -> t, con Brs : t list -> t})
+  val dlh = <dlHandle> : dlHandle
+  val fu = fn : unit -> unit
+  val fi = fn : int -> int
+  val fc = fn : char -> char
+  val fr = fn : real -> real
+  val fs = fn : string -> string
+  val fb = fn : bool -> bool
+  val fcur = fn : int -> char -> real -> string -> bool -> int
+  val ftup = fn : int * char * real -> int
+  val frec = fn : {age : int, givenname : string, surname : string} -> bool
+  con Lf = Lf : t
+  con Br = fn : int * t * t -> t
+  con Brs = fn : t list -> t
+  val fdat = fn : t -> int
+  val ffun = fn : (int -> real) -> int -> string
+> val frtup = fn : int -> int * bool
+> val frrec = fn : int -> {half : int, odd : bool}
+> val fconcat = fn : string -> string -> string
+> val test1 = true : bool
+> val test2 = true : bool
+> val test3 = true : bool
+> val test4 = true : bool
+> val test5 = true : bool
+> val test6 = true : bool
+> val test7 = true : bool
+> val test8 = true : bool
+> val test9 = true : bool
+> val test10 = true : bool
+  val test11 = true : bool
+> val test12 = true : bool
+> val test13 = true : bool
+> val test14 = true : bool
+make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/interface'
+cd intinf; make test 
+make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/intinf'
+mosml testintinf.sml
+Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Enter `quit();' to quit.
+[opening file "testintinf.sml"]
+> val it = () : unit
+[opening file "../../mosmllib/test/auxil.sml"]
+> infix 1 seq
+  val ('a, 'b) seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> (int -> bool) -> string
+[closing file "../../mosmllib/test/auxil.sml"]
+> val it = () : unit
+> val test1a = "OK" : string
+  val test1b = "OK" : string
+  val test1c = "OK" : string
+  val test1d = "OK" : string
+  val test2a = "OK" : string
+  val test2b = "OK" : string
+  val test2c = "OK" : string
+  val test2d = "OK" : string
+  val test3a = "OK" : string
+  val test3b = "OK" : string
+  val test3c = "OK" : string
+  val test3d = "OK" : string
+  val test4a = "OK" : string
+  val test4b = "OK" : string
+  val test4c = "OK" : string
+  val test4d = "OK" : string
+  val test5a = "OK" : string
+  val test5b = "OK" : string
+  val test5c = "OK" : string
+  val test5d = "OK" : string
+  val test5e = "OK" : string
+  val test5f = "OK" : string
+  val test6a = ["OK", "OK", "OK", "OK"] : string list
+  val test6b = ["OK", "OK", "OK", "OK"] : string list
+  val test6c = ["OK", "OK", "OK", "OK"] : string list
+  val chkToString = fn : int * string -> string
+  val test12a = ["OK", "OK", "OK", "OK"] : string list
+  val 'a chk = fn : ('a -> int' option) -> 'a * int -> string
+  val chkScan = fn : radix -> string * int -> string
+  val test13a = ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] : string list
+  val test13b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] :
+  string list
+  val test14a = ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] : string list
+  val test14b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] :
+  string list
+  val test15a = ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] : string list
+  val test15b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"] : string list
+  val test16a = ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] : string list
+  val test16b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK"] : string list
+  val test17a = ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] : string list
+  val test17b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] :
+  string list
+  val test18 = "OK" : string
+make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/intinf'
+cd mgd; make test 
+make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/mgd'
+mosml testgdimage.sml
+Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Enter `quit();' to quit.
+[opening file "testgdimage.sml"]
+> val it = () : unit
+Now try
+       xv try.gif hist.gif pie.gif graph.gif
+
+make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/mgd'
+cd mgdbm; make test 
+make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/mgdbm'
+mosml -P full testgdbm.sml
+Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Enter `quit();' to quit.
+[opening file "testgdbm.sml"]
+> val it = () : unit
+> type datum = string
+  type table = table
+  datatype openmode =
+  (openmode,
+   {con READER : openmode,
+    con WRITER : openmode,
+    con WRCREAT : openmode,
+    con NEWDB : openmode})
+  con WRITER = WRITER : openmode
+  val 'a withtable = fn : string * openmode -> (table -> 'a) -> 'a
+  exn GdbmError = fn : string -> exn
+  val 'a withtables = fn : (string * openmode) list -> (table list -> 'a) -> 'a
+  val numItems = fn : table -> int
+  con NEWDB = NEWDB : openmode
+  exn AlreadyThere = AlreadyThere : exn
+  val reorganize = fn : table -> unit
+  con WRCREAT = WRCREAT : openmode
+  val insert = fn : table -> string * string -> unit
+  val listKeys = fn : table -> string list
+  val fastwrite = ref false : bool ref
+  val listItems = fn : table -> (string * string) list
+  exn NotFound = NotFound : exn
+  val add = fn : table -> string * string -> unit
+  val find = fn : table -> string -> string
+  exn NotWriter = NotWriter : exn
+  val app = fn : (string * string -> unit) -> table -> unit
+  val peek = fn : table -> string -> string option
+  val 'a map = fn : (string * string -> 'a) -> table -> 'a list
+  val 'a fold = fn : (string * string * 'a -> 'a) -> 'a -> table -> 'a
+  con READER = READER : openmode
+  exn Closed = Closed : exn
+  val hasKey = fn : table -> string -> bool
+  val remove = fn : table -> string -> unit
+[opening file "../../mosmllib/test/auxil.sml"]
+> infix 1 seq
+  val ('a, 'b) seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> (int -> bool) -> string
+[closing file "../../mosmllib/test/auxil.sml"]
+> val it = () : unit
+> val test1a = "OK" : string
+> val test1b = "OK" : string
+> val test1c = "OK" : string
+  val test1d = "OK" : string
+  val test1e = "OK" : string
+  val test1f = "OK" : string
+  val test1g = "OK" : string
+  val test1h = "OK" : string
+  val test1i = "OK" : string
+  val test1j = "OK" : string
+  val test1k = "OK" : string
+  val pairs =
+    [("Hans 1", "Rischel"), ("Hans 2", "Dybkjær"), ("Anders", "Kristensen")] :
+  (string * string) list
+> val test2a = "OK" : string
+> val test2b1 = "OK" : string
+  val test2b2 = "OK" : string
+  val test2c1 = "OK" : string
+  val test2c2 = "OK" : string
+  val test2d = "OK" : string
+  val test2e = "OK" : string
+  val test2f = "OK" : string
+  val test2g = "OK" : string
+  val test2h = "OK" : string
+  val test2i = "OK" : string
+  val test2j1 = "OK" : string
+  val test2j2 = "OK" : string
+  val test2j3 = "OK" : string
+  val test2j4 = "OK" : string
+  val 'a sortkvs = fn : (string * 'a) list -> (string * 'a) list
+  val sortks = fn : string list -> string list
+  val pairorder =
+    [("Hans 1", "Rischel"), ("Anders", "Kristensen"), ("Hans 2", "Dybkjær")] :
+  (string * string) list
+  val test2k1 = "OK" : string
+  val test2k2 = "OK" : string
+  val test2l = "OK" : string
+  val test2m = "OK" : string
+  val test2n = "OK" : string
+  val test2o = "OK" : string
+  val test2p = "OK" : string
+  val test3a = "OK" : string
+  val test3b = "OK" : string
+  val test3c = "OK" : string
+> val test3d = "OK" : string
+make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/mgdbm'
+cd mmysql; make test 
+make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/mmysql'
+mosml testmysql.sml
+Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Enter `quit();' to quit.
+[opening file "testmysql.sml"]
+> val it = () : unit
+[opening file "../../mosmllib/test/auxil.sml"]
+> infix 1 seq
+  val ('a, 'b) seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> (int -> bool) -> string
+[closing file "../../mosmllib/test/auxil.sml"]
+> val it = () : unit
+> datatype dyntype =
+  (dyntype,
+   {con IntTy : dyntype,
+    con RealTy : dyntype,
+    con StringTy : dyntype,
+    con DateTy : dyntype,
+    con TimeTy : dyntype,
+    con DateTimeTy : dyntype,
+    con UnknownTy : dyntype})
+  type dbconn = dbconn
+  datatype dbresultstatus =
+  (dbresultstatus,
+   {con Empty_query : dbresultstatus,
+    con Command_ok : dbresultstatus,
+    con Tuples_ok : dbresultstatus,
+    con Copy_out : dbresultstatus,
+    con Copy_in : dbresultstatus,
+    con Bad_response : dbresultstatus,
+    con Nonfatal_error : dbresultstatus,
+    con Fatal_error : dbresultstatus})
+  type dbresult = dbresult
+  datatype dynval =
+  (dynval,
+   {con Int : int -> dynval,
+    con Real : real -> dynval,
+    con String : string -> dynval,
+    con Date : int * int * int -> dynval,
+    con Time : int * int * int -> dynval,
+    con DateTime : date -> dynval,
+    con NullVal : dynval})
+  val getdynfield = fn : dbresult -> int -> int -> dynval
+  val fname = fn : dbresult -> int -> string
+  con NullVal = NullVal : dynval
+  val ftype = fn : dbresult -> int -> dyntype
+  val db = fn : dbconn -> string
+  val getreal = fn : dbresult -> int -> int -> real
+  con Real = fn : real -> dynval
+  con Nonfatal_error = Nonfatal_error : dbresultstatus
+  exn Null = Null : exn
+  con Fatal_error = Fatal_error : dbresultstatus
+  con Copy_in = Copy_in : dbresultstatus
+  val fnumber = fn : dbresult -> string -> int option
+  con DateTimeTy = DateTimeTy : dyntype
+  con TimeTy = TimeTy : dyntype
+  val getstring = fn : dbresult -> int -> int -> string
+  val getdatetime = fn : dbresult -> int -> int -> date
+  val getbool = fn : dbresult -> int -> int -> bool
+  con String = fn : string -> dynval
+  val status = fn : dbconn -> bool
+  con Command_ok = Command_ok : dbresultstatus
+  val getdate = fn : dbresult -> int -> int -> int * int * int
+  con Date = fn : int * int * int -> dynval
+  con DateTy = DateTy : dyntype
+  val fromtag = fn : dyntype -> string
+  con Empty_query = Empty_query : dbresultstatus
+  val reset = fn : dbconn -> unit
+  val closebase = fn : dbconn -> unit
+  val getint = fn : dbresult -> int -> int -> int
+  con DateTime = fn : date -> dynval
+  con StringTy = StringTy : dyntype
+  con Tuples_ok = Tuples_ok : dbresultstatus
+  val ('a, 'b) applyto = fn : 'a -> ('a -> 'b) -> 'b
+  val nfields = fn : dbresult -> int
+  val openbase = fn :
+  {dbhost : string option, dbname : string option, dboptions : string option,
+   dbport : string option, dbpwd : string option, dbtty : string option,
+   dbuser : string option} -> dbconn
+  val resultstatus = fn : dbresult -> dbresultstatus
+  con RealTy = RealTy : dyntype
+  val host = fn : dbconn -> string option
+  val gettime = fn : dbresult -> int -> int -> int * int * int
+  con Time = fn : int * int * int -> dynval
+  con Bad_response = Bad_response : dbresultstatus
+  val errormessage = fn : dbconn -> string option
+  val copytableto = fn : dbconn * string * (string -> unit) -> unit
+  val options = fn : dbconn -> string
+  con IntTy = IntTy : dyntype
+  con UnknownTy = UnknownTy : dyntype
+  val cmdtuples = fn : dbresult -> int
+  val dynval2s = fn : dynval -> string
+  val copytablefrom = fn : dbconn * string * ((string -> unit) -> unit) -> unit
+  val execute = fn : dbconn -> string -> dbresult
+  val fnames = fn : dbresult -> string vector
+  val ftypes = fn : dbresult -> dyntype vector
+  val port = fn : dbconn -> string
+  val tty = fn : dbconn -> string
+  val ntuples = fn : dbresult -> int
+  val isnull = fn : dbresult -> int -> int -> bool
+  val getdyntups = fn : dbresult -> dynval vector vector
+  con Copy_out = Copy_out : dbresultstatus
+  val getdyntup = fn : dbresult -> int -> dynval vector
+  exn Closed = Closed : exn
+  con Int = fn : int -> dynval
+> val dbhost = SOME "localhost" : string option
+> val 'a dbport = NONE : 'a option
+> val 'a dboptions = NONE : 'a option
+> val 'a dbtty = NONE : 'a option
+> val 'a dbuser = NONE : 'a option
+> val 'a dbpwd = NONE : 'a option
+> val dbname = SOME "test" : string option
+> val pc = <dbconn> : dbconn
+> val info = ("test", SOME "localhost", "", "0", "") :
+  string * string option * string * string * string
+> val inst = fn : string -> dbresult
+  val res1 = <dbresult> : dbresult
+  val test1a = "OK" : string
+  val test1b = "OK" : string
+  val test1c = "OK" : string
+> val test1d = "OK" : string
+  val test1e = "OK" : string
+  val test1f = "OK" : string
+> val test1g = "OK" : string
+> val test1h = "OK" : string
+> val test1i = "OK" : string
+  val test1j = "OK" : string
+  val test1k = "OK" : string
+  val test1l = "OK" : string
+> val res2 = <dbresult> : dbresult
+  val res3 = <dbresult> : dbresult
+> val test3a = "OK" : string
+  val test3b = "OK" : string
+  val test3c = "OK" : string
+> val test3d = "OK" : string
+  val test3e = "OK" : string
+  val test3f = "OK" : string
+  val test3ga = ("OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK") :
+  string * string * string * string * string * string * string * string
+  val test3gb = ("OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK") :
+  string * string * string * string * string * string * string * string
+  val test3gc = ("OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK") :
+  string * string * string * string * string * string * string * string
+  val test3gd = ("OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK") :
+  string * string * string * string * string * string * string * string
+  val test3ha = ("OK", "OK") : string * string
+  val test3hb = ("OK", "OK") : string * string
+  val test3hc = ("OK", "OK") : string * string
+make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/mmysql'
+cd mpq; make test 
+make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/mpq'
+mosml testpsql.sml
+Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Enter `quit();' to quit.
+[opening file "testpsql.sml"]
+> val it = () : unit
+[opening file "../../mosmllib/test/auxil.sml"]
+> infix 1 seq
+  val ('a, 'b) seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> (int -> bool) -> string
+[closing file "../../mosmllib/test/auxil.sml"]
+> val it = () : unit
+> datatype dyntype =
+  (dyntype,
+   {con BoolTy : dyntype,
+    con IntTy : dyntype,
+    con RealTy : dyntype,
+    con StringTy : dyntype,
+    con DateTy : dyntype,
+    con TimeTy : dyntype,
+    con DateTimeTy : dyntype,
+    con OidTy : dyntype,
+    con ByteArrTy : dyntype,
+    con UnknownTy : oid -> dyntype})
+  type dbconn = dbconn
+  datatype dbresultstatus =
+  (dbresultstatus,
+   {con Empty_query : dbresultstatus,
+    con Command_ok : dbresultstatus,
+    con Tuples_ok : dbresultstatus,
+    con Copy_out : dbresultstatus,
+    con Copy_in : dbresultstatus,
+    con Bad_response : dbresultstatus,
+    con Nonfatal_error : dbresultstatus,
+    con Fatal_error : dbresultstatus})
+  type oid = oid
+  type dbresult = dbresult
+  datatype dynval =
+  (dynval,
+   {con Bool : bool -> dynval,
+    con Int : int -> dynval,
+    con Real : real -> dynval,
+    con String : string -> dynval,
+    con Date : int * int * int -> dynval,
+    con Time : int * int * int -> dynval,
+    con DateTime : date -> dynval,
+    con Oid : oid -> dynval,
+    con Bytea : array -> dynval,
+    con NullVal : dynval})
+  val getdynfield = fn : dbresult -> int -> int -> dynval
+  val fname = fn : dbresult -> int -> string
+  con NullVal = NullVal : dynval
+  val ftype = fn : dbresult -> int -> dyntype
+  val db = fn : dbconn -> string
+  val getreal = fn : dbresult -> int -> int -> real
+  con Real = fn : real -> dynval
+  con Nonfatal_error = Nonfatal_error : dbresultstatus
+  exn Null = Null : exn
+  con Fatal_error = Fatal_error : dbresultstatus
+  con Copy_in = Copy_in : dbresultstatus
+  val fnumber = fn : dbresult -> string -> int option
+  con DateTimeTy = DateTimeTy : dyntype
+  con TimeTy = TimeTy : dyntype
+  val getstring = fn : dbresult -> int -> int -> string
+  val getdatetime = fn : dbresult -> int -> int -> date
+  con ByteArrTy = ByteArrTy : dyntype
+  val getbool = fn : dbresult -> int -> int -> bool
+  con Bool = fn : bool -> dynval
+  con String = fn : string -> dynval
+  val status = fn : dbconn -> bool
+  con Command_ok = Command_ok : dbresultstatus
+  val getdate = fn : dbresult -> int -> int -> int * int * int
+  con Date = fn : int * int * int -> dynval
+  con DateTy = DateTy : dyntype
+  val fromtag = fn : dyntype -> string
+  con Empty_query = Empty_query : dbresultstatus
+  val reset = fn : dbconn -> unit
+  val closebase = fn : dbconn -> unit
+  val getint = fn : dbresult -> int -> int -> int
+  con DateTime = fn : date -> dynval
+  con StringTy = StringTy : dyntype
+  con Tuples_ok = Tuples_ok : dbresultstatus
+  val ('a, 'b) applyto = fn : 'a -> ('a -> 'b) -> 'b
+  val nfields = fn : dbresult -> int
+  con OidTy = OidTy : dyntype
+  val openbase = fn :
+  {dbhost : string option, dbname : string option, dboptions : string option,
+   dbport : string option, dbpwd : string option, dbtty : string option,
+   dbuser : string option} -> dbconn
+  val resultstatus = fn : dbresult -> dbresultstatus
+  con RealTy = RealTy : dyntype
+  val host = fn : dbconn -> string option
+  val gettime = fn : dbresult -> int -> int -> int * int * int
+  con Time = fn : int * int * int -> dynval
+  con Oid = fn : oid -> dynval
+  con Bad_response = Bad_response : dbresultstatus
+  val errormessage = fn : dbconn -> string option
+  val copytableto = fn : dbconn * string * (string -> unit) -> unit
+  val options = fn : dbconn -> string
+  con IntTy = IntTy : dyntype
+  con UnknownTy = fn : oid -> dyntype
+  val cmdtuples = fn : dbresult -> int
+  con Bytea = fn : array -> dynval
+  val dynval2s = fn : dynval -> string
+  val copytablefrom = fn : dbconn * string * ((string -> unit) -> unit) -> unit
+  val execute = fn : dbconn -> string -> dbresult
+  val fnames = fn : dbresult -> string vector
+  con BoolTy = BoolTy : dyntype
+  val ftypes = fn : dbresult -> dyntype vector
+  val port = fn : dbconn -> string
+  val tty = fn : dbconn -> string
+  val ntuples = fn : dbresult -> int
+  val isnull = fn : dbresult -> int -> int -> bool
+  val getdyntups = fn : dbresult -> dynval vector vector
+  con Copy_out = Copy_out : dbresultstatus
+  val getdyntup = fn : dbresult -> int -> dynval vector
+  exn Closed = Closed : exn
+  con Int = fn : int -> dynval
+> val dbhost = SOME "localhost" : string option
+> val 'a dbport = NONE : 'a option
+> val 'a dboptions = NONE : 'a option
+> val 'a dbtty = NONE : 'a option
+> val 'a dbuser = NONE : 'a option
+> val 'a dbpwd = NONE : 'a option
+> val 'a dbname = NONE : 'a option
+> val pc = <dbconn> : dbconn
+> val info = ("sestoft", SOME "localhost", "", "5432", "") :
+  string * string option * string * string * string
+> val inst = fn : string -> dbresult
+  val res1 = <dbresult> : dbresult
+  val test1a = "OK" : string
+  val test1b = "OK" : string
+  val test1c = "OK" : string
+> val test1d = "OK" : string
+  val test1e = "OK" : string
+  val test1f = "OK" : string
+> val test1g = "OK" : string
+> val test1h = "OK" : string
+> val test1i = "OK" : string
+  val test1j = "OK" : string
+  val test1k = "OK" : string
+  val test1l = "OK" : string
+> val res2 = <dbresult> : dbresult
+  val res3 = <dbresult> : dbresult
+make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/mpq'
+cd mregex; make test 
+make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/mregex'
+mosml testregex.sml
+Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Enter `quit();' to quit.
+[opening file "testregex.sml"]
+> val it = () : unit
+[opening file "../../mosmllib/test/auxil.sml"]
+> infix 1 seq
+  val ('a, 'b) seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> (int -> bool) -> string
+[closing file "../../mosmllib/test/auxil.sml"]
+> val it = () : unit
+> datatype eflag = (eflag,{con Notbol : eflag, con Noteol : eflag})
+  type regex = regex
+  datatype cflag =
+  (cflag,{con Extended : cflag, con Icase : cflag, con Newline : cflag})
+  datatype replacer =
+  (replacer,
+   {con Str : string -> replacer,
+    con Sus : int -> replacer,
+    con Tr : (string -> string) * int -> replacer,
+    con Trs : (substring vector -> string) -> replacer})
+  val ('a, 'b) fapp = fn : ('a -> 'b) -> 'a * 'b list -> 'b list
+  val get = fn : int -> substring vector -> string
+  con Noteol = Noteol : eflag
+  con Notbol = Notbol : eflag
+  val 'a map = fn : regex -> (substring vector -> 'a) -> string -> 'a list
+  val regnexec = fn :
+  regex -> eflag list -> substring -> substring vector option
+  con Extended = Extended : cflag
+  exn Regex = fn : string -> exn
+  con Str = fn : string -> replacer
+  val regexecBool = fn : regex -> eflag list -> string -> bool
+  con Icase = Icase : cflag
+  val regnexecBool = fn : regex -> eflag list -> substring -> bool
+  val substitute1 = fn : regex -> (string -> string) -> string -> string
+  val regmatchBool = fn :
+  {pat : string, tgt : string} -> cflag list -> eflag list -> bool
+  val 'a fold = fn :
+  regex -> (substring * 'a -> 'a) * (substring vector * 'a -> 'a) -> 'a ->
+  string -> 'a
+  val replace1 = fn : regex -> replacer list -> string -> string
+  val app = fn : regex -> (substring vector -> unit) -> string -> unit
+  con Trs = fn : (substring vector -> string) -> replacer
+  val fields = fn : regex -> string -> substring list
+  val regmatch = fn :
+  {pat : string, tgt : string} -> cflag list -> eflag list ->
+  substring vector option
+  val replace = fn : regex -> replacer list -> string -> string
+  val substitute = fn : regex -> (string -> string) -> string -> string
+  con Tr = fn : (string -> string) * int -> replacer
+  val regcomp = fn : string -> cflag list -> regex
+  con Sus = fn : int -> replacer
+  con Newline = Newline : cflag
+  val regexec = fn : regex -> eflag list -> string -> substring vector option
+  val tokens = fn : regex -> string -> substring list
+User: 0.000  System: 0.000  GC: 0.000  Real: 0.000
+size(s) = 23; length(res) = 5
+User: 0.000  System: 0.000  GC: 0.000  Real: 0.000
+size(s) = 46; length(res) = 10
+User: 0.000  System: 0.000  GC: 0.000  Real: 0.000
+size(s) = 92; length(res) = 20
+User: 0.000  System: 0.000  GC: 0.000  Real: 0.000
+size(s) = 184; length(res) = 40
+User: 0.000  System: 0.000  GC: 0.000  Real: 0.001
+size(s) = 368; length(res) = 80
+User: 0.000  System: 0.000  GC: 0.000  Real: 0.002
+size(s) = 736; length(res) = 160
+User: 0.010  System: 0.000  GC: 0.000  Real: 0.010
+size(s) = 1472; length(res) = 320
+User: 0.010  System: 0.000  GC: 0.000  Real: 0.009
+size(s) = 2944; length(res) = 640
+User: 0.020  System: 0.000  GC: 0.000  Real: 0.020
+size(s) = 5888; length(res) = 1280
+User: 0.030  System: 0.000  GC: 0.010  Real: 0.035
+size(s) = 11776; length(res) = 2560
+User: 0.070  System: 0.000  GC: 0.010  Real: 0.067
+size(s) = 23552; length(res) = 5120
+User: 0.160  System: 0.000  GC: 0.040  Real: 0.154
+size(s) = 47104; length(res) = 10240
+User: 0.270  System: 0.000  GC: 0.000  Real: 0.276
+size(s) = 94208; length(res) = 20480
+User: 0.590  System: 0.000  GC: 0.070  Real: 0.586
+size(s) = 188416; length(res) = 40960
+> val test1a = "OK" : string
+  val test1b = "OK" : string
+  val test2a = "OK" : string
+  val test2b = "OK" : string
+  val test3a = "OK" : string
+  val test3b = "OK" : string
+  val test4a = "OK" : string
+  val test4b = "OK" : string
+  val test5a = "OK" : string
+  val test5b = "OK" : string
+  val test6a = "OK" : string
+  val test6b = "OK" : string
+  val test6c = "OK" : string
+  val test6d = "OK" : string
+  val test6e = "OK" : string
+  val test6f = "OK" : string
+  val test6g = "OK" : string
+  val test7a = "OK" : string
+  val test7b = "OK" : string
+  val test7c = "OK" : string
+  val test7d = "OK" : string
+  val test7e = "OK" : string
+  val test8a = "OK" : string
+  val test8b = "OK" : string
+  val test8c = "OK" : string
+  val test8d = "OK" : string
+  val test9a = "OK" : string
+  val test9b = "OK" : string
+  val test10a = "OK" : string
+  val test10b = "OK" : string
+  val test10c = "OK" : string
+  val test10d = "OK" : string
+  val test11a = "OK" : string
+  val test11b = "OK" : string
+  val test11c = "OK" : string
+  val test11d = "OK" : string
+  val test12a = "OK" : string
+  val test12b = "OK" : string
+  val test13a = "OK" : string
+  val test13b = "OK" : string
+  val test14a = "OK" : string
+  val test14b = "OK" : string
+  val test15a = "OK" : string
+  val test16a = "OK" : string
+  val test16b = "OK" : string
+make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/mregex'
+cd munix; make test 
+make[1]: Entering directory `/home/sestoft/mosml2.0/src/dynlibs/munix'
+gcc -O2 -o sieve sieve.c
+mosml testunix.sml
+Moscow ML version 1.44cvr3 (internal release) (16th January 2000)
+Enter `quit();' to quit.
+[opening file "testunix.sml"]
+> val it = () : unit
+> type signal = signal
+  type proc = proc
+  type elem = char
+  type vector = string
+  type cs = cs
+  type instream = instream
+  type outstream = outstream
+  val kill = fn : proc * signal -> unit
+  val streamsOf = fn : proc -> instream * outstream
+  val reap = fn : proc -> status
+  val execute = fn : string * string list -> proc
+  val executeInEnv = fn : string * string list * string list -> proc
+  val stdErr = <outstream> : outstream
+  val openAppend = fn : string -> outstream
+  val flushOut = fn : outstream -> unit
+  val inputAll = fn : instream -> string
+  val inputLine = fn : instream -> string
+  val output1 = fn : outstream * char -> unit
+  val closeIn = fn : instream -> unit
+  val closeOut = fn : outstream -> unit
+  val lookahead = fn : instream -> char option
+  val stdIn = <instream> : instream
+  val input = fn : instream -> string
+  val print = fn : string -> unit
+  val inputNoBlock = fn : instream -> string option
+  val endOfStream = fn : instream -> bool
+  val output = fn : outstream * string -> unit
+  val inputN = fn : instream * int -> string
+  val outputSubstr = fn : outstream * substring -> unit
+  val openIn = fn : string -> instream
+  val openOut = fn : string -> outstream
+  val stdOut = <outstream> : outstream
+  val input1 = fn : instream -> char option
+  val 'a scanStream = fn :
+  ((cs -> (char * cs) option) -> cs -> ('a * cs) option) -> instream ->
+  'a option
+0 0
+1 0
+2 1
+3 1
+4 0
+5 1
+6 0
+7 1
+8 0
+9 0
+10 0
+11 1
+12 0
+13 1
+14 0
+15 0
+16 0
+17 1
+18 0
+19 1
+20 0
+21 0
+22 0
+23 1
+24 0
+25 0
+26 0
+27 0
+28 0
+29 1
+30 0
+31 1
+32 0
+33 0
+34 0
+35 0
+36 0
+37 1
+38 0
+39 0
+40 0
+41 1
+42 0
+43 1
+44 0
+45 0
+46 0
+47 1
+48 0
+49 0
+50 0
+51 0
+52 0
+53 1
+54 0
+55 0
+56 0
+57 0
+58 0
+59 1
+60 0
+61 1
+62 0
+63 0
+64 0
+65 0
+66 0
+67 1
+68 0
+69 0
+70 0
+71 1
+72 0
+73 1
+74 0
+75 0
+76 0
+77 0
+78 0
+79 1
+80 0
+81 0
+82 0
+83 1
+84 0
+85 0
+86 0
+87 0
+88 0
+89 1
+90 0
+91 0
+92 0
+93 0
+94 0
+95 0
+96 0
+97 1
+98 0
+99 0
+100 0
+101 1
+102 0
+103 1
+104 0
+105 0
+106 0
+107 1
+108 0
+109 1
+110 0
+111 0
+112 0
+113 1
+114 0
+115 0
+116 0
+117 0
+118 0
+119 0
+120 0
+121 0
+122 0
+123 0
+124 0
+125 0
+126 0
+127 1
+128 0
+129 0
+130 0
+131 1
+132 0
+133 0
+134 0
+135 0
+136 0
+137 1
+138 0
+139 1
+140 0
+141 0
+142 0
+143 0
+144 0
+145 0
+146 0
+147 0
+148 0
+149 1
+150 0
+151 1
+152 0
+153 0
+154 0
+155 0
+156 0
+157 1
+158 0
+159 0
+160 0
+161 0
+162 0
+163 1
+164 0
+165 0
+166 0
+167 1
+168 0
+169 0
+170 0
+171 0
+172 0
+173 1
+174 0
+175 0
+176 0
+177 0
+178 0
+179 1
+180 0
+181 1
+182 0
+183 0
+184 0
+185 0
+186 0
+187 0
+188 0
+189 0
+190 0
+191 1
+192 0
+193 1
+194 0
+195 0
+196 0
+197 1
+198 0
+199 1
+> val startandstop = fn : int -> string
+> val p = <proc> : proc
+Started subprocess...
+> val is = <instream> : instream
+  val os = <outstream> : outstream
+> val wr = fn : int -> string
+> val res = ["1\n", "1\n", "0\n", "0\n", "0\n"] : string list
+make[1]: Leaving directory `/home/sestoft/mosml2.0/src/dynlibs/munix'

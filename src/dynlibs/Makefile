@@ -1,5 +1,6 @@
 
 all:
+	cd interface; make 
 	cd intinf; make 
 	cd mgd; make 
 	cd mgdbm; make 
