@@ -56,6 +56,7 @@ Documentation files:
     README              This file
     doc/manual.pdf      User manual (PDF format)
     doc/mosmlref.pdf    A compact guide to Moscow ML syntax and primitives
+    doc/mosmllib.pdf    Moscow ML library documentation with an index
     doc/mosmllib/*.html Moscow ML library documentation in HTML format
     copyrght/*          Copyright notices (for Caml Light, SML/NJ, ...)
 
