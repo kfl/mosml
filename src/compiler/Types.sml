@@ -376,19 +376,27 @@ fun copyEnv copyInfo bns bvs env =
 		| (false,true) => (bns,bvs,false,COMPenv(cenv1,env2))
 		| (true,true) => (bns,bvs,true,env)
 	  end
-    | TOPenv(x, env) => fatalError "copyEnv"
-;
-
-fun copyPair copyFst copySnd bns bvs (pair as (fst,snd)) =  
-    let val (bns,bvs,sfst,cfst) = copyFst bns bvs fst
-	val (bns,bvs,ssnd,csnd) = copySnd bns bvs snd
-    in
-	case (sfst,ssnd) of
-	    (false,false) => (bns,bvs,false,(cfst,csnd))
-	  | (true,false) => (bns,bvs,false,(fst,csnd))
-	  | (false,true) => (bns,bvs,false,(cfst,snd))
-		| (true,true) => (bns,bvs,true,pair)
-    end
+    | TOPenv(t, env') => 
+	let val ct = Hasht.new 17
+	    val (bns,bvs,st) = 
+		Hasht.fold 
+		(fn k => fn info => fn (bns,bvs,st) => 
+		 let val (bns,bvs,sinfo,cinfo) = copyInfo bns bvs info
+		 in
+		     if sinfo 
+		     then (Hasht.insert ct k cinfo;
+			   (bns,bvs,st))
+		     else (Hasht.insert ct k cinfo;
+			  (bns,bvs,false))
+		 end)
+		(bns,bvs,true) t
+	    val ct = if st then t else ct
+	    val (bns,bvs,senv',cenv') = copyEnv copyInfo bns bvs env'
+	in
+	    if st andalso senv'
+	    then (bns,bvs,true,env)
+	    else (bns,bvs,false,TOPenv(ct,cenv'))
+	end
 ;
 
 fun copyGlobal copyInfo bns bvs (global as {qualid,info}) =  
