@@ -1,0 +1,20 @@
+%{
+
+%}
+
+%token <int*int> MLSTUFF COMMENT
+%token SIGNATURE STRUCTURE EOF
+
+%start Seq
+
+%type <token list> Seq
+
+%%
+
+Seq : 
+    MLSTUFF Seq { MLSTUFF $1 :: $2 }
+  | COMMENT Seq { COMMENT $1 :: $2 }
+  | SIGNATURE Seq { SIGNATURE :: $2 }
+  | STRUCTURE Seq { STRUCTURE :: $2 }
+  | EOF           { [EOF] }
+;
