@@ -209,7 +209,7 @@ fun foldr abf b (OS{root,...}) =
 fun foldl abf b (OS{root,...}) =
     let fun apply SplayNil                     res = res
 	  | apply (SplayObj{value,left,right}) res =
-	    apply right (abf(value, apply left b))
+	    apply right (abf(value, apply left res))
     in apply (!root) b end
 
 fun find p (OS{root,...}) = 
