@@ -36,10 +36,11 @@ all:
 	#this one last as its slow
 	$(MOSML) -P full test.sml >> result 2>&1
 	#these are new and need to be validated
-	$(MOSML) -P full loophole.sml >> result 2>&1
-	$(MOSML) -P full fcmodulebug.sml >> result 2>&1
+	$(MOSML) -P full < loophole.sml >> result 2>&1
+	$(MOSML) -P full < fcmodulebug.sml >> result 2>&1
+	$(MOSML) -P full < matchbug.sml >> result 2>&1
 	$(MOSMLC) -P full lvlbug.sml >> result 2>&1
-        $(MOSML) -P full matchbug.sml >> result 2>&1
+
 
 	diff result result.ok
 

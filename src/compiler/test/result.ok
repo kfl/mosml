@@ -8816,3 +8816,42 @@ Reached end of file.
 > val it = () : unit
 [closing file "test10.sml"]
 > val it = () : unit
+Moscow ML version 2.00 (June 2000)
+Enter `quit();' to quit.
+- > signature S = /\t.{type t = t, val x : t, val f : t -> unit}
+- ! Toplevel input:
+! functor Apply F:ARG = F(Unit)
+!                 ^^^
+! Illegal applicative functor argument: the signature specifies a generative functor in a positive position
+- 
+Moscow ML version 2.00 (June 2000)
+Enter `quit();' to quit.
+- ! Toplevel input:
+! functor WrongApp X:sig end = struct structure X as sig type t end = [structure struct  type t = int end as sig type t end] end;
+!                                               ^
+! Illegal structure binding: a structure value cannot be opened in a functor body
+- ! Toplevel input:
+! functor WrongGen (A : sig end) = struct structure X as sig type t end = [structure struct  type t = int end as sig type t end] end;
+!                                                   ^
+! Illegal structure binding: a structure value cannot be opened in a functor body
+- 
+Moscow ML version 2.00 (June 2000)
+Enter `quit();' to quit.
+- > signature S = {val 'a x : ('a -> 'a) ref}
+- ! Toplevel input:
+! structure S :> S = struct fun id x = x; val x = ref id end;
+!             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+! Signature mismatch: the module does not match the signature ...
+! Scheme mismatch: value identifier x
+! is specified with type scheme 
+!   val 'a' x : ('a' -> 'a') ref
+! in the signature
+! but its declaration has the unrelated type scheme 
+!   val x : ('a -> 'a) ref
+! in the module
+! The declared type scheme should be at least as general as the specified type scheme
+- ! Toplevel input:
+! val _ = S.x := (fn _ => 0);
+!         ^^^
+! Cannot access unit S before it has been loaded.
+- 
