@@ -17,6 +17,8 @@ type dbconn = { conn : dbconn_, closed : bool ref }
 
 prim_type dbresult_	(* a finalized object containing a MYSQL_RES pointer *)
 
+type oid = unit		(* not used by Mysql *)
+
 (* One mysql function requires a dbconn where Postgres requires a
    dbresult.  Hence we include the dbconn_ in the Mysql.dbresult *)
 
@@ -316,66 +318,75 @@ fun isnull' (_, dbres) fno tupno =	(* Assume fno >= 0 already checked *)
 	raise Fail "Mysql.isnull': negative tuple number"
 
 datatype dynval =
-    Int of int				(* mysql int4            *)
-  | Real of real			(* mysql float8 (float4) *)
-  | String of string			(* mysql text (varchar)  *)
-  | Date of int * int * int             (* mysql date yyyy-mm-dd *)
-  | Time of int * int * int             (* mysql time hh:mm:ss   *)
-  | DateTime of Date.date               (* mysql datetime        *)
-  | NullVal				(* mysql NULL            *)
+    Bool of bool                        (* (not used by Mysql)   *)
+  | Int of int                          (* Mysql int4            *)
+  | Real of real                        (* Mysql float8 (float4) *)
+  | String of string                    (* Mysql text (varchar)  *)
+  | Date of int * int * int             (* Mysql date yyyy-mm-dd *)
+  | Time of int * int * int             (* Mysql time hh:mm:ss   *)
+  | DateTime of Date.date               (* Mysql datetime        *)
+  | Oid of oid                          (* (not used by Mysql)   *)
+  | Bytea of Word8Array.array           (* (not used by Mysql)   *)
+  | NullVal                             (* Mysql NULL value      *)
 
 datatype dyntype = 
-    IntTy               (* ML int               mysql int4              *)
-  | RealTy              (* ML real              mysql float8, float4    *)
-  | StringTy            (* ML string            mysql text, varchar     *) 
-  | DateTy              (* ML (yyyy, mth, day)  mysql date              *)
-  | TimeTy              (* ML (hh, mm, ss)      mysql time              *)
-  | DateTimeTy          (* ML Date.date         mysql datetime, abstime *)
-  | UnknownTy
+    BoolTy              (* ML bool              (not used by Mysql)     *)
+  | IntTy               (* ML int               Mysql int4              *)
+  | RealTy              (* ML real              Mysql float8, float4    *)
+  | StringTy            (* ML string            Mysql text, varchar     *) 
+  | DateTy              (* ML (yyyy, mth, day)  Mysql date              *)
+  | TimeTy              (* ML (hh, mm, ss)      Mysql time              *)
+  | DateTimeTy          (* ML Date.date         Mysql datetime, abstime *)
+  | OidTy               (* ML oid               (not used by Mysql)     *)
+  | ByteArrTy           (* ML Word8Array.array  (not used by Mysql)     *)
+  | UnknownTy of oid
 
 (* A translation from Mysql types to Moscow ML types.
    
    NB!: The numbers below need to correspond to the
         numbers in mmysql.c *)
 
-fun totag 0      = SOME IntTy      (* FIELD_TYPE_DECIMAL *)
-  | totag 1      = SOME IntTy      (* FIELD_TYPE_TINY *)
-  | totag 2      = SOME IntTy      (* FIELD_TYPE_SHORT *)
-  | totag 3      = SOME IntTy      (* FIELD_TYPE_LONG *)
-  | totag 4      = SOME RealTy     (* FIELD_TYPE_FLOAT *)
-  | totag 5      = SOME RealTy     (* FIELD_TYPE_DOUBLE *)
-  | totag 6      = SOME UnknownTy  (* FIELD_TYPE_NULL *)
-  | totag 7      = SOME DateTimeTy (* FIELD_TYPE_TIMESTAMP *)
-  | totag 8      = SOME IntTy      (* FIELD_TYPE_LONGLONG *)  
-  | totag 9      = SOME IntTy 	   (* FIELD_TYPE_INT24 *)     
-  | totag 10     = SOME DateTy     (* FIELD_TYPE_DATE *)      
-  | totag 11     = SOME TimeTy     (* FIELD_TYPE_TIME *)      
-  | totag 12     = SOME DateTimeTy (* FIELD_TYPE_DATETIME *)  
-  | totag 13     = SOME DateTy     (* FIELD_TYPE_YEAR *)      
-  | totag 14     = SOME DateTy     (* FIELD_TYPE_NEWDATE *)   
-  | totag 15     = SOME UnknownTy  (* FIELD_TYPE_ENUM *)      
-  | totag 16     = SOME UnknownTy  (* FIELD_TYPE_SET *)       
-  | totag 17     = SOME StringTy   (* FIELD_TYPE_TINY_BLOB *) 
-  | totag 18     = SOME StringTy   (* FIELD_TYPE_MEDIUM_BLOB *)
-  | totag 19     = SOME StringTy   (* FIELD_TYPE_LONG_BLOB *) 
-  | totag 20     = SOME StringTy   (* FIELD_TYPE_BLOB *)      
-  | totag 21     = SOME StringTy   (* FIELD_TYPE_VAR_STRING *)
-  | totag 22     = SOME StringTy   (* FIELD_TYPE_STRING *)    
-  | totag _      = NONE            (* NB. Unknown Type *)    
+fun totag 0      = SOME IntTy		(* FIELD_TYPE_DECIMAL *)
+  | totag 1      = SOME IntTy		(* FIELD_TYPE_TINY *)
+  | totag 2      = SOME IntTy		(* FIELD_TYPE_SHORT *)
+  | totag 3      = SOME IntTy		(* FIELD_TYPE_LONG *)
+  | totag 4      = SOME RealTy		(* FIELD_TYPE_FLOAT *)
+  | totag 5      = SOME RealTy		(* FIELD_TYPE_DOUBLE *)
+  | totag 6      = SOME (UnknownTy ())  (* FIELD_TYPE_NULL *)
+  | totag 7      = SOME DateTimeTy	(* FIELD_TYPE_TIMESTAMP *)
+  | totag 8      = SOME IntTy		(* FIELD_TYPE_LONGLONG *)  
+  | totag 9      = SOME IntTy		(* FIELD_TYPE_INT24 *)     
+  | totag 10     = SOME DateTy		(* FIELD_TYPE_DATE *)      
+  | totag 11     = SOME TimeTy		(* FIELD_TYPE_TIME *)      
+  | totag 12     = SOME DateTimeTy	(* FIELD_TYPE_DATETIME *)  
+  | totag 13     = SOME DateTy		(* FIELD_TYPE_YEAR *)      
+  | totag 14     = SOME DateTy		(* FIELD_TYPE_NEWDATE *)   
+  | totag 15     = SOME (UnknownTy ())	(* FIELD_TYPE_ENUM *)      
+  | totag 16     = SOME (UnknownTy ())  (* FIELD_TYPE_SET *)       
+  | totag 17     = SOME StringTy	(* FIELD_TYPE_TINY_BLOB *) 
+  | totag 18     = SOME StringTy	(* FIELD_TYPE_MEDIUM_BLOB *)
+  | totag 19     = SOME StringTy	(* FIELD_TYPE_LONG_BLOB *) 
+  | totag 20     = SOME StringTy	(* FIELD_TYPE_BLOB *)      
+  | totag 21     = SOME StringTy	(* FIELD_TYPE_VAR_STRING *)
+  | totag 22     = SOME StringTy	(* FIELD_TYPE_STRING *)    
+  | totag _      = NONE			(* NB. Unknown Type *)    
 
 (* Translation from Moscow ML types to Mysql types: *)
 
-fun fromtag IntTy      = "long"
-  | fromtag RealTy     = "double"
-  | fromtag StringTy   = "text"
-  | fromtag DateTy     = "date"
-  | fromtag TimeTy     = "time"
-  | fromtag DateTimeTy = "datetime"
-  | fromtag UnknownTy  = raise Fail "Mysql.fromtag"
+fun fromtag BoolTy        = raise Fail "fromtag: no Mysql type for BoolTy"
+  | fromtag IntTy         = "long"
+  | fromtag RealTy        = "double"
+  | fromtag StringTy      = "text"
+  | fromtag DateTy        = "date"
+  | fromtag TimeTy        = "time"
+  | fromtag DateTimeTy    = "datetime"
+  | fromtag OidTy         = raise Fail "fromtag: no Mysql type for OidTy"
+  | fromtag ByteArrTy     = raise Fail "fromtag: no Mysql type for ByteArrTy"
+  | fromtag (UnknownTy _) = raise Fail "Mysql.fromtag";
 
 fun typeof tyname = 
     case totag tyname of
-	NONE     => UnknownTy
+	NONE     => UnknownTy ()
       | SOME tag => tag
 		
 fun ftype (_, dbres) fno = 
@@ -407,9 +418,8 @@ fun getdynfield (dbres as (_, dbres_)) fno : int -> dynval =
       | DateTimeTy => (fn tupno => 
 		       if db_isnull dbres_ tupno fno then NullVal
 		       else DateTime (db_getdatetime dbres_ tupno fno))
-      | UnknownTy => 
-	raise Fail ("Mysql.getdynfield: unknown type") 
-(*      | _ => raise Fail "Mysql.getdynfield: unknown type" *)
+      | UnknownTy () => raise Fail ("Mysql.getdynfield: unknown type") 
+      | _ => raise Fail "Mysql.getdynfield: unknown type";
 
 fun applyto x f = f x
 
@@ -431,7 +441,8 @@ in
       | dynval2s (Time hms)     = fmttrip ":" hms
       | dynval2s (DateTime dt)  = Date.toString dt
       | dynval2s NullVal        = "NULL"
-end
+      | dynval2s _              = raise Fail "Mysql.dynval2s: unknown dynval"
+end;
 
 
 (* Implements "copy <tablename> to stdout" : *)
@@ -458,8 +469,8 @@ fun dynvaltostring (Int i)          = replaceminus(Int.toString i)
   | dynvaltostring (Time time)      = totime time
   | dynvaltostring (DateTime dt)    = Date.fmt "%Y-%m-%d %H:%M:%S" dt
   | dynvaltostring (NullVal)        = "\\N"
-(*  | dynvaltostring _              = raise Fail ("dynvaltostring: unknown dynval")
-*)
+  | dynvaltostring _ = raise Fail "Mysql.dynvaltostring: unknown dynval";
+
 fun copytableto (dconn as { conn, closed } : dbconn,
 		 tablename : string,
 		 put : string -> unit) : unit =

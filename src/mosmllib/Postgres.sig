@@ -2,7 +2,7 @@
 
 type dbconn                                   (* Connection to server *)
 type dbresult                                 (* Result of a query    *)
-type oid                                      (* Internal object id   *)
+eqtype oid                                    (* Internal object id   *)
 
 exception Closed                              (* Connection is closed *)
 exception Null                                (* Field value is NULL  *)
@@ -55,8 +55,8 @@ val fnumber      : dbresult -> string -> int option
 val getint       : dbresult -> int -> int -> int
 val getreal      : dbresult -> int -> int -> real
 val getstring    : dbresult -> int -> int -> string
-val getdate      : dbresult -> int -> int -> int * int * int (* Y M D *)
-val gettime      : dbresult -> int -> int -> int * int * int (* H M S *)
+val getdate      : dbresult -> int -> int -> int * int * int   (* Y M D *)
+val gettime      : dbresult -> int -> int -> int * int * int   (* H M S *)
 val getdatetime  : dbresult -> int -> int -> Date.date
 val getbool      : dbresult -> int -> int -> bool
 val isnull       : dbresult -> int -> int -> bool

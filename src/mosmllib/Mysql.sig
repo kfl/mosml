@@ -2,6 +2,7 @@
 
 type dbconn                                   (* Connection to server *)
 type dbresult                                 (* Result of a query    *)
+eqtype oid                                    (* (not used by Mysql)  *)
 
 exception Closed                              (* Connection is closed *)
 exception Null                                (* Field value is NULL  *)
@@ -10,10 +11,10 @@ exception Null                                (* Field value is NULL  *)
 
 val openbase : { dbhost    : string option,   (* database server host *)
                  dbname    : string option,   (* database name        *)
-                 dboptions : string option,   (* (not used by MySQL)  *)
+                 dboptions : string option,   (* (not used by Mysql)  *)
                  dbport    : string option,   (* database server port *)
                  dbpwd     : string option,   (* user passwd          *)
-                 dbtty     : string option,   (* (not used by MySQL)  *)
+                 dbtty     : string option,   (* (not used by Mysql)  *)
                  dbuser    : string option    (* database user        *)
                } -> dbconn
 
@@ -31,12 +32,12 @@ val errormessage : dbconn -> string option
 (* Query execution and result set information *)
 
 datatype dbresultstatus =
-    Bad_response            (* (not used by mysql)                    *)
+    Bad_response            (* (not used by Mysql)                    *)
   | Command_ok              (* The query was a command                *)
-  | Copy_in                 (* (not used by mysql)                    *)
-  | Copy_out                (* (not used by mysql)                    *)
+  | Copy_in                 (* (not used by Mysql)                    *)
+  | Copy_out                (* (not used by Mysql)                    *)
   | Empty_query
-  | Fatal_error             (* (not used by mysql)                    *)
+  | Fatal_error             (* (not used by Mysql)                    *)
   | Nonfatal_error
   | Tuples_ok               (* The query successfully returned tuples *)
 
@@ -61,13 +62,16 @@ val getbool      : dbresult -> int -> int -> bool
 val isnull       : dbresult -> int -> int -> bool
 
 datatype dynval =
-    Int of int                          (* MySQL int4            *)
-  | Real of real                        (* MySQL float8 (float4) *)
-  | String of string                    (* MySQL text (varchar)  *)
-  | Date of int * int * int             (* MySQL date yyyy-mm-dd *)
-  | Time of int * int * int             (* MySQL time hh:mm:ss   *)
-  | DateTime of Date.date               (* MySQL datetime        *)
-  | NullVal                             (* MySQL NULL value      *)
+    Bool of bool                        (* (not used by Mysql)   *)
+  | Int of int                          (* Mysql int4            *)
+  | Real of real                        (* Mysql float8 (float4) *)
+  | String of string                    (* Mysql text (varchar)  *)
+  | Date of int * int * int             (* Mysql date yyyy-mm-dd *)
+  | Time of int * int * int             (* Mysql time hh:mm:ss   *)
+  | DateTime of Date.date               (* Mysql datetime        *)
+  | Oid of oid                          (* (not used by Mysql)   *)
+  | Bytea of Word8Array.array           (* (not used by Mysql)   *)
+  | NullVal                             (* Mysql NULL value      *)
 
 val getdynfield  : dbresult -> int -> int -> dynval
 val getdyntup    : dbresult -> int -> dynval vector
@@ -82,13 +86,16 @@ val copytablefrom : dbconn * string * ((string -> unit) -> unit) -> unit
 (* Some standard ML and MySQL types: *)
 
 datatype dyntype = 
-    IntTy               (* ML int               MySQL int4              *)
-  | RealTy              (* ML real              MySQL float8, float4    *)
-  | StringTy            (* ML string            MySQL text, varchar     *) 
-  | DateTy              (* ML (yyyy, mth, day)  MySQL date              *)
-  | TimeTy              (* ML (hh, mm, ss)      MySQL time              *)
-  | DateTimeTy          (* ML Date.date         MySQL datetime, abstime *)
-  | UnknownTy
+    BoolTy              (* ML bool              (not used by Mysql)     *)
+  | IntTy               (* ML int               Mysql int4              *)
+  | RealTy              (* ML real              Mysql float8, float4    *)
+  | StringTy            (* ML string            Mysql text, varchar     *) 
+  | DateTy              (* ML (yyyy, mth, day)  Mysql date              *)
+  | TimeTy              (* ML (hh, mm, ss)      Mysql time              *)
+  | DateTimeTy          (* ML Date.date         Mysql datetime, abstime *)
+  | OidTy               (* ML oid               (not used by Mysql)     *)
+  | ByteArrTy           (* ML Word8Array.array  (not used by Mysql)     *)
+  | UnknownTy of oid
 
 val fromtag : dyntype -> string
 val ftype   : dbresult -> int -> dyntype

@@ -641,11 +641,11 @@ size -A mlsexe kan fortaelle hvor store de enkelte sektioner er.
 * Extended date offset range?
 + ~ (ones-complement) in Word, Word8
 + Timer -- do not include GC time, add new function
-* Process.status not equality type
++ Process.status not equality type
 * Unix structure -- various changes
 
 
-* 2000-10-20: Mosml library
++ 2000-10-20: Mosml library
 
 Further unify Mysql and Postgres signatures; must match a common Db
 signature.

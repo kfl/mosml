@@ -67,25 +67,25 @@ CharVectorSlice.uo: CharVectorSlice.ui CharVector.ui Substring.ui Char.ui \
     Word8VectorSlice.ui 
 CharArraySlice.uo: CharArraySlice.ui CharVector.ui CharArray.ui \
     Word8ArraySlice.ui CharVectorSlice.ui 
-Word8Vector.uo: Word8Vector.ui String.ui List.ui Word8.ui 
 CharArraySlice.ui: CharVector.ui CharArray.ui CharVectorSlice.ui 
 CharVectorSlice.ui: CharVector.ui Substring.ui Char.ui 
-Word8Array.uo: Word8Array.ui List.ui Word8.ui Word8Vector.ui 
 Word8VectorSlice.uo: Word8VectorSlice.ui Word8.ui Word8Vector.ui 
 Word8VectorSlice.ui: Word8.ui Word8Vector.ui 
 Word8ArraySlice.uo: Word8ArraySlice.ui Word8Array.ui Word8.ui \
     Word8Vector.ui Word8VectorSlice.ui 
 Word8ArraySlice.ui: Word8Array.ui Word8.ui Word8Vector.ui \
     Word8VectorSlice.ui 
-Word.uo: Word.ui String.ui StringCvt.ui Char.ui 
+Word8Vector.uo: Word8Vector.ui String.ui List.ui Word8.ui 
 VectorSlice.uo: VectorSlice.ui Vector.ui 
+Word8Array.uo: Word8Array.ui List.ui Word8.ui Word8Vector.ui 
 VectorSlice.ui: Vector.ui 
-Vector.uo: Vector.ui List.ui 
+Word.uo: Word.ui String.ui StringCvt.ui Char.ui 
+Weak.uo: Weak.ui 
 ArraySlice.uo: ArraySlice.ui Vector.ui Array.ui VectorSlice.ui 
 ArraySlice.ui: Vector.ui Array.ui VectorSlice.ui 
-Weak.uo: Weak.ui 
+Vector.uo: Vector.ui List.ui 
 Strbase.uo: Strbase.ui List.ui 
-Process.uo: Process.ui List.ui BasicIO.ui 
+Process.uo: Process.ui List.ui BasicIO.ui Time.ui 
 Path.uo: Path.ui String.ui List.ui Substring.ui 
 Mosml.uo: Mosml.ui Timer.ui FileSys.ui BinIO.ui String.ui List.ui Vector.ui \
     Word8.ui Process.ui Byte.ui TextIO.ui Word8Vector.ui Time.ui 
@@ -139,6 +139,7 @@ SML90.uo: SML90.ui String.ui BasicIO.ui
 Real.uo: Real.ui StringCvt.ui Char.ui 
 Real.ui: StringCvt.ui 
 Random.uo: Random.ui 
+Process.ui: Time.ui 
 Polyhash.uo: Polyhash.ui Array.ui 
 Polygdbm.uo: Polygdbm.ui List.ui Gdbm.ui 
 Polygdbm.ui: Gdbm.ui 
