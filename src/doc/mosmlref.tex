@@ -1,4 +1,4 @@
-% mosmlref.tex v. 2.00.0 Copyright (C) Peter Sestoft 1994, 2000-06-14
+% mosmlref.tex v. 2.00.0 Copyright (C) Peter Sestoft 1994, 2000-06-15
 %
 % You may edit for lay-out, or leave out irrelevant sections (if
 % such omissions are marked somehow), but you may not redistribute the
@@ -874,14 +874,14 @@ filenames are preceded by the command line argument {\tt -structure},
 eg:
 
 \begin{alltt}
-   mosmlc -structure unitid.sig unitid.sml 
+   mosmlc -c -structure unitid.sig unitid.sml 
 \end{alltt}
 
 \noindent Since \emph{structure} mode is the default compilation
 mode, the {\tt -structure} option may also be omitted:
 
 \begin{alltt}
-   mosmlc unitid.sig unitid.sml 
+   mosmlc -c unitid.sig unitid.sml 
 \end{alltt}
 
 \noindent 
@@ -1020,7 +1020,7 @@ With the batch compiler {\tt mosmlc}, the files {\tt unitid.sig} and
 filenames are preceded by the command line argument {\tt -toplevel}.
 
 \begin{alltt}
-   mosmlc -toplevel unitid.sig unitid.sml
+   mosmlc -c -toplevel unitid.sig unitid.sml
 \end{alltt}
 
 \noindent 

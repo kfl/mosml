@@ -25,6 +25,8 @@ macmosml.dvi: macmosmlbib
 manual.dvi: manual.tex manual.bbl
 	${LATEX} manual
 	bibtex manual
+	${LATEX} manual
+	${LATEX} manual
 
 index.tex texsigsigs.tex:
 	cd helpsigs; make all base
