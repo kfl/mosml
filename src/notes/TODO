@@ -1549,6 +1549,7 @@ renaming code that assumes all bound variables are distinct.
 Changed closeValBindVE in Elab.sml to copy the type scheme before
 closing the valbind.
 
+
 + 2004-07-26: From David Greaves <David.Greaves@cl.cam.ac.uk>
 
 There is a bug in mosml sockets implementation that means that only 16
@@ -1578,3 +1579,77 @@ EXTERNML value msocket_recvfrom(value sock, value buff, value offset, ...
 The faulty line should read:
 
   modify(&Field(res, 0), Val_int(ret));    
+
+
+2004-11-02: Andrzej W:
+
+This looks like a bug in the parser of Moscow ML:
+
+signature A = sig type a type b end
+                      where type a = int
+                      where type b = int
+
+(*
+wasowski@klimt scope--reachability--0-SOURCE $ mosml ,test.sml
+Moscow ML version 2.01 (January 2004)
+Enter `quit();' to quit.
+[opening file ",test.sml"]
+File ",test.sml", line 4, characters 14-18:
+!                     where type b = int end
+!                           ^^^^
+! Syntax error.
+[closing file ",test.sml"]
+-
+*)
+
+
+The above code parses both in SML/NJ and MLTon. Also the definition
+(p.13, sigexp) seems to allow multiple where clauses.
+
+This error in the parser has been noted also by Norman Ramsey, see
+2004-03-08.
+
+
+* 2005-05-23: From: varming@itu.dk
+To: Peter Sestoft <sestoft@itu.dk>
+Subject: The Standard ML Basis Library Manual inconsistency
+
+Someone permuted the argument to packString.
+
+The type of Byte.packString in the manual:
+Word8Array.array * int * substring -> unit
+
+and in mosml and the kit:
+val it = fn : substring * array * int -> unit
+
+
+2005-06-25:
+Date: Sat, 25 Jun 2005 15:18:42 +0000
+From: Rob Arthan <rda@lemma-one.com>
+Subject: Problem with antiquotation in Moscow ML
+
+It isn't any great problem to me, but I noticed playing around with quotations
+and antiquotations that (illegal) input like `a b c ^42` makes Moscow ML
+hang. Here's a transcript:
+
+    - `a b c ^(42)`; (* OK *)
+    - `a b c ^42`; (* illegal: "42" is not an identifier, hangs ... *)
+[Control+C typed here]
+
+PS fixed Lexer.lex by replacing:
+
+  | _
+      { 
+        lexingMode := QUOTElm;   
+        lexError "ill-formed antiquotation" lexbuf 
+
+      }
+
+with 
+
+  | _
+      { 
+        skipString "ill-formed antiquotation" SkipQuotation lexbuf
+      }
+
+

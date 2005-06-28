@@ -458,8 +458,8 @@ and AntiQuotation = parse
         notTerminated "antiquotation" lexbuf
       }
   | _
-      { lexingMode := QUOTElm;
-        lexError "ill-formed antiquotation" lexbuf
+      { 
+        skipString "ill-formed antiquotation" SkipQuotation lexbuf
       }
 ;
 
