@@ -1653,3 +1653,54 @@ with
       }
 
 
+2005-06-28: Extending the globals offset from 16 to 32 bits.
+
+Currently, 
+
+GETGLOBAL, SETGLOBAL, PUSH_GETGLOBAL, PUSH_GETGLOBAL_APPLY[1-4]: 
+ 16-bit --> 32-bit arg
+
+PUSH_GETGLOBAL_APPTERM[1-4]:
+ 16-bit + 16-bit --> 16-bit + 32-bit
+
+
+compiler/Emitcode.sml
+
+ No changes.
+
+compiler/Reloc.sml
+
+ + slot_for_literal, slot_for_get_global and slot_for_set_global should
+   out_long instead of out_short
+
+compiler/Patch.sml
+
+ + patch_object should patch_long (new function) for literals and globals
+
+runtime/interp.c:
+
+ + In byte_raise_break_exn, two more 0's, at the end (little-endian) or
+   the beginning (big-endian).
+
+ + Increase RAISE_CODE_LEN to 6
+
+ + In GETGLOBAL, SETGLOBAL, PUSH_GETGLOBAL_APPLY[1-4], etc:
+   u16pc -> u32pc and += SHORT -> += LONG
+
+ + In PUSH_GETGLOBAL_APPTERM1 (only), second occurrence of u16pc -> u32pc. 
+
+runtime/fixcode.c:
+
+ + In fixup_endianness, more GETGLOBAL etc and SETGLOBAL to the
+   MAKEBLOCK group of instructions.
+
+ + Need a new category: one two-byte and one four-byte argument, for
+   PUSH_GETGLOBAL_APPLY[1-4]
+	
+runtime/expand.c:
+
+ + Move GETGLOBAL, SETGLOBAL, PUSH_GETGLOBAL_APPLY[1-4] to the MAKEBLOCK
+   group of instructions.
+
+ + Change the PUSH_GETGLOBAL_APPTERM[1-4] instructions to use u32pc for
+   the second arg, and LONG instead of SHORT

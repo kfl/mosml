@@ -23,15 +23,15 @@ fun slot_for_literal sc =
 	(case Hasht.peek literals sc of
 	     SOME addrs => addrs := !out_position :: !addrs
 	   | NONE       => Hasht.insert literals sc (ref [!out_position]));
-	out_short 0
+	out_long 0
     end
 
 fun slot_for_get_global uid =
-  (enter (Reloc_getglobal uid); out_short 0)
+  (enter (Reloc_getglobal uid); out_long 0)
 ;
 
 fun slot_for_set_global uid =
-  (enter (Reloc_setglobal uid); out_short 0)
+  (enter (Reloc_setglobal uid); out_long 0)
 ;
 
 fun slot_for_c_prim name =

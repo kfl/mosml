@@ -16,6 +16,16 @@ local
     set_nth_char_ buff (pos+1) (Char.chr (rshiftuns_ v 8))
   );
 
+  fun patch_long buff pos v =
+  (
+    (* `set_nth_char` must not check the length of buff, *)
+    (* because buff may be allocated outside the heap! *)
+    set_nth_char_ buff pos (Char.chr (andb_ 255 v));
+    set_nth_char_ buff (pos+1) (Char.chr (andb_ 255 (rshiftuns_ v 8)));
+    set_nth_char_ buff (pos+2) (Char.chr (andb_ 255 (rshiftuns_ v 16)));
+    set_nth_char_ buff (pos+3) (Char.chr (andb_ 255 (rshiftuns_ v 24)))
+  );
+
 in
 
 (* To relocate a block of object bytecode *)
@@ -23,14 +33,14 @@ in
 fun patch_object buff offset (stringlist, otherlist) =
     let fun relliteral (lit, poss) =
 	    let val slot = get_slot_for_literal lit
-		fun patchlit pos = patch_short buff (pos + offset) slot
+		fun patchlit pos = patch_long buff (pos + offset) slot
 	    in List.app patchlit poss end
 	fun relother (Reloc_literal sc, pos) =
-	    patch_short buff (pos + offset) (get_slot_for_literal sc)
+	    patch_long buff (pos + offset) (get_slot_for_literal sc)
 	  | relother (Reloc_getglobal uid, pos) =
-	    patch_short buff (pos + offset) (get_slot_for_variable uid)
+	    patch_long buff (pos + offset) (get_slot_for_variable uid)
 	  | relother (Reloc_setglobal uid, pos) =
-	    patch_short buff (pos + offset) (get_slot_for_defined_variable uid)
+	    patch_long buff (pos + offset) (get_slot_for_defined_variable uid)
 	  | relother (Reloc_primitive name, pos) =
 	    patch_short buff (pos + offset) (get_num_of_prim name)
     in
