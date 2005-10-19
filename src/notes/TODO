@@ -1704,3 +1704,33 @@ runtime/expand.c:
 
  + Change the PUSH_GETGLOBAL_APPTERM[1-4] instructions to use u32pc for
    the second arg, and LONG instead of SHORT
+
+* 2005-10-19: Fritz Henglein <henglein@gmail.com>
+
+Under MosML 2.01 (Windows XP) sker der at
+
+Date.date {year = 1970, month = Date.Jan, day = 1, hour = 0, minute = 0,
+second = 0, offset = NONE};
+
+får MosML til at gå ned.  Det sker øjensynligt for de (og kun de?!)
+datoer, der ligger den 1. januar 1970 f'ør kl. 1:00, altså
+1.1.1970 fra kl. 0:00:00 til 0:59:59.
+
+> Det lyder som den rigtige diagnose. Men hvorfor fungerer det øjensynligt for
+> datoer i 1969? (Er det, fordi de bliver håndteret særskilt i MosML?)
+
+Ja, forklaringen er denne betingelse:
+
+    if year < 1970 orelse year > 2037 then date1
+            else
+                case offset of
+                    NONE   =>
+                        tmozToDate (getlocaltime_ (mktime_ (dateToTmoz date1)))
+                                   offset
+                  | SOME t => date1
+
+som forsøger at gøre alle tilpas ved at normalisere datoen (med ugedag
+osv) hvis den falder inden for et interval hvor det et plausibelt at
+det kan lade sig gøre.  På Win XP er der så 1 time hvor det ikke
+virker; det må vi vist forsøge at håndtere i C-koden.
+
