@@ -1,7 +1,7 @@
 This is an -*- indented-text -*- document describing some of the
 technical details behind mosmlpm.
 
-Last mosdified by ken Friis Larsen <kfl@it.edu> July 15, 2000.
+Last modified by Ken Friis Larsen <ken@friislarsen.net> July 15, 2000.
 
 
 Filenames
@@ -14,7 +14,7 @@ Source files handled by mosmlpm should have extension ".sml".
 
 Recompilation and cut-off
 -------------------------
-We have tow cases for a <name>.sml file:
+We have two cases for a <name>.sml file:
 
 1. When no <name>.sig exists:
    Then <name>.sml sould be recompiled if 
