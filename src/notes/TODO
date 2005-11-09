@@ -1623,7 +1623,7 @@ and in mosml and the kit:
 val it = fn : substring * array * int -> unit
 
 
-2005-06-25:
++ 2005-06-25:
 Date: Sat, 25 Jun 2005 15:18:42 +0000
 From: Rob Arthan <rda@lemma-one.com>
 Subject: Problem with antiquotation in Moscow ML
@@ -1653,7 +1653,7 @@ with
       }
 
 
-2005-06-28: Extending the globals offset from 16 to 32 bits.
++ 2005-06-28: Extending the globals offset from 16 to 32 bits.
 
 Currently, 
 
@@ -1662,7 +1662,6 @@ GETGLOBAL, SETGLOBAL, PUSH_GETGLOBAL, PUSH_GETGLOBAL_APPLY[1-4]:
 
 PUSH_GETGLOBAL_APPTERM[1-4]:
  16-bit + 16-bit --> 16-bit + 32-bit
-
 
 compiler/Emitcode.sml
 
@@ -1734,3 +1733,55 @@ osv) hvis den falder inden for et interval hvor det et plausibelt at
 det kan lade sig gøre.  På Win XP er der så 1 time hvor det ikke
 virker; det må vi vist forsøge at håndtere i C-koden.
 
+* 2005-11-09 Discussion with Ken 
+  Moscow ML future:
+
+   - Moscow ML.NET:
+     Ken has resurrected mosml.net and integrated into CVS version.
+     Some build problems remain.
+     Should remain in sync in the future.
+     Should check in somehow into mosml2.0 CVS.
+     Make mosml.net the main branch?  
+       Pro: 32 bit int, no sync needed, thread support, .Net libs, 
+            simple FFI, potential MS funding, F# collaboration, 
+            new research (sep comp on .Net w speed), easier MSR contrib, 
+            ...
+       Con: lockin (but: Mono), redo libraries (MuDDy, mGTK, msql, intinf), 
+            performance, memory consumption, ...
+     Milestone  0: Makefile from NJK so Ken can build
+     Milestone  1: integration with current CVS mosml
+     Milestone  2: simplify build process (stay w csc and gnu make)
+     Milestone  3: build with mono 
+     Milestone  4: integrate library source files (#ifdef)
+     Milestone  5: design joint libraries (files, io)
+     More ...
+     Milestone 10: only one compiler with options: mosmlc -net *.sml
+     How to integrate the two libraries and the two backends etc?
+       --> #ifdef?
+       
+   - Support for MLB files:
+     Similar to PM files
+     - Need mosmlc option to specify target: 
+         mosmlc A.sml -toplevel -targetprefix _1A
+       when compiling "local A.sml in C.sml end".
+       Ken to implement this option.
+       (Or, more ambitiously, create packages of .ui and .uo files)
+     - Need mosmlb tool to read .mlb files and call mosmlc.
+
+   - Next release, what is needed
+
+     Release 2.02 (mini-release): Date 
+     - Library up to date
+       Ken to organize lib BL status investigation 
+       (w Michael N, Henning, Claudio)
+     - Various bug fixes and small embellishments
+
+     Release 2.10:
+     - Many more bug fixes
+       - 
+     - Requests for new functionality (this file)
+       - 
+     
+     
+   - Collaboration ML Kit and mlton
+     Especially Basis Library io and .mlb files.

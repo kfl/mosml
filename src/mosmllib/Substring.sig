@@ -102,7 +102,7 @@ val app         : (char -> unit) -> substring -> unit
    [sub (sus, k)] returns the k'th character of the substring; that is,
    s(i+k) where sus = (s, i, n).  Raises Subscript if k<0 or k>=n.
 
-   [size (s, i, n)] returns the size of the substring, that is, n.
+   [size sus] returns the size n of the substring sus = (s, i, n).
 
    [slice (sus, i', NONE)] returns the substring (s, i+i', n-i'), where
    sus = (s, i, n).  Raises Subscript if i' < 0 or i' > n.

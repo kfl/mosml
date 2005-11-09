@@ -249,6 +249,7 @@ Moscow ML release history
 
 2.02 (?)
   * Support for dynamic linking and callback from C also under MacOS X
+  * There may now be 2 G globals (string literals etc) instead of 64 K
   * Bugs fixed:
     * The HTML files generated for mosmllib now have valid URLs
     * Substring.app more efficient
