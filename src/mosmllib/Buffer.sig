@@ -12,7 +12,7 @@ sig
     val addSubString : buf -> substring -> unit
 end
 
-(* [buf] is the type of string buffers that allows efficient
+(* [buf] is the type of mutable string buffers that allows efficient
    concatenation at the end and automatically expand as necessary.  It
    provides accumulative concatenation of strings in quasi-linear time
    (instead of quadratic time when strings are concatenated pairwise).
@@ -21,7 +21,7 @@ end
    hint > String.maxSize.
    The argument hint is used as the initial size of the internal
    string that holds the buffer contents.  The internal string is
-   automatically reallocated as sontents is stored in the buffer.  For
+   automatically reallocated as contents is stored in the buffer.  For
    best performance, hint should be of the same order of magnitude as
    the number of characters that are expected to be stored in the
    buffer (for instance, 80 for a buffer that holds one output line).
