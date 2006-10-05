@@ -1785,3 +1785,59 @@ virker; det må vi vist forsøge at håndtere i C-koden.
      
    - Collaboration ML Kit and mlton
      Especially Basis Library io and .mlb files.
+
+ * Date: Tue, 14 Mar 2006 17:09:58 -0700
+   From: Konrad Slind <slind@cs.utah.edu>
+   Subject: FYI Moscow ML on Tiger
+
+I just spent a little time getting Moscow ML to build on Tiger. Not
+sure that I've got it completely sussed wrt dynamic libraries, but
+the following over-rides in src/Makefile.inc of the Moscow ML
+distribution helped in getting the basic executable to compile:
+
+     CC=gcc-3.3
+     LD=gcc-3.3 -flat_namespace
+     STRIP=echo
+
+In src/runtime/Makefile, you also need to add -lSystemStubs to BASELIBS:
+
+    BASELIBS=-lm -lSystemStubs
+
+If you get better info than the above results of my blundering about,
+let me know!
+
+ * Date: Sun, 20 Aug 2006 15:09:54 +0100
+   From: Ian Grant <ian.grant@cl.cam.ac.uk>
+
+Here is a tiny patch to allow the mosml 2.01 msocket library to compile under 
+GCC4 which no-longer allows a cast in an lvalue (see 
+http://gcc.gnu.org/gcc-3.4/changes.html "The cast-as-lvalue extension has 
+been removed for C++ and deprecated for C and Objective-C.") . I have tested 
+this with the simple client/server test in that directory, so I know it has 
+run at least once :-) The #ifdef macintosh branch of the Sock_val define 
+could probably be merged with this change as it most likely came about for 
+the same reason.
+
+Yours sincerely
+Ian Grant
+
+--- src/dynlibs/msocket/msocket.c.orig  2000-01-21 10:07:13.000000000 +0000
++++ src/dynlibs/msocket/msocket.c       2006-08-20 14:35:06.000000000 +0100
+@@ -70,6 +70,7 @@
+ #else
+ #define Sock_val(x) ((int) Field(x,0))
+ #endif
++#define Sock_lval(x) (Field(x,0))
+ 
+ /* Decomposition of addr values: */
+ #define Size_addrval(a)   Field(a, 0)
+@@ -111,7 +112,7 @@
+ /* ML return type: sock_ */
+ static value newsocket(int sock) {
+   value result = alloc(1, Abstract_tag);
+-  Sock_val(result) = sock;
++  Sock_lval(result) = sock;
+   return result;
+ }
+ 
+ * Problem building on Fedora 64 bit
