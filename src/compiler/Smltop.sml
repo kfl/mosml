@@ -37,13 +37,16 @@ fun tryEvalLoad name =
     val () =
       let
         val stop = input_binary_int is
+	val _ = (print "Stop = "; print (Int.toString stop); print "\n")
         val start = pos_in is
         val code_len = stop - start
+	val _ = (print (Int.toString code_len); print "\n")
         val () = (block_len := code_len + 1)
         (* Now we have to check, whether the unit body is compatible *)
         (* with its compiled signature and previously loaded units. *)
         val () = seek_in is stop
         val tables = (input_value is : compiled_unit_tables)
+	val _ = (print "Got here 2\n")
         val () =
           Hasht.apply (fn uname' => fn stamp' =>
               let val stamp'' = Hasht.find (!watchDog) uname' in

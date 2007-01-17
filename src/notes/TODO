@@ -1775,6 +1775,8 @@ virker; det må vi vist forsøge at håndtere i C-koden.
        Ken to organize lib BL status investigation 
        (w Michael N, Henning, Claudio)
      - Various bug fixes and small embellishments
+     - Option -targetprefix
+     - mosmlb (Ken)
 
      Release 2.10:
      - Many more bug fixes
@@ -1785,6 +1787,55 @@ virker; det må vi vist forsøge at håndtere i C-koden.
      
    - Collaboration ML Kit and mlton
      Especially Basis Library io and .mlb files.
+
+
+2006-06-25 Michael Norrish intern.c exception "too big" 
+
+sestoft@jones:~/tmp$ ll trace0910Theory.uo
+40024 -rw-r--r--  1 sestoft sestoft 40938033 Jun 22 07:55 trace0910Theory.uo
+sestoft@jones:~/tmp$ md5sum trace0910Theory.uo
+2bed6ce5b00498b93da8f5c6d0c819c2  trace0910Theory.uo
+
+load "trace0910Theory.uo";
+
+Stop = 6247533 (from Smltop.sml) = 00 5f 54 6d
+code_len = 6247529 (from Smltop.sml)
+wosize = 8672622 (from intern.c)
+! Uncaught exception:
+! Fail  "intern: structure too big #2"
+
+The claimed size of the data structure is 8672622 * 4 B = 34690488
+
+Added to the code size, that gives 40938021 B, which doesn't leave
+enough space for the header and the metadata at the end of the file.
+Not to mention that there are several (short) strings in the file.
+
+
+hd trace0910Theory.uo:
+
+00000000  00 5f 54 6d 6a 00 00 00  00 5d 05 13 00 00 00 6a  |._Tmj....].....j|
+
+005f5460  00 00 6c 00 00 00 00 03  05 00 00 00 48 84 95 a6  |..l.........H...|
+005f5470  ba 00 84 55 6f 00 17 00  00 02 00 00 00 1c 00 00  |...Uo...........|
+005f5480  00 24 00 00 00 30 00 00  00 4c 00 00 00 fa 07 00  |.$...0...L......|
+005f5490  00 58 00 00 00 01 0b 00  00 64 00 00 00 78 00 00  |.X.......d...x..|
+005f54a0  00 fd 1b 00 00 4e 31 6c  5a 49 44 58 7a 2b 54 75  |.....N1lZIDXz+Tu|
+
+@005f546d = 8495a6ba = 1000 0100 1001 0101 1010 0110 1011 1010 
+@005f5471 = 0084556f = 8672623 (dec) which whsize.
+
+The object we're looking for has type compiled_unit_tables and is a
+record of size 5.
+
+A wosize of 5 should give a header of this form (in bin):
+
+00000000 00000000 000101xx 00000000 where xx = 11 is a Black header
+
+and in hex
+
+00 00 17 00 
+
+
 
  * Date: Tue, 14 Mar 2006 17:09:58 -0700
    From: Konrad Slind <slind@cs.utah.edu>
@@ -1841,3 +1892,4 @@ Ian Grant
  }
  
  * Problem building on Fedora 64 bit
+
