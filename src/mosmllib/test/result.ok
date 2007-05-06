@@ -1,4 +1,4 @@
-Moscow ML version 2.01a (January 2004)
+Moscow ML version 2.01b (June 2005)
 Enter `quit();' to quit.
 [opening file "test.sml"]
 [opening file "array.sml"]
@@ -438,15 +438,15 @@ Enter `quit();' to quit.
 > val checkrange = fn : int * int -> (int -> bool) -> string
 [closing file "auxil.sml"]
 > val it = () : unit
-This is (local time) now:        Mon Jan 12 17:03:47 2004
-This is UTC now:                 Mon Jan 12 16:03:47 2004
-This is an hour from now:        Mon Jan 12 18:03:47 2004
-This is a day from now:          Tue Jan 13 17:03:47 2004
-This is a week from now:         Mon Jan 19 17:03:47 2004
-This is 120 days from now:       Tue May 11 18:03:47 2004
-This is 160 days from now:       Sun Jun 20 18:03:47 2004
-This is 200 days from now:       Fri Jul 30 18:03:47 2004
-This is 240 days from now:       Wed Sep  8 18:03:47 2004
+This is (local time) now:        Sun May  6 21:50:35 2007
+This is UTC now:                 Sun May  6 19:50:35 2007
+This is an hour from now:        Sun May  6 22:50:35 2007
+This is a day from now:          Mon May  7 21:50:35 2007
+This is a week from now:         Sun May 13 21:50:35 2007
+This is 120 days from now:       Mon Sep  3 21:50:35 2007
+This is 160 days from now:       Sat Oct 13 21:50:35 2007
+This is 200 days from now:       Thu Nov 22 20:50:35 2007
+This is 240 days from now:       Tue Jan  1 20:50:35 2008
 This is the epoch (UTC):         Thu Jan  1 00:00:00 1970
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
@@ -455,10 +455,10 @@ The UTC millenium (local time):  Sat Jan  1 01:00:00 2000
 The local millenium (UTC time):  Fri Dec 31 23:00:00 1999
 The UTC+01 millenium (UTC):      Fri Dec 31 23:00:00 1999
 The UTC-01 millenium (UTC):      Sat Jan  1 01:00:00 2000
-This is today's number:          012 (internally: 11)
-This is today's weekday:         Monday
-This is the name of this month:  January
-Today's ISO date:                2004-01-12
+This is today's number:          126 (internally: 125)
+This is today's weekday:         Sunday
+This is the name of this month:  May
+Today's ISO date:                2007-05-06
 > val test1 = "OK" : string
   val test2 = "OK" : string
   val test3 = "OK" : string
@@ -948,7 +948,7 @@ Should be `Io':
 > val checkrange = fn : int * int -> (int -> bool) -> string
 [closing file "auxil.sml"]
 > val it = () : unit
-sh: line 1: nonsuchprogramexists: command not found
+sh: nonsuchprogramexists: command not found
 > val test1 = "OK" : string
   val test2 = "OK" : string
   val test3a = "OK" : string
@@ -956,6 +956,38 @@ sh: line 1: nonsuchprogramexists: command not found
   val test3c = "OK" : string
   val test4 = "OK" : string
 [closing file "process.sml"]
+[opening file "random.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val ('a, 'b) seq = fn : 'a * 'b -> 'b
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> (int -> bool) -> string
+[closing file "auxil.sml"]
+> val it = () : unit
+> val it = () : unit
+> val r42 = fn : generator -> int
+  val rmax = fn : generator -> int
+  val rlo = fn : generator -> int
+  val rhi = fn : generator -> int
+  val test1a = "OK" : string
+  val test1b = "OK" : string
+  val test1c = "OK" : string
+  val test1d = "OK" : string
+  val test1e = "OK" : string
+  val rl42 = fn : int * generator -> int list
+  val rlmax = fn : int * generator -> int list
+  val rllo = fn : int * generator -> int list
+  val rlhi = fn : int * generator -> int list
+  val test2a = "OK" : string
+  val test2b = "OK" : string
+  val test2c = "OK" : string
+  val test2d = "OK" : string
+  val test2e = "OK" : string
+  val rl8 = fn : int * generator -> int list
+  val test3a = "OK" : string
+[closing file "random.sml"]
 [opening file "real.sml"]
 [opening file "auxil.sml"]
 > infix 1 seq
@@ -1268,6 +1300,7 @@ abcde <--- this should read abcde
   val test8a = "OK" : string
   val test9a = "OK" : string
   val test9b = "OK" : string
+  val test9c = "OK" : string
   val chk = fn : string * int -> string
   val test10a =
     ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
@@ -1287,14 +1320,14 @@ abcde <--- this should read abcde
 > val it = () : unit
 
 Each line below should show roughly the same User, System, and Gc times:
-User: 0.050  System: 0.000  Gc: 0.000  Real: 0.049
-User: 0.050  System: 0.000  Gc: 0.000  Real: 0.046
-User: 0.040  System: 0.000  Gc: 0.000  Real: 0.046
-User: 0.050  System: 0.000  Gc: 0.000  Real: 0.046
-User: 0.050  System: 0.000  Gc: 0.000  Real: 0.047
-User: 0.040  System: 0.000  Gc: 0.000  Real: 0.046
-User: 0.050  System: 0.000  Gc: 0.000  Real: 0.045
-User: 0.050  System: 0.000  Gc: 0.000  Real: 0.047
+User: 0.040  System: 0.000  Gc: 0.000  Real: 0.041
+User: 0.044  System: 0.000  Gc: 0.000  Real: 0.042
+User: 0.044  System: 0.000  Gc: 0.000  Real: 0.042
+User: 0.040  System: 0.000  Gc: 0.000  Real: 0.042
+User: 0.044  System: 0.000  Gc: 0.000  Real: 0.042
+User: 0.040  System: 0.000  Gc: 0.000  Real: 0.042
+User: 0.044  System: 0.000  Gc: 0.000  Real: 0.042
+User: 0.040  System: 0.000  Gc: 0.000  Real: 0.042
 > val test1 = "OK" : string
   val test2 = "OK" : string
   val test3 = "OK" : string
@@ -1560,7 +1593,7 @@ test5:
 test6:
 test7:
 test8:
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 > val a = <array> : int list array
   val test1 = "OK" : string
   val test2 = "OK" : string
