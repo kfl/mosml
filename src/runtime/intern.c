@@ -528,7 +528,7 @@ static value intern_fast_val(struct channel * chan, unsigned long magic)
     stat_free((char *) block);
   } else {
     /* Block has natural word size (32) */
-    printf("wosize = %d\n", wosize);
+    // printf("wosize = %d\n", wosize);
     if (wosize > Max_wosize) {
       failwith("intern: structure too big #2");
     }

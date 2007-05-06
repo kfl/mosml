@@ -21,6 +21,7 @@ app use
  "mosml.sml",				(* MOSML *)
  "polyhash.sml",			(* MOSML *)
  "process.sml",
+ "random.sml",				(* MOSML *)
  "real.sml",
  "string.sml",
  "stringcvt.sml",

@@ -38,16 +38,22 @@ fun randomlist (n, {seedref as ref seed0}) =
     in h n seed0 [] end;
 
 fun range (min, max) = 
-    if min > max then raise Fail "Random.range: empty range" 
+    if min >= max then raise Fail "Random.range: empty range" 
     else 
-	fn {seedref as ref seed} =>
-	(seedref := nextrand seed; min + (floor(real(max-min) * seed / m)));
+	let val scale = (real max - real min) / m
+	in
+	    fn {seedref as ref seed} =>
+	    (seedref := nextrand seed; floor(real min + scale * seed))
+	end;
 
 fun rangelist (min, max) =
-    if min > max then raise Fail "Random.rangelist: empty range" 
+    if min >= max then raise Fail "Random.rangelist: empty range" 
     else 
-	fn (n, {seedref as ref seed0}) => 
-	let fun h 0 seed res = (seedref := seed; res)
-	      | h i seed res = h (i-1) (nextrand seed) 
-		               (min + floor(real(max-min) * seed / m) :: res)
-	in h n seed0 [] end
+	let val scale = (real max - real min) / m
+	in
+	    fn (n, {seedref as ref seed0}) => 
+	    let fun h 0 seed res = (seedref := seed; res)
+		  | h i seed res = 
+		h (i-1) (nextrand seed) (floor(real min + scale * seed) :: res)
+	    in h n seed0 [] end
+	end;

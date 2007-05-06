@@ -14,8 +14,8 @@ val rangelist  : int * int -> int * generator -> int list
    linear congruential generators from Paulson 1991, 1996.
 
    [newgenseed seed] returns a random number generator with the given
-   seed.  Throws exception Fail on seed 0.0 (which gives rise to a
-   degenerate sequence of random numbers).
+   seed.  Throws exception Fail on seed 0.0 (which would give rise to
+   a degenerate sequence of random numbers).
 
    [newgen ()] returns a random number generator, taking the seed from
    the system clock.
@@ -26,8 +26,8 @@ val rangelist  : int * int -> int * generator -> int list
    interval [0,1).
 
    [range (min, max) gen] returns an integral random number in the
-   range [min, max).  Raises Fail if min > max.
+   range [min, max).  Raises Fail if min >= max.
 
    [rangelist (min, max) (n, gen)] returns a list of n integral random
-   numbers in the range [min, max).  Raises Fail if min > max.  
+   numbers in the range [min, max).  Raises Fail if min >= max.  
 *)
