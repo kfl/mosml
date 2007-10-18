@@ -1891,5 +1891,29 @@ Ian Grant
    return result;
  }
  
- * Problem building on Fedora 64 bit
++ Problem building on Fedora 64 bit
 
+2007-10-17: This is due to problems with certain versions of malloc(),
+which alternatively allocate memory for the camlrunm heap in very high
+addresses using mmap() or in very low addresses using brk().  
+
+This span requires a huge page_table (14 GB or so), which it would be
+silly to allocate.
+
+The problem can be avoided by either forcing high memory allocation
+using this environment variable:
+
+   export MALLOC_MMAP_THRESHOLD_=0
+
+or by using forcing low memory allocation using this environment
+variable:
+
+   export MALLOC_MMAP_MAX_=0
+
+There may be performance implications of either of these choices.  The
+latter one would limit usable mosml memory to at most 3 GB, I think,
+whereas the former one has been experimentally tested to allow mosml
+to use more than 4 GB.
+
+Also note that these environment variables affect *all* programs that
+use malloc() and hence may have mysterious side effects.
