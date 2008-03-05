@@ -1891,7 +1891,7 @@ Ian Grant
    return result;
  }
  
-+ Problem building on Fedora 64 bit
++ Problem building on Fedora, Gentoo and SUSE 64 bit
 
 2007-10-17: This is due to problems with certain versions of malloc(),
 which alternatively allocate memory for the camlrunm heap in very high
@@ -1917,3 +1917,44 @@ to use more than 4 GB.
 
 Also note that these environment variables affect *all* programs that
 use malloc() and hence may have mysterious side effects.
+
+A better solution is to use 
+
+   export MALLOC_MMAP_MAX_=0
+
+in the shell only when building Moscow ML, and then use a shell script
+that sets one of these variables, in the new shell only, when invoking
+mosml, mosmlc and mosmllex.  This way it will not affect any other programs.  
+
+The long term solution is to add yet another #ifdef to the runtime
+source, and use mmap() and munmap() instead of malloc() and free() on
+64-bit architectures.
+
+
++ 2008-03-05: Mail from Tom Ridge, Cambridge: glibc 2.7 is a problem.  Diagnosed on 
+virtual machine (ssh -p 2222 -l itu localhost) thanks to Kenneth Ahn Jensen.
+
+From
+http://www.gnu.org/software/libtool/manual/libc/Malloc-Tunable-Parameters.html
+and <malloc.h> we have
+
+/* mallopt options that actually do something */
+#define M_TRIM_THRESHOLD    -1
+#define M_TOP_PAD           -2
+#define M_MMAP_THRESHOLD    -3
+#define M_MMAP_MAX          -4
+#define M_CHECK_ACTION      -5
+
+/* General SVID/XPG interface to tunable parameters. */
+extern int mallopt __MALLOC_P ((int __param, int __val));
+
+That is, one could initially call 
+
+	mallopt(M_MMAP_MAX, 0);
+
+to make sure that there is no allocation using mmap().
+
+The right place to do this is in mosml/src/runtime/gc_ctrl.c function
+init_gc; a version gc_ctrl.c.new with the required edits has been made
+and has been tested with glibc 2.7 on a 32 bit machine and on a 64 bit
+machine.

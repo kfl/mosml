@@ -70,11 +70,11 @@ systems, then you can install Moscow ML as follows:
      for a personal installation.
 
 (S2) Download the Unix source files from
-         ftp://ftp.dina.kvl.dk/pub/mosml/mos20src.tar.gz
+         http://www.itu.dk/people/sestoft/mosml/mos201src.tar.gz
 
 (S3) Unpack it by executing (in /usr/local, or ${HOME})
 
-         gzip -dc mos20src.tar.gz | tar xvf -
+         gzip -dc mos201src.tar.gz | tar xvf -
 
 (S4) Change directory to mosml/src
 
@@ -156,7 +156,7 @@ Moscow ML was written by
 and Claudio V. Russo (Claudio.Russo@cl.cam.ac.uk), University of Cambridge.
     Thanks to Don Sannella at LFCS, Division of Informatics,
     University of Edinburgh for funding under EPSRC grant GR/K63795
-and Peter Sestoft (sestoft@dina.kvl.dk),
+and Peter Sestoft (sestoft@itu.dk),
     Department of Mathematics and Physics, Royal Veterinary and
     Agricultural University, Thorvaldsensvej 40, DK-1871 Frederiksberg C, 
     Denmark.  Much of the work was done at the Technical University of

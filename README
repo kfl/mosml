@@ -70,7 +70,7 @@ Moscow ML was written by
 and Claudio V. Russo (Claudio.Russo@cl.cam.ac.uk), University of Cambridge.
     Thanks to Don Sannella at LFCS, Division of Informatics,
     University of Edinburgh for funding under EPSRC grant GR/K63795
-and Peter Sestoft (sestoft@dina.kvl.dk),
+and Peter Sestoft (sestoft@itu.dk),
     Department of Mathematics and Physics, Royal Veterinary and
     Agricultural University, Thorvaldsensvej 40, DK-1871 Frederiksberg C, 
     Denmark.  Much of the work was done at the Technical University of
@@ -121,21 +121,12 @@ from ftp.inria.fr:lang/caml-light.
 AVAILABILITY
 
     * The Moscow ML home page is at  
-        http://www.dina.kvl.dk/~sestoft/mosml.html
+        http://www.itu.dk/people/sestoft/mosml.html
     * Moscow ML library documentation
-        http://www.dina.kvl.dk/~sestoft/mosmllib/
+        http://www.itu.dk/people/sestoft/mosmllib/
     * The Linux executables (and documentation) are in
-        ftp://ftp.dina.kvl.dk/pub/mosml/linux-mos20bin.tar.gz
+        http://www.itu.dk/people/sestoft/linux-mos20bin.tar.gz
     * The MS Windows executables are in 
-        ftp://ftp.dina.kvl.dk/pub/mosml/win32-mos20bin.zip
-    * The MS DOS executables (and documentation) are in
-        ftp://ftp.dina.kvl.dk/pub/mosml/mos20bin.zip
-    * The Macintosh/MacOS (68k and PPC) executables are in
-        ftp://ftp.dina.kvl.dk/pub/mosml/mac-mos20bin.sea.hqx
+        http://www.itu.dk/people/sestoft/win32-mos20bin.zip
     * The Unix source files (and documentation) are in
-        ftp://ftp.dina.kvl.dk/pub/mosml/mos20src.tar.gz
-    * The MacOS modified source files (relative to Unix) are in
-        ftp://ftp.dina.kvl.dk/pub/mosml/mac-mos20src.sea.hqx
-
-The files are mirrored at 
-        ftp://ftp.csd.uu.se/pub/mirror/mosml
+        http://www.itu.dk/people/sestoft/mos201src.tar.gz
