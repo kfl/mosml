@@ -120,32 +120,39 @@ in
                SOME(opr, y) => BIN(x, opr, y)
              | NONE         => x
 
+       fun mkBin opr (x, y) = BIN(x, opr, y)
+
        fun getOpt f = PC.getItem >>* f
                       
        (* simple productions *)
        val getVar = getOpt(fn (VAR_T s) => SOME s | _ => NONE)
        val getInt = getOpt(fn (INT_T i) => SOME i | _ => NONE)
 
-       val sumOpr =  PLUS_T  ##> PLUS
-                  || MINUS_T ##> MINUS
+       val sumOpr =  PLUS_T  ##> mkBin PLUS
+                  || MINUS_T ##> mkBin MINUS
 
-       val prodOpr =  MULT_T  ##> MULT
-                   || DIV_T   ##> DIV
+       val prodOpr =  MULT_T  ##> mkBin MULT
+                   || DIV_T   ##> mkBin DIV
+
+       fun leftrecur left recur opr right = 
+           (PC.optional((opr -- right >> (fn (opr, right) => opr(left, right)))
+                        >>= recur))
+            >> (fn NONE => left | SOME e => e)
+
 
        (* recursive productions *)
        fun start toks = (expr --# % EOF_T) toks
 
        and expr toks = sum toks
 
-       and sum toks = (prod -- sum' >> buildBin) toks 
-
-       and sum' toks = 
-           PC.optional(sumOpr -- (prod -- sum' >> buildBin)) toks
-
-       and prod toks = (term -- prod' >> buildBin) toks
-
-       and prod' toks = 
-           PC.optional(prodOpr -- (term -- prod' >> buildBin)) toks
+       and sum toks = (prod >>= sum') toks 
+       and sum' e = leftrecur e sum' sumOpr prod
+(*           (PC.optional((sumOpr -- prod >> (fn (opr, y) => BIN(e, opr, y))) 
+                        >>= sum'))
+            >> (fn NONE => e | SOME e => e)
+*)
+       and prod toks = (term >>= prod') toks
+       and prod' e  = leftrecur e prod' prodOpr term 
 
        and term toks = 
            (  getVar                     >> VAR
