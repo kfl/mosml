@@ -64,7 +64,8 @@ struct
 
 		  
     (* Functions fo manipulating context *)
-    type context = Time.time          (* the newest ui encountered *) 
+
+   type context = Time.time          (* the newest ui encountered *) 
                  * filename list list (* the set of ui files to pass to the 
                                          compiler.*)
 
@@ -192,7 +193,8 @@ struct
 	let fun compileFile toplevel file next =
                 if isSML file
 		then
-		    let val name = OS.Path.mkAbsolute(file,path)
+		    let val name = OS.Path.mkAbsolute{path       = file, 
+                                                      relativeTo = path}
 			val options = if toplevel then ["-toplevel"]
 				      else ["-structure"]
 			fun compile file =
@@ -266,7 +268,8 @@ struct
     
     fun findFilesBody path body accu =
 	let fun findFilesFile file body = 
-		let val name = OS.Path.mkAbsolute(file,path)
+		let val name = OS.Path.mkAbsolute{path       = file,
+                                                  relativeTo = path}
 		in  findFilesBody path body (name :: accu) 
 		end
 	in 

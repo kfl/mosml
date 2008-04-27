@@ -18,7 +18,7 @@ struct
 	    val sargs = String.concat ("mosmlc -c " ::args)
 	in  
 	    debug [sargs] 
-	  ; Proc.system sargs = Proc.success
+	  ; Proc.isSuccess (Proc.system sargs)
 	end
 
     fun link debug options files file =
@@ -27,7 +27,7 @@ struct
 	    val sargs = String.concat ("mosmlc -o " :: file :: " " :: args)
 	in  
 	    debug [sargs] 
-	  ; Proc.system sargs = Proc.success
+	  ; Proc.isSuccess (Proc.system sargs)
 	end
     
 end
