@@ -1,6 +1,7 @@
 (* Array -- SML Basis Library *)
 
 prim_EQtype 'a array
+type 'a vector = 'a Vector.vector
 
 val maxLen   : int
 
@@ -11,7 +12,7 @@ val fromList : '_a list -> '_a array
 val length   : 'a array -> int
 val sub      : 'a array * int -> 'a
 val update   : 'a array * int * 'a  -> unit
-val vector   : 'a array -> 'a Vector.vector
+val vector   : 'a array -> 'a vector
 
 val copy     : {src: 'a array,  dst: 'a array, di: int} -> unit
 val copyVec  : {src: 'a vector, dst: 'a array, di: int} -> unit
