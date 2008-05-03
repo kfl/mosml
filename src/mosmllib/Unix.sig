@@ -1,14 +1,20 @@
 (* Unix -- SML Basis Library *)
-
-type proc
+signature Unix = sig 
+type ('a, 'b) proc
 type signal = Signal.signal
 
-val executeInEnv : string * string list * string list -> proc 
-val execute      : string * string list -> proc 
-val streamsOf    : proc -> TextIO.instream * TextIO.outstream
-val kill         : proc * signal -> unit
-val reap         : proc -> Process.status 
+val executeInEnv    : string * string list * string list -> ('a, 'b) proc 
+val execute         : string * string list -> ('a, 'b) proc
 
+val streamsOf       : (TextIO.instream, TextIO.outstream) proc 
+                       -> TextIO.instream * TextIO.outstream
+val textInstreamOf  : (TextIO.instream, 'a) proc -> TextIO.instream
+val textOutstreamOf : ('a, TextIO.outstream) proc -> TextIO.outstream
+val binInstreamOf   : (BinIO.instream, 'a) proc -> BinIO.instream
+val binOutstreamOf  : ('a, BinIO.outstream) proc -> BinIO.outstream 
+val kill            : ('a, 'b) proc * signal -> unit
+val reap            : ('a, 'b) proc -> OS.Process.status 
+end
 (* 
    This structure allows Moscow ML programs to start other processes
    and to communicate with them.  
@@ -54,6 +60,18 @@ val reap         : proc -> Process.status
    the source for the input stream ins, and the standard input of pr
    is the sink for the output stream outs.
 
+   [textInstreamOf pr] returns the text input stream associated with
+   process pr.  That is, the standard output of pr.
+
+   [textOutstreamOf pr] returns the text output stream associated with
+   process pr.  That is, the standard input of pr.
+
+   [binInstreamOf pr] returns the binary input stream associated with
+   process pr.  That is, the standard output of pr.
+
+   [binOutstreamOf pr] returns the binary output stream associated
+   with process pr.  That is, the standard input of pr.
+ 
    [reap pr] closes the input and output streams associated with pr,
    and then suspends the current (ML) process until the process
    corresponding to pr terminates.  Returns the exit status given by
