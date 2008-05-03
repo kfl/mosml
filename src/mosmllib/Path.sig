@@ -14,6 +14,7 @@ val getParent    : string -> string
 
 val isAbsolute   : string -> bool
 val isRelative   : string -> bool
+val isRoot       : string -> bool
 val mkAbsolute   : { path : string, relativeTo : string } -> string
 val mkRelative   : { path : string, relativeTo : string } -> string
 
@@ -31,6 +32,10 @@ val splitBaseExt : string -> {base : string, ext : string option}
 val joinBaseExt  : {base : string, ext: string option} -> string
 val base         : string -> string    
 val ext          : string -> string option
+
+exception InvalidArc
+val fromUnixPath : string -> string
+val toUnixPath   : string -> string
 
 (* 
    This module provides OS-independent functions for manipulating
@@ -66,7 +71,7 @@ val ext          : string -> string option
    to look at paths, exemplified by the following paths:
 
         Unix:    d/e/f/a.b.c       and     /d/e/f/a.b.c 
-        DOS:     A:d\e\f\a.b.c     and     A:d\e\f\a.b.c     
+        DOS:     A:d\e\f\a.b.c     and     A:\d\e\f\a.b.c     
 
    (1) A path consists of a sequence of arcs, possibly preceded by a
        volume and a root:
@@ -103,6 +108,9 @@ val ext          : string -> string option
 
    [isAbsolute p] returns true if p is an absolute path.  
    Equals not (isRelative p).
+
+   [isRoot p] returns true if p is a canonical specification of a root
+   directory. That is, if p is an absolute path with no arcs.
 
    [validVolume {isAbs, vol}] returns true if vol is a valid volume
    name for an absolute path (if isAbs=true) resp. for a relative path
@@ -196,4 +204,16 @@ val ext          : string -> string option
    [ext s] equals #ext (splitBaseExt s).
 
    [base s] equals #base (splitBaseExt s).
+
+   
+   GROUP 4: Convenience functions for manipulating Unix-style paths.
+
+   [fromUnixPath s] returns a path in the style of the host OS from
+   the Unix-style path s. Slash characters are translated to the
+   directory separators of the local system, as are parent arcs and
+   current arcs.
+
+   [toUnixPath s] returns a Unix-style path from the path s in the
+   style of the host OS. If the path s has a non-empty volume name,
+   then the Path exception is raised.
 *)
