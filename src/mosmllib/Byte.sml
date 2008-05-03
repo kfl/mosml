@@ -6,9 +6,10 @@ prim_val bytesToString : Word8Vector.vector -> String.string = 1 "identity"
 prim_val stringToBytes : String.string -> Word8Vector.vector = 1 "identity"
 
 fun unpackStringVec arg = 
-    bytesToString (Word8VectorSlice.vector (Word8VectorSlice.slice arg))
+    bytesToString (Word8VectorSlice.vector arg)
+
 fun unpackString arg = 
-    bytesToString (Word8ArraySlice.vector (Word8ArraySlice.slice arg))
+    bytesToString (Word8ArraySlice.vector arg)
 
 fun packString (a, i, ss) =
     let val (s, si, n) = Substring.base ss
