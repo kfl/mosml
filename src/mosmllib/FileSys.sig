@@ -23,8 +23,8 @@ val setTime   : string * Time.time option -> unit
 val remove    : string -> unit
 val rename    : {old: string, new: string} -> unit
 
-datatype access = A_READ | A_WRITE | A_EXEC
-val access    : string * access list -> bool
+datatype access_mode = A_READ | A_WRITE | A_EXEC
+val access    : string * access_mode list -> bool
 
 val fileSize  : string -> int
 
@@ -108,7 +108,7 @@ val compare   : file_id * file_id -> order
 
    [rename {old, new}] changes the name of file `old' to `new'.
 
-   [access] is the type of access permissions:
+   [access_mode] is the type of access permissions:
 
    [A_READ] specifies read access.
 
