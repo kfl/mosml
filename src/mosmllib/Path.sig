@@ -211,9 +211,11 @@ val toUnixPath   : string -> string
    [fromUnixPath s] returns a path in the style of the host OS from
    the Unix-style path s. Slash characters are translated to the
    directory separators of the local system, as are parent arcs and
-   current arcs.
+   current arcs.  Raises InvalidArc if any arc in s is invalid in the
+   host OS's path syntax.
 
    [toUnixPath s] returns a Unix-style path from the path s in the
    style of the host OS. If the path s has a non-empty volume name,
-   then the Path exception is raised.
+   then the Path exception is raised. Raises InvalidArc if any arc
+   contains a slash character.
 *)
