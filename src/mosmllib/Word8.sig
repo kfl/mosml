@@ -43,6 +43,10 @@ val toLargeInt    : word -> int
 val toLargeIntX   : word -> int         (* with sign extension *)
 val fromLargeInt  : int -> word
 
+val toLarge   : word -> Word.word
+val toLargeX  : word -> Word.word   (* with sign extension *)
+val fromLarge : Word.word -> word
+
 val toLargeWord   : word -> Word.word
 val toLargeWordX  : word -> Word.word   (* with sign extension *)
 val fromLargeWord : Word.word -> word
@@ -151,12 +155,16 @@ val fromLargeWord : Word.word -> word
    
    [fromLargeInt i] returns the word holding the 8 least significant bits of i.
 
-   [toLargeWord w] returns the Word.word value corresponding to w.
+   [toLarge w] returns the Word.word value corresponding to w.
 
-   [toLargeWordX w] returns the Word.word value corresponding to w,
+   [toLargeX w] returns the Word.word value corresponding to w,
    with sign extension.  That is, the 8 least significant bits of the
    result are those of w, and the remaining bits are all equal to the
    most significant bit of w: its `sign bit'.
 
-   [fromLargeWord w] returns w modulo 256.
+   [fromLarge w] returns w modulo 256.
+
+   [toLargeWord w] 
+   [toLargeWordX w]
+   [fromLargeWord w] synonyms for toLarge, toLargeX and fromLarge, (deprecated)
 *)

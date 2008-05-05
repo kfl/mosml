@@ -39,6 +39,10 @@ val toInt      : word -> int
 val toIntX     : word -> int            (* with sign extension *)
 val fromInt    : int -> word
 
+val toLarge    : word -> word
+val toLargeX   : word -> word        (* with sign extension *)
+val fromLarge  : word -> word
+
 val toLargeWord   : word -> word
 val toLargeWordX  : word -> word        (* with sign extension *)
 val fromLargeWord : word -> word
@@ -155,7 +159,11 @@ val fromLargeInt  : int -> word
 
    [fromLargeInt i] returns the word representing integer i.
 
-   [toLargeWord w] returns w.
-   [toLargeWordX w] returns w.
-   [fromLargeWord w] returns w.
+   [toLarge w] returns w.
+   [toLargeX w] returns w.
+   [fromLarge w] returns w.
+
+   [toLargeWord w] returns w (deprecated).
+   [toLargeWordX w] returns w (deprecated).
+   [fromLargeWord w] returns w (deprecated).
 *)
