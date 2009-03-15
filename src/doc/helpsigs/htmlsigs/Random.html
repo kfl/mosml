@@ -21,7 +21,9 @@
    [<A NAME="generator-typ"><B>generator</B></A>] is the type of random number generators, here the
    linear congruential generators from Paulson 1991, 1996.
 
-   [<A NAME="newgenseed-val"><B>newgenseed</B></A> seed] returns a random number generator with the given seed.
+   [<A NAME="newgenseed-val"><B>newgenseed</B></A> seed] returns a random number generator with the given
+   seed.  Throws exception Fail on seed 0.0 (which would give rise to
+   a degenerate sequence of random numbers).
 
    [<A NAME="newgen-val"><B>newgen</B></A> ()] returns a random number generator, taking the seed from
    the system clock.
@@ -32,10 +34,10 @@
    interval [0,1).
 
    [<A NAME="range-val"><B>range</B></A> (min, max) gen] returns an integral random number in the
-   range [min, max).  Raises Fail if min &gt; max.
+   range [min, max).  Raises Fail if min &gt;= max.
 
    [<A NAME="rangelist-val"><B>rangelist</B></A> (min, max) (n, gen)] returns a list of n integral random
-   numbers in the range [min, max).  Raises Fail if min &gt; max.  
+   numbers in the range [min, max).  Raises Fail if min &gt;= max.  
 *)
 
 </PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>

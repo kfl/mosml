@@ -42,18 +42,18 @@
    [<A NAME="cos-val"><B>cos</B></A> r] is the cosine of r, where r is in radians.
 
    [<A NAME="tan-val"><B>tan</B></A> r] is the tangent of r, where r is in radians.  Raises Domain if 
-   r is a multiple of pi/2.
+   r is a multiple of pi/2.0.
 
-   [<A NAME="atan-val"><B>atan</B></A> t] is the arc tangent of t, in the open interval ] ~pi/2, pi/2 [.
+   [<A NAME="atan-val"><B>atan</B></A> t] is the arc tangent of t, in the open interval ] ~pi/2.0, pi/2.0 [.
 
-   [<A NAME="asin-val"><B>asin</B></A> t] is the arc sine of t, in the closed interval [ ~pi/2, pi/2 ].  
+   [<A NAME="asin-val"><B>asin</B></A> t] is the arc sine of t, in the closed interval [ ~pi/2.0, pi/2.0 ].  
    Raises Domain if abs x &gt; 1.
 
    [<A NAME="acos-val"><B>acos</B></A> t] is the arc cosine of t, in the closed interval [ 0, pi ].
    Raises Domain if abs x &gt; 1.
 
    [<A NAME="atan2-val"><B>atan2</B></A>(y, x)] is the arc tangent of y/x, in the interval ] ~pi, pi ],
-   except that atan2(y, 0) = sign y * pi/2.  The quadrant of the result
+   except that atan2(y, 0) = sign y * pi/2.0.  The quadrant of the result
    is the same as the quadrant of the point (x, y).
    Hence sign(cos(atan2(y, x))) = sign x 
    and   sign(sin(atan2(y, x))) = sign y. 
@@ -72,10 +72,10 @@
    [<A NAME="log10-val"><B>log10</B></A> x] is the base-10 logarithm of x.  Raises Domain if x &lt;= 0.0.
 
    [<A NAME="sinh-val"><B>sinh</B></A> x] returns the hyperbolic sine of x, mathematically defined as
-   (exp x - exp (~x)) / 2.  Raises Overflow if x is too large.
+   (exp x - exp (~x)) / 2.0.  Raises Overflow if x is too large.
 
    [<A NAME="cosh-val"><B>cosh</B></A> x] returns the hyperbolic cosine of x, mathematically defined as
-   (exp x + exp (~x)) / 2.  Raises Overflow if x is too large.
+   (exp x + exp (~x)) / 2.0.  Raises Overflow if x is too large.
 
    [<A NAME="tanh-val"><B>tanh</B></A> x] returns the hyperbolic tangent of x, mathematically defined 
    as (sinh x) / (cosh x).  Raises Domain if x is too large.

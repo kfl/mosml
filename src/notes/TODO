@@ -720,8 +720,8 @@ fun fitting [] left          = true
 --------
 (og ligeledes med orelse)
 
-Årsag: I kodegenereringen for Landalso og Lorelse i Back.sml mangler
-der det tilfælde hvor oversættelsestids-continuation starter med
+Ã…rsag: I kodegenereringen for Landalso og Lorelse i Back.sml mangler
+der det tilfÃ¦lde hvor oversÃ¦ttelsestids-continuation starter med
 Klabel :: Kreturn _ :: ... 
 
 Fixed by updating addPop to handle the case where C is Klabel :: Kreturn.
@@ -748,8 +748,8 @@ Subject: Int overflow
 
 Hej Peter,
 
-Jeg har modificeret koden til scanning og formattering af små
-heltalskonstanter således at Overflow ikke forekommer, som i følgende
+Jeg har modificeret koden til scanning og formattering af smÃ¥
+heltalskonstanter sÃ¥ledes at Overflow ikke forekommer, som i fÃ¸lgende
 session:
 
   mael@daffy> mosml -P full
@@ -766,7 +766,7 @@ session:
   ! Overflow
   - 
 
-Funktionen conv i strukturen Int ændres til:
+Funktionen conv i strukturen Int Ã¦ndres til:
 
   fun conv radix i =
     if SOME i = minInt then          (* Be careful not to Overflow *)
@@ -785,7 +785,7 @@ Funktionen conv i strukturen Int ændres til:
       in implode (if i < 0 then #"~" :: tostr (~i) else tostr i) 
       end
 
-Funktionen dig1 i strukturen Int ændres til:
+Funktionen dig1 i strukturen Int Ã¦ndres til:
 
     fun dig1 sgn NONE = NONE
       | dig1 sgn (SOME (c, rest)) =
@@ -907,7 +907,7 @@ which seems to be used when linking.
 * 2001-06-21: Martin Elsman <mael@dina.kvl.dk>
 
 Det ser ud som om Moscow ML ikke binder Option og Span som exception
-konstruktører på top-niveau, som foreskrevet i
+konstruktÃ¸rer pÃ¥ top-niveau, som foreskrevet i
  
   http://www.dina.kvl.dk/%7Esestoft/sml/top-level-chapter.html
 
@@ -1711,12 +1711,12 @@ Under MosML 2.01 (Windows XP) sker der at
 Date.date {year = 1970, month = Date.Jan, day = 1, hour = 0, minute = 0,
 second = 0, offset = NONE};
 
-får MosML til at gå ned.  Det sker øjensynligt for de (og kun de?!)
-datoer, der ligger den 1. januar 1970 f'ør kl. 1:00, altså
+fÃ¥r MosML til at gÃ¥ ned.Â  Det sker Ã¸jensynligt for de (og kun de?!)
+datoer, der ligger den 1. januar 1970 f'Ã¸r kl. 1:00, altsÃ¥
 1.1.1970 fra kl. 0:00:00 til 0:59:59.
 
-> Det lyder som den rigtige diagnose. Men hvorfor fungerer det øjensynligt for
-> datoer i 1969? (Er det, fordi de bliver håndteret særskilt i MosML?)
+> Det lyder som den rigtige diagnose. Men hvorfor fungerer det Ã¸jensynligt for
+> datoer i 1969? (Er det, fordi de bliver hÃ¥ndteret sÃ¦rskilt i MosML?)
 
 Ja, forklaringen er denne betingelse:
 
@@ -1728,10 +1728,10 @@ Ja, forklaringen er denne betingelse:
                                    offset
                   | SOME t => date1
 
-som forsøger at gøre alle tilpas ved at normalisere datoen (med ugedag
+som forsÃ¸ger at gÃ¸re alle tilpas ved at normalisere datoen (med ugedag
 osv) hvis den falder inden for et interval hvor det et plausibelt at
-det kan lade sig gøre.  På Win XP er der så 1 time hvor det ikke
-virker; det må vi vist forsøge at håndtere i C-koden.
+det kan lade sig gÃ¸re.  PÃ¥ Win XP er der sÃ¥ 1 time hvor det ikke
+virker; det mÃ¥ vi vist forsÃ¸ge at hÃ¥ndtere i C-koden.
 
 * 2005-11-09 Discussion with Ken 
   Moscow ML future:
@@ -1958,3 +1958,151 @@ The right place to do this is in mosml/src/runtime/gc_ctrl.c function
 init_gc; a version gc_ctrl.c.new with the required edits has been made
 and has been tested with glibc 2.7 on a 32 bit machine and on a 64 bit
 machine.
+
+
+2008-11-19 Unsafe type inference
+
+Date: Wed, 19 Nov 2008 10:10:53 +0000
+From: Claudio Russo <crusso@microsoft.com>
+
+Carsten (Varming) has discovered a type inference bug in Mosml which
+allows violations of the value restriction.
+
+Hereâ€™s his original code. Warning: the presence/absence of semicolons
+between declarations is significant!
+
+
+(* GOOD ML PROGRAM *)
+
+fun new () = let val r = ref NONE
+in ((fn t => fn () => r := SOME t), fn f => (r := NONE ; f() : unit ; valOf (!r)))
+
+end (* no semicolon here is significant! *)
+
+(* BAD NON-ML PROGRAM *)
+
+val bad = let val r = ref NONE
+in ((fn t => fn () => r := SOME t), fn f => (r := NONE ; f() : unit ; valOf (!r)))
+end;
+
+val (a,b) = bad; (*a, b are polymorphic not monomorphic as they should be...*)
+
+val z = a 1;
+
+val y = #1 bad "1";
+
+val yy = #2 bad y;
+
+(* val crash = #2 bad z; *)
+
+And hereâ€™s a smaller repro:
+
+(* smaller repro *)
+
+(* compare *)
+
+val y = ref []; val z_ok = y;
+
+(* z_ok correctly not polymorphic *)
+
+(* with *)
+
+val x = () val y = ref []; val z_wrong = y;
+
+(* z_wrong incorrectly polymorphic *)
+
+Notice that in the smaller repro, the only difference is that y is
+declared in a compound declaration. I
+
+It's just a hunch but what I think this boils down to is a levels bug.
+Perhaps the current type var level is being incremented in the nested
+declaration, but then reverted at the semicolon, leading to incorrect
+generalization at z_wrong.
+
+I always regret not having gone for a purely functional implementation of
+type inference....
+
+For now, it might be good to add this email to the bugs list (wherever
+that lives) or just check it in somewhere in the repository.
+
+Claudio adds: I've had a quick look at the mosmlnet source (all I
+have) and it does indeed look like the binding level is reset to zero
+at each topdec, so variables generated with a higher level, but not
+generalized in the previous dec, will get generalized in a subsequent
+one. I think a fix might be to reset the binding levels of all new
+type variables in the object of the current dec to zero before
+proceeding.
+
+There may be even be handle to those variables somewhere handy but I
+can't recall just now.
+
+
+2008-12-25:  From: Claudio Russo <crusso@microsoft.com>
+
+I?ve been told of yet another bug, this one thankfully a little more
+obscure ? can you add it to the list? This one came up in the authors?
+response to a referee report on recursive modules...
+
+
+> Moscow ML's type checker aborts
+> signaling "Internal error: elabRecSigExp", given the recursive
+> signature below:
+
+signature REC =
+  rec (Z: sig functor F : functor X : sig type t end -> sig type t end
+               structure M : sig type t end
+          end)
+  sig
+    functor F : functor X :  sig type t end 
+                             -> 
+                             sig datatype t = A of Y.t where Y = Z.F(Z.M) end
+    structure M : sig type t end
+end
+
+2009-03-15: From ian.grant@cl.cam.ac.uk Tue Dec 23 17:21:46 2008
+
+Thanks for you help on the Moscow ML build issue. I have fixed the  
+MacPorts mosml package and added a new one mosml-dynlibs with all the  
+dynlibs except the big databases (mysql and postgres.)
+
+I submitted the changes to the MacPorts people: http://trac.macports.org/ticket/17659 
+  and we just have to wait for someone to apply them. I'll let you  
+know when it happens.
+
+As regards the existence of this directory. I think it is there  
+because the file config.h is originally from the runtime subdirectory  
+where it uses
+
+#include "../config/m.h"
+#include "../config/s.h"
+
+to get at the auto-generated files. So when config.h is copied into  
+$MOSMLHOME/include it needs the symbolic link to work. I got around it  
+in the MacPorts build by adding an LSB switch which I turn on when  
+building dynlibs after the initial mosml install.
+
+--- ../mosml.orig/include/config.h      2004-01-19 15:02:21.000000000  
++0000
++++ ./include/config.h  2008-12-03 11:39:56.000000000 +0000
+@@ -2,7 +2,7 @@
+  #define _config_
+
+
+-#if defined(__MWERKS__) || defined(THINK_C)
++#if defined(__MWERKS__) || defined(THINK_C) || defined(LSB)
+  #include "m.h"
+  #include "s.h"
+  #else
+
+>> I am trying to fix the Mac Ports Moscow ML package to use dynamic  
+>> libraries. These all build and work well on Mac OS X now.
+
+>> The problem is that the config -> include symlink is complicating  
+>> matters. Standard use of namespace means that we can't install  
+>> headers, binaries etc in $MOSMLHOME e.g. /usr/mosml/ 
+>> {bin,include,config} etc, rather we must install under /usr/bin, / 
+>> usr/lib, /usr/include/mosml etc. This makes the symbolic link that  
+>> was $MOSMLHOME/config -> $MOSMLHOME/include awkward. I am trying to  
+>> remove all references to the $MOSMLHOME/config subdirectory but  
+>> they keep popping up again. Do you recall what is the reason for  
+>> separating config and include directories in the first place?

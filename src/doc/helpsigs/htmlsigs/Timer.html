@@ -13,12 +13,12 @@
 <A NAME="line4"></A>
 <A NAME="line5"></A>val <A HREF="#startCPUTimer-val">startCPUTimer</A>  : unit -&gt; cpu_timer
 <A NAME="line6"></A>val <A HREF="#totalCPUTimer-val">totalCPUTimer</A>  : unit -&gt; cpu_timer
-<A NAME="line7"></A>val <A HREF="#checkCPUTime-val">checkCPUTime</A>   : cpu_timer -&gt; { usr : Time.time, sys : Time.time }
+<A NAME="line7"></A>val <A HREF="#checkCPUTimer-val">checkCPUTimer</A>  : cpu_timer -&gt; { usr : Time.time, sys : Time.time }
 <A NAME="line8"></A>val <A HREF="#checkGCTime-val">checkGCTime</A>    : cpu_timer -&gt; Time.time
 <A NAME="line9"></A>
 <A NAME="line10"></A>val <A HREF="#startRealTimer-val">startRealTimer</A> : unit -&gt; real_timer
 <A NAME="line11"></A>val <A HREF="#totalRealTimer-val">totalRealTimer</A> : unit -&gt; real_timer
-<A NAME="line12"></A>val <A HREF="#checkRealTime-val">checkRealTime</A>  : real_timer -&gt; Time.time
+<A NAME="line12"></A>val <A HREF="#checkRealTimer-val">checkRealTimer</A> : real_timer -&gt; Time.time
 <A NAME="line13"></A>
 <A NAME="line14"></A>(* 
    [<A NAME="cpu_timer-typ"><B>cpu_timer</B></A>] is the type of timers for measuring CPU time consumption
@@ -33,7 +33,7 @@
    [<A NAME="totalCPUTimer-val"><B>totalCPUTimer</B></A> ()] returns a cpu_timer started at the moment the 
    library was loaded.
 
-   [<A NAME="checkCPUTime-val"><B>checkCPUTime</B></A> tmr] returns {usr, sys} where usr is the amount of
+   [<A NAME="checkCPUTimer-val"><B>checkCPUTimer</B></A> tmr] returns {usr, sys} where usr is the amount of
    user CPU time consumed since tmr was started and sys is the amount
    of system CPU time consumed since tmr was started.  Note that
    garbage collection time is included in the usr time.  Under MS DOS
@@ -49,7 +49,7 @@
    [<A NAME="totalRealTimer-val"><B>totalRealTimer</B></A> ()] returns a real_timer started at the moment the 
    library was loaded.
 
-   [<A NAME="checkRealTime-val"><B>checkRealTime</B></A> tmr] returns the amount of real time that has passed
+   [<A NAME="checkRealTimer-val"><B>checkRealTimer</B></A> tmr] returns the amount of real time that has passed
    since tmr was started.
 *)
 
