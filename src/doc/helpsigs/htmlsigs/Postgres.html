@@ -116,7 +116,16 @@
 <A NAME="line107"></A>val <A HREF="#formattable-val">formattable</A> : dbresult -&gt; Msp.wseq
 <A NAME="line108"></A>val <A HREF="#showquery-val">showquery</A>   : dbconn -&gt; string -&gt; Msp.wseq
 <A NAME="line109"></A>
-<A NAME="line110"></A>(*
+<A NAME="line110"></A>(* 
+<A NAME="line111"></A>
+<A NAME="line112"></A>   (Technical warning: This expects the PostgreSQL server to use ISO
+<A NAME="line113"></A>   date format, such as 2002-07-25.  Also, if the PostgreSQL server
+<A NAME="line114"></A>   was compiled with support for multibyte-encodings (Unicode), the
+<A NAME="line115"></A>   database must be created with
+<A NAME="line116"></A>     createdb -E LATIN1 &lt;dbname&gt;
+<A NAME="line117"></A>   or you should set the environment variable PGCLIENTENCODING to
+<A NAME="line118"></A>   LATIN1 in the SML program's environment.)
+<A NAME="line119"></A> 
    [<A NAME="dbconn-typ"><B>dbconn</B></A>] is the type of connections to a PostgreSQL database.
 
    [<A NAME="dbresult-typ"><B>dbresult</B></A>] is the type of result sets from SQL queries.

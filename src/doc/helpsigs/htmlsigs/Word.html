@@ -145,12 +145,22 @@
       DEC     (0w)?[0-9]+
       HEX     (0wx|0wX|0x|0X)?[0-9a-fA-F]+
 
-   [<A NAME="toInt-val"><B>toInt</B></A> w] returns the (signed) integer represented by bit-pattern w.
-   [<A NAME="toIntX-val"><B>toIntX</B></A> w] returns the (signed) integer represented by bit-pattern w.
-   [<A NAME="fromInt-val"><B>fromInt</B></A> i] returns the word representing integer i.
+   [<A NAME="toInt-val"><B>toInt</B></A> w] returns the (non-negative) default size int represented
+   by bit-pattern w.  Raises Overflow in case w is not representable
+   as an integer.
 
-   [<A NAME="toLargeInt-val"><B>toLargeInt</B></A> w] returns the (signed) integer represented by bit-pattern w.
-   [<A NAME="toLargeIntX-val"><B>toLargeIntX</B></A> w] returns the (signed) integer represented by bit-pattern w.
+   [<A NAME="toIntX-val"><B>toIntX</B></A> w] returns the (signed) default size int represented by
+   twos's complement bit-pattern w.
+
+   [<A NAME="fromInt-val"><B>fromInt</B></A> i] returns the word (bit-pattern) representing integer i.
+
+   [<A NAME="toLargeInt-val"><B>toLargeInt</B></A> w] returns the (non-negative) largest size int
+   represented by bit-pattern w.  Raises Overflow in case w is not
+   representable as an integer.
+
+   [<A NAME="toLargeIntX-val"><B>toLargeIntX</B></A> w] returns the (signed) largest size int represented
+   by two's complement bit-pattern w.  
+
    [<A NAME="fromLargeInt-val"><B>fromLargeInt</B></A> i] returns the word representing integer i.
 
    [<A NAME="toLargeWord-val"><B>toLargeWord</B></A> w] returns w.
