@@ -1,4 +1,6 @@
-*.ui *.uo
+*.ui
+*.uo
+
 # Files derived from .lex and .grm files
 Grammar.sig
 Grammar.sml

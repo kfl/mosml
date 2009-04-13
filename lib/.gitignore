@@ -1,9 +1,10 @@
-*.ui *.uo *.sig
-header
+*.sig
+*.ui
+*.uo
 README
+header
+mosmlcmmc
 mosmlcmp
+mosmllex
 mosmllnk
 mosmltop
-mosmllex
-mosmlcmmc
-
