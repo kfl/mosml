@@ -1,3 +1,4 @@
+*.o
 camlrunm
 jumptbl.h
 primitives
