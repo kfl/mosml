@@ -1,6 +1,8 @@
 *.sig
 *.ui
 *.uo
+camlrunm
+helpsigs.val
 README
 header
 mosmlcmmc
