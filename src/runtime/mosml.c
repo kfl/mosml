@@ -1103,7 +1103,7 @@ value sml_gmtime (value v) /* ML */
 
 value sml_mktime (value v) /* ML */
 {
-  struct tm tmr;
+  struct tm tmr = {0};
 
   tmr.tm_hour  = Long_val(Field (v, 0));
   tmr.tm_isdst = Long_val(Field (v, 1));
@@ -1120,7 +1120,7 @@ value sml_mktime (value v) /* ML */
 
 value sml_asctime (value v) /* ML */
 {
-  struct tm tmr;
+  struct tm tmr = {0};
   char *res;
 
   tmr.tm_hour  = Long_val(Field (v, 0));
@@ -1141,7 +1141,7 @@ value sml_asctime (value v) /* ML */
 
 value sml_strftime (value fmt, value v) /* ML */
 {
-  struct tm tmr;
+  struct tm tmr = {0};
 #define BUFSIZE 256      
   char buf[BUFSIZE];
   long ressize;
