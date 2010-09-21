@@ -42,7 +42,8 @@ static char *expand_heap (mlsize_t request)
 #ifndef SIXTEEN
   if (mem < heap_start){
     /* This is WRONG, Henning Niss 2005: */
-    more_pages = -Page (mem);
+    //    more_pages = -Page (mem);
+    more_pages = (heap_start - mem) >> Page_log;
   }else if (Page (mem + malloc_request) > page_table_size){
     Assert (mem >= heap_end);
     more_pages = Page (mem + malloc_request) - page_table_size;
