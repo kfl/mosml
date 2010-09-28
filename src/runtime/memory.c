@@ -19,7 +19,7 @@ value *c_roots_head;
 */
 static char *expand_heap (mlsize_t request)
 {
-  char *mem;
+  char *mem, *orig_ptr;
   char *new_page_table = NULL;
   asize_t new_page_table_size = 0;
   asize_t malloc_request;
@@ -34,6 +34,7 @@ static char *expand_heap (mlsize_t request)
     gc_message ("No room for growing heap\n", 0);
     return NULL;
   }
+  orig_ptr = ((char **)mem)[0];
   mem += sizeof (heap_chunk_head);
   (((heap_chunk_head *) mem) [-1]).size = malloc_request;
   Assert (Wosize_bhsize (malloc_request) >= request);
@@ -60,7 +61,7 @@ static char *expand_heap (mlsize_t request)
     new_page_table = (char *) malloc (new_page_table_size);
     if (new_page_table == NULL){
       gc_message ("No room for growing page table\n", 0);
-      free (mem);
+      free (orig_ptr);
       return NULL;
     }
   }
