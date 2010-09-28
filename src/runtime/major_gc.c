@@ -35,6 +35,32 @@ asize_t page_table_size;
 char *gc_sweep_hp;
 int gc_phase;
 
+addr *p_table;
+size_t p_table_total_size;
+size_t p_table_current_size;
+
+void p_table_init(size_t initial) {
+  p_table = malloc(initial*sizeof(addr *));
+  if(p_table == NULL)
+      fatal_error ("No room for allocating page table\n");
+  p_table_total_size = initial;
+  p_table_current_size = 0;
+}
+
+size_t p_table_lookup(addr p) {
+}
+
+char p_table_in_heap(addr p) {
+}
+
+void p_table_update_size(size_t new_pages) {
+}
+
+int p_table_add_pages(addr start, addr end) {  
+}
+
+
+
 /* The mark phase will register pointers to live arrays of weak
    pointers in weak_arrays.  Then the weak phase traverses each weak
    array and resets pointers to objects that will be deallocated by the
@@ -347,7 +373,7 @@ void init_major_heap (asize_t heap_size)
 #else
   page_table_size = 4 * stat_heap_size / Page_size;
 #endif
-  page_table = (char *) malloc (page_table_size);
+  /*  page_table = (char *) malloc (page_table_size);
   if (page_table == NULL){
     fatal_error ("Fatal error: not enough memory for the initial heap.\n");
   }
@@ -357,6 +383,9 @@ void init_major_heap (asize_t heap_size)
   for (i = Page (heap_start); i < Page (heap_end); i++){
     page_table [i] = In_heap;
   }
+  */
+  p_table_init(page_table_size);
+  p_table_add_pages(heap_start, heap_end);
   Hd_hp (heap_start) = Make_header (Wosize_bhsize (stat_heap_size), 0, Blue);
   fl_init_merge ();
   fl_merge_block (Bp_hp (heap_start));
