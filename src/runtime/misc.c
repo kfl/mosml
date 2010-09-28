@@ -132,7 +132,7 @@ void memmov (char * dst, char * src, unsigned long length)
 
 char *aligned_malloc (asize_t size, int modulo)
 {
-  char *raw_mem;
+  char *raw_mem, *ptr, *result;
   unsigned long aligned_mem;
 /*
 #ifndef __MWERKS__
@@ -140,9 +140,13 @@ char *aligned_malloc (asize_t size, int modulo)
 #endif
 */
                                                  Assert (modulo < Page_size);
-  raw_mem = malloc (size + Page_size);
+  ptr = raw_mem = malloc (size + Page_size);
   if (raw_mem == NULL) return NULL;
   raw_mem += modulo;		/* Address to be aligned */
   aligned_mem = (((unsigned long) raw_mem / Page_size + 1) * Page_size);
-  return (char *) (aligned_mem - modulo);
+  result = (char *) (aligned_mem - modulo);
+
+  /* Save the original ptr from malloc */
+  ((char **) result)[0] = ptr;
+  return result;
 }
