@@ -35,28 +35,50 @@ asize_t page_table_size;
 char *gc_sweep_hp;
 int gc_phase;
 
-addr *p_table;
+typedef struct {
+  size_t low;
+  size_t high;
+} p_table_entry;
+p_table_entry *p_table;
 size_t p_table_total_size;
 size_t p_table_current_size;
 
 void p_table_init(size_t initial) {
-  p_table = malloc(initial*sizeof(addr *));
+  p_table = malloc(initial*sizeof(p_table_entry));
   if(p_table == NULL)
       fatal_error ("No room for allocating page table\n");
   p_table_total_size = initial;
   p_table_current_size = 0;
 }
 
-size_t p_table_lookup(addr p) {
+#define RawPage(p) (((unsigned long) (p)) >> Page_log)
+
+
+char p_table_in_heap(addr a) {
+  int i;
+  size_t p = RawPage(a);
+  for(i = 0; i < p_table_current_size; i++) {
+    //printf("p: %u low: %u high: %u\n", p, p_table[i].low, p_table[i].high);
+    if(p_table[i].low <= p && p <= p_table[i].high)
+      return In_heap;
+  }
+  return Not_in_heap;
 }
 
-char p_table_in_heap(addr p) {
+void p_table_update_size() {
+  p_table_total_size *= 2;
+  p_table = realloc(p_table, sizeof(p_table_entry)*p_table_total_size);
+  if(p_table == NULL)
+    fatal_error("No memory for page table");
 }
 
-void p_table_update_size(size_t new_pages) {
-}
-
-int p_table_add_pages(addr start, addr end) {  
+void p_table_add_pages(addr start, addr end) {
+  size_t s, e;
+  if(p_table_current_size == p_table_total_size)
+    p_table_update_size();
+  p_table[p_table_current_size].low = RawPage(start);
+  p_table[p_table_current_size].high = RawPage(end);
+  p_table_current_size++;
 }
 
 
