@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdint.h>
 #include "config.h"
 #include "debugger.h"
 #include "fail.h"
@@ -36,9 +37,9 @@ char *gc_sweep_hp;
 int gc_phase;
 
 typedef struct {
-  size_t low;
-  size_t high;
+  intptr_t low, high;
 } p_table_entry;
+
 static p_table_entry *p_table;
 static size_t p_table_total_size;
 static size_t p_table_current_size;
@@ -51,11 +52,11 @@ void p_table_init(size_t initial) {
   p_table_current_size = 0;
 }
 
-#define RawPage(p) (((unsigned long) (p)) >> Page_log)
+#define RawPage(p) (((intptr_t) (p)) >> Page_log)
 
 char p_table_in_heap(addr a) {
   int i;
-  size_t p = RawPage(a);
+  intptr_t p = RawPage(a);
   for(i = 0; i < p_table_current_size; i++) {
     //printf("p: %u low: %u high: %u\n", p, p_table[i].low, p_table[i].high);
     if(p_table[i].low <= p && p <= p_table[i].high) {
@@ -81,7 +82,7 @@ void p_table_update_size() {
 }
 
 void p_table_add_pages(addr start, addr end) {
-  size_t s, e;
+  intptr_t s, e;
   if(p_table_current_size == p_table_total_size)
     p_table_update_size();
   p_table[p_table_current_size].low = RawPage(start);
