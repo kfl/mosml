@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdint.h>
 #include "config.h"
 #include "debugger.h"
 #include "fail.h"
