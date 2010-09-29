@@ -70,6 +70,8 @@ void p_table_update_size() {
   p_table = realloc(p_table, sizeof(p_table_entry)*p_table_total_size);
   if(p_table == NULL)
     fatal_error("No memory for page table");
+  gc_message ("Growing p_table to %ld\n", p_table_total_size);
+
 }
 
 void p_table_add_pages(addr start, addr end) {
@@ -406,7 +408,8 @@ void init_major_heap (asize_t heap_size)
     page_table [i] = In_heap;
   }
   */
-  p_table_init(page_table_size);
+  //  p_table_init(page_table_size);
+  p_table_init(64);
   p_table_add_pages(heap_start, heap_end);
   Hd_hp (heap_start) = Make_header (Wosize_bhsize (stat_heap_size), 0, Blue);
   fl_init_merge ();
