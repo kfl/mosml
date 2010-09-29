@@ -39,9 +39,9 @@ typedef struct {
   size_t low;
   size_t high;
 } p_table_entry;
-p_table_entry *p_table;
-size_t p_table_total_size;
-size_t p_table_current_size;
+static p_table_entry *p_table;
+static size_t p_table_total_size;
+static size_t p_table_current_size;
 
 void p_table_init(size_t initial) {
   p_table = malloc(initial*sizeof(p_table_entry));
@@ -53,14 +53,20 @@ void p_table_init(size_t initial) {
 
 #define RawPage(p) (((unsigned long) (p)) >> Page_log)
 
-
 char p_table_in_heap(addr a) {
   int i;
   size_t p = RawPage(a);
   for(i = 0; i < p_table_current_size; i++) {
     //printf("p: %u low: %u high: %u\n", p, p_table[i].low, p_table[i].high);
-    if(p_table[i].low <= p && p <= p_table[i].high)
+    if(p_table[i].low <= p && p <= p_table[i].high) {
+      if (i != 0) {
+	p_table_entry tmp;
+	tmp = p_table[0];
+	p_table[0] = p_table[i];
+	p_table[i] = tmp;
+      }
       return In_heap;
+    }
   }
   return Not_in_heap;
 }
