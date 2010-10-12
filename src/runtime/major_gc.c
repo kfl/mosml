@@ -54,86 +54,86 @@ void p_table_init(size_t initial) {
 
 #define RawPage(p) (((intptr_t) (p)) >> Page_log)
 
-char p_table_in_heap_simple(addr a) {
+char p_table_in_heap(addr a) {
   int i;
   intptr_t p = RawPage(a);
   for(i = 0; i < p_table_current_size; i++) {
     //printf("p: %u low: %u high: %u\n", p, p_table[i].low, p_table[i].high);
-    if(p_table[i].low <= p && p <= p_table[i].high) {
+    if(p_table[i].low <= p && p < p_table[i].high) {
       return In_heap;
     }
   }
   return Not_in_heap;
 }
 
-char p_table_in_heap(addr a) {
+char p_table_in_heap_l(addr a) {
   intptr_t p = RawPage(a);
   int i = 0;
   while(i + 15 < p_table_current_size) {
-    if(   (p_table[i].low <= p && p <= p_table[i].high)
-       || (p_table[i + 1].low <= p && p <= p_table[i + 1].high)
-       || (p_table[i + 2].low <= p && p <= p_table[i + 2].high)
-       || (p_table[i + 3].low <= p && p <= p_table[i + 3].high)
-       || (p_table[i + 4].low <= p && p <= p_table[i + 4].high)
-       || (p_table[i + 5].low <= p && p <= p_table[i + 5].high)
-       || (p_table[i + 6].low <= p && p <= p_table[i + 6].high)
-       || (p_table[i + 7].low <= p && p <= p_table[i + 7].high)
-       || (p_table[i + 8].low <= p && p <= p_table[i + 8].high)
-       || (p_table[i + 9].low <= p && p <= p_table[i + 9].high)
-       || (p_table[i + 10].low <= p && p <= p_table[i + 10].high)
-       || (p_table[i + 11].low <= p && p <= p_table[i + 11].high)
-       || (p_table[i + 12].low <= p && p <= p_table[i + 12].high)
-       || (p_table[i + 13].low <= p && p <= p_table[i + 13].high)
-       || (p_table[i + 14].low <= p && p <= p_table[i + 14].high)
-       || (p_table[i + 15].low <= p && p <= p_table[i + 15].high)
+    if(   (p_table[i].low <= p && p < p_table[i].high)
+       || (p_table[i + 1].low <= p && p < p_table[i + 1].high)
+       || (p_table[i + 2].low <= p && p < p_table[i + 2].high)
+       || (p_table[i + 3].low <= p && p < p_table[i + 3].high)
+       || (p_table[i + 4].low <= p && p < p_table[i + 4].high)
+       || (p_table[i + 5].low <= p && p < p_table[i + 5].high)
+       || (p_table[i + 6].low <= p && p < p_table[i + 6].high)
+       || (p_table[i + 7].low <= p && p < p_table[i + 7].high)
+       || (p_table[i + 8].low <= p && p < p_table[i + 8].high)
+       || (p_table[i + 9].low <= p && p < p_table[i + 9].high)
+       || (p_table[i + 10].low <= p && p < p_table[i + 10].high)
+       || (p_table[i + 11].low <= p && p < p_table[i + 11].high)
+       || (p_table[i + 12].low <= p && p < p_table[i + 12].high)
+       || (p_table[i + 13].low <= p && p < p_table[i + 13].high)
+       || (p_table[i + 14].low <= p && p < p_table[i + 14].high)
+       || (p_table[i + 15].low <= p && p < p_table[i + 15].high)
        ) return In_heap;
     i += 16;
   }
   switch(p_table_current_size - i) {
   case 15:
-    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
     i++;
   case 14:
-    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
     i++;
   case 13:
-    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
     i++;
   case 12:
-    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
     i++;
   case 11:
-    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
     i++;
   case 10:
-    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
     i++;
   case 9:
-    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
     i++;
   case 8:
-    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
     i++;
   case 7:
-    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
     i++;
   case 6:
-    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
     i++;
   case 5:
-    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
     i++;
   case 4:
-    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
     i++;
   case 3:
-    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
     i++;
   case 2:
-    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
     i++;
   case 1:
-    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
     i++;
   default: return Not_in_heap;
   }
