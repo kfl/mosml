@@ -89,13 +89,54 @@ char p_table_in_heap(addr a) {
        ) return In_heap;
     i += 16;
   }
-  while(i < p_table_current_size) {
-    if(p_table[i].low <= p && p <= p_table[i].high) {
-      return In_heap;
-    }
+  switch(p_table_current_size - i) {
+  case 15:
+    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
     i++;
+  case 14:
+    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    i++;
+  case 13:
+    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    i++;
+  case 12:
+    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    i++;
+  case 11:
+    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    i++;
+  case 10:
+    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    i++;
+  case 9:
+    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    i++;
+  case 8:
+    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    i++;
+  case 7:
+    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    i++;
+  case 6:
+    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    i++;
+  case 5:
+    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    i++;
+  case 4:
+    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    i++;
+  case 3:
+    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    i++;
+  case 2:
+    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    i++;
+  case 1:
+    if(p_table[i].low <= p && p <= p_table[i].high) return In_heap;
+    i++;
+  default: return Not_in_heap;
   }
-  return Not_in_heap;
 }
 
 void p_table_update_size() {
