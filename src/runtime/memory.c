@@ -56,8 +56,8 @@ static char *expand_heap (mlsize_t request)
     new_page_table_size = page_table_size + more_pages;
     new_page_table = (char *) malloc (new_page_table_size);
     if (new_page_table == NULL){
-      gc_message ("No room for growing page table to: %dM\n",
-		  new_page_table_size / 1024);
+      gc_message ("No room for growing page table to: %zuMB\n",
+		  new_page_table_size / 1024*1024);
       free (orig_ptr);
       return NULL;
     }
