@@ -20,10 +20,8 @@ value *c_roots_head;
 static char *expand_heap (mlsize_t request)
 {
   char *mem, *orig_ptr;
-  char *new_page_table = NULL;
-  asize_t new_page_table_size = 0;
   asize_t malloc_request;
-  asize_t i, more_pages;
+  asize_t i;
 
   malloc_request = round_heap_chunk_size (Bhsize_wosize (request));
   gc_message ("Growing heap to %ldk\n",
@@ -41,18 +39,22 @@ static char *expand_heap (mlsize_t request)
   Hd_hp (mem) = Make_header (Wosize_bhsize (malloc_request), 0, Blue);
 
 #ifndef SIXTEEN
-  if (mem < heap_start){
-    /* This is WRONG, Henning Niss 2005: */
-    //    more_pages = -Page (mem);
-    more_pages = (heap_start - mem) >> Page_log;
-  }else if (Page (mem + malloc_request) > page_table_size){
-    Assert (mem >= heap_end);
-    more_pages = Page (mem + malloc_request) - page_table_size;
-  }else{
-    more_pages = 0;
-  }
+  /* if (mem < heap_start){ */
+  /*   /\* This is WRONG, Henning Niss 2005: *\/ */
+  /*   /\*    more_pages = -Page (mem); *\/ */
+  /*   /\* Actually, it is right. Albeit is depending on some intricate */
+  /*      properties of unsigned arithmetic. Below is a more */
+  /*      straightforward formulation. Ken Friis Larsen 2010. */
+  /*    *\/ */
+  /*   more_pages = (heap_start - mem) >> Page_log; */
+  /* }else if (Page (mem + malloc_request) > page_table_size){ */
+  /*   Assert (mem >= heap_end); */
+  /*   more_pages = Page (mem + malloc_request) - page_table_size; */
+  /* }else{ */
+  /*   more_pages = 0; */
+  /* } */
 
-  if (more_pages != 0){
+  /*if (more_pages != 0){
     new_page_table_size = page_table_size + more_pages;
     new_page_table = (char *) malloc (new_page_table_size);
     if (new_page_table == NULL){
@@ -62,13 +64,14 @@ static char *expand_heap (mlsize_t request)
       return NULL;
     }
   }
-
+  */
   if (mem < heap_start){
-    Assert (more_pages != 0);
-    for (i = 0; i < more_pages; i++){
+    //    Assert (more_pages != 0);
+    /*    for (i = 0; i < more_pages; i++){
       new_page_table [i] = Not_in_heap;
     }
     bcopy (page_table, new_page_table + more_pages, page_table_size);
+    */    
     (((heap_chunk_head *) mem) [-1]).next = heap_start;
     heap_start = mem;
   }else{
@@ -76,12 +79,13 @@ static char *expand_heap (mlsize_t request)
     char *cur;
 
     if (mem >= heap_end) heap_end = mem + malloc_request;
-    if (more_pages != 0){
+    /*if (more_pages != 0){
       for (i = page_table_size; i < new_page_table_size; i++){
         new_page_table [i] = Not_in_heap;
       }
       bcopy (page_table, new_page_table, page_table_size);
     }
+    */
     last = &heap_start;
     cur = *last;
     while (cur != NULL && cur < mem){
@@ -92,11 +96,12 @@ static char *expand_heap (mlsize_t request)
     *last = mem;
   }
 
-  if (more_pages != 0){
+  /*  if (more_pages != 0){
     free (page_table);
     page_table = new_page_table;
     page_table_size = new_page_table_size;
   }
+  */
 #else                           /* Simplified version for the 8086 */
   {
     char **last;
@@ -113,9 +118,11 @@ static char *expand_heap (mlsize_t request)
   }
 #endif
 
-  for (i = Page (mem); i < Page (mem + malloc_request); i++){
+  /*  for (i = Page (mem); i < Page (mem + malloc_request); i++){
     page_table [i] = In_heap;
   }
+  */
+  p_table_add_pages(mem, mem+malloc_request);  
   stat_heap_size += malloc_request;
   return Bp_hp (mem);
 }

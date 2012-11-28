@@ -36,7 +36,7 @@ camlrunm$(EXE): $(OBJS) prims.o
 	$(STRIP) camlrunm$(EXE)
 
 camlrunmd$(EXE): $(DOBJS) prims.d.o
-	$(CC) $(CFLAGS) -o camlrunmd$(EXE) prims.d.o $(DOBJS) $(LIBS)
+	$(LD) $(CFLAGS) -o camlrunmd$(EXE) prims.d.o $(DOBJS) $(LIBS)
 
 clean:
 	rm -f camlrunm$(EXE) camlrunmd$(EXE) *.o *.a
