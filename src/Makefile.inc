@@ -2,7 +2,10 @@
 
 # Where to install stuff
 
-MOSMLHOME=${HOME}/mosml2.10
+MOSMLHOME=${HOME}/project/mosml2.10-new
+
+# The version
+VERSION=2.10
 
 # Various utility programs
 INSTALL_PROGRAM=cp
@@ -18,10 +21,14 @@ CC=gcc
 # CC=/usr/sepp/bin/gcc		# Solaris at KVL
 
 # To compile the runtime system camlrunm with support for
-# dynamically loadable libraries (DDLs), uncomment these:
+# dynamically loadable libraries (DDLs), set DYNLIBSUPPORT to true
+DYNLIBSUPPORT=true
 
-ADDPRIMS=dynlib.c
-ADDOBJS=dynlib.o
+ifeq ($(DYNLIBSUPPORT),true)
+  ADDPRIMS=dynlib.c
+  ADDOBJS=dynlib.o
+endif
+
 ADDRUNLIBS=-ldl
 ADDRUNCFLAGS=
 ADDDYNLIBCFLAGS=

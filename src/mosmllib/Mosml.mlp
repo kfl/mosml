@@ -132,4 +132,16 @@ fun run cmd args inp =
 	result
     end
 
+#include "../config/defs.h"
+val systemProperties = [ 
+    ("version", VERSION_S)
+  , ("dynlib support", DYNLIBSUPPORT_S)
+]
+fun systemInfo [] = systemProperties
+  | systemInfo ps = 
+    let fun lookup [] _ = NONE
+          | lookup ((res as (p,_))::rest) prop = if p = prop then SOME res
+                                                 else lookup rest prop
+    in  List.mapPartial (lookup systemProperties) ps end   
+
 end (* local *)
