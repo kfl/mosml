@@ -86,7 +86,7 @@ DYNLD=ld -shared
 # DYNLD=ld -G -B symbolic -z nodefs
 # ADDRUNCFLAGS=
 # ADDDYNLIBCFLAGS=
- 
+
 # If the above fails with dynlibs, try this:
 # LD=gcc -Wl,--export-dynamic
 
