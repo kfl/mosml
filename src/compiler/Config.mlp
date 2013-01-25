@@ -1,7 +1,8 @@
 local open Fnlib in
 
 (* version string *)
-val version = "2.10 PRE-RELEASE SHOULD NOT BE DISTRIBUTED (May 2008)";
+#include "../config/defs.h"
+val version = VERSION_S
 
 (* Integer ranges *)
 
