@@ -283,8 +283,9 @@ struct
       in  (* FIXME: here is lots of room for optimizations *)
           case (get [t1], get [t2]) of
               (SOME(x, stack1), SOME(y, stack2)) => loop x y stack1 stack2
-            | (NONE, NONE)                       => true
-            | _                                  => false end
+            | (NONE, _)                          => true
+            | _                                  => false
+      end
 
   end
 
