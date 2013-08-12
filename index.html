@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Moscow ML by kfl</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Moscow ML</h1>
+        <p>Moscow ML is a light-weight implementation of Standard ML (SML), a strict functional language used in teaching and research</p>
+
+        <p class="view"><a href="https://github.com/kfl/mosml">View the Project on GitHub <small>kfl/mosml</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/kfl/mosml/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/kfl/mosml/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/kfl/mosml">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p>The current version 2.10 of Moscow ML</p>
+
+<ul>
+<li>implements the full Standard ML language, as revised 1997, 
+including Modules and some extensions</li>
+<li>yet is backwards compatible with versions prior to 2.00</li>
+<li>implements large parts of the new SML Basis Library</li>
+<li>implements separate compilation </li>
+<li>can produce compact stand-alone executables (a la Caml Light)</li>
+<li>supports quotations and antiquotations, useful for metaprogramming</li>
+<li>supports dynamic linking of external functions under Linux (x86
+and Alpha), FreeBSD, NetBSD, Solaris, Digital Unix, HP-UX,
+MacOS, and MS Windows'95/98/NT/XP/Vista and possibly also Win 7 and 8. </li>
+</ul><h2>
+<a name="new-in-version-210-of-moscow-ml" class="anchor" href="#new-in-version-210-of-moscow-ml"><span class="octicon octicon-link"></span></a>New in version 2.10 of Moscow ML</h2>
+
+<ul>
+<li>Support for dynamic linking and callback from C also under MacOS X</li>
+<li>There may now be 2 G globals (string literals etc) instead of 64 K</li>
+<li>Bugs fixed:
+
+<ul>
+<li>The HTML files generated for mosmllib now have valid URLs</li>
+<li>
+<code>Substring.app</code> more efficient</li>
+<li>Recursive structure compilation (elabRecSigExp) fixed</li>
+<li>Several errors in <code>Mosmlcookie</code>
+</li>
+<li>Misplaced double quote in <code>Msp.ahrefa</code> </li>
+<li>Exception <code>Option</code> wasn't available at top-level</li>
+<li>Linker did not check stamps of linked-in units</li>
+<li>Hash function now much faster on very long strings</li>
+<li>Double alignment constraints now correct with gcc-3.2 and Solaris</li>
+<li>Bug in <code>Polyhash.filter</code>
+</li>
+<li>
+<code>Socket</code> library returned only first 16 bytes of UDP datagram</li>
+</ul>
+</li>
+<li>SML Basis Library changes:
+
+<ul>
+<li>
+<code>String</code> and <code>Substring</code>: added <code>concatWith</code>, <code>isSuffix</code>, <code>isSubstring</code>, <code>full</code>
+</li>
+<li>
+<code>ListPair</code>: added <code>zipEq</code>, <code>appEq</code>, <code>mapEq</code>, <code>foldlEq</code>, <code>foldrEq</code>, <code>allEq</code>
+</li>
+<li>Added <code>ArraySlice</code> and <code>VectorSlice</code> structures, also for <code>Char</code> and <code>Word8</code>
+</li>
+<li>Added <code>find</code>, <code>findi</code>, <code>all</code>, <code>exists</code>, <code>collate</code> to vector, array and 
+slice structures</li>
+<li>Added collate to <code>List</code>
+</li>
+<li>Added <code>update</code> to vector structures</li>
+<li>
+<code>Path.</code>{<code>mkRelative</code>,<code>mkAbsolute</code>} now take record arguments</li>
+<li>Negative <code>Time.time</code> values allowed</li>
+<li>
+<code>OS.Process</code>: new functions <code>sleep</code> and <code>isSuccess</code>; <code>status</code> not <code>eqtype</code>
+</li>
+<li>
+<code>Listsort</code>: added <code>eqclasses</code>, <code>merge</code>, <code>mergeUniq</code>
+</li>
+<li>
+<code>Path</code>: added functions <code>isRoot</code>, <code>fromUnixPath</code>, <code>toUnixPath</code>, and
+exception <code>InvalidArc</code> (bug report by Henning Niss)</li>
+<li>
+<code>TextIO</code>: <code>inputLine</code> now have type <code>instream -&gt; string option</code>
+</li>
+<li>
+<code>Array</code>: added type abbreviation <code>vector</code> (bug report by Andrzej
+Wasowski)</li>
+<li>
+<code>FileSys</code>: type <code>access</code> renamed to <code>access_mode</code> (bug report by
+Henning Niss)</li>
+<li>
+<code>Byte</code>: <code>unpackString{,Vec}</code> now uses vector slices (bug report by
+Henning Niss)</li>
+<li>
+<code>Unix</code>: added functions <code>fromStatus</code>, <code>textInstreamOf</code>, <code>binInstreamOf</code>,
+<code>textOutstreamOf</code>, <code>binOutstreamOf</code>, <code>exit</code>, and added phantom types
+to <code>proc</code> (bug report by Henning Niss)</li>
+<li>
+<code>Timer</code>: added function <code>checkCPUTimes</code>
+</li>
+<li>
+<code>Word</code> and <code>Word8</code>: added functions <code>toLarge</code>, <code>toLargeX</code>, and <code>fromLarge</code>
+(bug report by Martin Elsman)</li>
+<li>
+<code>General</code>: added exception <code>Span</code> and made the type of the function
+<code>before</code> less general (bug report by Henning Niss)</li>
+</ul>
+</li>
+<li>Moscow ML is now developed in the open at github.</li>
+</ul><h2>
+<a name="system-requirements" class="anchor" href="#system-requirements"><span class="octicon octicon-link"></span></a>System Requirements</h2>
+
+<p>Compilation under Unix is best done using GNU make, gcc, and Perl.  A
+binary installation requires 5 MB disk space; a source installation
+requires 25 MB disk space.</p>
+
+<h2>
+<a name="authors-and-credits" class="anchor" href="#authors-and-credits"><span class="octicon octicon-link"></span></a>Authors and credits</h2>
+
+<p>Moscow ML was created by Sergei Romanenko at the Keldysh Institute of Applied Mathematics, Russian Academy of Sciences, Moscow, Claudio Russo (then at Edinburgh University, now at Microsoft Research, Cambridge UK), Niels Kokholm at the IT University of Copenhagen (Moscow ML for .Net), Ken Friis Larsen at Department of Computer Science, University of Copenhagen, Denmark, and Peter Sestoft at the IT University of Copenhagen formerly at the Royal Veterinary and Agricultural University, Copenhagen, Denmark.</p>
+
+<p>Moscow ML uses the entire runtime system and many other ideas from the Caml Light implementation created by Xavier Leroy and Damien Doligez.</p>
+
+<p>Doug Currie created the MacOS port and considerably improved the bytecode interpreter. </p>
+
+<h2>
+<a name="availability" class="anchor" href="#availability"><span class="octicon octicon-link"></span></a>AVAILABILITY</h2>
+
+<ul>
+<li>The Moscow ML home page is at <a href="http://mosml.org">http://mosml.org</a>
+</li>
+<li>The Moscow ML github page is at <a href="https://github.com/kfl/mosml">https://github.com/kfl/mosml</a>
+</li>
+<li>More to come ...</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/kfl">kfl</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
