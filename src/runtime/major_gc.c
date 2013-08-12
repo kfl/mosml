@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdint.h>
 #include "config.h"
 #include "debugger.h"
 #include "fail.h"
@@ -34,6 +35,395 @@ char *page_table;
 asize_t page_table_size;
 char *gc_sweep_hp;
 int gc_phase;
+
+typedef struct {
+  intptr_t low, high;
+} p_table_entry;
+
+static p_table_entry *p_table;
+static size_t p_table_total_size;
+static size_t p_table_current_size;
+
+void p_table_init(size_t initial) {
+  p_table = malloc(initial*sizeof(p_table_entry));
+  if(p_table == NULL)
+      fatal_error ("No room for allocating page table\n");
+  p_table_total_size = initial;
+  p_table_current_size = 0;
+}
+
+#define RawPage(p) (((intptr_t) (p)) >> Page_log)
+
+char p_table_in_heap_simple(addr a) {
+  int i;
+  intptr_t p = RawPage(a);
+  for(i = 0; i < p_table_current_size; i++) {
+    //printf("p: %u low: %u high: %u\n", p, p_table[i].low, p_table[i].high);
+    if(p_table[i].low <= p && p < p_table[i].high) {
+      return In_heap;
+    }
+  }
+  return Not_in_heap;
+}
+
+char p_table_in_heap_16(addr a) {
+  intptr_t p = RawPage(a);
+  int i = 0;
+  while(i + 15 < p_table_current_size) {
+    if(   (p_table[i].low <= p && p < p_table[i].high)
+       || (p_table[i + 1].low <= p && p < p_table[i + 1].high)
+       || (p_table[i + 2].low <= p && p < p_table[i + 2].high)
+       || (p_table[i + 3].low <= p && p < p_table[i + 3].high)
+       || (p_table[i + 4].low <= p && p < p_table[i + 4].high)
+       || (p_table[i + 5].low <= p && p < p_table[i + 5].high)
+       || (p_table[i + 6].low <= p && p < p_table[i + 6].high)
+       || (p_table[i + 7].low <= p && p < p_table[i + 7].high)
+       || (p_table[i + 8].low <= p && p < p_table[i + 8].high)
+       || (p_table[i + 9].low <= p && p < p_table[i + 9].high)
+       || (p_table[i + 10].low <= p && p < p_table[i + 10].high)
+       || (p_table[i + 11].low <= p && p < p_table[i + 11].high)
+       || (p_table[i + 12].low <= p && p < p_table[i + 12].high)
+       || (p_table[i + 13].low <= p && p < p_table[i + 13].high)
+       || (p_table[i + 14].low <= p && p < p_table[i + 14].high)
+       || (p_table[i + 15].low <= p && p < p_table[i + 15].high)
+       ) return In_heap;
+    i += 16;
+  }
+  switch(p_table_current_size - i) {
+  case 15:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 14:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 13:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 12:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 11:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 10:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 9:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 8:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 7:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 6:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 5:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 4:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 3:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 2:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 1:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  default: return Not_in_heap;
+  }
+}
+
+char p_table_in_heap(addr a) {
+  intptr_t p = RawPage(a);
+  int i = 0;
+  while(i + 63 < p_table_current_size) {
+    if(   (p_table[i].low <= p && p < p_table[i].high)
+       || (p_table[i + 1].low <= p && p < p_table[i + 1].high)
+       || (p_table[i + 2].low <= p && p < p_table[i + 2].high)
+       || (p_table[i + 3].low <= p && p < p_table[i + 3].high)
+       || (p_table[i + 4].low <= p && p < p_table[i + 4].high)
+       || (p_table[i + 5].low <= p && p < p_table[i + 5].high)
+       || (p_table[i + 6].low <= p && p < p_table[i + 6].high)
+       || (p_table[i + 7].low <= p && p < p_table[i + 7].high)
+       || (p_table[i + 8].low <= p && p < p_table[i + 8].high)
+       || (p_table[i + 9].low <= p && p < p_table[i + 9].high)
+       || (p_table[i + 10].low <= p && p < p_table[i + 10].high)
+       || (p_table[i + 11].low <= p && p < p_table[i + 11].high)
+       || (p_table[i + 12].low <= p && p < p_table[i + 12].high)
+       || (p_table[i + 13].low <= p && p < p_table[i + 13].high)
+       || (p_table[i + 14].low <= p && p < p_table[i + 14].high)
+       || (p_table[i + 15].low <= p && p < p_table[i + 15].high)
+       || (p_table[i + 16].low <= p && p < p_table[i + 16].high)
+       || (p_table[i + 17].low <= p && p < p_table[i + 17].high)
+       || (p_table[i + 18].low <= p && p < p_table[i + 18].high)
+       || (p_table[i + 19].low <= p && p < p_table[i + 19].high)
+       || (p_table[i + 20].low <= p && p < p_table[i + 20].high)
+       || (p_table[i + 21].low <= p && p < p_table[i + 21].high)
+       || (p_table[i + 22].low <= p && p < p_table[i + 22].high)
+       || (p_table[i + 23].low <= p && p < p_table[i + 23].high)
+       || (p_table[i + 24].low <= p && p < p_table[i + 24].high)
+       || (p_table[i + 25].low <= p && p < p_table[i + 25].high)
+       || (p_table[i + 26].low <= p && p < p_table[i + 26].high)
+       || (p_table[i + 27].low <= p && p < p_table[i + 27].high)
+       || (p_table[i + 28].low <= p && p < p_table[i + 28].high)
+       || (p_table[i + 29].low <= p && p < p_table[i + 29].high)
+       || (p_table[i + 30].low <= p && p < p_table[i + 30].high)
+       || (p_table[i + 31].low <= p && p < p_table[i + 31].high)
+       || (p_table[i + 32].low <= p && p < p_table[i + 32].high)
+       || (p_table[i + 33].low <= p && p < p_table[i + 33].high)
+       || (p_table[i + 34].low <= p && p < p_table[i + 34].high)
+       || (p_table[i + 35].low <= p && p < p_table[i + 35].high)
+       || (p_table[i + 36].low <= p && p < p_table[i + 36].high)
+       || (p_table[i + 37].low <= p && p < p_table[i + 37].high)
+       || (p_table[i + 38].low <= p && p < p_table[i + 38].high)
+       || (p_table[i + 39].low <= p && p < p_table[i + 39].high)
+       || (p_table[i + 40].low <= p && p < p_table[i + 40].high)
+       || (p_table[i + 41].low <= p && p < p_table[i + 41].high)
+       || (p_table[i + 42].low <= p && p < p_table[i + 42].high)
+       || (p_table[i + 43].low <= p && p < p_table[i + 43].high)
+       || (p_table[i + 44].low <= p && p < p_table[i + 44].high)
+       || (p_table[i + 45].low <= p && p < p_table[i + 45].high)
+       || (p_table[i + 46].low <= p && p < p_table[i + 46].high)
+       || (p_table[i + 47].low <= p && p < p_table[i + 47].high)
+       || (p_table[i + 48].low <= p && p < p_table[i + 48].high)
+       || (p_table[i + 49].low <= p && p < p_table[i + 49].high)
+       || (p_table[i + 50].low <= p && p < p_table[i + 50].high)
+       || (p_table[i + 51].low <= p && p < p_table[i + 51].high)
+       || (p_table[i + 52].low <= p && p < p_table[i + 52].high)
+       || (p_table[i + 53].low <= p && p < p_table[i + 53].high)
+       || (p_table[i + 54].low <= p && p < p_table[i + 54].high)
+       || (p_table[i + 55].low <= p && p < p_table[i + 55].high)
+       || (p_table[i + 56].low <= p && p < p_table[i + 56].high)
+       || (p_table[i + 57].low <= p && p < p_table[i + 57].high)
+       || (p_table[i + 58].low <= p && p < p_table[i + 58].high)
+       || (p_table[i + 59].low <= p && p < p_table[i + 59].high)
+       || (p_table[i + 60].low <= p && p < p_table[i + 60].high)
+       || (p_table[i + 61].low <= p && p < p_table[i + 61].high)
+       || (p_table[i + 62].low <= p && p < p_table[i + 62].high)
+       || (p_table[i + 63].low <= p && p < p_table[i + 63].high)
+       ) return In_heap;
+    i += 64;
+  }
+  switch(p_table_current_size - i) {
+  case 63:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 62:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 61:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 60:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 59:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 58:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 57:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 56:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 55:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 54:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 53:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 52:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 51:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 50:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 49:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 48:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 47:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 46:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 45:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 44:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 43:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 42:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 41:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 40:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 39:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 38:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 37:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 36:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 35:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 34:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 33:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 32:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 31:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 30:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 29:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 28:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 27:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 26:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 25:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 24:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 23:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 22:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 21:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 20:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 19:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 18:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 17:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 16:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 15:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 14:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 13:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 12:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 11:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 10:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 9:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 8:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 7:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 6:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 5:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 4:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 3:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 2:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  case 1:
+    if(p_table[i].low <= p && p < p_table[i].high) return In_heap;
+    i++;
+  default: return Not_in_heap;
+  }
+}
+
+
+void p_table_update_size() {
+  p_table_total_size *= 2;
+  p_table = realloc(p_table, sizeof(p_table_entry)*p_table_total_size);
+  if(p_table == NULL)
+    fatal_error("No memory for page table");
+  gc_message ("Growing p_table to %ld\n", p_table_total_size);
+
+}
+
+void p_table_add_pages(addr start, addr end) {
+  intptr_t s, e;
+  if(p_table_current_size == p_table_total_size)
+    p_table_update_size();
+  p_table[p_table_current_size].low = RawPage(start);
+  p_table[p_table_current_size].high = RawPage(end);
+  p_table_current_size++;
+}
+
+
 
 /* The mark phase will register pointers to live arrays of weak
    pointers in weak_arrays.  Then the weak phase traverses each weak
@@ -347,7 +737,7 @@ void init_major_heap (asize_t heap_size)
 #else
   page_table_size = 4 * stat_heap_size / Page_size;
 #endif
-  page_table = (char *) malloc (page_table_size);
+  /*  page_table = (char *) malloc (page_table_size);
   if (page_table == NULL){
     fatal_error ("Fatal error: not enough memory for the initial heap.\n");
   }
@@ -357,6 +747,10 @@ void init_major_heap (asize_t heap_size)
   for (i = Page (heap_start); i < Page (heap_end); i++){
     page_table [i] = In_heap;
   }
+  */
+  //  p_table_init(page_table_size);
+  p_table_init(64);
+  p_table_add_pages(heap_start, heap_end);
   Hd_hp (heap_start) = Make_header (Wosize_bhsize (stat_heap_size), 0, Blue);
   fl_init_merge ();
   fl_merge_block (Bp_hp (heap_start));

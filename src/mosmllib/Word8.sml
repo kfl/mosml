@@ -36,11 +36,18 @@ in
     val fromLargeInt = fromInt
 
     prim_val toLargeWord   : word -> Word.word = 1 "identity";
-    fun toLargeWordX w = if toInt w < 128 then (* msbit = 0 *)
-	                     toLargeWord w
-			 else		       (* msbit = 1 *)
-			     toLargeWord (orb_ w (fromInt_ ~256))
-    fun fromLargeWord w = norm(largeWordToWord_ w);
+    prim_val toLarge       : word -> Word.word = 1 "identity";
+
+    fun toLargeX w = if toInt w < 128 then (* msbit = 0 *)
+	                 toLarge w
+		     else		       (* msbit = 1 *)
+			 toLarge (orb_ w (fromInt_ ~256))
+    fun fromLarge w = norm(largeWordToWord_ w);
+    
+    val toLargeWordX = toLargeX
+    val fromLargeWord = fromLarge
+
+
 
     fun orb (x, y)  = orb_ x y;
     fun andb (x, y) = andb_ x y;

@@ -1,5 +1,5 @@
 (* Rbset -- functional sets using Okasaki-style red-black trees *)
-(* Ken Friis Larsen <kfl@it.edu>                                *)
+(* Ken Friis Larsen <ken@friislarsen.net>                                *)
 (* Various extensions, and test: sestoft@dina.kvl.dk * 2001-10-21 *)
 
 structure Rbset :>  Rbset =

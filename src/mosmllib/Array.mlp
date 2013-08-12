@@ -5,11 +5,10 @@ structure Array :> Array = struct
 (* In fact, type 'a array = 'a array_ ref, but for the static equality
  * type to be right, we need to declare it a prim_EQtype:              *)
 prim_EQtype 'a array;
+type 'a vector = 'a Vector.vector;
 
 local 
     prim_type 'a array_;
-
-    type 'a vector = 'a Vector.vector;
 
     prim_val length_  : 'a array_ -> int               = 1 "vect_length";
     prim_val lengthv_ : 'a vector -> int               = 1 "vect_length";

@@ -282,7 +282,7 @@ fun output1 (os as ref {closed, oc, name}, c) =
 	 if os = stdErr then caml_flush oc else ());
 
 fun inputLine (is as ref {closed, ic, name}) =
-  if closed then "" else
+  if closed then NONE else
   let val max = ref 127
       val tmp = ref (create_string_ (!max))
       fun realloc () =
@@ -303,7 +303,7 @@ fun inputLine (is as ref {closed, ic, name}) =
 	     | SOME c => (set_nth_char_ (!tmp) len c;
 			  if c = #"\n" then sub_string_ (!tmp) 0 (len+1) 
 			               else h (len+1)))
-  in if endOfStream is then "" else h 0 end;
+  in if endOfStream is then NONE else SOME(h 0) end;
 
 fun openOut (s : string) : outstream =
     ref {closed=false, oc=caml_open_out s, name=s}

@@ -1,5 +1,5 @@
 (* Pretty print of C--                                                       *)
-(* Created by Ken Friis Larsen <kfl@it.edu> 2001-02-27                       *)
+(* Created by Ken Friis Larsen <ken@friislarsen.net> 2001-02-27                       *)
 structure CmmPrint :> CmmPrint =
 struct 
    type 'a printer = 'a -> Wpp.doc

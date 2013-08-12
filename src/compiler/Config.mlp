@@ -1,7 +1,8 @@
 local open Fnlib in
 
 (* version string *)
-val version = "2.01b (June 2005)";
+#include "../config/defs.h"
+val version = VERSION_S
 
 (* Integer ranges *)
 

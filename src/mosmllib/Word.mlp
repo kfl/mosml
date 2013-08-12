@@ -44,6 +44,11 @@ in
     prim_val toLargeWordX  : word -> word = 1 "identity";
     prim_val fromLargeWord : word -> word = 1 "identity";
 
+    prim_val toLarge   : word -> word = 1 "identity";
+    prim_val toLargeX  : word -> word = 1 "identity";
+    prim_val fromLarge : word -> word = 1 "identity";
+
+
     fun orb (x, y)  = orb_ x y;
     fun andb (x, y) = andb_ x y;
     fun xorb (x, y) = xorb_ x y;

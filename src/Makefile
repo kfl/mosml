@@ -16,7 +16,7 @@ include Makefile.inc
 # Build the entire system for the first time
 
 world:
-	cd config; sh autoconf $(CC)
+	cd config; $(MAKE) defs.h; sh autoconf $(CC)
 	cd runtime; make all
 	cp runtime/camlrunm$(EXE) .
 	cd mosmlyac; make all
@@ -58,7 +58,7 @@ install:
 	cd compiler; make install
 	cd toolssrc; make install
 	cd lex; make install
-	(cd $(INCDIR)/..; rm -f config; ln -s include config)
+	(cd $(INCDIR)/..; rm -fr config; ln -s include config)
 	cd doc; make install
 
 # Remove all generated files

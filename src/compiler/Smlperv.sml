@@ -267,7 +267,8 @@ val predefExceptions = [
   ("Overflow",         ("exn_overflow",  0, sc_exn)),
   ("Bind",             ("exn_bind",      0, sc_exn)),
   ("Match",            ("exn_match",     0, sc_exn)),
-  ("Option",           ("exn_option",    0, sc_exn))
+  ("Option",           ("exn_option",    0, sc_exn)),
+  ("Span",             ("exn_span",      0, sc_exn))
 ];
 
 val () =

@@ -49,14 +49,16 @@ extern value global_data;
 #define SYS__EXN_MATCH      33   /* "sys","exn_match" */
 #define SYS__EXN_IO         34   /* "sys","exn_io" */
 #define SYS__EXN_OPTION     35   /* "sys","exn_option" */
+#define SYS__EXN_SPAN       36   /* "sys","exn_span" */
+
 
 /* Frequently used exception values (NOT exn indexes); alloc by sys_init */
 
-#define EXN_INTERRUPT       36   /* "sys","val_exn_interrupt" */
-#define EXN_DIV             37   /* "sys","val_exn_div" */
-#define EXN_OVERFLOW        38   /* "sys","val_exn_overflow" */
+#define EXN_INTERRUPT       37   /* "sys","val_exn_interrupt" */
+#define EXN_DIV             38   /* "sys","val_exn_div" */
+#define EXN_OVERFLOW        39   /* "sys","val_exn_overflow" */
 
 #define SYS__FIRST_EXN 19
-#define SYS__LAST_EXN 35
+#define SYS__LAST_EXN 36
 
 #endif /* _globals_ */

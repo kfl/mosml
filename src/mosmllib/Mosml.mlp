@@ -6,13 +6,6 @@ local
     prim_val setbyte_ : real -> int -> Word8.word -> unit  = 3 "set_nth_char";
 in
 
-#if defined(msdos)
-#include "../config.dos/m.h"
-#elif defined(win32)
-#include "../config.w32/m.h"
-#else
-#include "../config/m.h"
-#endif
 
 prim_val doubleVec : real -> Word8Vector.vector = 1 "doubletow8vec"
 prim_val vecDouble_ : Word8Vector.vector -> real = 1 "w8vectodouble"
@@ -138,5 +131,17 @@ fun run cmd args inp =
 	(FileSys.remove outfile) handle SysErr _ => ();
 	result
     end
+
+#include "../config/defs.h"
+val systemProperties = [ 
+    ("version", VERSION_S)
+  , ("dynlib support", DYNLIBSUPPORT_S)
+]
+fun systemInfo [] = systemProperties
+  | systemInfo ps = 
+    let fun lookup [] _ = NONE
+          | lookup ((res as (p,_))::rest) prop = if p = prop then SOME res
+                                                 else lookup rest prop
+    in  List.mapPartial (lookup systemProperties) ps end   
 
 end (* local *)

@@ -50,7 +50,7 @@ local
 in
 
     type dirstream  = dirstruct_ option ref;
-    datatype access = A_READ | A_WRITE | A_EXEC;
+    datatype access_mode = A_READ | A_WRITE | A_EXEC;
 
     fun access (path, perm) =
 	let fun mem p = if List.exists (fn q => p=q) perm then 1 else 0

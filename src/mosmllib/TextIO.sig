@@ -14,7 +14,7 @@ val inputAll     : instream -> vector
 val inputNoBlock : instream -> vector option
 val input1       : instream -> elem option
 val inputN       : instream * int -> vector
-val inputLine    : instream -> string
+val inputLine    : instream -> string option
 val endOfStream  : instream -> bool
 val lookahead    : instream -> elem option
 
@@ -96,11 +96,11 @@ val print        : string -> unit
    (This is the behaviour of the `input' function prescribed in the
    1990 Definition of Standard ML).
 
-   [inputLine istr] returns one line of text, including the
-   terminating newline character.  If end of stream is reached before
-   a newline character, then the remaining part of the stream is
-   returned, with a newline character added.  If istr is at end of
-   stream or is closed, then the empty string "" is returned.
+   [inputLine istr] returns SOME ln, where ln is one line of text,
+   including the terminating newline character.  If end of stream is
+   reached before a newline character, then the remaining part of the
+   stream is returned, with a newline character added.  If istr is at
+   end of stream or is closed, then NONE is returned.
 
    [endOfStream istr] returns false if any elements are available in
    istr; returns true if istr is at end of stream or closed; blocks if

@@ -15,6 +15,8 @@ datatype runresult =
 
 val run : string -> string list -> string -> runresult
 
+val systemInfo: string list -> (string * string) list
+
 (* 
    [argv ()] returns the command line strings of the current process.
    Hence List.nth(argv (), 0) is the command used to invoke the SML
@@ -59,4 +61,9 @@ val run : string -> string list -> string -> runresult
        Extreme care should be taken when calling this function in web
    scripts and similar, since the cmd is executed by the shell, so
    even the args can be abused for attacks.
+
+   [systemInfo query] returns a pair (p, v) for each property p in
+   query, where v is the value associated with p. If query is the
+   empty list, then all properties and values are returned.  The
+   property "version" is always guaranteed to have a value associated.
 *)

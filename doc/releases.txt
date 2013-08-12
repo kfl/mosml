@@ -274,3 +274,20 @@ Moscow ML release history
     * Negative Time.time values allowed
     * OS.Process: new functions sleep and isSuccess; status not eqtype
     * Listsort: added eqclasses, merge, mergeUniq
+    * Path: added functions isRoot, fromUnixPath, toUnixPath, and
+      exception InvalidArc (bug report by Henning Niss)
+    * TextIO: inputLine now have type instream -> string option
+    * Array: added type abbreviation vector (bug report by Andrzej
+      Wasowski)
+    * FileSys: type access renamed to access_mode (bug report by
+      Henning Niss)
+    * Byte: unpackString{,Vec} now uses vector slices (bug report by
+      Henning Niss)
+    * Unix: added functions fromStatus, textInstreamOf, binInstreamOf,
+      textOutstreamOf, binOutstreamOf, exit, and added phantom types
+      to proc (bug report by Henning Niss)
+    * Timer: added function checkCPUTimes
+    * Word and Word8: added functions toLarge, toLargeX, and fromLarge
+      (bug report by Martin Elsman)
+    * General: added exception Span and made the type of the function
+      'before' less general (bug report by Henning Niss)

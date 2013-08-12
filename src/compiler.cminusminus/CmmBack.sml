@@ -1,5 +1,5 @@
 (* Translation of lambda terms to C-- functions                              *)
-(* Created by Ken Friis Larsen <kfl@it.edu> 2001-02-14                       *)
+(* Created by Ken Friis Larsen <ken@friislarsen.net> 2001-02-14                       *)
 (* Inspired by the regular Moscow ML backend                                 *)
 structure CmmBack =
 struct

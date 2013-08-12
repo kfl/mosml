@@ -36,6 +36,7 @@ exception Overflow
 exception Option
 exception Subscript
 exception Size
+exception Span
 
 (* Additional Moscow ML top-level exceptions *)
 
@@ -53,7 +54,7 @@ val :=         : 'a ref * 'a -> unit
 
 val o          : ('b -> 'c) * ('a -> 'b) -> ('a -> 'c)
 val ignore     : 'a -> unit
-val before     : 'a * 'b -> 'a
+val before     : 'a * unit -> 'a
 
 val exnName    : exn -> string
 val exnMessage : exn -> string

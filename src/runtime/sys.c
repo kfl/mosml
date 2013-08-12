@@ -63,7 +63,8 @@ char* globalexn[] = {
        "Bind",
        "Match",
        "Io",
-       "Option" };
+       "Option",
+       "Span" };
 
 void sys_error(char * arg)
 {

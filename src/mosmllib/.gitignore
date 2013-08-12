@@ -1,4 +1,6 @@
-*.ui *.uo
+*.ui
+*.uo
+
 # Files derived from .mlp versions
 Array.sml
 FileSys.sml
