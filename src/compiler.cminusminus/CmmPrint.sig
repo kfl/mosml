@@ -1,5 +1,5 @@
 (* Pretty print of C--                                                       *)
-(* Created by Ken Friis Larsen <kfl@it.edu> 2001-02-13                       *)
+(* Created by Ken Friis Larsen <ken@friislarsen.net> 2001-02-13                       *)
 signature CmmPrint =
 sig 
     type 'a printer = 'a -> Wpp.doc

@@ -1,5 +1,5 @@
 (* Redblackset -- sets implemented by Okasaki-style Red-Black trees *)
-(* Ken Friis Larsen <kfl@it.edu>                                    *)
+(* Ken Friis Larsen <ken@friislarsen.net>                                    *)
 structure Redblackset :>  Redblackset =
 struct
 

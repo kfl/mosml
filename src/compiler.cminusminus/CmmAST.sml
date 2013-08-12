@@ -1,5 +1,5 @@
 (* Abstract syntax for C--, nicked from Fermin Reig and heavily modified.    *)
-(* Ken Friis Larsen <kfl@it.edu>                                             *)
+(* Ken Friis Larsen <ken@friislarsen.net>                                             *)
 structure CmmAST =
 struct
 

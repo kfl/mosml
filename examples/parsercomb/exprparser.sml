@@ -1,5 +1,5 @@
 (* Expression parser using Parser combinators                              *)
-(* By Ken Friis Larsen <kfl@it.edu>                                        *)
+(* By Ken Friis Larsen <ken@friislarsen.net>                                        *)
 (* (Re)Created: 20010907                                                   *)
 structure ExprParser =
 struct

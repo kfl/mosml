@@ -1,6 +1,6 @@
 A C-- backend for Moscow ML
 ===========================
-Ken Friis Larsen <kfl@it.edu>, 2001-02-11
+Ken Friis Larsen <ken@friislarsen.net>, 2001-02-11
 
 
 New Files:

@@ -1,6 +1,6 @@
 (* Redblackmap --                                                   *) 
 (*    applicative maps implemented by Okasaki-style Red-Black trees *)
-(* Ken Friis Larsen <kfl@it.edu>                                    *)
+(* Ken Friis Larsen <ken@friislarsen.net>                                    *)
 structure Redblackmap :>  Redblackmap =
 struct
 

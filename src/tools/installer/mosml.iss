@@ -1,5 +1,5 @@
 ; Inno Setup Script for installing Moscow ML ver. 2.00
-; Created: 2001-02-04 by Ken Friis Larsen <kfl@it.edu>
+; Created: 2001-02-04 by Ken Friis Larsen <ken@friislarsen.net>
 ; Modified: 2001-05-10 kfl
 
 [Setup]

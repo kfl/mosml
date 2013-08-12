@@ -1,5 +1,5 @@
 (* String buffers heavily inspired by the Buffer module in OCaml *)
-(* Ken Friis Larsen <kfl@it.edu> 2001-07-31                      *)
+(* Ken Friis Larsen <ken@friislarsen.net> 2001-07-31                      *)
 structure Buffer :> Buffer =
 struct
 

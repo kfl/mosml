@@ -1,5 +1,5 @@
 (* Translate Zam instructions to C--                                         *)
-(* Created by Ken Friis Larsen <kfl@it.edu> 2001-02-14                       *)
+(* Created by Ken Friis Larsen <ken@friislarsen.net> 2001-02-14                       *)
 structure CmmEmitcode =
 struct
 local open CmmAST 
