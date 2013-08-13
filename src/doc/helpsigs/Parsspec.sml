@@ -32,7 +32,7 @@ fun processSpec is str ((Location.Loc(pos1, pos2), spec), res) =
 	    else line
 	val lineno = (Nonstdio.seek_in is 0; getline 0 0)
 	open Asynt Database
-	fun getId ({qualid = {id, ...}, ...} : IdInfo) = id
+	fun getId ({qualid = {id, ...}, ...} : IdInfo) = hd id
 	fun valdesc ((idInfo, ty), res) = 
 	    {comp = Val (getId idInfo), file = str, line = lineno} :: res
 	fun pvaldesc ((idInfo, ty, arity, cfun), res) = 

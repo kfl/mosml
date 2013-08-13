@@ -11,7 +11,7 @@ fun mkTupleRow xs = mkTupleRow' 1 xs;
 
 type QualifiedIdent =
 {
-  id: string,
+  id: string list,
   qual: string
 };
 

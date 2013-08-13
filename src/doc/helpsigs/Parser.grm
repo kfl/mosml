@@ -7,14 +7,14 @@ open Location Asynt;
 
 %token ABSTYPE AND ANDALSO AS CASE DATATYPE DO ELSE END
 %token EQTYPE EXCEPTION
-%token FN FUN HANDLE IF IN INFIX INFIXR LET LOCAL
-%token NONFIX OF OP ORELSE RAISE REC SIG SIGNATURE STRUCT STRUCTURE
-%token THEN TYPE VAL WHILE WITH WITHTYPE
+%token FN FUN FUNCTOR HANDLE IF IN INCLUDE INFIX INFIXR LET LOCAL
+%token NONFIX OF OP ORELSE RAISE REC SHARING SIG SIGNATURE STRUCT STRUCTURE
+%token THEN TYPE VAL WHERE WHILE WITH WITHTYPE
 
 %token EQUALS
 %token COMMA ARROW DARROW BAR STAR HASH
 %token LBRACE RBRACE HASHLBRACKET LBRACKET RBRACKET LPAREN RPAREN
-%token COLON SEMICOLON UNDERBAR DOTDOTDOT
+%token COLON COLONGT SEMICOLON UNDERBAR DOTDOTDOT
 
 %token OPEN PRIM_VAL PRIM_TYPE PRIM_EQTYPE PRIM_REFTYPE
 
@@ -91,13 +91,13 @@ IdentWithLoc :
     Ident       { mkLoc($1) }
 
 OpIdent :
-    Ident       { mkIdInfo (mkLoc { qual="", id=$1 }) false }
-  | OP Ident    { mkIdInfo (mkLoc { qual="", id=$2 }) true }
+    Ident       { mkIdInfo (mkLoc { qual="", id=[$1] }) false }
+  | OP Ident    { mkIdInfo (mkLoc { qual="", id=[$2] }) true }
 ;
 
 OpEqIdent :
-    EqIdent     { mkIdInfo (mkLoc { qual="", id=$1 }) false }
-  | OP Ident    { mkIdInfo (mkLoc { qual="", id=$2 }) true }
+    EqIdent     { mkIdInfo (mkLoc { qual="", id=[$1] }) false }
+  | OP Ident    { mkIdInfo (mkLoc { qual="", id=[$2] }) true }
 ;
 
 EqIdent :
@@ -115,7 +115,7 @@ UnitName :
 ;
 
 TypeIdent :
-    ID          { mkIdInfo (mkLoc { qual="", id=$1 }) false }
+    ID          { mkIdInfo (mkLoc { qual="", id=[$1] }) false }
 ;
 
 LongTypeIdent :
@@ -124,7 +124,7 @@ LongTypeIdent :
 ;
 
 TyVar :
-    TYVAR    { mkIdInfo (mkLoc { qual="", id=$1 }) false }
+    TYVAR    { mkIdInfo (mkLoc { qual="", id=[$1] }) false }
 ;
 
 UnitName_seq1 :

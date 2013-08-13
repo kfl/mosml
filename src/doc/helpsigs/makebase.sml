@@ -3,8 +3,7 @@
  *)
 
 (* The version number inserted in generated files: *)
-val version = "<A HREF=\"http://www.dina.kvl.dk/~sestoft/mosml.html\">\
-    \Moscow ML</A> 2.00.1";
+val version = "<A HREF=\"http://mosml.org\">Moscow ML</A> 2.10";
 
 (* Default directory containing the signature files: *)
 val libdirDef = "../../../lib/"
@@ -102,6 +101,8 @@ fun dirToBase (dir, filename) =
 	Database.writebase(filename, db)
     end
     handle exn as OS.SysErr (str, _) => (print(str ^ "\n\n"); raise exn)
+        |  exn as Lexer.LexicalError(msg,start,_) => (print(msg ^ " starting at " 
+                                                            ^ Int.toString start ^ "\n\n"); raise exn) 
 
 fun process (libdir, helpfile, txtIndex, texIndex, htmldir, htmlIndex) =
     (print ("Reading signatures in directory " ^ libdir ^ 

@@ -72,9 +72,11 @@ List.app (fn (str,tok) => Hasht.insert keyword_table str tok)
   ("exception",    EXCEPTION),
   ("fn",           FN),
   ("fun",          FUN),
+  ("functor",      FUNCTOR),
   ("handle",       HANDLE),
   ("if",           IF),
   ("in",           IN),
+  ("include",      INCLUDE),
   ("infix",        INFIX),
   ("infixr",       INFIXR),
   ("let",          LET),
@@ -90,6 +92,7 @@ List.app (fn (str,tok) => Hasht.insert keyword_table str tok)
   ("prim_val",     PRIM_VAL),
   ("raise",        RAISE),
   ("rec",          REC),
+  ("sharing",      SHARING),
   ("sig",          SIG),
   ("signature",    SIGNATURE),
   ("struct",       STRUCT),
@@ -97,12 +100,14 @@ List.app (fn (str,tok) => Hasht.insert keyword_table str tok)
   ("then",         THEN),
   ("type",         TYPE),
   ("val",          VAL),
+  ("where",        WHERE),
   ("while",        WHILE),
   ("with",         WITH),
   ("withtype",     WITHTYPE),
   ("#",            HASH),
   ("->",           ARROW),
   ("|",            BAR),
+  (":>",           COLONGT),
   (":",            COLON),
   ("=>",           DARROW),
   ("=",            EQUALS),
@@ -161,33 +166,45 @@ fun get_stored_string() =
     s
   end;
 
+(* cvr: NOTE normalizeUnitName done elsewhere now *)
 fun splitQualId s =
   let open CharVectorSlice
-      val len' = size s - 1
-      fun parse n =
+      val len' = size s
+      fun parse i n acc =
         if n >= len' then
-          ("", s)
+	  vector(slice(s, i, SOME (len' - i))) :: acc
         else if CharVector.sub(s, n) = #"." then
-          ( vector(slice(s, 0, SOME n)),
-            vector(slice(s, n + 1, SOME(len' - n))) )
+          parse (n+1) (n+1) (vector(slice(s, i, SOME (n - i)))::acc)
         else
-          parse (n+1)
-  in parse 0 end;
+          parse i (n+1) acc
+  in parse 0 0 [] end
+
+
 
 fun mkQualId lexbuf =
-  let val (qual, id) = splitQualId(getLexeme lexbuf) in
-    if id = "*" then
-      QUAL_STAR { qual=qual, id=id }
+  let val  id = splitQualId(getLexeme lexbuf) in
+    if id = ["*"] then
+      QUAL_STAR { qual="", id=id }
     else
-      QUAL_ID   { qual=qual, id=id }
-  end
-;
+      QUAL_ID   { qual="", id=id }
+  end;
 
 fun charCodeOfDecimal lexbuf i =
   100 * (Char.ord(getLexemeChar lexbuf i) - 48) +
    10 * (Char.ord(getLexemeChar lexbuf (i+1)) - 48) +
         (Char.ord(getLexemeChar lexbuf (i+2)) - 48)
 ;
+
+fun charCodeOfHexadecimal lexbuf i =
+    let fun hexval c = 
+	    if #"0" <= c andalso c <= #"9" then Char.ord c - 48
+	    else (Char.ord c - 55) mod 32;
+    in 
+       4096 * hexval(getLexemeChar lexbuf (i+1)) +
+        256 * hexval(getLexemeChar lexbuf (i+2)) +
+         16 * hexval(getLexemeChar lexbuf (i+3)) +
+              hexval(getLexemeChar lexbuf (i+4)) 
+    end;
 
 fun lexError msg lexbuf =
 (
@@ -338,10 +355,10 @@ and TokenId = parse
     | [`!` `%` `&` `$` `#` `+` `-` `/` `:` `<` `=` `>` `?` `@` `\\`
        `~` `\`` `^` `|` `*`]+ )
       { mkKeyword lexbuf }
-  | ( [`A`-`Z` `a`-`z`] [ `A`-`Z` `a`-`z` `0`-`9` `_` `'`]*
-    | [`!` `%` `&` `$` `#` `+` `-` `/` `:` `<` `=` `>` `?` `@` `\\`
-       `~` `\`` `^` `|` `*`]+ )
-    "."
+  | ((  [`A`-`Z` `a`-`z`] [ `A`-`Z` `a`-`z` `0`-`9` `_` `'`]*
+      | [`!` `%` `&` `$` `#` `+` `-` `/` `:` `<` `=` `>` `?` `@` `\\`
+        `~` `\`` `^` `|` `*`]+ )
+      ".")+
     ( [`A`-`Z` `a`-`z`] [ `A`-`Z` `a`-`z` `0`-`9` `_` `'`]*
     | [`!` `%` `&` `$` `#` `+` `-` `/` `:` `<` `=` `>` `?` `@` `\\`
        `~` `\`` `^` `|` `*`]+ )
@@ -354,10 +371,10 @@ and TokenIdQ = parse
     | [`!` `%` `&` `$` `#` `+` `-` `/` `:` `<` `=` `>` `?` `@` `\\`
        `~` `^` `|` `*`]+ )
       { mkKeyword lexbuf }
-  | ( [`A`-`Z` `a`-`z`] [ `A`-`Z` `a`-`z` `0`-`9` `_` `'`]*
-    | [`!` `%` `&` `$` `#` `+` `-` `/` `:` `<` `=` `>` `?` `@` `\\`
-       `~` `^` `|` `*`]+ )
-    "."
+  | ((  [`A`-`Z` `a`-`z`] [ `A`-`Z` `a`-`z` `0`-`9` `_` `'`]*
+      | [`!` `%` `&` `$` `#` `+` `-` `/` `:` `<` `=` `>` `?` `@` `\\`
+        `~` `^` `|` `*`]+ )
+     ".")+
     ( [`A`-`Z` `a`-`z`] [ `A`-`Z` `a`-`z` `0`-`9` `_` `'`]*
     | [`!` `%` `&` `$` `#` `+` `-` `/` `:` `<` `=` `>` `?` `@` `\\`
        `~` `^` `|` `*`]+ )
@@ -392,6 +409,15 @@ and String = parse
         String lexbuf }
   | `\\` [`0`-`9`] [`0`-`9`] [`0`-`9`]
       { let val code = charCodeOfDecimal lexbuf 1 in
+          if code >= 256 then
+            skipString "character code is too large" SkipString lexbuf
+          else ();
+          store_string_char(Char.chr code);
+          String lexbuf
+        end }
+  | "\\u" [`0`-`9``a`-`f``A`-`F`] [`0`-`9``a`-`f``A`-`F`] 
+          [`0`-`9``a`-`f``A`-`F`] [`0`-`9``a`-`f``A`-`F`]
+      { let val code = charCodeOfHexadecimal lexbuf 1 in
           if code >= 256 then
             skipString "character code is too large" SkipString lexbuf
           else ();
