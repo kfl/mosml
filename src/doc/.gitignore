@@ -1,4 +1,13 @@
-*.bbl *.blg *.dvi *.log *.aux *.toc *.idx *.ilg *.ind
+*.bbl
+*.blg
+*.dvi
+*.log
+*.aux
+*.toc
+*.idx
+*.ilg
+*.ind
+*.out
 index.tex
 manual.ps
 mosmllib.ps
