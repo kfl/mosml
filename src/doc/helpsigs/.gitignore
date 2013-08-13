@@ -1,5 +1,6 @@
 # Files derived from .lex and .grm files
-*.ui *.uo
+*.ui
+*.uo
 Lexer.sml
 Parser.sig
 Parser.sml
