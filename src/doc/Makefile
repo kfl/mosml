@@ -5,13 +5,13 @@
 
 include ../Makefile.inc
 
-all: helpsigs allps allpdf
+all: helpsigs allpdf
 
-allpdf: manual.pdf mosmlref.pdf mosmllib.pdf mosmllib2up.pdf 
+allpdf: manual.pdf mosmlref.pdf mosmllib.pdf
 
-allps: manual.ps mosmlref.ps mosmllib.ps mosmllib2up.ps 
+#allps: manual.ps mosmlref.ps mosmllib.ps mosmllib2up.ps 
 
-LATEX=latex
+LATEX=pdflatex
 
 helpsigs:
 	cd helpsigs; make all base 
@@ -24,7 +24,7 @@ macmosml.dvi: macmosmlbib
 	${LATEX} macmosml
 	${LATEX} macmosml
 
-manual.dvi: manual.tex manual.bbl mosml.sty
+manual.pdf: manual.tex manual.bbl mosml.sty
 	${LATEX} manual
 	bibtex manual
 	${LATEX} manual
@@ -33,25 +33,25 @@ manual.dvi: manual.tex manual.bbl mosml.sty
 index.tex texsigsigs.tex:
 	cd helpsigs; make all base
 
-mosmlref.dvi: mosmlref.tex mosml.sty
+mosmlref.pdf: mosmlref.tex mosml.sty
 	${LATEX} mosmlref
 	${LATEX} mosmlref
 
-mosmllib.dvi: mosmllib.tex texsigsigs.tex
+mosmllib.pdf: mosmllib.tex texsigsigs.tex
 	touch mosmllib.ind
 	${LATEX} mosmllib
 	makeindex mosmllib
 	${LATEX} mosmllib
 	${LATEX} mosmllib
 
-mosmllib2up.ps: mosmllib.ps
-	psnup -pa4 -2 mosmllib.ps mosmllib2up.ps
+#mosmllib2up.ps: mosmllib.ps
+#	psnup -pa4 -2 mosmllib.ps mosmllib2up.ps
 
 install:
 	cp mosmlref.pdf $(DOCDIR)
 	cp manual.pdf $(DOCDIR)
 	cp mosmllib.pdf $(DOCDIR)
-	cp mosmllib2up.pdf $(DOCDIR)
+#	cp mosmllib2up.pdf $(DOCDIR)
 	cd helpsigs; make install
 
 clean:
@@ -61,10 +61,10 @@ clean:
 	cd helpsigs; make clean
 
 .SUFFIXES :
-.SUFFIXES : .aux .bbl .tex .bib .dvi .ps .pdf 
+.SUFFIXES : .aux .bbl .tex .bib .dvi .ps
 
-.ps.pdf:
-	ps2pdf $<
+#.ps.pdf:
+#	ps2pdf $<
 
 .dvi.ps:
 	dvips -ta4 $< -o
