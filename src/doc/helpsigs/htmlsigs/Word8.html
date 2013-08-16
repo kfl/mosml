@@ -51,11 +51,15 @@
 <A NAME="line42"></A>val <A HREF="#toLargeIntX-val">toLargeIntX</A>   : word -&gt; int         (* with sign extension *)
 <A NAME="line43"></A>val <A HREF="#fromLargeInt-val">fromLargeInt</A>  : int -&gt; word
 <A NAME="line44"></A>
-<A NAME="line45"></A>val <A HREF="#toLargeWord-val">toLargeWord</A>   : word -&gt; Word.word
-<A NAME="line46"></A>val <A HREF="#toLargeWordX-val">toLargeWordX</A>  : word -&gt; Word.word   (* with sign extension *)
-<A NAME="line47"></A>val <A HREF="#fromLargeWord-val">fromLargeWord</A> : Word.word -&gt; word
+<A NAME="line45"></A>val <A HREF="#toLarge-val">toLarge</A>   : word -&gt; Word.word
+<A NAME="line46"></A>val <A HREF="#toLargeX-val">toLargeX</A>  : word -&gt; Word.word   (* with sign extension *)
+<A NAME="line47"></A>val <A HREF="#fromLarge-val">fromLarge</A> : Word.word -&gt; word
 <A NAME="line48"></A>
-<A NAME="line49"></A>(* 
+<A NAME="line49"></A>val <A HREF="#toLargeWord-val">toLargeWord</A>   : word -&gt; Word.word
+<A NAME="line50"></A>val <A HREF="#toLargeWordX-val">toLargeWordX</A>  : word -&gt; Word.word   (* with sign extension *)
+<A NAME="line51"></A>val <A HREF="#fromLargeWord-val">fromLargeWord</A> : Word.word -&gt; word
+<A NAME="line52"></A>
+<A NAME="line53"></A>(* 
    [<A NAME="word-typ"><B>word</B></A>] is the type of 8-bit words, or 8-bit unsigned integers in
    the range 0..255.
 
@@ -159,18 +163,22 @@
    
    [<A NAME="fromLargeInt-val"><B>fromLargeInt</B></A> i] returns the word holding the 8 least significant bits of i.
 
-   [<A NAME="toLargeWord-val"><B>toLargeWord</B></A> w] returns the Word.word value corresponding to w.
+   [<A NAME="toLarge-val"><B>toLarge</B></A> w] returns the Word.word value corresponding to w.
 
-   [<A NAME="toLargeWordX-val"><B>toLargeWordX</B></A> w] returns the Word.word value corresponding to w,
+   [<A NAME="toLargeX-val"><B>toLargeX</B></A> w] returns the Word.word value corresponding to w,
    with sign extension.  That is, the 8 least significant bits of the
    result are those of w, and the remaining bits are all equal to the
    most significant bit of w: its `sign bit'.
 
-   [<A NAME="fromLargeWord-val"><B>fromLargeWord</B></A> w] returns w modulo 256.
+   [<A NAME="fromLarge-val"><B>fromLarge</B></A> w] returns w modulo 256.
+
+   [<A NAME="toLargeWord-val"><B>toLargeWord</B></A> w] 
+   [<A NAME="toLargeWordX-val"><B>toLargeWordX</B></A> w]
+   [<A NAME="fromLargeWord-val"><B>fromLargeWord</B></A> w] synonyms for toLarge, toLargeX and fromLarge, (deprecated)
 *)
 
 </PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
 <TH><A HREF="idIndex.html">Identifier index</A>
 <TH><A HREF="index.html">Structure index</A>
 </TABLE><HR>
-<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>
+<BR><EM><A HREF="http://mosml.org">Moscow ML</A> 2.10</EM></BODY></HTML>

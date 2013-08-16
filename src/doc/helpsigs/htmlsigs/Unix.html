@@ -7,29 +7,35 @@
 </TABLE><HR>
 <PRE>
 <A NAME="line0"></A>(* Unix -- SML Basis Library *)
-<A NAME="line1"></A>
-<A NAME="line2"></A>type <A HREF="#proc-typ">proc</A>
+<A NAME="line1"></A>signature Unix = sig 
+<A NAME="line2"></A>type ('a, 'b) <A HREF="#proc-typ">proc</A>
 <A NAME="line3"></A>type <A HREF="#signal-typ">signal</A> = Signal.signal
 <A NAME="line4"></A>
-<A NAME="line5"></A>val <A HREF="#executeInEnv-val">executeInEnv</A> : string * string list * string list -&gt; proc 
-<A NAME="line6"></A>val <A HREF="#execute-val">execute</A>      : string * string list -&gt; proc 
-<A NAME="line7"></A>val <A HREF="#streamsOf-val">streamsOf</A>    : proc -&gt; TextIO.instream * TextIO.outstream
-<A NAME="line8"></A>val <A HREF="#kill-val">kill</A>         : proc * signal -&gt; unit
-<A NAME="line9"></A>val <A HREF="#reap-val">reap</A>         : proc -&gt; Process.status 
-<A NAME="line10"></A>
-<A NAME="line11"></A>(* 
-<A NAME="line12"></A>   This structure allows Moscow ML programs to start other processes
-<A NAME="line13"></A>   and to communicate with them.  
-<A NAME="line14"></A>
-<A NAME="line15"></A>   Child processes are not automatically terminated when the parent
-<A NAME="line16"></A>   (ML) process terminates.  To forcibly terminate a child process pr,
-<A NAME="line17"></A>   use Unix.kill(pr, Signal.term).  Then, to remove the terminated
-<A NAME="line18"></A>   process from the operating system tables, call Unix.reap(pr).
-<A NAME="line19"></A>
-<A NAME="line20"></A>   The protocol for communication between the ML program and its child
-<A NAME="line21"></A>   process must be designed with some care, typically using
-<A NAME="line22"></A>   non-blocking input for reading from the child process.
-<A NAME="line23"></A>
+<A NAME="line5"></A>val <A HREF="#executeInEnv-val">executeInEnv</A>    : string * string list * string list -&gt; ('a, 'b) proc 
+<A NAME="line6"></A>val <A HREF="#execute-val">execute</A>         : string * string list -&gt; ('a, 'b) proc
+<A NAME="line7"></A>
+<A NAME="line8"></A>val <A HREF="#streamsOf-val">streamsOf</A>       : (TextIO.instream, TextIO.outstream) proc 
+<A NAME="line9"></A>                       -&gt; TextIO.instream * TextIO.outstream
+<A NAME="line10"></A>val <A HREF="#textInstreamOf-val">textInstreamOf</A>  : (TextIO.instream, 'a) proc -&gt; TextIO.instream
+<A NAME="line11"></A>val <A HREF="#textOutstreamOf-val">textOutstreamOf</A> : ('a, TextIO.outstream) proc -&gt; TextIO.outstream
+<A NAME="line12"></A>val <A HREF="#binInstreamOf-val">binInstreamOf</A>   : (BinIO.instream, 'a) proc -&gt; BinIO.instream
+<A NAME="line13"></A>val <A HREF="#binOutstreamOf-val">binOutstreamOf</A>  : ('a, BinIO.outstream) proc -&gt; BinIO.outstream 
+<A NAME="line14"></A>val <A HREF="#kill-val">kill</A>            : ('a, 'b) proc * signal -&gt; unit
+<A NAME="line15"></A>val <A HREF="#reap-val">reap</A>            : ('a, 'b) proc -&gt; OS.Process.status 
+<A NAME="line16"></A>end
+<A NAME="line17"></A>(* 
+<A NAME="line18"></A>   This structure allows Moscow ML programs to start other processes
+<A NAME="line19"></A>   and to communicate with them.  
+<A NAME="line20"></A>
+<A NAME="line21"></A>   Child processes are not automatically terminated when the parent
+<A NAME="line22"></A>   (ML) process terminates.  To forcibly terminate a child process pr,
+<A NAME="line23"></A>   use Unix.kill(pr, Signal.term).  Then, to remove the terminated
+<A NAME="line24"></A>   process from the operating system tables, call Unix.reap(pr).
+<A NAME="line25"></A>
+<A NAME="line26"></A>   The protocol for communication between the ML program and its child
+<A NAME="line27"></A>   process must be designed with some care, typically using
+<A NAME="line28"></A>   non-blocking input for reading from the child process.
+<A NAME="line29"></A>
    [<A NAME="proc-typ"><B>proc</B></A>] is the type of processes started by the ML program.
 
    [<A NAME="signal-typ"><B>signal</B></A>] is the type of Unix-style signals, which can be sent to
@@ -62,6 +68,18 @@
    the source for the input stream ins, and the standard input of pr
    is the sink for the output stream outs.
 
+   [<A NAME="textInstreamOf-val"><B>textInstreamOf</B></A> pr] returns the text input stream associated with
+   process pr.  That is, the standard output of pr.
+
+   [<A NAME="textOutstreamOf-val"><B>textOutstreamOf</B></A> pr] returns the text output stream associated with
+   process pr.  That is, the standard input of pr.
+
+   [<A NAME="binInstreamOf-val"><B>binInstreamOf</B></A> pr] returns the binary input stream associated with
+   process pr.  That is, the standard output of pr.
+
+   [<A NAME="binOutstreamOf-val"><B>binOutstreamOf</B></A> pr] returns the binary output stream associated
+   with process pr.  That is, the standard input of pr.
+ 
    [<A NAME="reap-val"><B>reap</B></A> pr] closes the input and output streams associated with pr,
    and then suspends the current (ML) process until the process
    corresponding to pr terminates.  Returns the exit status given by
@@ -81,4 +99,4 @@
 <TH><A HREF="idIndex.html">Identifier index</A>
 <TH><A HREF="index.html">Structure index</A>
 </TABLE><HR>
-<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>
+<BR><EM><A HREF="http://mosml.org">Moscow ML</A> 2.10</EM></BODY></HTML>

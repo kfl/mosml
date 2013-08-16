@@ -31,8 +31,8 @@
 <A NAME="line22"></A>val <A HREF="#remove-val">remove</A>    : string -&gt; unit
 <A NAME="line23"></A>val <A HREF="#rename-val">rename</A>    : {old: string, new: string} -&gt; unit
 <A NAME="line24"></A>
-<A NAME="line25"></A>datatype <A HREF="#access-typ">access</A> = A_READ | A_WRITE | A_EXEC
-<A NAME="line26"></A>val <A HREF="#access-val">access</A>    : string * access list -&gt; bool
+<A NAME="line25"></A>datatype <A HREF="#access_mode-typ">access_mode</A> = A_READ | A_WRITE | A_EXEC
+<A NAME="line26"></A>val <A HREF="#access-val">access</A>    : string * access_mode list -&gt; bool
 <A NAME="line27"></A>
 <A NAME="line28"></A>val <A HREF="#fileSize-val">fileSize</A>  : string -&gt; int
 <A NAME="line29"></A>
@@ -116,7 +116,7 @@
 
    [<A NAME="rename-val"><B>rename</B></A> {old, new}] changes the name of file `old' to `new'.
 
-   [<A NAME="access-typ"><B>access</B></A>] is the type of access permissions:
+   [<A NAME="access_mode-typ"><B>access_mode</B></A>] is the type of access permissions:
 
    [<A NAME="A_READ-con"><B>A_READ</B></A>] specifies read access.
 
@@ -169,4 +169,4 @@
 <TH><A HREF="idIndex.html">Identifier index</A>
 <TH><A HREF="index.html">Structure index</A>
 </TABLE><HR>
-<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>
+<BR><EM><A HREF="http://mosml.org">Moscow ML</A> 2.10</EM></BODY></HTML>

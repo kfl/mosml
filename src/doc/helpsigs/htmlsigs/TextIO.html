@@ -22,7 +22,7 @@
 <A NAME="line13"></A>val <A HREF="#inputNoBlock-val">inputNoBlock</A> : instream -&gt; vector option
 <A NAME="line14"></A>val <A HREF="#input1-val">input1</A>       : instream -&gt; elem option
 <A NAME="line15"></A>val <A HREF="#inputN-val">inputN</A>       : instream * int -&gt; vector
-<A NAME="line16"></A>val <A HREF="#inputLine-val">inputLine</A>    : instream -&gt; string
+<A NAME="line16"></A>val <A HREF="#inputLine-val">inputLine</A>    : instream -&gt; string option
 <A NAME="line17"></A>val <A HREF="#endOfStream-val">endOfStream</A>  : instream -&gt; bool
 <A NAME="line18"></A>val <A HREF="#lookahead-val">lookahead</A>    : instream -&gt; elem option
 <A NAME="line19"></A>
@@ -104,11 +104,11 @@
    (This is the behaviour of the `input' function prescribed in the
    1990 Definition of Standard ML).
 
-   [<A NAME="inputLine-val"><B>inputLine</B></A> istr] returns one line of text, including the
-   terminating newline character.  If end of stream is reached before
-   a newline character, then the remaining part of the stream is
-   returned, with a newline character added.  If istr is at end of
-   stream or is closed, then the empty string "" is returned.
+   [<A NAME="inputLine-val"><B>inputLine</B></A> istr] returns SOME ln, where ln is one line of text,
+   including the terminating newline character.  If end of stream is
+   reached before a newline character, then the remaining part of the
+   stream is returned, with a newline character added.  If istr is at
+   end of stream or is closed, then NONE is returned.
 
    [<A NAME="endOfStream-val"><B>endOfStream</B></A> istr] returns false if any elements are available in
    istr; returns true if istr is at end of stream or closed; blocks if
@@ -204,4 +204,4 @@
 <TH><A HREF="idIndex.html">Identifier index</A>
 <TH><A HREF="index.html">Structure index</A>
 </TABLE><HR>
-<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>
+<BR><EM><A HREF="http://mosml.org">Moscow ML</A> 2.10</EM></BODY></HTML>

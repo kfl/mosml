@@ -1,33 +1,33 @@
-<HTML><HEAD><TITLE>Structure Splayset</TITLE></HEAD>
+<HTML><HEAD><TITLE>Structure Redblackset</TITLE></HEAD>
 <BODY BGCOLOR="#fbf2e7">
-<H1>Structure Splayset</H1>
+<H1>Structure Redblackset</H1>
 <HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
 <TH><A HREF="idIndex.html">Identifier index</A>
 <TH><A HREF="index.html">Structure index</A>
 </TABLE><HR>
 <PRE>
-<A NAME="line0"></A>(* Splayset -- applicative sets implemented by splay-trees       *)
-<A NAME="line1"></A>(* From SML/NJ lib 0.2, copyright 1993 by AT&amp;T Bell Laboratories *)
-<A NAME="line2"></A>
+<A NAME="line0"></A>(* Redblackset -- sets implemented by Red-Black trees *)
+<A NAME="line1"></A>signature Redblackset =
+<A NAME="line2"></A>sig
 <A NAME="line3"></A>type 'item <A HREF="#set-typ">set</A>
 <A NAME="line4"></A>
 <A NAME="line5"></A>exception NotFound
 <A NAME="line6"></A>
-<A NAME="line7"></A>val <A HREF="#empty-val">empty</A>        : ('_item * '_item -&gt; order) -&gt; '_item set
-<A NAME="line8"></A>val <A HREF="#singleton-val">singleton</A>    : ('_item * '_item -&gt; order) -&gt; '_item -&gt; '_item set
-<A NAME="line9"></A>val <A HREF="#add-val">add</A>          : '_item set * '_item -&gt; '_item set
-<A NAME="line10"></A>val <A HREF="#addList-val">addList</A>      : '_item set * '_item list -&gt; '_item set
+<A NAME="line7"></A>val <A HREF="#empty-val">empty</A>        : ('item * 'item -&gt; order) -&gt; 'item set
+<A NAME="line8"></A>val <A HREF="#singleton-val">singleton</A>    : ('item * 'item -&gt; order) -&gt; 'item -&gt; 'item set
+<A NAME="line9"></A>val <A HREF="#add-val">add</A>          : 'item set * 'item -&gt; 'item set
+<A NAME="line10"></A>val <A HREF="#addList-val">addList</A>      : 'item set * 'item list -&gt; 'item set
 <A NAME="line11"></A>val <A HREF="#retrieve-val">retrieve</A>     : 'item set * 'item -&gt; 'item
 <A NAME="line12"></A>val <A HREF="#peek-val">peek</A>         : 'item set * 'item -&gt; 'item option
 <A NAME="line13"></A>val <A HREF="#isEmpty-val">isEmpty</A>      : 'item set -&gt; bool
 <A NAME="line14"></A>val <A HREF="#equal-val">equal</A>        : 'item set * 'item set -&gt; bool
 <A NAME="line15"></A>val <A HREF="#isSubset-val">isSubset</A>     : 'item set * 'item set -&gt; bool
 <A NAME="line16"></A>val <A HREF="#member-val">member</A>       : 'item set * 'item -&gt; bool
-<A NAME="line17"></A>val <A HREF="#delete-val">delete</A>       : '_item set * '_item -&gt; '_item set
+<A NAME="line17"></A>val <A HREF="#delete-val">delete</A>       : 'item set * 'item -&gt; 'item set
 <A NAME="line18"></A>val <A HREF="#numItems-val">numItems</A>     : 'item set -&gt;  int
-<A NAME="line19"></A>val <A HREF="#union-val">union</A>        : '_item set * '_item set -&gt; '_item set
-<A NAME="line20"></A>val <A HREF="#intersection-val">intersection</A> : '_item set * '_item set -&gt; '_item set
-<A NAME="line21"></A>val <A HREF="#difference-val">difference</A>   : '_item set * '_item set -&gt; '_item set
+<A NAME="line19"></A>val <A HREF="#union-val">union</A>        : 'item set * 'item set -&gt; 'item set
+<A NAME="line20"></A>val <A HREF="#intersection-val">intersection</A> : 'item set * 'item set -&gt; 'item set
+<A NAME="line21"></A>val <A HREF="#difference-val">difference</A>   : 'item set * 'item set -&gt; 'item set
 <A NAME="line22"></A>val <A HREF="#listItems-val">listItems</A>    : 'item set -&gt; 'item list
 <A NAME="line23"></A>val <A HREF="#app-val">app</A>          : ('item -&gt; unit) -&gt; 'item set -&gt; unit
 <A NAME="line24"></A>val <A HREF="#revapp-val">revapp</A>       : ('item -&gt; unit) -&gt; 'item set -&gt; unit
@@ -35,12 +35,14 @@
 <A NAME="line26"></A>val <A HREF="#foldl-val">foldl</A>        : ('item * 'b -&gt; 'b) -&gt; 'b -&gt; 'item set -&gt; 'b
 <A NAME="line27"></A>val <A HREF="#find-val">find</A>         : ('item -&gt; bool) -&gt; 'item set -&gt; 'item option
 <A NAME="line28"></A>
-<A NAME="line29"></A>(* 
+<A NAME="line29"></A>end
+<A NAME="line30"></A>
+<A NAME="line31"></A>(* 
    ['item <A NAME="set-typ"><B>set</B></A>] is the type of sets of ordered elements of type 'item.
    The ordering relation on the elements is used in the representation
    of the set.  The result of combining two sets with different
    underlying ordering relations is undefined.  The implementation
-   uses splay-trees (Sleator and Tarjan).
+   uses Okasaki-style Red-Black trees.
 
    [<A NAME="empty-val"><B>empty</B></A> ordr] creates a new empty set with the given ordering
    relation.  
@@ -71,13 +73,13 @@
 
    [<A NAME="union-val"><B>union</B></A>(s1, s2)] returns the union of s1 and s2.  
 
-   [<A NAME="intersection-val"><B>intersection</B></A>(s1, s2)] returns the intersectionof s1 and s2.
+   [<A NAME="intersection-val"><B>intersection</B></A>(s1, s2)] returns the intersection of s1 and s2.
 
    [<A NAME="difference-val"><B>difference</B></A>(s1, s2)] returns the difference between s1 and s2 (that
    is, the set of elements in s1 but not in s2).
 
    [<A NAME="listItems-val"><B>listItems</B></A> s] returns a list of the items in set s, in increasing
-    order.
+   order.
 
    [<A NAME="app-val"><B>app</B></A> f s] applies function f to the elements of s, in increasing
    order.
@@ -92,11 +94,12 @@
    set in decreasing order. 
 
    [<A NAME="find-val"><B>find</B></A> p s] returns SOME i, where i is an item in s which satisfies
-   p, if one exists; otherwise returns NONE.
-*)	
+   p, if one exists; otherwise returns NONE.  Traverses the entries of
+   the set in increasing order.
+*)
 
 </PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
 <TH><A HREF="idIndex.html">Identifier index</A>
 <TH><A HREF="index.html">Structure index</A>
 </TABLE><HR>
-<BR><EM><A HREF="http://mosml.org">Moscow ML</A> 2.10</EM></BODY></HTML>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

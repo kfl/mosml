@@ -9,39 +9,40 @@
 <A NAME="line0"></A>(* Array -- SML Basis Library *)
 <A NAME="line1"></A>
 <A NAME="line2"></A>prim_EQtype 'a <A HREF="#array-typ">array</A>
-<A NAME="line3"></A>
-<A NAME="line4"></A>val <A HREF="#maxLen-val">maxLen</A>   : int
-<A NAME="line5"></A>
-<A NAME="line6"></A>val <A HREF="#array-val">array</A>    : int * '_a -&gt; '_a array
-<A NAME="line7"></A>val <A HREF="#tabulate-val">tabulate</A> : int * (int -&gt; '_a) -&gt; '_a array
-<A NAME="line8"></A>val <A HREF="#fromList-val">fromList</A> : '_a list -&gt; '_a array
-<A NAME="line9"></A>
-<A NAME="line10"></A>val <A HREF="#length-val">length</A>   : 'a array -&gt; int
-<A NAME="line11"></A>val <A HREF="#sub-val">sub</A>      : 'a array * int -&gt; 'a
-<A NAME="line12"></A>val <A HREF="#update-val">update</A>   : 'a array * int * 'a  -&gt; unit
-<A NAME="line13"></A>val vector   : 'a array -&gt; 'a Vector.vector
-<A NAME="line14"></A>
-<A NAME="line15"></A>val <A HREF="#copy-val">copy</A>     : {src: 'a array,  dst: 'a array, di: int} -&gt; unit
-<A NAME="line16"></A>val <A HREF="#copyVec-val">copyVec</A>  : {src: 'a vector, dst: 'a array, di: int} -&gt; unit
-<A NAME="line17"></A>
-<A NAME="line18"></A>val <A HREF="#find-val">find</A>     : ('a -&gt; bool) -&gt; 'a array -&gt; 'a option
-<A NAME="line19"></A>val <A HREF="#exists-val">exists</A>   : ('a -&gt; bool) -&gt; 'a array -&gt; bool
-<A NAME="line20"></A>val <A HREF="#all-val">all</A>      : ('a -&gt; bool) -&gt; 'a array -&gt; bool
-<A NAME="line21"></A>
-<A NAME="line22"></A>val <A HREF="#app-val">app</A>      : ('a -&gt; unit) -&gt; 'a array -&gt; unit
-<A NAME="line23"></A>val <A HREF="#foldl-val">foldl</A>    : ('a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array -&gt; 'b
-<A NAME="line24"></A>val <A HREF="#foldr-val">foldr</A>    : ('a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array -&gt; 'b
-<A NAME="line25"></A>val <A HREF="#modify-val">modify</A>   : ('a -&gt; 'a) -&gt; 'a array -&gt; unit
-<A NAME="line26"></A>
-<A NAME="line27"></A>val <A HREF="#findi-val">findi</A>    : (int * 'a -&gt; bool) -&gt; 'a array -&gt; (int * 'a) option
-<A NAME="line28"></A>val <A HREF="#appi-val">appi</A>     : (int * 'a -&gt; unit) -&gt; 'a array -&gt; unit
-<A NAME="line29"></A>val <A HREF="#foldli-val">foldli</A>   : (int * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array -&gt; 'b
-<A NAME="line30"></A>val <A HREF="#foldri-val">foldri</A>   : (int * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array -&gt; 'b
-<A NAME="line31"></A>val <A HREF="#modifyi-val">modifyi</A>  : (int * 'a -&gt; 'a) -&gt; 'a array -&gt; unit
-<A NAME="line32"></A>
-<A NAME="line33"></A>val <A HREF="#collate-val">collate</A>  : ('a * 'a -&gt; order) -&gt; 'a array * 'a array -&gt; order
-<A NAME="line34"></A>
-<A NAME="line35"></A>(* 
+<A NAME="line3"></A>type 'a vector = 'a Vector.vector
+<A NAME="line4"></A>
+<A NAME="line5"></A>val <A HREF="#maxLen-val">maxLen</A>   : int
+<A NAME="line6"></A>
+<A NAME="line7"></A>val <A HREF="#array-val">array</A>    : int * '_a -&gt; '_a array
+<A NAME="line8"></A>val <A HREF="#tabulate-val">tabulate</A> : int * (int -&gt; '_a) -&gt; '_a array
+<A NAME="line9"></A>val <A HREF="#fromList-val">fromList</A> : '_a list -&gt; '_a array
+<A NAME="line10"></A>
+<A NAME="line11"></A>val <A HREF="#length-val">length</A>   : 'a array -&gt; int
+<A NAME="line12"></A>val <A HREF="#sub-val">sub</A>      : 'a array * int -&gt; 'a
+<A NAME="line13"></A>val <A HREF="#update-val">update</A>   : 'a array * int * 'a  -&gt; unit
+<A NAME="line14"></A>val vector   : 'a array -&gt; 'a vector
+<A NAME="line15"></A>
+<A NAME="line16"></A>val <A HREF="#copy-val">copy</A>     : {src: 'a array,  dst: 'a array, di: int} -&gt; unit
+<A NAME="line17"></A>val <A HREF="#copyVec-val">copyVec</A>  : {src: 'a vector, dst: 'a array, di: int} -&gt; unit
+<A NAME="line18"></A>
+<A NAME="line19"></A>val <A HREF="#find-val">find</A>     : ('a -&gt; bool) -&gt; 'a array -&gt; 'a option
+<A NAME="line20"></A>val <A HREF="#exists-val">exists</A>   : ('a -&gt; bool) -&gt; 'a array -&gt; bool
+<A NAME="line21"></A>val <A HREF="#all-val">all</A>      : ('a -&gt; bool) -&gt; 'a array -&gt; bool
+<A NAME="line22"></A>
+<A NAME="line23"></A>val <A HREF="#app-val">app</A>      : ('a -&gt; unit) -&gt; 'a array -&gt; unit
+<A NAME="line24"></A>val <A HREF="#foldl-val">foldl</A>    : ('a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array -&gt; 'b
+<A NAME="line25"></A>val <A HREF="#foldr-val">foldr</A>    : ('a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array -&gt; 'b
+<A NAME="line26"></A>val <A HREF="#modify-val">modify</A>   : ('a -&gt; 'a) -&gt; 'a array -&gt; unit
+<A NAME="line27"></A>
+<A NAME="line28"></A>val <A HREF="#findi-val">findi</A>    : (int * 'a -&gt; bool) -&gt; 'a array -&gt; (int * 'a) option
+<A NAME="line29"></A>val <A HREF="#appi-val">appi</A>     : (int * 'a -&gt; unit) -&gt; 'a array -&gt; unit
+<A NAME="line30"></A>val <A HREF="#foldli-val">foldli</A>   : (int * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array -&gt; 'b
+<A NAME="line31"></A>val <A HREF="#foldri-val">foldri</A>   : (int * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array -&gt; 'b
+<A NAME="line32"></A>val <A HREF="#modifyi-val">modifyi</A>  : (int * 'a -&gt; 'a) -&gt; 'a array -&gt; unit
+<A NAME="line33"></A>
+<A NAME="line34"></A>val <A HREF="#collate-val">collate</A>  : ('a * 'a -&gt; order) -&gt; 'a array * 'a array -&gt; order
+<A NAME="line35"></A>
+<A NAME="line36"></A>(* 
    ['ty <A NAME="array-typ"><B>array</B></A>] is the type of one-dimensional, mutable, zero-based
    constant-time-access arrays with elements of type 'ty.  Type 
    'ty array admits equality even if 'ty does not.  Arrays a1 and a2 
@@ -133,4 +134,4 @@
 <TH><A HREF="idIndex.html">Identifier index</A>
 <TH><A HREF="index.html">Structure index</A>
 </TABLE><HR>
-<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>
+<BR><EM><A HREF="http://mosml.org">Moscow ML</A> 2.10</EM></BODY></HTML>

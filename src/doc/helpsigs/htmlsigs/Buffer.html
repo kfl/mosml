@@ -1,0 +1,61 @@
+<HTML><HEAD><TITLE>Structure Buffer</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Buffer</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>signature Buffer =
+<A NAME="line1"></A>sig
+<A NAME="line2"></A>    type buf
+<A NAME="line3"></A>    val <A HREF="#new-val">new</A>      : int -&gt; buf
+<A NAME="line4"></A>    val <A HREF="#contents-val">contents</A> : buf -&gt; string
+<A NAME="line5"></A>    val <A HREF="#size-val">size</A>     : buf -&gt; int
+<A NAME="line6"></A>    val <A HREF="#clear-val">clear</A>    : buf -&gt; unit
+<A NAME="line7"></A>    val <A HREF="#reset-val">reset</A>    : buf -&gt; unit
+<A NAME="line8"></A>
+<A NAME="line9"></A>    val <A HREF="#addChar-val">addChar</A>      : buf -&gt; char -&gt; unit
+<A NAME="line10"></A>    val <A HREF="#addString-val">addString</A>    : buf -&gt; string -&gt; unit
+<A NAME="line11"></A>    val <A HREF="#addSubString-val">addSubString</A> : buf -&gt; substring -&gt; unit
+<A NAME="line12"></A>end
+<A NAME="line13"></A>
+<A NAME="line14"></A>(* [buf] is the type of mutable string buffers that allows efficient
+<A NAME="line15"></A>   concatenation at the end and automatically expand as necessary.  It
+<A NAME="line16"></A>   provides accumulative concatenation of strings in quasi-linear time
+<A NAME="line17"></A>   (instead of quadratic time when strings are concatenated pairwise).
+<A NAME="line18"></A>
+   [<A NAME="new-val"><B>new</B></A> hint] creates a new empty buffer.  Raises Size if hint &lt;= 0 or
+   hint &gt; String.maxSize.
+   The argument hint is used as the initial size of the internal
+   string that holds the buffer contents.  The internal string is
+   automatically reallocated as contents is stored in the buffer.  For
+   best performance, hint should be of the same order of magnitude as
+   the number of characters that are expected to be stored in the
+   buffer (for instance, 80 for a buffer that holds one output line).
+   Nothing bad will happen if the buffer grows beyond that limit,
+   however.  In doubt, take hint = 16 for instance. 
+
+   [<A NAME="contents-val"><B>contents</B></A> buf] returns the contents of buf.
+
+   [<A NAME="size-val"><B>size</B></A> buf] returns the size of the contents of buf.
+
+   [<A NAME="clear-val"><B>clear</B></A> buf] emptys buf.
+
+   [<A NAME="reset-val"><B>reset</B></A> buf] emptys buf and shrink the internal string to the
+   initial hint.
+
+   [<A NAME="addChar-val"><B>addChar</B></A> buf c] appends c at the end of buf.
+
+   [<A NAME="addString-val"><B>addString</B></A> buf s] appends s at the end of buf.
+
+   [<A NAME="addSubString-val"><B>addSubString</B></A> buf ss] appends ss at the end of buf.
+
+*)
+
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://mosml.org">Moscow ML</A> 2.10</EM></BODY></HTML>
