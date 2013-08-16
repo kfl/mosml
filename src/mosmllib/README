@@ -1,78 +1,90 @@
 Library units, Moscow ML version 2.10 (August 2013)
 
-      Name        Purpose                                     Notes
-    -----------------------------------------------------------------
-    | Array       mutable constant-time-access arrays        |SDF NO|
-    | Array2      two-dimensional arrays                     |S     |
-    | Arraysort   array sorting (quicksort)                  |   L  |
-    | BasicIO     input-output, see Definition (temporary)   | DF   |
-    | Binarymap   binary tree implementation of finite maps  |   L  |
-    | Binaryset   binary tree implementation of finite sets  |   L  |
-    | BinIO       binary input-output streams (imperative)   |S F   |
-    | Bool        Booleans                                   |S F   |
-    | Buffer      mutable string buffer                      |      |
-    | Byte        character-byte conversion                  |S F   |
-    | Callback    registering ML values for access from C    |      |
-    | Char        characters                                 |SDF NO|
-    | CharArray   arrays of characters                       |S F   |
-    | CharVector  vectors of characters (= strings)          |S F   |
-    | CommandLine program name and arguments                 |S F   |
-    | Date        manipulation of calendar dates             |S F   |
-    | Dynarray    dynamic arrays                             |   L  |
-    | Dynlib      dynamic linking with C                     |      |
-    | FileSys     interaction with the file system           |S F   |
-    | Gdbm        persistent hash tables of strings (gdbm)   |      |
-    | Gdimage     generation of PNG images (Boutell's GD)    |      |
-    | General     various top-level primitives               |SD    |
-    | Graphics    graphics primitives (DOS version only)     |      |
-    | Hashset     sets implemented by hashtables             |   L  |
-    | Help        on-line help                               | DF NO|
-    | Int         operations on integers                     |S F   |
-    | Intmap      finite maps from integers                  |   L  |
-    | Intset      finite sets of integers                    |   L  |
-    | List        classic list manipulation functions        |SDF NO|
-    | ListPair    operations on pairs of lists               |S F   |
-    | Listsort    list sorting (mergesort)                   |      |
-    | Location    error reporting for lexers and parsers     |      |
-    | Math        trigonometric functions etc.               |S F   |
-    | Misc        various for initial top-level environment  | DF NO|
-    | Mosml       various non-standard utilities             |  F   |
-    | Mosmlcgi    utilities for writing CGI programs         |      |
-    | Msp         utilities for generating HTML code         |      |
-    | NJ93        top-level compatibility with SML/NJ 0.93   |    N |
-    | Option      partial functions                          |SDF NO|
-    | OS          operating system information               |S F   |
-    | Path        file-system independent path manipulation  |S F   |
-    | Polygdbm    polymorphic persistent hash tables (gdbm)  |      |
-    | Polyhash    polymorphic hash tables                    |      |
-    | Postgres    interface to PostgreSQL database server    |      |
-    | PP          general prettyprinters                     |   L  |
-    | Process     manipulating processes                     |S F   |
-    | Random      generation of pseudo-random numbers        |      |
-    | Rbset       sets implemented by red-black trees        |      |
-    | Real        arithmetic on floating-point numbers       |S F   |
-    | Redblackmap maps implemented by red-black trees        |      |
-    | Regex       regular expressions as in POSIX 1003.2     |      |
-    | Real        arithmetic on floating-point numbers       |S F   |
-    | Signal      Unix signals                               |S     |
-    | Socket      interface to sockets                       |      |
-    | Splaymap    splay-tree implementation of finite maps   |   L  |
-    | Splayset    splay-tree implementation of finite sets   |   L  |
-    | String      string manipulation                        |SDF NO|
-    | StringCvt   conversion to and from strings             |S F   |
-    | Substring   manipulation of constant-time substrings   |S F   |
-    | Susp        support for lazy evaluation                |      |
-    | TextIO      text input-output streams (imperative)     |SDF   |
-    | Time        time points and durations                  |S F   |
-    | Timer       measuring real time and cpu time           |S F   |
-    | Unix        starting concurrent subprocesses           |S     |
-    | Vector      immutable constant-time-access vectors     |SDF NO|
-    | Weak        arrays of weak pointers                    |      |
-    | Word        words (31-bit unsigned integers)           |S F   |
-    | Word8       bytes (8-bit unsigned integers)            |S F   |
-    | Word8Array  arrays of bytes                            |S F   |
-    | Word8Vector vectors of bytes                           |S F   |
-    -----------------------------------------------------------------
+      Name             Purpose                                       Notes
+    --------------------------------------------------------------------------
+    | Array            mutable constant-time-access arrays          |SDF NO  |
+    | Array2           two-dimensional arrays                       |S       |
+    | ArraySlice       mutable sub-arrays                           |S F     |
+    | Arraysort        array sorting (quicksort)                    |   L    |
+    | BasicIO          input-output, see Definition (temporary)     | DF     |
+    | Binarymap        binary tree implementation of finite maps    |   L    |
+    | Binaryset        binary tree implementation of finite sets    |   L    |
+    | BinIO            binary input-output streams (imperative)     |S F     |
+    | Bool             Booleans                                     |S F     |
+    | Buffer           mutable string buffer                        |        |
+    | Byte             character-byte conversion                    |S F     |
+    | Callback         registering ML values for access from C      |        |
+    | Char             characters                                   |SDF NO  |
+    | CharArray        arrays of characters                         |S F     |
+    | CharArraySlice   sub-arrays of characters                     |S F     |
+    | CharVector       vectors of characters (= strings)            |S F     |
+    | CharVectorSlice  sub-vectors of characters (= substrings)     |S F     |
+    | CommandLine      program name and arguments                   |S F     |
+    | Date             manipulation of calendar dates               |S F     |
+    | Dynarray         dynamic arrays                               |   L    |
+    | Dynlib           dynamic linking with C                       |        |
+    | FileSys          interaction with the file system             |S F     | 
+    | Gdbm             persistent hash tables of strings (gdbm)     |      C |
+    | Gdimage          generation of PNG images (Boutell's GD)      |      C |
+    | General          various top-level primitives                 |SD      |
+    | Graphics         graphics primitives (DOS version only)       |        |
+    | Hashset          sets implemented by hashtables               |   L    |
+    | Help             on-line help                                 | DF NO  |
+    | Int              operations on integers                       |S F     |
+    | Intmap           finite maps from integers                    |   L    |
+    | Intset           finite sets of integers                      |   L    |
+    | Lexing           support for lexers generated by mosmllex     |        |
+    | List             classic list manipulation functions          |SDF NO  |
+    | ListPair         operations on pairs of lists                 |S F     |
+    | Listsort         list sorting (mergesort)                     |        |
+    | Location         error reporting for lexers and parsers       |        |
+    | Math             trigonometric functions etc.                 |S F     |
+    | Meta             functions specific to the interactive system |        |
+    | Misc             various for initial top-level environment    | DF NO  |
+    | Mosml            various non-standard utilities               |  F     |
+    | Mosmlcgi         utilities for writing CGI programs           |        |
+    | Mosmlcookie      manipulating cookies in CGI programs         |        |
+    | Msp              utilities for generating HTML code           |        | 
+    | MySQL            interface to the Mysql database server       |      C |
+    | NJ93             top-level compatibility with SML/NJ 0.93     |    N   |
+    | Nonstdio         non-standard I/O, used by lexers             |        |
+    | Option           partial functions                            |SDF NO  |
+    | OS               operating system information                 |S F     |
+    | Parsing          support for parsers generated by mosmlyac    |        |
+    | Path             file-system independent path manipulation    |S F     |
+    | Polygdbm         polymorphic persistent hash tables (gdbm)    |      C |
+    | Polyhash         polymorphic hash tables                      |        |
+    | Postgres         interface to PostgreSQL database server      |        |
+    | PP               general prettyprinters                       |   L    |
+    | Process          manipulating processes                       |S F     |
+    | Random           generation of pseudo-random numbers          |        |
+    | Rbset            sets implemented by red-black trees          |        |
+    | Real             arithmetic on floating-point numbers         |S F     |
+    | Redblackmap      maps implemented by red-black trees          |        |
+    | Regex            regular expressions as in POSIX 1003.2       |      C |
+    | Real             arithmetic on floating-point numbers         |S F     |
+    | Signal           Unix signals                                 |S       |
+    | Socket           interface to sockets                         |      C |
+    | Splaymap         splay-tree implementation of finite maps     |   L    |
+    | Splayset         splay-tree implementation of finite sets     |   L    |
+    | String           string manipulation                          |SDF NO  |
+    | StringCvt        conversion to and from strings               |S F     |
+    | Substring        manipulation of constant-time substrings     |S F     |
+    | Susp             support for lazy evaluation                  |        |
+    | TextIO           text input-output streams (imperative)       |SDF     |
+    | Time             time points and durations                    |S F     |
+    | Timer            measuring real time and cpu time             |S F     |
+    | Unix             starting concurrent subprocesses             |S       |
+    | Vector           immutable constant-time-access vectors       |SDF NO  |
+    | VectorSlice      immutable sub-vectors                        |S F     |
+    | Weak             arrays of weak pointers                      |        |
+    | Word             words (31-bit unsigned integers)             |S F     |
+    | Word8            bytes (8-bit unsigned integers)              |S F     |
+    | Word8Array       arrays of bytes                              |S F     |
+    | Word8ArraySlice  sub-arrays of byte arrays                    |S F     |
+    | Word8Vector      vectors of bytes                             |S F     |
+    | Word8VectorSlice sub-vectors of byte vectors                  |S F     |
+    --------------------------------------------------------------------------
 
 Only the libraries marked S belong to the SML Basis Library; the
 remaining ones are non-standard.
@@ -83,6 +95,8 @@ remaining ones are non-standard.
   N  means that the unit is loaded if option `-P nj93' is specified.
   O  means that the unit is loaded if option `-P sml90' is specified.
   L  means that the unit is from the SML/NJ Library (version 0.2).
+  C  means that the unit requires the Dynlib foreign (C) function
+     interface and other foreign libraries
 
 A unit U can be loaded into a Moscow ML interactive session by
 evaluating
