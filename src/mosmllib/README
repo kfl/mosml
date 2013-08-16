@@ -10,6 +10,7 @@ Library units, Moscow ML version 2.00 (June 2000)
     | Binaryset   binary tree implementation of finite sets  |   L  |
     | BinIO       binary input-output streams (imperative)   |S F   |
     | Bool        Booleans                                   |S F   |
+    | Buffer      mutable string buffer                      |      |
     | Byte        character-byte conversion                  |S F   |
     | Callback    registering ML values for access from C    |      |
     | Char        characters                                 |SDF NO|
@@ -23,7 +24,8 @@ Library units, Moscow ML version 2.00 (June 2000)
     | Gdbm        persistent hash tables of strings (gdbm)   |      |
     | Gdimage     generation of PNG images (Boutell's GD)    |      |
     | General     various top-level primitives               |SD    |
-    | Graphics    graphics primitives (DOS version only)     |      |   
+    | Graphics    graphics primitives (DOS version only)     |      |
+    | Hashset     sets implemented by hashtables             |   L  |
     | Help        on-line help                               | DF NO|
     | Int         operations on integers                     |S F   |
     | Intmap      finite maps from integers                  |   L  |
@@ -47,7 +49,9 @@ Library units, Moscow ML version 2.00 (June 2000)
     | PP          general prettyprinters                     |   L  |
     | Process     manipulating processes                     |S F   |
     | Random      generation of pseudo-random numbers        |      |
+    | Rbset       sets implemented by red-black trees        |      |
     | Real        arithmetic on floating-point numbers       |S F   |
+    | Redblackmap maps implemented by red-black trees        |      |
     | Regex       regular expressions as in POSIX 1003.2     |      |
     | Real        arithmetic on floating-point numbers       |S F   |
     | Signal      Unix signals                               |S     |

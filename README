@@ -60,13 +60,19 @@ New in version 2.10 of Moscow ML
       (bug report by Martin Elsman)
     * General: added exception Span and made the type of the function
       'before' less general (bug report by Henning Niss)
-    * Moscow ML is now developed in the open at github.
+  * Added modules to mosmllib:
+    * Buffer: mutable string buffers for fast and efficient
+      concatenation of strings
+    * Hashset: sets implemented by hash-tables
+    * Rbset: ordered sets implemented by red-black trees
+    * Redblackmap: maps implemented by red-black trees
+  * Moscow ML is now developed in the open at github.
 
 
 SYSTEM REQUIREMENTS
 
 Compilation under Unix is best done using GNU make, gcc, and Perl.  A
-binary installation requires 5 MB disk space; a source installation
+binary installation requires 8 MB disk space; a source installation
 requires 25 MB disk space.
 
 LIST OF FILES
@@ -147,13 +153,9 @@ from ftp.inria.fr:lang/caml-light.
 
 AVAILABILITY
 
-    * The Moscow ML home page is at  
-        http://www.itu.dk/people/sestoft/mosml.html
-    * Moscow ML library documentation
-        http://www.itu.dk/people/sestoft/mosmllib/
-    * The Linux executables (and documentation) are in
-        http://www.itu.dk/people/sestoft/linux-mos20bin.tar.gz
-    * The MS Windows executables are in 
-        http://www.itu.dk/people/sestoft/win32-mos20bin.zip
-    * The Unix source files (and documentation) are in
-        http://www.itu.dk/people/sestoft/mos201src.tar.gz
+  * The Moscow ML home page is at  
+      http://mosml.org
+  * Moscow ML library documentation
+      http://www.itu.dk/people/sestoft/mosmllib/
+  * The source files can be downloaded from GitHub at
+      https://github.com/kfl/mosml/zipball/master
