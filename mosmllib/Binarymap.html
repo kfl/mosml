@@ -1,0 +1,80 @@
+<HTML><HEAD><TITLE>Structure Binarymap</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Binarymap</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Binarymap -- applicative maps as balanced ordered binary trees *)
+<A NAME="line1"></A>(* From SML/NJ lib 0.2, copyright 1993 by AT&amp;T Bell Laboratories  *)
+<A NAME="line2"></A>(* Original implementation due to Stephen Adams, Southampton, UK  *)
+<A NAME="line3"></A>
+<A NAME="line4"></A>type ('key, 'a) <A HREF="#dict-typ">dict</A>
+<A NAME="line5"></A>
+<A NAME="line6"></A>exception NotFound
+<A NAME="line7"></A>
+<A NAME="line8"></A>val <A HREF="#mkDict-val">mkDict</A>    : ('key * 'key -&gt; order) -&gt; ('key, 'a) dict
+<A NAME="line9"></A>val <A HREF="#insert-val">insert</A>    : ('key, 'a) dict * 'key * 'a -&gt; ('key, 'a) dict
+<A NAME="line10"></A>val <A HREF="#find-val">find</A>      : ('key, 'a) dict * 'key -&gt; 'a
+<A NAME="line11"></A>val <A HREF="#peek-val">peek</A>      : ('key, 'a) dict * 'key -&gt; 'a option
+<A NAME="line12"></A>val <A HREF="#remove-val">remove</A>    : ('key, 'a) dict * 'key -&gt; ('key, 'a) dict * 'a
+<A NAME="line13"></A>val <A HREF="#numItems-val">numItems</A>  : ('key, 'a) dict -&gt; int
+<A NAME="line14"></A>val <A HREF="#listItems-val">listItems</A> : ('key, 'a) dict -&gt; ('key * 'a) list
+<A NAME="line15"></A>val <A HREF="#app-val">app</A>       : ('key * 'a -&gt; unit) -&gt; ('key,'a) dict -&gt; unit
+<A NAME="line16"></A>val <A HREF="#revapp-val">revapp</A>    : ('key * 'a -&gt; unit) -&gt; ('key,'a) dict -&gt; unit
+<A NAME="line17"></A>val <A HREF="#foldr-val">foldr</A>     : ('key * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; ('key,'a) dict -&gt; 'b
+<A NAME="line18"></A>val <A HREF="#foldl-val">foldl</A>     : ('key * 'a * 'b -&gt; 'b) -&gt; 'b -&gt; ('key,'a) dict -&gt; 'b
+<A NAME="line19"></A>val <A HREF="#map-val">map</A>       : ('key * 'a -&gt; 'b) -&gt; ('key,'a) dict -&gt; ('key, 'b) dict
+<A NAME="line20"></A>val <A HREF="#transform-val">transform</A> : ('a -&gt; 'b) -&gt; ('key,'a) dict -&gt; ('key, 'b) dict
+<A NAME="line21"></A>
+<A NAME="line22"></A>(* 
+   [('key, 'a) <A NAME="dict-typ"><B>dict</B></A>] is the type of applicative maps from domain type
+   'key to range type 'a, or equivalently, applicative dictionaries
+   with keys of type 'key and values of type 'a.  They are implemented
+   as ordered balanced binary trees.
+
+   [<A NAME="mkDict-val"><B>mkDict</B></A> ordr] returns a new, empty map whose keys have ordering
+   ordr.
+
+   [<A NAME="insert-val"><B>insert</B></A>(m, i, v)] extends (or modifies) map m to map i to v.
+
+   [<A NAME="find-val"><B>find</B></A>(m, k)] returns v if m maps k to v; otherwise raises NotFound.
+   
+   [<A NAME="peek-val"><B>peek</B></A>(m, k)] returns SOME v if m maps k to v; otherwise returns NONE.
+
+   [<A NAME="remove-val"><B>remove</B></A>(m, k)] removes k from the domain of m and returns the
+   modified map and the element v corresponding to k.  Raises NotFound
+   if k is not in the domain of m.
+
+   [<A NAME="numItems-val"><B>numItems</B></A> m] returns the number of entries in m (that is, the size
+   of the domain of m).
+
+   [<A NAME="listItems-val"><B>listItems</B></A> m] returns a list of the entries (k, v) of keys k and
+   the corresponding values v in m, in order of increasing key values.
+
+   [<A NAME="app-val"><B>app</B></A> f m] applies function f to the entries (k, v) in m, in
+   increasing order of k (according to the ordering ordr used to
+   create the map or dictionary).
+
+   [<A NAME="revapp-val"><B>revapp</B></A> f m] applies function f to the entries (k, v) in m, in
+   decreasing order of k.
+
+   [<A NAME="foldl-val"><B>foldl</B></A> f e m] applies the folding function f to the entries (k, v)
+   in m, in increasing order of k.
+
+   [<A NAME="foldr-val"><B>foldr</B></A> f e m] applies the folding function f to the entries (k, v)
+   in m, in decreasing order of k.
+
+   [<A NAME="map-val"><B>map</B></A> f m] returns a new map whose entries have form (k, f(k,v)),
+   where (k, v) is an entry in m.
+
+   [<A NAME="transform-val"><B>transform</B></A> f m] returns a new map whose entries have form (k, f v),
+   where (k, v) is an entry in m.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

@@ -1,0 +1,201 @@
+<HTML><HEAD><TITLE>Structure Array2</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Array2</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Array2 -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>eqtype 'a <A HREF="#array-typ">array</A>
+<A NAME="line3"></A>
+<A NAME="line4"></A>datatype <A HREF="#traversal-typ">traversal</A> = RowMajor | ColMajor
+<A NAME="line5"></A>
+<A NAME="line6"></A>val <A HREF="#array-val">array</A>      : int * int * '_a -&gt; '_a array
+<A NAME="line7"></A>val <A HREF="#fromList-val">fromList</A>   : '_a list list -&gt; '_a array
+<A NAME="line8"></A>val <A HREF="#tabulate-val">tabulate</A>   : traversal -&gt; int * int * (int * int -&gt; '_a) -&gt; '_a array
+<A NAME="line9"></A>
+<A NAME="line10"></A>val <A HREF="#dimensions-val">dimensions</A> : 'a array -&gt; int * int
+<A NAME="line11"></A>val <A HREF="#nCols-val">nCols</A>      : 'a array -&gt; int
+<A NAME="line12"></A>val <A HREF="#nRows-val">nRows</A>      : 'a array -&gt; int
+<A NAME="line13"></A>
+<A NAME="line14"></A>val <A HREF="#sub-val">sub</A>        : 'a array * int * int -&gt; 'a
+<A NAME="line15"></A>val <A HREF="#update-val">update</A>     : 'a array * int * int * 'a -&gt; unit
+<A NAME="line16"></A>
+<A NAME="line17"></A>val <A HREF="#row-val">row</A>        : 'a array * int -&gt; 'a Vector.vector
+<A NAME="line18"></A>val <A HREF="#column-val">column</A>     : 'a array * int -&gt; 'a Vector.vector
+<A NAME="line19"></A>
+<A NAME="line20"></A>type 'a <A HREF="#region-typ">region</A> = { base : 'a array, row : int, col : int, 
+<A NAME="line21"></A>                   nrows : int option, ncols : int option}
+<A NAME="line22"></A>
+<A NAME="line23"></A>val <A HREF="#copy-val">copy</A>       : { src : 'a region, dst : 'a array, 
+<A NAME="line24"></A>                   dst_row : int, dst_col : int } -&gt; unit
+<A NAME="line25"></A>
+<A NAME="line26"></A>val <A HREF="#app-val">app</A>        : traversal -&gt; ('a -&gt; unit) -&gt; 'a array -&gt; unit
+<A NAME="line27"></A>val <A HREF="#modify-val">modify</A>     : traversal -&gt; ('a -&gt; 'a) -&gt; 'a array -&gt; unit
+<A NAME="line28"></A>val <A HREF="#fold-val">fold</A>       : traversal -&gt; ('a * 'b -&gt; 'b) -&gt; 'b -&gt; 'a array -&gt; 'b
+<A NAME="line29"></A>
+<A NAME="line30"></A>val <A HREF="#appi-val">appi</A>       : traversal -&gt; (int * int * 'a -&gt; unit) -&gt; 'a region -&gt; unit
+<A NAME="line31"></A>val <A HREF="#modifyi-val">modifyi</A>    : traversal -&gt; (int * int * 'a -&gt; 'a) -&gt; 'a region -&gt; unit
+<A NAME="line32"></A>val <A HREF="#foldi-val">foldi</A>      : traversal -&gt; (int * int * 'a * 'b -&gt; 'b) -&gt; 'b 
+<A NAME="line33"></A>                 -&gt; 'a region -&gt; 'b
+<A NAME="line34"></A>
+<A NAME="line35"></A>(* 
+   ['ty <A NAME="array-typ"><B>array</B></A>] is the type of two-dimensional, mutable, zero-based
+   constant-time-access arrays with elements of type 'ty.  
+   Type 'ty array admits equality even if 'ty does not.  Arrays a1 and a2 
+   are equal if both were created by the same call to one of the
+   primitives array, fromList, and tabulate.
+
+   [<A NAME="traversal-typ"><B>traversal</B></A>] is the type of traversal orders: row major or column major.
+
+   [<A NAME="RowMajor-con"><B>RowMajor</B></A>] specifies that an operation must be done in row-major
+   order, that is, one row at a time, from top to bottom, and from
+   left to right within each row.  Row-major traversal visits the
+   elements of an (m,n)-array with m rows and n columns in this 
+   order:
+            (0,0), (0,1), (0,2), ..., (0,n-1), 
+            (1,0), (1,1), (1,2), ..., (1,n-1), 
+                    ...
+   that is, in order of lexicographically increasing (i, j).  In
+   Moscow ML, row-major traversal is usually faster than column-major
+   traversal.
+
+   [<A NAME="ColMajor-con"><B>ColMajor</B></A>] specifies that an operation must be done in column-major
+   order, that is, one column at a time, from left to right, and from
+   top to bottom within each column.  Column-major traversal visits
+   the elements of an (m,n)-array with m rows and n columns in this
+   order:
+            (0,0), (1,0), (2,0), ..., (m-1,0), 
+            (0,1), (1,1), (2,1), ..., (m-1,1), 
+                    ...
+   that is, in order of lexicographically increasing (j, i).  
+
+   [<A NAME="array-val"><B>array</B></A>(m, n, x)] returns a new m * n matrix whose elements are all x.  
+   Raises Size if n&lt;0 or m&lt;0.
+
+   [<A NAME="fromList-val"><B>fromList</B></A> xss] returns a new array whose first row has elements
+   xs1, second row has elements xs2, ..., where xss = [xs1,xs2,...,xsm].  
+   Raises Size if the lists in xss do not all have the same length.
+
+   [<A NAME="tabulate-val"><B>tabulate</B></A> RowMajor (m, n, f)] returns a new m-by-n array whose 
+   elements are f(0,0), f(0,1), ..., f(0, n-1), 
+                f(1,0), f(1,1), ..., f(1, n-1),
+                    ...
+                f(m-1,0),    ...,    f(m-1, n-1)
+   created in row-major order: f(0,0), f(0,1), ..., f(1,0), f(1,1), ...
+   Raises Size if n&lt;0 or m&lt;0.
+
+   [<A NAME="tabulate-val"><B>tabulate</B></A> ColMajor (m, n, f)] returns a new m-by-n array whose 
+   elements are as above, but created in the column-major order:
+   f(0,0), f(1,0), ..., f(0, 1), f(1, 1), ...  Raises Size if n&lt;0 or m&lt;0.
+
+   [<A NAME="dimensions-val"><B>dimensions</B></A> a] returns the dimensions (m, n) of a, where m is the
+   number of rows and n the number of columns.
+
+   [<A NAME="nCols-val"><B>nCols</B></A> a] returns the number of n of columns of a.
+
+   [<A NAME="nRows-val"><B>nRows</B></A> a] returns the number of m of rows of a.
+
+   [<A NAME="sub-val"><B>sub</B></A>(a, i, j)] returns the i'th row's j'th element, counting from 0.
+   Raises Subscript if i&lt;0 or j&lt;0 or i&gt;=m or j&gt;=n 
+   where (m,n) = dimensions a.
+
+   [<A NAME="update-val"><B>update</B></A>(a, i, j, x)] destructively replaces the (i,j)'th element of a 
+   by x. Raises Subscript if i&lt;0 or j&lt;0 or i&gt;=m or j&gt;=n 
+   where (m,n) = dimensions a. 
+
+   [<A NAME="row-val"><B>row</B></A> (a, i)] returns a vector containing the elements of the ith
+   row of a.  Raises Subscript if i &lt; 0 or i &gt;= height a.
+
+   [<A NAME="column-val"><B>column</B></A> (a, j)] returns a vector containing the elements of the jth
+   column of a.  Raises Subscript if j &lt; 0 or j &gt;= width a.
+
+   [<A NAME="app-val"><B>app</B></A> RowMajor f a] applies f to the elements a[0,0], a[0,1], ...,
+   a[0,n-1], a[1,0], ..., a[m-1, n-1] of a, where (m, n) = dimensions a.
+
+   [<A NAME="app-val"><B>app</B></A> ColMajor f a] applies f to the elements a[0,0], a[1,0], ...,
+   a[n-1,0], a[0,1], a[1,1], ..., a[m-1, n-1] of a, where (m, n) =
+   dimensions a.
+
+   [<A NAME="modify-val"><B>modify</B></A> RowMajor f a] applies f to the elements a[0,0], a[0,1],
+   ..., a[0,n-1], a[1,0], ..., a[m-1, n-1] of a, updating each element
+   with the result of the application, where (m, n) = dimensions a.
+
+   [<A NAME="modify-val"><B>modify</B></A> ColMajor f a] applies f to the elements a[0,0], a[1,0],
+   ..., a[n-1,0], a[0,1], a[1,1], ..., a[m-1, n-1] of a, updating each
+   element with the result of the application, where (m, n) =
+   dimensions a.
+
+   [<A NAME="fold-val"><B>fold</B></A> RowMajor f b a] folds f left-right and top-down over the
+   elements of a in row-major order.  That is, computes
+        f(a[m-1, n-1], f(a[m-1, n-2], ..., f(a[0,1], f(a[0,0], b)) ...))
+   where (m, n) = dimensions a.
+
+   [<A NAME="fold-val"><B>fold</B></A> ColMajor f b a] folds f left-right and top-down over the
+   elements of a in column-major order.  That is, computes
+        f(a[m-1, n-1], f(a[m-2, n-1], ..., f(a[1,0], f(a[0,0], b)) ...))
+   where (m, n) = dimensions a.
+
+
+   The following iterators generalize the above ones in two ways:
+
+     * the indexes i and j are also being passed to the function;
+     * the iterators work on a region (submatrix) of a matrix.          
+
+   [<A NAME="region-typ"><B>region</B></A>] is the type of records { base, row, col, nrows, ncols }
+   determining the region or submatrix of array base whose upper left
+   corner has index (row, col).
+
+   If nrows = SOME r, then the region has r rows: row, row+1, ..., row+r-1.
+   If nrows = NONE, then the region extends to the bottom of the matrix.
+   The field ncols similarly determines the number of columns.
+
+   A region is valid for an array with dimensions (m, n) if 
+       (1) either nrows = NONE and 0 &lt;= row &lt;= m 
+           or nrows = SOME r and 0 &lt;= row &lt;= row + r &lt;= m 
+   and (2) either ncols = NONE and 0 &lt;= col &lt;= n
+           or ncols = SOME c and 0 &lt;= col &lt;= col + c &lt;= n.
+
+   [<A NAME="appi-val"><B>appi</B></A> RowMajor f reg] applies f to (i, j, a[i, j]) in order of
+   lexicographically increasing (i, j) within the region reg.  Raises
+   Subscript if reg is not valid.  Note that app tr f a is equivalent
+   to appi tr (f o #3) {base=a, row=0, col=0, nrows=NONE, ncols=NONE}
+
+   [<A NAME="appi-val"><B>appi</B></A> ColMajor f reg] applies f to (i, j, a[i, j]) in order of
+   lexicographically increasing (j, i) within the region reg.  Raises
+   Subscript if reg is not valid.  
+
+   [<A NAME="modifyi-val"><B>modifyi</B></A> RowMajor f reg)] applies f to (i, j, a[i, j]) in order of
+   lexicographically increasing (i, j) within the region reg.  Raises
+   Subscript if reg is not valid.  Note that modify tr f a is equivalent 
+   to modifyi (f o #3) {base=a, row=0, col=0, nrows=NONE, ncols=NONE}).
+
+   [<A NAME="modifyi-val"><B>modifyi</B></A> ColMajor f reg)] applies f to (i, j, a[i, j]) in order of
+   lexicographically increasing (j, i) within the region reg.  Raises
+   Subscript if reg is not valid.  
+
+   [<A NAME="foldi-val"><B>foldi</B></A> RowMajor f b a] folds f over (i, j, a[i, j]) in row-major
+   order within the region reg, that is, for lexicographically
+   increasing (i, j) in the region.  Raises Subscript if reg is not
+   valid.
+
+   [<A NAME="foldi-val"><B>foldi</B></A> ColMajor f b a] folds f over (i, j, a[i, j]) in column-major
+   order within the region reg, that is, for lexicographically
+   increasing (j, i) in the region.  Raises Subscript if reg is not
+   valid.
+
+   [<A NAME="copy-val"><B>copy</B></A> { src, dst, dst_row, dst_col }] copies the region determined
+   by src to array dst such that the upper leftmost corner of src is
+   copied to dst[dst_row, dst_col].  Works correctly even when src and
+   dst are the same and the source and destination regions overlap.
+   Raises Subscript if the src region is invalid, or if src translated
+   to (dst_row, dst_col) is invalid for dst.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

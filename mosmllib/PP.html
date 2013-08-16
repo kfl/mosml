@@ -1,0 +1,195 @@
+<HTML><HEAD><TITLE>Structure PP</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure PP</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* PP -- pretty-printing -- from the SML/NJ library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>type <A HREF="#ppconsumer-typ">ppconsumer</A> = { consumer  : string -&gt; unit,
+<A NAME="line3"></A>                    linewidth : int,
+<A NAME="line4"></A>                    flush     : unit -&gt; unit }
+<A NAME="line5"></A>
+<A NAME="line6"></A>datatype <A HREF="#break_style-typ">break_style</A> = 
+<A NAME="line7"></A>    CONSISTENT
+<A NAME="line8"></A>  | INCONSISTENT
+<A NAME="line9"></A>
+<A NAME="line10"></A>val <A HREF="#mk_ppstream-val">mk_ppstream</A>    : ppconsumer -&gt; ppstream
+<A NAME="line11"></A>val <A HREF="#dest_ppstream-val">dest_ppstream</A>  : ppstream -&gt; ppconsumer
+<A NAME="line12"></A>val <A HREF="#add_break-val">add_break</A>      : ppstream -&gt; int * int -&gt; unit
+<A NAME="line13"></A>val <A HREF="#add_newline-val">add_newline</A>    : ppstream -&gt; unit
+<A NAME="line14"></A>val <A HREF="#add_string-val">add_string</A>     : ppstream -&gt; string -&gt; unit
+<A NAME="line15"></A>val <A HREF="#begin_block-val">begin_block</A>    : ppstream -&gt; break_style -&gt; int -&gt; unit
+<A NAME="line16"></A>val <A HREF="#end_block-val">end_block</A>      : ppstream -&gt; unit
+<A NAME="line17"></A>val <A HREF="#clear_ppstream-val">clear_ppstream</A> : ppstream -&gt; unit
+<A NAME="line18"></A>val <A HREF="#flush_ppstream-val">flush_ppstream</A> : ppstream -&gt; unit
+<A NAME="line19"></A>val <A HREF="#with_pp-val">with_pp</A>        : ppconsumer -&gt; (ppstream -&gt; unit) -&gt; unit
+<A NAME="line20"></A>val <A HREF="#pp_to_string-val">pp_to_string</A>   : int -&gt; (ppstream -&gt; 'a -&gt; unit) -&gt; 'a -&gt; string
+<A NAME="line21"></A>
+<A NAME="line22"></A>(* 
+<A NAME="line23"></A>   This structure provides tools for creating customized Oppen-style
+<A NAME="line24"></A>   pretty-printers, based on the type ppstream.  A ppstream is an
+<A NAME="line25"></A>   output stream that contains prettyprinting commands.  The commands
+<A NAME="line26"></A>   are placed in the stream by various function calls listed below.
+<A NAME="line27"></A>
+<A NAME="line28"></A>   There following primitives add commands to the stream:
+<A NAME="line29"></A>   begin_block, end_block, add_string, add_break, and add_newline.
+<A NAME="line30"></A>   All calls to add_string, add_break, and add_newline must happen
+<A NAME="line31"></A>   between a pair of calls to begin_block and end_block must be
+<A NAME="line32"></A>   properly nested dynamically.  All calls to begin_block and
+<A NAME="line33"></A>   end_block must be properly nested (dynamically).
+<A NAME="line34"></A>
+   [<A NAME="ppconsumer-typ"><B>ppconsumer</B></A>] is the type of sinks for pretty-printing.  A value of 
+   type ppconsumer is a record 
+                 { consumer  : string -&gt; unit,
+                   linewidth : int,
+                   flush     : unit -&gt; unit }
+   of a string consumer, a specified linewidth, and a flush function
+   which is called whenever flush_ppstream is called.
+
+   A prettyprinter can be called outright to print a value.  In
+   addition, a prettyprinter for a base type or nullary datatype ty
+   can be installed in the top-level system.  Then the installed
+   prettyprinter will be invoked automatically whenever a value of
+   type ty is to be printed.
+
+   [<A NAME="break_style-typ"><B>break_style</B></A>] is the type of line break styles for blocks:
+
+   [<A NAME="CONSISTENT-con"><B>CONSISTENT</B></A>] specifies that if any line break occurs inside the
+   block, then all indicated line breaks occur.
+
+   [<A NAME="INCONSISTENT-con"><B>INCONSISTENT</B></A>] specifies that breaks will be inserted to only to
+   avoid overfull lines.
+
+   [<A NAME="mk_ppstream-val"><B>mk_ppstream</B></A> {consumer, linewidth, flush}] creates a new ppstream
+   which invokes the consumer to output text, putting at most
+   linewidth characters on each line.
+
+   [<A NAME="dest_ppstream-val"><B>dest_ppstream</B></A> ppstrm] extracts the linewidth, flush function, and
+   consumer from a ppstream.
+
+   [<A NAME="add_break-val"><B>add_break</B></A> ppstrm (size, offset)] notifies the pretty-printer that
+   a line break is possible at this point.  
+   * When the current block style is CONSISTENT:
+      ** if the entire block fits on the remainder of the line, then
+         output size spaces; else
+      ** increase the current indentation by the block offset;
+         further indent every item of the block by offset, and add
+         one newline at every add_break in the block.
+   * When the current block style is INCONSISTENT:
+      ** if the next component of the block fits on the remainder of
+         the line, then output size spaces; else
+      ** issue a newline and indent to the current indentation level
+         plus the block offset plus the offset.
+
+   [<A NAME="add_newline-val"><B>add_newline</B></A> ppstrm] issues a newline.
+
+   [<A NAME="add_string-val"><B>add_string</B></A> ppstrm str] outputs the string str to the ppstream.
+
+   [<A NAME="begin_block-val"><B>begin_block</B></A> ppstrm style blockoffset] begins a new block and
+   level of indentation, with the given style and block offset.
+
+   [<A NAME="end_block-val"><B>end_block</B></A> ppstrm] closes the current block.  
+
+   [<A NAME="clear_ppstream-val"><B>clear_ppstream</B></A> ppstrm] restarts the stream, without affecting the
+   underlying consumer.
+
+   [<A NAME="flush_ppstream-val"><B>flush_ppstream</B></A> ppstrm] executes any remaining commands in the
+   ppstream (that is, flushes currently accumulated output to the
+   consumer associated with ppstrm); executes the flush function
+   associated with the consumer; and calls clear_ppstream.
+
+   [<A NAME="with_pp-val"><B>with_pp</B></A> consumer f] makes a new ppstream from the consumer and
+   applies f (which can be thought of as a producer) to that
+   ppstream, then flushes the ppstream and returns the value of f.
+
+   [<A NAME="pp_to_string-val"><B>pp_to_string</B></A> linewidth printit x] constructs a new ppstream
+   ppstrm whose consumer accumulates the output in a string s.  Then
+   it evaluates (printit ppstrm x) and finally returns the string s.
+
+   
+   Example 1: A simple prettyprinter for Booleans:
+
+       load "PP";
+       fun ppbool pps d = 
+           let open PP
+           in
+               begin_block pps INCONSISTENT 6; 
+               add_string pps (if d then "right" else "wrong");
+               end_block pps
+           end;
+
+   Now one may define a ppstream to print to, and exercise it:
+
+       val ppstrm = PP.mk_ppstream {consumer  = 
+                                    fn s =&gt; TextIO.output(TextIO.stdOut, s), 
+                                    linewidth = 72,
+                                    flush     = 
+                                     fn () =&gt; TextIO.flushOut TextIO.stdOut};
+
+       fun ppb b = (ppbool ppstrm b; PP.flush_ppstream ppstrm);
+
+       - ppb false;
+       wrong&gt; val it = () : unit   
+
+   The prettyprinter may also be installed in the toplevel system;
+   then it will be used to print all expressions of type bool
+   subsequently computed:
+
+       - installPP ppbool;
+       &gt; val it = () : unit
+       - 1=0;
+       &gt; val it = wrong : bool
+       - 1=1;
+       &gt; val it = right : bool
+
+   See library Meta for a description of installPP.
+
+
+   Example 2: Prettyprinting simple expressions (examples/pretty/ppexpr.sml):
+
+       datatype expr = 
+           Cst of int 
+         | Neg of expr
+         | Plus of expr * expr
+
+       fun ppexpr pps e0 = 
+           let open PP
+               fun ppe (Cst i)        = add_string pps (Int.toString i)
+                 | ppe (Neg e)        = (add_string pps "~"; ppe e)
+                 | ppe (Plus(e1, e2)) = (begin_block pps CONSISTENT 0;
+                                         add_string pps "(";
+                                         ppe e1; 
+                                         add_string pps " + ";
+                                         add_break pps (0, 1);
+                                         ppe e2; 
+                                         add_string pps ")";
+                                         end_block pps)
+           in
+               begin_block pps INCONSISTENT 0; 
+               ppe e0;
+               end_block pps
+           end
+
+       val _ = installPP ppexpr;
+
+       (* Some example values: *)
+
+       val e1 = Cst 1;
+       val e2 = Cst 2;
+       val e3 = Plus(e1, Neg e2);
+       val e4 = Plus(Neg e3, e3);
+       val e5 = Plus(Neg e4, e4);
+       val e6 = Plus(e5, e5);
+       val e7 = Plus(e6, e6);
+       val e8 = 
+           Plus(e3, Plus(e3, Plus(e3, Plus(e3, Plus(e3, Plus(e3, e7))))));
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

@@ -1,0 +1,432 @@
+<HTML><HEAD><TITLE>Structure Msp</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Msp</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Msp -- utilities for CGI scripts and ML Server Pages *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>(* Efficiently concatenable word sequences *)
+<A NAME="line3"></A>
+<A NAME="line4"></A>datatype <A HREF="#wseq-typ">wseq</A> = 
+<A NAME="line5"></A>    Empty                               (* The empty sequence         *)
+<A NAME="line6"></A>  | Nl                                  (* Newline                    *)
+<A NAME="line7"></A>  | $ of string                         (* A string                   *)
+<A NAME="line8"></A>  | $$ of string list                   (* A sequence of strings      *)
+<A NAME="line9"></A>  | &amp;&amp; of wseq * wseq;                  (* Concatenation of sequences *)
+<A NAME="line10"></A>
+<A NAME="line11"></A>(* Manipulating wseqs *)
+<A NAME="line12"></A>
+<A NAME="line13"></A>val <A HREF="#prmap-val">prmap</A>    : ('a -&gt; wseq) -&gt; 'a list -&gt; wseq
+<A NAME="line14"></A>val <A HREF="#prsep-val">prsep</A>    : wseq -&gt; ('a -&gt; wseq) -&gt; 'a list -&gt; wseq
+<A NAME="line15"></A>val <A HREF="#flatten-val">flatten</A>  : wseq -&gt; string
+<A NAME="line16"></A>val <A HREF="#printseq-val">printseq</A> : wseq -&gt; unit
+<A NAME="line17"></A>val <A HREF="#vec2list-val">vec2list</A> : 'a vector -&gt; 'a list
+<A NAME="line18"></A>
+<A NAME="line19"></A>
+<A NAME="line20"></A>(* Shorthands for accessing CGI parameters *)
+<A NAME="line21"></A>
+<A NAME="line22"></A>exception ParamMissing of string
+<A NAME="line23"></A>exception NotInt of string * string
+<A NAME="line24"></A>
+<A NAME="line25"></A>val <A HREF="#%25-val">%</A>        : string -&gt; string      
+<A NAME="line26"></A>val <A HREF="#%25%3F-val">%?</A>       : string -&gt; bool
+<A NAME="line27"></A>val <A HREF="#%25%23-val">%#</A>       : string -&gt; int
+<A NAME="line28"></A>val <A HREF="#%25%25-val">%%</A>       : string * string -&gt; string
+<A NAME="line29"></A>val <A HREF="#%25%25%23-val">%%#</A>      : string * int -&gt; int
+<A NAME="line30"></A>
+<A NAME="line31"></A>
+<A NAME="line32"></A>(* HTML generic marks *)
+<A NAME="line33"></A>
+<A NAME="line34"></A>val <A HREF="#mark0-val">mark0</A>    : string -&gt; wseq
+<A NAME="line35"></A>val <A HREF="#mark0a-val">mark0a</A>   : string -&gt; string -&gt; wseq
+<A NAME="line36"></A>val <A HREF="#mark1-val">mark1</A>    : string -&gt; wseq -&gt; wseq
+<A NAME="line37"></A>val <A HREF="#mark1a-val">mark1a</A>   : string -&gt; string -&gt; wseq -&gt; wseq
+<A NAME="line38"></A>val <A HREF="#comment-val">comment</A>  : wseq -&gt; wseq
+<A NAME="line39"></A>
+<A NAME="line40"></A>(* HTML documents and headers *)
+<A NAME="line41"></A>
+<A NAME="line42"></A>val <A HREF="#html-val">html</A>     : wseq -&gt; wseq
+<A NAME="line43"></A>val <A HREF="#head-val">head</A>     : wseq -&gt; wseq
+<A NAME="line44"></A>val <A HREF="#title-val">title</A>    : wseq -&gt; wseq
+<A NAME="line45"></A>val <A HREF="#body-val">body</A>     : wseq -&gt; wseq
+<A NAME="line46"></A>val <A HREF="#bodya-val">bodya</A>    : string -&gt; wseq -&gt; wseq
+<A NAME="line47"></A>val <A HREF="#htmldoc-val">htmldoc</A>  : wseq -&gt; wseq -&gt; wseq
+<A NAME="line48"></A>
+<A NAME="line49"></A>(* HTML headings and vertical format *)
+<A NAME="line50"></A>
+<A NAME="line51"></A>val <A HREF="#h1-val">h1</A>       : wseq -&gt; wseq
+<A NAME="line52"></A>val h2       : wseq -&gt; wseq
+<A NAME="line53"></A>val h3       : wseq -&gt; wseq
+<A NAME="line54"></A>val h4       : wseq -&gt; wseq
+<A NAME="line55"></A>val h5       : wseq -&gt; wseq
+<A NAME="line56"></A>val h6       : wseq -&gt; wseq
+<A NAME="line57"></A>val <A HREF="#p-val">p</A>        : wseq -&gt; wseq
+<A NAME="line58"></A>val <A HREF="#pa-val">pa</A>       : string -&gt; wseq -&gt; wseq
+<A NAME="line59"></A>val <A HREF="#br-val">br</A>       : wseq
+<A NAME="line60"></A>val <A HREF="#bra-val">bra</A>      : string -&gt; wseq
+<A NAME="line61"></A>val <A HREF="#hr-val">hr</A>       : wseq
+<A NAME="line62"></A>val <A HREF="#hra-val">hra</A>      : string -&gt; wseq
+<A NAME="line63"></A>
+<A NAME="line64"></A>val <A HREF="#divi-val">divi</A>        : wseq -&gt; wseq
+<A NAME="line65"></A>val <A HREF="#divia-val">divia</A>       : string -&gt; wseq -&gt; wseq
+<A NAME="line66"></A>val <A HREF="#blockquote-val">blockquote</A>  : wseq -&gt; wseq
+<A NAME="line67"></A>val <A HREF="#blockquotea-val">blockquotea</A> : string -&gt; wseq -&gt; wseq
+<A NAME="line68"></A>val <A HREF="#center-val">center</A>      : wseq -&gt; wseq
+<A NAME="line69"></A>val <A HREF="#address-val">address</A>     : wseq -&gt; wseq
+<A NAME="line70"></A>val <A HREF="#pre-val">pre</A>         : wseq -&gt; wseq
+<A NAME="line71"></A>
+<A NAME="line72"></A>(* HTML anchors and hyperlinks *)
+<A NAME="line73"></A>
+<A NAME="line74"></A>val <A HREF="#ahref-val">ahref</A>    : string -&gt; wseq -&gt; wseq
+<A NAME="line75"></A>val <A HREF="#ahrefa-val">ahrefa</A>   : string -&gt; string -&gt; wseq -&gt; wseq
+<A NAME="line76"></A>val <A HREF="#aname-val">aname</A>    : string -&gt; wseq -&gt; wseq
+<A NAME="line77"></A>
+<A NAME="line78"></A>(* HTML text formats and style *)
+<A NAME="line79"></A>
+<A NAME="line80"></A>val <A HREF="#em-val">em</A>       : wseq -&gt; wseq
+<A NAME="line81"></A>val <A HREF="#strong-val">strong</A>   : wseq -&gt; wseq
+<A NAME="line82"></A>val <A HREF="#tt-val">tt</A>       : wseq -&gt; wseq
+<A NAME="line83"></A>val <A HREF="#sub-val">sub</A>      : wseq -&gt; wseq
+<A NAME="line84"></A>val <A HREF="#sup-val">sup</A>      : wseq -&gt; wseq
+<A NAME="line85"></A>val <A HREF="#fonta-val">fonta</A>    : string -&gt; wseq -&gt; wseq
+<A NAME="line86"></A>
+<A NAME="line87"></A>(* HTML lists *)
+<A NAME="line88"></A>
+<A NAME="line89"></A>val <A HREF="#ul-val">ul</A>       : wseq -&gt; wseq
+<A NAME="line90"></A>val <A HREF="#ula-val">ula</A>      : string -&gt; wseq -&gt; wseq
+<A NAME="line91"></A>val <A HREF="#ol-val">ol</A>       : wseq -&gt; wseq
+<A NAME="line92"></A>val <A HREF="#ola-val">ola</A>      : string -&gt; wseq -&gt; wseq
+<A NAME="line93"></A>val <A HREF="#li-val">li</A>       : wseq -&gt; wseq
+<A NAME="line94"></A>val <A HREF="#dl-val">dl</A>       : wseq -&gt; wseq
+<A NAME="line95"></A>val <A HREF="#dla-val">dla</A>      : string -&gt; wseq -&gt; wseq
+<A NAME="line96"></A>val <A HREF="#dt-val">dt</A>       : wseq -&gt; wseq
+<A NAME="line97"></A>val <A HREF="#dd-val">dd</A>       : wseq -&gt; wseq
+<A NAME="line98"></A>
+<A NAME="line99"></A>(* HTML tables *)
+<A NAME="line100"></A>
+<A NAME="line101"></A>val <A HREF="#table-val">table</A>    : wseq -&gt; wseq
+<A NAME="line102"></A>val <A HREF="#tablea-val">tablea</A>   : string -&gt; wseq -&gt; wseq
+<A NAME="line103"></A>val <A HREF="#tr-val">tr</A>       : wseq -&gt; wseq
+<A NAME="line104"></A>val <A HREF="#tra-val">tra</A>      : string -&gt; wseq -&gt; wseq
+<A NAME="line105"></A>val <A HREF="#td-val">td</A>       : wseq -&gt; wseq
+<A NAME="line106"></A>val <A HREF="#tda-val">tda</A>      : string -&gt; wseq -&gt; wseq
+<A NAME="line107"></A>val <A HREF="#th-val">th</A>       : wseq -&gt; wseq
+<A NAME="line108"></A>val <A HREF="#tha-val">tha</A>      : string -&gt; wseq -&gt; wseq
+<A NAME="line109"></A>val <A HREF="#caption-val">caption</A>  : wseq -&gt; wseq
+<A NAME="line110"></A>val <A HREF="#captiona-val">captiona</A> : string -&gt; wseq -&gt; wseq
+<A NAME="line111"></A>
+<A NAME="line112"></A>(* HTML images and image maps *)
+<A NAME="line113"></A>
+<A NAME="line114"></A>val <A HREF="#img-val">img</A>      : string -&gt; wseq
+<A NAME="line115"></A>val <A HREF="#imga-val">imga</A>     : string -&gt; string -&gt; wseq
+<A NAME="line116"></A>val <A HREF="#map-val">map</A>      : string -&gt; wseq -&gt; wseq
+<A NAME="line117"></A>val <A HREF="#mapa-val">mapa</A>     : string -&gt; string -&gt; wseq -&gt; wseq
+<A NAME="line118"></A>val <A HREF="#area-val">area</A>     : { alt : string option, coords : string, 
+<A NAME="line119"></A>                 href : string option, shape : string} -&gt; wseq
+<A NAME="line120"></A>
+<A NAME="line121"></A>(* HTML forms etc *)
+<A NAME="line122"></A>
+<A NAME="line123"></A>val <A HREF="#form-val">form</A>       : string -&gt; wseq -&gt; wseq
+<A NAME="line124"></A>val <A HREF="#forma-val">forma</A>      : string -&gt; string -&gt; wseq -&gt; wseq
+<A NAME="line125"></A>val <A HREF="#input-val">input</A>      : string -&gt; wseq
+<A NAME="line126"></A>val <A HREF="#inputa-val">inputa</A>     : string -&gt; string -&gt; wseq
+<A NAME="line127"></A>val <A HREF="#intext-val">intext</A>     : string -&gt; string -&gt; wseq
+<A NAME="line128"></A>val <A HREF="#inpassword-val">inpassword</A> : string -&gt; string -&gt; wseq
+<A NAME="line129"></A>val <A HREF="#incheckbox-val">incheckbox</A> : {name : string, value : string} -&gt; string -&gt; wseq
+<A NAME="line130"></A>val <A HREF="#inradio-val">inradio</A>    : {name : string, value : string} -&gt; string -&gt; wseq
+<A NAME="line131"></A>val <A HREF="#inreset-val">inreset</A>    : string -&gt; string -&gt; wseq
+<A NAME="line132"></A>val <A HREF="#insubmit-val">insubmit</A>   : string -&gt; string -&gt; wseq
+<A NAME="line133"></A>val <A HREF="#inhidden-val">inhidden</A>   : {name : string, value : string} -&gt; wseq
+<A NAME="line134"></A>val <A HREF="#textarea-val">textarea</A>   : string -&gt; wseq -&gt; wseq
+<A NAME="line135"></A>val <A HREF="#textareaa-val">textareaa</A>  : string -&gt; string -&gt; wseq -&gt; wseq
+<A NAME="line136"></A>val <A HREF="#select-val">select</A>     : string -&gt; string -&gt; wseq -&gt; wseq
+<A NAME="line137"></A>val <A HREF="#option-val">option</A>     : string -&gt; wseq
+<A NAME="line138"></A>
+<A NAME="line139"></A>(* HTML frames and framesets *)
+<A NAME="line140"></A>
+<A NAME="line141"></A>val <A HREF="#frameset-val">frameset</A>   : string -&gt; wseq -&gt; wseq
+<A NAME="line142"></A>val <A HREF="#frame-val">frame</A>      : { src : string, name : string } -&gt; wseq
+<A NAME="line143"></A>val <A HREF="#framea-val">framea</A>     : { src : string, name : string } -&gt; string -&gt; wseq
+<A NAME="line144"></A>
+<A NAME="line145"></A>(* HTML encoding  *)
+<A NAME="line146"></A>
+<A NAME="line147"></A>val <A HREF="#urlencode-val">urlencode</A>  : string -&gt; string
+<A NAME="line148"></A>val <A HREF="#htmlencode-val">htmlencode</A> : string -&gt; string
+<A NAME="line149"></A>
+<A NAME="line150"></A>
+<A NAME="line151"></A>(* 
+<A NAME="line152"></A>   This module provides support functions for writing CGI scripts and
+<A NAME="line153"></A>   ML Server Page scripts.
+<A NAME="line154"></A>
+   [<A NAME="wseq-typ"><B>wseq</B></A>] is the type of efficiently concatenable word sequences.
+   Building an HTML page (functionally) as a wseq is more efficient
+   than building it (functionally) as a string, and more convenient
+   and modular than building it (imperatively) by calling print.
+
+   [<A NAME="Empty-con"><B>Empty</B></A>] represents the empty string "".
+
+   [<A NAME="Nl-con"><B>Nl</B></A>] represents the string "\n" consisting of a single newline character.
+
+   [<A NAME="%24-con"><B>$</B></A> s] represents the string s.
+
+   [<A NAME="%24%24-con"><B>$$</B></A> ss] represents the string String.concat(ss).
+
+   [<A NAME="%26%26-con"><B>&&</B></A>(ws1, ws2)] represents the concatenation of the strings
+   represented by ws1 and ws2.  The function &amp;&amp; should be declared
+        infix &amp;&amp;
+
+   [<A NAME="prmap-val"><B>prmap</B></A> f xs] is f x1 &amp;&amp; ... &amp;&amp; f xn evaluated from left to right, 
+   when xs is [x1, ..., xn].
+
+   [<A NAME="prsep-val"><B>prsep</B></A> sep f xs] is f x1 &amp;&amp; sep &amp;&amp; ... &amp;&amp; sep &amp;&amp; f xn, evaluated
+   from left to right, when xs is [x1, ..., xn].
+
+   [<A NAME="flatten-val"><B>flatten</B></A> ws] is the string represented by ws.
+
+   [<A NAME="printseq-val"><B>printseq</B></A> ws] is equivalent to print(flatten ws), but avoids
+   building any new strings.
+
+   [<A NAME="vec2list-val"><B>vec2list</B></A> vec] is a list of the elements of vector vec.  Use it to
+   convert e.g. the results of a database query into a list, for
+   processing with prmap or prsep.
+
+
+   Shorthands for accessing CGI parameters:
+
+   [<A NAME="%25%3F-val"><B>%?</B></A> fnm] returns true if there is a string associated with CGI
+   parameter fnm; otherwise returns false.
+
+   [<A NAME="%25-val"><B>%</B></A> fnm] returns a string associated with CGI parameter fnm if there
+   is any; raises ParamMissing(fnm) if no strings are associated with
+   fnm.  Equivalent to
+       case Mosmlcgi.cgi_field_string fnm of 
+           NONE   =&gt; raise ParamMissing "fnm"
+         | SOME v =&gt; v
+   In general, multiple strings may be associated with a CGI parameter; 
+   use Mosmlcgi.cgi_field_strings if you need to access all of them.
+
+   [<A NAME="%25%23-val"><B>%#</B></A> fnm] returns the integer i if there is a string associated with
+   CGI parameter fnm, and that string is parsable as ML integer i.
+   Raises ParamMissing(fnm) if no string is associated with fnm.
+   Raises NotInt(fnm, s) if there is a string but it is not parsable
+   as an ML int.
+
+   [<A NAME="%25%25-val"><B>%%</B></A>(fnm, dflt)] returns a string associated with CGI parameter fnm
+   if there is any; otherwise returns the string dflt.
+
+   [<A NAME="%25%25%23-val"><B>%%#</B></A>(fnm, dflt)] returns the integer i if there is a string
+   associated with CGI parameter fnm, and that string is parsable as
+   an ML int; otherwise returns the string dflt.
+
+
+   HTML generic marks:
+
+   [<A NAME="mark0-val"><B>mark0</B></A> t] generates the HTML tag &lt;t&gt; as a wseq.
+
+   [<A NAME="mark0a-val"><B>mark0a</B></A> attr t] generates the attributed HTML tag &lt;t attr&gt; as a wseq.
+
+   [<A NAME="mark1-val"><B>mark1</B></A> t ws] generates  &lt;t&gt;ws&lt;/t&gt;  as a wseq.
+
+   [<A NAME="mark1a-val"><B>mark1a</B></A> attr t ws] generates  &lt;t attr&gt;ws&lt;/t&gt; as a wseq.
+
+   [<A NAME="comment-val"><B>comment</B></A> ws] generates  &lt;!--ws--&gt;  as a wseq.
+
+
+   HTML documents and headers:
+
+   [<A NAME="html-val"><B>html</B></A> ws] generates &lt;HTML&gt;ws&lt;/HTML&gt;.
+
+   [<A NAME="head-val"><B>head</B></A> ws] generates &lt;HEAD&gt;ws&lt;/HEAD&gt;.
+
+   [<A NAME="title-val"><B>title</B></A> ws] generates &lt;TITLE&gt;ws&lt;/TITLE&gt;.
+
+   [<A NAME="body-val"><B>body</B></A> ws] generates &lt;BODY&gt;ws&lt;/BODY&gt;.
+
+   [<A NAME="bodya-val"><B>bodya</B></A> attr ws] generates &lt;BODY attr&gt;ws&lt;/BODY&gt;.
+
+   [<A NAME="htmldoc-val"><B>htmldoc</B></A> titl ws] generates 
+   &lt;HTML&gt;&lt;HEAD&gt;&lt;TITLE&gt;titl&lt;/TITLE&gt;&lt;/HEAD&gt;&lt;BODY&gt;ws&lt;/BODY&gt;&lt;/HTML&gt;.
+
+   
+   HTML headings and vertical format:
+
+   [<A NAME="h1-val"><B>h1</B></A> ws] generates &lt;H1&gt;ws&lt;/H1&gt;.
+
+   [<A NAME="p-val"><B>p</B></A> ws] generates &lt;P&gt;ws&lt;/P&gt;.
+
+   [<A NAME="pa-val"><B>pa</B></A> attr ws] generates &lt;P attr&gt;ws&lt;/P&gt;.
+
+   [<A NAME="br-val"><B>br</B></A>] generates &lt;BR&gt;.
+
+   [<A NAME="bra-val"><B>bra</B></A> attr] generates &lt;BR attr&gt;.
+
+   [<A NAME="hr-val"><B>hr</B></A>] generates &lt;HR&gt;.
+
+   [<A NAME="hra-val"><B>hra</B></A> attr] generates &lt;HR attr&gt;.
+
+   [<A NAME="divi-val"><B>divi</B></A> ws] generates &lt;DIV&gt;ws&lt;/DIV&gt;.
+
+   [<A NAME="divia-val"><B>divia</B></A> attr ws] generates &lt;DIV attr&gt;ws&lt;/DIV&gt;.
+
+   [<A NAME="blockquote-val"><B>blockquote</B></A> ws] generates &lt;BLOCKQUOTE&gt;ws&lt;/BLOCKQUOTE&gt;.
+
+   [<A NAME="blockquotea-val"><B>blockquotea</B></A> attr ws] generates &lt;BLOCKQUOTE attr&gt;ws&lt;/BLOCKQUOTE&gt; 
+
+   [<A NAME="center-val"><B>center</B></A> ws] generates &lt;CENTER&gt;ws&lt;/CENTER&gt;.
+
+   [<A NAME="address-val"><B>address</B></A> ws] generates &lt;ADDRESS&gt;ws&lt;/ADDRESS&gt;.
+
+   [<A NAME="pre-val"><B>pre</B></A> ws] generates &lt;PRE&gt;ws&lt;/PRE&gt;.
+
+
+   HTML anchors and hyperlinks:
+
+   [<A NAME="ahref-val"><B>ahref</B></A> link ws] generates &lt;A HREF="link"&gt;ws&lt;/A&gt;.
+
+   [<A NAME="ahrefa-val"><B>ahrefa</B></A> link attr ws] generates &lt;A HREF="link" attr&gt;ws&lt;/A&gt;.
+
+   [<A NAME="aname-val"><B>aname</B></A> nam ws] generates &lt;A NAME="name"&gt;ws&lt;/A&gt;.
+
+
+   HTML text formats and style:
+
+   [<A NAME="em-val"><B>em</B></A> ws] generates &lt;EM&gt;ws&lt;/EM&gt;.
+
+   [<A NAME="strong-val"><B>strong</B></A> ws] generates &lt;STRONG&gt;ws&lt;/STRONG&gt;.
+
+   [<A NAME="tt-val"><B>tt</B></A> ws] generates &lt;TT&gt;ws&lt;/TT&gt;.
+
+   [<A NAME="sub-val"><B>sub</B></A> ws] generates &lt;SUB&gt;ws&lt;/SUB&gt;.
+
+   [<A NAME="sup-val"><B>sup</B></A> ws] generates &lt;SUP&gt;ws&lt;/SUP&gt;.
+
+   [<A NAME="fonta-val"><B>fonta</B></A> attr ws] generates &lt;FONT attr&gt;ws&lt;/FONT&gt;.
+
+
+   HTML lists:
+
+   [<A NAME="ul-val"><B>ul</B></A> ws] generates &lt;UL&gt;ws&lt;/UL&gt;.
+
+   [<A NAME="ula-val"><B>ula</B></A> attr ws] generates &lt;UL attr&gt;ws&lt;/UL&gt;.
+
+   [<A NAME="ol-val"><B>ol</B></A> ws] generates &lt;OL&gt;ws&lt;/OL&gt;.
+
+   [<A NAME="ola-val"><B>ola</B></A> attr ws] generates &lt;OL attr&gt;ws&lt;/OL&gt;.
+
+   [<A NAME="li-val"><B>li</B></A> ws] generates &lt;LI&gt;ws&lt;/LI&gt;.
+
+   [<A NAME="dl-val"><B>dl</B></A> ws] generates &lt;DL&gt;ws&lt;/DL&gt;.
+
+   [<A NAME="dla-val"><B>dla</B></A> attr ws] generates &lt;DL attr&gt;ws&lt;/DL&gt;.
+
+   [<A NAME="dt-val"><B>dt</B></A> ws] generates &lt;DT&gt;ws&lt;/DT&gt;.
+
+   [<A NAME="dd-val"><B>dd</B></A> ws] generates &lt;DD&gt;ws&lt;/DD&gt;.
+
+
+   HTML tables:
+
+   [<A NAME="table-val"><B>table</B></A> ws] generates &lt;TABLE&gt;ws&lt;/TABLE&gt;.
+
+   [<A NAME="tablea-val"><B>tablea</B></A> attr ws] generates &lt;TABLE attr&gt;ws&lt;/TABLE&gt;.
+
+   [<A NAME="tr-val"><B>tr</B></A> ws] generates &lt;TR&gt;ws&lt;/TR&gt;.
+
+   [<A NAME="tra-val"><B>tra</B></A> attr ws] generates &lt;TR attr&gt;ws&lt;/TR&gt;.
+
+   [<A NAME="td-val"><B>td</B></A> ws] generates &lt;TD&gt;ws&lt;/TD&gt;.
+
+   [<A NAME="tda-val"><B>tda</B></A> attr ws] generates &lt;TD attr&gt;ws&lt;/TD&gt;.
+
+   [<A NAME="th-val"><B>th</B></A> ws] generates &lt;TH&gt;ws&lt;/TH&gt;.
+
+   [<A NAME="tha-val"><B>tha</B></A> attr ws] generates &lt;TH attr&gt;ws&lt;/TH&gt;.
+
+   [<A NAME="caption-val"><B>caption</B></A> ws] generates &lt;CAPTION&gt;ws&lt;/CAPTION&gt;.
+
+   [<A NAME="captiona-val"><B>captiona</B></A> attr ws] generates &lt;CAPTION attr&gt;ws&lt;/CAPTION&gt;.
+
+
+   HTML images and image maps:
+
+   [<A NAME="img-val"><B>img</B></A> s] generates &lt;IMG SRC="s"&gt;.
+
+   [<A NAME="imga-val"><B>imga</B></A> s attr] generates &lt;IMG SRC="s" attr&gt;.
+
+   [<A NAME="map-val"><B>map</B></A> nam ws] generates &lt;MAP NAME="name"&gt;ws&lt;/MAP&gt;.
+
+   [<A NAME="mapa-val"><B>mapa</B></A> nam attr ws] generates &lt;MAP NAME="name" attr&gt;ws&lt;/MAP&gt;.
+
+   [<A NAME="area-val"><B>area</B></A> { alt, coords, href, shape}] generates
+       &lt;AREA SHAPE="shape" COORDS="coords" HREF="link" ALT="desc"&gt; 
+   when href is SOME link (where HREF is replaced by NOHREF otherwise)
+   and  alt  is SOME desc (where ALT is omitted otherwise).
+
+
+   HTML forms etc:
+
+   [<A NAME="form-val"><B>form</B></A> act ws] generates &lt;FORM ACTION="act"&gt;ws&lt;/FORM&gt;.
+
+   [<A NAME="forma-val"><B>forma</B></A> act attr ws] generates &lt;FORM ACTION="act" attr&gt;ws&lt;/FORM&gt;.
+
+   [<A NAME="input-val"><B>input</B></A> typ] generates &lt;INPUT TYPE=typ&gt;.
+
+   [<A NAME="inputa-val"><B>inputa</B></A> typ attr] generates &lt;INPUT TYPE=typ attr&gt;.
+
+   [<A NAME="intext-val"><B>intext</B></A> name attr] generates &lt;INPUT TYPE=TEXT NAME="name" attr&gt;.
+
+   [<A NAME="inpassword-val"><B>inpassword</B></A> name attr] generates &lt;INPUT TYPE=PASSWORD NAME="name" attr&gt;.
+
+   [<A NAME="incheckbox-val"><B>incheckbox</B></A> {name, value} attr] generates 
+   &lt;INPUT TYPE=CHECKBOX NAME="name" VALUE="value" attr&gt;.
+
+   [<A NAME="inradio-val"><B>inradio</B></A> {name, value} attr] generates 
+   &lt;INPUT TYPE=RADIO NAME="name" VALUE="value" attr&gt;.
+
+   [<A NAME="inreset-val"><B>inreset</B></A> value attr] generates &lt;INPUT TYPE=RESET VALUE="value" attr&gt;.
+
+   [<A NAME="insubmit-val"><B>insubmit</B></A> value attr] generates &lt;INPUT TYPE=SUBMIT VALUE="value" attr&gt;.
+
+   [<A NAME="inhidden-val"><B>inhidden</B></A> {name, value}] generates
+   &lt;INPUT TYPE=HIDDEN NAME="name" VALUE="value"&gt;.
+
+   [<A NAME="textarea-val"><B>textarea</B></A> name ws] generates &lt;TEXTAREA NAME="name"&gt;ws&lt;/TEXTAREA&gt;.
+
+   [<A NAME="textareaa-val"><B>textareaa</B></A> name attr ws] generates 
+   &lt;TEXTAREA NAME="name" attr&gt;ws&lt;/TEXTAREA&gt;.
+
+   [<A NAME="select-val"><B>select</B></A> name attr ws] generates &lt;SELECT NAME="name" attr&gt;ws&lt;/SELECT&gt;.
+
+   [<A NAME="option-val"><B>option</B></A> value] generates &lt;OPTION VALUE="value"&gt;.
+
+
+   HTML frames and framesets:
+
+   [<A NAME="frameset-val"><B>frameset</B></A> attr ws] generates &lt;FRAMESET attr&gt;ws&lt;/FRAMESET&gt;.
+
+   [<A NAME="frame-val"><B>frame</B></A> { src, name }] generates &lt;FRAME SRC="src" NAME="name"&gt;.
+
+   [<A NAME="framea-val"><B>framea</B></A> { src, name } attr] generates &lt;FRAME SRC="src" NAME="name" attr&gt;.
+
+
+   HTML encoding functions:
+
+   [<A NAME="urlencode-val"><B>urlencode</B></A> s] returns the url-encoding of s.  That is, space (ASCII 32) 
+   is replaced by `+' and every non-alphanumeric character c except
+   the three characters hyphen (-), underscore (_) and full stop (.)
+   is replaced by %hh, where hh is the hexadecimal representation of
+   the ASCII code of c.
+
+   [<A NAME="htmlencode-val"><B>htmlencode</B></A> s] returns the html-encoding of s.  That is, &lt; and &gt;
+   are replaced by &amp;lt; and &amp;gt; respectively, and &amp; is replaced by 
+   &amp;amp;
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

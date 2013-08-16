@@ -1,0 +1,138 @@
+<HTML><HEAD><TITLE>Structure Real</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Real</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Real -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>type real = real
+<A NAME="line3"></A>
+<A NAME="line4"></A>exception Div
+<A NAME="line5"></A>and Overflow
+<A NAME="line6"></A>
+<A NAME="line7"></A>val <A HREF="#%7E-val">~</A>           : real -&gt; real
+<A NAME="line8"></A>val <A HREF="#%2B-val">+</A>           : real * real -&gt; real
+<A NAME="line9"></A>val <A HREF="#--val">-</A>           : real * real -&gt; real
+<A NAME="line10"></A>val <A HREF="#%2A-val">*</A>           : real * real -&gt; real
+<A NAME="line11"></A>val <A HREF="#%2F-val">/</A>           : real * real -&gt; real
+<A NAME="line12"></A>val <A HREF="#abs-val">abs</A>         : real -&gt; real
+<A NAME="line13"></A>val <A HREF="#min-val">min</A>         : real * real -&gt; real
+<A NAME="line14"></A>val <A HREF="#max-val">max</A>         : real * real -&gt; real
+<A NAME="line15"></A>val <A HREF="#sign-val">sign</A>        : real -&gt; int
+<A NAME="line16"></A>val <A HREF="#compare-val">compare</A>     : real * real -&gt; order
+<A NAME="line17"></A>
+<A NAME="line18"></A>val <A HREF="#sameSign-val">sameSign</A>    : real * real -&gt; bool
+<A NAME="line19"></A>val <A HREF="#toDefault-val">toDefault</A>   : real -&gt; real
+<A NAME="line20"></A>val <A HREF="#fromDefault-val">fromDefault</A> : real -&gt; real
+<A NAME="line21"></A>val <A HREF="#fromInt-val">fromInt</A>     : int -&gt; real
+<A NAME="line22"></A>
+<A NAME="line23"></A>val <A HREF="#floor-val">floor</A>       : real -&gt; int
+<A NAME="line24"></A>val <A HREF="#ceil-val">ceil</A>        : real -&gt; int
+<A NAME="line25"></A>val <A HREF="#trunc-val">trunc</A>       : real -&gt; int
+<A NAME="line26"></A>val <A HREF="#round-val">round</A>       : real -&gt; int
+<A NAME="line27"></A>
+<A NAME="line28"></A>val <A HREF="#%3E-val">></A>           : real * real -&gt; bool
+<A NAME="line29"></A>val <A HREF="#%3E%3D-val">>=</A>          : real * real -&gt; bool
+<A NAME="line30"></A>val <A HREF="#%3C-val"><</A>           : real * real -&gt; bool
+<A NAME="line31"></A>val <A HREF="#%3C%3D-val"><=</A>          : real * real -&gt; bool
+<A NAME="line32"></A>val <A HREF="#%3D%3D-val">==</A>          : real * real -&gt; bool
+<A NAME="line33"></A>val <A HREF="#%21%3D-val">!=</A>          : real * real -&gt; bool
+<A NAME="line34"></A>val <A HREF="#%3F%3D-val">?=</A>          : real * real -&gt; bool
+<A NAME="line35"></A>
+<A NAME="line36"></A>val <A HREF="#toString-val">toString</A>    : real -&gt; string
+<A NAME="line37"></A>val <A HREF="#fromString-val">fromString</A>  : string -&gt; real option
+<A NAME="line38"></A>val <A HREF="#scan-val">scan</A>        : (char, 'a) StringCvt.reader -&gt; (real, 'a) StringCvt.reader
+<A NAME="line39"></A>val <A HREF="#fmt-val">fmt</A>         : StringCvt.realfmt -&gt; real -&gt; string
+<A NAME="line40"></A>
+<A NAME="line41"></A>(* 
+   [<A NAME="%7E-val"><B>~</B></A>]
+   [<A NAME="%2A-val"><B>*</B></A>]
+   [<A NAME="%2F-val"><B>/</B></A>]
+   [<A NAME="%2B-val"><B>+</B></A>]
+   [<A NAME="--val"><B>-</B></A>]
+   [<A NAME="%3E-val"><B>></B></A>]
+   [<A NAME="%3E%3D-val"><B>>=</B></A>]
+   [<A NAME="%3C-val"><B><</B></A>]
+   [<A NAME="%3C%3D-val"><B><=</B></A>] are the usual operations on defined reals (excluding NaN and Inf).
+
+   [<A NAME="abs-val"><B>abs</B></A> x] is x if x &gt;= 0, and ~x if x &lt; 0, that is, the absolute value of x.
+
+   [<A NAME="min-val"><B>min</B></A>(x, y)] is the smaller of x and y.
+
+   [<A NAME="max-val"><B>max</B></A>(x, y)] is the larger of x and y.
+
+   [<A NAME="sign-val"><B>sign</B></A> x] is ~1, 0, or 1, according as x is negative, zero, or positive.
+
+   [<A NAME="compare-val"><B>compare</B></A>(x, y)] returns LESS, EQUAL, or GREATER, according 
+   as x is less than, equal to, or greater than y.
+
+   [<A NAME="sameSign-val"><B>sameSign</B></A>(x, y)] is true iff sign x = sign y.
+
+   [<A NAME="toDefault-val"><B>toDefault</B></A> x] is x.
+
+   [<A NAME="fromDefault-val"><B>fromDefault</B></A> x] is x.
+
+   [<A NAME="fromInt-val"><B>fromInt</B></A> i] is the floating-point number representing integer i.
+
+   [<A NAME="floor-val"><B>floor</B></A> r] is the largest integer &lt;= r (rounds towards minus infinity).
+   May raise Overflow.
+
+   [<A NAME="ceil-val"><B>ceil</B></A> r] is the smallest integer &gt;= r (rounds towards plus infinity).
+   May raise Overflow.
+
+   [<A NAME="trunc-val"><B>trunc</B></A> r] is the numerically largest integer between r and zero
+   (rounds towards zero).  May raise Overflow.
+
+   [<A NAME="round-val"><B>round</B></A> r] is the integer nearest to r, using the default rounding
+   mode.  May raise Overflow.
+
+   [<A NAME="%3D%3D-val"><B>==</B></A>(x, y)] is equivalent to x=y in Moscow ML (because of the
+   absence of NaNs and Infs).
+
+   [<A NAME="%21%3D-val"><B>!=</B></A>(x, y)] is equivalent to x&lt;&gt;y in Moscow ML (because of the
+   absence of NaNs and Infs).
+
+   [<A NAME="%3F%3D-val"><B>?=</B></A>(x, y)] is false in Moscow ML (because of the absence of NaNs
+   and Infs).
+
+   [<A NAME="fmt-val"><B>fmt</B></A> spec r] returns a string representing r, in the format
+   specified by spec (see below).  The requested number of digits must
+   be &gt;= 0 in the SCI and FIX formats and &gt; 0 in the GEN format;
+   otherwise Size is raised, even in a partial application fmt(spec).
+
+      spec          description                            C printf 
+      ---------------------------------------------------------------
+      SCI NONE      scientific,   6 digits after point       %e
+      SCI (SOME n)  scientific,   n digits after point       %.ne
+      FIX NONE      fixed-point,  6 digits after point       %f
+      FIX (SOME n)  fixed-point,  n digits after point       %.nf
+      GEN NONE      auto choice, 12 significant digits       %.12g
+      GEN (SOME n)  auto choice,  n significant digits       %.ng
+
+   [<A NAME="toString-val"><B>toString</B></A> r] returns a string representing r, with automatic choice
+   of format according to the magnitude of r.  
+   Equivalent to (fmt (GEN NONE) r).
+   
+   [<A NAME="fromString-val"><B>fromString</B></A> s] returns SOME(r) if a floating-point numeral can be
+   scanned from a prefix of string s, ignoring any initial whitespace;
+   returns NONE otherwise.  The valid forms of floating-point numerals
+   are described by:
+        [+~-]?(([0-9]+(\.[0-9]+)?)|(\.[0-9]+))([eE][+~-]?[0-9]+)?
+
+   [<A NAME="scan-val"><B>scan</B></A> getc charsrc] attempts to scan a floating-point number from
+   the character source charsrc, using the accessor getc, and ignoring
+   any initial whitespace.  If successful, it returns SOME(r, rest)
+   where r is the number scanned, and rest is the unused part of the
+   character source.  The valid forms of floating-point numerals
+   are described by:
+        [+~-]?(([0-9]+(\.[0-9]+)?)|(\.[0-9]+))([eE][+~-]?[0-9]+)?
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

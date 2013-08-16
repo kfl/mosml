@@ -1,0 +1,257 @@
+<HTML><HEAD><TITLE>Structure Substring</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Substring</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Substring -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>type <A HREF="#substring-typ">substring</A>
+<A NAME="line3"></A>
+<A NAME="line4"></A>val <A HREF="#substring-val">substring</A>   : string * int * int -&gt; substring
+<A NAME="line5"></A>val <A HREF="#extract-val">extract</A>     : string * int * int option -&gt; substring
+<A NAME="line6"></A>val <A HREF="#full-val">full</A>        : string -&gt; substring
+<A NAME="line7"></A>val <A HREF="#all-val">all</A>         : string -&gt; substring
+<A NAME="line8"></A>val <A HREF="#string-val">string</A>      : substring -&gt; string
+<A NAME="line9"></A>val <A HREF="#base-val">base</A>        : substring -&gt; (string * int * int)
+<A NAME="line10"></A>
+<A NAME="line11"></A>val <A HREF="#isEmpty-val">isEmpty</A>     : substring -&gt; bool
+<A NAME="line12"></A>val <A HREF="#getc-val">getc</A>        : substring -&gt; (char * substring) option
+<A NAME="line13"></A>val <A HREF="#first-val">first</A>       : substring -&gt; char option
+<A NAME="line14"></A>val <A HREF="#triml-val">triml</A>       : int -&gt; substring -&gt; substring
+<A NAME="line15"></A>val <A HREF="#trimr-val">trimr</A>       : int -&gt; substring -&gt; substring
+<A NAME="line16"></A>val <A HREF="#sub-val">sub</A>         : substring * int -&gt; char
+<A NAME="line17"></A>val <A HREF="#size-val">size</A>        : substring -&gt; int
+<A NAME="line18"></A>val <A HREF="#slice-val">slice</A>       : substring * int * int option -&gt; substring
+<A NAME="line19"></A>val <A HREF="#concat-val">concat</A>      : substring list -&gt; string
+<A NAME="line20"></A>val <A HREF="#concatWith-val">concatWith</A>  : string -&gt; substring list -&gt; string
+<A NAME="line21"></A>val <A HREF="#explode-val">explode</A>     : substring -&gt; char list
+<A NAME="line22"></A>val <A HREF="#compare-val">compare</A>     : substring * substring -&gt; order
+<A NAME="line23"></A>val <A HREF="#collate-val">collate</A>     : (char * char -&gt; order) -&gt; substring * substring -&gt; order
+<A NAME="line24"></A>
+<A NAME="line25"></A>val <A HREF="#dropl-val">dropl</A>       : (char -&gt; bool) -&gt; substring -&gt; substring
+<A NAME="line26"></A>val <A HREF="#dropr-val">dropr</A>       : (char -&gt; bool) -&gt; substring -&gt; substring
+<A NAME="line27"></A>val <A HREF="#takel-val">takel</A>       : (char -&gt; bool) -&gt; substring -&gt; substring
+<A NAME="line28"></A>val <A HREF="#taker-val">taker</A>       : (char -&gt; bool) -&gt; substring -&gt; substring
+<A NAME="line29"></A>val <A HREF="#splitl-val">splitl</A>      : (char -&gt; bool) -&gt; substring -&gt; substring * substring
+<A NAME="line30"></A>val <A HREF="#splitr-val">splitr</A>      : (char -&gt; bool) -&gt; substring -&gt; substring * substring
+<A NAME="line31"></A>val <A HREF="#splitAt-val">splitAt</A>     : substring * int -&gt; substring * substring
+<A NAME="line32"></A>
+<A NAME="line33"></A>val <A HREF="#position-val">position</A>    : string -&gt; substring -&gt; substring * substring
+<A NAME="line34"></A>val <A HREF="#isPrefix-val">isPrefix</A>    : string -&gt; substring -&gt; bool
+<A NAME="line35"></A>val <A HREF="#isSuffix-val">isSuffix</A>    : string -&gt; substring -&gt; bool
+<A NAME="line36"></A>val <A HREF="#isSubstring-val">isSubstring</A> : string -&gt; substring -&gt; bool
+<A NAME="line37"></A>
+<A NAME="line38"></A>exception Span
+<A NAME="line39"></A>val <A HREF="#span-val">span</A>        : substring * substring -&gt; substring
+<A NAME="line40"></A>
+<A NAME="line41"></A>val <A HREF="#translate-val">translate</A>   : (char -&gt; string) -&gt; substring -&gt; string
+<A NAME="line42"></A>
+<A NAME="line43"></A>val <A HREF="#tokens-val">tokens</A>      : (char -&gt; bool) -&gt; substring -&gt; substring list
+<A NAME="line44"></A>val <A HREF="#fields-val">fields</A>      : (char -&gt; bool) -&gt; substring -&gt; substring list
+<A NAME="line45"></A>
+<A NAME="line46"></A>val <A HREF="#foldl-val">foldl</A>       : (char * 'a -&gt; 'a) -&gt; 'a -&gt; substring -&gt; 'a
+<A NAME="line47"></A>val <A HREF="#foldr-val">foldr</A>       : (char * 'a -&gt; 'a) -&gt; 'a -&gt; substring -&gt; 'a
+<A NAME="line48"></A>val <A HREF="#app-val">app</A>         : (char -&gt; unit) -&gt; substring -&gt; unit
+<A NAME="line49"></A>
+<A NAME="line50"></A>(* 
+   [<A NAME="substring-typ"><B>substring</B></A>] is the type of substrings of a basestring, an efficient 
+   representation of a piece of a string.
+   A substring (s,i,n) is valid if 0 &lt;= i &lt;= i+n &lt;= size s, 
+                  or equivalently, 0 &lt;= i and 0 &lt;= n and i+n &lt;= size s.  
+   A valid substring (s, i, n) represents the string s[i...i+n-1].  
+   Invariant in the implementation: Any value of type substring is valid.
+
+   A substring is the same as a CharVectorSlice.slice, so substrings
+   may be processed using the functions declared in CharVectorSlice.
+
+   [<A NAME="substring-val"><B>substring</B></A>(s, i, n)] creates the substring (s, i, n), consisting of
+   the substring of s with length n starting at i.  Raises Subscript
+   if i&lt;0 or n&lt;0 or i+n &gt; size s.  Equivalent to extract(s, i, SOME n).
+
+   [<A NAME="extract-val"><B>extract</B></A>(s, i, NONE)] creates the substring (s, i, size s-i)
+   consisting of the tail of s starting at i.  
+   Raises Subscript if i&lt;0 or i &gt; size s.
+
+   [<A NAME="extract-val"><B>extract</B></A>(s, i, SOME n)] creates the substring (s, i, n),
+   consisting of the substring of s with length n starting at i.
+   Raises Subscript if i&lt;0 or n&lt;0 or i+n &gt; size s.
+
+   [<A NAME="full-val"><B>full</B></A> s] is the substring (s, 0, size s).
+
+   [<A NAME="all-val"><B>all</B></A> s] is the same as full(s).  Its use is deprecated.
+
+   [<A NAME="string-val"><B>string</B></A> sus] is the string s[i..i+n-1] represented by sus = (s, i, n).
+
+   [<A NAME="base-val"><B>base</B></A> sus] is the concrete triple (s, i, n), where sus = (s, i, n).
+
+   [<A NAME="isEmpty-val"><B>isEmpty</B></A> (s, i, n)] true if the substring is empty (that is, n = 0).
+
+   [<A NAME="getc-val"><B>getc</B></A> sus] returns SOME(c, rst) where c is the first character and
+   rst the remainder of sus, if sus is non-empty; otherwise returns
+   NONE.  Note that 
+        #1 o valOf o scanFn Substring.getc
+   is equivalent to, but more efficient than, 
+        valOf o StringCvt.scanString scanFn o Substring.string
+
+   [<A NAME="first-val"><B>first</B></A> sus] returns SOME c where c is the first character in sus,
+   if sus is non-empty; otherwise returns NONE.
+
+   [<A NAME="triml-val"><B>triml</B></A> k sus] returns sus less its leftmost k characters; or the
+   empty string at the end of sus if it has less than k characters.
+   Raises Subscript if k &lt; 0, even in the partial application triml(k). 
+
+   [<A NAME="trimr-val"><B>trimr</B></A> k sus] returns sus less its rightmost k characters; or the
+   empty string at the beginning of sus if it has less than k characters.  
+   Raises Subscript if k &lt; 0, even in the partial application triml(k).
+
+   [<A NAME="sub-val"><B>sub</B></A> (sus, k)] returns the k'th character of the substring; that is,
+   s(i+k) where sus = (s, i, n).  Raises Subscript if k&lt;0 or k&gt;=n.
+
+   [<A NAME="size-val"><B>size</B></A> sus] returns the size n of the substring sus = (s, i, n).
+
+   [<A NAME="slice-val"><B>slice</B></A> (sus, i', NONE)] returns the substring (s, i+i', n-i'), where
+   sus = (s, i, n).  Raises Subscript if i' &lt; 0 or i' &gt; n.
+
+   [<A NAME="slice-val"><B>slice</B></A> (sus, i', SOME n')] returns the substring (s, i+i', n'), where
+   sus = (s, i, n).  Raises Subscript if i' &lt; 0 or n' &lt; 0 or i'+n' &gt; n.
+
+   [<A NAME="concat-val"><B>concat</B></A> suss] returns a string consisting of the concatenation of
+   the substrings.  Equivalent to String.concat (List.map string suss).  
+   Raises Size if the resulting string would be longer than String.maxSize.
+
+   [<A NAME="concatWith-val"><B>concatWith</B></A> sep suss] returns a string consisting of the
+   concatenation of the substrings in suss, using sep as a separator.
+   Equivalent to String.concatWith sep (List.map string suss).  Raises
+   Size if the resulting string would be longer than String.maxSize.
+
+   [<A NAME="explode-val"><B>explode</B></A> sus] returns the list of characters of sus, that is,
+        [s(i), s(i+1), ..., s(i+n-1)]
+   where sus = (s, i, n).  Equivalent to String.explode(string ss).
+
+   [<A NAME="compare-val"><B>compare</B></A> (sus1, sus2)] performs lexicographic comparison, using the
+   standard ordering Char.compare on the characters.  Returns LESS,
+   EQUAL, or GREATER, according as sus1 is less than, equal to, or
+   greater than sus2.  Equivalent to, but more efficient than,
+       String.compare(string sus1, string sus2).
+
+   [<A NAME="collate-val"><B>collate</B></A> cmp (sus1, sus2)] performs lexicographic comparison, using the 
+   given ordering cmp on characters.  Equivalent to, but more efficient 
+   than, String.collate cmp (string sus1, string sus2).
+
+   [<A NAME="dropl-val"><B>dropl</B></A> p sus] drops the longest prefix (left substring) of sus all
+   of whose characters satisfy predicate p.  If all characters do, it
+   returns the empty substring (s, i+n, 0) where sus = (s, i, n).
+
+   [<A NAME="dropr-val"><B>dropr</B></A> p sus] drops the longest suffix (right substring) of sus all
+   of whose characters satisfy predicate p.  If all characters do, it
+   returns the empty substring (s, i, 0) where sus = (s, i, n).
+
+   [<A NAME="takel-val"><B>takel</B></A> p sus] returns the longest prefix (left substring) of sus
+   all of whose characters satisfy predicate p.  That is, if the
+   left-most character does not satisfy p, returns the empty (s, i, 0)
+   where sus = (s, i, n).
+
+   [<A NAME="taker-val"><B>taker</B></A> p sus] returns the longest suffix (right substring) of sus
+   all of whose characters satisfy predicate p.  That is, if the
+   right-most character satisfies p, returns the empty (s, i+n, 0)
+   where sus = (s, i, n).
+
+   Let p be a predicate and xxxxfyyyyfzzzz a string where all
+   characters in xxxx and zzzz satisfy p, and f a is character
+   not satisfying p.  Then
+
+                sus = xxxxfyyyyfzzzz         sus = xxxxzzzz
+        ------------------------------------------------------
+        dropl p sus =     fyyyyfzzzz               
+        dropr p sus = xxxxfyyyyf       
+        takel p sus = xxxx                         xxxxzzzz
+        taker p sus =           zzzz               xxxxzzzz
+
+   It also holds that 
+        concat[takel p sus, dropl p sus] = string sus
+        concat[dropr p sus, taker p sus] = string sus 
+
+   [<A NAME="splitl-val"><B>splitl</B></A> p sus] splits sus into a pair (sus1, sus2) of substrings
+   where sus1 is the longest prefix (left substring) all of whose
+   characters satisfy p, and sus2 is the rest.  That is, sus2 begins
+   with the leftmost character not satisfying p.  Disregarding
+   sideeffects, we have: 
+        splitl p sus = (takel p sus, dropl p sus).
+
+   [<A NAME="splitr-val"><B>splitr</B></A> p sus] splits sus into a pair (sus1, sus2) of substrings
+   where sus2 is the longest suffix (right substring) all of whose
+   characters satisfy p, and sus1 is the rest.  That is, sus1 ends
+   with the rightmost character not satisfying p.  Disregarding
+   sideeffects, we have:
+        splitr p sus = (dropr p sus, taker p sus)
+
+   [<A NAME="splitAt-val"><B>splitAt</B></A> (sus, k)] returns the pair (sus1, sus2) of substrings,
+   where sus1 contains the first k characters of sus, and sus2
+   contains the rest.  Raises Subscript if k &lt; 0 or k &gt; size sus.
+
+   [<A NAME="isPrefix-val"><B>isPrefix</B></A> s1 s2] is true if s1 is a prefix of s2. That is, if there 
+   exists a string u such that  s1 ^ u = string s2.
+
+   [<A NAME="isSuffix-val"><B>isSuffix</B></A> s1 s2] is true if s1 is a suffix of s2. That is, if there
+   exists a string t such that  t ^ s1 = string s2.
+
+   [<A NAME="isSubstring-val"><B>isSubstring</B></A> s1 s2] is true if s1 is a substring of s2. That is, if
+   there exist strings t and u such that  t ^ s1 ^ u = string s2.
+
+   [<A NAME="position-val"><B>position</B></A> s (s',i,n)] splits the substring into a pair (pref, suff)
+   of substrings, where suff is the longest suffix of (s', i, n) which
+   has s as a prefix.  More precisely, let m = size s.  If there is a
+   least index k in i..i+n-m for which s = s'[k..k+m-1], 
+   then the result is       pref = (s', i, k-i) and suff = (s', k, n-(k-i)); 
+   otherwise the result is  pref = (s', i, n)   and suff = (s', i+n, 0).
+
+   [<A NAME="span-val"><B>span</B></A> (sus1, sus2)] returns a substring spanning from the start of
+   sus1 to the end of sus2, provided this is well-defined: sus1 and
+   sus2 must have the same underlying string, and the start of sus1
+   must not be to the right of the end of sus2; otherwise raises Span.
+
+   More precisely, if base(sus1) = (s,i,n) and base(sus2) = (s',i',n') 
+   and s = s' and i &lt;= i'+n', then base(join(sus1, sus2)) = (s, i, i'+n'-i).
+   This may be used to compute `span', `union', and `intersection'.
+
+   [<A NAME="translate-val"><B>translate</B></A> f sus] applies f to every character of sus, from left to
+   right, and returns the concatenation of the results.  Raises Size
+   if the sum of their sizes is greater than String.maxSize.
+   Equivalent to String.concat(List.map f (explode sus)).
+
+   [<A NAME="tokens-val"><B>tokens</B></A> p sus] returns the list of tokens in sus, from left to right, 
+   where a token is a non-empty maximal substring of sus not containing 
+   any delimiter, and a delimiter is a character satisfying p.
+
+   [<A NAME="fields-val"><B>fields</B></A> p sus] returns the list of fields in sus, from left to right, 
+   where a field is a (possibly empty) maximal substring of sus not 
+   containing any delimiter, and a delimiter is a character satisfying p.
+
+   Two tokens may be separated by more than one delimiter, whereas two
+   fields are separated by exactly one delimiter.  If the only delimiter 
+   is the character #"|", then
+        "abc||def" contains two tokens:   "abc" and "def"
+        "abc||def" contains three fields: "abc" and "" and "def"
+
+   [<A NAME="foldl-val"><B>foldl</B></A> f e sus] folds f over sus from left to right.  That is, 
+   evaluates f(s[i+n-1], f( ... f(s[i+1], f(s[i] % e)) ...)) 
+   tail-recursively, where sus = (s, i, n).  
+   Equivalent to List.foldl f e (explode sus).
+
+   [<A NAME="foldr-val"><B>foldr</B></A> f e sus] folds f over sus from right to left.  That is, 
+   evaluates f(s[i], f(s[i+1], f(... f(s[i+n-1] % e) ...)))
+   tail-recursively, where sus = (s, i, n).
+   Equivalent to List.foldr f e (explode sus).
+
+   [<A NAME="app-val"><B>app</B></A> f sus] applies f to all characters of sus, from left to right.
+   Equivalent to List.app f (explode sus).
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

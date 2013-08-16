@@ -1,0 +1,42 @@
+<HTML><HEAD><TITLE>Structure BasicIO</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure BasicIO</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* BasicIO -- non-standard input-output; use BinIO and TextIO instead *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>type instream
+<A NAME="line3"></A>type outstream
+<A NAME="line4"></A>
+<A NAME="line5"></A>val std_in        : instream;
+<A NAME="line6"></A>val open_in       : string -&gt; instream;
+<A NAME="line7"></A>val open_in_bin   : string -&gt; instream;
+<A NAME="line8"></A>val input         : instream * int -&gt; string;
+<A NAME="line9"></A>val inputc        : instream -&gt; int -&gt; string;
+<A NAME="line10"></A>val lookahead     : instream -&gt; string;
+<A NAME="line11"></A>val close_in      : instream -&gt; unit;
+<A NAME="line12"></A>val end_of_stream : instream -&gt; bool;
+<A NAME="line13"></A>
+<A NAME="line14"></A>val std_out       : outstream;
+<A NAME="line15"></A>val std_err       : outstream;
+<A NAME="line16"></A>val open_out      : string -&gt; outstream;
+<A NAME="line17"></A>val open_out_bin  : string -&gt; outstream;
+<A NAME="line18"></A>val output        : outstream * string -&gt; unit;
+<A NAME="line19"></A>val outputc       : outstream -&gt; string -&gt; unit;
+<A NAME="line20"></A>val close_out     : outstream -&gt; unit;
+<A NAME="line21"></A>val flush_out     : outstream -&gt; unit;
+<A NAME="line22"></A>val input_line    : instream -&gt; string;
+<A NAME="line23"></A>val can_input     : instream * int -&gt; bool;
+<A NAME="line24"></A>val open_append   : string -&gt; outstream;
+<A NAME="line25"></A>
+<A NAME="line26"></A>val exit          : int -&gt; 'a
+<A NAME="line27"></A>val print         : string -&gt; unit
+<A NAME="line28"></A>
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

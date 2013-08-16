@@ -1,0 +1,88 @@
+<HTML><HEAD><TITLE>Structure Math</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Math</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Math -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>type real = real
+<A NAME="line3"></A>
+<A NAME="line4"></A>val <A HREF="#pi-val">pi</A>    : real
+<A NAME="line5"></A>val <A HREF="#e-val">e</A>     : real
+<A NAME="line6"></A>
+<A NAME="line7"></A>val <A HREF="#sqrt-val">sqrt</A>  : real -&gt; real
+<A NAME="line8"></A>val <A HREF="#sin-val">sin</A>   : real -&gt; real
+<A NAME="line9"></A>val <A HREF="#cos-val">cos</A>   : real -&gt; real
+<A NAME="line10"></A>val <A HREF="#tan-val">tan</A>   : real -&gt; real
+<A NAME="line11"></A>val <A HREF="#atan-val">atan</A>  : real -&gt; real
+<A NAME="line12"></A>val <A HREF="#asin-val">asin</A>  : real -&gt; real
+<A NAME="line13"></A>val <A HREF="#acos-val">acos</A>  : real -&gt; real
+<A NAME="line14"></A>val <A HREF="#atan2-val">atan2</A> : real * real -&gt; real
+<A NAME="line15"></A>val <A HREF="#exp-val">exp</A>   : real -&gt; real
+<A NAME="line16"></A>val <A HREF="#pow-val">pow</A>   : real * real -&gt; real
+<A NAME="line17"></A>val <A HREF="#ln-val">ln</A>    : real -&gt; real
+<A NAME="line18"></A>val <A HREF="#log10-val">log10</A> : real -&gt; real
+<A NAME="line19"></A>val <A HREF="#sinh-val">sinh</A>  : real -&gt; real
+<A NAME="line20"></A>val <A HREF="#cosh-val">cosh</A>  : real -&gt; real
+<A NAME="line21"></A>val <A HREF="#tanh-val">tanh</A>  : real -&gt; real
+<A NAME="line22"></A>
+<A NAME="line23"></A>(*  
+   [<A NAME="pi-val"><B>pi</B></A>] is the circumference of the circle with diameter 1, that is,
+   3.14159265358979323846.
+
+   [<A NAME="e-val"><B>e</B></A>] is the base of the natural logarithm: 2.7182818284590452354.
+
+   [<A NAME="sqrt-val"><B>sqrt</B></A> x] is the square root of x.  Raises Domain if x &lt; 0.0.
+
+   [<A NAME="sin-val"><B>sin</B></A> r] is the sine of r, where r is in radians.
+
+   [<A NAME="cos-val"><B>cos</B></A> r] is the cosine of r, where r is in radians.
+
+   [<A NAME="tan-val"><B>tan</B></A> r] is the tangent of r, where r is in radians.  Raises Domain if 
+   r is a multiple of pi/2.0.
+
+   [<A NAME="atan-val"><B>atan</B></A> t] is the arc tangent of t, in the open interval ] ~pi/2.0, pi/2.0 [.
+
+   [<A NAME="asin-val"><B>asin</B></A> t] is the arc sine of t, in the closed interval [ ~pi/2.0, pi/2.0 ].  
+   Raises Domain if abs x &gt; 1.
+
+   [<A NAME="acos-val"><B>acos</B></A> t] is the arc cosine of t, in the closed interval [ 0, pi ].
+   Raises Domain if abs x &gt; 1.
+
+   [<A NAME="atan2-val"><B>atan2</B></A>(y, x)] is the arc tangent of y/x, in the interval ] ~pi, pi ],
+   except that atan2(y, 0) = sign y * pi/2.0.  The quadrant of the result
+   is the same as the quadrant of the point (x, y).
+   Hence sign(cos(atan2(y, x))) = sign x 
+   and   sign(sin(atan2(y, x))) = sign y. 
+
+   [<A NAME="exp-val"><B>exp</B></A> x] is e to the x'th power.
+
+   [<A NAME="pow-val"><B>pow</B></A> (x, y)] is x it the y'th power, defined when 
+      y &gt;= 0 and (y integral or x &gt;= 0)
+   or y &lt; 0 and ((y integral and x &lt;&gt; 0.0) or x &gt; 0).
+
+   We define pow(0, 0) = 1.
+
+   [<A NAME="ln-val"><B>ln</B></A> x] is the natural logarithm of x (that is, with base e).
+   Raises Domain if x &lt;= 0.0.
+
+   [<A NAME="log10-val"><B>log10</B></A> x] is the base-10 logarithm of x.  Raises Domain if x &lt;= 0.0.
+
+   [<A NAME="sinh-val"><B>sinh</B></A> x] returns the hyperbolic sine of x, mathematically defined as
+   (exp x - exp (~x)) / 2.0.  Raises Overflow if x is too large.
+
+   [<A NAME="cosh-val"><B>cosh</B></A> x] returns the hyperbolic cosine of x, mathematically defined as
+   (exp x + exp (~x)) / 2.0.  Raises Overflow if x is too large.
+
+   [<A NAME="tanh-val"><B>tanh</B></A> x] returns the hyperbolic tangent of x, mathematically defined 
+   as (sinh x) / (cosh x).  Raises Domain if x is too large.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

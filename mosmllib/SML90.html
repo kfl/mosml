@@ -1,0 +1,58 @@
+<HTML><HEAD><TITLE>Structure SML90</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure SML90</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* SML90 -- part of the initial basis of the 1990 Definition *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>(* Math *)
+<A NAME="line3"></A>
+<A NAME="line4"></A>val sqrt    : real -&gt; real
+<A NAME="line5"></A>val sin     : real -&gt; real
+<A NAME="line6"></A>val cos     : real -&gt; real
+<A NAME="line7"></A>val arctan  : real -&gt; real
+<A NAME="line8"></A>val exp     : real -&gt; real
+<A NAME="line9"></A>val ln      : real -&gt; real
+<A NAME="line10"></A>
+<A NAME="line11"></A>(* Strings *)
+<A NAME="line12"></A>
+<A NAME="line13"></A>val chr     : int -&gt; string
+<A NAME="line14"></A>val ord     : string -&gt; int
+<A NAME="line15"></A>
+<A NAME="line16"></A>val explode : string -&gt; string list
+<A NAME="line17"></A>val implode : string list -&gt; string
+<A NAME="line18"></A>
+<A NAME="line19"></A>exception Abs  
+<A NAME="line20"></A>      and Diff 
+<A NAME="line21"></A>      and Exp  
+<A NAME="line22"></A>      and Floor
+<A NAME="line23"></A>      and Neg  
+<A NAME="line24"></A>      and Prod 
+<A NAME="line25"></A>      and Sum  
+<A NAME="line26"></A>      and Mod  
+<A NAME="line27"></A>      and Quot
+<A NAME="line28"></A>
+<A NAME="line29"></A>(* Input/output *)
+<A NAME="line30"></A>
+<A NAME="line31"></A>type instream and outstream
+<A NAME="line32"></A>
+<A NAME="line33"></A>val std_in        : instream
+<A NAME="line34"></A>val open_in       : string -&gt; instream
+<A NAME="line35"></A>val input         : instream * int -&gt; string
+<A NAME="line36"></A>val lookahead     : instream -&gt; string
+<A NAME="line37"></A>val close_in      : instream -&gt; unit
+<A NAME="line38"></A>val end_of_stream : instream -&gt; bool
+<A NAME="line39"></A>
+<A NAME="line40"></A>val std_out       : outstream
+<A NAME="line41"></A>val open_out      : string -&gt; outstream
+<A NAME="line42"></A>val output        : outstream * string -&gt; unit
+<A NAME="line43"></A>val close_out     : outstream -&gt; unit
+<A NAME="line44"></A>
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

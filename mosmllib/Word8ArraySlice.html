@@ -1,0 +1,65 @@
+<HTML><HEAD><TITLE>Structure Word8ArraySlice</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Word8ArraySlice</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Word8ArraySlice -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>type elem = Word8.word
+<A NAME="line3"></A>type array = Word8Array.array
+<A NAME="line4"></A>type vector = Word8Vector.vector
+<A NAME="line5"></A>type vector_slice = Word8VectorSlice.slice
+<A NAME="line6"></A>
+<A NAME="line7"></A>type <A HREF="#slice-typ">slice</A>
+<A NAME="line8"></A>
+<A NAME="line9"></A>val length   : slice -&gt; int
+<A NAME="line10"></A>val sub      : slice * int -&gt; elem
+<A NAME="line11"></A>val update   : slice * int * elem  -&gt; unit
+<A NAME="line12"></A>val slice    : array * int * int option -&gt; slice
+<A NAME="line13"></A>val full     : array -&gt; slice
+<A NAME="line14"></A>val subslice : slice * int * int option -&gt; slice
+<A NAME="line15"></A>val base     : slice -&gt; array * int * int
+<A NAME="line16"></A>val vector   : slice -&gt; vector
+<A NAME="line17"></A>val copy     : {src: slice, dst: array, di: int} -&gt; unit
+<A NAME="line18"></A>val copyVec  : {src: vector_slice, dst: array, di: int} -&gt; unit 
+<A NAME="line19"></A>val isEmpty  : slice -&gt; bool
+<A NAME="line20"></A>val getItem  : slice -&gt; (elem * slice) option
+<A NAME="line21"></A>
+<A NAME="line22"></A>val find     : (elem -&gt; bool) -&gt; slice -&gt; elem option
+<A NAME="line23"></A>val exists   : (elem -&gt; bool) -&gt; slice -&gt; bool
+<A NAME="line24"></A>val all      : (elem -&gt; bool) -&gt; slice -&gt; bool
+<A NAME="line25"></A>
+<A NAME="line26"></A>val app      : (elem -&gt; unit) -&gt; slice -&gt; unit
+<A NAME="line27"></A>val foldl    : (elem * 'b -&gt; 'b) -&gt; 'b -&gt; slice -&gt; 'b
+<A NAME="line28"></A>val foldr    : (elem * 'b -&gt; 'b) -&gt; 'b -&gt; slice -&gt; 'b
+<A NAME="line29"></A>val modify   : (elem -&gt; elem) -&gt; slice -&gt; unit
+<A NAME="line30"></A>
+<A NAME="line31"></A>val findi    : (int * elem -&gt; bool) -&gt; slice -&gt; (int * elem) option
+<A NAME="line32"></A>val appi     : (int * elem -&gt; unit) -&gt; slice -&gt; unit
+<A NAME="line33"></A>val foldli   : (int * elem * 'b -&gt; 'b) -&gt; 'b -&gt; slice -&gt; 'b
+<A NAME="line34"></A>val foldri   : (int * elem * 'b -&gt; 'b) -&gt; 'b -&gt; slice -&gt; 'b
+<A NAME="line35"></A>val modifyi  : (int * elem -&gt; elem) -&gt; slice -&gt; unit
+<A NAME="line36"></A>
+<A NAME="line37"></A>val collate  : (elem * elem -&gt; order) -&gt; slice * slice -&gt; order
+<A NAME="line38"></A>
+<A NAME="line39"></A>(* 
+   [<A NAME="slice-typ"><B>slice</B></A>] is the type of Word8Array slices, that is, sub-arrays of
+   Word8Array.array values.
+   The slice (a,i,n) is valid if 0 &lt;= i &lt;= i+n &lt;= size s, 
+                or equivalently, 0 &lt;= i and 0 &lt;= n and i+n &lt;= size s.  
+   A valid slice sli = (a,i,n) represents the sub-array a[i...i+n-1],
+   so the elements of sli are a[i], a[i+1], ..., a[i+n-1], and n is
+   the length of the slice.  Only valid slices can be constructed by
+   the functions below.
+
+   All operations are as for ArraySlice.slice.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

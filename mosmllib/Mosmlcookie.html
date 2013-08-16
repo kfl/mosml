@@ -1,0 +1,61 @@
+<HTML><HEAD><TITLE>Structure Mosmlcookie</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Mosmlcookie</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Mosmlcookie -- getting and setting cookies in CGI scripts *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>exception CookieError of string
+<A NAME="line3"></A>
+<A NAME="line4"></A>val <A HREF="#allCookies-val">allCookies</A>     : string list
+<A NAME="line5"></A>val <A HREF="#getCookieValue-val">getCookieValue</A> : string -&gt; string option 
+<A NAME="line6"></A>val <A HREF="#getCookie-val">getCookie</A>      : string -&gt; string option 
+<A NAME="line7"></A>
+<A NAME="line8"></A>type cookiedata = 
+<A NAME="line9"></A>    { name   : string, 
+<A NAME="line10"></A>      value  : string, 
+<A NAME="line11"></A>      expiry : Date.date option, 
+<A NAME="line12"></A>      domain : string option, 
+<A NAME="line13"></A>      path   : string option, 
+<A NAME="line14"></A>      secure : bool }
+<A NAME="line15"></A>
+<A NAME="line16"></A>val <A HREF="#setCookie-val">setCookie</A>    : cookiedata -&gt; string
+<A NAME="line17"></A>val <A HREF="#setCookies-val">setCookies</A>   : cookiedata list -&gt; string
+<A NAME="line18"></A>
+<A NAME="line19"></A>val <A HREF="#deleteCookie-val">deleteCookie</A> : { name : string, path : string option } -&gt; string
+<A NAME="line20"></A>
+<A NAME="line21"></A>(* 
+<A NAME="line22"></A>   These functions may be used in CGI scripts to get and set cookies.
+<A NAME="line23"></A>   (c) Hans Molin, Computing Science Dept., Uppsala University, 1999.
+<A NAME="line24"></A>
+   [<A NAME="getCookieValue-val"><B>getCookieValue</B></A> ck] returns SOME(v) where v is the value associated
+   with the cookie ck, if any; otherwise returns NONE.
+
+   [<A NAME="getCookie-val"><B>getCookie</B></A> ck] returns SOME(nv) where nv is the ck=value string
+   for the cookie ck, if any; otherwise returns NONE.
+
+   [<A NAME="allCookies-val"><B>allCookies</B></A>] is a list [nv1, nv2, ..., nvm] of all the ck=value
+   pairs of defined cookies.
+
+   [<A NAME="setCookie-val"><B>setCookie</B></A> { name, value, expiry, domain, path, secure }] returns a
+   string which (when transmitted to a browser as part of the HTTP
+   response header) sets a cookie with the given name, value, expiry
+   date, domain, path, and security.
+
+   [<A NAME="setCookies-val"><B>setCookies</B></A> ckds] returns a string which (when transmitted to a
+   browser as part of the HTTP response header) sets the specified cookies.
+
+   [<A NAME="deleteCookie-val"><B>deleteCookie</B></A> { name, path }] returns a string which (when
+   transmitted to a browser as part of the HTTP response header)
+   deletes the specified cookie by setting its expiry to some time in
+   the past.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

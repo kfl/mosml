@@ -1,0 +1,35 @@
+<HTML><HEAD><TITLE>Structure Susp</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Susp</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Susp -- support for lazy evaluation *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>type 'a <A HREF="#susp-typ">susp</A>
+<A NAME="line3"></A>
+<A NAME="line4"></A>val <A HREF="#delay-val">delay</A> : (unit -&gt; 'a) -&gt; 'a susp
+<A NAME="line5"></A>val <A HREF="#force-val">force</A> : 'a susp -&gt; 'a
+<A NAME="line6"></A>
+<A NAME="line7"></A>(* 
+   ['a <A NAME="susp-typ"><B>susp</B></A>] is the type of lazily evaluated expressions with result
+   type 'a.
+
+   [<A NAME="delay-val"><B>delay</B></A> (fn () =&gt; e)] creates a suspension for the expression e.
+   The first time the suspension is forced, the expression e will be
+   evaluated, and the result stored in the suspension.  All subsequent
+   forcing of the suspension will just return this result, so e is
+   evaluated at most once.  If the suspension is never forced, then e
+   is never evaluated.
+
+   [<A NAME="force-val"><B>force</B></A> su] forces the suspension su and returns the result of the
+   expression e stored in the suspension.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

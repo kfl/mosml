@@ -1,0 +1,54 @@
+<HTML><HEAD><TITLE>Structure Listsort</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Listsort</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Listsort *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>val <A HREF="#sort-val">sort</A>      : ('a * 'a -&gt; order) -&gt; 'a list -&gt; 'a list
+<A NAME="line3"></A>val <A HREF="#sorted-val">sorted</A>    : ('a * 'a -&gt; order) -&gt; 'a list -&gt; bool
+<A NAME="line4"></A>val <A HREF="#merge-val">merge</A>     : ('a * 'a -&gt; order) -&gt; 'a list * 'a list -&gt; 'a list
+<A NAME="line5"></A>val <A HREF="#mergeUniq-val">mergeUniq</A> : ('a * 'a -&gt; order) -&gt; 'a list * 'a list -&gt; 'a list
+<A NAME="line6"></A>val <A HREF="#eqclasses-val">eqclasses</A> : ('a * 'a -&gt; order) -&gt; 'a list -&gt; 'a list list
+<A NAME="line7"></A>
+<A NAME="line8"></A>(* 
+   [<A NAME="sort-val"><B>sort</B></A> ordr xs] sorts the list xs in nondecreasing order, using the
+   given ordering.  Uses Richard O'Keefe's smooth applicative merge
+   sort.
+
+   [<A NAME="sorted-val"><B>sorted</B></A> ordr xs] checks that the list xs is sorted in nondecreasing
+   order, in the given ordering.
+
+   [<A NAME="merge-val"><B>merge</B></A> ordr (xs, ys)] returns a sorted list of the elements of the
+   sorted lists xs and ys, preserving duplicates.  Both xs and ys must
+   be already sorted by ordr, that is, must satisfy
+      sorted ordr xs andalso sorted ordr ys
+   Then the result satisfies 
+      sorted ordr (merge ordr (xs, ys))
+
+   [<A NAME="mergeUniq-val"><B>mergeUniq</B></A> ordr (xs, ys)] returns a sorted list of the elements of
+   the sorted lists xs and ys, without duplicates: no elements in the
+   result are EQUAL by ordr.  Both xs and ys must be already sorted by
+   ordr.
+
+   [<A NAME="eqclasses-val"><B>eqclasses</B></A> ordr xs] returns a list [xs1, xs2, ..., xsn] of
+   non-empty equivalence classes of xs, obtained by sorting the list 
+   and then grouping consecutive runs of elements that are EQUAL by ordr.
+   If ordr is a total order, then it holds for xi in xsi and xj in xsj:
+      ordr(xi, xj) = EQUAL   iff i=j and 
+      ordr(xi, xj) = LESS    iff i&lt;j and 
+      ordr(xi, xj) = GREATER iff i&gt;j 
+   Thus ordr(xi, xj) = Int.compare(i, j).  A list of representatives
+   for the equivalence classes of xs under ordering ordr can be
+   obtained by
+      List.map List.hd (eqclasses ordr xs) 
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>

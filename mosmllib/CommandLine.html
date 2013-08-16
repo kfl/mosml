@@ -1,0 +1,25 @@
+<HTML><HEAD><TITLE>Structure CommandLine</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure CommandLine</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* CommandLine -- SML Basis Library *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>val <A HREF="#name-val">name</A>      : unit -&gt; string 
+<A NAME="line3"></A>val <A HREF="#arguments-val">arguments</A> : unit -&gt; string list
+<A NAME="line4"></A>
+<A NAME="line5"></A>(* 
+   [<A NAME="name-val"><B>name</B></A> ()] returns the name used to start the current process.
+
+   [<A NAME="arguments-val"><B>arguments</B></A> ()] returns the command line arguments of the current process.
+   Hence List.nth(arguments (), 0) is the first argument.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>
