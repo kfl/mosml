@@ -2,7 +2,7 @@
 
 # Where to install stuff
 
-MOSMLHOME=${HOME}/project/mosml2.10-new
+MOSMLHOME=${HOME}/projects/mosml2.10-new
 
 # The version
 VERSION=2.10
