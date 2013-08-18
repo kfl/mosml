@@ -44,71 +44,72 @@
 <A NAME="line35"></A>exception <A HREF="#Option-exc">Option</A>
 <A NAME="line36"></A>exception <A HREF="#Subscript-exc">Subscript</A>
 <A NAME="line37"></A>exception <A HREF="#Size-exc">Size</A>
-<A NAME="line38"></A>
-<A NAME="line39"></A>(* Additional Moscow ML top-level exceptions *)
-<A NAME="line40"></A>
-<A NAME="line41"></A>exception <A HREF="#Graphic-exc">Graphic</A> of string
-<A NAME="line42"></A>exception <A HREF="#Interrupt-exc">Interrupt</A>
-<A NAME="line43"></A>exception <A HREF="#Invalid_argument-exc">Invalid_argument</A> of string
-<A NAME="line44"></A>exception <A HREF="#Io-exc">Io</A> of {function : string, name : string, cause : exn }
-<A NAME="line45"></A>exception <A HREF="#Out_of_memory-exc">Out_of_memory</A>
-<A NAME="line46"></A>exception <A HREF="#SysErr-exc">SysErr</A> of string * syserror option
-<A NAME="line47"></A>
-<A NAME="line48"></A>(* SML Basis Library values *)
-<A NAME="line49"></A>
-<A NAME="line50"></A>val <A HREF="#%21-val">!</A>          : 'a ref -&gt; 'a
-<A NAME="line51"></A>val <A HREF="#%3A%3D-val">:=</A>         : 'a ref * 'a -&gt; unit
-<A NAME="line52"></A>
-<A NAME="line53"></A>val <A HREF="#o-val">o</A>          : ('b -&gt; 'c) * ('a -&gt; 'b) -&gt; ('a -&gt; 'c)
-<A NAME="line54"></A>val <A HREF="#ignore-val">ignore</A>     : 'a -&gt; unit
-<A NAME="line55"></A>val <A HREF="#before-val">before</A>     : 'a * 'b -&gt; 'a
-<A NAME="line56"></A>
-<A NAME="line57"></A>val <A HREF="#exnName-val">exnName</A>    : exn -&gt; string
-<A NAME="line58"></A>val <A HREF="#exnMessage-val">exnMessage</A> : exn -&gt; string
-<A NAME="line59"></A>
-<A NAME="line60"></A>(* Additional Moscow ML top-level values *)
-<A NAME="line61"></A>
-<A NAME="line62"></A>val <A HREF="#not-val">not</A>    : bool -&gt; bool
-<A NAME="line63"></A>val <A HREF="#%5E-val">^</A>      : string * string -&gt; string
-<A NAME="line64"></A>
-<A NAME="line65"></A>val <A HREF="#%3D-val">=</A>      : ''a * ''a -&gt; bool
-<A NAME="line66"></A>val <A HREF="#%3C%3E-val"><></A>     : ''a * ''a -&gt; bool
-<A NAME="line67"></A>
-<A NAME="line68"></A>val <A HREF="#ceil-val">ceil</A>   : real -&gt; int                (* round towards plus infinity  *)
-<A NAME="line69"></A>val <A HREF="#floor-val">floor</A>  : real -&gt; int                (* round towards minus infinity *)
-<A NAME="line70"></A>val <A HREF="#real-val">real</A>   : int -&gt; real                (* equals Real.fromInt          *)
-<A NAME="line71"></A>val <A HREF="#round-val">round</A>  : real -&gt; int                (* round to nearest even        *)
-<A NAME="line72"></A>val <A HREF="#trunc-val">trunc</A>  : real -&gt; int                (* round towards zero           *)
-<A NAME="line73"></A>
-<A NAME="line74"></A>val <A HREF="#vector-val">vector</A> : 'a list -&gt; 'a vector
-<A NAME="line75"></A>
-<A NAME="line76"></A>(* Below, numtxt is int, Word.word, Word8.word, real, char, string: *)
-<A NAME="line77"></A>
-<A NAME="line78"></A>val <A HREF="#%3C-val"><</A>   : numtxt * numtxt -&gt; bool
-<A NAME="line79"></A>val <A HREF="#%3C%3D-val"><=</A>  : numtxt * numtxt -&gt; bool
-<A NAME="line80"></A>val <A HREF="#%3E-val">></A>   : numtxt * numtxt -&gt; bool
-<A NAME="line81"></A>val <A HREF="#%3E%3D-val">>=</A>  : numtxt * numtxt -&gt; bool
-<A NAME="line82"></A>
-<A NAME="line83"></A>val <A HREF="#makestring-val">makestring</A> : numtxt -&gt; string
-<A NAME="line84"></A>
-<A NAME="line85"></A>(* Below, realint is int or real:                                       *)
-<A NAME="line86"></A>
-<A NAME="line87"></A>val <A HREF="#%7E-val">~</A>   : realint -&gt; realint            (* raises Overflow              *)
-<A NAME="line88"></A>val <A HREF="#abs-val">abs</A> : realint -&gt; realint            (* raises Overflow              *)
-<A NAME="line89"></A>                                                                        
-<A NAME="line90"></A>(* Below, num is int, Word.word, Word8.word, or real:                   *)
-<A NAME="line91"></A>
-<A NAME="line92"></A>val <A HREF="#%2B-val">+</A>   : num * num -&gt; num              (* raises Overflow              *)
-<A NAME="line93"></A>val <A HREF="#--val">-</A>   : num * num -&gt; num              (* raises Overflow              *)
-<A NAME="line94"></A>val <A HREF="#%2A-val">*</A>   : num * num -&gt; num              (* raises Overflow              *)
-<A NAME="line95"></A>val <A HREF="#%2F-val">/</A>   : real * real -&gt; real           (* raises Div, Overflow         *)
-<A NAME="line96"></A>                                                                        
-<A NAME="line97"></A>(* Below, wordint is int, Word.word or Word8.word:                      *)
-<A NAME="line98"></A>
-<A NAME="line99"></A>val <A HREF="#div-val">div</A> : wordint * wordint -&gt; wordint  (* raises Div, Overflow         *)
-<A NAME="line100"></A>val <A HREF="#mod-val">mod</A> : wordint * wordint -&gt; wordint  (* raises Div                   *)
-<A NAME="line101"></A>
-<A NAME="line102"></A>(*
+<A NAME="line38"></A>exception Span
+<A NAME="line39"></A>
+<A NAME="line40"></A>(* Additional Moscow ML top-level exceptions *)
+<A NAME="line41"></A>
+<A NAME="line42"></A>exception <A HREF="#Graphic-exc">Graphic</A> of string
+<A NAME="line43"></A>exception <A HREF="#Interrupt-exc">Interrupt</A>
+<A NAME="line44"></A>exception <A HREF="#Invalid_argument-exc">Invalid_argument</A> of string
+<A NAME="line45"></A>exception <A HREF="#Io-exc">Io</A> of {function : string, name : string, cause : exn }
+<A NAME="line46"></A>exception <A HREF="#Out_of_memory-exc">Out_of_memory</A>
+<A NAME="line47"></A>exception <A HREF="#SysErr-exc">SysErr</A> of string * syserror option
+<A NAME="line48"></A>
+<A NAME="line49"></A>(* SML Basis Library values *)
+<A NAME="line50"></A>
+<A NAME="line51"></A>val <A HREF="#%21-val">!</A>          : 'a ref -&gt; 'a
+<A NAME="line52"></A>val <A HREF="#%3A%3D-val">:=</A>         : 'a ref * 'a -&gt; unit
+<A NAME="line53"></A>
+<A NAME="line54"></A>val <A HREF="#o-val">o</A>          : ('b -&gt; 'c) * ('a -&gt; 'b) -&gt; ('a -&gt; 'c)
+<A NAME="line55"></A>val <A HREF="#ignore-val">ignore</A>     : 'a -&gt; unit
+<A NAME="line56"></A>val <A HREF="#before-val">before</A>     : 'a * unit -&gt; 'a
+<A NAME="line57"></A>
+<A NAME="line58"></A>val <A HREF="#exnName-val">exnName</A>    : exn -&gt; string
+<A NAME="line59"></A>val <A HREF="#exnMessage-val">exnMessage</A> : exn -&gt; string
+<A NAME="line60"></A>
+<A NAME="line61"></A>(* Additional Moscow ML top-level values *)
+<A NAME="line62"></A>
+<A NAME="line63"></A>val <A HREF="#not-val">not</A>    : bool -&gt; bool
+<A NAME="line64"></A>val <A HREF="#%5E-val">^</A>      : string * string -&gt; string
+<A NAME="line65"></A>
+<A NAME="line66"></A>val <A HREF="#%3D-val">=</A>      : ''a * ''a -&gt; bool
+<A NAME="line67"></A>val <A HREF="#%3C%3E-val"><></A>     : ''a * ''a -&gt; bool
+<A NAME="line68"></A>
+<A NAME="line69"></A>val <A HREF="#ceil-val">ceil</A>   : real -&gt; int                (* round towards plus infinity  *)
+<A NAME="line70"></A>val <A HREF="#floor-val">floor</A>  : real -&gt; int                (* round towards minus infinity *)
+<A NAME="line71"></A>val <A HREF="#real-val">real</A>   : int -&gt; real                (* equals Real.fromInt          *)
+<A NAME="line72"></A>val <A HREF="#round-val">round</A>  : real -&gt; int                (* round to nearest even        *)
+<A NAME="line73"></A>val <A HREF="#trunc-val">trunc</A>  : real -&gt; int                (* round towards zero           *)
+<A NAME="line74"></A>
+<A NAME="line75"></A>val <A HREF="#vector-val">vector</A> : 'a list -&gt; 'a vector
+<A NAME="line76"></A>
+<A NAME="line77"></A>(* Below, numtxt is int, Word.word, Word8.word, real, char, string: *)
+<A NAME="line78"></A>
+<A NAME="line79"></A>val <A HREF="#%3C-val"><</A>   : numtxt * numtxt -&gt; bool
+<A NAME="line80"></A>val <A HREF="#%3C%3D-val"><=</A>  : numtxt * numtxt -&gt; bool
+<A NAME="line81"></A>val <A HREF="#%3E-val">></A>   : numtxt * numtxt -&gt; bool
+<A NAME="line82"></A>val <A HREF="#%3E%3D-val">>=</A>  : numtxt * numtxt -&gt; bool
+<A NAME="line83"></A>
+<A NAME="line84"></A>val <A HREF="#makestring-val">makestring</A> : numtxt -&gt; string
+<A NAME="line85"></A>
+<A NAME="line86"></A>(* Below, realint is int or real:                                       *)
+<A NAME="line87"></A>
+<A NAME="line88"></A>val <A HREF="#%7E-val">~</A>   : realint -&gt; realint            (* raises Overflow              *)
+<A NAME="line89"></A>val <A HREF="#abs-val">abs</A> : realint -&gt; realint            (* raises Overflow              *)
+<A NAME="line90"></A>                                                                        
+<A NAME="line91"></A>(* Below, num is int, Word.word, Word8.word, or real:                   *)
+<A NAME="line92"></A>
+<A NAME="line93"></A>val <A HREF="#%2B-val">+</A>   : num * num -&gt; num              (* raises Overflow              *)
+<A NAME="line94"></A>val <A HREF="#--val">-</A>   : num * num -&gt; num              (* raises Overflow              *)
+<A NAME="line95"></A>val <A HREF="#%2A-val">*</A>   : num * num -&gt; num              (* raises Overflow              *)
+<A NAME="line96"></A>val <A HREF="#%2F-val">/</A>   : real * real -&gt; real           (* raises Div, Overflow         *)
+<A NAME="line97"></A>                                                                        
+<A NAME="line98"></A>(* Below, wordint is int, Word.word or Word8.word:                      *)
+<A NAME="line99"></A>
+<A NAME="line100"></A>val <A HREF="#div-val">div</A> : wordint * wordint -&gt; wordint  (* raises Div, Overflow         *)
+<A NAME="line101"></A>val <A HREF="#mod-val">mod</A> : wordint * wordint -&gt; wordint  (* raises Div                   *)
+<A NAME="line102"></A>
+<A NAME="line103"></A>(*
    [<A NAME="exn-typ"><B>exn</B></A>] is the type of exceptions.
  
    [<A NAME="unit-typ"><B>unit</B></A>] is the type containing the empty tuple () which equals the 
@@ -295,4 +296,4 @@
 <TH><A HREF="idIndex.html">Identifier index</A>
 <TH><A HREF="index.html">Structure index</A>
 </TABLE><HR>
-<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>
+<BR><EM><A HREF="http://mosml.org">Moscow ML</A> 2.10</EM></BODY></HTML>
