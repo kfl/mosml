@@ -1,0 +1,104 @@
+<HTML><HEAD><TITLE>Structure Hashset</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Hashset</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Hashset -- sets implemented by hashtables *)
+<A NAME="line1"></A>
+<A NAME="line2"></A>signature Hashset = sig
+<A NAME="line3"></A>type 'item <A HREF="#set-typ">set</A>
+<A NAME="line4"></A>
+<A NAME="line5"></A>exception NotFound
+<A NAME="line6"></A>
+<A NAME="line7"></A>val <A HREF="#empty-val">empty</A>        : ('_item -&gt; word) * ('_item * '_item -&gt; bool) -&gt; '_item set
+<A NAME="line8"></A>val <A HREF="#singleton-val">singleton</A>    : ('_item -&gt; word) * ('_item * '_item -&gt; bool) -&gt; '_item 
+<A NAME="line9"></A>                   -&gt; '_item set
+<A NAME="line10"></A>
+<A NAME="line11"></A>val <A HREF="#member-val">member</A>       : '_item set * '_item -&gt; bool
+<A NAME="line12"></A>val <A HREF="#retrieve-val">retrieve</A>     : '_item set * '_item -&gt; '_item
+<A NAME="line13"></A>val <A HREF="#peek-val">peek</A>         : '_item set * '_item -&gt; '_item option
+<A NAME="line14"></A>
+<A NAME="line15"></A>val <A HREF="#add-val">add</A>          : '_item set * '_item -&gt; unit
+<A NAME="line16"></A>val <A HREF="#addList-val">addList</A>      : '_item set * '_item list -&gt; unit
+<A NAME="line17"></A>val <A HREF="#delete-val">delete</A>       : '_item set * '_item -&gt; unit
+<A NAME="line18"></A>
+<A NAME="line19"></A>val <A HREF="#isEmpty-val">isEmpty</A>      : '_item set -&gt; bool
+<A NAME="line20"></A>val <A HREF="#isSubset-val">isSubset</A>     : '_item set * '_item set -&gt; bool
+<A NAME="line21"></A>val <A HREF="#equal-val">equal</A>        : '_item set * '_item set -&gt; bool
+<A NAME="line22"></A>val <A HREF="#numItems-val">numItems</A>     : '_item set -&gt;  int
+<A NAME="line23"></A>val <A HREF="#listItems-val">listItems</A>    : '_item set -&gt; '_item list
+<A NAME="line24"></A>
+<A NAME="line25"></A>val <A HREF="#app-val">app</A>          : ('_item -&gt; unit) -&gt; '_item set -&gt; unit
+<A NAME="line26"></A>val <A HREF="#fold-val">fold</A>         : ('_item * 'b -&gt; 'b) -&gt; 'b -&gt; '_item set -&gt; 'b
+<A NAME="line27"></A>val all          : ('_item -&gt; bool) -&gt; '_item set -&gt; bool
+<A NAME="line28"></A>val exists       : ('_item -&gt; bool) -&gt; '_item set -&gt; bool
+<A NAME="line29"></A>val <A HREF="#find-val">find</A>         : ('_item -&gt; bool) -&gt; '_item set -&gt; '_item option
+<A NAME="line30"></A>val copy         : '_item set -&gt; '_item set
+<A NAME="line31"></A>
+<A NAME="line32"></A>val <A HREF="#hash-val">hash</A>         : '_item set -&gt; word
+<A NAME="line33"></A>val <A HREF="#polyHash-val">polyHash</A>     : 'a -&gt; word
+<A NAME="line34"></A>
+<A NAME="line35"></A>end
+<A NAME="line36"></A>
+<A NAME="line37"></A>(* 
+   ['item <A NAME="set-typ"><B>set</B></A>] is the type of sets of elements of type 'item, with a
+   given hash function and equality predicate.
+
+   [<A NAME="empty-val"><B>empty</B></A> (hash, equal)] creates a new empty set with the given hash
+   function and equality predicate.  It must hold that equal(x, y)
+   implies hash x = hash y.
+
+   [<A NAME="singleton-val"><B>singleton</B></A> (hash, equal) i] creates the singleton set containing i,
+   with the given hash function and equality predicate.
+
+   [<A NAME="member-val"><B>member</B></A>(s, i)] returns true if and only if i is in s.
+
+   [<A NAME="retrieve-val"><B>retrieve</B></A>(s, i)] returns i if it is in s; raises NotFound otherwise.
+
+   [<A NAME="peek-val"><B>peek</B></A>(s, i)] returns SOME i if i is in s; returns NONE otherwise.
+
+   [<A NAME="add-val"><B>add</B></A>(s, i)] adds item i to set s.  
+
+   [<A NAME="addList-val"><B>addList</B></A>(s, xs)] adds all items from the list xs to the set s.
+
+   [<A NAME="delete-val"><B>delete</B></A>(s, i)] removes item i from s.  Raises NotFound if i is not in s.
+
+   [<A NAME="isEmpty-val"><B>isEmpty</B></A> s] returns true if the set is empty; false otherwise.
+
+   [<A NAME="equal-val"><B>equal</B></A>(s1, s2)] returns true if and only if the two sets have the
+   same elements.  
+
+   [<A NAME="isSubset-val"><B>isSubset</B></A>(s1, s2)] returns true if and only if s1 is a subset of s2.
+   
+   [<A NAME="numItems-val"><B>numItems</B></A> s] returns the number of items in set s.
+
+   [<A NAME="listItems-val"><B>listItems</B></A> s] returns a list of the items in set s, in some order.
+
+   [<A NAME="app-val"><B>app</B></A> f s] applies function f to the elements of s, in some order.
+
+   [<A NAME="fold-val"><B>fold</B></A> f e s] applies the folding function f to the entries of the
+   set in some order.
+
+   [<A NAME="find-val"><B>find</B></A> p s] returns SOME i, where i is an item in s which satisfies
+   p, if one exists; otherwise returns NONE.  
+
+   [<A NAME="hash-val"><B>hash</B></A> s] returns the hashcode of the set, which is the sum of the
+   hashcodes of its elements, as computed by the hash function given
+   when the set was created.  
+
+   [<A NAME="polyHash-val"><B>polyHash</B></A> v] returns a system-defined hashcode for the value v.
+   This pseudo-polymorphic hash function can be used together with the
+   standard equality function (=) to create a Hashset for any type that 
+   admits equality, as follows:
+
+       val set = Hashset.empty (Hashset.hash, op =);
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://mosml.org">Moscow ML</A> 2.10</EM></BODY></HTML>

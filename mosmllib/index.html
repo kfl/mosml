@@ -4,15 +4,9 @@
 <H1>Moscow ML Library</h1>
 
 <P>The Moscow ML Library consists of large parts of the <A
-HREF="http://www.dina.kvl.dk/~sestoft/sml/">SML Basis Library</A> and
+HREF="http://www.standardml.org/Basis/">SML Basis Library</A> and
 a number of extensions.
 
-<P>The HTML files referred below may be downloaded to your local site:
-<A
-HREF="ftp://ftp.dina.kvl.dk/pub/mosml/doc/mosmllib-html.tgz">gzipped
-tar file</A> or <A
-HREF="ftp://ftp.dina.kvl.dk/pub/mosml/doc/mosmllib-html.zip">zip
-file</A>.
 
 <A NAME="structures"><H2>Identifier index</H2></A>
 
@@ -21,6 +15,7 @@ file</A>.
 
 <A NAME="structures"><H2>All structures</H2></A>
 
+<TR><TH>Name<TH>Contents<TH>Compatibility
 <A HREF="Array.html">Array</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Array2.html">Array2</A>&nbsp;&nbsp;&nbsp;
 <A HREF="ArraySlice.html">ArraySlice</A>&nbsp;&nbsp;&nbsp;
@@ -30,6 +25,7 @@ file</A>.
 <A HREF="Binaryset.html">Binaryset</A>&nbsp;&nbsp;&nbsp;
 <A HREF="BinIO.html">BinIO</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Bool.html">Bool</A>&nbsp;&nbsp;&nbsp;
+<A HREF="Buffer.html">Buffer</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Byte.html">Byte</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Callback.html">Callback</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Char.html">Char</A>&nbsp;&nbsp;&nbsp;
@@ -41,10 +37,12 @@ file</A>.
 <A HREF="Date.html">Date</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Dynarray.html">Dynarray</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Dynlib.html">Dynlib</A>&nbsp;&nbsp;&nbsp;
-<A HREF="FileSys.html">FileSys</A>&nbsp;&nbsp;&nbsp;
+<A HREF="FileSys.html">FileSys</A>&nbsp;&nbsp;&nbsp; 
 <A HREF="Gdbm.html">Gdbm</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Gdimage.html">Gdimage</A>&nbsp;&nbsp;&nbsp;
 <A HREF="General.html">General</A>&nbsp;&nbsp;&nbsp;
+<A HREF="Graphics.html">Graphics</A>&nbsp;&nbsp;&nbsp;
+<A HREF="Hashset.html">Hashset</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Help.html">Help</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Int.html">Int</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Intmap.html">Intmap</A>&nbsp;&nbsp;&nbsp;
@@ -56,15 +54,16 @@ file</A>.
 <A HREF="Location.html">Location</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Math.html">Math</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Meta.html">Meta</A>&nbsp;&nbsp;&nbsp;
+<A HREF="Misc.html">Misc</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Mosml.html">Mosml</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Mosmlcgi.html">Mosmlcgi</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Mosmlcookie.html">Mosmlcookie</A>&nbsp;&nbsp;&nbsp;
-<A HREF="Msp.html">Msp</A>&nbsp;&nbsp;&nbsp;
-<A HREF="Mysql.html">Mysql</A>&nbsp;&nbsp;&nbsp;
+<A HREF="Msp.html">Msp</A>&nbsp;&nbsp;&nbsp; 
+<A HREF="MySQL.html">MySQL</A>&nbsp;&nbsp;&nbsp;
 <A HREF="NJ93.html">NJ93</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Nonstdio.html">Nonstdio</A>&nbsp;&nbsp;&nbsp;
-<A HREF="OS.html">OS</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Option.html">Option</A>&nbsp;&nbsp;&nbsp;
+<A HREF="OS.html">OS</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Parsing.html">Parsing</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Path.html">Path</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Polygdbm.html">Polygdbm</A>&nbsp;&nbsp;&nbsp;
@@ -73,10 +72,12 @@ file</A>.
 <A HREF="PP.html">PP</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Process.html">Process</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Random.html">Random</A>&nbsp;&nbsp;&nbsp;
+<A HREF="Rbset.html">Rbset</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Real.html">Real</A>&nbsp;&nbsp;&nbsp;
+<A HREF="Redblackmap.html">Redblackmap</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Regex.html">Regex</A>&nbsp;&nbsp;&nbsp;
+<A HREF="Real.html">Real</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Signal.html">Signal</A>&nbsp;&nbsp;&nbsp;
-<A HREF="SML90.html">SML90</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Socket.html">Socket</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Splaymap.html">Splaymap</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Splayset.html">Splayset</A>&nbsp;&nbsp;&nbsp;
@@ -96,241 +97,97 @@ file</A>.
 <A HREF="Word8Array.html">Word8Array</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Word8ArraySlice.html">Word8ArraySlice</A>&nbsp;&nbsp;&nbsp;
 <A HREF="Word8Vector.html">Word8Vector</A>&nbsp;&nbsp;&nbsp;
-<A HREF="Word8VectorSlice.html">Word8VectorSlice</A>
+<A HREF="Word8VectorSlice.html">Word8VectorSlice</A>&nbsp;&nbsp;&nbsp;
 
 
 <H2>Description of the structures</H2>
 
 <TABLE BORDER>
 <TR><TH>Name<TH>Contents<TH>Compatibility
-<TR><TD><A HREF="Array.html">Array</A>
-<TD>mutable constant-time-access arrays<TD>SDFNO
-
-<TR><TD><A HREF="Array2.html">Array2</A>
-<TD>two-dimensional arrays<TD>S     
-
-<TR><TD><A HREF="ArraySlice.html">ArraySlice</A>
-<TD>mutable sub-arrays<TD>SF
-
-<TR><TD><A HREF="Arraysort.html">Arraysort</A>
-<TD>array sorting (quicksort)<TD>L  
-
-<TR><TD><A HREF="BasicIO.html">BasicIO</A>
-<TD>input-output as in SML'90<TD>DF  
-
-<TR><TD><A HREF="Binarymap.html">Binarymap</A>
-<TD>binary tree implementation of finite maps<TD>L
-
-<TR><TD><A HREF="Binaryset.html">Binaryset</A>
-<TD>binary tree implementation of finite sets<TD>SF
-
-<TR><TD><A HREF="BinIO.html">BinIO</A>
-<TD>binary input-output streams (imperative)<TD>L
-
-<TR><TD><A HREF="Bool.html">Bool</A>
-<TD>Booleans<TD>SF
-
-<TR><TD><A HREF="Byte.html">Byte</A>
-<TD>character-byte conversion<TD>SF
-
-<TR><TD><A HREF="Callback.html">Callback</A>
-<TD>registering ML values for access from C code<TD>&nbsp;
-
-<TR><TD><A HREF="Char.html">Char</A>
-<TD>characters<TD>SDFNO
-
-<TR><TD><A HREF="CharArray.html">CharArray</A>
-<TD>arrays of characters<TD>SF
-
-<TR><TD><A HREF="CharArraySlice.html">CharArraySlice</A>
-<TD>sub-arrays of characters<TD>SF
-
-<TR><TD><A HREF="CharVector.html">CharVector</A>
-<TD>vectors of characters (= strings)<TD>SF
-
-<TR><TD><A HREF="CharVectorSlice.html">CharVectorSlice</A>
-<TD>sub-vectors of characters (= substrings)<TD>SF
-
-<TR><TD><A HREF="CommandLine.html">CommandLine</A>
-<TD>program name and arguments<TD>SF
-
-<TR><TD><A HREF="Date.html">Date</A>
-<TD>manipulation of calendar dates<TD>SF   
-
-<TR><TD><A HREF="Dynarray.html">Dynarray</A>
-<TD>dynamic arrays<TD>L
-
-<TR><TD><A HREF="Dynlib.html">Dynlib</A>
-<TD>dynamic linking of foreign (C) functions<TD>&nbsp;
-
-<TR><TD><A HREF="FileSys.html">FileSys</A>
-<TD>interaction with the file system<TD>SF   
-
-<TR><TD><A HREF="General.html">General</A>
-<TD>various top-level primitives<TD>SD
-
-<TR><TD><A HREF="Gdbm.html">Gdbm</A>
-<TD>persistent hash tables of strings (gdbm)<TD>C
-
-<TR><TD><A HREF="Gdimage.html">Gdimage</A>
-<TD>generation of PNG images (Boutell's GD package)<TD>C
-
-<TR><TD><A HREF="Help.html">Help</A>
-<TD>on-line help<TD>DFNO
-
-<TR><TD><A HREF="Int.html">Int</A>
-<TD>operations on integers<TD>SF
-
-<TR><TD><A HREF="Intmap.html">Intmap</A>
-<TD>finite maps from integers<TD>L
-
-<TR><TD><A HREF="Intset.html">Intset</A>
-<TD>finite sets of integers<TD>L
-
-<TR><TD><A HREF="Lexing.html">Lexing</A>
-<TD>support for lexers generated by mosmllex<TD>&nbsp
-
-<TR><TD><A HREF="List.html">List</A>
-<TD>classic list manipulation functions<TD>SDFNO
-
-<TR><TD><A HREF="ListPair.html">ListPair</A>
-<TD>operations on pairs of lists<TD>SF
-
-<TR><TD><A HREF="Listsort.html">Listsort</A>
-<TD>list sorting (mergesort)<TD>&nbsp;
-
-<TR><TD><A HREF="Location.html">Location</A>
-<TD>error reporting for lexers and parsers<TD>&nbsp;
-
-<TR><TD><A HREF="Math.html">Math</A>
-<TD>trigonometric functions etc.<TD>SF
-
-<TR><TD><A HREF="Meta.html">Meta</A>
-<TD>functions specific to the interactive system<TD>&nbsp;
-
-<TR><TD><A HREF="Mosml.html">Mosml</A>
-<TD>various non-standard utilities<TD>F  
-
-<TR><TD><A HREF="Mosmlcgi.html">Mosmlcgi</A>
-<TD>utilities for writing CGI programs<TD>&nbsp;
-
-<TR><TD><A HREF="Mosmlcookie.html">Mosmlcookie</A>
-<TD>manipulating cookies in CGI programs<TD>&nbsp;
-
-<TR><TD><A HREF="Msp.html">Msp</A>
-<TD>ML Server Pages, mixing HTML and SML<TD>&nbsp;
-
-<TR><TD><A HREF="Mysql.html">Mysql</A>
-<TD>interface to the Mysql database server<TD>C
-
-<TR><TD><A HREF="NJ93.html">NJ93</A>
-<TD>top-level compatibility with SML/NJ 0.93<TD>N
-
-<TR><TD><A HREF="Nonstdio.html">Nonstdio</A>
-<TD>non-standard I/O, used by lexers<TD>&nbsp;
-
-<TR><TD><A HREF="OS.html">OS</A>
-<TD>operating system information<TD>SF
-
-<TR><TD><A HREF="Option.html">Option</A>
-<TD>partial functions<TD>SDFNO
-
-<TR><TD><A HREF="Parsing.html">Parsing</A>
-<TD>support for parsers generated by mosmlyac<TD>&nbsp
-
-<TR><TD><A HREF="Path.html">Path</A>
-<TD>file-system independent path manipulation<TD>SF
-
-<TR><TD><A HREF="Polygdbm.html">Polygdbm</A>
-<TD>polymorphic persistent hash tables (gdbm)<TD>C
-
-<TR><TD><A HREF="Polyhash.html">Polyhash</A>
-<TD>polymorphic hash tables<TD>&nbsp;
-
-<TR><TD><A HREF="Postgres.html">Postgres</A>
-<TD>interface to the PostgreSQL database server<TD>C
-
-<TR><TD><A HREF="PP.html">PP</A>
-<TD>general prettyprinters<TD>L 
-
-<TR><TD><A HREF="Process.html">Process</A>
-<TD>manipulating processes<TD>SF
-
-<TR><TD><A HREF="Random.html">Random</A>
-<TD>generation of pseudo-random numbers<TD>&nbsp;
-
-<TR><TD><A HREF="Real.html">Real</A>
-<TD>arithmetics on floating-point numbers<TD>SF
-
-<TR><TD><A HREF="Regex.html">Regex</A>
-<TD>regular expressions as in POSIX 1003.2<TD>C
-
-<TR><TD><A HREF="Signal.html">Signal</A>
-<TD>Unix signals<TD>S
-
-<TR><TD><A HREF="SML90.html">SML90</A>
-<TD>top-level compatibility with SML'90<TD>SO
-
-<TR><TD><A HREF="Socket.html">Socket</A>
-<TD>interface to sockets<TD>C
-
-<TR><TD><A HREF="Splaymap.html">Splaymap</A>
-<TD>splay-tree implementation of finite maps<TD>L 
-
-<TR><TD><A HREF="Splayset.html">Splayset</A>
-<TD>splay-tree implementation of finite sets<TD>L 
-
-<TR><TD><A HREF="String.html">String</A>
-<TD>string manipulation<TD>SDFNO
-
-<TR><TD><A HREF="StringCvt.html">StringCvt</A>
-<TD>conversion to and from strings<TD>SF
-
-<TR><TD><A HREF="Substring.html">Substring</A>
-<TD>manipulation of constant-time substrings<TD>SF
-
-<TR><TD><A HREF="Susp.html">Susp</A>
-<TD>support for lazy evaluation<TD>&nbsp;
-
-<TR><TD><A HREF="TextIO.html">TextIO</A>
-<TD>text input-output streams (imperative)<TD>SDF
-
-<TR><TD><A HREF="Time.html">Time</A>
-<TD>time points and durations<TD>SF
-
-<TR><TD><A HREF="Timer.html">Timer</A>
-<TD>measuring real time and cpu time<TD>SF
-
-<TR><TD><A HREF="Unix.html">Unix</A>
-<TD>starting concurrent subprocesses under Unix<TD>S
-
-<TR><TD><A HREF="Vector.html">Vector</A>
-<TD>immutable constant-time-access vectors<TD>SDFNO
-
-<TR><TD><A HREF="VectorSlice.html">VectorSlice</A>
-<TD>immutable sub-vectors<TD>SF
-
-<TR><TD><A HREF="Weak.html">Weak</A>
-<TD>arrays of weak pointers<TD>&nbsp;
-
-<TR><TD><A HREF="Word.html">Word</A>
-<TD>words (31-bit unsigned integers)<TD>SF
-
-<TR><TD><A HREF="Word8.html">Word8</A>
-<TD>bytes (8-bit unsigned integers)<TD>SF
-
-<TR><TD><A HREF="Word8Array.html">Word8Array</A>
-<TD>arrays of bytes<TD>SF
-
-<TR><TD><A HREF="Word8ArraySlice.html">Word8ArraySlice</A>
-<TD>sub-arrays of byte arrays<TD>SF
-
-<TR><TD><A HREF="Word8Vector.html">Word8Vector</A>
-<TD>vectors of bytes<TD>SF
-
-<TR><TD><A HREF="Word8VectorSlice.html">Word8VectorSlice</A>
-<TD>sub-vectors of byte vectors<TD>SF
+<TR><TD><A HREF="Array.html">Array</A></TD><TD>mutable constant-time-access arrays         </TD><TD>SDF NO  </TD></TR>
+<TR><TD><A HREF="Array2.html">Array2</A></TD><TD>two-dimensional arrays                      </TD><TD>S       </TD></TR>
+<TR><TD><A HREF="ArraySlice.html">ArraySlice</A></TD><TD>mutable sub-arrays                          </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Arraysort.html">Arraysort</A></TD><TD>array sorting (quicksort)                   </TD><TD>   L    </TD></TR>
+<TR><TD><A HREF="BasicIO.html">BasicIO</A></TD><TD>input-output, see Definition (temporary)    </TD><TD> DF     </TD></TR>
+<TR><TD><A HREF="Binarymap.html">Binarymap</A></TD><TD>binary tree implementation of finite maps   </TD><TD>   L    </TD></TR>
+<TR><TD><A HREF="Binaryset.html">Binaryset</A></TD><TD>binary tree implementation of finite sets   </TD><TD>   L    </TD></TR>
+<TR><TD><A HREF="BinIO.html">BinIO</A></TD><TD>binary input-output streams (imperative)    </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Bool.html">Bool</A></TD><TD>Booleans                                    </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Buffer.html">Buffer</A></TD><TD>mutable string buffer                       </TD><TD>        </TD></TR>
+<TR><TD><A HREF="Byte.html">Byte</A></TD><TD>character-byte conversion                   </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Callback.html">Callback</A></TD><TD>registering ML values for access from C     </TD><TD>        </TD></TR>
+<TR><TD><A HREF="Char.html">Char</A></TD><TD>characters                                  </TD><TD>SDF NO  </TD></TR>
+<TR><TD><A HREF="CharArray.html">CharArray</A></TD><TD>arrays of characters                        </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="CharArraySlice.html">CharArraySlice</A></TD><TD>sub-arrays of characters                    </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="CharVector.html">CharVector</A></TD><TD>vectors of characters (= strings)           </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="CharVectorSlice.html">CharVectorSlice</A></TD><TD>sub-vectors of characters (= substrings)    </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="CommandLine.html">CommandLine</A></TD><TD>program name and arguments                  </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Date.html">Date</A></TD><TD>manipulation of calendar dates              </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Dynarray.html">Dynarray</A></TD><TD>dynamic arrays                              </TD><TD>   L    </TD></TR>
+<TR><TD><A HREF="Dynlib.html">Dynlib</A></TD><TD>dynamic linking with C                      </TD><TD>        </TD></TR>
+<TR><TD><A HREF="FileSys.html">FileSys</A></TD><TD>interaction with the file system            </TD><TD>S F     </TD></TR> 
+<TR><TD><A HREF="Gdbm.html">Gdbm</A></TD><TD>persistent hash tables of strings (gdbm)    </TD><TD>      C </TD></TR>
+<TR><TD><A HREF="Gdimage.html">Gdimage</A></TD><TD>generation of PNG images (Boutell's GD)     </TD><TD>      C </TD></TR>
+<TR><TD><A HREF="General.html">General</A></TD><TD>various top-level primitives                </TD><TD>SD      </TD></TR>
+<TR><TD><A HREF="Graphics.html">Graphics</A></TD><TD>graphics primitives (DOS version only)      </TD><TD>        </TD></TR>
+<TR><TD><A HREF="Hashset.html">Hashset</A></TD><TD>sets implemented by hashtables              </TD><TD>   L    </TD></TR>
+<TR><TD><A HREF="Help.html">Help</A></TD><TD>on-line help                                </TD><TD> DF NO  </TD></TR>
+<TR><TD><A HREF="Int.html">Int</A></TD><TD>operations on integers                      </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Intmap.html">Intmap</A></TD><TD>finite maps from integers                   </TD><TD>   L    </TD></TR>
+<TR><TD><A HREF="Intset.html">Intset</A></TD><TD>finite sets of integers                     </TD><TD>   L    </TD></TR>
+<TR><TD><A HREF="Lexing.html">Lexing</A></TD><TD>support for lexers generated by mosmllex    </TD><TD>        </TD></TR>
+<TR><TD><A HREF="List.html">List</A></TD><TD>classic list manipulation functions         </TD><TD>SDF NO  </TD></TR>
+<TR><TD><A HREF="ListPair.html">ListPair</A></TD><TD>operations on pairs of lists                </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Listsort.html">Listsort</A></TD><TD>list sorting (mergesort)                    </TD><TD>        </TD></TR>
+<TR><TD><A HREF="Location.html">Location</A></TD><TD>error reporting for lexers and parsers      </TD><TD>        </TD></TR>
+<TR><TD><A HREF="Math.html">Math</A></TD><TD>trigonometric functions etc.                </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Meta.html">Meta</A></TD><TD>functions specific to the interactive system</TD><TD>        </TD></TR>
+<TR><TD><A HREF="Misc.html">Misc</A></TD><TD>various for initial top-level environment   </TD><TD> DF NO  </TD></TR>
+<TR><TD><A HREF="Mosml.html">Mosml</A></TD><TD>various non-standard utilities              </TD><TD>  F     </TD></TR>
+<TR><TD><A HREF="Mosmlcgi.html">Mosmlcgi</A></TD><TD>utilities for writing CGI programs          </TD><TD>        </TD></TR>
+<TR><TD><A HREF="Mosmlcookie.html">Mosmlcookie</A></TD><TD>manipulating cookies in CGI programs        </TD><TD>        </TD></TR>
+<TR><TD><A HREF="Msp.html">Msp</A></TD><TD>utilities for generating HTML code          </TD><TD>        </TD></TR> 
+<TR><TD><A HREF="MySQL.html">MySQL</A></TD><TD>interface to the Mysql database server      </TD><TD>      C </TD></TR>
+<TR><TD><A HREF="NJ93.html">NJ93</A></TD><TD>top-level compatibility with SML/NJ 0.93    </TD><TD>    N   </TD></TR>
+<TR><TD><A HREF="Nonstdio.html">Nonstdio</A></TD><TD>non-standard I/O, used by lexers            </TD><TD>        </TD></TR>
+<TR><TD><A HREF="Option.html">Option</A></TD><TD>partial functions                           </TD><TD>SDF NO  </TD></TR>
+<TR><TD><A HREF="OS.html">OS</A></TD><TD>operating system information                </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Parsing.html">Parsing</A></TD><TD>support for parsers generated by mosmlyac   </TD><TD>        </TD></TR>
+<TR><TD><A HREF="Path.html">Path</A></TD><TD>file-system independent path manipulation   </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Polygdbm.html">Polygdbm</A></TD><TD>polymorphic persistent hash tables (gdbm)   </TD><TD>      C </TD></TR>
+<TR><TD><A HREF="Polyhash.html">Polyhash</A></TD><TD>polymorphic hash tables                     </TD><TD>        </TD></TR>
+<TR><TD><A HREF="Postgres.html">Postgres</A></TD><TD>interface to PostgreSQL database server     </TD><TD>        </TD></TR>
+<TR><TD><A HREF="PP.html">PP</A></TD><TD>general prettyprinters                      </TD><TD>   L    </TD></TR>
+<TR><TD><A HREF="Process.html">Process</A></TD><TD>manipulating processes                      </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Random.html">Random</A></TD><TD>generation of pseudo-random numbers         </TD><TD>        </TD></TR>
+<TR><TD><A HREF="Rbset.html">Rbset</A></TD><TD>sets implemented by red-black trees         </TD><TD>        </TD></TR>
+<TR><TD><A HREF="Real.html">Real</A></TD><TD>arithmetic on floating-point numbers        </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Redblackmap.html">Redblackmap</A></TD><TD>maps implemented by red-black trees         </TD><TD>        </TD></TR>
+<TR><TD><A HREF="Regex.html">Regex</A></TD><TD>regular expressions as in POSIX 1003.2      </TD><TD>      C </TD></TR>
+<TR><TD><A HREF="Real.html">Real</A></TD><TD>arithmetic on floating-point numbers        </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Signal.html">Signal</A></TD><TD>Unix signals                                </TD><TD>S       </TD></TR>
+<TR><TD><A HREF="Socket.html">Socket</A></TD><TD>interface to sockets                        </TD><TD>      C </TD></TR>
+<TR><TD><A HREF="Splaymap.html">Splaymap</A></TD><TD>splay-tree implementation of finite maps    </TD><TD>   L    </TD></TR>
+<TR><TD><A HREF="Splayset.html">Splayset</A></TD><TD>splay-tree implementation of finite sets    </TD><TD>   L    </TD></TR>
+<TR><TD><A HREF="String.html">String</A></TD><TD>string manipulation                         </TD><TD>SDF NO  </TD></TR>
+<TR><TD><A HREF="StringCvt.html">StringCvt</A></TD><TD>conversion to and from strings              </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Substring.html">Substring</A></TD><TD>manipulation of constant-time substrings    </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Susp.html">Susp</A></TD><TD>support for lazy evaluation                 </TD><TD>        </TD></TR>
+<TR><TD><A HREF="TextIO.html">TextIO</A></TD><TD>text input-output streams (imperative)      </TD><TD>SDF     </TD></TR>
+<TR><TD><A HREF="Time.html">Time</A></TD><TD>time points and durations                   </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Timer.html">Timer</A></TD><TD>measuring real time and cpu time            </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Unix.html">Unix</A></TD><TD>starting concurrent subprocesses            </TD><TD>S       </TD></TR>
+<TR><TD><A HREF="Vector.html">Vector</A></TD><TD>immutable constant-time-access vectors      </TD><TD>SDF NO  </TD></TR>
+<TR><TD><A HREF="VectorSlice.html">VectorSlice</A></TD><TD>immutable sub-vectors                       </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Weak.html">Weak</A></TD><TD>arrays of weak pointers                     </TD><TD>        </TD></TR>
+<TR><TD><A HREF="Word.html">Word</A></TD><TD>words (31-bit unsigned integers)            </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Word8.html">Word8</A></TD><TD>bytes (8-bit unsigned integers)             </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Word8Array.html">Word8Array</A></TD><TD>arrays of bytes                             </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Word8ArraySlice.html">Word8ArraySlice</A></TD><TD>sub-arrays of byte arrays                   </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Word8Vector.html">Word8Vector</A></TD><TD>vectors of bytes                            </TD><TD>S F     </TD></TR>
+<TR><TD><A HREF="Word8VectorSlice.html">Word8VectorSlice</A></TD><TD>sub-vectors of byte vectors                 </TD><TD>S F     </TD></TR>
 </TABLE>
+
 
 <P>The compatibility field is interpreted as follows:
 
@@ -363,8 +220,8 @@ instance, to get help on the <CODE>toString</CODE> functions, type
    help "tostring";
 </PRE>
 
-<P><hr><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">
-Moscow ML</A> 2.00.1</EM>,
-<a href="http://www.dina.kvl.dk/~sestoft/">Peter Sestoft</a>
-(<a href="mailto:sestoft@dina.kvl.dk">sestoft@dina.kvl.dk</a>)
-2000-10-26</body></html>
+<P><hr><EM><A HREF="http://mosml.org">
+Moscow ML</A> 2.10</EM>,
+<a href="http://www.itu.dk/~sestoft/">Peter Sestoft</a>
+(<a href="mailto:sestoft@itu.dk">sestoft@itu.dk</a>)
+</body></html>

@@ -1,0 +1,165 @@
+<HTML><HEAD><TITLE>Structure Rbset</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure Rbset</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* Rbset -- ordered sets implemented by red-black trees *)
+<A NAME="line1"></A>(* Intention: should resemble SML/NJs ORD_SET signature *)
+<A NAME="line2"></A>
+<A NAME="line3"></A>signature Rbset = sig
+<A NAME="line4"></A>type 'item <A HREF="#set-typ">set</A>
+<A NAME="line5"></A>
+<A NAME="line6"></A>exception NotFound
+<A NAME="line7"></A>exception NonMonotonic
+<A NAME="line8"></A>
+<A NAME="line9"></A>val <A HREF="#empty-val">empty</A>        : ('item * 'item -&gt; order) -&gt; 'item set
+<A NAME="line10"></A>val <A HREF="#singleton-val">singleton</A>    : ('item * 'item -&gt; order) -&gt; 'item -&gt; 'item set
+<A NAME="line11"></A>val <A HREF="#add-val">add</A>          : 'item set * 'item -&gt; 'item set
+<A NAME="line12"></A>val add'         : 'item * 'item set -&gt; 'item set
+<A NAME="line13"></A>val <A HREF="#addList-val">addList</A>      : 'item set * 'item list -&gt; 'item set
+<A NAME="line14"></A>val <A HREF="#isEmpty-val">isEmpty</A>      : 'item set -&gt; bool
+<A NAME="line15"></A>val <A HREF="#isSubset-val">isSubset</A>     : 'item set * 'item set -&gt; bool
+<A NAME="line16"></A>val <A HREF="#member-val">member</A>       : 'item set * 'item -&gt; bool
+<A NAME="line17"></A>val <A HREF="#delete-val">delete</A>       : 'item set * 'item -&gt; 'item set
+<A NAME="line18"></A>val <A HREF="#numItems-val">numItems</A>     : 'item set -&gt;  int
+<A NAME="line19"></A>val getOrder     : 'item set -&gt; ('item * 'item -&gt; order)
+<A NAME="line20"></A>val <A HREF="#union-val">union</A>        : 'item set * 'item set -&gt; 'item set
+<A NAME="line21"></A>val <A HREF="#intersection-val">intersection</A> : 'item set * 'item set -&gt; 'item set
+<A NAME="line22"></A>val <A HREF="#difference-val">difference</A>   : 'item set * 'item set -&gt; 'item set
+<A NAME="line23"></A>val <A HREF="#listItems-val">listItems</A>    : 'item set -&gt; 'item list
+<A NAME="line24"></A>val <A HREF="#app-val">app</A>          : ('item -&gt; unit) -&gt; 'item set -&gt; unit
+<A NAME="line25"></A>val <A HREF="#revapp-val">revapp</A>       : ('item -&gt; unit) -&gt; 'item set -&gt; unit
+<A NAME="line26"></A>val <A HREF="#foldr-val">foldr</A>        : ('item * 'b -&gt; 'b) -&gt; 'b -&gt; 'item set -&gt; 'b
+<A NAME="line27"></A>val <A HREF="#foldl-val">foldl</A>        : ('item * 'b -&gt; 'b) -&gt; 'b -&gt; 'item set -&gt; 'b
+<A NAME="line28"></A>val <A HREF="#map-val">map</A>          : ('item -&gt; 'newitem) * ('newitem * 'newitem -&gt; order) 
+<A NAME="line29"></A>                   -&gt; 'item set -&gt; 'newitem set
+<A NAME="line30"></A>val <A HREF="#mapMono-val">mapMono</A>      : ('item -&gt; 'newitem) * ('newitem * 'newitem -&gt; order) 
+<A NAME="line31"></A>                   -&gt; 'item set -&gt; 'newitem set
+<A NAME="line32"></A>val <A HREF="#find-val">find</A>         : ('item -&gt; bool) -&gt; 'item set -&gt; 'item option
+<A NAME="line33"></A>val <A HREF="#min-val">min</A>          : 'item set -&gt; 'item option
+<A NAME="line34"></A>val <A HREF="#max-val">max</A>          : 'item set -&gt; 'item option
+<A NAME="line35"></A>val hash         : ('item -&gt; word) -&gt; 'item set -&gt; word
+<A NAME="line36"></A>val <A HREF="#equal-val">equal</A>        : 'item set * 'item set -&gt; bool
+<A NAME="line37"></A>val <A HREF="#compare-val">compare</A>      : 'item set * 'item set -&gt; order 
+<A NAME="line38"></A>
+<A NAME="line39"></A>val depth        : 'item set -&gt; int
+<A NAME="line40"></A>
+<A NAME="line41"></A>datatype 'item intv = 
+<A NAME="line42"></A>    All
+<A NAME="line43"></A>  | From of 'item
+<A NAME="line44"></A>  | To   of 'item
+<A NAME="line45"></A>  | FromTo of 'item * 'item
+<A NAME="line46"></A>
+<A NAME="line47"></A>val <A HREF="#subset-val">subset</A>  : 'item set * 'item intv -&gt; 'item set
+<A NAME="line48"></A>val <A HREF="#sublist-val">sublist</A> : 'item set * 'item intv -&gt; 'item list
+<A NAME="line49"></A>
+<A NAME="line50"></A>end
+<A NAME="line51"></A>
+<A NAME="line52"></A>(* 
+<A NAME="line53"></A>
+   ['item <A NAME="set-typ"><B>set</B></A>] is the type of sets of ordered elements of type 'item.
+   The ordering relation on the elements is used in the representation
+   of the set.  The result of combining or comparing two sets with
+   different underlying ordering relations is undefined.  The
+   implementation uses Okasaki-style red-black trees.
+
+   [<A NAME="empty-val"><B>empty</B></A> ordr] creates a new empty set with the given ordering
+   relation.  
+
+   [<A NAME="singleton-val"><B>singleton</B></A> ordr i] creates the singleton set containing i, with the
+   given ordering relation.
+
+   [<A NAME="add-val"><B>add</B></A>(s, i)] adds item i to set s.  
+
+   [<A NAME="addList-val"><B>addList</B></A>(s, xs)] adds all items from the list xs to the set s.
+
+   [<A NAME="isEmpty-val"><B>isEmpty</B></A> s] returns true if and only if the set is empty.
+
+   [<A NAME="equal-val"><B>equal</B></A>(s1, s2)] returns true if and only if the two sets have the
+   same elements, as determined by the ordering relation given when
+   the sets were created.  
+
+   [<A NAME="isSubset-val"><B>isSubset</B></A>(s1, s2)] returns true if and only if s1 is a subset of s2.
+
+   [<A NAME="member-val"><B>member</B></A>(s, i)] returns true if and only if i is in s.
+
+   [<A NAME="delete-val"><B>delete</B></A>(s, i)] removes item i from s.  Raises NotFound if i is not in s.
+   
+   [<A NAME="numItems-val"><B>numItems</B></A> s] returns the number of items in set s.
+
+   [<A NAME="union-val"><B>union</B></A>(s1, s2)] returns the union of s1 and s2.  
+
+   [<A NAME="intersection-val"><B>intersection</B></A>(s1, s2)] returns the intersection of s1 and s2.
+
+   [<A NAME="difference-val"><B>difference</B></A>(s1, s2)] returns the difference between s1 and s2 (that
+   is, the set of elements in s1 but not in s2).
+
+   [<A NAME="listItems-val"><B>listItems</B></A> s] returns a list of the items in set s, in increasing
+   order.
+
+   [<A NAME="app-val"><B>app</B></A> f s] applies function f to the elements of s, in increasing
+   order.
+
+   [<A NAME="revapp-val"><B>revapp</B></A> f s] applies function f to the elements of s, in decreasing
+   order. 
+
+   [<A NAME="foldl-val"><B>foldl</B></A> f e s] applies the folding function f to the entries of the
+   set in increasing order.
+
+   [<A NAME="foldr-val"><B>foldr</B></A> f e s] applies the folding function f to the entries of the
+   set in decreasing order. 
+
+   [<A NAME="map-val"><B>map</B></A> (f, ordr) s] creates a new set with underlying ordering ordr
+   by applying function f to all elements of the set s.
+
+   [<A NAME="mapMono-val"><B>mapMono</B></A> (f, ordr) s] creates a new set by applying the strictly
+   monotonically increasing function f to all elements of s.  The new
+   set will have ordering ordr.  This is faster than map (f, ordr) s by 
+   a logarithmic factor, but the function must satisfy 
+      ordr(f x, f y) = ordr'(x, y) 
+   for all elements x, y in s, where ordr' is the ordering relation 
+   on s; otherwise exception NonMonotonic is thrown.
+
+   [<A NAME="find-val"><B>find</B></A> p s] returns SOME i, where i is an item in s which satisfies
+   p, if one exists; otherwise returns NONE.  Traverses the entries of
+   the set in increasing order.
+
+   [<A NAME="min-val"><B>min</B></A> s] returns SOME i, where i is the least item in the set s, if s is 
+   non-empty; returns NONE if s is empty.
+
+   [<A NAME="max-val"><B>max</B></A> s] returns SOME i, where i is the greatest item in the set s,
+   if s is non-empty; returns NONE if s is empty.
+
+   [hashCode h s] returns the hashcode of the set, which is the sum of
+   the hashcodes of its elements, as computed by the function h.
+
+   [<A NAME="compare-val"><B>compare</B></A> (s1, s2)] returns LESS, EQUAL or GREATER according as s1
+   precedes, equals or follows s2 in the lexicographic ordering that
+   would be obtained by comparing the sorted lists of elements of the
+   two sets.  It holds that 
+      equal(s1, s2)    if and only if compare(s1, s2) = EQUAL
+      isSubset(s1, s2) implies compare(s1, s2) = LESS
+      isSubset(s2, s1) implies compare(s1, s2) = GREATER
+
+   [<A NAME="subset-val"><B>subset</B></A>(s, intv)] returns a set of those elements of s that belong
+   to the interval intv.  The intervals have the following meaning:
+
+       All             denotes  all elements
+       From e1         denotes  elements e for which cmp(e1, e) &lt;&gt; GREATER
+       To e2           denotes  elements e for which cmp(e, e2) = LESS
+       FromTo(e1, e2)  denotes  elements e for which cmp(e1, e) &lt;&gt; GREATER
+                                                 and cmp(e, e2) = LESS
+
+   [<A NAME="sublist-val"><B>sublist</B></A>(s, intv)] returns a list, in order, of those elements of s
+   that belong to the interval intv.  Thus sublist(s, All) is equivalent 
+   to listItems s.
+*)
+
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://mosml.org">Moscow ML</A> 2.10</EM></BODY></HTML>

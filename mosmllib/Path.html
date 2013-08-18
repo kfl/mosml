@@ -22,85 +22,90 @@
 <A NAME="line13"></A>
 <A NAME="line14"></A>val <A HREF="#isAbsolute-val">isAbsolute</A>   : string -&gt; bool
 <A NAME="line15"></A>val <A HREF="#isRelative-val">isRelative</A>   : string -&gt; bool
-<A NAME="line16"></A>val <A HREF="#mkAbsolute-val">mkAbsolute</A>   : { path : string, relativeTo : string } -&gt; string
-<A NAME="line17"></A>val <A HREF="#mkRelative-val">mkRelative</A>   : { path : string, relativeTo : string } -&gt; string
-<A NAME="line18"></A>
-<A NAME="line19"></A>val <A HREF="#concat-val">concat</A>       : string * string -&gt; string
-<A NAME="line20"></A>
-<A NAME="line21"></A>val <A HREF="#mkCanonical-val">mkCanonical</A>  : string -&gt; string
-<A NAME="line22"></A>val <A HREF="#isCanonical-val">isCanonical</A>  : string -&gt; bool
-<A NAME="line23"></A>
-<A NAME="line24"></A>val <A HREF="#splitDirFile-val">splitDirFile</A> : string -&gt; {dir : string, file : string}
-<A NAME="line25"></A>val <A HREF="#joinDirFile-val">joinDirFile</A>  : {dir : string, file : string} -&gt; string
-<A NAME="line26"></A>val <A HREF="#dir-val">dir</A>          : string -&gt; string
-<A NAME="line27"></A>val <A HREF="#file-val">file</A>         : string -&gt; string
-<A NAME="line28"></A>
-<A NAME="line29"></A>val <A HREF="#splitBaseExt-val">splitBaseExt</A> : string -&gt; {base : string, ext : string option}
-<A NAME="line30"></A>val <A HREF="#joinBaseExt-val">joinBaseExt</A>  : {base : string, ext: string option} -&gt; string
-<A NAME="line31"></A>val <A HREF="#base-val">base</A>         : string -&gt; string    
-<A NAME="line32"></A>val <A HREF="#ext-val">ext</A>          : string -&gt; string option
-<A NAME="line33"></A>
-<A NAME="line34"></A>(* 
-<A NAME="line35"></A>   This module provides OS-independent functions for manipulating
-<A NAME="line36"></A>   strings that represent file names and paths in a directory
-<A NAME="line37"></A>   structure.  None of these functions accesses the actual filesystem.
-<A NAME="line38"></A>   
-<A NAME="line39"></A>   Definitions: 
-<A NAME="line40"></A>
-<A NAME="line41"></A>   * An arc denotes a directory or file.  Under Unix or DOS, an arc may
-<A NAME="line42"></A>   have form "..", ".", "", or "abc", or similar.
-<A NAME="line43"></A>
-<A NAME="line44"></A>   * An absolute path has a root: Unix examples include "/", "/a/b";
-<A NAME="line45"></A>   DOS examples include "\", "\a\b", "A:\a\b".  
-<A NAME="line46"></A>
-<A NAME="line47"></A>   * A relative path is one without a root: Unix examples include
-<A NAME="line48"></A>   "..", "a/b"; DOS examples include "..", "a\b", "A:a\b".
-<A NAME="line49"></A>
-<A NAME="line50"></A>   * A path has an associated volume.  Under Unix, there is only one
-<A NAME="line51"></A>   volume, whose name is "".  Under DOS, the volume names are "",
-<A NAME="line52"></A>   "A:", "C:", and similar.
-<A NAME="line53"></A>
-<A NAME="line54"></A>   * A canonical path contains no occurrences of the empty arc "" or
-<A NAME="line55"></A>   the current arc ".", and contains or the parent arc ".." only at
-<A NAME="line56"></A>   the beginning and only if the path is relative.  
-<A NAME="line57"></A>
-<A NAME="line58"></A>   * All functions (except concat) preserve canonical paths.  That is,
-<A NAME="line59"></A>   if all arguments are canonical, then so will the result be.
-<A NAME="line60"></A>
-<A NAME="line61"></A>   * All functions are defined so that they work sensibly on canonical 
-<A NAME="line62"></A>   paths.
-<A NAME="line63"></A>
-<A NAME="line64"></A>   * There are three groups of functions, corresponding to three ways
-<A NAME="line65"></A>   to look at paths, exemplified by the following paths:
-<A NAME="line66"></A>
-<A NAME="line67"></A>        Unix:    d/e/f/a.b.c       and     /d/e/f/a.b.c 
-<A NAME="line68"></A>        DOS:     A:d\e\f\a.b.c     and     A:d\e\f\a.b.c     
-<A NAME="line69"></A>
-<A NAME="line70"></A>   (1) A path consists of a sequence of arcs, possibly preceded by a
-<A NAME="line71"></A>       volume and a root:
-<A NAME="line72"></A>
-<A NAME="line73"></A>                          vol  [--- arcs ---]        vol  root  [--- arcs ---]
-<A NAME="line74"></A>        ---------------------------------------------------------------------- 
-<A NAME="line75"></A>        Unix examples:         d  e  f  a.b.c               /   d  e  f  a.b.c
-<A NAME="line76"></A>        DOS examples:     A:   d  e  f  a.b          A:     \   d  e  f  a.b
+<A NAME="line16"></A>val <A HREF="#isRoot-val">isRoot</A>       : string -&gt; bool
+<A NAME="line17"></A>val <A HREF="#mkAbsolute-val">mkAbsolute</A>   : { path : string, relativeTo : string } -&gt; string
+<A NAME="line18"></A>val <A HREF="#mkRelative-val">mkRelative</A>   : { path : string, relativeTo : string } -&gt; string
+<A NAME="line19"></A>
+<A NAME="line20"></A>val <A HREF="#concat-val">concat</A>       : string * string -&gt; string
+<A NAME="line21"></A>
+<A NAME="line22"></A>val <A HREF="#mkCanonical-val">mkCanonical</A>  : string -&gt; string
+<A NAME="line23"></A>val <A HREF="#isCanonical-val">isCanonical</A>  : string -&gt; bool
+<A NAME="line24"></A>
+<A NAME="line25"></A>val <A HREF="#splitDirFile-val">splitDirFile</A> : string -&gt; {dir : string, file : string}
+<A NAME="line26"></A>val <A HREF="#joinDirFile-val">joinDirFile</A>  : {dir : string, file : string} -&gt; string
+<A NAME="line27"></A>val <A HREF="#dir-val">dir</A>          : string -&gt; string
+<A NAME="line28"></A>val <A HREF="#file-val">file</A>         : string -&gt; string
+<A NAME="line29"></A>
+<A NAME="line30"></A>val <A HREF="#splitBaseExt-val">splitBaseExt</A> : string -&gt; {base : string, ext : string option}
+<A NAME="line31"></A>val <A HREF="#joinBaseExt-val">joinBaseExt</A>  : {base : string, ext: string option} -&gt; string
+<A NAME="line32"></A>val <A HREF="#base-val">base</A>         : string -&gt; string    
+<A NAME="line33"></A>val <A HREF="#ext-val">ext</A>          : string -&gt; string option
+<A NAME="line34"></A>
+<A NAME="line35"></A>exception InvalidArc
+<A NAME="line36"></A>val <A HREF="#fromUnixPath-val">fromUnixPath</A> : string -&gt; string
+<A NAME="line37"></A>val <A HREF="#toUnixPath-val">toUnixPath</A>   : string -&gt; string
+<A NAME="line38"></A>
+<A NAME="line39"></A>(* 
+<A NAME="line40"></A>   This module provides OS-independent functions for manipulating
+<A NAME="line41"></A>   strings that represent file names and paths in a directory
+<A NAME="line42"></A>   structure.  None of these functions accesses the actual filesystem.
+<A NAME="line43"></A>   
+<A NAME="line44"></A>   Definitions: 
+<A NAME="line45"></A>
+<A NAME="line46"></A>   * An arc denotes a directory or file.  Under Unix or DOS, an arc may
+<A NAME="line47"></A>   have form "..", ".", "", or "abc", or similar.
+<A NAME="line48"></A>
+<A NAME="line49"></A>   * An absolute path has a root: Unix examples include "/", "/a/b";
+<A NAME="line50"></A>   DOS examples include "\", "\a\b", "A:\a\b".  
+<A NAME="line51"></A>
+<A NAME="line52"></A>   * A relative path is one without a root: Unix examples include
+<A NAME="line53"></A>   "..", "a/b"; DOS examples include "..", "a\b", "A:a\b".
+<A NAME="line54"></A>
+<A NAME="line55"></A>   * A path has an associated volume.  Under Unix, there is only one
+<A NAME="line56"></A>   volume, whose name is "".  Under DOS, the volume names are "",
+<A NAME="line57"></A>   "A:", "C:", and similar.
+<A NAME="line58"></A>
+<A NAME="line59"></A>   * A canonical path contains no occurrences of the empty arc "" or
+<A NAME="line60"></A>   the current arc ".", and contains or the parent arc ".." only at
+<A NAME="line61"></A>   the beginning and only if the path is relative.  
+<A NAME="line62"></A>
+<A NAME="line63"></A>   * All functions (except concat) preserve canonical paths.  That is,
+<A NAME="line64"></A>   if all arguments are canonical, then so will the result be.
+<A NAME="line65"></A>
+<A NAME="line66"></A>   * All functions are defined so that they work sensibly on canonical 
+<A NAME="line67"></A>   paths.
+<A NAME="line68"></A>
+<A NAME="line69"></A>   * There are three groups of functions, corresponding to three ways
+<A NAME="line70"></A>   to look at paths, exemplified by the following paths:
+<A NAME="line71"></A>
+<A NAME="line72"></A>        Unix:    d/e/f/a.b.c       and     /d/e/f/a.b.c 
+<A NAME="line73"></A>        DOS:     A:d\e\f\a.b.c     and     A:\d\e\f\a.b.c     
+<A NAME="line74"></A>
+<A NAME="line75"></A>   (1) A path consists of a sequence of arcs, possibly preceded by a
+<A NAME="line76"></A>       volume and a root:
 <A NAME="line77"></A>
-<A NAME="line78"></A>   (2) A path consists of a directory part and a (last) file name part:
-<A NAME="line79"></A>
-<A NAME="line80"></A>                          directory   file            directory  file 
-<A NAME="line81"></A>        ------------------------------------------------------------------
-<A NAME="line82"></A>        Unix examples:    d/e/f       a.b.c           /d/e/f     a.b.c
-<A NAME="line83"></A>        DOS examples:     A:d\e\f     a.b             A:\d\e\f   a.b
+<A NAME="line78"></A>                          vol  [--- arcs ---]        vol  root  [--- arcs ---]
+<A NAME="line79"></A>        ---------------------------------------------------------------------- 
+<A NAME="line80"></A>        Unix examples:         d  e  f  a.b.c               /   d  e  f  a.b.c
+<A NAME="line81"></A>        DOS examples:     A:   d  e  f  a.b          A:     \   d  e  f  a.b
+<A NAME="line82"></A>
+<A NAME="line83"></A>   (2) A path consists of a directory part and a (last) file name part:
 <A NAME="line84"></A>
-<A NAME="line85"></A>   (3) A path consists of a base and an extension:
-<A NAME="line86"></A>
-<A NAME="line87"></A>                          base       extension       base        extension
-<A NAME="line88"></A>        ------------------------------------------------------------------
-<A NAME="line89"></A>        Unix examples:    d/e/f/a.b      c           /d/e/f/a.b      c
-<A NAME="line90"></A>        DOS examples:     A:d\e\f\a      b           A:\d\e\f\a      b
+<A NAME="line85"></A>                          directory   file            directory  file 
+<A NAME="line86"></A>        ------------------------------------------------------------------
+<A NAME="line87"></A>        Unix examples:    d/e/f       a.b.c           /d/e/f     a.b.c
+<A NAME="line88"></A>        DOS examples:     A:d\e\f     a.b             A:\d\e\f   a.b
+<A NAME="line89"></A>
+<A NAME="line90"></A>   (3) A path consists of a base and an extension:
 <A NAME="line91"></A>
-<A NAME="line92"></A>
-<A NAME="line93"></A>   GROUP 0: General functions on paths:
-<A NAME="line94"></A>
+<A NAME="line92"></A>                          base       extension       base        extension
+<A NAME="line93"></A>        ------------------------------------------------------------------
+<A NAME="line94"></A>        Unix examples:    d/e/f/a.b      c           /d/e/f/a.b      c
+<A NAME="line95"></A>        DOS examples:     A:d\e\f\a      b           A:\d\e\f\a      b
+<A NAME="line96"></A>
+<A NAME="line97"></A>
+<A NAME="line98"></A>   GROUP 0: General functions on paths:
+<A NAME="line99"></A>
    [<A NAME="parentArc-val"><B>parentArc</B></A>] is the arc denoting a parent directory: ".." under 
    DOS and Unix.
 
@@ -111,6 +116,9 @@
 
    [<A NAME="isAbsolute-val"><B>isAbsolute</B></A> p] returns true if p is an absolute path.  
    Equals not (isRelative p).
+
+   [<A NAME="isRoot-val"><B>isRoot</B></A> p] returns true if p is a canonical specification of a root
+   directory. That is, if p is an absolute path with no arcs.
 
    [<A NAME="validVolume-val"><B>validVolume</B></A> {isAbs, vol}] returns true if vol is a valid volume
    name for an absolute path (if isAbs=true) resp. for a relative path
@@ -204,10 +212,24 @@
    [<A NAME="ext-val"><B>ext</B></A> s] equals #ext (splitBaseExt s).
 
    [<A NAME="base-val"><B>base</B></A> s] equals #base (splitBaseExt s).
+
+   
+   GROUP 4: Convenience functions for manipulating Unix-style paths.
+
+   [<A NAME="fromUnixPath-val"><B>fromUnixPath</B></A> s] returns a path in the style of the host OS from
+   the Unix-style path s. Slash characters are translated to the
+   directory separators of the local system, as are parent arcs and
+   current arcs.  Raises InvalidArc if any arc in s is invalid in the
+   host OS's path syntax.
+
+   [<A NAME="toUnixPath-val"><B>toUnixPath</B></A> s] returns a Unix-style path from the path s in the
+   style of the host OS. If the path s has a non-empty volume name,
+   then the Path exception is raised. Raises InvalidArc if any arc
+   contains a slash character.
 *)
 
 </PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
 <TH><A HREF="idIndex.html">Identifier index</A>
 <TH><A HREF="index.html">Structure index</A>
 </TABLE><HR>
-<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>
+<BR><EM><A HREF="http://mosml.org">Moscow ML</A> 2.10</EM></BODY></HTML>

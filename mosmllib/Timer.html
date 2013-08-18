@@ -15,12 +15,15 @@
 <A NAME="line6"></A>val <A HREF="#totalCPUTimer-val">totalCPUTimer</A>  : unit -&gt; cpu_timer
 <A NAME="line7"></A>val <A HREF="#checkCPUTimer-val">checkCPUTimer</A>  : cpu_timer -&gt; { usr : Time.time, sys : Time.time }
 <A NAME="line8"></A>val <A HREF="#checkGCTime-val">checkGCTime</A>    : cpu_timer -&gt; Time.time
-<A NAME="line9"></A>
-<A NAME="line10"></A>val <A HREF="#startRealTimer-val">startRealTimer</A> : unit -&gt; real_timer
-<A NAME="line11"></A>val <A HREF="#totalRealTimer-val">totalRealTimer</A> : unit -&gt; real_timer
-<A NAME="line12"></A>val <A HREF="#checkRealTimer-val">checkRealTimer</A> : real_timer -&gt; Time.time
-<A NAME="line13"></A>
-<A NAME="line14"></A>(* 
+<A NAME="line9"></A>val <A HREF="#checkCPUTimes-val">checkCPUTimes</A>  : cpu_timer -&gt; { nongc : {usr : Time.time, sys : Time.time},
+<A NAME="line10"></A>                                    gc    : {usr : Time.time, sys : Time.time}
+<A NAME="line11"></A>                                  }
+<A NAME="line12"></A>
+<A NAME="line13"></A>val <A HREF="#startRealTimer-val">startRealTimer</A> : unit -&gt; real_timer
+<A NAME="line14"></A>val <A HREF="#totalRealTimer-val">totalRealTimer</A> : unit -&gt; real_timer
+<A NAME="line15"></A>val <A HREF="#checkRealTimer-val">checkRealTimer</A> : real_timer -&gt; Time.time
+<A NAME="line16"></A>
+<A NAME="line17"></A>(* 
    [<A NAME="cpu_timer-typ"><B>cpu_timer</B></A>] is the type of timers for measuring CPU time consumption
    (user time, garbage collection time, and system time).
 
@@ -43,6 +46,15 @@
    garbage collection since tmr was started.  Under MS DOS and MS
    Windows, gc time is measured in real time.
 
+   [<A NAME="checkCPUTimes-val"><B>checkCPUTimes</B></A> tmr] returns the amount of CPU time consumed since
+   tmr was started spilt into time spend in the program (nongc) and on
+   garbage collecttion (gc). For both nongc and gc a record {usr, sys}
+   is returned where usr is the amount of user CPU time consumed since
+   tmr was started and sys is the amount of system CPU time consumed
+   since tmr was started.  Note that Moscow ML will allways attribute
+   all the system CPU time to the program (nongc).  That is,
+   #sys(#gc(checkCPUTimes tmr)) is always 0.
+
    [<A NAME="startRealTimer-val"><B>startRealTimer</B></A> ()] returns a real_timer started at the moment of 
    the call.
 
@@ -57,4 +69,4 @@
 <TH><A HREF="idIndex.html">Identifier index</A>
 <TH><A HREF="index.html">Structure index</A>
 </TABLE><HR>
-<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>
+<BR><EM><A HREF="http://mosml.org">Moscow ML</A> 2.10</EM></BODY></HTML>

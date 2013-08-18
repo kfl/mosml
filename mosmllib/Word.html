@@ -47,15 +47,19 @@
 <A NAME="line38"></A>val <A HREF="#toIntX-val">toIntX</A>     : word -&gt; int            (* with sign extension *)
 <A NAME="line39"></A>val <A HREF="#fromInt-val">fromInt</A>    : int -&gt; word
 <A NAME="line40"></A>
-<A NAME="line41"></A>val <A HREF="#toLargeWord-val">toLargeWord</A>   : word -&gt; word
-<A NAME="line42"></A>val <A HREF="#toLargeWordX-val">toLargeWordX</A>  : word -&gt; word        (* with sign extension *)
-<A NAME="line43"></A>val <A HREF="#fromLargeWord-val">fromLargeWord</A> : word -&gt; word
+<A NAME="line41"></A>val <A HREF="#toLarge-val">toLarge</A>    : word -&gt; word
+<A NAME="line42"></A>val <A HREF="#toLargeX-val">toLargeX</A>   : word -&gt; word        (* with sign extension *)
+<A NAME="line43"></A>val <A HREF="#fromLarge-val">fromLarge</A>  : word -&gt; word
 <A NAME="line44"></A>
-<A NAME="line45"></A>val <A HREF="#toLargeInt-val">toLargeInt</A>    : word -&gt; int
-<A NAME="line46"></A>val <A HREF="#toLargeIntX-val">toLargeIntX</A>   : word -&gt; int         (* with sign extension *)
-<A NAME="line47"></A>val <A HREF="#fromLargeInt-val">fromLargeInt</A>  : int -&gt; word
+<A NAME="line45"></A>val <A HREF="#toLargeWord-val">toLargeWord</A>   : word -&gt; word
+<A NAME="line46"></A>val <A HREF="#toLargeWordX-val">toLargeWordX</A>  : word -&gt; word        (* with sign extension *)
+<A NAME="line47"></A>val <A HREF="#fromLargeWord-val">fromLargeWord</A> : word -&gt; word
 <A NAME="line48"></A>
-<A NAME="line49"></A>(* 
+<A NAME="line49"></A>val <A HREF="#toLargeInt-val">toLargeInt</A>    : word -&gt; int
+<A NAME="line50"></A>val <A HREF="#toLargeIntX-val">toLargeIntX</A>   : word -&gt; int         (* with sign extension *)
+<A NAME="line51"></A>val <A HREF="#fromLargeInt-val">fromLargeInt</A>  : int -&gt; word
+<A NAME="line52"></A>
+<A NAME="line53"></A>(* 
    [<A NAME="word-typ"><B>word</B></A>] is the type of n-bit words, or n-bit unsigned integers.
 
    [<A NAME="wordSize-val"><B>wordSize</B></A>] is the value of n above.  In Moscow ML, n=31 on 32-bit
@@ -163,13 +167,17 @@
 
    [<A NAME="fromLargeInt-val"><B>fromLargeInt</B></A> i] returns the word representing integer i.
 
-   [<A NAME="toLargeWord-val"><B>toLargeWord</B></A> w] returns w.
-   [<A NAME="toLargeWordX-val"><B>toLargeWordX</B></A> w] returns w.
-   [<A NAME="fromLargeWord-val"><B>fromLargeWord</B></A> w] returns w.
+   [<A NAME="toLarge-val"><B>toLarge</B></A> w] returns w.
+   [<A NAME="toLargeX-val"><B>toLargeX</B></A> w] returns w.
+   [<A NAME="fromLarge-val"><B>fromLarge</B></A> w] returns w.
+
+   [<A NAME="toLargeWord-val"><B>toLargeWord</B></A> w] returns w (deprecated).
+   [<A NAME="toLargeWordX-val"><B>toLargeWordX</B></A> w] returns w (deprecated).
+   [<A NAME="fromLargeWord-val"><B>fromLargeWord</B></A> w] returns w (deprecated).
 *)
 
 </PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
 <TH><A HREF="idIndex.html">Identifier index</A>
 <TH><A HREF="index.html">Structure index</A>
 </TABLE><HR>
-<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>
+<BR><EM><A HREF="http://mosml.org">Moscow ML</A> 2.10</EM></BODY></HTML>

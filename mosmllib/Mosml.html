@@ -23,7 +23,9 @@
 <A NAME="line14"></A>
 <A NAME="line15"></A>val <A HREF="#run-val">run</A> : string -&gt; string list -&gt; string -&gt; runresult
 <A NAME="line16"></A>
-<A NAME="line17"></A>(* 
+<A NAME="line17"></A>val systemInfo: string list -&gt; (string * string) list
+<A NAME="line18"></A>
+<A NAME="line19"></A>(* 
    [<A NAME="argv-val"><B>argv</B></A> ()] returns the command line strings of the current process.
    Hence List.nth(argv (), 0) is the command used to invoke the SML
    process, List.nth(argv (), 1) is its first argument, and so on.
@@ -67,10 +69,15 @@
        Extreme care should be taken when calling this function in web
    scripts and similar, since the cmd is executed by the shell, so
    even the args can be abused for attacks.
+
+   [<A NAME="systemInfo-val"><B>systemInfo</B></A> query] returns a pair (p, v) for each property p in
+   query, where v is the value associated with p. If query is the
+   empty list, then all properties and values are returned.  The
+   property "version" is always guaranteed to have a value associated.
 *)
 
 </PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
 <TH><A HREF="idIndex.html">Identifier index</A>
 <TH><A HREF="index.html">Structure index</A>
 </TABLE><HR>
-<BR><EM><A HREF="http://www.dina.kvl.dk/~sestoft/mosml.html">Moscow ML</A> 2.00.1</EM></BODY></HTML>
+<BR><EM><A HREF="http://mosml.org">Moscow ML</A> 2.10</EM></BODY></HTML>
