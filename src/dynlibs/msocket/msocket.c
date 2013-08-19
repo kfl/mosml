@@ -66,11 +66,8 @@ Type ml_s_addr    = ML abstract object containing an INET socket's address
 */
 
 /* Decomposition of sock_ values: */
-#ifdef macintosh
 #define Sock_val(x) (Field(x,0))
-#else
-#define Sock_val(x) ((int) Field(x,0))
-#endif
+
 
 /* Decomposition of addr values: */
 #define Size_addrval(a)   Field(a, 0)
