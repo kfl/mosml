@@ -9,6 +9,8 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 /* Moscow ML includes */
 
@@ -59,8 +61,10 @@ void failure() {
     failwith("EINVAL"); break;
   case EISDIR:
     failwith("EISDIR"); break;
+#ifdef ELIBBAD
   case ELIBBAD:
     failwith("ELIBBAD"); break;
+#endif
   case ECHILD:
     failwith("ECHILD"); break;
   case EINTR:
