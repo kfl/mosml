@@ -21,6 +21,7 @@
 #include <arpa/inet.h>
 #endif
 #include <signal.h>
+#include <string.h>
 
 /* Moscow ML includes */
 
