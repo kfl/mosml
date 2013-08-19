@@ -2,6 +2,7 @@
    sestoft@dina.kvl.dk 1995, 1998-04-20 */
 
 #include <gmp.h>
+#include <stdlib.h>
 
 /* Access to the camlrunm/Moscow ML runtime data representation: */
 
