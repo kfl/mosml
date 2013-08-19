@@ -42,6 +42,7 @@ clean:
 	rm -f camlrunm$(EXE) camlrunmd$(EXE) *.o *.a
 	rm -f primitives prims.c opnames.h jumptbl.h
 	rm -f .debugobj/*.o
+	rm -f m.h s.h
 
 install:
 	${INSTALL_PROGRAM} camlrunm$(EXE) $(BINDIR)
