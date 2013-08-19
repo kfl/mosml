@@ -3,3 +3,5 @@ camlrunm
 jumptbl.h
 primitives
 prims.c
+m.h
+s.h
