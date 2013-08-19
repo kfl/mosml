@@ -5,13 +5,9 @@
 include ../../Makefile.inc
 
 OPTS=-fno-defer-pop
-CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(INCDIR)
+ROOTDIR:=../..
+CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(CAMLRT)
 
-MOSMLTOOLS=camlrunm $(MOSMLHOME)/tools
-MOSMLC=mosmlc -c
-MOSMLL=mosmlc
-MOSMLLEX=mosmllex
-MOSMLYACC=mosmlyac
 
 all: libmunix.so 
 
@@ -19,7 +15,7 @@ munix.o: munix.c
 	$(CC) $(CFLAGS) -c -o munix.o munix.c
 
 libmunix.so: munix.o
-	$(DYNLD) -o libmunix.so munix.o 
+	$(DYNLD) -o libmunix.so munix.o -lc
 
 install:
 	cp libmunix.so $(LIBDIR)

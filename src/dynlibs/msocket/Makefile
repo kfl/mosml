@@ -6,13 +6,10 @@
 include ../../Makefile.inc
 
 OPTS=-fno-defer-pop
-CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(INCDIR)
+ROOTDIR:=../..
+CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(CAMLRT)
 
-MOSMLTOOLS=camlrunm $(MOSMLHOME)/tools
-MOSMLC=mosmlc -c
-MOSMLL=mosmlc
-MOSMLLEX=mosmllex
-MOSMLYACC=mosmlyac
+MOSMLTOOLS=camlrunm $(TOOLSDIR)
 
 all: libmsocket.so 
 

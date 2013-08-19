@@ -1,47 +1,62 @@
 # Unix Makefile for Moscow ML
 
 # To build the Moscow ML system on a new machine for the first time, 
-#	(1) edit MOSMLHOME etc. in file Makefile.inc
+#	(1) edit PREFIX etc. in file Makefile.inc
 #	(2) execute `make world'
 
 # To install it
 
 #	(1) execute `make install'
-#	(2) edit MOSMLHOME in file mosml/tools/Makefile.stub
+#	(2) edit PREFIX in file mosml/tools/Makefile.stub
 
 # ------------------------------------------------------------
 
 include Makefile.inc
 
+# Basis dynlibs
+BASISDYNLIB=
+ifeq ($(DYNLIBSUPPORT),true)
+  BASISDYNLIB=intinf msocket munix
+endif
+
+
 # Build the entire system for the first time
 
 world:
 	cd config; $(MAKE) defs.h; sh autoconf $(CC)
-	cd runtime; make all
+	cd runtime; $(MAKE) all
 	cp runtime/camlrunm$(EXE) .
-	cd mosmlyac; make all
-	cd mosmllib; make all
-	cd compiler; make all
-	cd toolssrc; make all
-	cd lex; make all
-	cd launch; make all
+	cd mosmlyac; $(MAKE) all
+	cd mosmllib; $(MAKE) all
+	cd compiler; $(MAKE) all
+	cd toolssrc; $(MAKE) all
+	cd lex; $(MAKE) all
+	cd launch; $(MAKE) all
+	$(MAKE) basisdynlib
 
 uptodate:
-	cd runtime; make all
+	cd runtime; $(MAKE) all
 	cp runtime/camlrunm$(EXE) .
-	cd mosmlyac; make all
-	cd mosmllib; make all
-	cd compiler; make all
-	cd toolssrc; make all
-	cd lex; make all
-	cd launch; make all
+	cd mosmlyac; $(MAKE) all
+	cd mosmllib; $(MAKE) all
+	cd compiler; $(MAKE) all
+	cd toolssrc; $(MAKE) all
+	cd lex; $(MAKE) all
+	cd launch; $(MAKE) all
 
 # Recompile all Mosml code from scratch
 again:
-	cd mosmllib; make clean all
-	cd compiler; make clean all
-	cd toolssrc; make clean all
-	cd lex; make clean all
+	cd mosmllib; $(MAKE) clean all
+	cd compiler; $(MAKE) clean all
+	cd toolssrc; $(MAKE) clean all
+	cd lex; $(MAKE) clean all
+
+
+basisdynlib:
+	for i in $(BASISDYNLIB); do \
+	  (cd dynlibs/$$i; $(MAKE)) || exit $$?; \
+	done
+
 
 # Install the Mosml system
 install:
@@ -50,41 +65,48 @@ install:
 	test -d $(INCDIR) || mkdir -p $(INCDIR)
 	test -d $(DOCDIR) || mkdir -p $(DOCDIR)
 	test -d $(TOOLDIR) || mkdir -p $(TOOLDIR)
-	cd runtime; make install
-	cd config; make install
-	cd launch; make all install
-	cd mosmlyac; make install
-	cd mosmllib; make install
-	cd compiler; make install
-	cd toolssrc; make install
-	cd lex; make install
+	cd runtime; $(MAKE) install
+	cd config; $(MAKE) install
+	cd launch; $(MAKE) all install
+	cd mosmlyac; $(MAKE) install
+	cd mosmllib; $(MAKE) install
+	cd compiler; $(MAKE) install
+	cd toolssrc; $(MAKE) install
+	cd lex; $(MAKE) install
 	(cd $(INCDIR)/..; rm -fr config; ln -s include config)
-	cd doc; make install
+	cd doc; $(MAKE) install
+	$(MAKE) basisdynlib_install
+
+basisdynlib_install:
+	for i in $(BASISDYNLIB); do \
+	  (cd dynlibs/$$i; $(MAKE) install) || exit $$?; \
+	done
+
 
 # Remove all generated files
 clean:
-	cd config; make clean
-	cd runtime; make clean
-	cd launch; make clean
-	cd mosmlyac; make clean
-	cd mosmllib; make clean
-	cd compiler; make clean
-	cd toolssrc; make clean
-	cd lex; make clean
-	cd test; make clean
-	cd mosmllib/test; make clean
-	cd ../examples; make clean	
-	cd dynlibs; make clean
+	cd config; $(MAKE) clean
+	cd runtime; $(MAKE) clean
+	cd launch; $(MAKE) clean
+	cd mosmlyac; $(MAKE) clean
+	cd mosmllib; $(MAKE) clean
+	cd compiler; $(MAKE) clean
+	cd toolssrc; $(MAKE) clean
+	cd lex; $(MAKE) clean
+	cd test; $(MAKE) clean
+	cd mosmllib/test; $(MAKE) clean
+	cd ../examples; $(MAKE) clean	
+	cd dynlibs; $(MAKE) clean
 	rm -f camlrunm$(EXE)
-	cd doc; make clean
+	cd doc; $(MAKE) clean
 
 dynlibs:
-	cd dynlibs; make
+	cd dynlibs; $(MAKE)
 
 # Rebuild the dependencies in all Makefiles.
 # You can't do this unless you have a compiled runtime system.
 depend:
-	cd mosmllib; make depend
-	cd mosmlyac; make all
-	cd compiler; make depend
-	cd lex; make depend
+	cd mosmllib; $(MAKE) depend
+	cd mosmlyac; $(MAKE) all
+	cd compiler; $(MAKE) depend
+	cd lex; $(MAKE) depend

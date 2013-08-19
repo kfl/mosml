@@ -1,8 +1,25 @@
 # Unix configuration Makefile for Moscow ML          -*- mode: makefile -*-
 
 # Where to install stuff
+PREFIX=/usr/local
 
-MOSMLHOME=${HOME}/projects/mosml2.10-new
+# BINDIR contains true executable files, such as scripts
+# LIBDIR contains bytecode files (such as mosmlcmp and library units), and .dll/.so for dynlibs. 
+#        RPATH is set to include LIBDIR
+# INCDIR contains the runtime system header files (for compiling dynlibs)
+# DOCDIR contains documentation
+
+BINDIR=${PREFIX}/bin
+LIBDIR=${PREFIX}/lib/mosml
+INCDIR=${PREFIX}/include/mosml
+DOCDIR=${PREFIX}/share/doc/mosml
+TOOLDIR=${PREFIX}/share/mosml/tools
+
+### Where to install the man pages
+# Man pages for commands go in $(MANDIR)/man$(MANEXT)
+MANDIR=${PREFIX}/man
+MANEXT=1
+
 
 # The version
 VERSION=2.10
@@ -34,12 +51,16 @@ ADDRUNCFLAGS=
 ADDDYNLIBCFLAGS=
 
 
-# For Linux (x86 or Alpha), use:
+# For Linux, use:
 # ------------------------------
 CPP=cpp -P -traditional -Dunix -Umsdos
 STRIP=strip -S
-LD=gcc -rdynamic
+LD=gcc -rdynamic -Wl,-rpath,$(LIBDIR)
 DYNLD=ld -shared
+
+# For MacOS X, use the same as Linux except:
+# -----------------
+DYNLD=$(LD) -bundle -undefined dynamic_lookup
 
 # For FreeBSD, use:
 # -----------------
@@ -49,17 +70,6 @@ DYNLD=ld -shared
 # DYNLD=ld -shared
 # ADDRUNLIBS=
 
-# For MacOS X, use:
-# -----------------
-#CPP=cpp -P -traditional -Dunix -Umsdos
-#STRIP=strip -S
-#CC=gcc -traditional-cpp
-#LD=gcc -rdynamic
-#DYNLD=$(LD) -bundle -undefined dynamic_lookup
-# ADDDYNLIBCFLAGS=-I/sw/include -fPIC
-# ADDRUNCFLAGS=-I/sw/include
-# ADDRUNLIBS=-L/sw/lib -ldl
-# BASELIBS=
 
 # For Cygwin 20.1, use:
 # ---------------------
@@ -139,34 +149,22 @@ DYNLD=ld -shared
 SHELL=/bin/sh
 
 # ---------- You shouldn't need to edit below this line ------------
+ROOTDIR:=$(CURDIR)/..
 
-# BINDIR contains true executable files, such as scripts
-# LIBDIR contains bytecode files (such as mosmlcmp and library units)
-# INCDIR contains the runtime system header files (for compiling dynlibs)
-# DOCDIR contains documentation
+CAMLRT=$(ROOTDIR)/runtime
 
-BINDIR=${MOSMLHOME}/bin
-LIBDIR=${MOSMLHOME}/lib
-INCDIR=${MOSMLHOME}/include
-DOCDIR=${MOSMLHOME}/doc
-TOOLDIR=${MOSMLHOME}/tools
-# LIBDIR=${MOSMLHOME}/lib/moscow_ml
-# TOOLDIR=${MOSMLHOME}/libexec/moscow_ml
+MOSMLTOOLS=$(ROOTDIR)/tools
 
-CAMLRT=../runtime
+MOSMLC=$(ROOTDIR)/camlrunm $(ROOTDIR)/mosmlcmp -stdlib $(ROOTDIR)/mosmllib -P none
+MOSMLL=$(ROOTDIR)/camlrunm $(ROOTDIR)/mosmllnk -stdlib $(ROOTDIR)/mosmllib -P none
+MOSMLLDOS=$(ROOTDIR)/camlrunm $(ROOTDIR)/mosmllnk.dos -stdlib $(ROOTDIR)/mosmllib -P none
+MOSMLLW32=$(ROOTDIR)/camlrunm $(ROOTDIR)/mosmllnk.w32 -stdlib $(ROOTDIR)/mosmllib -P none
+MOSMLLNEW=$(ROOTDIR)/camlrunm $(ROOTDIR)/mosmllnk.new -stdlib $(ROOTDIR)/mosmllib -P none
 
-MOSMLTOOLS=../tools
-
-MOSMLC=../camlrunm ../mosmlcmp -stdlib ../mosmllib -P none
-MOSMLL=../camlrunm ../mosmllnk -stdlib ../mosmllib -P none
-MOSMLLDOS=../camlrunm ../mosmllnk.dos -stdlib ../mosmllib -P none
-MOSMLLW32=../camlrunm ../mosmllnk.w32 -stdlib ../mosmllib -P none
-MOSMLLNEW=../camlrunm ../mosmllnk.new -stdlib ../mosmllib -P none
-
-MOSMLLEX=../camlrunm ../mosmllex
-MOSMLYACC=../mosmlyac/mosmlyac
-MOSMLCUT=../camlrunm ../cutdeps 
-MOSMLDEP=../camlrunm ../mosmldep
+MOSMLLEX=$(ROOTDIR)/camlrunm $(ROOTDIR)/mosmllex
+MOSMLYACC=$(ROOTDIR)/mosmlyac/mosmlyac
+MOSMLCUT=$(ROOTDIR)/camlrunm $(ROOTDIR)/cutdeps 
+MOSMLDEP=$(ROOTDIR)/camlrunm $(ROOTDIR)/mosmldep
 
 # For cross-compiling to MS DOS (from Linux) (development only)
 # CPP=/lib/cpp -P -traditional -Uunix -Dmsdos -Uwin32

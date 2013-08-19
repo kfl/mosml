@@ -5,31 +5,34 @@
 
 # Where to find GMP header file and compiled library
 
-GMPDIR=${HOME}/c/gmp-2.0.2
+#GMPDIR=${HOME}/c/gmp-2.0.2
+GMPINCDIR=/usr/local/include
+GMPLIBDIR=/usr/local/lib
 
 include ../../Makefile.inc
 
 OPTS=-fno-defer-pop
-CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(INCDIR) -I ${GMPDIR}
+ROOTDIR:=../..
+CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(CAMLRT) -I${GMPINCDIR}
+#CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(INCDIR) -I ${GMPDIR}
 
-MOSMLTOOLS=camlrunm $(MOSMLHOME)/tools
-MOSMLC=mosmlc -c
-MOSMLL=mosmlc
-MOSMLLEX=mosmllex
-MOSMLYACC=mosmlyac
+MOSMLTOOLS=camlrunm $(TOOLDIR)
 
 all: libmgmp.so IntInf.uo
 
+
 install:
 	cp libmgmp.so $(LIBDIR)
+	cp IntInf.{sig,ui,uo} $(LIBDIR)
 
 intinf.o: intinf.c
 	$(CC) $(CFLAGS) -c -o intinf.o intinf.c
 
 libmgmp.so: intinf.o
-	$(DYNLD) -o libmgmp.so intinf.o ${GMPDIR}/libgmp.a
+	$(DYNLD) -o libmgmp.so intinf.o -L$(GMPLIBDIR) -lgmp -lc
 
 test:
+	echo $(CURDIR)
 	mosml testintinf.sml
 
 clean:
