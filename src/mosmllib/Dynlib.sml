@@ -1,7 +1,7 @@
 structure Dynlib :> Dynlib =
 struct
 
-(* Ken Larsen (kla@it.dtu.dk) and sestoft@dina.kvl.dk 1998-01-12 1999-01-07 *)
+(* Ken Friis Larsen (ken@friislarsen.net) and sestoft@dina.kvl.dk 1998-01-12 1999-01-07 *)
 	
 prim_type dlHandle_			(* A pointer outside the ML heap *)
 prim_type symHandle_			(* A pointer outside the ML heap *)

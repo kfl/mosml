@@ -1,4 +1,4 @@
-(* Ken Larsen kla@it.dtu.dk 1998-10-26 *)
+(* Ken Friis Larsen (ken@friislarsen.net) 1998-10-26 *)
 
 (* The initial implementation was financed by the PROSPER project. *)
 

@@ -15,7 +15,7 @@
 #include <dlfcn.h>
 #endif
 
-/* Ken Larsen (kla@it.dtu.dk) 1998-01-08 */
+/* Ken Friis Larsen (ken@friislarsen.net) 1998-01-08 */
 
 /* Doug Currie (e@flavors.com) 1998May06 Macintosh specific changes */
 
