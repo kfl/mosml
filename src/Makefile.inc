@@ -56,11 +56,11 @@ ADDDYNLIBCFLAGS=-fPIC
 CPP=cpp -P -traditional -Dunix -Umsdos
 STRIP=strip -S
 LD=gcc -rdynamic -Wl,-rpath,$(LIBDIR)
-DYNLD=ld -shared
+DYNLD=gcc -shared
 
 # For MacOS X, use the same as Linux except:
 # -----------------
-DYNLD=$(LD) -bundle -undefined dynamic_lookup
+#DYNLD=$(LD) -bundle -undefined dynamic_lookup
 
 # For FreeBSD, use:
 # -----------------
