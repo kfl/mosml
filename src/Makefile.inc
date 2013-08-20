@@ -47,8 +47,8 @@ ifeq ($(DYNLIBSUPPORT),true)
 endif
 
 ADDRUNLIBS=-ldl
-ADDRUNCFLAGS=
-ADDDYNLIBCFLAGS=
+ADDRUNCFLAGS=-fPIC
+ADDDYNLIBCFLAGS=-fPIC
 
 
 # For Linux, use:
@@ -66,7 +66,7 @@ DYNLD=$(LD) -bundle -undefined dynamic_lookup
 # -----------------
 # CPP=/usr/bin/cpp -P -traditional -Dunix -Umsdos
 # STRIP=strip
-# LD=gcc -export-dynamic
+# LD=gcc -export-dynamic -Wl,-rpath,$(LIBDIR)
 # DYNLD=ld -shared
 # ADDRUNLIBS=
 
@@ -76,7 +76,7 @@ DYNLD=$(LD) -bundle -undefined dynamic_lookup
 # MOSMLHOME=/mosml
 # CPP=/lib/cpp -P -traditional -Dunix -Umsdos
 # STRIP=strip
-# LD=gcc -Wl,--export-dynamic
+# LD=gcc -Wl,--export-dynamic -Wl,-rpath,$(LIBDIR)
 # DYNLD=ld -shared
 # EXE=.exe
 # # For dynamically loadable libraries (DDLs) under Cygwin:
@@ -105,7 +105,7 @@ DYNLD=$(LD) -bundle -undefined dynamic_lookup
 # ADDDYNLIBCFLAGS=
 
 # If the above fails with dynlibs, try this:
-# LD=gcc -Wl,--export-dynamic
+# LD=gcc -Wl,--export-dynamic -Wl,-rpath,$(LIBDIR)
 
 
 # For HP-UX 9, use:
