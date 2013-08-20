@@ -23,7 +23,7 @@ endif
 # Build the entire system for the first time
 
 world:
-	cd config; $(MAKE) defs.h; sh autoconf $(CC)
+	cd config; $(MAKE) all
 	cd runtime; $(MAKE) all
 	cp runtime/camlrunm$(EXE) .
 	cd mosmlyac; $(MAKE) all
@@ -73,7 +73,6 @@ install:
 	cd compiler; $(MAKE) install
 	cd toolssrc; $(MAKE) install
 	cd lex; $(MAKE) install
-	(cd $(INCDIR)/..; rm -fr config; ln -s include config)
 	cd doc; $(MAKE) install
 	$(MAKE) basisdynlib_install
 
