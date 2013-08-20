@@ -48,7 +48,7 @@ endif
 
 ADDRUNLIBS=-ldl
 ADDRUNCFLAGS=-fPIC
-ADDDYNLIBCFLAGS=-fPIC
+ADDDYNLIBCFLAGS=-fPIC -fno-stack-protector
 
 
 # For Linux, use:
