@@ -66,7 +66,7 @@ install:
 	test -d $(DOCDIR) || mkdir -p $(DOCDIR)
 	test -d $(TOOLDIR) || mkdir -p $(TOOLDIR)
 	cd runtime; $(MAKE) install
-	cd config; $(MAKE) install
+#	cd config; $(MAKE) install
 	cd launch; $(MAKE) all install
 	cd mosmlyac; $(MAKE) install
 	cd mosmllib; $(MAKE) install
