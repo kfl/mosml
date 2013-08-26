@@ -45,8 +45,9 @@ clean:
 	rm -f m.h s.h
 
 install:
-	${INSTALL_PROGRAM} camlrunm$(EXE) $(BINDIR)
-	${INSTALL_PROGRAM} *.h $(INCDIR)
+	${INSTALL_PROGRAM} camlrunm$(EXE) $(DISTDIR)$(BINDIR)
+	${INSTALL_PROGRAM} camlrunm$(EXE) $(DISTDIR)$(LIBDIR)
+	${INSTALL_DATA} *.h $(DISTDIR)$(INCDIR)
 
 primitives : $(PRIMS)
 	sed -n -e '/\/\* ML \*\//s/.* \([a-zA-Z0-9_][a-zA-Z0-9_]*\) *(.*/\1/p' \

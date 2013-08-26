@@ -48,9 +48,9 @@ mosmllib.pdf: mosmllib.tex texsigsigs.tex
 #	psnup -pa4 -2 mosmllib.ps mosmllib2up.ps
 
 install:
-	cp mosmlref.pdf $(DOCDIR)
-	cp manual.pdf $(DOCDIR)
-	cp mosmllib.pdf $(DOCDIR)
+	$(INSTALL_DATA) mosmlref.pdf $(DISTDIR)$(DOCDIR)
+	$(INSTALL_DATA) manual.pdf $(DISTDIR)$(DOCDIR)
+	$(INSTALL_DATA) mosmllib.pdf $(DISTDIR)$(DOCDIR)
 #	cp mosmllib2up.pdf $(DOCDIR)
 	cd helpsigs; make install
 

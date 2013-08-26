@@ -18,7 +18,7 @@ clean:
 	rm -f mosmlyac$(EXE)
 
 install:
-	${INSTALL_PROGRAM} mosmlyac$(EXE) $(BINDIR)/mosmlyac$(EXE)
+	${INSTALL_PROGRAM} mosmlyac$(EXE) $(DISTDIR)$(BINDIR)/mosmlyac$(EXE)
 
 depend:
 

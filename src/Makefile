@@ -60,11 +60,11 @@ basisdynlib:
 
 # Install the Mosml system
 install:
-	test -d $(BINDIR) || mkdir -p $(BINDIR)
-	test -d $(LIBDIR) || mkdir -p $(LIBDIR)
-	test -d $(INCDIR) || mkdir -p $(INCDIR)
-	test -d $(DOCDIR) || mkdir -p $(DOCDIR)
-	test -d $(TOOLDIR) || mkdir -p $(TOOLDIR)
+	test -d $(DISTDIR)$(BINDIR) || mkdir -p $(DISTDIR)$(BINDIR)
+	test -d $(DISTDIR)$(LIBDIR) || mkdir -p $(DISTDIR)$(LIBDIR)
+	test -d $(DISTDIR)$(INCDIR) || mkdir -p $(DISTDIR)$(INCDIR)
+	test -d $(DISTDIR)$(DOCDIR) || mkdir -p $(DISTDIR)$(DOCDIR)
+	test -d $(DISTDIR)$(TOOLDIR) || mkdir -p $(DISTDIR)$(TOOLDIR)
 	cd runtime; $(MAKE) install
 #	cd config; $(MAKE) install
 	cd launch; $(MAKE) all install

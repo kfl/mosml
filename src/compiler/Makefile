@@ -117,9 +117,9 @@ clean:
 	rm -f Makefile.bak
 
 install:
-	${INSTALL_DATA} mosmlcmp $(LIBDIR)
-	${INSTALL_DATA} mosmllnk $(LIBDIR)
-	${INSTALL_DATA} mosmltop $(LIBDIR)
+	${INSTALL_DATA} mosmlcmp $(DISTDIR)$(LIBDIR)
+	${INSTALL_DATA} mosmllnk $(DISTDIR)$(LIBDIR)
+	${INSTALL_DATA} mosmltop $(DISTDIR)$(LIBDIR)
 
 promote:
 	test -f ../mosmlcmp.orig || cp ../mosmlcmp ../mosmlcmp.orig

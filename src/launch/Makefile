@@ -8,19 +8,28 @@ all: mosml mosmlc mosmllex camlexec testprog
 # header cannot be generated until camlrunm is installed in $(BINDIR)...
 
 install:
+	echo "#!$(BINDIR)/camlrunm" > $(DISTDIR)$(LIBDIR)/header;
+	for script in mosml mosmlc mosmllex; do \
+	  ${INSTALL_SCRIPT} $$script $(DISTDIR)$(BINDIR)/$$script; \
+	  chmod a+x $(DISTDIR)$(BINDIR)/$$script; \
+	done
+
+old_install:
 	(echo "#!$(BINDIR)/camlrunm"; \
-	 echo "exit 2"; \
-	 cat testprog) > /tmp/testscr
+	  echo "exit 2"; \
+	  cat testprog) > /tmp/testscr
 	chmod a+x /tmp/testscr
 	sh -c 'if sh -c /tmp/testscr 2>/dev/null; \
-               then echo "#!$(BINDIR)/camlrunm" > $(LIBDIR)/header; \
-               else ${INSTALL_PROGRAM} camlexec$(EXE) $(LIBDIR)/header; \
-               fi'
+                then echo "#!$(BINDIR)/camlrunm" > $(LIBDIR)/header; \
+                else ${INSTALL_PROGRAM} camlexec$(EXE) $(LIBDIR)/header; \
+                fi'
 	rm -f /tmp/testscr
+	echo "#!$(BINDIR)/camlrunm" > $(DISTDIR)$(LIBDIR)/header;
 	for script in mosml mosmlc mosmllex; do \
 	  ${INSTALL_SCRIPT} $$script $(BINDIR)/$$script; \
 	  chmod a+x $(BINDIR)/$$script; \
 	done
+
 
 mosml: mosml.tpl
 	sed -e "s|LIBDIR|$(LIBDIR)|" -e "s|BINDIR|$(BINDIR)|" mosml.tpl > mosml

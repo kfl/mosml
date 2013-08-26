@@ -22,10 +22,10 @@ all: libmgmp.so IntInf.uo
 
 
 install:
-	$(INSTALL_DATA) libmgmp.so $(LIBDIR)
-	$(INSTALL_DATA) IntInf.sig $(LIBDIR)
-	$(INSTALL_DATA) IntInf.ui $(LIBDIR)
-	$(INSTALL_DATA) IntInf.uo $(LIBDIR)
+	$(INSTALL_DATA) libmgmp.so $(DISTDIR)$(LIBDIR)
+	$(INSTALL_DATA) IntInf.sig $(DISTDIR)$(LIBDIR)
+	$(INSTALL_DATA) IntInf.ui $(DISTDIR)$(LIBDIR)
+	$(INSTALL_DATA) IntInf.uo $(DISTDIR)$(LIBDIR)
 
 intinf.o: intinf.c
 	$(CC) $(CFLAGS) -c -o intinf.o intinf.c

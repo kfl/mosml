@@ -11,7 +11,7 @@ defs.h:
 .PHONY: runtime
 runtime:
 	sh autoconf $(CC)
-	$(INSTALL_PROGRAM) m.h s.h ../runtime
+	$(INSTALL_DATA) m.h s.h ../runtime
 
 clean scratch:
 	rm -f m.h s.h defs.h
