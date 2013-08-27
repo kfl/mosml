@@ -121,6 +121,14 @@ install:
 	${INSTALL_DATA} mosmllnk $(DISTDIR)$(LIBDIR)
 	${INSTALL_DATA} mosmltop $(DISTDIR)$(LIBDIR)
 
+
+install_w32:
+	${INSTALL_DATA} mosmlcmp.w32 $(DISTDIR)$(LIBDIR)/mosmlcmp
+	${INSTALL_DATA} mosmllnk.w32 $(DISTDIR)$(LIBDIR)/mosmllnk
+	${INSTALL_DATA} mosmltop.w32 $(DISTDIR)$(LIBDIR)/mosmltop
+
+
+
 promote:
 	test -f ../mosmlcmp.orig || cp ../mosmlcmp ../mosmlcmp.orig
 	test -f ../mosmllnk.orig || cp ../mosmllnk ../mosmllnk.orig

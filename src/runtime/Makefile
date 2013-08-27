@@ -1,9 +1,13 @@
-# Makefile for the Moscow ML 2.00 version of the Caml Light runtime system
+# Makefile for the Moscow ML 2.10 version of the Caml Light runtime system
 
 OPTS=-fno-defer-pop -fomit-frame-pointer -DTHREADED
+include ../Makefile.inc
+
 BASECFLAGS= -Dunix -O2 $(OPTS)
 
-include ../Makefile.inc
+ifeq ($(UNAME_S),Cross_W32)
+	BASECFLAGS= -Dunix -DCAMLRT -DWIN32 -D_CONSOLE -D_MBCS -O2 $(OPTS)
+endif
 
 BASEOBJS=interp.o expand.o misc.o stacks.o fix_code.o main.o fail.o signals.o \
   freelist.o major_gc.o minor_gc.o memory.o alloc.o roots.o \
@@ -38,6 +42,14 @@ camlrunm$(EXE): $(OBJS) prims.o
 camlrunmd$(EXE): $(DOBJS) prims.d.o
 	$(LD) $(CFLAGS) -o camlrunmd$(EXE) prims.d.o $(DOBJS) $(LIBS)
 
+
+# For cross compiling to WIN32
+camlrt.dll: $(OBJS) prims.o
+	$(DYNLD) -o camlrt.dll prims.o $(OBJS) $(LIBS) -mconsole
+#        $(CC) $(CFLAGS) /Fecamlrt.dll prims.obj $(OBJS) $(LIBS) /link /subsystem:console /def:"mosmldll.def"
+#        $(CC) $(CFLAGS) /Fecamlrt.dll prims.obj $(OBJS) $(LIBS) /link /subsystem:console
+
+
 clean:
 	rm -f camlrunm$(EXE) camlrunmd$(EXE) *.o *.a
 	rm -f primitives prims.c opnames.h jumptbl.h
@@ -48,6 +60,12 @@ install:
 	${INSTALL_PROGRAM} camlrunm$(EXE) $(DISTDIR)$(BINDIR)
 	${INSTALL_PROGRAM} camlrunm$(EXE) $(DISTDIR)$(LIBDIR)
 	${INSTALL_DATA} *.h $(DISTDIR)$(INCDIR)
+
+install_w32: camlrt.dll
+	${INSTALL_PROGRAM} camlrt.dll $(DISTDIR)$(BINDIR)
+	${INSTALL_PROGRAM} camlrt.dll $(DISTDIR)$(LIBDIR)
+	${INSTALL_DATA} *.h $(DISTDIR)$(INCDIR)
+
 
 primitives : $(PRIMS)
 	sed -n -e '/\/\* ML \*\//s/.* \([a-zA-Z0-9_][a-zA-Z0-9_]*\) *(.*/\1/p' \

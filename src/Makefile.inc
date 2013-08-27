@@ -73,7 +73,17 @@ ifeq ($(UNAME_S),Darwin) 	# For MacOS X, use the same as Linux except DYNDL
 	LD=gcc -rdynamic -Wl,-rpath,$(LIBDIR)
 	DYNLD=$(LD) -bundle -undefined dynamic_lookup
 endif
-
+ifeq ($(UNAME_S),Cross_W32)
+	CC=i586-mingw32msvc-gcc
+	CPP=cpp -P -traditional -Umsdos -Uunix -Dwin32
+	ADDRUNLIBS=
+	ADDRUNCFLAGS=
+	ADDDYNLIBCFLAGS=
+	STRIP=strip -S
+	EXE=.exe
+	LD=$(CC)
+	DYNLD=$(CC) -shared
+endif
 ifeq ($(UNAME_S),Custom) # Your configuration here
 error:
 	@echo "Unknow OS $(UNAME_S), please update Makefile.inc and send a patch to mosml.org"

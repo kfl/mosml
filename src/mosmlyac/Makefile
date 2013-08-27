@@ -9,13 +9,22 @@ OBJS= closure.o error.o lalr.o lr0.o main.o mkpar.o output.o reader.o \
 
 all: mosmlyac$(EXE)
 
-mosmlyac$(EXE): $(OBJS)
-	$(CC) $(CFLAGS) -o mosmlyac$(EXE) $(OBJS)
-	$(STRIP) mosmlyac$(EXE)
+mosmlyac: $(OBJS)
+	$(CC) $(CFLAGS) -o mosmlyac $(OBJS)
+	$(STRIP) mosmlyac
 
-clean:
+mosmlyac.exe: $(OBJS)
+	$(CC) $(CFLAGS) -o mosmlyac.exe $(OBJS) -mconsole
+	$(STRIP) mosmlyac.exe
+
+
+clean_obj:
 	rm -f *.o
-	rm -f mosmlyac$(EXE)
+
+clean: clean_obj
+	rm -f mosmlyac mosmlyac.exe
+
+
 
 install:
 	${INSTALL_PROGRAM} mosmlyac$(EXE) $(DISTDIR)$(BINDIR)/mosmlyac$(EXE)
