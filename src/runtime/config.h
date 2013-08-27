@@ -7,9 +7,9 @@
 #ifdef WIN32
 
 #ifdef CAMLRT
-#define EXTERN __declspec(dllexport)
+#define EXTERN extern __declspec(dllexport)
 #else
-#define EXTERN __declspec(dllimport)
+#define EXTERN extern __declspec(dllimport)
 #endif
 
 #else
