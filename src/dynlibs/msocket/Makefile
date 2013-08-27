@@ -22,7 +22,7 @@ libmsocket.so: msocket.o
 #	$(DYNLD) -o libmsocket.so -lsocket msocket.o 
 
 install:
-	$(INSTALL_DATA) libmsocket.so $(DISTDIR)$(LIBDIR)
+	$(INSTALL_DATA) libmsocket.so $(DESTDIR)$(LIBDIR)
 
 test:
 	mosml testsocket.sml

@@ -37,7 +37,7 @@ clean:
 	cd test; make clean
 
 install:
-	${INSTALL_DATA} mosmllex $(DISTDIR)$(LIBDIR)
+	${INSTALL_DATA} mosmllex $(DESTDIR)$(LIBDIR)
 
 Grammar.sml Grammar.sig: Grammar.grm
 	$(MOSMLYACC) Grammar.grm

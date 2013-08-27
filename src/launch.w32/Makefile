@@ -12,10 +12,10 @@ include ../Makefile.inc
 all: header.exe camlrunm.exe mosmlc.exe mosml.exe
 
 install:
-	$(INSTALL_PROGRAM) header.exe $(DISTDIR)$(LIBDIR)/header
-	$(INSTALL_PROGRAM) camlrunm.exe $(DISTDIR)$(BINDIR)/camlrunm.exe
-	$(INSTALL_PROGRAM) mosmlc.exe $(DISTDIR)$(BINDIR)/mosmlc.exe
-	$(INSTALL_PROGRAM) mosml.exe $(DISTDIR)$(BINDIR)/mosml.exe
+	$(INSTALL_PROGRAM) header.exe $(DESTDIR)$(LIBDIR)/header
+	$(INSTALL_PROGRAM) camlrunm.exe $(DESTDIR)$(BINDIR)/camlrunm.exe
+	$(INSTALL_PROGRAM) mosmlc.exe $(DESTDIR)$(BINDIR)/mosmlc.exe
+	$(INSTALL_PROGRAM) mosml.exe $(DESTDIR)$(BINDIR)/mosml.exe
 
 clean:
 	rm *.exe

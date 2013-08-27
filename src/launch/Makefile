@@ -8,10 +8,10 @@ all: mosml mosmlc mosmllex camlexec testprog
 # header cannot be generated until camlrunm is installed in $(BINDIR)...
 
 install:
-	echo "#!$(BINDIR)/camlrunm" > $(DISTDIR)$(LIBDIR)/header;
+	echo "#!$(BINDIR)/camlrunm" > $(DESTDIR)$(LIBDIR)/header;
 	for script in mosml mosmlc mosmllex; do \
-	  ${INSTALL_SCRIPT} $$script $(DISTDIR)$(BINDIR)/$$script; \
-	  chmod a+x $(DISTDIR)$(BINDIR)/$$script; \
+	  ${INSTALL_SCRIPT} $$script $(DESTDIR)$(BINDIR)/$$script; \
+	  chmod a+x $(DESTDIR)$(BINDIR)/$$script; \
 	done
 
 old_install:
@@ -24,7 +24,7 @@ old_install:
                 else ${INSTALL_PROGRAM} camlexec$(EXE) $(LIBDIR)/header; \
                 fi'
 	rm -f /tmp/testscr
-	echo "#!$(BINDIR)/camlrunm" > $(DISTDIR)$(LIBDIR)/header;
+	echo "#!$(BINDIR)/camlrunm" > $(DESTDIR)$(LIBDIR)/header;
 	for script in mosml mosmlc mosmllex; do \
 	  ${INSTALL_SCRIPT} $$script $(BINDIR)/$$script; \
 	  chmod a+x $(BINDIR)/$$script; \

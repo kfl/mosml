@@ -57,14 +57,14 @@ clean:
 	rm -f m.h s.h
 
 install:
-	${INSTALL_PROGRAM} camlrunm$(EXE) $(DISTDIR)$(BINDIR)
-	${INSTALL_PROGRAM} camlrunm$(EXE) $(DISTDIR)$(LIBDIR)
-	${INSTALL_DATA} *.h $(DISTDIR)$(INCDIR)
+	${INSTALL_PROGRAM} camlrunm$(EXE) $(DESTDIR)$(BINDIR)
+	${INSTALL_PROGRAM} camlrunm$(EXE) $(DESTDIR)$(LIBDIR)
+	${INSTALL_DATA} *.h $(DESTDIR)$(INCDIR)
 
 install_w32: camlrt.dll
-	${INSTALL_PROGRAM} camlrt.dll $(DISTDIR)$(BINDIR)
-	${INSTALL_PROGRAM} camlrt.dll $(DISTDIR)$(LIBDIR)
-	${INSTALL_DATA} *.h $(DISTDIR)$(INCDIR)
+	${INSTALL_PROGRAM} camlrt.dll $(DESTDIR)$(BINDIR)
+	${INSTALL_PROGRAM} camlrt.dll $(DESTDIR)$(LIBDIR)
+	${INSTALL_DATA} *.h $(DESTDIR)$(INCDIR)
 
 
 primitives : $(PRIMS)

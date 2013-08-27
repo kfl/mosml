@@ -51,11 +51,11 @@ cross_w32:
 	$(MAKE) -C lex UNAME_S=Cross_W32 all
 	$(MAKE) -C launch.w32 UNAME_S=Cross_W32 all
 
-	test -d $(DISTDIR)$(BINDIR) || mkdir -p $(DISTDIR)$(BINDIR)
-	test -d $(DISTDIR)$(LIBDIR) || mkdir -p $(DISTDIR)$(LIBDIR)
-	test -d $(DISTDIR)$(INCDIR) || mkdir -p $(DISTDIR)$(INCDIR)
-	test -d $(DISTDIR)$(DOCDIR) || mkdir -p $(DISTDIR)$(DOCDIR)
-	test -d $(DISTDIR)$(TOOLDIR) || mkdir -p $(DISTDIR)$(TOOLDIR)
+	test -d $(DESTDIR)$(BINDIR) || mkdir -p $(DESTDIR)$(BINDIR)
+	test -d $(DESTDIR)$(LIBDIR) || mkdir -p $(DESTDIR)$(LIBDIR)
+	test -d $(DESTDIR)$(INCDIR) || mkdir -p $(DESTDIR)$(INCDIR)
+	test -d $(DESTDIR)$(DOCDIR) || mkdir -p $(DESTDIR)$(DOCDIR)
+	test -d $(DESTDIR)$(TOOLDIR) || mkdir -p $(DESTDIR)$(TOOLDIR)
 
 	$(MAKE) -C runtime UNAME_S=Cross_W32 install_w32
 	$(MAKE) -C mosmlyac UNAME_S=Cross_W32 install
@@ -94,11 +94,11 @@ basisdynlib:
 
 # Install the Mosml system
 install:
-	test -d $(DISTDIR)$(BINDIR) || mkdir -p $(DISTDIR)$(BINDIR)
-	test -d $(DISTDIR)$(LIBDIR) || mkdir -p $(DISTDIR)$(LIBDIR)
-	test -d $(DISTDIR)$(INCDIR) || mkdir -p $(DISTDIR)$(INCDIR)
-	test -d $(DISTDIR)$(DOCDIR) || mkdir -p $(DISTDIR)$(DOCDIR)
-	test -d $(DISTDIR)$(TOOLDIR) || mkdir -p $(DISTDIR)$(TOOLDIR)
+	test -d $(DESTDIR)$(BINDIR) || mkdir -p $(DESTDIR)$(BINDIR)
+	test -d $(DESTDIR)$(LIBDIR) || mkdir -p $(DESTDIR)$(LIBDIR)
+	test -d $(DESTDIR)$(INCDIR) || mkdir -p $(DESTDIR)$(INCDIR)
+	test -d $(DESTDIR)$(DOCDIR) || mkdir -p $(DESTDIR)$(DOCDIR)
+	test -d $(DESTDIR)$(TOOLDIR) || mkdir -p $(DESTDIR)$(TOOLDIR)
 	cd runtime; $(MAKE) install
 #	cd config; $(MAKE) install
 	cd launch; $(MAKE) all install

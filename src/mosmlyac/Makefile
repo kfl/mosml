@@ -27,7 +27,7 @@ clean: clean_obj
 
 
 install:
-	${INSTALL_PROGRAM} mosmlyac$(EXE) $(DISTDIR)$(BINDIR)/mosmlyac$(EXE)
+	${INSTALL_PROGRAM} mosmlyac$(EXE) $(DESTDIR)$(BINDIR)/mosmlyac$(EXE)
 
 depend:
 

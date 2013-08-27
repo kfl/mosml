@@ -33,4 +33,4 @@ clean:
 #	cd test; make clean
 
 install:
-	${INSTALL_DATA} mosmlpm $(DISTDIR)$(LIBDIR)
+	${INSTALL_DATA} mosmlpm $(DESTDIR)$(LIBDIR)
