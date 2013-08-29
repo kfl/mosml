@@ -34,6 +34,40 @@ world:
 	cd launch; $(MAKE) all
 	$(MAKE) basisdynlib
 
+# Cross compilation to Win
+cross_w32:
+	cd config; $(MAKE) all
+	cd runtime; $(MAKE) all
+	cp runtime/camlrunm$(EXE) .
+	$(MAKE) -C mosmlyac all
+	$(MAKE) -C runtime clean
+	$(MAKE) -C mosmlyac clean_obj
+	$(MAKE) -C config UNAME_S=Cross_W32 w32
+	$(MAKE) -C runtime UNAME_S=Cross_W32 camlrt.dll
+	$(MAKE) -C mosmlyac UNAME_S=Cross_W32 all
+	$(MAKE) -C mosmllib UNAME_S=Cross_W32 all
+	$(MAKE) -C compiler UNAME_S=Cross_W32 w32
+	$(MAKE) -C toolssrc UNAME_S=Cross_W32 all
+	$(MAKE) -C lex UNAME_S=Cross_W32 all
+	$(MAKE) -C launch.w32 UNAME_S=Cross_W32 all
+
+	test -d $(DESTDIR)$(BINDIR) || mkdir -p $(DESTDIR)$(BINDIR)
+	test -d $(DESTDIR)$(LIBDIR) || mkdir -p $(DESTDIR)$(LIBDIR)
+	test -d $(DESTDIR)$(INCDIR) || mkdir -p $(DESTDIR)$(INCDIR)
+	test -d $(DESTDIR)$(DOCDIR) || mkdir -p $(DESTDIR)$(DOCDIR)
+	test -d $(DESTDIR)$(TOOLDIR) || mkdir -p $(DESTDIR)$(TOOLDIR)
+
+	$(MAKE) -C runtime UNAME_S=Cross_W32 install_w32
+	$(MAKE) -C mosmlyac UNAME_S=Cross_W32 install
+	$(MAKE) -C mosmllib UNAME_S=Cross_W32 install
+	$(MAKE) -C compiler UNAME_S=Cross_W32 install_w32
+	$(MAKE) -C toolssrc UNAME_S=Cross_W32 install
+	$(MAKE) -C lex UNAME_S=Cross_W32 install
+	$(MAKE) -C launch.w32 UNAME_S=Cross_W32 install
+	$(MAKE) -C doc install
+#	$(MAKE) basisdynlib
+
+
 uptodate:
 	cd runtime; $(MAKE) all
 	cp runtime/camlrunm$(EXE) .
@@ -60,11 +94,11 @@ basisdynlib:
 
 # Install the Mosml system
 install:
-	test -d $(BINDIR) || mkdir -p $(BINDIR)
-	test -d $(LIBDIR) || mkdir -p $(LIBDIR)
-	test -d $(INCDIR) || mkdir -p $(INCDIR)
-	test -d $(DOCDIR) || mkdir -p $(DOCDIR)
-	test -d $(TOOLDIR) || mkdir -p $(TOOLDIR)
+	test -d $(DESTDIR)$(BINDIR) || mkdir -p $(DESTDIR)$(BINDIR)
+	test -d $(DESTDIR)$(LIBDIR) || mkdir -p $(DESTDIR)$(LIBDIR)
+	test -d $(DESTDIR)$(INCDIR) || mkdir -p $(DESTDIR)$(INCDIR)
+	test -d $(DESTDIR)$(DOCDIR) || mkdir -p $(DESTDIR)$(DOCDIR)
+	test -d $(DESTDIR)$(TOOLDIR) || mkdir -p $(DESTDIR)$(TOOLDIR)
 	cd runtime; $(MAKE) install
 #	cd config; $(MAKE) install
 	cd launch; $(MAKE) all install

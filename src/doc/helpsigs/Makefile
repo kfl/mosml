@@ -22,10 +22,10 @@ base:
 	./makebase $(LIBDIR)
 
 install:
-	cp helpsigs.val $(LIBDIR)
-	test -d $(DOCDIR)/mosmllib || mkdir -p $(DOCDIR)/mosmllib
-	cp htmlsigs/*.html $(DOCDIR)/mosmllib
-	cp index.html $(DOCDIR)/mosmllib
+	$(INSTALL_DATA) helpsigs.val $(DESTDIR)$(LIBDIR)
+	test -d $(DESTDIR)$(DOCDIR)/mosmllib || mkdir -p $(DESTDIR)$(DOCDIR)/mosmllib
+	$(INSTALL_DATA) htmlsigs/*.html $(DESTDIR)$(DOCDIR)/mosmllib
+	$(INSTALL_DATA) index.html $(DESTDIR)$(DOCDIR)/mosmllib
 
 depend: Lexer.sml Parser.sml 
 	rm -f Makefile.bak

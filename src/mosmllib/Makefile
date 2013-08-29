@@ -41,14 +41,14 @@ clean:
 	rm -f Vector.sml Word.sml Word8Array.sml Word8Vector.sml Weak.sml
 
 install:
-	${INSTALL_DATA} README $(LIBDIR)
-	${INSTALL_DATA} *.ui $(LIBDIR)
-	${INSTALL_DATA} *.uo $(LIBDIR)
-	${INSTALL_DATA} *.sig $(LIBDIR)
-	${INSTALL_DATA} General.fke $(LIBDIR)/General.sig
-	${INSTALL_DATA} Meta.fke $(LIBDIR)/Meta.sig
-	rm -f $(LIBDIR)/camlrunm
-	ln -s $(BINDIR)/camlrunm $(LIBDIR)/camlrunm
+	${INSTALL_DATA} README $(DESTDIR)$(LIBDIR)
+	${INSTALL_DATA} *.ui $(DESTDIR)$(LIBDIR)
+	${INSTALL_DATA} *.uo $(DESTDIR)$(LIBDIR)
+	${INSTALL_DATA} *.sig $(DESTDIR)$(LIBDIR)
+	${INSTALL_DATA} General.fke $(DESTDIR)$(LIBDIR)/General.sig
+	${INSTALL_DATA} Meta.fke $(DESTDIR)$(LIBDIR)/Meta.sig
+#	rm -f $(DESTDIR)$(LIBDIR)/camlrunm
+#	ln -s $(BINDIR)/camlrunm $(LIBDIR)/camlrunm
 
 depend: Array.sml FileSys.sml Help.sml Int.sml Mosml.sml Path.sml \
     Process.sml Strbase.sml Vector.sml Word.sml Word8Array.sml \

@@ -1,7 +1,8 @@
 *.o
+/camlrt.dll
 camlrunm
 jumptbl.h
+m.h
 primitives
 prims.c
-m.h
 s.h

@@ -117,9 +117,17 @@ clean:
 	rm -f Makefile.bak
 
 install:
-	${INSTALL_DATA} mosmlcmp $(LIBDIR)
-	${INSTALL_DATA} mosmllnk $(LIBDIR)
-	${INSTALL_DATA} mosmltop $(LIBDIR)
+	${INSTALL_DATA} mosmlcmp $(DESTDIR)$(LIBDIR)
+	${INSTALL_DATA} mosmllnk $(DESTDIR)$(LIBDIR)
+	${INSTALL_DATA} mosmltop $(DESTDIR)$(LIBDIR)
+
+
+install_w32:
+	${INSTALL_DATA} mosmlcmp.w32 $(DESTDIR)$(LIBDIR)/mosmlcmp
+	${INSTALL_DATA} mosmllnk.w32 $(DESTDIR)$(LIBDIR)/mosmllnk
+	${INSTALL_DATA} mosmltop.w32 $(DESTDIR)$(LIBDIR)/mosmltop
+
+
 
 promote:
 	test -f ../mosmlcmp.orig || cp ../mosmlcmp ../mosmlcmp.orig

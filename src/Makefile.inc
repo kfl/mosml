@@ -51,17 +51,45 @@ ADDRUNCFLAGS=-fPIC
 ADDDYNLIBCFLAGS=-fPIC
 
 
-# For Linux, use:
-# ------------------------------
-CPP=cpp -P -traditional -Dunix -Umsdos
-STRIP=strip -S
-LD=gcc -rdynamic -Wl,-rpath,$(LIBDIR)
-DYNLD=gcc -shared
+# Automatic detection of OS
+# If you need to override the detection, set UNAME_S to Custom and add your configuration there.
+# 
+UNAME_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
 
-# For MacOS X, use the same as Linux except:
-# -----------------
-#DYNLD=$(LD) -bundle -undefined dynamic_lookup
 
+# We choose to avoid "if .. else if .. else .. endif endif"
+# because maintaining the nesting to match is a pain.  If
+# we had "elif" things would have been much nicer...
+
+ifeq ($(UNAME_S),Linux)
+	CPP=cpp -P -traditional -Dunix -Umsdos
+	STRIP=strip -S
+	LD=gcc -rdynamic -Wl,-rpath,$(LIBDIR)
+	DYNLD=gcc -shared
+endif
+ifeq ($(UNAME_S),Darwin) 	# For MacOS X, use the same as Linux except DYNDL
+	CPP=cpp -P -traditional -Dunix -Umsdos
+	STRIP=strip -S
+	LD=gcc -rdynamic -Wl,-rpath,$(LIBDIR)
+	DYNLD=$(LD) -bundle -undefined dynamic_lookup
+endif
+ifeq ($(UNAME_S),Cross_W32)
+	CC=i586-mingw32msvc-gcc
+	CPP=cpp -P -traditional -Umsdos -Uunix -Dwin32
+	ADDRUNLIBS=
+	ADDRUNCFLAGS=
+	ADDDYNLIBCFLAGS=
+	STRIP=strip -S
+	EXE=.exe
+	LD=$(CC)
+	DYNLD=$(CC) -shared
+endif
+ifeq ($(UNAME_S),Custom) # Your configuration here
+error:
+	@echo "Unknow OS $(UNAME_S), please update Makefile.inc and send a patch to mosml.org"
+endif
+
+# Note for contributers, please check and convert the following to your platform of choice
 # For FreeBSD, use:
 # -----------------
 # CPP=/usr/bin/cpp -P -traditional -Dunix -Umsdos

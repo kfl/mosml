@@ -18,7 +18,7 @@ libmunix.so: munix.o
 	$(DYNLD) -o libmunix.so munix.o -lc
 
 install:
-	cp libmunix.so $(LIBDIR)
+	$(INSTALL_DATA) libmunix.so $(DESTDIR)$(LIBDIR)
 
 test:
 	gcc -O2 -o sieve sieve.c
