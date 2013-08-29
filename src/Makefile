@@ -64,7 +64,7 @@ cross_w32:
 	$(MAKE) -C toolssrc UNAME_S=Cross_W32 install
 	$(MAKE) -C lex UNAME_S=Cross_W32 install
 	$(MAKE) -C launch.w32 UNAME_S=Cross_W32 install
-
+	$(MAKE) -C doc install
 #	$(MAKE) basisdynlib
 
 
