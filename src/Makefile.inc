@@ -35,6 +35,7 @@ BASELIBS=-lm
 # This works with most systems, including MacOS X with XCode installed:
 
 CC=gcc
+# CC=gcc -mmacosx-version-min=10.7 # for building OS X package
 # CC=/usr/sepp/bin/gcc		# Solaris at KVL
 
 # To compile the runtime system camlrunm with support for
@@ -70,7 +71,7 @@ endif
 ifeq ($(UNAME_S),Darwin) 	# For MacOS X, use the same as Linux except DYNDL
 	CPP=cpp -P -traditional -Dunix -Umsdos
 	STRIP=strip -S
-	LD=gcc -rdynamic -Wl,-rpath,$(LIBDIR)
+	LD=$(CC) -rdynamic -Wl,-rpath,$(LIBDIR)
 	DYNLD=$(LD) -bundle -undefined dynamic_lookup
 endif
 ifeq ($(UNAME_S),Cross_W32)
@@ -177,7 +178,7 @@ endif
 SHELL=/bin/sh
 
 # ---------- You shouldn't need to edit below this line ------------
-ROOTDIR:=$(CURDIR)/..
+ROOTDIR:=..
 
 CAMLRT=$(ROOTDIR)/runtime
 

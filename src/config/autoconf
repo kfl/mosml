@@ -2,7 +2,7 @@
 
 case $1 in
   "") cc=cc;;
-   *) cc=$1;;
+   *) cc="$@";;
 esac
 export cc
 
