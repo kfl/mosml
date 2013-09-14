@@ -231,6 +231,7 @@ rule Token = parse
 
 and TokenN = parse
     [` ` `\n` `\r` `\t` `\^L`]  { TokenN lexbuf }
+  | "#!" [^`\n` `\r`]* {TokenN lexbuf }
   | "(*"
       { savedLexemeStart := getLexemeStart lexbuf;
         comment_depth := 1; Comment lexbuf; TokenN lexbuf
