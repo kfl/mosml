@@ -207,6 +207,12 @@ fun scanString scan lexbuf =
   setLexStartPos lexbuf (!savedLexemeStart - getLexAbsPos lexbuf)
 )
 
+(* enable support for Shebang/Hashbang *)
+exception HashbangError of string
+val currentLine = ref 1
+fun failIfWrongHashbang () =
+    if (!currentLine) <> 1 then raise HashbangError "Hashbang misplaced"
+                 else ()
 }
 
 rule Token = parse
@@ -230,8 +236,11 @@ rule Token = parse
       }
 
 and TokenN = parse
-    [` ` `\n` `\r` `\t` `\^L`]  { TokenN lexbuf }
-  | "#!" [^`\n` `\r`]* {TokenN lexbuf }
+    [` ` `\r` `\t` `\^L`]  { TokenN lexbuf }
+  | `\n`
+      { currentLine := !currentLine+1; TokenN lexbuf }
+  | "#!" [^`\n` `\r`]*
+      { failIfWrongHashbang(); TokenN lexbuf }
   | "(*"
       { savedLexemeStart := getLexemeStart lexbuf;
         comment_depth := 1; Comment lexbuf; TokenN lexbuf
