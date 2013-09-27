@@ -9,11 +9,11 @@ datatype lexingMode =
     NORMALlm
   | QUOTElm
   | ANTIQUOTElm
+  | HASHBANGlm
 
 val lexingMode = ref NORMALlm
 
 val parCount = Stack.new() : int Stack.t
-
 fun resetLexerState() =
 (
   lexingMode := NORMALlm;
@@ -209,10 +209,9 @@ fun scanString scan lexbuf =
 
 (* enable support for Shebang/Hashbang *)
 exception HashbangError of string
-val currentLine = ref 1
-fun failIfWrongHashbang () =
-    if (!currentLine) <> 1 then raise HashbangError "Hashbang misplaced"
-                 else ()
+fun enableHashbang b = (if b
+                        then lexingMode := HASHBANGlm
+                        else lexingMode := NORMALlm; ());
 }
 
 rule Token = parse
@@ -227,20 +226,20 @@ rule Token = parse
                case !lexingMode of
                    NORMALlm =>
                      QUOTER (get_stored_string())
+                 | HASHBANGlm =>
+                     QUOTER (get_stored_string())
                  | ANTIQUOTElm =>
                      QUOTEM (get_stored_string())
                  | QUOTElm =>
                      fatalError "Token")
           | ANTIQUOTElm =>
               AntiQuotation lexbuf
+          | HASHBANGlm =>
+              Hashbang lexbuf
       }
 
 and TokenN = parse
-    [` ` `\r` `\t` `\^L`]  { TokenN lexbuf }
-  | `\n`
-      { currentLine := !currentLine+1; TokenN lexbuf }
-  | "#!" [^`\n` `\r`]*
-      { failIfWrongHashbang(); TokenN lexbuf }
+    [` ` `\n` `\r` `\t` `\^L`]  { TokenN lexbuf }
   | "(*"
       { savedLexemeStart := getLexemeStart lexbuf;
         comment_depth := 1; Comment lexbuf; TokenN lexbuf
@@ -471,6 +470,12 @@ and AntiQuotation = parse
       { 
         skipString "ill-formed antiquotation" SkipQuotation lexbuf
       }
+and Hashbang = parse
+   "#!" [^`\n` `\r`]*
+      { lexingMode := NORMALlm; Token lexbuf }
+  | ""
+      { lexingMode := NORMALlm; Token lexbuf }
+
 ;
 
 

@@ -24,6 +24,9 @@ while : ; do
     -quietdec)
       options="$options -quietdec"
       ;;
+    -s|-hashbang)
+      options="$options -hashbang"
+      ;;
     -valuepoly)
       options="$options -valuepoly"
       ;;
