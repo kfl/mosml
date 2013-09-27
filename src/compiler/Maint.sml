@@ -76,7 +76,8 @@ fun set_quietdec b _ =
 fun set_hashbang b _ =
   let in
     Lexer.enableHashbang b;
-    Exec_phr.quietdec := b
+    Exec_phr.quietdec := b;
+    Exec_phr.hashbang := b
   end;
 
 fun add_include d =
@@ -157,7 +158,8 @@ fun main () =
     resetTypes(); 
     Miscsys.catch_interrupt true;
     input_lexbuf := Compiler.createLexerStream std_in;
-    (initial_loop() handle EndOfFile => ());
+    (initial_loop() handle EndOfFile =>
+         if !Exec_phr.hashbang then BasicIO.exit 0 else ());
     main_loop()
   end
   handle

@@ -208,7 +208,6 @@ fun scanString scan lexbuf =
 )
 
 (* enable support for Shebang/Hashbang *)
-exception HashbangError of string
 fun enableHashbang b = (if b
                         then lexingMode := HASHBANGlm
                         else lexingMode := NORMALlm; ());
