@@ -199,6 +199,8 @@ static value from_saddr(union saddr *s, int len) {
     /* The native representation of a sinaddrport is struct sockaddr_in */
     return newaddr(sizeof(struct sockaddr_in), AF_INET, sinaddrport);
   }
+  default:
+    return Val_unit;
   } 
 }
 
@@ -441,7 +443,12 @@ EXTERNML value msocket_accept(value sock) {
   union saddr addr;
   value res;
 
-  int len = sizeof(addr);
+#ifdef __APPLE__
+  socklen_t
+#else
+  int
+#endif
+     len = sizeof(addr);
   enter_blocking_section();
   ret = accept(Sock_val(sock), &addr.sockaddr_gen, &len);
   leave_blocking_section();
@@ -610,7 +617,12 @@ EXTERNML value msocket_recvfrom(value sock, value buff, value offset,
   value res;
   union saddr addr;
 
-  int len = sizeof(addr);
+#ifdef __APPLE__
+  socklen_t
+#else
+  int
+#endif
+      len = sizeof(addr);
 
   enter_blocking_section();
   ret = recvfrom(Sock_val(sock), &Byte(buff, Long_val(offset)), 

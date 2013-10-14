@@ -128,9 +128,9 @@ EXTERNML value unix_execute(value cmd, value args, value envopt) {
     printf("Could not exec %s\n", String_val(cmd));
     exit(1);
     // Never gets here
+  }
     return Val_unit;
   }
-}
 
 /* ML type: int -> int */
 EXTERNML value unix_waitpid(value pid) {

@@ -51,7 +51,7 @@
    and realloc provide two benefits: (1) they call the runtime's
    adjust_gc_speed() function to inform the gc about the external
    allocations, and (2) they raise mosml exceptions for out-of-memory
-   errors. These changes are marked with a "/* adjust_gc_speed tweak *"
+   errors. These changes are marked with a "* adjust_gc_speed tweak *"
    comment.
 
    A macro MAX_GMP_ALLOC is defined below. It determines how much gmp
@@ -64,7 +64,7 @@
    The second change is to integrate the MP_INT structure into the
    mosml largeint rather than pointing to it. This provides a modest
    speed improvement by avoiding a malloc()/free() for each Largeint.
-   These changes are marked with a "/* inline MPINT tweak *" comment.
+   These changes are marked with a "* inline MPINT tweak *" comment.
 
    A largeint is now a finalized object: a structure,
 
@@ -308,10 +308,9 @@ value largeint_set_str(value dest, value str, value base)
   if (changesign) { Byte(str, 0) = '-'; }
   res = mpz_set_str(Large_val(dest), String_val(str), Long_val(base));
   if (changesign) { Byte(str, 0) = '~'; }
-  if (0 == res)
-    { return Val_unit; }
-  else
+  if (0 != res)
     { failwith("Ill-formed number string"); }
+  return Val_unit;
 }
 
 value largeint_get_str(value src, value base)		
