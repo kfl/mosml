@@ -200,8 +200,10 @@ static value from_saddr(union saddr *s, int len) {
     return newaddr(sizeof(struct sockaddr_in), AF_INET, sinaddrport);
   }
   default:
-    return Val_unit;
-  } 
+    failwith("msocket: implemented sa_family");
+  }
+  /* NOTREACHED */
+  return Val_unit;
 }
 
 void failure()
