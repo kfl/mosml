@@ -80,6 +80,8 @@ requires 25 MB disk space.
 For version 2.10.
 
   * [Moscow ML Library Documentation online](mosmllib)
+  * [Moscow ML Owner's Manual](manual.pdf)
+  * [Moscow ML Language Overview](mosmlref.pdf)
 
 
 ## Authors and credits
