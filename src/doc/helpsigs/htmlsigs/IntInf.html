@@ -1,0 +1,61 @@
+<HTML><HEAD><TITLE>Structure IntInf</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+<H1>Structure IntInf</H1>
+<HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<PRE>
+<A NAME="line0"></A>(* LargeInt -- arbitrary-precision integers 1995-09-04, 1998-04-12     *)
+<A NAME="line1"></A>(* This module requires Dynlib and the GNU GMP package to be installed *)
+<A NAME="line2"></A>
+<A NAME="line3"></A>type int
+<A NAME="line4"></A>
+<A NAME="line5"></A>val precision : int option
+<A NAME="line6"></A>val minInt    : int option
+<A NAME="line7"></A>val maxInt    : int option
+<A NAME="line8"></A>
+<A NAME="line9"></A>val ~    : int -&gt; int
+<A NAME="line10"></A>val +    : int * int -&gt; int
+<A NAME="line11"></A>val -    : int * int -&gt; int
+<A NAME="line12"></A>val *    : int * int -&gt; int
+<A NAME="line13"></A>val div  : int * int -&gt; int
+<A NAME="line14"></A>val mod  : int * int -&gt; int
+<A NAME="line15"></A>val quot : int * int -&gt; int
+<A NAME="line16"></A>val rem  : int * int -&gt; int
+<A NAME="line17"></A>val <    : int * int -&gt; bool
+<A NAME="line18"></A>val >    : int * int -&gt; bool
+<A NAME="line19"></A>val <=   : int * int -&gt; bool
+<A NAME="line20"></A>val >=   : int * int -&gt; bool
+<A NAME="line21"></A>val eq   : int * int -&gt; bool
+<A NAME="line22"></A>val ne   : int * int -&gt; bool
+<A NAME="line23"></A>val abs  : int -&gt; int
+<A NAME="line24"></A>val min  : int * int -&gt; int
+<A NAME="line25"></A>val max  : int * int -&gt; int
+<A NAME="line26"></A>
+<A NAME="line27"></A>val divMod   : int * int -&gt; int * int
+<A NAME="line28"></A>val quotRem  : int * int -&gt; int * int
+<A NAME="line29"></A>val pow      : int * Int.int -&gt; int
+<A NAME="line30"></A>val log2     : int -&gt; Int.int
+<A NAME="line31"></A>
+<A NAME="line32"></A>val sign     : int -&gt; Int.int
+<A NAME="line33"></A>val sameSign : int * int -&gt; bool
+<A NAME="line34"></A>val compare  : int * int -&gt; order
+<A NAME="line35"></A>
+<A NAME="line36"></A>val fromInt    : Int.int -&gt; int
+<A NAME="line37"></A>val toInt      : int -&gt; Int.int		(* Overflow *)
+<A NAME="line38"></A>val toLarge    : int -&gt; int
+<A NAME="line39"></A>val fromLarge  : int -&gt; int
+<A NAME="line40"></A>
+<A NAME="line41"></A>val fromString : string -&gt; int option
+<A NAME="line42"></A>val toString   : int -&gt; string
+<A NAME="line43"></A>
+<A NAME="line44"></A>val scan : StringCvt.radix
+<A NAME="line45"></A>           -&gt; (char, 'a) StringCvt.reader -&gt; (int, 'a) StringCvt.reader
+<A NAME="line46"></A>val fmt  : StringCvt.radix -&gt; int -&gt; string
+<A NAME="line47"></A>
+</PRE><HR><TABLE WIDTH=100%><TR ALIGN = CENTER>
+<TH><A HREF="idIndex.html">Identifier index</A>
+<TH><A HREF="index.html">Structure index</A>
+</TABLE><HR>
+<BR><EM><A HREF="http://mosml.org">Moscow ML</A> 2.10</EM></BODY></HTML>
