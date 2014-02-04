@@ -3,6 +3,7 @@
 open List BasicIO Nonstdio;
 open Miscsys Memory Fnlib Config Mixture Location Units Smlperv Rtvals  Smltop;
 open Types (* cvr *);
+open Lexer  (*to set hashbang*);
 val initialFiles = ref ([] : string list);
 
 (* Initial loop *)
@@ -72,6 +73,13 @@ fun set_value_polymorphism b _ =
 fun set_quietdec b _ =
   Exec_phr.quietdec := b;
 
+fun set_hashbang b _ =
+  let in
+    Lexer.enableHashbang b;
+    Exec_phr.quietdec := b;
+    Exec_phr.hashbang := b
+  end;
+
 fun add_include d =
   load_path := !load_path @ [d];
 
@@ -117,6 +125,8 @@ fun main () =
                ("-perv",      Arg.String perv_set),
                ("-imptypes",  Arg.Unit (set_value_polymorphism false)),
                ("-valuepoly", Arg.Unit (set_value_polymorphism true)),
+               ("-hashbang",  Arg.Unit (set_hashbang true)),
+               ("-s",         Arg.Unit (set_hashbang true)),
                ("-quietdec",  Arg.Unit (set_quietdec true)),
                ("-msgstyle",  Arg.String set_msgstyle),
                ("-m",         Arg.String set_msgstyle),
@@ -148,7 +158,8 @@ fun main () =
     resetTypes(); 
     Miscsys.catch_interrupt true;
     input_lexbuf := Compiler.createLexerStream std_in;
-    (initial_loop() handle EndOfFile => ());
+    (initial_loop() handle EndOfFile =>
+         if !Exec_phr.hashbang then BasicIO.exit 0 else ());
     main_loop()
   end
   handle

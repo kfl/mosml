@@ -8,6 +8,10 @@ open Symtable Rtvals Load_phr;
 
 val quietdec = ref false ;
 
+(* Is enabled if running with -hashbang arg: *)
+
+val hashbang = ref false ;
+
 (* Executing a top-level declaration. *)
 
 local

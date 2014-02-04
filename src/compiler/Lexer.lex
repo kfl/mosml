@@ -9,11 +9,11 @@ datatype lexingMode =
     NORMALlm
   | QUOTElm
   | ANTIQUOTElm
+  | HASHBANGlm
 
 val lexingMode = ref NORMALlm
 
 val parCount = Stack.new() : int Stack.t
-
 fun resetLexerState() =
 (
   lexingMode := NORMALlm;
@@ -207,6 +207,10 @@ fun scanString scan lexbuf =
   setLexStartPos lexbuf (!savedLexemeStart - getLexAbsPos lexbuf)
 )
 
+(* enable support for Shebang/Hashbang *)
+fun enableHashbang b = (if b
+                        then lexingMode := HASHBANGlm
+                        else lexingMode := NORMALlm; ());
 }
 
 rule Token = parse
@@ -221,12 +225,16 @@ rule Token = parse
                case !lexingMode of
                    NORMALlm =>
                      QUOTER (get_stored_string())
+                 | HASHBANGlm =>
+                     QUOTER (get_stored_string())
                  | ANTIQUOTElm =>
                      QUOTEM (get_stored_string())
                  | QUOTElm =>
                      fatalError "Token")
           | ANTIQUOTElm =>
               AntiQuotation lexbuf
+          | HASHBANGlm =>
+              Hashbang lexbuf
       }
 
 and TokenN = parse
@@ -461,6 +469,12 @@ and AntiQuotation = parse
       { 
         skipString "ill-formed antiquotation" SkipQuotation lexbuf
       }
+and Hashbang = parse
+   "#!" [^`\n` `\r`]*
+      { lexingMode := NORMALlm; Token lexbuf }
+  | ""
+      { lexingMode := NORMALlm; Token lexbuf }
+
 ;
 
 
