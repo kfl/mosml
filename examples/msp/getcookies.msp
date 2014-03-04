@@ -1,0 +1,39 @@
+<?MSP val session = Session.session "ps" ?>
+
+<FORM ACTION="getcookies.msp">
+Ny x: <INPUT TYPE=TEXT NAME="newx">
+<INPUT TYPE=SUBMIT VALUE="Set x">
+</FORM>
+
+
+
+<P>
+<UL>
+<LI>
+<?MSP
+val (getx, setx) = Session.var session "x" 
+
+val _ = (setx (Msp.%# "newx")) handle _ => ();
+
+
+val (gety, sety) = Session.var session "y" 
+
+val _ = print (case getx () of NONE => "Ingen" | SOME i => Int.toString i);
+val _ = Option.map (fn i => setx (i+1)) (getx ());
+?> 
+
+<LI>
+<?MSP
+val _ = print (case gety () of NONE => "Ingen" | SOME i => Int.toString i);
+
+val _ = Option.map (fn i => sety (i+1)) (gety ());
+
+?>
+
+<LI>Age of this session in seconds: 
+<?MSP= case Session.starttime session of 
+            NONE    => ""
+          | SOME st => Time.fmt 0 (Time.-(Time.now(), st))
+ ?>
+
+</UL>

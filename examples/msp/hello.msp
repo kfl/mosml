@@ -1,0 +1,9 @@
+<HTML><BODY>
+
+<H1>Hello world!</H1>
+
+The current date and time is
+<?MSP= Date.toString (Date.fromTimeLocal(Time.now())) ?>
+
+<HR><ADDRESS>Your friendly ML server page</ADDRESS>
+</BODY></HTML>

@@ -1,0 +1,37 @@
+<?MSP open Msp Session 
+      val skey = session "purchase" 
+      infix && 
+?>
+
+<?MSP type order = (string * int) list
+      val (getname,  setname)  = var skey "name" : string var
+      val (getorder, setorder) = var skey "order" : order var
+      val _ = setorder ((% "order", %# "qty") :: getOpt(getorder(), []))
+?>
+
+<H1>Your order so far</H1>
+
+Hello, <?MSP= getOpt(getname (), "<none>") ?>, you have ordered the
+following items:
+
+<P>
+
+<TABLE BORDER=0>
+<TR><TH>Product<TH>Quantity
+<?MSP$ 
+prmap (fn (p,q) => tr (td ($p) && td($(Int.toString q))))
+      (getOpt(getorder(), []))
+?>
+</TABLE>
+
+<FORM ACTION="script2.msp" METHOD=GET>
+<INPUT TYPE=SUBMIT VALUE="Order more">
+</FORM>
+
+<P>
+
+<FORM ACTION="script1.msp" METHOD=POST>
+<INPUT TYPE=HIDDEN NAME="restart">
+<INPUT TYPE=SUBMIT VALUE="Give up and login as a new customer">
+</FORM>
+

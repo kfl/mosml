@@ -1,0 +1,145 @@
+ML Server Pages (version 1)
+---------------------------
+
+ML Server Pages (MSP) is a web scripting language, a loose integration
+of Standard ML (SML) and HTML in the style of Sun's Java Server Pages,
+Microsoft's Active Server Pages, or PHP.
+
+This note describes how to install MSP under Moscow ML 2.00.
+
+To use MSP scripts you'll need
+
+ - Moscow ML 2.00
+ - the Regex library for Moscow ML (in mosml/src/dynlibs/mregex) 
+ - an Apache webserver or similar
+
+This package contains:
+
+ - mspcompile.sml
+ - example MSP scripts
+
+
+Installation instructions
+-------------------------
+
+ 1. Edit MOSMLLIB and CGIDIR in msp1/Makefile to reflect the location
+    of your Moscow ML installation and your webserver cgi-bin directory
+
+ 2. Edit msp1/mspcompile.sml to reflect the location of your Moscow ML
+    installation and your webserver cgi-bin directory
+
+ 3. Do 
+	make all
+
+ 4. As root, do
+	make install
+
+ 5. Edit your Apache webserver configuration (e.g. /etc/httpd/conf/srm.conf):
+
+    5a. Make it recognize the .msp extension:
+
+        Action application/x-msp /cgi-bin/mspcompile
+        AddType application/x-msp .msp
+
+    5b. Permit index.msp to reply to a directory request, by adding it to 
+        the DirectoryIndex directive:
+
+	DirectoryIndex index.html index.shtml index.cgi index.msp
+
+    5c. Under Apache for MS Windows NT, add this as well:
+
+        SetEnv MOSMLLIB "c:/mosml/lib"
+
+ 6. Reconfigure Apache, either by restarting it, or by 
+	
+	kill -HUP <apache process id>
+
+ 7. Test it.  Copy hello.msp to a directory accessible from the web,
+    say, http://foo.com/hello.msp and point your browser to that URL.
+
+
+If it doesn't work
+------------------
+
+ - If mspcompile does not start, then probably the libmregex.so (for
+   Regex) is not installed in a place where mspcompile can find it.
+   Copy libmregex.so to /usr/local/lib, update /etc/ld.so.conf and 
+   run ldconfig if necessary.
+
+ - If mspcompile does start, then check Apache's error_log; the
+   mspcompile script logs all errors there.
+
+ - If mspcompile starts but cannot compile the generated scripts, then
+   possibly the compiler mosmlc cannot find the Msp.ui and Msp.uo files.  
+   Make sure you set MOSMLLIB correctly in the Makefile (in this directory).
+
+
+Writing ML Server Pages
+-----------------------
+
+An ML server page script is stored in an .msp file and consists of
+HTML (text) fragments and SML (code) fragments.  
+
+Thus a date-enhanced Hello World script might look like this:
+
+   <HTML><BODY>
+
+   <H1>Hello world!</H1>
+
+   The current date and time is
+   <?MSP= Date.toString (Date.fromTimeLocal(Time.now())) ?>
+
+   <HR><ADDRESS>Your friendly ML server page</ADDRESS>
+   </BODY></HTML>
+
+
+In general, an SML fragment must have one of the following forms:
+
+<?MSP dec ?>
+
+  An SML declaration  dec  in  <?MSP dec ?>  may define types, 
+  functions and variables, and may print (on standard output) HTML
+  code that becomes part of the resulting HTML page.
+
+<?MSP= exp ?>
+
+  An SML expression  exp  in  <?MSP= exp ?>  must have type string.  
+  The expression is evaluated and the resulting string is printed on
+  standard output as part of the resulting HTML page.
+
+<?MSP$ exp ?>
+
+  An SML expression  exp  in  <?MSP$ exp ?>  must have type Msp.wseq.  
+
+  The expression is evaluated and the resulting word sequence is
+  printed on standard output as part of the resulting HTML page.
+
+The following structures are particularly useful for writing ML server
+page scripts:
+
+  Msp		for efficient functional generation of HTML.  
+
+  Mosmlcgi      for accessing CGI parameters
+
+  Mosmlcookie   for manipulating cookies.  Untested.  Cookies can be
+                accessed anywhere in an MSP script, but can be set
+                only in a ML fragment immediately at the beginning of
+                the MSP script, before any HTML fragment.
+
+
+Who is responsible?
+-------------------
+
+The concept of ML server pages was presented by Christian Stefansen at
+a Funtechs meeting in December 1999 at the IT University of
+Copenhagen.  This early design and implementation is by Peter Sestoft.
+The third honourable member of the ML server pages group is Peter
+Lund.
+
+
+For further information
+-----------------------
+
+See MSP homepage at http://ellemose.dina.kvl.dk/~sestoft/msp
+
+Peter Sestoft (sestoft@dina.kvl.dk) 2000-02-22, 2000-08-20

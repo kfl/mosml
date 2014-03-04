@@ -1,0 +1,36 @@
+<HTML>
+<HEAD><TITLE>MSP example: log to a file</TITLE></HEAD>
+<BODY BGCOLOR="#fbf2e7">
+
+<H1>MSP example: log to a file</H1>
+
+This script writes to and reads from a log file, kept in the script
+source directory.
+
+<P>The log file can be kept outside the script source directory if
+desirable for security.
+
+<?MSP 
+val logfile = "log"
+open TextIO 
+val os = openAppend logfile
+val now = Date.fromTimeLocal(Time.now()) 
+val msg = "Invoked " ^ Date.toString now ^ " from " 
+          ^ getOpt(Mosmlcgi.cgi_remote_addr, "<unknown address>") ^ "\n"
+val _ = output(os, msg)
+val _ = closeOut os
+?>
+
+<P>The current contents of the log file is:
+
+<HR><PRE><?MSP= 
+let val is = openIn logfile 
+in 
+    inputAll is 
+    before 
+    closeIn is
+end
+?></PRE><HR>
+
+</BODY>
+</HTML>

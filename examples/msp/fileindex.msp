@@ -1,0 +1,58 @@
+<HTML><HEAD>
+<TITLE>Automatic file index generation</TITLE>
+</HEAD><BODY BGCOLOR="#fbf2e7">
+
+<H2>Automatic file index generation</H2>
+
+To download a file, hold down the Shift key while clicking on the
+link, or right-click the link and choose Save Link As.
+
+<?MSP (* General index generator.  Invoke with   
+	mkfileindex <directory> <list of relevant file extensions>
+   *)
+
+open Msp
+infix &&
+
+fun mem x [] = false
+  | mem x (y::yr) = x=y orelse mem x yr
+
+fun relevant relevantExt = 
+    List.filter (fn f => 
+		 f <> "index.html" andalso not (FileSys.isDir f) 
+		 andalso mem (getOpt(Path.ext f, "")) relevantExt)
+
+fun getfiles relevantExt dir =
+    Listsort.sort String.compare (relevant relevantExt (Mosml.listDir dir))
+
+fun urlpath path = 
+    let val {isAbs, vol, arcs} = Path.fromString path 
+    in Path.toString {isAbs = isAbs, vol = vol, arcs = List.map urlencode arcs}
+    end
+
+fun mkfile dir file = 
+    td (ahref (urlpath (Path.concat(dir, file))) ($file))
+
+fun mkfileindex dir relevantExt = 
+    let fun process line = tr (prmap (mkfile dir) line) && Nl
+	fun loop [] = Empty
+	  | loop (x1 :: x2 :: x3 :: x4 :: rest) = 
+	    process [x1, x2, x3, x4] && loop rest
+	  | loop xs = process xs
+    in tablea "CELLSPACING=5" (loop (getfiles relevantExt dir)) end
+    handle exn => 
+	br && strong ($$["Fileindex failed: ", exnMessage exn]) && br
+?>
+
+<H2>Example scripts in this directory</H2>
+
+<?MSP$ mkfileindex "." ["msp"] ?>
+
+
+<H2>Example source files in this directory</H2>
+
+<?MSP$ mkfileindex "." ["txt"] ?>
+
+<HR><A HREF="http://www.dina.kvl.dk/~sestoft/">Peter Sestoft</A> 
+(<A HREF="mailto:sestoft@dina.kvl.dk">sestoft@dina.kvl.dk</A>) 2000-02-06
+</BODY></HTML>

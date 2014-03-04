@@ -1,0 +1,228 @@
+<!---*-mode: HTML; eval: (iso-accents-mode 1); -*--->
+
+<html> <head> <title>ML server pages</title> </head>
+<BODY BGCOLOR="#fbf2e7">
+
+<H1>ML server pages (version 1.1)</h1>
+
+ML Server Pages (MSP) is a web scripting language, a loose integration
+of Standard ML (SML) and HTML in the style of Sun's Java Server Pages,
+Microsoft's Active Server Pages, or PHP.
+
+
+<H2>News and links</H2>
+
+<UL>
+<LI>Version 1.1 (April 2001) no longer requires the Regex library
+(which, being based on a C program, is flaky).  Also, quotations and
+antiquotations may now be used in MSP scripts.
+
+<LI>The MSP implementation is available as <A HREF="msp1.tgz">gzipped
+tar file</A>.
+
+<LI>Slides from the Funtechs presentation on February 10, 2000: <A
+HREF="msp000210cstef.pdf">part 1</A> and <A HREF="msp000210.pdf">part
+2</A>
+</UL>
+
+
+<H2>Some example scripts</H2>
+
+<TABLE BORDER>
+<TR><TH>Description<TH>Script source<TH>Run script
+<?MSP$ 
+let
+    open Msp
+    infix &&
+        
+    fun mkrow (desc, file) = 
+        tr (td ($desc) 
+            && td(ahref (file ^ ".txt") ($(file ^ ".txt")))
+            && td(ahref file ($file))
+            && Nl)
+in 
+    prmap mkrow [("Hello world", "hello.msp"),
+                 ("Generating a calendar", "calendar.msp"),
+                 ("Writing to and reading from a file", "logtofile.msp"),
+                 ("Generating an index of a subdirectory", "fileindex.msp"),
+                 ("A demo of various MSP styles", "test.msp"),
+                 ("Generating an HTML form", "dbrequestform.msp"),
+                 ("Doing a database query specified by the form", 
+                 "dbquery.msp"),
+                 ("Doing two fixed database queries", "database.msp"),
+                 ("This index page", "index.msp")]
+end
+?>
+</TABLE>
+
+<P>You may pass arguments to msp-scripts, as in <A
+HREF="calendar.msp?year=1962">calendar.msp?year=1962</A> or <A
+HREF="test.msp?nvalue=10&mvalue=17">test.msp?nvalue=10&mvalue=17</A>.
+
+<P>(In MS Internet Explorer, you must select View | Source to see the
+document source after clicking on the *.msp.txt file; Internet
+Explorer erroneously ignores the contents-type sent by the webserver).
+
+<H2>Writing ML Server Pages</H2>
+
+An ML server page script is stored in an .msp file and consists of
+HTML (text) fragments and SML (code) fragments.  
+
+<P>Thus a date-enhanced Hello World script might look like this:
+
+<PRE>
+   &lt;HTML&gt;&lt;BODY&gt;
+   &lt;H1&gt;Hello world!&lt;/H1&gt;
+
+   The current date and time is
+   &lt;?MSP= Date.toString (Date.fromTimeLocal(Time.now())) ?&gt;
+
+   &lt;HR&gt;&lt;ADDRESS&gt;Your friendly ML server page&lt;/ADDRESS&gt;
+   &lt;/BODY&gt;&lt;/HTML&gt;
+</PRE>
+
+<P>To see the webpage produced by the above code, run the <A
+HREF="hello.msp">hello.msp</A> script.
+
+<P>In general, an SML fragment must have one of the following forms:
+
+<DL><DT><TT>&lt;?MSP dec ?&gt;</TT>
+<DD>
+  An SML declaration <TT>dec</TT> in <TT>&lt;?MSP dec ?&gt;</TT> may
+  define types, functions and variables, and may print (on standard
+  output) HTML code that becomes part of the resulting HTML page.
+
+<DT><TT>&lt;?MSP= exp ?&gt;</TT>
+<DD>
+  An SML expression <TT>exp</TT> in <TT>&lt;?MSP= exp ?&gt;</TT> must
+  have type string.  The expression is evaluated and the resulting
+  string is printed on standard output as part of the resulting HTML
+  page.
+
+<DT><TT>&lt;?MSP$ exp ?&gt;</TT>
+<DD>
+  An SML expression <TT>exp</TT> in <TT>&lt;?MSP$ exp ?&gt;</TT> must
+  have type Msp.wseq.  The expression is evaluated and the resulting
+  word sequence is printed on standard output as part of the resulting
+  HTML page.
+</DL>
+
+<P>The strange tag syntax &nbsp;&nbsp;<TT>&lt;?MSP
+... ?&gt;</TT>&nbsp;&nbsp; follows the standard for so-called <A
+HREF="http://www.w3.org/TR/REC-xml#sec-pi">XML processing
+instructions</A>.
+
+<P>The following structures are particularly useful for writing ML
+ server page scripts:
+
+<UL><LI><A HREF="../mosmllib/Msp.html">Msp</A> for
+efficient functional generation of HTML.  Here are the raw <A
+HREF="Msp.sig">Msp.sig</A> and <A HREF="Msp.sml">Msp.sml</A> files.
+
+<LI><A HREF="../mosmllib/Mosmlcgi.html">Mosmlcgi</A> for
+accessing CGI parameters
+
+<LI><A HREF="../mosmllib/Mosmlcookie.html">Mosmlcookie</A> for
+manipulating cookies.  Here are the raw <A
+HREF="Mosmlcookie.sig">Mosmlcookie.sig</A> and <A
+HREF="Mosmlcookie.sml">Mosmlcookie.sml</A> files. <B>Untested.</B>
+Cookies can be accessed anywhere in an MSP script, but can be set only
+in a ML fragment immediately at the beginning of the MSP script.
+</UL>
+
+
+<H2>Implementation</H2>
+
+This is how an msp-script is executed in our early proof-of-concept
+implementation (January 2000):
+
+<UL>
+<LI>When the Apache web server receives a request for a file with the
+.msp extension, it will invoke the CGI script /cgi-bin/mspcompile.
+This is achieved by adding the following lines to the Apache
+configuration file:
+
+<PRE>
+        Action application/x-msp /cgi-bin/mspcompile
+        AddType application/x-msp .msp
+</PRE>
+
+<LI>To make Apache translate a request for a directory into a request
+for index.msp (if it exists), add index.msp to the DirectoryIndex
+directive:
+
+<PRE>
+        DirectoryIndex index.html index.msp 
+</PRE>
+
+<P>When running MSP under Apache under MS Windows NT, the Apache
+configuration must set the MOSMLLIB environment variable:
+
+<PRE>
+        SetEnv MOSMLLIB "c:/mosml/lib"
+</PRE>
+
+<LI>The program /cgi-bin/mspcompile will check whether an up-to-date
+compiled version of the msp-script exists.  If not, it will
+preprocess the msp-script to obtain a corresponding .sml-file, then
+compile and link it.
+
+<LI>When the msp-script has been compiled (or recompiled), the program
+/cgi-bin/mspcompile will invoke it, passing its own environment
+variables, standard input, and standard output on to the compiled
+script.  The script executes and produces HTML-code which is returned
+to the browser.  The script executes in its source directory, so it
+can read and write files there.  This is demonstrated by the script <A
+HREF="logtofile.msp">logtofile.msp</A>.
+</UL>
+
+<P>The CGI script mspcompile is the main workhorse, yet it consists of
+little more than two pages of ML code.  It splits an .msp-file into
+HTML fragments and ML fragments, to build the corresponding .sml-file.
+An HTML fragment <TT>&lt;FOO&gt;bar...</TT> is transformed into an ML
+string constant (with quotes, backslashes, newlines etc. properly
+escaped) which is then embedded into a declaration of the form
+
+<PRE>
+        val _ = print "&lt;FOO&gt;bar..."; 
+</PRE>
+
+<P>An ML declaration fragment is copied to the .sml-file as is.  An ML
+expression fragments is embedded in <TT>val _ = print(...)</TT> or
+<TT>val _ = Msp.printseq(...)</TT> or <TT>val _ = (...)</TT> depending
+on its type: string, Msp.wseq, or unit.  It would be nice to
+distinguish these three cases automatically, but that would require a
+typecase construct.
+
+<P>The name of a compiled msp-script is simply the MD5 checksum of
+the full local pathname of the msp-script.  This gives a fast and
+probabilistically one-to-one mapping from the name of an msp-script
+to the name of the corresponding compiled script.
+
+
+<H2>Future work</H2>
+
+Lots: security, efficiency, session management, persistence,
+scalability, real-world examples, ...
+
+
+<H2>Who is responsible?</H2>
+
+The concept of ML server pages was presented by <A
+ HREF="mailto:cstef@diku.dk">Christian Stefansen</A> at a <A
+ HREF="http://www.funtechs.org">Funtechs</A> meeting in December 1999
+ at the IT University of Copenhagen.  This early design and
+ implementation is by <a href="http://www.dina.kvl.dk/~sestoft/">Peter
+ Sestoft</a>.  The third honourable member of the ML server pages
+ group is <A HREF="mailto:firefly@diku.dk">Peter Lund</A>.
+
+<H2>Where?</H2>
+
+The MSP homepage is at
+<TT>http://ellemose.dina.kvl.dk/~sestoft/msp/index.msp</TT>
+
+<P> <hr> <a
+href="http://www.dina.kvl.dk/~sestoft/">Peter Sestoft</a> (<a
+href="mailto:sestoft@dina.kvl.dk">sestoft@dina.kvl.dk</a>) 2000-02-22,
+2001-04-29 
+</body></html>

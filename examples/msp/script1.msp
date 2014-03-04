@@ -1,0 +1,8 @@
+<?MSP val _ = Session.stop () ?>
+
+<FORM ACTION="script2.msp" METHOD=POST>
+<TABLE BORDER=0>
+<TR><TD>Login name: <TD><INPUT TYPE=TEXT NAME="name">
+<TR><TD>Password: <TD><INPUT TYPE=PASSWORD NAME="passwd">
+<TR><TD COLSPAN=2><INPUT TYPE=SUBMIT VALUE="Log in">
+</TABLE>

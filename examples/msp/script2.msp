@@ -1,0 +1,41 @@
+<?MSP open Session; val skey = session "purchase" ?>
+
+<?MSP val (getname,  setname)  = var skey "name" : string var ?>
+
+<?MSP 
+fun ok newsession n = 
+let type order = (string * int) list
+    val (getorder, setorder) = var skey "order" : order var
+    val _ = if newsession then (setname n; setorder []) else ()
+?>
+
+<B>OK, you are logged in as <?MSP= n ?></B>
+
+<P>What do you want to order:
+
+<FORM ACTION="script3.msp">
+<SELECT NAME="order">
+<OPTION VALUE="tractor">Ursus tractor
+<OPTION VALUE="porsche">Porsche 911
+<OPTION VALUE="bicycle">Raleigh bike (green)
+<OPTION VALUE="scooter">Vespa classic
+</SELECT>
+
+<INPUT TYPE=TEXT NAME="qty">
+<INPUT TYPE=SUBMIT VALUE="Order">
+</FORM>
+<?MSP in () end ?>
+
+<?MSP
+val _ =
+case (getname(),
+      Mosmlcgi.cgi_field_string "name", 
+      Mosmlcgi.cgi_field_string "passwd") of
+    (SOME n, _, _) => ok false n
+  | (NONE, SOME n, SOME p) => if n=p then ok true n 
+			      else print "Wrong password." 
+  | (_   , NONE,   _     ) => print "Missing name" 
+  | (_   , _,      NONE  ) => print "Missing password" 
+?>
+
+
