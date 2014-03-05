@@ -43,11 +43,11 @@ Installation instructions
 
     5b. enable the MSP configuration with the command
 
-    	       sudo a2enconf msp
+    	        sudo a2enconf msp
 
     5c. Restart Apache with the command
 
-    		 sudo service apache2 restart
+    		sudo service apache2 restart
     
     5d. If you are not using Ubuntu or Debian, then your Apache setup
         might be slightly different. In that case copy the content of
@@ -59,6 +59,19 @@ Installation instructions
 
 If it doesn't work
 ------------------
+ 
+ - If you get an error like:
+
+         AH00526: Syntax error on line 1 of /etc/apache2/conf-enabled/msp.conf:
+         Invalid command 'Action', perhaps misspelled or defined by a module not included in the server configuration
+
+   After you restart Apache, you probably need to enable the `actions`
+   module. For instance, by the command:
+         
+         sudo a2enmod actions
+
+   And then you most likely also need to enable the `cgi` module
+   (using the `a2enmod` command).
 
  - If mspcompile does start, then check Apache's `error.log`; the
    mspcompile script logs all errors there.
@@ -116,9 +129,9 @@ page scripts:
  * `Mosmlcgi`    for accessing CGI parameters
 
  * `Mosmlcookie` for manipulating cookies.  Untested.  Cookies can be
-                accessed anywhere in an MSP script, but can be set
-                only in a ML fragment immediately at the beginning of
-                the MSP script, before any HTML fragment.
+                 accessed anywhere in an MSP script, but can be set
+                 only in a ML fragment immediately at the beginning of
+                 the MSP script, before any HTML fragment.
 
 
 Who is responsible?
@@ -136,4 +149,5 @@ For further information
 
 See MSP homepage in `index.msp`
 
-Peter Sestoft (sestoft@dina.kvl.dk) 2000-02-22, 2000-08-20
+Peter Sestoft (sestoft@itu.dk) 2000-02-22, 2000-08-20
+Ken Friis Larsen (ken@friislarsen.net) 2014-03-05
