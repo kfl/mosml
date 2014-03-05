@@ -1,4 +1,5 @@
-(* ML serverpages -- sestoft@dina.kvl.dk 2001-04-29 v 1.1
+(* ML serverpages -- sestoft@dina.kvl.dk 2001-04-29 v 1.1   
+                  -- 2014-03-05 Ken Friis Larsen minor changes, v 1.2
 
    Under Unix/Linux/MacOSX compile with 
       mosmlc -standalone -o mspcompile mspcompile.sml
@@ -10,13 +11,11 @@
 
 (* Directory for compiling and storing scripts; must agree with Makefile *)
 
-val MSPDIR = "/var/www/cgi-bin"
-
-val scriptdir = MSPDIR ^ "/mscripts"
+val SCRIPTCACHE = "/var/cache/mspscripts"
 
 (* The path to the Moscow ML compiler.  Add .exe under MSWINDOWS: *)
 
-val mosmlc = "/home/sestoft/mosml/bin/mosmlc"
+val mosmlc = "/usr/bin/mosmlc"
 
 (* Transform [x1, x2, ..., xn] to [f x1, sep, f x2, sep, ..., sep, f xn] *)
 
@@ -153,7 +152,7 @@ fun invoke path bin =
 	val input = TextIO.inputN(TextIO.stdIn, len)
     in 
 	FileSys.chDir (Path.dir path);
-	case Mosml.run (Path.concat(scriptdir, bin)) [] input of
+	case Mosml.run (Path.concat(SCRIPTCACHE, bin)) [] input of
 	    Mosml.Failure s => err ("Invocation of " ^ path ^ " failed:\n" ^ s)
 	  | Mosml.Success s => print s
     end
@@ -161,7 +160,7 @@ fun invoke path bin =
 (* Main program *)
 
 val _ = 
-    (FileSys.chDir scriptdir;
+    (FileSys.chDir SCRIPTCACHE;
      case Process.getEnv("PATH_TRANSLATED") of
 	 NONE      => err "Invocation failed.  Contact server administrator"
        | SOME path => 

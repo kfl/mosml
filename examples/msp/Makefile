@@ -1,19 +1,17 @@
-# Making and installing ML Server Pages version 1, for Moscow ML 2.00
+# Making and installing ML Server Pages version 1.2, for Moscow ML 2.10
 
-# NB: Must set `MSPDIR' and `mosmlc' in mspcompile.sml prior to compilation.
+# NB: Must set `SCRIPTCACHE' and `mosmlc' in mspcompile.sml prior to compilation.
 
-MSPDIR=/var/lib/httpd/cgi-bin
-MOSMLLIB=/usr/local/mosml/lib
-
-SCRIPTDIR=${MSPDIR}/mscripts
+CGI_DIR=/usr/lib/cgi-bin
+SCRIPTCACHE=/var/cache/mspscripts
 
 all: 
 	mosmlc -standalone -o mspcompile mspcompile.sml
 
 install: 
-	cp -p mspcompile ${MSPDIR}
-	mkdir ${SCRIPTDIR}
-	chown nobody ${SCRIPTDIR}
+	cp mspcompile ${CGI_DIR}
+	mkdir ${SCRIPTCACHE}
+	chown www-data:www-data ${SCRIPTCACHE}
 
 clean:
 	rm -f *.ui *.uo

@@ -3,7 +3,7 @@
 <html> <head> <title>ML server pages</title> </head>
 <BODY BGCOLOR="#fbf2e7">
 
-<H1>ML server pages (version 1.1)</h1>
+<H1>ML server pages (version 1.2)</h1>
 
 ML Server Pages (MSP) is a web scripting language, a loose integration
 of Standard ML (SML) and HTML in the style of Sun's Java Server Pages,
@@ -13,16 +13,17 @@ Microsoft's Active Server Pages, or PHP.
 <H2>News and links</H2>
 
 <UL>
+<li>Version 1.2 (March 2014) minor updates and moved to mosml distribution.
+
 <LI>Version 1.1 (April 2001) no longer requires the Regex library
 (which, being based on a C program, is flaky).  Also, quotations and
 antiquotations may now be used in MSP scripts.
 
-<LI>The MSP implementation is available as <A HREF="msp1.tgz">gzipped
-tar file</A>.
+<LI>The MSP implementation is available in the <tt>examples/msp</tt> directory in the Moscow ML distribution.
 
-<LI>Slides from the Funtechs presentation on February 10, 2000: <A
-HREF="msp000210cstef.pdf">part 1</A> and <A HREF="msp000210.pdf">part
-2</A>
+<!-- <LI>Slides from the Funtechs presentation on February 10, 2000: <A -->
+<!-- HREF="msp000210cstef.pdf">part 1</A> and <A HREF="msp000210.pdf">part -->
+<!-- 2</A> -->
 </UL>
 
 
@@ -134,7 +135,7 @@ in a ML fragment immediately at the beginning of the MSP script.
 <H2>Implementation</H2>
 
 This is how an msp-script is executed in our early proof-of-concept
-implementation (January 2000):
+implementation (January 2000, minor updates March 2014):
 
 <UL>
 <LI>When the Apache web server receives a request for a file with the
@@ -144,7 +145,7 @@ configuration file:
 
 <PRE>
         Action application/x-msp /cgi-bin/mspcompile
-        AddType application/x-msp .msp
+        AddHandler application/x-msp .msp
 </PRE>
 
 <LI>To make Apache translate a request for a directory into a request
@@ -152,7 +153,7 @@ for index.msp (if it exists), add index.msp to the DirectoryIndex
 directive:
 
 <PRE>
-        DirectoryIndex index.html index.msp 
+        DirectoryIndex index.msp 
 </PRE>
 
 <P>When running MSP under Apache under MS Windows NT, the Apache
@@ -172,8 +173,9 @@ compile and link it.
 variables, standard input, and standard output on to the compiled
 script.  The script executes and produces HTML-code which is returned
 to the browser.  The script executes in its source directory, so it
-can read and write files there.  This is demonstrated by the script <A
-HREF="logtofile.msp">logtofile.msp</A>.
+can read and write files there.  This is demonstrated by the
+script <A HREF="logtofile.msp">logtofile.msp</A> (if webserver user
+has write right to the directory, normally not recommended).
 </UL>
 
 <P>The CGI script mspcompile is the main workhorse, yet it consists of
@@ -212,7 +214,7 @@ The concept of ML server pages was presented by <A
  HREF="mailto:cstef@diku.dk">Christian Stefansen</A> at a <A
  HREF="http://www.funtechs.org">Funtechs</A> meeting in December 1999
  at the IT University of Copenhagen.  This early design and
- implementation is by <a href="http://www.dina.kvl.dk/~sestoft/">Peter
+ implementation is by <a href="http://www.itu.dk/~sestoft/">Peter
  Sestoft</a>.  The third honourable member of the ML server pages
  group is <A HREF="mailto:firefly@diku.dk">Peter Lund</A>.
 
@@ -222,7 +224,8 @@ The MSP homepage is at
 <TT>http://ellemose.dina.kvl.dk/~sestoft/msp/index.msp</TT>
 
 <P> <hr> <a
-href="http://www.dina.kvl.dk/~sestoft/">Peter Sestoft</a> (<a
-href="mailto:sestoft@dina.kvl.dk">sestoft@dina.kvl.dk</a>) 2000-02-22,
-2001-04-29 
+href="http://www.itu.dk/~sestoft/">Peter Sestoft</a> (<a
+href="mailto:sestoft@itu.dk">sestoft@itu.dk</a>) 2000-02-22,
+2001-04-29. (Minor updates by <a
+href="http://ken.friislarsen.net/">Ken Friis Larsen</a> 2014-03-05.)
 </body></html>
