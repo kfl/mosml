@@ -1,5 +1,5 @@
 ML Server Pages (version 1.2)
----------------------------
+=============================
 
 ML Server Pages (MSP) is a web scripting language, a loose integration
 of Standard ML (SML) and HTML in the style of Sun's Java Server Pages,
@@ -34,7 +34,7 @@ Installation instructions
 
  4. Then, install everything by
 
-	sudo make install
+        sudo make install
 
  5. Setup your Apache webserver configuration (tested with a standard
     Apache 2.4 installation under Ubuntu 13.10):
@@ -43,14 +43,14 @@ Installation instructions
 
     5b. enable the MSP configuration with the command
 
-    	        sudo a2enconf msp
+            sudo a2enconf msp
 
     5c. Restart Apache with the command
 
-    		sudo service apache2 restart
+            sudo service apache2 restart
     
     5d. If you are not using Ubuntu or Debian, then your Apache setup
-        might be slightly different. In that case copy the content of
+        might be slightly different. In that case, copy the content of
         `msp.conf` to the relevant Apache conf file for your setup.
 
  6. Test it.  Copy `hello.msp` to a directory accessible from the web,
