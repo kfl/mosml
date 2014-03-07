@@ -2,7 +2,7 @@ This is file README for Moscow ML 2.10 for Linux/Unix (August 2013)
 
 EXTENT OF THE IMPLEMENTATION
 
-The current version 2.10 of Moscow ML
+The current version 2.10.1 of Moscow ML
 
     * implements the full Standard ML language, as revised 1997, 
       including Modules and some extensions
@@ -14,6 +14,10 @@ The current version 2.10 of Moscow ML
     * supports dynamic linking of external functions under Linux (x86
       and Alpha), FreeBSD, NetBSD, Solaris, Digital Unix, HP-UX,
       MacOS, and MS Windows'95/98/NT/XP/Vista and possibly also 7 and 8. 
+
+New in version 2.10.1 of Moscow ML
+
+  * ML Server Pages added to examples
 
 New in version 2.10 of Moscow ML
 
