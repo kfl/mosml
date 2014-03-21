@@ -1,0 +1,24 @@
+#!/bin/sh
+# Script for handling execution of builds with Travis CI (travis-ci.org).
+
+# show information about system used for building
+uname -a
+
+case "$1" in
+    "install")
+        case "$TARGET" in
+            "linux") sudo apt-get install -y libgmp-dev ;;
+            "cross_w32") which i586-mingw32msvc-gcc || sudo apt-get -f -y install gcc-mingw32 ;;
+        esac
+    ;;
+    "build")
+        case "$TARGET" in
+            "linux") cd src && make world && sudo make install ;;
+            "cross_w32")
+                INSTALLDIR=/tmp/mosml_install
+                cd src && make cross_w32 PREFIX=$INSTALLDIR ;;
+        esac
+    ;;
+    "test")
+    ;;
+esac
