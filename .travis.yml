@@ -19,6 +19,7 @@ after_script:
 branches:
     only:
         - master
+        - devel
 
 notifications:
     email:
