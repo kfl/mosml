@@ -1,0 +1,26 @@
+# Configuration file for Travis CI (http://travis-ci.org)
+language: c
+compiler: gcc
+
+env:
+    - TARGET=linux
+    - TARGET=cross_w32
+
+before_install:
+    - sudo apt-get update -qq
+install:
+    - ./src/tools/travis install
+script:
+    - ./src/tools/travis build
+after_script:
+    - ./src/tools/travis test
+
+
+branches:
+    only:
+        - master
+
+notifications:
+    email:
+        on_success: change
+        on_failure: always
