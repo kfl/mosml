@@ -31,6 +31,10 @@ modules         Various toy examples illustrating Moscow ML's Modules
                 language, an extension of Standard ML's Modules language.
                 These are small examples without Makefiles.
                
+msp             ML Server Pages. A loose integration of Standard ML
+                (SML) and HTML in the style of Sun's Java Server
+                Pages, Microsoft's Active Server Pages, or PHP.
+
 parsercomb      An implementation of Hutton/Paulson-style parser
                 combinators for Moscow ML, based on work by Fritz
                 Henglein, Ken Friis Larsen, and Peter Sestoft.  
