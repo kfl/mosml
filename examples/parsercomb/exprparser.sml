@@ -134,7 +134,7 @@ in
        val prodOpr =  MULT_T  ##> mkBin MULT
                    || DIV_T   ##> mkBin DIV
 
-       fun leftrecur left recur opr right = 
+       fun chainl left recur opr right = 
            (PC.optional((opr -- right >> (fn (opr, right) => opr(left, right)))
                         >>= recur))
             >> (fn NONE => left | SOME e => e)
@@ -146,13 +146,13 @@ in
        and expr toks = sum toks
 
        and sum toks = (prod >>= sum') toks 
-       and sum' e = leftrecur e sum' sumOpr prod
+       and sum' e = chainl e sum' sumOpr prod
 (*           (PC.optional((sumOpr -- prod >> (fn (opr, y) => BIN(e, opr, y))) 
                         >>= sum'))
             >> (fn NONE => e | SOME e => e)
 *)
        and prod toks = (term >>= prod') toks
-       and prod' e  = leftrecur e prod' prodOpr term 
+       and prod' e  = chainl e prod' prodOpr term 
 
        and term toks = 
            (  getVar                     >> VAR
