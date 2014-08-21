@@ -23,7 +23,7 @@ fun do_code may_free code entrypoint len =
           | _ =>
               ());
        msgIBlock 0;
-       errPrompt "Uncaught exception: "; msgEOL(); errPrompt "";
+       errPrompt "Uncaught exception:"; msgEOL(); errPrompt "";
        printVal (trivial_scheme type_exn) (repr x);
        msgEOL();
        msgEBlock();
