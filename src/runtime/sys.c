@@ -34,11 +34,6 @@ char * error_message(void)
 
 #else
 
-#if (!defined(__APPLE__))
-extern int sys_nerr;
-extern char * sys_errlist [];
-#endif
-
 char * error_message(void)
 {
   if (errno < 0 || errno >= sys_nerr)

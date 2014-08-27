@@ -445,12 +445,7 @@ EXTERNML value msocket_accept(value sock) {
   union saddr addr;
   value res;
 
-#ifdef __APPLE__
-  socklen_t
-#else
-  int
-#endif
-     len = sizeof(addr);
+  socklen_t len = sizeof(addr);
   enter_blocking_section();
   ret = accept(Sock_val(sock), &addr.sockaddr_gen, &len);
   leave_blocking_section();
@@ -619,12 +614,7 @@ EXTERNML value msocket_recvfrom(value sock, value buff, value offset,
   value res;
   union saddr addr;
 
-#ifdef __APPLE__
-  socklen_t
-#else
-  int
-#endif
-      len = sizeof(addr);
+  socklen_t len = sizeof(addr);
 
   enter_blocking_section();
   ret = recvfrom(Sock_val(sock), &Byte(buff, Long_val(offset)), 

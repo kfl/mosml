@@ -2,15 +2,17 @@
 #include <ctype.h>
 #include <stdio.h>
 
-#ifdef __APPLE__
-#define ANSI
 #include <unistd.h>
 #include <string.h>
+
+#if __STDC__
+#define ANSI
 #endif
 
 #ifdef ANSI
 #include <stdlib.h>
 #endif
+
 
 #ifdef macintosh
 #include <CursorCtl.h>
