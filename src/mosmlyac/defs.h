@@ -1,9 +1,18 @@
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
+
+#include <unistd.h>
+#include <string.h>
+
+#if __STDC__
+#define ANSI
+#endif
+
 #ifdef ANSI
 #include <stdlib.h>
 #endif
+
 
 #ifdef macintosh
 #include <CursorCtl.h>
@@ -418,7 +427,7 @@ extern void free_symbols(void);
 
 extern void verbose(void);
 
-/* warshell.c */
+/* warshall.c */
 
 extern void reflexive_transitive_closure(unsigned *R, int n);
 

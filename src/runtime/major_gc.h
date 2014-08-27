@@ -31,7 +31,7 @@ extern char *gc_sweep_hp;
 #define Page(p) (((addr) (p) - (addr) heap_start) >> Page_log)
 #define Is_in_heap(p) \
   ((addr)(p) >= (addr)heap_start && (addr)(p) < (addr)heap_end \
-   && (p_table_in_heap(p) == In_heap))
+   && (p_table_in_heap((addr)p) == In_heap))
 #else
 #define Page(p) \
   (((unsigned long)(p) >> (16 + Page_log - 4)) + ((unsigned)(p) >> Page_log))
@@ -44,6 +44,7 @@ void darken (value);
 void major_collection_slice (void);
 void major_collection (void);
 void finish_major_cycle (void);
-
+char p_table_in_heap(addr a);
+void p_table_add_pages(addr start, addr end);
 
 #endif /* _major_gc_ */

@@ -1,3 +1,4 @@
+#include <unistd.h>
 char * runtime_name = "BINDIR/camlrunm";
 char * errmsg = "Cannot exec camlrunm.\n";
 

@@ -271,6 +271,7 @@ int keyword(void)
     }
     syntax_error(lineno, line, t_cptr);
     /*NOTREACHED*/
+    return 0;
 }
 
 
@@ -1182,7 +1183,7 @@ void insert_empty_rule(void)
 	expand_items();
     bpp = pitem + nitems - 1;
     *bpp-- = bp;
-    while (bpp[0] = bpp[-1]) --bpp;
+    while ((bpp[0] = bpp[-1])) --bpp;
 
     if (++nrules >= maxrules)
 	expand_rules();
@@ -1523,7 +1524,7 @@ void pack_names(void)
     {
 	p = t;
 	s = bp->name;
-	while (*t++ = *s++) continue;
+	while ((*t++ = *s++)) continue;
 	FREE(bp->name);
 	bp->name = p;
     }

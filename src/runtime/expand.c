@@ -335,7 +335,7 @@ int buildrealmap(bytecode_t byteprog, int code_size, int realaddress[])
       }
       break;
     default:
-      printf("buildrealmap: opcode = %d at %d\n", *pc, pc-byteprog);
+      printf("buildrealmap: opcode = %d at %ld\n", *pc, pc-byteprog);
       fatal_error("bad opcode\n");
     }
   }
@@ -660,7 +660,7 @@ realcode_t expandcode(bytecode_t byteprog, int code_size, void * jumptable[])
       }
       break;
     default:
-      printf("expandcode: opcode = %d at %d\n", *pc, pc-byteprog);
+      printf("expandcode: opcode = %d at %ld\n", *pc, pc-byteprog);
       fatal_error("bad opcode");
     }
   }
