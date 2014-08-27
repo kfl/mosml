@@ -1,6 +1,13 @@
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
+
+#ifdef __APPLE__
+#define ANSI
+#include <unistd.h>
+#include <string.h>
+#endif
+
 #ifdef ANSI
 #include <stdlib.h>
 #endif
@@ -418,7 +425,7 @@ extern void free_symbols(void);
 
 extern void verbose(void);
 
-/* warshell.c */
+/* warshall.c */
 
 extern void reflexive_transitive_closure(unsigned *R, int n);
 

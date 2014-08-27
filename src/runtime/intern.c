@@ -473,7 +473,7 @@ static value intern_fast_val(struct channel * chan, unsigned long magic)
     hd = Hd_val (res);
     color = Color_hd (hd);
     Assert (color == White || color == Black);
-    expand_block(block, Hp_val(res), whsize32, whsize, color);
+    expand_block(block, (value *)Hp_val(res), whsize32, whsize, color);
     stat_free((char *) block);
   } else {
     /* Block has natural word size (64) */

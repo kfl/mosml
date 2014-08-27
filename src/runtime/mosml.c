@@ -972,7 +972,7 @@ value sml_access(value path, value permarg)          /* ML */
 }
 
 #ifndef HAS_STRERROR
-#if (!defined(__FreeBSD__) && !defined(linux))
+#if (!defined(__FreeBSD__) && !defined(linux) && !defined(__APPLE__))
   extern int sys_nerr;
   extern char * sys_errlist [];
 #endif   
@@ -1008,7 +1008,7 @@ value sml_errormsg(value err)   /* ML */
   if (errnum < 0 || errnum >= sys_nerr) 
       return copy_string("(Unknown error)");
   else 
-    return copy_string(sys_errlist[errnum]);
+    return copy_string((char *)sys_errlist[errnum]);
 #endif
 }
 
