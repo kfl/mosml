@@ -1,12 +1,12 @@
 # Makefile for the Moscow ML 2.10 version of the Caml Light runtime system
 
-OPTS=-fno-defer-pop -fomit-frame-pointer -DTHREADED
+OPTS=-DTHREADED
 include ../Makefile.inc
 
-BASECFLAGS= -Dunix -O2 $(OPTS)
+BASECFLAGS= -Dunix -O3 $(OPTS)
 
 ifeq ($(UNAME_S),Cross_W32)
-	BASECFLAGS= -Dunix -DCAMLRT -DWIN32 -D_CONSOLE -D_MBCS -O2 $(OPTS)
+	BASECFLAGS= -Dunix -DCAMLRT -DWIN32 -D_CONSOLE -D_MBCS -O3 $(OPTS)
 endif
 
 BASEOBJS=interp.o expand.o misc.o stacks.o fix_code.o main.o fail.o signals.o \

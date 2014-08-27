@@ -5,9 +5,9 @@
 
 include ../../Makefile.inc
 
-OPTS=-fno-defer-pop
+#OPTS=-fno-defer-pop
 ROOTDIR:=../..
-CFLAGS=-Dunix -O2 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(CAMLRT)
+CFLAGS=-Dunix -O3 $(OPTS) $(ADDDYNLIBCFLAGS) -I$(CAMLRT)
 
 MOSMLTOOLS=camlrunm $(TOOLSDIR)
 
