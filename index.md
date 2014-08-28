@@ -2,7 +2,7 @@
 layout: index
 ---
 
-The current version 2.10 of Moscow ML
+The current version 2.10.1 of Moscow ML
 
   * implements the full Standard ML language, as revised 1997, 
     including Modules and some extensions
@@ -14,6 +14,13 @@ The current version 2.10 of Moscow ML
   * supports dynamic linking of external functions under Linux (x86, ARM,
     and Alpha), FreeBSD, NetBSD, Solaris, Digital Unix, HP-UX,
     MacOS, and MS Windows'95/98/NT/XP/Vista and possibly also 7 and 8. 
+
+## New in version 2.10.1 of Moscow ML
+
+  * This is a minor update, mostly just for various clean up.
+  * ML Server Pages added to examples
+  * Build system cleaned up a bit
+
 
 ## New in version 2.10 of Moscow ML
 
@@ -74,6 +81,16 @@ The current version 2.10 of Moscow ML
 Compilation under Unix is best done using GNU make, gcc, and Perl.  A
 binary installation requires 5 MB disk space; a source installation
 requires 25 MB disk space.
+
+## How to install
+
+Go to the [the releases page at GitHub](https://github.com/kfl/mosml/releases) and grab the latest release, and build Moscow ML from source.
+
+Or your can use one of the binary distributions:
+
+  * For Ubuntu you can use this [Moscow ML PPA](https://launchpad.net/~kflarsen/+archive/ubuntu/mosml)
+  * For Mac OS X 10.9 you can use this [Moscow ML .pkg installer](https://github.com/kfl/mosml/releases/download/ver-2.10.1/mosml-2.10.1.pkg) which will install Moscow ML in `/usr/local`.
+
 
 ## Moscow ML documentation
 
