@@ -1,104 +1,78 @@
-; Inno Setup Script for installing Moscow ML ver. 2.00
-; Created: 2001-02-04 by Ken Friis Larsen <ken@friislarsen.net>
-; Modified: 2001-05-10 kfl
+; Inno Setup script for Moscow ML ver. 2.10.1
 
 [Setup]
-AppName            = Moscow ML
-AppVerName         = Moscow ML version 2.00
-AppVersion         = 2.00
-;AppCopyright=Copyright © 1997-2001 Peter Sestoft
-AppPublisherURL    = http://www.dina.kvl.dk/~sestoft/mosml.html
-DefaultDirName     = {pf}\Mosml
-DefaultGroupName   = Moscow ML
-CompressLevel      = 9
-InfoAfterFile      = src/install/infoafter.txt
-OutputBaseFilename = mosml-setup-2.00
+AppId={{A34767A0-A549-48AB-90BB-F460DA36ED51}
+AppName=Moscow ML
+AppVersion=2.10.1
+AppVerName=Moscow ML version 2.10.1
+AppPublisherURL=http://mosml.org
+AppSupportURL=https://github.com/kfl/mosml/issues
+AppUpdatesURL=http://mosml.org
+DefaultDirName={pf}\mosml
+DefaultGroupName=Moscow ML
+OutputBaseFilename=mosml-setup-2.10.1
+Compression=lzma
+SolidCompression=yes
+ChangesEnvironment=yes
 
-[Dirs]
-Name: "{app}\bin"
-Name: "{app}\copyrght"
-Name: "{app}\config.w32"
-Name: "{app}\doc"
-Name: "{app}\doc\mosmllib"
-Name: "{app}\examples"
-Name: "{app}\examples\calc"
-Name: "{app}\examples\cgi"
-Name: "{app}\examples\lexyacc"
-Name: "{app}\examples\lexyacc\cl"
-Name: "{app}\examples\manual"
-Name: "{app}\examples\mls"
-Name: "{app}\examples\modules"
-Name: "{app}\examples\parsercomb"
-Name: "{app}\examples\paulson"
-Name: "{app}\examples\pretty"
-Name: "{app}\examples\small"
-Name: "{app}\examples\units"
-Name: "{app}\examples\weak"
-Name: "{app}\examples\webserver"
-Name: "{app}\include"
-Name: "{app}\lib"
-Name: "{app}\tools"
-Name: "{app}\utility"
-Name: "{app}\utility\sml-mode-3.3b"
+[Languages]
+Name: "da"; MessagesFile: "compiler:Languages\Danish.isl"
+Name: "en"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source : "bin\*"; DestDir : "{app}\bin"
-Source : "config"; DestDir : "{app}"
-Source : "config.w32\*"; DestDir : "{app}\config.w32" 
-Source : "copyrght\*"; DestDir : "{app}\copyrght"
-Source : "doc\*"; DestDir : "{app}\doc"
-Source : "doc\recomp"; DestDir : "{app}\doc"
-Source : "doc\mosmllib\*"; DestDir : "{app}\doc\mosmllib"
-Source : "examples\*" ; DestDir : "{app}\examples"
-Source : "examples\calc\*" ; DestDir : "{app}\examples\calc"
-Source : "examples\cgi\*" ; DestDir : "{app}\examples\cgi"
-Source : "examples\lexyacc\*" ; DestDir : "{app}\examples\lexyacc"
-Source : "examples\lexyacc\cl\*" ; DestDir : "{app}\examples\lexyacc\cl"
-Source : "examples\manual\*" ; DestDir : "{app}\examples\manual"
-Source : "examples\mls\*" ; DestDir : "{app}\examples\mls"
-Source : "examples\modules\*" ; DestDir : "{app}\examples\modules"
-Source : "examples\parsercomb\*" ; DestDir : "{app}\examples\parsercomb"
-Source : "examples\paulson\*" ; DestDir : "{app}\examples\paulson"
-Source : "examples\pretty\*" ; DestDir : "{app}\examples\pretty"
-Source : "examples\small\*" ; DestDir : "{app}\examples\small"
-Source : "examples\units\*" ; DestDir : "{app}\examples\units"
-Source : "examples\weak\*" ; DestDir : "{app}\examples\weak"
-Source : "examples\webserver\*" ; DestDir : "{app}\examples\webserver"
-Source : "include\*" ; DestDir : "{app}\include"
-Source : "install.txt" ; DestDir : "{app}"
-Source : "readme" ; DestDir : "{app}"
-Source : "roadmap" ; DestDir : "{app}"
-Source : "lib\*" ; DestDir : "{app}\lib"
-Source : "tools\*" ; DestDir : "{app}\tools"
-Source : "utility\*" ; DestDir : "{app}\utility"
-Source : "utility\sml-mode-3.3b\*" ; DestDir : "{app}\utility\sml-mode-3.3b"
+Source: "mosml\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Components: mosml
 
-; Some helper programs for Windows 95 and derrived
-Source : "addline.bat"; DestDir : "{tmp}" ; Flags : deleteafterinstall ; OnlyBelowVersion : 0,3.0
-Source : "dellines.exe"; DestDir : "{app}\lib" ; OnlyBelowVersion : 0,3.0
+[Components]
+Name: "mosml"; Description: "Moscow ML v2.10.1"; Flags: fixed; Types: full custom
 
+[Types]
+Name: "full"; Description: "{cm:FullInstall}"
+Name: "custom"; Description: "{cm:CustomInstall}"; Flags: iscustom
+
+[Tasks]
+Name: startmenu; Description: "{cm:StartMenu}"
+Name: desktopicon; Description: "{cm:DesktopIcon}"
 
 [Icons]
-Name : "{group}\Moscow ML" ; FileName : "{app}\bin\mosml.exe" ; Parameters : "-P full" ; WorkingDir : "{app}" ; IconFilename : "{app}\utility\FS2_cow.ico" 
-Name : "{userdesktop}\Moscow ML" ; FileName : "{app}\bin\mosml.exe" ; Parameters : "-P full" ; WorkingDir : "{app}" ; IconFilename : "{app}\utility\FS2_cow.ico" 
+Name: "{group}\{cm:MosMLName}"; Filename: "{app}\bin\mosml.exe"; Parameters: "-P full"; WorkingDir: "{userdocs}"; Components: mosml; Tasks: startmenu
+Name: "{group}\{cm:UninstallProgram,Moscow ML}"; Filename: "{uninstallexe}"; Tasks: startmenu
+Name: "{group}\{cm:Documentation}\{cm:OwnersManual}"; Filename: "{app}\share\doc\mosml\manual.pdf"; Tasks: startmenu
+Name: "{group}\{cm:Documentation}\{cm:LibraryDocs}"; Filename: "{app}\share\doc\mosml\mosmllib\index.html"; Tasks: startmenu
+Name: "{group}\{cm:Documentation}\{cm:LanguageOverview}"; Filename: "{app}\share\doc\mosml\mosmlref.pdf"; Tasks: startmenu
+Name: "{commondesktop}\{cm:MosMLName}"; Filename: "{app}\bin\mosml.exe"; Parameters: "-P full"; WorkingDir: "{userdocs}"; Components: mosml; Tasks: desktopicon
+
+[CustomMessages]
+en.FullInstall=Full installation
+da.FullInstall=Fuld installation
+en.CustomInstall=Custom installation
+da.CustomInstall=Brugerdefineret installation
+
+en.StartMenu=Create Start Menu shortcuts
+da.StartMenu=Lav genveje i startmenuen
+en.DesktopIcon=Create shortcuts on your desktop
+da.DesktopIcon=Lav genveje på skrivebordet
+
+en.MosMLName=Moscow ML Commandline
+da.MosMLName=Moscow ML Kommandolinje
+en.UninstallProgram=Uninstall %1
+da.UninstallProgram=Afinstallér %1
+
+en.Documentation=Documentation
+da.Documentation=Dokumentation
+en.OwnersManual=Moscow ML Owner's Manual
+da.OwnersManual=Moscow ML Owner's Manual
+en.LibraryDocs=Moscow ML Library
+da.LibraryDocs=Moscow ML Library
+en.LanguageOverview=Moscow ML Language Overview
+da.LanguageOverview=Moscow ML Language Overview
+
+en.Updating=Updating %1...
+da.Updating=Opdaterer %1...
+en.Setting=Setting %1...
+da.Setting=Sætter %1...
+da.Deleting=Sletter %1...
+en.Deleting=Deleting %1...
 
 [Registry]
-; Set environment variables on Windows NT, Windows 2000
-Root: HKCU ; Subkey : "Environment"; ValueType : string ; ValueName : "MOSMLLIB"; ValueData : "{app}\lib"; Flags: uninsdeletevalue; MinVersion : 0,3.51
-Root: HKCU ; Subkey : "Environment"; ValueType : string ; ValueName : "MOSMLBIN"; ValueData : "{app}\bin"; Flags: uninsdeletevalue; MinVersion : 0,3.51
-; Use MOSMLBIN instead of {app}\bin
-Root: HKCU ; Subkey : "Environment"; ValueType : expandsz ; ValueName : "Path"; ValueData : "{olddata};{app}\bin"; MinVersion : 0,3.51
-
-; The following two lines are system-wide installation
-;Root: HKLM ; Subkey : "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType : string ; ValueName : "MOSMLLIB"; ValueData : "{app}\lib"; MinVersion : 0,3.51
-;Root: HKLM ; Subkey : "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType : expandsz ; ValueName : "PATH"; ValueData : "{olddata};{app}\bin"; MinVersion : 0,3.51
-
-[Run]
-; Set environment variables on Windows 95 and derrived
-Filename : "{tmp}\addline.bat"; Description : "Set environment variables"; StatusMsg : "Setting environment variables..."; Parameters : """{app}\lib"" ""{app}\bin""" ; Flags : postinstall ; OnlyBelowVersion : 0,3.0
-
-[UninstallRun]
-; Unset environment variables on Windows 95 and derrived
-Filename : "{app}\lib\dellines.exe" ; OnlyBelowVersion : 0,3.0
-
-
+Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};{app}\bin"; Flags: preservestringtype; Components: mosml
+Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: string; ValueName: "MOSMLLIB"; ValueData: "{app}\lib\mosml"; Flags: uninsdeletevalue; Components: mosml
