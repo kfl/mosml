@@ -1,14 +1,8 @@
-
 This directory contains configuration scripts for various installation
 builders.
 
 
 File                     Description
 ---------------------------------------
-mosml.spec               For rpm (remember to update version nr.)
-
 mosml.iss                For Inno Setup (Windows) see README.inno for
                          more information.
-infoafter.txt            For Inno Setup
-addline.bat              For Inno Setup
-dellines.sml             For Inno Setup
