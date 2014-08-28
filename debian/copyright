@@ -1,0 +1,48 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: mosml
+Source: http://mosml.org
+
+Files: *
+Copyright: 1994, 1995, 1996, 1997, 1998, 1999, 2000 Sergei Romanenko, Moscow, Russia and Peter Sestoft, Copenhagen, Denmark
+           2000-2014 Peter Sestoft, Claudio Russo, Ken Friis Larsen
+License: GPL-2+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License in copyrght/gpl2 for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>
+ .
+ Note that a number of source files are derived from the Caml Light
+ distribution, copyright (C) 1993 INRIA, Rocquencourt, France.  Thus
+ charging money for redistributing Moscow ML may require prior
+ permission from INRIA; see the INRIA copyright notice in file
+ copyrght/copyrght.cl.  The Caml Light system itself can be obtained
+ from ftp.inria.fr:lang/caml-light.
+
+# If you want to use GPL v2 or later for the /debian/* files use 
+# the following clauses, or change it to suit. Delete these two lines
+Files: debian/*
+Copyright: 2014 Ken Friis Larsen <ken@friislarsen.net>
+License: GPL-2+
+ This package is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ .
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
