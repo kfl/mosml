@@ -1,18 +1,18 @@
-File install.txt.w32 for Moscow ML 2.00 for Win95/98/ME/NT/2000/XP (June 2000)
+File install.txt.w32 for Moscow ML 2.10.1 for Win95/98/ME/NT/2000/XP/?? (August 2014)
 
 
 SYSTEM REQUIREMENTS
 
-Moscow ML requires Windows 95, 98, ME, NT, 2000 or XP. The
+Moscow ML requires Windows 95, 98, ME, NT, 2000, XP or higher. The
 installation requires around 18 MB disk space.
 
 
-INSTALLING MOSCOW ML (BINARIES ONLY) UNDER WINDOWS 95/98/ME/NT/2000/XP
+INSTALLING MOSCOW ML (BINARIES ONLY) UNDER WINDOWS 95/98/ME/NT/2000/XP/??
 
 (1) Change directory to C:\ and unpack the Moscow ML distribution
     by executing
 
-        unzip win32-mos20bin.zip
+        unzip mosml-2.10.1.windows-bin.zip
 
     NOTE: You must use a version of unzip that preserves long file
     names, such as Info-Zip or Winzip.
