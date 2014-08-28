@@ -14,7 +14,7 @@ allpdf: manual.pdf mosmlref.pdf mosmllib.pdf
 LATEX=pdflatex
 
 helpsigs:
-	cd helpsigs; make all base 
+	cd helpsigs; $(MAKE) all base 
 
 macmosmlbib: macmosml.tex macmosml.bbl
 	${LATEX} macmosml
@@ -31,7 +31,7 @@ manual.pdf: manual.tex manual.bbl mosml.sty
 	${LATEX} manual
 
 index.tex texsigsigs.tex:
-	cd helpsigs; make all base
+	cd helpsigs; $(MAKE) all base
 
 mosmlref.pdf: mosmlref.tex mosml.sty
 	${LATEX} mosmlref
@@ -52,13 +52,13 @@ install:
 	$(INSTALL_DATA) manual.pdf $(DESTDIR)$(DOCDIR)
 	$(INSTALL_DATA) mosmllib.pdf $(DESTDIR)$(DOCDIR)
 #	cp mosmllib2up.pdf $(DOCDIR)
-	cd helpsigs; make install
+	cd helpsigs; $(MAKE) install
 
 clean:
 	rm -f *.aux *.dvi *.blg *.bbl *.blg *.log *.ps
 	rm -f *.ind *.idx *.ilg *.toc
 	rm -f index.tex texsigsigs.tex
-	cd helpsigs; make clean
+	cd helpsigs; $(MAKE) clean
 
 .SUFFIXES :
 .SUFFIXES : .aux .bbl .tex .bib .dvi .ps
