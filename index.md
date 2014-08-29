@@ -90,7 +90,7 @@ Or your can use one of the binary distributions:
 
   * For Ubuntu you can use this [Moscow ML PPA](https://launchpad.net/~kflarsen/+archive/ubuntu/mosml)
   * For Mac OS X 10.9 you can use this [Moscow ML .pkg installer](https://github.com/kfl/mosml/releases/download/ver-2.10.1/mosml-2.10.1.pkg) which will install Moscow ML in `/usr/local`.
-  * For Windows you can use [Moscow ML installer](https://github.com/kfl/mosml/releases/download/ver-2.10.1/mosml-setup-2.10.1.exe)
+  * For Windows you can use [Moscow ML installer](https://github.com/kfl/mosml/releases/download/ver-2.10.1/mosml-setup-2.10.1.exe) (made by Sebastian Paaske Tørholm ([Eckankar](https://github.com/Eckankar))
 
 
 ## Moscow ML documentation
