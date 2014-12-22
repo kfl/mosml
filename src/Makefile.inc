@@ -85,6 +85,14 @@ ifeq ($(UNAME_S),Cross_W32)
 	LD=$(CC)
 	DYNLD=$(CC) -shared
 endif
+ifeq ($(UNAME_S),OpenBSD)
+	ADDRUNLIBS=
+	CPP=cpp -P -traditional -Dunix -Umsdos
+	STRIP=strip -S
+	LD=gcc -rdynamic -Wl,-rpath,$(LIBDIR)
+	DYNLD=gcc -shared
+endif
+
 ifeq ($(UNAME_S),Custom) # Your configuration here
 error:
 	@echo "Unknow OS $(UNAME_S), please update Makefile.inc and send a patch to mosml.org"
