@@ -34,8 +34,9 @@ in
 
     fun timeToUnits (t, p) = floor(toReal t * negpow10 p + 0.5);
 
-    fun fmt p r =
-	Real.fmt (StringCvt.FIX (SOME (if p > 0 then p else 0))) (r/1000000.0);
+    fun fmt p = if (p < 0)
+                then raise Size
+                else (fn r => Real.fmt (StringCvt.FIX (SOME p)) (r/1000000.0));
 
     fun toString t = fmt 3 t;
 
