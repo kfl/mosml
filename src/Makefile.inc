@@ -95,7 +95,7 @@ endif
 
 ifeq ($(UNAME_S),Custom) # Your configuration here
 error:
-	@echo "Unknow OS $(UNAME_S), please update Makefile.inc and send a patch to mosml.org"
+	@echo "Unknown OS $(UNAME_S), please update Makefile.inc and send a patch to mosml.org"
 endif
 
 # Note for contributers, please check and convert the following to your platform of choice
