@@ -5,11 +5,11 @@ LINKFLAGS=-P full
 
 include ../Makefile.inc
 
-STRFILES= ArgParse.sig ArgParse.sml Mlb.sml Parser.sig Parser.sml Scanner.sml Mlb_functions.sml
+STRFILES=Mlb.sml Parser.sig Parser.sml Scanner.sml Mlb_functions.sml
 
 TOPFILES=mosmlb.sml
 
-OBJS=ArgParse.uo Mlb.uo Parser.uo Scanner.uo Mlb_functions.uo mosmlb.uo
+OBJS=Mlb.uo Parser.uo Scanner.uo Mlb_functions.uo mosmlb.uo
 
 all: mosmlb
 
