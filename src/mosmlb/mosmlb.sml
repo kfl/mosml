@@ -5,8 +5,6 @@ fun parseAndPrint filename =
         Mlb_functions.printAST mlbAST
     end
 
-fun assign r v = r := v
-fun assignTrue r () = r := true
 fun main () =
     let 
         val args = CommandLine.arguments () 
