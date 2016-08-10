@@ -187,7 +187,7 @@ val _ =
         val buf = Word8Array.array(10000, 0w0)
         fun gethttprequest sock =
             let val got = Socket.recvArr(sock, {buf = buf, ofs=0, size=NONE})
-            in Byte.unpackString(buf, 0, SOME got) end
+            in Byte.unpackString (Word8ArraySlice.slice (buf, 0, SOME got)) end
         fun next () = 
             let val (sock', a) = Socket.accept sock
 	    in 
