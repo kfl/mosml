@@ -47,7 +47,7 @@ basDecs : { [] }
 basDec :
     BASIS basBindList { Mlb.Basis (rev $2) } 
   | LOCAL basDecs IN basDecs END { Mlb.Local ( $2, $4) }
-  | OPEN basIdList { Mlb.Open (rev $2) }
+  | OPEN basIdList { Mlb.Open $2 }
   | STRUCTURE bStrBindList { Mlb.Structure $2 }
   | SIGNATURE bSigBindList { Mlb.Signature $2 }
   | FUNCTOR bFunBindList { Mlb.Functor $2 }
