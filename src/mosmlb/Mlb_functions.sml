@@ -1,4 +1,4 @@
-(*
+(**
  * Functions for mlb file.
  *
  * In contrast to MLton parsing, each .mlb file is scanned and
@@ -9,8 +9,11 @@ structure Mlb_functions = struct
 
 open Mlb
 
-(* Pretty printers of AST structure. *)
-fun printAST basDecs =
+(** Pretty printers of AST structure. 
+  * @param print the function used to output a string
+  * @param basDecs the parse tree of a single .mlb file
+  *)
+fun printAST print basDecs =
     let
         (* Helper function that applies f to list and prints "and" in between. *)
         fun apA f [] = ()
@@ -112,7 +115,9 @@ fun printAST basDecs =
         app (printBasDec "") basDecs
     end
 
-(* Read and parse individual .mlb file. *)
+(** Read and parse individual .mlb file. 
+ * @param filename the name of the file.
+ * @return parse tree. *)
 fun openParseSingleFile filename =
     let	
         fun createLexerStream (is : BasicIO.instream) =

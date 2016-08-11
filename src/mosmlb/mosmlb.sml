@@ -2,7 +2,7 @@ fun parseAndPrint filename =
     let 
         val mlbAST = Mlb_functions.openParseSingleFile filename
     in
-        Mlb_functions.printAST mlbAST
+        Mlb_functions.printAST print mlbAST
     end
 
 fun main () =
