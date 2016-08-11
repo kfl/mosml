@@ -39,6 +39,8 @@ fun main () =
             in
                 if initialAST <> secondAST then
                     print "Parse trees are different.\n"
+                else
+                    ()
             end
     end
 
