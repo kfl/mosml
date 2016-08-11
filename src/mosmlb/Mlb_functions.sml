@@ -74,8 +74,13 @@ fun printAST print basDecs =
           | printBasExp indent (BasId basId) = print basId
           | printBasExp indent (Let (basDecList, basExp)) =
           (
-            app (printBasDec "") basDecList;
-            printBasExp indent basExp
+            printInd indent "let\n";
+            let val inIndent = step indent in
+                app (printBasDec inIndent) basDecList;
+                printInd indent "in\n";
+                printBasExp indent basExp
+            end;
+            printInd indent "end\n"
           )
         and printPath indent (_, path) =
             print (indent ^ path ^ "\n")

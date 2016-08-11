@@ -57,7 +57,7 @@ basDec :
 basExp :
     BAS basDecs END { Mlb.Bas $2 }
   | basId { Mlb.BasId $1 }
-  | LET basDecs IN basExp END { Mlb.Let ((rev $2), $4) }
+  | LET basDecs IN basExp END { Mlb.Let ($2, $4) }
 
 basBindList : 
     basBind { [$1] }
