@@ -1,3 +1,7 @@
+(** 
+ * ML Basis System frontend for MosML compiler.
+ *)
+
 fun parseAndPrint filename =
     let 
         val mlbAST = Mlb_functions.openParseSingleFile filename
