@@ -136,4 +136,44 @@ fun openParseSingleFile filename =
         basDecs
     end
 
+(** Extract all paths that are mentioned in the file.
+  * @param basDecList parse tree of .mlb file (list of base declarations)
+  *)
+fun extractPaths basDecList =
+    let
+        fun 
+            pathsOfBasDec (Mlb.Basis basBindList) = 
+                foldl 
+                    (fn ((Mlb.BasBind (_, basExp), paths)) => 
+                        (pathsOfBasExp basExp) @ paths) [] basBindList
+          | pathsOfBasDec (Mlb.Local (basDecList1, basDecList2)) =
+          (
+            let
+                fun addPaths (basDec, paths) =
+                    (pathsOfBasDec basDec) @ paths
+            in
+                (foldl addPaths [] basDecList1) @
+                (foldl addPaths [] basDecList2)
+            end
+          )
+          | pathsOfBasDec (Mlb.Open _) = []
+          | pathsOfBasDec (Mlb.Structure _) = []
+          | pathsOfBasDec (Mlb.Signature _) = []
+          | pathsOfBasDec (Mlb.Functor _) = []
+          | pathsOfBasDec (Mlb.Path (_, path)) = [path]
+          | pathsOfBasDec (Mlb.Annotation _) = []
+        and pathsOfBasExp (Mlb.Bas basDecList) =
+            foldl (fn (basDec, paths) => (pathsOfBasDec basDec) @ paths) [] basDecList
+          | pathsOfBasExp (Mlb.BasId _) = []
+          | pathsOfBasExp (Mlb.Let (basDecList, basExp)) =
+          (
+            (foldl 
+                (fn (basDec, paths) => (pathsOfBasDec basDec) @ paths) [] basDecList) 
+            @ (pathsOfBasExp basExp)
+          )
+    in
+        foldl 
+            (fn (basDec, paths) => (pathsOfBasDec basDec) @ paths) [] basDecList
+    end
+
 end

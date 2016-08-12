@@ -6,7 +6,8 @@ fun parseAndPrint filename =
     let 
         val mlbAST = Mlb_functions.openParseSingleFile filename
     in
-        Mlb_functions.printAST print mlbAST
+        Mlb_functions.printAST print mlbAST;
+        Mlb_functions.extractPaths mlbAST
     end
 
 fun main () =
@@ -15,7 +16,8 @@ fun main () =
     in
         case args of
           [] => print "Error: no .mlb file specified.\n"
-        | file::_ => parseAndPrint file
+        | file::_ => 
+            app (fn s => print (s ^ "\n")) (parseAndPrint file)
     end
 
 val _ = (main() before OS.Process.exit OS.Process.success)
