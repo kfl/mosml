@@ -55,6 +55,17 @@ fun notTerminated msg lexbuf =
 fun printDebug token lexbuf =
     print (token ^ " \"" ^ (getLexeme lexbuf) ^ "\"\n")
 
+fun processEscaped str =
+    case String.fromCString str of
+      SOME s => s
+    | NONE => raise Fail "Invalid escape sequence"
+
+(* We do not check for the presence of quotes! *)
+fun unquote str = String.substring (str, 1, ((String.size str) - 2))
+
+(* Quoted paths contain escaped sequences as well! *)
+fun unquotePath str = processEscaped (unquote str)
+    
 }
 
 let alpha = [`A`-`Z``a`-`z`]
@@ -93,12 +104,25 @@ rule Lexer = parse
   | ";" { savePos lexbuf; SEMICOLON }
   | (eof | `\^Z`) { resetLexer(); EOF }
   | id { savePos lexbuf; ID (getLexeme lexbuf)}
+
   | filePath".mlb" { savePos lexbuf; PATH (Mlb.MLBFile, (getLexeme lexbuf)) }
+  | `"`filePath".mlb"`"` { savePos lexbuf; PATH (Mlb.MLBFile, (unquotePath (getLexeme lexbuf))) }
+
   | filePath".sml" { savePos lexbuf; PATH (Mlb.SMLFile, (getLexeme lexbuf)) }
+  | `"`filePath".sml"`"` { savePos lexbuf; PATH (Mlb.SMLFile, (unquotePath (getLexeme lexbuf))) }
+
   | filePath".sig" { savePos lexbuf; PATH (Mlb.SIGFile, (getLexeme lexbuf)) }
+  | `"`filePath".sig"`"` { savePos lexbuf; PATH (Mlb.SIGFile, (unquotePath (getLexeme lexbuf))) }
+
   | filePath".fun" { savePos lexbuf; PATH (Mlb.FUNFile, (getLexeme lexbuf)) }
+  | `"`filePath".fun"`"` { savePos lexbuf; PATH (Mlb.FUNFile, (unquotePath (getLexeme lexbuf))) }
+
+  (* Perhaps quoted paths will conflict with quoted strings, so, we do not include general quoted path *)
   | filePath { savePos lexbuf; PATH (Mlb.UnknownFile, (getLexeme lexbuf)) }
-  | quotedString { savePos lexbuf; STRING (getLexeme lexbuf)}
+
+  | quotedString 
+    { savePos lexbuf; STRING (processEscaped (getLexeme lexbuf)) }
+
   | "(*" { beginComment (); Comment lexbuf }
   | "*)" { raise Fail "unexpected comment end." }
   | _ { Lexer lexbuf }

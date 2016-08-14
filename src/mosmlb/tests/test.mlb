@@ -6,7 +6,7 @@
  *)
 
 local
-   sources.mlb
+   "sources.mlb"
    sources.sml
 in
    destinations.fun
