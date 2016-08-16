@@ -63,7 +63,7 @@ fun processEscaped str =
 (* We do not check for the presence of quotes! *)
 fun unquote str = String.substring (str, 1, ((String.size str) - 2))
 
-(* Quoted paths contain escaped sequences as well! *)
+(* Quoted paths contain escaped sequences as well and can contain path variables! *)
 fun unquotePath str = processEscaped (unquote str)
     
 }
@@ -71,9 +71,16 @@ fun unquotePath str = processEscaped (unquote str)
 let alpha = [`A`-`Z``a`-`z`]
 let digit = [`0`-`9`]
 let alphaDigit = (alpha|digit)
+let escaped = (`\\`alpha|`\\``\\`|`\\``'`|`\\``"`|`\\``?`|`\\`digit+|`\\``x`digit+)
 
 let id = alpha(alphaDigit|`'`|`_`)*
-let quotedString = `"`(alphaDigit|`'`|`_`|`-`|` `|`\t`)*`"`
+let punctuation = (`.`|`,`|`;`|`:`)
+let math = (`+`|`-`|`/`|`*`)
+let inquotedChar = (alphaDigit|`'`|`_`|`-`|` `|`\t`|`$`|`(`|`)`|punctuation|math)
+
+(* quotedStringPrefix is used in quoted paths *)
+let quotedStringPrefix = `"`(inquotedChar|escaped)*
+let quotedString = quotedStringPrefix`"`
 
 (* Path declarations, carefully translated from MLton distribution (mlb.lex) *)
 let firstFileNameChar = (alphaDigit|`.`|`_`)
@@ -85,6 +92,11 @@ let relativePath = (pathArc"/")*
 let absolutePath = "/"relativePath
 let directoryPath = absolutePath|relativePath
 let filePath = (directoryPath)fileName
+
+let quotedFunPath = quotedStringPrefix".fun"`"`
+let quotedMlbPath = quotedStringPrefix".mlb"`"`
+let quotedSigPath = quotedStringPrefix".sig"`"`
+let quotedSmlPath = quotedStringPrefix".sml"`"`
 
 rule Lexer = parse
     [^ `\000`-`\255`] { raise Fail "unreachable point in lexer." }
@@ -105,17 +117,17 @@ rule Lexer = parse
   | (eof | `\^Z`) { resetLexer(); EOF }
   | id { savePos lexbuf; ID (getLexeme lexbuf)}
 
-  | filePath".mlb" { savePos lexbuf; PATH (Mlb.MLBFile, (getLexeme lexbuf)) }
-  | `"`filePath".mlb"`"` { savePos lexbuf; PATH (Mlb.MLBFile, (unquotePath (getLexeme lexbuf))) }
+  | filePath".fun" { savePos lexbuf; PATH (Mlb.FUNFile, (getLexeme lexbuf)) }
+  | quotedFunPath { savePos lexbuf; PATH (Mlb.FUNFile, (unquotePath (getLexeme lexbuf))) }
 
-  | filePath".sml" { savePos lexbuf; PATH (Mlb.SMLFile, (getLexeme lexbuf)) }
-  | `"`filePath".sml"`"` { savePos lexbuf; PATH (Mlb.SMLFile, (unquotePath (getLexeme lexbuf))) }
+  | filePath".mlb" { savePos lexbuf; PATH (Mlb.MLBFile, (getLexeme lexbuf)) }
+  | quotedMlbPath { savePos lexbuf; PATH (Mlb.MLBFile, (unquotePath (getLexeme lexbuf))) }
 
   | filePath".sig" { savePos lexbuf; PATH (Mlb.SIGFile, (getLexeme lexbuf)) }
-  | `"`filePath".sig"`"` { savePos lexbuf; PATH (Mlb.SIGFile, (unquotePath (getLexeme lexbuf))) }
+  | quotedSigPath { savePos lexbuf; PATH (Mlb.SIGFile, (unquotePath (getLexeme lexbuf))) }
 
-  | filePath".fun" { savePos lexbuf; PATH (Mlb.FUNFile, (getLexeme lexbuf)) }
-  | `"`filePath".fun"`"` { savePos lexbuf; PATH (Mlb.FUNFile, (unquotePath (getLexeme lexbuf))) }
+  | filePath".sml" { savePos lexbuf; PATH (Mlb.SMLFile, (getLexeme lexbuf)) }
+  | quotedSmlPath { savePos lexbuf; PATH (Mlb.SMLFile, (unquotePath (getLexeme lexbuf))) }
 
   (* Perhaps quoted paths will conflict with quoted strings, so, we do not include general quoted path *)
   | filePath { savePos lexbuf; PATH (Mlb.UnknownFile, (getLexeme lexbuf)) }
