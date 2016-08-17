@@ -33,6 +33,11 @@ datatype basDec = Basis of basBind list | Local of (basDec list)*(basDec list)
  * path variables. *)
 fun pathVariable variable =
     let
+        (* Currently (17 aug 2016) MLton, SMLNJ, MLkit use only SML_LIB and
+         * TARGET_ARCH (mlton). Valid values for TARGET_ARCH are:
+         * netbsd, solaris, hurd, darwin, freebsd, mingw, cygwin, linux,
+         * openbsd, hpux, aix. For MosML TARGET_ARCH=linux.
+         *)
         val predefinedPathVariables =
            [("SML_LIB","/sml-lib-location"),
             ("HOME_PATH","/home"), (* for automated testing, remove in future *)
@@ -49,3 +54,4 @@ fun pathVariable variable =
           SOME (name, value) => value
         | NONE => raise Fail ("Unknown path variable " ^ variable)
     end
+
