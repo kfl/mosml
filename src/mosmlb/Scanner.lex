@@ -8,17 +8,17 @@ val pos = ref 0
 
 fun savePos lexbuf = pos := getLexemeEnd lexbuf
 
-fun getPosStart lexbuf = 
+fun getPosStart lexbuf =
     let val endpos = getLexemeStart lexbuf
     in  (!pos, endpos) before pos := endpos
     end
 
-fun getPosEnd lexbuf = 
+fun getPosEnd lexbuf =
     let val endpos = getLexemeEnd lexbuf
     in  (!pos, endpos) before pos := endpos
     end
 
-(* For nesting comments - unfortunately mosmllex does not allow 
+(* For nesting comments - unfortunately mosmllex does not allow
  * parameters for rules. *)
 
 (* mode encodes comment depth *)
@@ -55,6 +55,55 @@ fun notTerminated msg lexbuf =
 fun printDebug token lexbuf =
     print (token ^ " \"" ^ (getLexeme lexbuf) ^ "\"\n")
 
+(* Utility functions for expanding Path variables *)
+(*
+ * Search for character ch in string str and return two
+ * substrings - before and after first occurence of this
+ * char (ch is not included).
+ *)
+fun findAndSplit ch str =
+    let
+        fun iter head (c::tail) =
+            if c = ch then
+                (rev head, tail)
+            else
+                iter (c::head) tail
+          | iter head [] = (rev head, [])
+        val (head, tail) = iter [] (String.explode str)
+    in
+        (String.implode head, String.implode tail)
+    end
+
+(*
+ * Search for path variable - substring of form
+ * $(VARIABLE) - spaces and tabulation are NOT trimmed.
+ * Returns VARIABLE and substrings before and after variable.
+ *)
+fun searchForPathVar path =
+    let
+        val (prefix, suffix) = findAndSplit #"$" path
+        val (inVar, suffix) = findAndSplit #")" suffix
+    in
+        case String.explode inVar of
+          #"("::tail =>
+            SOME (String.implode tail, prefix, suffix)
+        | _ => NONE
+    end
+
+(* Searches for path variables in path and replaces them with their
+ * actual value from Mlb *)
+fun substitutePathVars path =
+    let
+        fun iter prefix suffix =
+            case searchForPathVar suffix  of
+              NONE => prefix ^ suffix
+            | SOME (variable, pre, suffix) =>
+                iter (prefix ^ pre ^ (Mlb.pathVariable variable)) suffix
+    in
+        iter "" path
+    end
+
+(* Decoding escaped sequences. *)
 fun processEscaped str =
     case String.fromCString str of
       SOME s => s
@@ -64,8 +113,8 @@ fun processEscaped str =
 fun unquote str = String.substring (str, 1, ((String.size str) - 2))
 
 (* Quoted paths contain escaped sequences as well and can contain path variables! *)
-fun unquotePath str = processEscaped (unquote str)
-    
+fun unquotePath str = processEscaped (substitutePathVars (unquote str))
+
 }
 
 let alpha = [`A`-`Z``a`-`z`]
@@ -84,7 +133,7 @@ let quotedString = quotedStringPrefix`"`
 
 (* Path declarations, carefully translated from MLton distribution (mlb.lex) *)
 let firstFileNameChar = (alphaDigit|`.`|`_`)
-let fileNameChar = firstFileNameChar|`-` 
+let fileNameChar = firstFileNameChar|`-`
 let pathVar = "$("(alpha|`_`)(alphaDigit|`_`)*")"
 let fileName = (pathVar|firstFileNameChar)(pathVar|fileNameChar)*
 let pathArc = (pathVar|fileName|"."|"..")
@@ -132,7 +181,7 @@ rule Lexer = parse
   (* Perhaps quoted paths will conflict with quoted strings, so, we do not include general quoted path *)
   | filePath { savePos lexbuf; PATH (Mlb.UnknownFile, (getLexeme lexbuf)) }
 
-  | quotedString 
+  | quotedString
     { savePos lexbuf; STRING (processEscaped (getLexeme lexbuf)) }
 
   | "(*" { beginComment (); Comment lexbuf }
@@ -141,9 +190,9 @@ rule Lexer = parse
 
 and Comment = parse
     "(*" { beginComment (); Comment lexbuf }
-  | "*)" 
-    { 
-      endComment (); 
+  | "*)"
+    {
+      endComment ();
       if (inComment ()) then
         Comment lexbuf
       else

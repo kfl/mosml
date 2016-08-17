@@ -27,3 +27,25 @@ datatype basDec = Basis of basBind list | Local of (basDec list)*(basDec list)
     | Annotation of (string list)*(basDec list)
     and basBind = BasBind of (basId)*(basExp)
     and basExp = Bas of basDec list | BasId of basId | Let of (basDec list)*basExp
+
+(* Returns the value of path variable by its name.
+ * Currently works only with hardcoded predefined 
+ * path variables. *)
+fun pathVariable variable =
+    let
+        val predefinedPathVariables =
+           [("SML_LIB","/sml-lib-location"),
+            ("HOME_PATH","/home"), (* for automated testing, remove in future *)
+            ("TARGET_ARCH", "bytecode"),
+            ("TARGET_OS", "linux"),
+            ("DEFAULT_INT", "int32"),
+            ("DEFAULT_WORD", "word32"),
+            ("DEFAULT_REAL", "real64")]
+        val sub = List.find 
+            (fn (name, _) => (String.compare (name, variable)) = EQUAL)
+            predefinedPathVariables
+    in
+        case sub of
+          SOME (name, value) => value
+        | NONE => raise Fail ("Unknown path variable " ^ variable)
+    end
