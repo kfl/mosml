@@ -138,7 +138,7 @@ fun openParseSingleFile filename =
 
 (** Read .mlb file and load all included .mlb files
  *  generating complete parse tree. All paths are
- *  converted to relative to root .mlb file path (not yet implemented).
+ *  converted to relative to root .mlb file path.
  *
  *  @param file name of the root .mlb file
  *  @return complete parse tree of the project
