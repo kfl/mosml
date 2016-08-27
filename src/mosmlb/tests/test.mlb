@@ -8,6 +8,7 @@
 local
    "sources.mlb"
    sources.sml
+   "folder/in_folder.mlb"
    "$(HOME_PATH)/const/tasks/Ocaml/mosml/src/mosmlb/tests/empty.mlb"
 in
    destinations.fun

@@ -6,6 +6,10 @@
  * is fully created.
  *)
 
+(* Errors appearing while loading and parsing .mlb files. *)
+(* Failure to read, parse file or cycle in included .mlb *)
+datatype fileError = ReadFailure | ParseFailure | CyclicDependency
+
 datatype funBind = FunId of string | FunBind of string*string
 
 datatype strBind = StrId of string | StrBind of string*string
@@ -25,11 +29,11 @@ datatype basDec = Basis of basBind list | Local of (basDec list)*(basDec list)
     (* The type of referenced file - .mlb, .sig, .sml, .fun. For some
      * .mlb files from MLton distribution we also need Unknown. The type
      * of the file is determined by lexer by extension of the file.
-     * Option SOME indicates that file is already loaded, NONE - it is not
-     * loaded.
+     * MLBFile - not yet loaded .mlb, LoadedMLBFile - parse tree of successfully
+     * loaded file, FailedMLBFile - why failed loading of the file.
      *)
-    and includedFileType = UnknownFile | MLBFile | LoadedMLBFile of basDec list option 
-      | SIGFile | SMLFile | FUNFile
+    and includedFileType = UnknownFile | MLBFile | LoadedMLBFile of basDec list
+      | FailedMLBFile of fileError | SIGFile | SMLFile | FUNFile
 
 (* Returns the value of path variable by its name.
  * Currently works only with hardcoded predefined 

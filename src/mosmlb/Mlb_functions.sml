@@ -145,6 +145,9 @@ fun openParseSingleFile filename =
  *)
 fun loadMlbFileTree file =
     let
+        (* stack of paths currently processed .mlb files, relative to root .mlb *)
+        val pathStack = ref [file] 
+
         (*  Expand parse tree, loading included .mlb files. 
           *
           * @param pathF function to apply to each path of the tree
@@ -166,12 +169,25 @@ fun loadMlbFileTree file =
                   | expandBasDec (Mlb.Path path) = 
                     (
                         case pathF path of
-                          ((Mlb.LoadedMLBFile (SOME (ast))), file) =>
-                            let
-                                val ast = expandParseTree pathF ast
-                            in
-                                Mlb.Path ((Mlb.LoadedMLBFile (SOME (ast))), file)
-                            end
+                          ((Mlb.LoadedMLBFile ast), file) =>
+                          ( (* File successfully loaded. Maybe there is a cycle? *)
+                            case (List.find (fn x => (String.compare (file,x)) = EQUAL) (!pathStack)) of
+                              SOME _ => 
+                              (
+                                print ("Cycle error: " ^ file ^ " is included twice.\n");
+                                Mlb.Path (Mlb.FailedMLBFile Mlb.CyclicDependency, file)
+                              )
+                            | NONE =>
+                              (
+                                pathStack := file::(!pathStack);
+                                let
+                                    val ast = expandParseTree pathF ast
+                                in
+                                    pathStack := tl (!pathStack);
+                                    Mlb.Path ((Mlb.LoadedMLBFile ast), file)
+                                end
+                              )
+                          )
                         | path => Mlb.Path path
                     )
                   | expandBasDec (Mlb.Annotation (annList, basDecList)) =
@@ -187,19 +203,28 @@ fun loadMlbFileTree file =
                 map expandBasDec basDecList
             end
 
-        (* stack of paths currently processed .mlb files, relative to root .mlb *)
-        val pathStack = ref [file] 
-
         (** Load single .mlb file, convert path to relative to root .mlb path. *)
         fun loadPath (Mlb.MLBFile, file) = 
             (
                 let
-                    val ast = openParseSingleFile file
+                    val parentMLB = hd (!pathStack)
+                    val absoluteFile =
+                        if Path.isAbsolute file then
+                            file
+                        else
+                            Path.mkCanonical 
+                                (Path.concat ((Path.dir parentMLB), file))
+                    val ast = openParseSingleFile absoluteFile
                 in
                     print ("Included " ^ file ^ "\n");
-                    ((Mlb.LoadedMLBFile (SOME (ast))), file)
+                    print ("Final path " ^ absoluteFile ^ "\n");
+                    ((Mlb.LoadedMLBFile ast), absoluteFile)
                 end
-                handle OS.SysErr _ => (print ("load error: " ^ file ^ "\n"); ((Mlb.LoadedMLBFile NONE), file))
+                handle OS.SysErr _ => 
+                (
+                    print ("Load error: " ^ file ^ "\n");
+                    ((Mlb.FailedMLBFile Mlb.ReadFailure), file)
+                )
             )
           | loadPath path = path
     in
