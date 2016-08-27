@@ -136,6 +136,76 @@ fun openParseSingleFile filename =
         basDecs
     end
 
+(** Read .mlb file and load all included .mlb files
+ *  generating complete parse tree. All paths are
+ *  converted to relative to root .mlb file path (not yet implemented).
+ *
+ *  @param file name of the root .mlb file
+ *  @return complete parse tree of the project
+ *)
+fun loadMlbFileTree file =
+    let
+        (*  Expand parse tree, loading included .mlb files. 
+          *
+          * @param pathF function to apply to each path of the tree
+          * @param basDecList parse tree of .mlb file (list of base declarations)
+          *)
+        fun expandParseTree pathF basDecList =
+            let
+                fun 
+                    expandBasDec (Mlb.Basis basBindList) = 
+                        Mlb.Basis (map expandBasBind basBindList)
+                  | expandBasDec (Mlb.Local (basDecList1, basDecList2)) =
+                        Mlb.Local (map expandBasDec basDecList1, map expandBasDec basDecList2)
+
+                  | expandBasDec (Mlb.Open basIdList) = Mlb.Open basIdList
+                  | expandBasDec (Mlb.Structure strBindList) = Mlb.Structure strBindList
+                  | expandBasDec (Mlb.Signature sigBindList) = Mlb.Signature sigBindList
+                  | expandBasDec (Mlb.Functor funBindList) = Mlb.Functor funBindList
+        
+                  | expandBasDec (Mlb.Path path) = 
+                    (
+                        case pathF path of
+                          ((Mlb.LoadedMLBFile (SOME (ast))), file) =>
+                            let
+                                val ast = expandParseTree pathF ast
+                            in
+                                Mlb.Path ((Mlb.LoadedMLBFile (SOME (ast))), file)
+                            end
+                        | path => Mlb.Path path
+                    )
+                  | expandBasDec (Mlb.Annotation (annList, basDecList)) =
+                        Mlb.Annotation (annList, map expandBasDec basDecList)
+                and expandBasBind (Mlb.BasBind (basId, basExp)) = 
+                        Mlb.BasBind (basId, expandBasExp basExp)
+                and expandBasExp (Mlb.Bas basDecList) =
+                        Mlb.Bas (map expandBasDec basDecList)
+                  | expandBasExp (Mlb.BasId basId) = Mlb.BasId basId
+                  | expandBasExp (Mlb.Let (basDecList, basExp)) =
+                        Mlb.Let (map expandBasDec basDecList, expandBasExp basExp)
+            in
+                map expandBasDec basDecList
+            end
+
+        (* stack of paths currently processed .mlb files, relative to root .mlb *)
+        val pathStack = ref [file] 
+
+        (** Load single .mlb file, convert path to relative to root .mlb path. *)
+        fun loadPath (Mlb.MLBFile, file) = 
+            (
+                let
+                    val ast = openParseSingleFile file
+                in
+                    print ("Included " ^ file ^ "\n");
+                    ((Mlb.LoadedMLBFile (SOME (ast))), file)
+                end
+                handle OS.SysErr _ => (print ("load error: " ^ file ^ "\n"); ((Mlb.LoadedMLBFile NONE), file))
+            )
+          | loadPath path = path
+    in
+        expandParseTree loadPath (openParseSingleFile file)
+    end
+
 (** Extract all paths that are mentioned in the file.
   * @param basDecList parse tree of .mlb file (list of base declarations)
   *)

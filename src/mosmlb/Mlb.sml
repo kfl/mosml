@@ -6,11 +6,6 @@
  * is fully created.
  *)
 
-(* The type of referenced file - .mlb, .sig, .sml, .fun. For some
- * .mlb files from MLton distribution we also need Unknown. The type
- * of the file is determined by lexer by extension of the file. *)
-datatype includedFileType = UnknownFile | MLBFile | SIGFile | SMLFile | FUNFile
-
 datatype funBind = FunId of string | FunBind of string*string
 
 datatype strBind = StrId of string | StrBind of string*string
@@ -27,6 +22,14 @@ datatype basDec = Basis of basBind list | Local of (basDec list)*(basDec list)
     | Annotation of (string list)*(basDec list)
     and basBind = BasBind of (basId)*(basExp)
     and basExp = Bas of basDec list | BasId of basId | Let of (basDec list)*basExp
+    (* The type of referenced file - .mlb, .sig, .sml, .fun. For some
+     * .mlb files from MLton distribution we also need Unknown. The type
+     * of the file is determined by lexer by extension of the file.
+     * Option SOME indicates that file is already loaded, NONE - it is not
+     * loaded.
+     *)
+    and includedFileType = UnknownFile | MLBFile | LoadedMLBFile of basDec list option 
+      | SIGFile | SMLFile | FUNFile
 
 (* Returns the value of path variable by its name.
  * Currently works only with hardcoded predefined 
