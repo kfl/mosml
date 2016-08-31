@@ -79,15 +79,15 @@ fun main () =
                         ) fileList
             in
                 case smlFileList of
-                  topLevel::other =>
+                  topLevel::[] =>
                   (
-                    app (execCompiler false) (rev other);
                     execCompiler true topLevel;
 
                     execLinker smlFileList file
                   )
-                | topLevel::[] =>
+                | topLevel::other =>
                   (
+                    app (execCompiler false) (rev other);
                     execCompiler true topLevel;
 
                     execLinker smlFileList file
