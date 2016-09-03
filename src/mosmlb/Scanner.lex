@@ -3,8 +3,9 @@
 
 open Parser
 
-(* For calculating position ala ocamllex - line number and
+(* For calculating position ala ocamllex - filename, line number and
    current position in stream of the start of the current line. *)
+val fileName = ref ""
 val lineNumber = ref 1
 val lineStartPos = ref 0
 
@@ -43,9 +44,9 @@ fun currentPosition onlyStart lexbuf =
         fun pos seek = (!lineNumber, seek - !lineStartPos)
     in
         if onlyStart then
-            ("TODO:filename", (pos (Lexing.getLexemeStart lexbuf)), NONE)
+            (!fileName, (pos (Lexing.getLexemeStart lexbuf)), NONE)
         else
-            ("TODO:filename", (pos (Lexing.getLexemeStart lexbuf)), 
+            (!fileName, (pos (Lexing.getLexemeStart lexbuf)), 
                               SOME (pos (Lexing.getLexemeEnd lexbuf)))
     end
 

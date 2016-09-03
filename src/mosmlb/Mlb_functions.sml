@@ -127,7 +127,14 @@ fun openParseSingleFile filename =
     let	
         fun createLexerStream (is : BasicIO.instream) =
             Lexing.createLexer (fn buff => fn n => Nonstdio.buff_input is buff 0 n)
-        fun parseFile lexbuf = Parser.mlbFile Scanner.Lexer lexbuf
+        fun parseFile lexbuf = 
+            let
+                val _ = Scanner.fileName := filename
+                val mlbFile = Parser.mlbFile Scanner.Lexer lexbuf
+                val _ = Scanner.fileName := ""
+            in
+                mlbFile
+            end
         val is     = BasicIO.open_in filename
         val lexbuf = createLexerStream is
         val basDecs = parseFile lexbuf
