@@ -3,19 +3,50 @@
 
 open Parser
 
-(* Functions and variables to keep track of the position. *)
-val pos = ref 0
+(* For calculating position ala ocamllex - line number and
+   current position in stream of the start of the current line. *)
+val lineNumber = ref 1
+val lineStartPos = ref 0
 
-fun savePos lexbuf = pos := getLexemeEnd lexbuf
+fun newLinePosUpdate lexbuf =
+(
+    lineNumber := !lineNumber + 1;
+    lineStartPos := Lexing.getLexemeEnd lexbuf
+)
 
-fun getPosStart lexbuf =
-    let val endpos = getLexemeStart lexbuf
-    in  (!pos, endpos) before pos := endpos
+(* we have to update the position and lineNumber after reading
+   quoted string, since it can contain new line chars. *)
+fun quotedStringPosUpdate lexbuf =
+(
+    let
+        val str = getLexeme lexbuf
+        val (nlNumber, shift, _) =
+            foldl
+                (fn (ch, (nlNumber, shift, counter)) =>
+                    if ch = #"\n" then
+                        (nlNumber + 1, counter, counter + 1)
+                    else
+                        (nlNumber, shift, counter + 1)
+                )
+                (0, 0, 0) (String.explode str)
+    in
+        lineNumber := !lineNumber + nlNumber;
+        lineStartPos := (Lexing.getLexemeStart lexbuf) + shift
     end
+)
 
-fun getPosEnd lexbuf =
-    let val endpos = getLexemeEnd lexbuf
-    in  (!pos, endpos) before pos := endpos
+(* position of current lexeme (start or start-end).
+   we do not process lexemes occupying several lines. *)
+fun currentPosition onlyStart lexbuf =
+    let
+        (* seek - position from the beginning of stream *)
+        fun pos seek = (!lineNumber, seek - !lineStartPos)
+    in
+        if onlyStart then
+            ("TODO:filename", (pos (Lexing.getLexemeStart lexbuf)), NONE)
+        else
+            ("TODO:filename", (pos (Lexing.getLexemeStart lexbuf)), 
+                              SOME (pos (Lexing.getLexemeEnd lexbuf)))
     end
 
 (* For nesting comments - unfortunately mosmllex does not allow
@@ -44,7 +75,7 @@ fun inComment () =
     | _ => false
 
 fun resetLexer () =
-    (pos := 0; mode := Normal)
+    (mode := Normal)
 
 fun notTerminated msg lexbuf =
 (
@@ -149,43 +180,44 @@ let quotedSmlPath = quotedStringPrefix".sml"`"`
 
 rule Lexer = parse
     [^ `\000`-`\255`] { raise Fail "unreachable point in lexer." }
-  | "structure" { savePos lexbuf; STRUCTURE }
-  | "signature" { savePos lexbuf; SIGNATURE }
-  | "functor" { savePos lexbuf; FUNCTOR }
-  | "ann" { savePos lexbuf; ANN }
-  | "and" { savePos lexbuf; AND }
-  | "basis" { savePos lexbuf; BASIS }
-  | "bas" { savePos lexbuf; BAS }
-  | "in" { savePos lexbuf; IN }
-  | "end" { savePos lexbuf; END }
-  | "=" { savePos lexbuf; EQUAL }
-  | "let" { savePos lexbuf; LET }
-  | "local" { savePos lexbuf; LOCAL }
-  | "open" { savePos lexbuf; OPEN }
-  | ";" { savePos lexbuf; SEMICOLON }
+  | "structure" { STRUCTURE }
+  | "signature" { SIGNATURE }
+  | "functor" { FUNCTOR }
+  | "ann" { ANN }
+  | "and" { AND }
+  | "basis" { BASIS }
+  | "bas" { BAS }
+  | "in" { IN }
+  | "end" { END }
+  | "=" { EQUAL }
+  | "let" { LET }
+  | "local" { LOCAL }
+  | "open" { OPEN }
+  | ";" { SEMICOLON }
   | (eof | `\^Z`) { resetLexer(); EOF }
-  | id { savePos lexbuf; ID (getLexeme lexbuf)}
+  | id { ID (getLexeme lexbuf)}
 
-  | filePath".fun" { savePos lexbuf; PATH (Mlb.FUNFile, (getLexeme lexbuf)) }
-  | quotedFunPath { savePos lexbuf; PATH (Mlb.FUNFile, (unquotePath (getLexeme lexbuf))) }
+  | filePath".fun" { PATH (Mlb.FUNFile, (getLexeme lexbuf)) }
+  | quotedFunPath { PATH (Mlb.FUNFile, (unquotePath (getLexeme lexbuf))) }
 
-  | filePath".mlb" { savePos lexbuf; PATH (Mlb.MLBFile, (getLexeme lexbuf)) }
-  | quotedMlbPath { savePos lexbuf; PATH (Mlb.MLBFile, (unquotePath (getLexeme lexbuf))) }
+  | filePath".mlb" { PATH (Mlb.MLBFile, (getLexeme lexbuf)) }
+  | quotedMlbPath { PATH (Mlb.MLBFile, (unquotePath (getLexeme lexbuf))) }
 
-  | filePath".sig" { savePos lexbuf; PATH (Mlb.SIGFile, (getLexeme lexbuf)) }
-  | quotedSigPath { savePos lexbuf; PATH (Mlb.SIGFile, (unquotePath (getLexeme lexbuf))) }
+  | filePath".sig" { PATH (Mlb.SIGFile, (getLexeme lexbuf)) }
+  | quotedSigPath { PATH (Mlb.SIGFile, (unquotePath (getLexeme lexbuf))) }
 
-  | filePath".sml" { savePos lexbuf; PATH (Mlb.SMLFile, (getLexeme lexbuf)) }
-  | quotedSmlPath { savePos lexbuf; PATH (Mlb.SMLFile, (unquotePath (getLexeme lexbuf))) }
+  | filePath".sml" { PATH (Mlb.SMLFile, (getLexeme lexbuf)) }
+  | quotedSmlPath { PATH (Mlb.SMLFile, (unquotePath (getLexeme lexbuf))) }
 
   (* Perhaps quoted paths will conflict with quoted strings, so, we do not include general quoted path *)
-  | filePath { savePos lexbuf; PATH (Mlb.UnknownFile, (getLexeme lexbuf)) }
+  | filePath { PATH (Mlb.UnknownFile, (getLexeme lexbuf)) }
 
   | quotedString
-    { savePos lexbuf; STRING (processEscaped (getLexeme lexbuf)) }
+    { quotedStringPosUpdate lexbuf; STRING (processEscaped (getLexeme lexbuf)) }
 
   | "(*" { beginComment (); Comment lexbuf }
-  | "*)" { raise Fail "unexpected comment end." }
+  | "*)" { Log.error (Log.UnexpectedCommentEnd ()); Lexer lexbuf }
+  | `\n` { newLinePosUpdate lexbuf; Lexer lexbuf }
   | _ { Lexer lexbuf }
 
 and Comment = parse
@@ -199,5 +231,6 @@ and Comment = parse
         Lexer lexbuf
     }
   | (eof | `\^Z`) { notTerminated "comment" lexbuf }
+  | `\n` { newLinePosUpdate lexbuf; Lexer lexbuf }
   | _ { Comment lexbuf }
 ;

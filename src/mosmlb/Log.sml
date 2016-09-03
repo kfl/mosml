@@ -3,11 +3,18 @@
  * TODO: add correct message descriptions and numbers.
  *)
 structure Log = struct
+
+    type position = int*int (* position in file = line, column *)
+
+    (* location of error/warning - name of file, start position, end position *)
+    type location = string*position*(position option)
+
     datatype warningMessage = DuplicatedSources of unit
 
     datatype errorMessage = 
         MLBGraphCycle of unit
       | FileNotFound of unit
+      | UnexpectedCommentEnd of unit
 
     datatype logMessage = Warning of warningMessage 
                         | Error of errorMessage
@@ -19,6 +26,7 @@ structure Log = struct
 
     fun errorDescription (MLBGraphCycle ()) = (1, "Cycle in mlb includes.")
       | errorDescription (FileNotFound ())  = (2, "File not found.")
+      | errorDescription (UnexpectedCommentEnd ()) = (3, "Unexpected commend end.")
 
     val debugLevel = ref NONE
 
