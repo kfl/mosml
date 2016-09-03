@@ -14,7 +14,7 @@ structure Log = struct
     datatype errorMessage = 
         MLBGraphCycle of unit
       | FileNotFound of unit
-      | UnexpectedCommentEnd of unit
+      | UnexpectedCommentEnd of location
 
     datatype logMessage = Warning of warningMessage 
                         | Error of errorMessage
@@ -26,7 +26,8 @@ structure Log = struct
 
     fun errorDescription (MLBGraphCycle ()) = (1, "Cycle in mlb includes.")
       | errorDescription (FileNotFound ())  = (2, "File not found.")
-      | errorDescription (UnexpectedCommentEnd ()) = (3, "Unexpected commend end.")
+      | errorDescription (UnexpectedCommentEnd (file, (line, _), _)) = 
+        (3, ("Unexpected commend end in " ^ file ^ " at line " ^ (Int.toString line)))
 
     val debugLevel = ref NONE
 

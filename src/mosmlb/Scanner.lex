@@ -216,7 +216,7 @@ rule Lexer = parse
     { quotedStringPosUpdate lexbuf; STRING (processEscaped (getLexeme lexbuf)) }
 
   | "(*" { beginComment (); Comment lexbuf }
-  | "*)" { Log.error (Log.UnexpectedCommentEnd ()); Lexer lexbuf }
+  | "*)" { Log.error (Log.UnexpectedCommentEnd (currentPosition true lexbuf)); Lexer lexbuf }
   | `\n` { newLinePosUpdate lexbuf; Lexer lexbuf }
   | _ { Lexer lexbuf }
 
@@ -231,6 +231,6 @@ and Comment = parse
         Lexer lexbuf
     }
   | (eof | `\^Z`) { notTerminated "comment" lexbuf }
-  | `\n` { newLinePosUpdate lexbuf; Lexer lexbuf }
+  | `\n` { newLinePosUpdate lexbuf; Comment lexbuf }
   | _ { Comment lexbuf }
 ;
