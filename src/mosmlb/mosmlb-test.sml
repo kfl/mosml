@@ -16,7 +16,7 @@
 
 fun readAndWriteIntermediate filename intermediateFile =
     let 
-        val initialAST = Mlb_functions.openParseSingleFile filename
+        val initialAST = Mlb_functions.loadSingleMLBFile filename
         val outStream = BasicIO.open_out intermediateFile
     in
         Mlb_functions.printAST 
@@ -84,7 +84,7 @@ fun main () =
         | file::intermediateFile::_ => 
             let
                 val initialAST = readAndWriteIntermediate file intermediateFile
-                val secondAST = Mlb_functions.openParseSingleFile intermediateFile
+                val secondAST = Mlb_functions.loadSingleMLBFile intermediateFile
             in
                 if initialAST <> secondAST then
                     print "Parse trees are different.\n"

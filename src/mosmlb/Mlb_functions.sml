@@ -120,10 +120,10 @@ fun printAST print basDecs =
         app (printBasDec "") basDecs
     end
 
-(** Read and parse individual .mlb file. 
+(** Read and parse individual .mlb file, do not load included .mlb files.
  * @param filename the name of the file.
  * @return parse tree. *)
-fun openParseSingleFile filename =
+fun loadSingleMLBFile filename =
     let	
         fun createLexerStream (is : BasicIO.instream) =
             Lexing.createLexer (fn buff => fn n => Nonstdio.buff_input is buff 0 n)
@@ -234,7 +234,7 @@ fun loadMlbFileTree file =
                         else
                             Path.mkCanonical 
                                 (Path.concat ((Path.dir parentMLB), file))
-                    val ast = openParseSingleFile absoluteFile
+                    val ast = loadSingleMLBFile absoluteFile
                 in
                     Log.debug 1 ("Included " ^ file);
                     Log.debug 1 ("Final path " ^ absoluteFile);
@@ -253,7 +253,7 @@ fun loadMlbFileTree file =
             )
           | loadPath path = path
     in
-        expandParseTree loadPath (openParseSingleFile file)
+        expandParseTree loadPath (loadSingleMLBFile file)
     end
 
 (** Extract all paths that are mentioned in the file.
