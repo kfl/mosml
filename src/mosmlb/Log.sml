@@ -9,27 +9,32 @@ structure Log = struct
     (* location of error/warning - name of file, start position, end position *)
     type location = string*position*(position option)
 
+    (* Types of warning/error messages - add new warnings add errors here. *)
     datatype warningMessage = DuplicatedSources of unit
 
     datatype errorMessage = 
-        MLBGraphCycle of unit
-      | FileNotFound of unit
+        MLBGraphCycle of string * string list
+      | FileNotRead of string
       | UnexpectedCommentEnd of location
+      | ParseError of string
 
     datatype logMessage = Warning of warningMessage 
                         | Error of errorMessage
 
     (* The number of the warning and its description. Do not reassign
      * same number to different warnings. If you remove warning, 
-     * leave a hole in numbers. *)
-    fun warningDescription (DuplicatedSources ()) = (1, "File is included twice.")
+     * leave a hole in numbers. Same for errors. *)
+    fun warningDescription (DuplicatedSources ()) = (1, "File is included twice")
 
-    fun errorDescription (MLBGraphCycle ()) = (1, "Cycle in mlb includes.")
-      | errorDescription (FileNotFound ())  = (2, "File not found.")
+    fun errorDescription (MLBGraphCycle (file, includeStack)) = 
+        (1, "Cycle in mlb includes: " ^ file ^
+            (foldl (fn (f, str) => ("\n  is included from " ^ f ^ str)) "" includeStack))
+      | errorDescription (FileNotRead filename)  = (2, ("File '" ^ filename ^ "' can not be loaded"))
+      | errorDescription (ParseError filename)  = (3, ("File '" ^ filename ^ "' can not be parsed"))
       | errorDescription (UnexpectedCommentEnd (file, (line, _), _)) = 
-        (3, ("Unexpected commend end in " ^ file ^ " at line " ^ (Int.toString line)))
+        (4, ("Unexpected commend end in " ^ file ^ " at line " ^ (Int.toString line)))
 
-    val debugLevel = ref NONE
+    val debugLevel = ref (SOME 2)
 
     val failEarly = ref false
 

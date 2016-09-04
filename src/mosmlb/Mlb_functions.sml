@@ -181,7 +181,20 @@ fun loadMlbFileTree file =
                             case (List.find (fn x => (String.compare (file,x)) = EQUAL) (!pathStack)) of
                               SOME _ => 
                               (
-                                print ("Cycle error: " ^ file ^ " is included twice.\n");
+                                let
+                                    val includeStack = foldl 
+                                        (fn (f, stack) =>
+                                            case stack of
+                                              [] => 
+                                                if String.compare (file, f) = EQUAL then
+                                                    [f]
+                                                else
+                                                    []
+                                            | _ => f::stack
+                                        ) [] (rev (!pathStack));
+                                in
+                                    Log.error (Log.MLBGraphCycle (file, (rev includeStack)))
+                                end;
                                 Mlb.Path (Mlb.FailedMLBFile Mlb.CyclicDependency, file)
                               )
                             | NONE =>
@@ -223,13 +236,18 @@ fun loadMlbFileTree file =
                                 (Path.concat ((Path.dir parentMLB), file))
                     val ast = openParseSingleFile absoluteFile
                 in
-                    print ("Included " ^ file ^ "\n");
-                    print ("Final path " ^ absoluteFile ^ "\n");
+                    Log.debug 1 ("Included " ^ file);
+                    Log.debug 1 ("Final path " ^ absoluteFile);
                     ((Mlb.LoadedMLBFile ast), absoluteFile)
                 end
                 handle OS.SysErr _ => 
                 (
-                    print ("Load error: " ^ file ^ "\n");
+                    Log.error (Log.FileNotRead file);
+                    ((Mlb.FailedMLBFile Mlb.ReadFailure), file)
+                )
+                  | Parsing.ParseError _ =>
+                (
+                    Log.error (Log.ParseError file);
                     ((Mlb.FailedMLBFile Mlb.ReadFailure), file)
                 )
             )
