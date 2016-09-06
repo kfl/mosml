@@ -153,75 +153,28 @@ fun loadSingleMLBFile filename =
 fun loadMlbFileTree file =
     let
         (* stack of paths currently processed .mlb files, relative to root .mlb *)
-        val pathStack = ref [file] 
+        val pathStack = ref [""] 
 
-        (*  Expand parse tree, loading included .mlb files. 
-          *
-          * @param pathF function to apply to each path of the tree
-          * @param basDecList parse tree of .mlb file (list of base declarations)
-          *)
-        fun expandParseTree pathF basDecList =
-            let
-                fun 
-                    expandBasDec (Mlb.Basis basBindList) = 
-                        Mlb.Basis (map expandBasBind basBindList)
-                  | expandBasDec (Mlb.Local (basDecList1, basDecList2)) =
-                        Mlb.Local (map expandBasDec basDecList1, map expandBasDec basDecList2)
-
-                  | expandBasDec (Mlb.Open basIdList) = Mlb.Open basIdList
-                  | expandBasDec (Mlb.Structure strBindList) = Mlb.Structure strBindList
-                  | expandBasDec (Mlb.Signature sigBindList) = Mlb.Signature sigBindList
-                  | expandBasDec (Mlb.Functor funBindList) = Mlb.Functor funBindList
-        
-                  | expandBasDec (Mlb.Path path) = 
-                    (
-                        case pathF path of
-                          ((Mlb.LoadedMLBFile ast), file) =>
-                          ( (* File successfully loaded. Maybe there is a cycle? *)
-                            case (List.find (fn x => (String.compare (file,x)) = EQUAL) (!pathStack)) of
-                              SOME _ => 
-                              (
-                                let
-                                    val includeStack = foldl 
-                                        (fn (f, stack) =>
-                                            case stack of
-                                              [] => 
-                                                if String.compare (file, f) = EQUAL then
-                                                    [f]
-                                                else
-                                                    []
-                                            | _ => f::stack
-                                        ) [] (rev (!pathStack));
-                                in
-                                    Log.error (Log.MLBGraphCycle (file, (rev includeStack)))
-                                end;
-                                Mlb.Path (Mlb.FailedMLBFile Mlb.CyclicDependency, file)
-                              )
-                            | NONE =>
-                              (
-                                pathStack := file::(!pathStack);
-                                let
-                                    val ast = expandParseTree pathF ast
-                                in
-                                    pathStack := tl (!pathStack);
-                                    Mlb.Path ((Mlb.LoadedMLBFile ast), file)
-                                end
-                              )
-                          )
-                        | path => Mlb.Path path
-                    )
-                  | expandBasDec (Mlb.Annotation (annList, basDecList)) =
-                        Mlb.Annotation (annList, map expandBasDec basDecList)
-                and expandBasBind (Mlb.BasBind (basId, basExp)) = 
-                        Mlb.BasBind (basId, expandBasExp basExp)
-                and expandBasExp (Mlb.Bas basDecList) =
-                        Mlb.Bas (map expandBasDec basDecList)
-                  | expandBasExp (Mlb.BasId basId) = Mlb.BasId basId
-                  | expandBasExp (Mlb.Let (basDecList, basExp)) =
-                        Mlb.Let (map expandBasDec basDecList, expandBasExp basExp)
-            in
-                map expandBasDec basDecList
-            end
+        (* Check if file is already in pathStack. Returns NONE if
+         * not, or SOME list of files, which make an include cycle. *)
+        fun checkForCycle file =
+            case (List.find (fn x => (String.compare (file,x)) = EQUAL) (!pathStack)) of
+              SOME _ => 
+                let
+                    val cycleStack = foldl 
+                        (fn (f, stack) =>
+                            case stack of
+                              [] => 
+                                if String.compare (file, f) = EQUAL then
+                                    [f]
+                                else
+                                    []
+                            | _ => f::stack
+                        ) [] (rev (!pathStack))
+                in
+                    SOME (rev cycleStack)
+                end
+            | NONE => NONE
 
         (** Load single .mlb file, convert path to relative to root .mlb path. *)
         fun loadPath (Mlb.MLBFile, file) = 
@@ -251,9 +204,70 @@ fun loadMlbFileTree file =
                     ((Mlb.FailedMLBFile Mlb.ReadFailure), file)
                 )
             )
-          | loadPath path = path
+          | loadPath path = 
+            Log.fatal "Internal error: incorrect path type in loadPath"
+
+        (*  Expand parse tree, loading included .mlb files. 
+          *
+          * @param pathF function to apply to each path of the tree
+          * @param basDecList parse tree of .mlb file (list of base declarations)
+          *)
+        fun expandParseTree mlbPath =
+            let
+                fun 
+                    expandBasDec (Mlb.Basis basBindList) = 
+                        Mlb.Basis (map expandBasBind basBindList)
+                  | expandBasDec (Mlb.Local (basDecList1, basDecList2)) =
+                        Mlb.Local (map expandBasDec basDecList1, map expandBasDec basDecList2)
+
+                  | expandBasDec (Mlb.Open basIdList) = Mlb.Open basIdList
+                  | expandBasDec (Mlb.Structure strBindList) = Mlb.Structure strBindList
+                  | expandBasDec (Mlb.Signature sigBindList) = Mlb.Signature sigBindList
+                  | expandBasDec (Mlb.Functor funBindList) = Mlb.Functor funBindList
+                  | expandBasDec (Mlb.Path (MLBFile, path)) = 
+                  (
+                    case checkForCycle path of
+                      SOME cycleList =>
+                    (
+                        Log.error (Log.MLBGraphCycle (path, cycleList));
+                        Mlb.Path (Mlb.FailedMLBFile Mlb.CyclicDependency, file)
+                    )
+                    | NONE => 
+                    (
+                        let 
+                            val loadedMlb = loadPath (MLBFile, path)
+                            val (_, absolutePath) = loadedMlb
+                        in
+                            pathStack := absolutePath::(!pathStack);
+                            let
+                                val expandedBasDec = expandBasDec (Mlb.Path loadedMlb)
+                            in
+                                pathStack := tl (!pathStack);
+                                expandedBasDec
+                            end
+                        end
+                    )
+                  )
+                  | expandBasDec (Mlb.Path ((Mlb.LoadedMLBFile basDecList), path)) = 
+                        (Mlb.Path ((Mlb.LoadedMLBFile (map expandBasDec basDecList)), path))
+                  | expandBasDec (Mlb.Path nonMlbPath) = (Mlb.Path nonMlbPath)
+                  | expandBasDec (Mlb.Annotation (annList, basDecList)) =
+                        Mlb.Annotation (annList, map expandBasDec basDecList)
+                and expandBasBind (Mlb.BasBind (basId, basExp)) = 
+                        Mlb.BasBind (basId, expandBasExp basExp)
+                and expandBasExp (Mlb.Bas basDecList) =
+                        Mlb.Bas (map expandBasDec basDecList)
+                  | expandBasExp (Mlb.BasId basId) = Mlb.BasId basId
+                  | expandBasExp (Mlb.Let (basDecList, basExp)) =
+                        Mlb.Let (map expandBasDec basDecList, expandBasExp basExp)
+            in
+                expandBasDec mlbPath
+            end
+
     in
-        expandParseTree loadPath (loadSingleMLBFile file)
+        case (expandParseTree (Mlb.Path (Mlb.MLBFile, file))) of
+          Mlb.Path (Mlb.LoadedMLBFile baseDecList, _) => baseDecList
+        | _ => Log.fatal "Internal error in loadMlbFileTree"
     end
 
 (** Extract all paths that are mentioned in the file.
