@@ -22,10 +22,14 @@ structure Options = struct
 
     fun setDebugLevel level =
         case level of
-          "1" => Log.debugLevel := SOME 1
+          "1" => Log.debugLevel := Log.Level 1
+        | "2" => Log.debugLevel := Log.Level 2
+        | "3" => Log.debugLevel := Log.Level 3
+        | "print" => Log.debugLevel := Log.PrintParseTree
+        | "test" => Log.debugLevel := Log.ReadPrintReadTest
         | _ => 
         (
-            Log.debugLevel := NONE; 
+            Log.debugLevel := Log.NoDebug; 
             Log.fatal "Invalid debug level." 
         )
 
