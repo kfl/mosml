@@ -60,40 +60,38 @@ fun execLinker sources mlbFile =
 
 fun main () =
     let 
-        val args = CommandLine.arguments () 
+        val _ = Options.readCommandLine ()
+        val file = Option.valOf (!Options.mlbFile)
     in
-        case args of
-          [] => print "Error: no .mlb file specified.\n"
-        | file::_ => 
-            let 
-                val parseTree = Mlb_functions.loadMlbFileTree file
-                val fileList = Mlb_functions.extractPaths parseTree
-                val smlFileList = 
-                    List.filter 
-                        (fn (fileType, _) => 
-                            case fileType of
-                              Mlb.MLBFile => false
-                            | Mlb.LoadedMLBFile _ => false
-                            | Mlb.FailedMLBFile _ => false
-                            | _ => true
-                        ) fileList
-            in
-                case smlFileList of
-                  topLevel::[] =>
-                  (
-                    execCompiler true topLevel;
+        let 
+            val parseTree = Mlb_functions.loadMlbFileTree file
+            val fileList = Mlb_functions.extractPaths parseTree
+            val smlFileList = 
+                List.filter 
+                    (fn (fileType, _) => 
+                        case fileType of
+                          Mlb.MLBFile => false
+                        | Mlb.LoadedMLBFile _ => false
+                        | Mlb.FailedMLBFile _ => false
+                        | _ => true
+                    ) fileList
+        in
+            case smlFileList of
+              topLevel::[] =>
+              (
+                execCompiler true topLevel;
 
-                    execLinker smlFileList file
-                  )
-                | topLevel::other =>
-                  (
-                    app (execCompiler false) (rev other);
-                    execCompiler true topLevel;
+                execLinker smlFileList file
+              )
+            | topLevel::other =>
+              (
+                app (execCompiler false) (rev other);
+                execCompiler true topLevel;
 
-                    execLinker smlFileList file
-                  )
-                | [] => print "No files to compile.\n"
-            end
+                execLinker smlFileList file
+              )
+            | [] => print "No files to compile.\n"
+        end
     end
 
 val _ = (main() before OS.Process.exit OS.Process.success)

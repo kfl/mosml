@@ -34,10 +34,9 @@ structure Log = struct
       | errorDescription (UnexpectedCommentEnd (file, (line, _), _)) = 
         (4, ("Unexpected commend end in " ^ file ^ " at line " ^ (Int.toString line)))
 
+    (* Global variables of the program. *)
     val debugLevel = ref (SOME 2)
-
-    val failEarly = ref false
-
+    val failEarly = ref true
     val log = ref [] : logMessage list ref (* Warnings and errors, collected so far. *)
 
     (* Printing for debug, report and fatal messages. *)
