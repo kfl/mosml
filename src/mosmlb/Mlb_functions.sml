@@ -158,9 +158,18 @@ fun loadMlbFileTree file =
         (* stack of paths currently processed .mlb files, relative to root .mlb *)
         val pathStack = ref [""] 
 
+        (* makes path of loading file absolute using parent MLB from pathStack *)
+        fun absolutize path =
+            if Path.isAbsolute path then
+                path
+            else
+                Path.mkCanonical 
+                    (Path.concat ((Path.dir (hd (!pathStack))), path))
+
         (* Check if file is already in pathStack. Returns NONE if
          * not, or SOME list of files, which make an include cycle. *)
         fun checkForCycle file =
+        (
             case (List.find (fn x => (String.compare (file,x)) = EQUAL) (!pathStack)) of
               SOME _ => 
                 let
@@ -178,24 +187,13 @@ fun loadMlbFileTree file =
                     SOME (rev cycleStack)
                 end
             | NONE => NONE
+        )
 
         (** Load single .mlb file, convert path to relative to root .mlb path. *)
         fun loadPath (Mlb.MLBFile, file) = 
             (
-                let
-                    val parentMLB = hd (!pathStack)
-                    val absoluteFile =
-                        if Path.isAbsolute file then
-                            file
-                        else
-                            Path.mkCanonical 
-                                (Path.concat ((Path.dir parentMLB), file))
-                    val ast = loadSingleMLBFile absoluteFile
-                in
-                    Log.debug 1 ("Included " ^ file);
-                    Log.debug 1 ("Final path " ^ absoluteFile);
-                    ((Mlb.LoadedMLBFile ast), absoluteFile)
-                end
+                Log.debug 1 ("Included " ^ file);
+                ((Mlb.LoadedMLBFile (loadSingleMLBFile file)), file)
                 handle OS.SysErr _ => 
                 (
                     Log.error (Log.FileNotRead file);
@@ -212,8 +210,7 @@ fun loadMlbFileTree file =
 
         (*  Expand parse tree, loading included .mlb files. 
           *
-          * @param pathF function to apply to each path of the tree
-          * @param basDecList parse tree of .mlb file (list of base declarations)
+          * @param mlbPath parse tree of .mlb file (list of base declarations)
           *)
         fun expandParseTree mlbPath =
             let
@@ -229,27 +226,27 @@ fun loadMlbFileTree file =
                   | expandBasDec (Mlb.Functor funBindList) = Mlb.Functor funBindList
                   | expandBasDec (Mlb.Path (MLBFile, path)) = 
                   (
-                    case checkForCycle path of
-                      SOME cycleList =>
-                    (
-                        Log.error (Log.MLBGraphCycle (path, cycleList));
-                        Mlb.Path (Mlb.FailedMLBFile Mlb.CyclicDependency, file)
-                    )
-                    | NONE => 
-                    (
-                        let 
-                            val loadedMlb = loadPath (MLBFile, path)
-                            val (_, absolutePath) = loadedMlb
-                        in
+                    let
+                        val absolutePath = absolutize path
+                    in
+                        case checkForCycle absolutePath of
+                          SOME cycleList =>
+                        (
+                            Log.error (Log.MLBGraphCycle (absolutePath, cycleList));
+                            Mlb.Path (Mlb.FailedMLBFile Mlb.CyclicDependency, absolutePath)
+                        )
+                        | NONE => 
+                        (
                             pathStack := absolutePath::(!pathStack);
                             let
+                                val loadedMlb = loadPath (MLBFile, absolutePath)
                                 val expandedBasDec = expandBasDec (Mlb.Path loadedMlb)
                             in
                                 pathStack := tl (!pathStack);
                                 expandedBasDec
                             end
-                        end
-                    )
+                        )
+                    end
                   )
                   | expandBasDec (Mlb.Path ((Mlb.LoadedMLBFile basDecList), path)) = 
                         (Mlb.Path ((Mlb.LoadedMLBFile (map expandBasDec basDecList)), path))
