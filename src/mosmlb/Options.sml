@@ -15,8 +15,12 @@ structure Options = struct
         let
             val (major, minor) = version
         in
-            print ("Moscow MLB tool v." ^ (Int.toString major) ^ "." ^
+            print ("Moscow MLB build tool v." ^ (Int.toString major) ^ "." ^
                    (Int.toString minor) ^ "\n");
+            print "Defined path variables:\n";
+            app (fn (variable, value) => 
+                    print ("  " ^ variable ^ " = '" ^ value ^ "'\n"))
+                (!Mlb.pathVariables);
             BasicIO.exit 0
         end
 

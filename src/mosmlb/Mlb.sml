@@ -35,27 +35,28 @@ datatype basDec = Basis of basBind list | Local of (basDec list)*(basDec list)
     and includedFileType = UnknownFile | MLBFile | LoadedMLBFile of basDec list
       | FailedMLBFile of fileError | SIGFile | SMLFile | FUNFile
 
+(* Currently (6 sept 2016) MLton, SMLNJ, MLkit use only SML_LIB and
+ * TARGET_ARCH (mlton). Valid values for TARGET_ARCH are:
+ * netbsd, solaris, hurd, darwin, freebsd, mingw, cygwin, linux,
+ * openbsd, hpux, aix. For MosML TARGET_ARCH=linux.
+ *)
+val pathVariables = ref
+    [("SML_LIB","/sml-lib-location"),
+     ("HOME_PATH","/home"), (* for automated testing, remove in future *)
+     ("TARGET_ARCH", "bytecode"),
+     ("TARGET_OS", "linux"),
+     ("DEFAULT_INT", "int32"),
+     ("DEFAULT_WORD", "word32"),
+     ("DEFAULT_REAL", "real64")]
+
 (* Returns the value of path variable by its name.
  * Currently works only with hardcoded predefined 
  * path variables. *)
 fun pathVariable variable =
     let
-        (* Currently (17 aug 2016) MLton, SMLNJ, MLkit use only SML_LIB and
-         * TARGET_ARCH (mlton). Valid values for TARGET_ARCH are:
-         * netbsd, solaris, hurd, darwin, freebsd, mingw, cygwin, linux,
-         * openbsd, hpux, aix. For MosML TARGET_ARCH=linux.
-         *)
-        val predefinedPathVariables =
-           [("SML_LIB","/sml-lib-location"),
-            ("HOME_PATH","/home"), (* for automated testing, remove in future *)
-            ("TARGET_ARCH", "bytecode"),
-            ("TARGET_OS", "linux"),
-            ("DEFAULT_INT", "int32"),
-            ("DEFAULT_WORD", "word32"),
-            ("DEFAULT_REAL", "real64")]
         val sub = List.find 
             (fn (name, _) => (String.compare (name, variable)) = EQUAL)
-            predefinedPathVariables
+            (!pathVariables)
     in
         case sub of
           SOME (name, value) => value
