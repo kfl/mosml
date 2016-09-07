@@ -5,7 +5,7 @@ echo Reading escaped.mlb
 ../../camlrunm ../mosmlb -keep-going escaped.mlb
 echo Done.
 echo Reading test.mlb
-../../camlrunm ../mosmlb -keep-going test.mlb
+../../camlrunm ../mosmlb -keep-going -debug print test.mlb
 echo Done.
 
 # Parse-print-parse-compare test on test.mlb

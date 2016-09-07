@@ -58,40 +58,46 @@ fun execLinker sources mlbFile =
             print ("Linking of " ^ output ^ " failed.\n")
     end
 
+fun buildProject file parseTree =
+    let 
+        val fileList = Mlb_functions.extractPaths parseTree
+        val smlFileList = 
+            List.filter 
+                (fn (fileType, _) => 
+                    case fileType of
+                      Mlb.MLBFile => false
+                    | Mlb.LoadedMLBFile _ => false
+                    | Mlb.FailedMLBFile _ => false
+                    | _ => true
+                ) fileList
+    in
+        case smlFileList of
+          topLevel::[] =>
+          (
+            execCompiler true topLevel;
+
+            execLinker smlFileList file
+          )
+        | topLevel::other =>
+          (
+            app (execCompiler false) (rev other);
+            execCompiler true topLevel;
+
+            execLinker smlFileList file
+          )
+        | [] => print "No files to compile.\n"
+    end
+
 fun main () =
     let 
         val _ = Options.readCommandLine ()
         val file = Option.valOf (!Options.mlbFile)
+        val parseTree = Mlb_functions.loadMlbFileTree file
     in
-        let 
-            val parseTree = Mlb_functions.loadMlbFileTree file
-            val fileList = Mlb_functions.extractPaths parseTree
-            val smlFileList = 
-                List.filter 
-                    (fn (fileType, _) => 
-                        case fileType of
-                          Mlb.MLBFile => false
-                        | Mlb.LoadedMLBFile _ => false
-                        | Mlb.FailedMLBFile _ => false
-                        | _ => true
-                    ) fileList
-        in
-            case smlFileList of
-              topLevel::[] =>
-              (
-                execCompiler true topLevel;
-
-                execLinker smlFileList file
-              )
-            | topLevel::other =>
-              (
-                app (execCompiler false) (rev other);
-                execCompiler true topLevel;
-
-                execLinker smlFileList file
-              )
-            | [] => print "No files to compile.\n"
-        end
+        case !Log.debugLevel of
+          Log.PrintParseTree => Mlb_functions.printAST print parseTree
+        | Log.ReadPrintReadTest => print "Not yet implemented.\n"
+        | _ => buildProject file parseTree
     end
 
 val _ = (main() before OS.Process.exit OS.Process.success)

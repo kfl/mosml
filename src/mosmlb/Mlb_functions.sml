@@ -114,6 +114,9 @@ fun printAST print basDecs =
           | printBasDec indent (Structure binds) = printStructure indent binds
           | printBasDec indent (Signature binds) = printSignature indent binds
           | printBasDec indent (Functor binds) = printFunctor indent binds
+          | printBasDec indent (Path (FailedMLBFile _, _)) = ()
+          | printBasDec indent (Path (LoadedMLBFile basDecList, _)) =
+            app (printBasDec indent) basDecList
           | printBasDec indent (Path path) = printPath indent path
           | printBasDec indent (Annotation annotations) = printAnnotation indent annotations
     in
