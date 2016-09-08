@@ -3,12 +3,13 @@
 
 include ../Makefile.inc
 
-all: mosml mosmlc mosmllex camlexec testprog 
-
-# header cannot be generated until camlrunm is installed in $(BINDIR)...
+all: header mosml mosmlc mosmllex camlexec testprog
 
 install:
-	echo "#!$(BINDIR)/camlrunm" > $(DESTDIR)$(LIBDIR)/header;
+	# header cannot be used until camlrunm is installed in $(BINDIR)...
+	# but we have to pregenerate it with directories of BUILD phase, since
+	# while packaging (RPM) "make install" runs with fake-root.
+	cp header $(DESTDIR)$(LIBDIR)/header;
 	for script in mosml mosmlc mosmllex; do \
 	  ${INSTALL_SCRIPT} $$script $(DESTDIR)$(BINDIR)/$$script; \
 	  chmod a+x $(DESTDIR)$(BINDIR)/$$script; \
@@ -30,6 +31,8 @@ old_install:
 	  chmod a+x $(BINDIR)/$$script; \
 	done
 
+header:
+	echo "#!$(BINDIR)/camlrunm" > header
 
 mosml: mosml.tpl
 	sed -e "s|LIBDIR|$(LIBDIR)|" -e "s|BINDIR|$(BINDIR)|" mosml.tpl > mosml
