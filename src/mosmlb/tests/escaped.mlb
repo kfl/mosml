@@ -1,0 +1,10 @@
+(**
+ * This is a test file for testing escaped sequences in
+ * paths and annotations of .mlb *)
+
+ann
+ "Hello, \\ \? \"world\" annotation"
+in
+ "$(SML_LIB)\\path.sml"
+end
+

@@ -1,0 +1,101 @@
+/*
+ * Grammar file for .mlb. This file is written according to
+ * mlb-formal.pdf from MLton.
+ */
+%{
+
+%}
+
+%token BAS BASIS LET LOCAL OPEN SEMICOLON STRUCTURE SIGNATURE FUNCTOR IN END EQUAL AND EOF ANN 
+%token <Mlb.includedFileType*string> PATH
+
+%token <string> STRING ID
+
+%start mlbFile
+
+%type <Mlb.basDec list> basDecs mlbFile
+
+%type <Mlb.basDec> basDec 
+%type <Mlb.basExp> basExp
+%type <Mlb.basBind> basBind
+%type <Mlb.basBind list> basBindList
+
+%type <Mlb.basId> basId
+%type <Mlb.basId list> basIdList
+
+%type <Mlb.strBind> bStrBind
+%type <Mlb.strBind list> bStrBindList
+
+%type <Mlb.sigBind> bSigBind
+%type <Mlb.sigBind list> bSigBindList
+
+%type <Mlb.funBind> bFunBind
+%type <Mlb.funBind list> bFunBindList
+
+%type <Mlb.annotation> annotation
+%type <Mlb.annotation list> annotationList
+
+%%
+
+mlbFile : basDecs EOF { $1 }
+
+basDecs : { [] }
+  | basDec basDecs { $1::$2 }
+  | basDec SEMICOLON basDecs { $1::$3 }
+;
+
+basDec :
+    BASIS basBindList { Mlb.Basis (rev $2) } 
+  | LOCAL basDecs IN basDecs END { Mlb.Local ( $2, $4) }
+  | OPEN basIdList { Mlb.Open $2 }
+  | STRUCTURE bStrBindList { Mlb.Structure $2 }
+  | SIGNATURE bSigBindList { Mlb.Signature $2 }
+  | FUNCTOR bFunBindList { Mlb.Functor $2 }
+  | PATH { Mlb.Path $1 }
+  | ANN annotationList IN basDecs END { Mlb.Annotation ( $2, $4) }
+
+basExp :
+    BAS basDecs END { Mlb.Bas $2 }
+  | basId { Mlb.BasId $1 }
+  | LET basDecs IN basExp END { Mlb.Let ($2, $4) }
+
+basBindList : 
+    basBind { [$1] }
+  | basBind AND basBindList { $1::$3 }
+
+basBind : basId EQUAL basExp { Mlb.BasBind ($1, $3) }
+
+basIdList : basId { [$1] }
+  | basId basIdList { $1::$2 }
+
+basId : ID { $1 }
+
+bStrBindList : 
+    bStrBind { [$1] }
+  | bStrBind AND bStrBindList { $1::$3 }
+
+bStrBind : 
+    ID EQUAL ID { Mlb.StrBind ($1, $3) }
+  | ID { Mlb.StrId $1 }
+
+bSigBindList : 
+    bSigBind { [$1] }
+  | bSigBind AND bSigBindList { $1::$3 }
+
+bSigBind : 
+    ID EQUAL ID { Mlb.SigBind ($1, $3) }
+  | ID { Mlb.SigId $1 }
+
+bFunBindList : 
+    bFunBind { [$1] }
+  | bFunBind AND bFunBindList { $1::$3 }
+
+bFunBind : 
+    ID EQUAL ID { Mlb.FunBind ($1, $3) }
+  | ID { Mlb.FunId $1 }
+
+annotation : STRING { $1 }
+
+annotationList :
+    annotation { [$1] }
+  | annotation annotationList { $1::$2 }
