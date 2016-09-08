@@ -17,40 +17,17 @@ fun execCompiler toplevel (_, file) =
             print ("Compilation of " ^ file ^ " failed.\n")
     end
 
-(** Removes duplicates from list lst assuming it is already
- *  sorted. Result is in reverse order.
- *  @param lst list to uniq
- *)
-fun listRevUniq ord lst =
-    case lst of
-      [] => lst
-    | x::tail =>
-        let
-            val (a, rtail) = 
-                foldl 
-                    (fn (a, (current, result)) =>
-                        if ord (a, current) = EQUAL then
-                            (current, result)
-                        else
-                            (a, (current::result))
-                    ) (x, []) tail
-        in
-            a::rtail
-        end
-
 fun execLinker sources mlbFile =
     let
         val output = "-o " ^ (Path.base mlbFile)
         val system = "-stdlib ../mosmllib -P none -P full -noheader "
         val objects = 
             map (fn (_, s) => Path.joinBaseExt {base = Path.base s, ext = SOME "uo"}) sources
-        val sortedObjects = Listsort.sort String.compare objects
-        val uniqObjects = listRevUniq String.compare sortedObjects
+        val uniqObjects = Mlb_functions.listUnique String.compare objects
         val uniqObjects = map (fn s => " " ^ s ^ " ") uniqObjects
-        val args = [system] @
-            uniqObjects @ [output]
+        val args = [system] @ (rev uniqObjects) @ [output]
     in
-        print ("OUTPUT = '" ^ output ^ "'\n");
+        print ("OUTPUT = '" ^ (String.concat ("../camlrunm ../mosmllnk "::args)) ^ "'\n");
         if OS.Process.isSuccess (
             OS.Process.system (String.concat ("../camlrunm ../mosmllnk "::args))) then
             print ("Linked " ^ output ^ ".\n")

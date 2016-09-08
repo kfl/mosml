@@ -49,11 +49,24 @@ fun testSubstitutePathVars () =
         | _ => print "Substitute path variables test failed.\n"
     end
 
+(* Unit test for listUnique function *)
+fun testListUnique () =
+    let
+        val uniqTestList = ["hilo","tau","alpha","cau_"]
+    in
+        if uniqTestList <> 
+            Mlb_functions.listUnique String.compare (uniqTestList @ (rev uniqTestList)) then
+            print "List uniq failed.\n"
+        else
+            ()
+    end
+
 fun main () =
 (
     testSplit ();
     testPathVarSearch ();
-    testSubstitutePathVars ()
+    testSubstitutePathVars ();
+    testListUnique ()
 )
 
 val _ = (main() before OS.Process.exit OS.Process.success)

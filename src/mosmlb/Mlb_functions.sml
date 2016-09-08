@@ -310,4 +310,23 @@ fun extractPaths basDecList =
             (fn (basDec, paths) => (pathsOfBasDec basDec) @ paths) [] basDecList
     end
 
+    (** Removes duplicates from list lst. Order is preserved. 
+     *  @param lst list to unique
+     *
+     *  TODO: probably Mlb_functions is not the best place for
+     *  this function.
+     *)
+    fun listUnique ord lst =
+        let
+            val (lst, _) =
+                foldl 
+                    (fn (x, (lst, set)) =>
+                        case Binaryset.peek (set, x) of
+                          SOME _ => (lst, set)
+                        | NONE   => ((x::lst), Binaryset.add (set, x))
+                    ) ([], Binaryset.empty ord) lst
+        in
+            rev lst
+        end
+
 end
