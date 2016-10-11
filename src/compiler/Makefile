@@ -121,6 +121,8 @@ install:
 	${INSTALL_DATA} mosmllnk $(DESTDIR)$(LIBDIR)
 	${INSTALL_DATA} mosmltop $(DESTDIR)$(LIBDIR)
 
+uninstall:
+	cd $(DESTDIR)$(LIBDIR) && ${UNINSTALL_DATA} mosmlcmp mosmllnk mosmltop
 
 install_w32:
 	${INSTALL_DATA} mosmlcmp.w32 $(DESTDIR)$(LIBDIR)/mosmlcmp

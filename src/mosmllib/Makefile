@@ -50,6 +50,9 @@ install:
 #	rm -f $(DESTDIR)$(LIBDIR)/camlrunm
 #	ln -s $(BINDIR)/camlrunm $(LIBDIR)/camlrunm
 
+uninstall:
+	cd $(DESTDIR)$(LIBDIR) && ${UNINSTALL_DATA} README *.ui *.uo *.sig General.sig Meta.sig
+
 depend: Array.sml FileSys.sml Help.sml Int.sml Mosml.sml Path.sml \
     Process.sml Strbase.sml Vector.sml Word.sml Word8Array.sml \
     Word8Vector.sml Weak.sml

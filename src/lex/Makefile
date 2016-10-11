@@ -39,6 +39,9 @@ clean:
 install:
 	${INSTALL_DATA} mosmllex $(DESTDIR)$(LIBDIR)
 
+uninstall:
+	${UNINSTALL_DATA} $(DESTDIR)$(LIBDIR)/mosmllex
+
 Grammar.sml Grammar.sig: Grammar.grm
 	$(MOSMLYACC) Grammar.grm
 

@@ -17,17 +17,17 @@ mosmlyac.exe: $(OBJS)
 	$(CC) $(CFLAGS) -o mosmlyac.exe $(OBJS) -mconsole
 	$(STRIP) mosmlyac.exe
 
-
 clean_obj:
 	rm -f *.o
 
 clean: clean_obj
 	rm -f mosmlyac mosmlyac.exe
 
-
-
 install:
 	${INSTALL_PROGRAM} mosmlyac$(EXE) $(DESTDIR)$(BINDIR)/mosmlyac$(EXE)
+
+uninstall:
+	${UNINSTALL_PROGRAM} $(DESTDIR)$(BINDIR)/mosmlyac$(EXE)
 
 depend:
 

@@ -30,6 +30,9 @@ old_install:
 	  chmod a+x $(BINDIR)/$$script; \
 	done
 
+uninstall:
+	${UNINSTALL_PROGRAM} $(DESTDIR)$(LIBDIR)/header
+	cd $(DESTDIR)$(BINDIR) && ${UNINSTALL_SCRIPT} mosml mosmlc mosmllex
 
 mosml: mosml.tpl
 	sed -e "s|LIBDIR|$(LIBDIR)|" -e "s|BINDIR|$(BINDIR)|" mosml.tpl > mosml

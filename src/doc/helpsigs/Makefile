@@ -27,6 +27,10 @@ install:
 	$(INSTALL_DATA) htmlsigs/*.html $(DESTDIR)$(DOCDIR)/mosmllib
 	$(INSTALL_DATA) index.html $(DESTDIR)$(DOCDIR)/mosmllib
 
+uninstall:
+	${UNINSTALL_DATA} $(DESTDIR)$(LIBDIR)/helpsigs.val
+	${UNINSTALL_DATA} $(DESTDIR)$(DOCDIR)/mosmllib/*.html
+
 depend: Lexer.sml Parser.sml 
 	rm -f Makefile.bak
 	mv Makefile Makefile.bak
