@@ -49,7 +49,7 @@ endif
 
 ADDRUNLIBS=-ldl
 ADDRUNCFLAGS=-fPIC
-ADDDYNLIBCFLAGS=-fPIC
+ADDDYNLIBCFLAGS=-fPIC -fno-stack-protector
 
 
 # Automatic detection of OS
