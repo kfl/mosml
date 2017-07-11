@@ -20,12 +20,14 @@ MOSMLTOOLS=camlrunm $(TOOLDIR)
 
 all: libmgmp.so IntInf.uo
 
-
 install:
 	$(INSTALL_DATA) libmgmp.so $(DESTDIR)$(LIBDIR)
 	$(INSTALL_DATA) IntInf.sig $(DESTDIR)$(LIBDIR)
 	$(INSTALL_DATA) IntInf.ui $(DESTDIR)$(LIBDIR)
 	$(INSTALL_DATA) IntInf.uo $(DESTDIR)$(LIBDIR)
+
+uninstall:
+	cd $(DESTDIR)$(LIBDIR) && ${UNINSTALL_DATA} libmgmp.so IntInf.sig IntInf.ui IntInf.uo
 
 intinf.o: intinf.c
 	$(CC) $(CFLAGS) -c -o intinf.o intinf.c

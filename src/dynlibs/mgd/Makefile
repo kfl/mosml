@@ -32,7 +32,10 @@ test: Graphs.uo
 	mosml testgdimage.sml
 
 install:
-	cp libmgd.so $(LIBDIR)
+	${INSTALL_DATA} libmgd.so $(LIBDIR)
+
+uninstall:
+	${UNINSTALL_DATA} $(LIBDIR)/libmgd.so
 
 clean:
 	rm -f *.o

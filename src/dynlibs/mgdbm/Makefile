@@ -19,7 +19,10 @@ BASELIBS=-lm -ldl
 all: libmgdbm.so
 
 install:
-	cp libmgdbm.so $(LIBDIR)
+	${INSTALL_DATA} libmgdbm.so $(LIBDIR)
+
+uninstall:
+	${UNINSTALL_DATA} $(LIBDIR)/libmgdbm.so
 
 mgdbm.o: mgdbm.c
 	$(CC) $(CFLAGS) -c -o mgdbm.o mgdbm.c 

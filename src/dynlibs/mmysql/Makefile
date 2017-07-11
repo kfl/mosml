@@ -31,7 +31,10 @@ libmmysql.so: mmysql.o
 #	$(DYNLD) -o libmmysql.so mmysql.o -L${MYSQLLIBDIR} -lmysqlclient
 
 install:
-	cp libmmysql.so $(LIBDIR)
+	${INSTALL_DATA} libmmysql.so $(LIBDIR)
+
+uninstall:
+	${UNINSTALL_DATA} $(LIBDIR)/libmmysql.so
 
 test:
 	mosml testmysql.sml

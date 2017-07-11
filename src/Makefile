@@ -19,7 +19,6 @@ ifeq ($(DYNLIBSUPPORT),true)
   BASISDYNLIB=intinf msocket munix
 endif
 
-
 # Build the entire system for the first time
 
 world:
@@ -112,11 +111,26 @@ install:
 	cd doc; $(MAKE) install
 	$(MAKE) basisdynlib_install
 
+uninstall:
+	cd runtime; $(MAKE) uninstall
+	cd launch; $(MAKE) uninstall
+	cd mosmlyac; $(MAKE) uninstall
+	cd mosmllib; $(MAKE) uninstall
+	cd compiler; $(MAKE) uninstall
+	cd toolssrc; $(MAKE) uninstall
+	cd lex; $(MAKE) uninstall
+	cd doc; $(MAKE) uninstall
+	$(MAKE) basisdynlib_uninstall
+
 basisdynlib_install:
 	for i in $(BASISDYNLIB); do \
 	  (cd dynlibs/$$i; $(MAKE) install) || exit $$?; \
 	done
 
+basisdynlib_uninstall:
+	for i in $(BASISDYNLIB); do \
+	  (cd dynlibs/$$i; $(MAKE) uninstall) || exit $$?; \
+	done
 
 # Remove all generated files
 clean:

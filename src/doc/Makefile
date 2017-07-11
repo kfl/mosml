@@ -54,6 +54,10 @@ install:
 #	cp mosmllib2up.pdf $(DOCDIR)
 	cd helpsigs; $(MAKE) install
 
+uninstall:
+	cd $(DESTDIR)$(DOCDIR) && ${UNINSTALL_DATA} mosmlref.pdf manual.pdf mosmllib.pdf
+	cd helpsigs; $(MAKE) uninstall
+
 clean:
 	rm -f *.aux *.dvi *.blg *.bbl *.blg *.log *.ps
 	rm -f *.ind *.idx *.ilg *.toc

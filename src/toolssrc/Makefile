@@ -36,6 +36,9 @@ clean:
 install:
 	${INSTALL_DATA} cutdeps mosmldep $(DESTDIR)$(TOOLDIR)
 
+uninstall:
+	cd $(DESTDIR)$(TOOLDIR) && ${UNINSTALL_DATA}  cutdeps mosmldep
+
 depend: Deplex.sml Deppars.sml Mosmldep.sml
 	rm -f Makefile.bak
 	mv Makefile Makefile.bak

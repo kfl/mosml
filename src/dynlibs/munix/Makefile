@@ -20,6 +20,9 @@ libmunix.so: munix.o
 install:
 	$(INSTALL_DATA) libmunix.so $(DESTDIR)$(LIBDIR)
 
+uninstall:
+	${UNINSTALL_DATA} $(DESTDIR)$(LIBDIR)/libmunix.so
+
 test:
 	gcc -O2 -o sieve sieve.c
 	mosml testunix.sml

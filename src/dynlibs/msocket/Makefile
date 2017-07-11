@@ -24,6 +24,9 @@ libmsocket.so: msocket.o
 install:
 	$(INSTALL_DATA) libmsocket.so $(DESTDIR)$(LIBDIR)
 
+uninstall:
+	${UNINSTALL_DATA} $(DESTDIR)$(LIBDIR)/libmsocket.so
+
 test:
 	mosml testsocket.sml
 

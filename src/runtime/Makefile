@@ -61,11 +61,20 @@ install:
 	${INSTALL_PROGRAM} camlrunm$(EXE) $(DESTDIR)$(LIBDIR)
 	${INSTALL_DATA} *.h $(DESTDIR)$(INCDIR)
 
+uninstall:
+	${UNINSTALL_PROGRAM} $(DESTDIR)$(BINDIR)/camlrunm$(EXE)
+	${UNINSTALL_PROGRAM} $(DESTDIR)$(LIBDIR)/camlrunm$(EXE)
+	cd $(DESTDIR)$(INCDIR) && ${UNINSTALL_DATA} *.h
+
 install_w32: camlrt.dll
 	${INSTALL_PROGRAM} camlrt.dll $(DESTDIR)$(BINDIR)
 	${INSTALL_PROGRAM} camlrt.dll $(DESTDIR)$(LIBDIR)
 	${INSTALL_DATA} *.h $(DESTDIR)$(INCDIR)
 
+uninstall_w32:
+	${UNINSTALL_PROGRAM} $(DESTDIR)$(BINDIR)/camlrt.dll
+	${UNINSTALL_PROGRAM} $(DESTDIR)$(LIBDIR)/camlrt.dll
+	cd $(DESTDIR}$(INCDIR) && ${UNINSTALL_DATA} *.h
 
 primitives : $(PRIMS)
 	sed -n -e '/\/\* ML \*\//s/.* \([a-zA-Z0-9_][a-zA-Z0-9_]*\) *(.*/\1/p' \
