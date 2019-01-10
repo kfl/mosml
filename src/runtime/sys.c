@@ -278,7 +278,7 @@ void mysignal(int signum, sighandler_return_type (*handler)(int)) {
   sigemptyset(&emptyset);
   sigact.sa_handler  = handler;
   sigact.sa_mask     = emptyset;
-  sigact.sa_flags    = SA_NOMASK;
+  sigact.sa_flags    = SA_NODEFER;
   sigaction(signum, &sigact, 0); 
 #else
   signal(signum, handler);
