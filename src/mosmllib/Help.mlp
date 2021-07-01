@@ -42,7 +42,8 @@ val helpdirs = ref [] : string list ref
 
 #ifdef macintosh
 val slash = #":"
-#else (* DOS/UNIX *)
+#else
+(* DOS/UNIX *)
 val slash = #"/"
 #endif  
 
