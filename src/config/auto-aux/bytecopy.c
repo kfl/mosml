@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <string.h>
 char buffer[27];
 
 #ifdef reverse

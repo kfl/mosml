@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <signal.h>
 #include <setjmp.h>
@@ -39,4 +40,3 @@ main()
   signal(SIGBUS, SIG_DFL);
   exit(res);
 }
-

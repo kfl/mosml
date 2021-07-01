@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 signed char foo[]="\377";
 main()
 {

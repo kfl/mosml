@@ -1,7 +1,3 @@
 main() {
-  tcgetattr();
-  tcsetattr();
-  tcsendbreak();
-  tcflush();
-  tcflow();
+  getgroups();
 }

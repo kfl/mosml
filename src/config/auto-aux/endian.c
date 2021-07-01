@@ -1,3 +1,6 @@
+#include <stdlib.h>
+#include <string.h>
+
 main()
 {
   long n[2];

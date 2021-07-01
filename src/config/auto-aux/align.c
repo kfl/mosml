@@ -1,6 +1,8 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <signal.h>
 #include <setjmp.h>
+#include <unistd.h>
 
 long foo;
 
@@ -74,7 +76,7 @@ int speedtest(p)
   sigact.sa_handler  = &alarm_handler;
   sigact.sa_mask     = emptyset;
   sigact.sa_flags    = SA_NODEFER;
-  sigaction(SIGALRM, &sigact, 0); 
+  sigaction(SIGALRM, &sigact, 0);
 #else
   signal(SIGALRM, alarm_handler);
 #endif
