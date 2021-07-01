@@ -4,7 +4,7 @@
 PREFIX=/usr/local
 
 # BINDIR contains true executable files, such as scripts
-# LIBDIR contains bytecode files (such as mosmlcmp and library units), and .dll/.so for dynlibs. 
+# LIBDIR contains bytecode files (such as mosmlcmp and library units), and .dll/.so for dynlibs.
 #        RPATH is set to include LIBDIR
 # INCDIR contains the runtime system header files (for compiling dynlibs)
 # DOCDIR contains documentation
@@ -57,7 +57,7 @@ ADDDYNLIBCFLAGS=-fPIC
 
 # Automatic detection of OS
 # If you need to override the detection, set UNAME_S to Custom and add your configuration there.
-# 
+#
 UNAME_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
 
 
@@ -66,20 +66,20 @@ UNAME_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
 # we had "elif" things would have been much nicer...
 
 ifeq ($(UNAME_S),Linux)
-	CPP=cpp -P -traditional -Dunix -Umsdos
+	CPP=cpp -P -traditional -Dunix -Umsdos -Wno-invalid-pp-token
 	STRIP=strip -S
 	LD=gcc -rdynamic -Wl,-rpath,$(LIBDIR)
 	DYNLD=gcc -shared
 endif
 ifeq ($(UNAME_S),Darwin) 	# For MacOS X, use the same as Linux except DYNDL
-	CPP=cpp -P -traditional -Dunix -Umsdos
+	CPP=cpp -P -traditional -Dunix -Umsdos -Wno-invalid-pp-token
 	STRIP=strip -S
 	LD=$(CC) -rdynamic -Wl,-rpath,$(LIBDIR)
 	DYNLD=$(LD) -bundle -undefined dynamic_lookup
 endif
 ifeq ($(UNAME_S),Cross_W32)
 	CC=i586-mingw32msvc-gcc
-	CPP=cpp -P -traditional -Umsdos -Uunix -Dwin32
+	CPP=cpp -P -traditional -Umsdos -Uunix -Dwin32 -Wno-invalid-pp-token
 	ADDRUNLIBS=
 	ADDRUNCFLAGS=
 	ADDDYNLIBCFLAGS=
@@ -90,7 +90,7 @@ ifeq ($(UNAME_S),Cross_W32)
 endif
 ifeq ($(UNAME_S),OpenBSD)
 	ADDRUNLIBS=
-	CPP=cpp -P -traditional -Dunix -Umsdos
+	CPP=cpp -P -traditional -Dunix -Umsdos -Wno-invalid-pp-token
 	STRIP=strip -S
 	LD=gcc -rdynamic -Wl,-rpath,$(LIBDIR)
 	DYNLD=gcc -shared
@@ -203,7 +203,7 @@ MOSMLLNEW=$(ROOTDIR)/camlrunm $(ROOTDIR)/mosmllnk.new -stdlib $(ROOTDIR)/mosmlli
 
 MOSMLLEX=$(ROOTDIR)/camlrunm $(ROOTDIR)/mosmllex
 MOSMLYACC=$(ROOTDIR)/mosmlyac/mosmlyac
-MOSMLCUT=$(ROOTDIR)/camlrunm $(ROOTDIR)/cutdeps 
+MOSMLCUT=$(ROOTDIR)/camlrunm $(ROOTDIR)/cutdeps
 MOSMLDEP=$(ROOTDIR)/camlrunm $(ROOTDIR)/mosmldep
 
 # For cross-compiling to MS DOS (from Linux) (development only)
