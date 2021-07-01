@@ -1,6 +1,6 @@
 #include <signal.h>
 
-main()
+int main()
 {
   SIGRETURN (*old)();
   old = signal(SIGQUIT, SIG_DFL);
