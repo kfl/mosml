@@ -18,7 +18,7 @@ all: Array.uo Array2.uo ArraySlice.uo Arraysort.uo \
      Math.uo Misc.uo Mosml.uo Mosmlcgi.uo Mosmlcookie.uo Msp.uo Mysql.uo \
      NJ93.uo Nonstdio.uo \
      Obj.uo Option.uo OS.uo \
-     PackRealBig.uo \
+     PackRealBig.uo PackRealLittle.uo \
      Parsing.uo Path.uo Polygdbm.uo Polyhash.uo Postgres.uo PP.uo Process.uo \
      Random.uo Rbset.uo Real.uo Redblackmap.uo Regex.uo \
      Signal.uo SML90.uo Socket.uo Splaymap.uo Splayset.uo Splaytree.uo \
@@ -75,7 +75,8 @@ FileSys.uo: FileSys.ui Path.ui List.ui Time.ui
 Mosmlcookie.uo: Mosmlcookie.ui String.ui List.ui Date.ui Option.ui \
     Process.ui Substring.ui Bool.ui 
 Bool.uo: Bool.ui StringCvt.ui Char.ui 
-PackRealLittle.uo: PackRealLittle.ui Word8Array.ui Word8Vector.ui 
+PackRealLittle.uo: PackRealLittle.ui Word8Array.ui Word8ArraySlice.ui \
+    Word8Vector.ui Word8VectorSlice.ui 
 TextIO.ui: StringCvt.ui Char.ui 
 Msp.uo: Msp.ui String.ui StringCvt.ui List.ui Option.ui Vector.ui TextIO.ui \
     Int.ui Mosmlcgi.ui Char.ui 
@@ -132,8 +133,8 @@ BinIO.uo: BinIO.ui Word8.ui TextIO.ui Word8Vector.ui
 Word8VectorSlice.uo: Word8VectorSlice.ui Word8.ui Word8Vector.ui 
 Option.uo: Option.ui 
 Signal.uo: Signal.ui Word.ui 
-PackRealBig.uo: PackRealBig.ui Word8ArraySlice.ui Word8Vector.ui \
-    Word8VectorSlice.ui 
+PackRealBig.uo: PackRealBig.ui Word8Array.ui Word8ArraySlice.ui \
+    Word8Vector.ui Word8VectorSlice.ui 
 Int.ui: StringCvt.ui 
 ArraySlice.uo: ArraySlice.ui Vector.ui Array.ui VectorSlice.ui 
 Array2.uo: Array2.ui List.ui Vector.ui Array.ui VectorSlice.ui \
