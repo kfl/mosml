@@ -30,22 +30,30 @@ in
 val test4a = check(map ceil args  
 		   = [0, 99, ~5, 2, ~1, 2, ~1, 3, ~2, 1000002, ~1000001]);
 val test4b = chkminmax ceil [rminInt-0.9] [rmaxInt-0.1]; 
-val test4c = map (chkfail ceil) [rminInt-1.0, rmaxInt+0.1]; (* 31-bit *)
+val test4c = if Int.precision = SOME 31
+             then map (chkfail ceil) [rminInt-1.0, rmaxInt+0.1] (* 31-bit *)
+             else ["TODO"];
 
 val test5a = check(map floor args 
 		   = [0, 99, ~5, 1, ~2, 1, ~2, 2, ~3, 1000001, ~1000002]);
 val test5b = chkminmax floor [rminInt+0.1] [rmaxInt+0.9]; 
-val test5c = map (chkfail floor) [rminInt-0.1, rmaxInt+1.0]; (* 31-bit *)
+val test5c = if Int.precision = SOME 31
+             then map (chkfail floor) [rminInt-0.1, rmaxInt+1.0] (* 31-bit *)
+             else ["TODO"];
 
 val test6a = check(map trunc args 
 		   = [0, 99, ~5, 1, ~1, 1, ~1, 2, ~2, 1000001, ~1000001]);
 val test6b = chkminmax trunc [rminInt-0.9] [rmaxInt+0.9]; 
-val test6c = map (chkfail trunc) [rminInt-1.0, rmaxInt+1.0]; (* 31-bit *)
+val test6c = if Int.precision = SOME 31
+             then map (chkfail trunc) [rminInt-1.0, rmaxInt+1.0] (* 31-bit *)
+             else ["TODO"];
 
 val test7a = check(map round args 
 		   = [0, 99, ~5, 1, ~1, 2, ~2, 2, ~2, 1000001, ~1000001]);
 val test7b = chkminmax round [rminInt-0.5, rmaxInt+0.4]
-val test7c = map (chkfail round) [rminInt-0.6, rmaxInt+0.5]; (* 31-bit *)
+val test7c = if Int.precision = SOME 31
+             then map (chkfail round) [rminInt-0.6, rmaxInt+0.5] (* 31-bit *)
+             else ["TODO"];
 
 end
 

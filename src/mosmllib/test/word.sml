@@ -1,21 +1,21 @@
 (* test/word.sml -- some test cases for Word, appropriate for a two's
-   complement machine whose Int.precision = SOME 31 
+   complement machine whose Int.precision = SOME 31
    PS 1995-03-19, 1995-07-12, 1995-11-06, 1996-04-01, 1996-10-01,
    2000-10-24 *)
 
 use "auxil.sml";
 
-local 
+local
     (* Isn't this disgusting: *)
-    val [gt,  lt,  ge,   le] = 
+    val [gt,  lt,  ge,   le] =
 	[op>, op<, op>=, op<=] : (int * int -> bool) list
-    val [add, sub, mul, idiv,   imod] = 
+    val [add, sub, mul, idiv,   imod] =
 	[op+, op-, op*, op div, op mod] : (int * int -> int) list
     val maxposint = valOf Int.maxInt;
     val maxnegint = ~maxposint-1;
     open Word;
     val op > = gt and op < = lt and op >= = ge and op <= = le;
-    val op + = add and op - = sub and op * = mul 
+    val op + = add and op - = sub and op * = mul
     and op div = idiv and op mod = imod;
     val i2w = fromInt
     and w2i = toInt;
@@ -24,19 +24,19 @@ in
 val test1 = checkrange (0, 1025)
     (fn i => i = w2i (i2w i));
 
-val test3 = checkrange (~1000, 1000) 
+val test3 = checkrange (~1000, 1000)
     (fn i => i = toIntX (i2w i));
 
-val test5a = checkrange (0,15) 
+val test5a = checkrange (0,15)
     (fn i => (i+960) div 2 * 2 + 1
              = w2i (orb (i2w i, i2w 961)));
 val test5b = checkrange (0,513)
     (fn i => i = w2i (orb (i2w i, i2w i)));
-val test6a = checkrange (0,15) 
+val test6a = checkrange (0,15)
     (fn i => i div 2 * 2 = w2i (andb (i2w i, i2w ~2)));
 val test6b = checkrange (0,513)
     (fn i => i = w2i (andb (i2w i, i2w i)));
-val test7a = checkrange (0,15) 
+val test7a = checkrange (0,15)
     (fn i => i+960 = w2i (xorb (i2w i, i2w 960)));
 val test7b = checkrange (0, 513)
     (fn i => 0 = w2i (xorb (i2w i, i2w i)));
@@ -48,32 +48,38 @@ val test8c = checkrange (~1000,1000)
 	     in w = notb(notb w) end);
 val test8d = check (0 = Word.toIntX (~ (i2w 0)));
 val test8e = check (1 = w2i (~ (i2w ~1)));
-val test8f = check (2 = w2i (~ (i2w ~2))); 
-val test8g = check (1023 = w2i (~ (i2w ~1023))); 
+val test8f = check (2 = w2i (~ (i2w ~2)));
+val test8g = check (1023 = w2i (~ (i2w ~1023)));
 val test8h = checkrange (~1000,1000)
     (fn i => let val w = i2w i
 	     in w = ~(~w) end);
 
-fun pwr2 0 = 1 
+fun pwr2 0 = 1
   | pwr2 n = 2 * pwr2 (n-1);
 fun rwp i 0 = i
   | rwp i n = rwp i (n-1) div 2;
 
 val test9a = checkrange (0,29)
     (fn k => pwr2 k = w2i (<< (i2w 1, i2w k)));
-val test9b = checkrange (31,65)
-    (fn k => 0 = w2i (<< (i2w 1, i2w k)));
-val test9c = 
-    (w2i (<< (i2w 1, i2w 30)); "WRONG")
-    handle Overflow => "OK" | _ => "WRONG";
+val test9b = if Int.precision = SOME 31
+             then checkrange (31,65)
+                             (fn k => 0 = w2i (<< (i2w 1, i2w k))) (* 31-bit *)
+             else "TODO";
+val test9c =
+    if Int.precision = SOME 31
+    then (w2i (<< (i2w 1, i2w 30)); "WRONG")
+         handle Overflow => "OK" | _ => "WRONG" (* 31-bit *)
+    else "TODO";
 val test9d = checkrange (0, 1025)
     (fn i => 2 * i = w2i (<< (i2w i, i2w 1)));
 val test9e = checkrange (0, 1025)
     (fn i => i div 2 = w2i (>> (i2w i, i2w 1)));
 val test9f = checkrange (0,65)
     (fn k => rwp maxposint k = w2i (>> (i2w maxposint, i2w k)));
-val test9g = checkrange (31,65)
-    (fn k => 0 = w2i (<< (i2w ~1, i2w k)));
+val test9g = if Int.precision = SOME 31
+             then checkrange (31,65)
+                             (fn k => 0 = w2i (<< (i2w ~1, i2w k))) (* 31-bit *)
+             else "TODO";
 val test9h = checkrange (1,65)
     (fn k => 0 = w2i (>> (i2w 1, i2w k)));
 
@@ -86,7 +92,7 @@ val test10c = checkrange (~513, 513)
 val test10d = checkrange (0,65)
     (fn k => rwp maxnegint k = toIntX (~>> (i2w maxnegint, i2w k)));
 
-local 
+local
     open Word
 in
 val test11a = check (i2w 256 > i2w 255);
@@ -100,27 +106,27 @@ val test11h = check (i2w maxposint < i2w maxnegint);
 val test11i = check (i2w maxnegint < i2w ~1);
 end;
 
-local 
+local
     open Word
 in
 val test12a = checkrange(0, 300) (fn k => w2i (i2w k + i2w 17) = add(k, 17));
 val test12b = checkrange(0, 300) (fn k => toIntX (i2w k - i2w 17) = sub(k, 17));
 val test12c = checkrange(0, 300) (fn k => w2i (i2w k * i2w 17) = mul(k, 17));
-val test12d = checkrange(0, 300) 
+val test12d = checkrange(0, 300)
     (fn k => w2i (i2w k div i2w 17) = idiv(k, 17));
-val test12e = checkrange(0, 300) 
+val test12e = checkrange(0, 300)
     (fn k => w2i (i2w k mod i2w 17) = imod(k, 17));
-val test12f = checkrange(0, 300) 
+val test12f = checkrange(0, 300)
     (fn k => toIntX (i2w k + i2w maxnegint) = add(k, maxnegint));
-val test12g = checkrange(0, 300) 
+val test12g = checkrange(0, 300)
     (fn k => toIntX (i2w maxnegint - i2w k - i2w 1) = sub(maxposint,k));
-val test12h = checkrange(0, 300) 
+val test12h = checkrange(0, 300)
     (fn k => toIntX (i2w k * i2w maxnegint) = mul(imod(k, 2), maxnegint));
-val test12i = checkrange(0, 300) 
+val test12i = checkrange(0, 300)
     (fn k => toIntX (i2w k * i2w maxposint + i2w k) = mul(imod(k, 2), maxnegint));
-val test12j = checkrange(0, 300) 
+val test12j = checkrange(0, 300)
     (fn k => w2i (i2w k div i2w ~1) = 0);
-val test12k = checkrange(0, 300) 
+val test12k = checkrange(0, 300)
     (fn k => w2i (i2w k mod i2w ~1) = k);
 val test12l = check(toIntX (i2w maxposint + i2w 1) = maxnegint);
 val test12m = check(w2i (i2w maxnegint - i2w 1) = maxposint);
@@ -128,20 +134,20 @@ val test12n = check(w2i (i2w ~1 div i2w 2) = maxposint);
 val test12o = check(w2i (i2w ~1 mod i2w 2) = 1);
 val test12p = check(w2i (i2w ~1 div i2w 100) = idiv(maxposint, 50));
 val test12q = check(w2i (i2w ~1 mod i2w 10) = 7);
-val test12r = (i2w 17 div i2w 0 seq "WRONG") 
+val test12r = (i2w 17 div i2w 0 seq "WRONG")
               handle Div => "OK" | _ => "WRONG";
-val test12s = (i2w 17 mod i2w 0 seq "WRONG") 
+val test12s = (i2w 17 mod i2w 0 seq "WRONG")
               handle Div => "OK" | _ => "WRONG";
 
-fun chk f (s, r) = 
-    check'(fn _ => 
+fun chk f (s, r) =
+    check'(fn _ =>
 	   case f s of
 	       SOME res => res = i2w r
 	     | NONE     => false)
 
 fun chkScan fmt = chk (StringCvt.scanString (scan fmt))
 
-val test13a = 
+val test13a =
     List.map (chk fromString)
              [("20Af", 8367),
 	      (" \n\t20AfGrap", 8367),
@@ -158,12 +164,12 @@ val test13a =
 	      ("0wx ", 0),
 	      ("0wX ", 0)];
 
-val test13b = 
+val test13b =
     List.map (fn s => case fromString s of NONE => "OK" | _ => "WRONG")
-	   ["", "-", "~", "+", " \n\t", " \n\t-", " \n\t~", " \n\t+", 
-	    "+1", "~1", "-1", "GG"];	    
+	   ["", "-", "~", "+", " \n\t", " \n\t-", " \n\t~", " \n\t+",
+	    "+1", "~1", "-1", "GG"];
 
-val test14a = 
+val test14a =
     List.map (chkScan StringCvt.DEC)
              [("10789", 10789),
 	      (" \n\t10789crap", 10789),
@@ -180,13 +186,13 @@ val test14a =
 	      ("0wx ", 0),
 	      ("0wX ", 0)];
 
-val test14b = 
-    List.map (fn s => case StringCvt.scanString (scan StringCvt.DEC) s 
+val test14b =
+    List.map (fn s => case StringCvt.scanString (scan StringCvt.DEC) s
 	              of NONE => "OK" | _ => "WRONG")
-	   ["", "-", "~", "+", " \n\t", " \n\t-", " \n\t~", " \n\t+", 
-	    "+1", "~1", "-1", "ff"];	    
+	   ["", "-", "~", "+", " \n\t", " \n\t-", " \n\t~", " \n\t+",
+	    "+1", "~1", "-1", "ff"];
 
-val test15a = 
+val test15a =
     List.map (chkScan StringCvt.BIN)
              [("10010", 18),
 	      (" \n\t10010crap", 18),
@@ -203,13 +209,13 @@ val test15a =
 	      ("0wx ", 0),
 	      ("0wX ", 0)];
 
-val test15b = 
-    List.map (fn s => case StringCvt.scanString (scan StringCvt.BIN) s 
+val test15b =
+    List.map (fn s => case StringCvt.scanString (scan StringCvt.BIN) s
 	              of NONE => "OK" | _ => "WRONG")
-	   ["", "-", "~", "+", " \n\t", " \n\t-", " \n\t~", " \n\t+", 
+	   ["", "-", "~", "+", " \n\t", " \n\t-", " \n\t~", " \n\t+",
 	    "+1", "~1", "-1", "2", "8", "ff"];
 
-val test16a = 
+val test16a =
     List.map (chkScan StringCvt.OCT)
              [("2071", 1081),
 	      (" \n\t2071crap", 1081),
@@ -226,13 +232,13 @@ val test16a =
 	      ("0wx ", 0),
 	      ("0wX ", 0)];
 
-val test16b = 
-    List.map (fn s => case StringCvt.scanString (scan StringCvt.OCT) s 
+val test16b =
+    List.map (fn s => case StringCvt.scanString (scan StringCvt.OCT) s
 	              of NONE => "OK" | _ => "WRONG")
-	   ["", "-", "~", "+", " \n\t", " \n\t-", " \n\t~", " \n\t+", 
+	   ["", "-", "~", "+", " \n\t", " \n\t-", " \n\t~", " \n\t+",
 	    "+1", "~1", "-1", "8", "ff"];
 
-val test17a = 
+val test17a =
     List.map (chkScan StringCvt.HEX)
              [("20Af", 8367), (" \n\t20AfGrap", 8367),
 	      ("0wx20Af", 8367), (" \n\t0wx20AfGrap", 8367),
@@ -249,37 +255,37 @@ val test17a =
 	      ("0wx1", 1),
 	      ("0wX1", 1)];
 
-val test17b = 
-    List.map (fn s => case StringCvt.scanString (scan StringCvt.HEX) s 
+val test17b =
+    List.map (fn s => case StringCvt.scanString (scan StringCvt.HEX) s
 	              of NONE => "OK" | _ => "WRONG")
-	   ["", "-", "~", "+", " \n\t", " \n\t-", " \n\t~", " \n\t+", 
+	   ["", "-", "~", "+", " \n\t", " \n\t-", " \n\t~", " \n\t+",
 	    "+1", "~1", "-1"];
 
 end;
 
-local 
-    fun fromToString i = 
+local
+    fun fromToString i =
 	fromString (toString (fromInt i)) = SOME (fromInt i);
 
-    fun scanFmt radix i = 
+    fun scanFmt radix i =
 	let val w = fromInt i
 	    val s = fmt radix w
 	in StringCvt.scanString (scan radix) s = SOME w end;
 
 in
-val test18 = 
+val test18 =
     check'(fn _ => range (0, 1200) fromToString);
 
-val test19 = 
+val test19 =
     check'(fn _ => range (0, 1200) (scanFmt StringCvt.BIN));
 
-val test20 = 
+val test20 =
     check'(fn _ => range (0, 1200) (scanFmt StringCvt.OCT));
 
-val test21 = 
+val test21 =
     check'(fn _ => range (0, 1200) (scanFmt StringCvt.DEC));
 
-val test22 = 
+val test22 =
     check'(fn _ => range (0, 1200) (scanFmt StringCvt.HEX));
 end
 end;
