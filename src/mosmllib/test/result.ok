@@ -438,15 +438,15 @@ Enter `quit();' to quit.
 > val checkrange = fn : int * int -> (int -> bool) -> string
 [closing file "auxil.sml"]
 > val it = () : unit
-VARYING: This is (local time) now:        Fri Jul  2 14:38:58 2021
-VARYING: This is UTC now:                 Fri Jul  2 12:38:58 2021
-VARYING: This is an hour from now:        Fri Jul  2 15:38:58 2021
-VARYING: This is a day from now:          Sat Jul  3 14:38:58 2021
-VARYING: This is a week from now:         Fri Jul  9 14:38:58 2021
-VARYING: This is 120 days from now:       Sat Oct 30 14:38:58 2021
-VARYING: This is 160 days from now:       Thu Dec  9 13:38:58 2021
-VARYING: This is 200 days from now:       Tue Jan 18 13:38:58 2022
-VARYING: This is 240 days from now:       Sun Feb 27 13:38:58 2022
+VARYING: This is (local time) now:        Fri Jul  2 20:31:32 2021
+VARYING: This is UTC now:                 Fri Jul  2 18:31:32 2021
+VARYING: This is an hour from now:        Fri Jul  2 21:31:32 2021
+VARYING: This is a day from now:          Sat Jul  3 20:31:32 2021
+VARYING: This is a week from now:         Fri Jul  9 20:31:32 2021
+VARYING: This is 120 days from now:       Sat Oct 30 20:31:32 2021
+VARYING: This is 160 days from now:       Thu Dec  9 19:31:32 2021
+VARYING: This is 200 days from now:       Tue Jan 18 19:31:32 2022
+VARYING: This is 240 days from now:       Sun Feb 27 19:31:32 2022
 VARYING: This is the epoch (UTC):         Thu Jan  1 00:00:00 1970
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
@@ -1320,14 +1320,14 @@ abcde <--- this should read abcde
 > val it = () : unit
 
 Each line below should show roughly the same User, System, and Gc times:
-User: 0.010  System: 0.000  Gc: 0.000  Real: 0.010
-User: 0.010  System: 0.000  Gc: 0.000  Real: 0.010
-User: 0.012  System: 0.000  Gc: 0.000  Real: 0.012
-User: 0.013  System: 0.000  Gc: 0.000  Real: 0.013
-User: 0.013  System: 0.000  Gc: 0.000  Real: 0.013
-User: 0.012  System: 0.000  Gc: 0.000  Real: 0.012
-User: 0.010  System: 0.000  Gc: 0.000  Real: 0.010
-User: 0.011  System: 0.000  Gc: 0.000  Real: 0.011
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
 > val test1 = "OK" : string
   val test2 = "OK" : string
   val test3 = "OK" : string
@@ -1593,7 +1593,7 @@ test5:
 test6:
 test7:
 test8:
-VARYING: //////////////////////////////////////////////////////////////////
+VARYING: /////////////////////////////////////
 > val a = <array> : int list array
   val test1 = "OK" : string
   val test2 = "OK" : string
@@ -2110,4 +2110,40 @@ VARYING: //////////////////////////////////////////////////////////////////
   val test17a = "OK" : string
   val test17b = "OK" : string
 [closing file "word8vectorslice.sml"]
+[opening file "packrealbig.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val ('b, 'c) seq = fn : 'b * 'c -> 'c
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> (int -> bool) -> string
+[closing file "auxil.sml"]
+> val it = () : unit
+> val it = () : unit
+  ~420.000000 is enconded as C0 7A 40 00 00 00 00 00 (big endian)
+  ~1.100000 is enconded as BF F1 99 99 99 99 99 9A (big endian)
+  ~0.123457 is enconded as BF BF 9A DD 37 39 63 5F (big endian)
+  0.000000 is enconded as 00 00 00 00 00 00 00 00 (big endian)
+  0.000000 is enconded as 00 00 00 00 00 00 00 00 (big endian)
+  1.000000 is enconded as 3F F0 00 00 00 00 00 00 (big endian)
+  1.100000 is enconded as 3F F1 99 99 99 99 99 9A (big endian)
+  2.000000 is enconded as 40 00 00 00 00 00 00 00 (big endian)
+  420000000.000000 is enconded as 41 B9 08 B1 00 00 00 00 (big endian)
+  4611686018427387904.000000 is enconded as 43 D0 00 00 00 00 00 00 (big endian)
+  9007199254740991.000000 is enconded as 43 3F FF FF FF FF FF FF (big endian)
+  9007199254740992.000000 is enconded as 43 40 00 00 00 00 00 00 (big endian)
+  9007199254740992.000000 is enconded as 43 40 00 00 00 00 00 00 (big endian)
+  3.141593 is enconded as 40 09 21 FB 54 44 2D 18 (big endian)
+  2.718282 is enconded as 40 05 BF 0A 8B 14 57 69 (big endian)
+> val roundtrip = fn : real -> bool
+  val test_roundtrip = "OK" : string
+  val encoded =
+    [0wx40, 0wx9, 0wx21, 0wxFB, 0wx54, 0wx44, 0wx2D, 0wx18, 0wx40, 0wx9, 0wx21,
+     0wxFB, 0wx54, 0wx44, 0wx2D, 0wx18] : word8 list
+  val test_subvec = "OK" : string
+  val test_subarr = "OK" : string
+  val test_update0 = "OK" : string
+  val test_update1 = "OK" : string
+[closing file "packrealbig.sml"]
 > val it = () : unit
