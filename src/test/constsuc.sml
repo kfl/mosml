@@ -13,7 +13,9 @@ val test2 = maxInt1 = maxInt21 andalso maxInt21 = maxInt22;
 val maxWord1 = 0w2147483647;
 val maxWord2 = 0wx7fffffff;
 
-val test3 = maxWord1 = maxWord2 andalso maxWord1 = Word.fromInt ~1;
+val test3 = maxWord1 = maxWord2
+            andalso
+            (Int.precision <> SOME 31 orelse maxWord1 = Word.fromInt ~1);
 
 val maxWord8_1 = 0w255;
 val maxWord8_2 = 0wxFF;

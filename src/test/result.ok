@@ -1,4 +1,4 @@
-Moscow ML version 2.01a (January 2004)
+Moscow ML version 2.10
 Enter `quit();' to quit.
 [opening file "test.sml"]
 [opening file "test1.sml"]
@@ -324,20 +324,20 @@ ba> val it = CONSab{a = "a", b = "b"} : (string, string) AB
 > val minint = ~1073741824 : int
 > infix 0 seq
   val ('a, 'b) seq = fn : 'a * 'b -> 'b
-> val it = "OK" : string
-> val it = "OK" : string
-> val it = "OK" : string
-> val it = "OK" : string
+> val test1 = "TODO" : string
+> val test2 = "TODO" : string
+> val test3 = "TODO" : string
+> val test4 = "TODO" : string
 > val it = "OK" : string
 > val it = "OK" : string
 > val it = "OK" : string
 > val sum = fn : int * int -> int
 > val diff = fn : int * int -> int
-> val it = "OK" : string
-> val it = "OK" : string
-> val it = "OK" : string
+> val test5 = "TODO" : string
+> val test6 = "TODO" : string
+> val test7 = "TODO" : string
 > val prod = fn : int * int -> int
-> val it = "OK" : string
+> val test8 = "TODO" : string
 > val checkDivMod = fn : int -> int -> string
 23 10   > val it = "OK" : string
 ~23 10   > val it = "OK" : string
@@ -353,7 +353,7 @@ ba> val it = CONSab{a = "a", b = "b"} : (string, string) AB
 0 ~1   > val it = "OK" : string
 > val it = "OK" : string
 > val it = "OK" : string
-> val it = "OK" : string
+> val test9 = "TODO" : string
 > val maxri = 1073741823.0 : real
 > val minri = ~1073741824.0 : real
 > val it = "OK" : string
@@ -362,8 +362,8 @@ ba> val it = CONSab{a = "a", b = "b"} : (string, string) AB
 > val it = "OK" : string
 > val it = "OK" : string
 > val it = "OK" : string
-> val it = "OK" : string
-> val it = "OK" : string
+> val test9 = "TODO" : string
+> val test10 = "TODO" : string
 [closing file "testd.sml"]
 > val it = () : unit
 [opening file "teste.sml"]
@@ -497,10 +497,10 @@ ba> val it = CONSab{a = "a", b = "b"} : (string, string) AB
 > val eew1 = true : bool
 > val eec1 = true : bool
 > val eeg1 = true : bool
-User: 0.390  System: 0.000  GC: 0.000  Real: 0.390
+User: 0.027  System: 0.000  GC: 0.000  Real: 0.027
 > val it = 7 : int
 > val loop2 = fn : int -> int
-User: 0.400  System: 0.000  GC: 0.000  Real: 0.391
+User: 0.033  System: 0.000  GC: 0.000  Real: 0.033
 > val it = 7 : int
 > val maxi = fn : int array -> int * int
 [closing file "ovlsucc.sml"]
@@ -942,7 +942,7 @@ File "recsucc.sml", line 47, characters 21-22:
 > val h = so far so good<installed prettyprinter failed: PP7> : int
 [closing file "testpp.sml"]
 > val it = () : unit
-Moscow ML version 2.01a (January 2004)
+Moscow ML version 2.10
 Enter `quit();' to quit.
 - > type word8 = word8
 - ! Toplevel input:
@@ -1076,66 +1076,7 @@ Enter `quit();' to quit.
 !                  ^^^^^
 ! Word8.word constant is too large
 - 
-Moscow ML version 2.01a (January 2004)
-Enter `quit();' to quit.
-- ! Toplevel input:
-! val fail1 = ~1073741825;
-!             ^^^^^^^^^^^
-! Lexical error: integer constant is too large.
-- ! Toplevel input:
-! val fail2 =  1073741824;
-!              ^^^^^^^^^^
-! Lexical error: integer constant is too large.
-- ! Toplevel input:
-! val fail3 = ~0x40000001;
-!             ^^^^^^^^^^^
-! Lexical error: integer constant is too large.
-- ! Toplevel input:
-! val fail4 =  0x40000000;
-!              ^^^^^^^^^^
-! Lexical error: integer constant is too large.
-- ! Toplevel input:
-! val fail5 = 0w2147483648;
-!             ^^^^^^^^^^^^
-! Lexical error: word constant is too large.
-- ! Toplevel input:
-! val fail6 = 0wx80000000;
-!             ^^^^^^^^^^^
-! Lexical error: word constant is too large.
-- ! Toplevel input:
-! val fail7 = 0w256  : Word8.word;
-!             ^^^^^
-! Word8.word constant is too large
-- ! Toplevel input:
-! val fail8 = 0wx100 : Word8.word;
-!             ^^^^^^
-! Word8.word constant is too large
-- ! Toplevel input:
-! val fail9  =  9999999999999999999999999999999999999999;
-!               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-! Lexical error: integer constant is too large.
-- ! Toplevel input:
-! val fail10 = ~9999999999999999999999999999999999999999;
-!              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-! Lexical error: integer constant is too large.
-- ! Toplevel input:
-! val fail11 =  0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
-!               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-! Lexical error: integer constant is too large.
-- ! Toplevel input:
-! val fail12 = ~0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
-!              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-! Lexical error: integer constant is too large.
-- ! Toplevel input:
-! val fail13 = 0wxFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
-!              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-! Lexical error: word constant is too large.
-- ! Toplevel input:
-! val fail14 = 0wxFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF : Word8.word;
-!              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-! Lexical error: word constant is too large.
-- 
-Moscow ML version 2.01a (January 2004)
+Moscow ML version 2.10
 Enter `quit();' to quit.
 - ! Toplevel input:
 ! datatype t = true;
@@ -1282,7 +1223,7 @@ Enter `quit();' to quit.
 !             ^^^
 ! Illegal rebinding or respecification
 - 
-Moscow ML version 2.01a (January 2004)
+Moscow ML version 2.10
 Enter `quit();' to quit.
 - > val ('a, 'b) it = fn : 'a -> ('a -> 'b) -> 'b
 - ! Toplevel input:
@@ -1332,7 +1273,7 @@ Enter `quit();' to quit.
 !   'b
 ! because of circularity
 - 
-Moscow ML version 2.01a (January 2004)
+Moscow ML version 2.10
 Enter `quit();' to quit.
 - ! Toplevel input:
 ! fun f1 x = (x=x, x 1);
@@ -1478,7 +1419,7 @@ Enter `quit();' to quit.
 !   'a -> 'a
 ! cannot have explicit type 'a
 - 
-Moscow ML version 2.01a (January 2004)
+Moscow ML version 2.10
 Enter `quit();' to quit.
 - ! Toplevel input:
 ! fun true x  = x;
