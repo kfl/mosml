@@ -44,3 +44,9 @@ jobs:
           cd src/test
           make current cleaned
           diff cleaned-result cleaned-result.ok
+
+      - name: Test mosmllib
+        run: |
+          cd src/mosmllib/test
+          make current cleaned
+          diff cleaned-result cleaned-result.ok
