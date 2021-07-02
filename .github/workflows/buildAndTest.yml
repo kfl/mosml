@@ -35,9 +35,14 @@ jobs:
           brew update
           brew install gmp
 
-      - name: Build and install
+      - name: Build
         run: |
-          cd src && make world install
+          cd src && make world
+
+      - name: Install
+        run: |
+          cd src
+          sudo make install
 
       - name: Test compiler and runtime system
         run: |
