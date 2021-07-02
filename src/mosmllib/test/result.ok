@@ -438,15 +438,15 @@ Enter `quit();' to quit.
 > val checkrange = fn : int * int -> (int -> bool) -> string
 [closing file "auxil.sml"]
 > val it = () : unit
-VARYING: This is (local time) now:        Fri Jul  2 20:31:32 2021
-VARYING: This is UTC now:                 Fri Jul  2 18:31:32 2021
-VARYING: This is an hour from now:        Fri Jul  2 21:31:32 2021
-VARYING: This is a day from now:          Sat Jul  3 20:31:32 2021
-VARYING: This is a week from now:         Fri Jul  9 20:31:32 2021
-VARYING: This is 120 days from now:       Sat Oct 30 20:31:32 2021
-VARYING: This is 160 days from now:       Thu Dec  9 19:31:32 2021
-VARYING: This is 200 days from now:       Tue Jan 18 19:31:32 2022
-VARYING: This is 240 days from now:       Sun Feb 27 19:31:32 2022
+VARYING: This is (local time) now:        Fri Jul  2 20:59:07 2021
+VARYING: This is UTC now:                 Fri Jul  2 18:59:07 2021
+VARYING: This is an hour from now:        Fri Jul  2 21:59:07 2021
+VARYING: This is a day from now:          Sat Jul  3 20:59:07 2021
+VARYING: This is a week from now:         Fri Jul  9 20:59:07 2021
+VARYING: This is 120 days from now:       Sat Oct 30 20:59:07 2021
+VARYING: This is 160 days from now:       Thu Dec  9 19:59:07 2021
+VARYING: This is 200 days from now:       Tue Jan 18 19:59:07 2022
+VARYING: This is 240 days from now:       Sun Feb 27 19:59:07 2022
 VARYING: This is the epoch (UTC):         Thu Jan  1 00:00:00 1970
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
@@ -2146,4 +2146,40 @@ VARYING: /////////////////////////////////////
   val test_update0 = "OK" : string
   val test_update1 = "OK" : string
 [closing file "packrealbig.sml"]
+[opening file "packreallittle.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val ('b, 'c) seq = fn : 'b * 'c -> 'c
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> (int -> bool) -> string
+[closing file "auxil.sml"]
+> val it = () : unit
+> val it = () : unit
+  ~420.000000 is enconded as 00 00 00 00 00 40 7A C0 (little endian)
+  ~1.100000 is enconded as 9A 99 99 99 99 99 F1 BF (little endian)
+  ~0.123457 is enconded as 5F 63 39 37 DD 9A BF BF (little endian)
+  0.000000 is enconded as 00 00 00 00 00 00 00 00 (little endian)
+  0.000000 is enconded as 00 00 00 00 00 00 00 00 (little endian)
+  1.000000 is enconded as 00 00 00 00 00 00 F0 3F (little endian)
+  1.100000 is enconded as 9A 99 99 99 99 99 F1 3F (little endian)
+  2.000000 is enconded as 00 00 00 00 00 00 00 40 (little endian)
+  420000000.000000 is enconded as 00 00 00 00 B1 08 B9 41 (little endian)
+  4611686018427387904.000000 is enconded as 00 00 00 00 00 00 D0 43 (little endian)
+  9007199254740991.000000 is enconded as FF FF FF FF FF FF 3F 43 (little endian)
+  9007199254740992.000000 is enconded as 00 00 00 00 00 00 40 43 (little endian)
+  9007199254740992.000000 is enconded as 00 00 00 00 00 00 40 43 (little endian)
+  3.141593 is enconded as 18 2D 44 54 FB 21 09 40 (little endian)
+  2.718282 is enconded as 69 57 14 8B 0A BF 05 40 (little endian)
+> val roundtrip = fn : real -> bool
+  val test_roundtrip = "OK" : string
+  val encoded =
+    [0wx40, 0wx9, 0wx21, 0wxFB, 0wx54, 0wx44, 0wx2D, 0wx18, 0wx40, 0wx9, 0wx21,
+     0wxFB, 0wx54, 0wx44, 0wx2D, 0wx18] : word8 list
+  val test_subvec = "OK" : string
+  val test_subarr = "OK" : string
+  val test_update0 = "OK" : string
+  val test_update1 = "OK" : string
+[closing file "packreallittle.sml"]
 > val it = () : unit
