@@ -8,7 +8,7 @@ fun check' f = (if f () then "OK" else "WRONG") handle ? => "EXN ("^(exnName ?)^
 fun range (from, to) p =
     let open Int
     in
-	(from > to) orelse (p from) andalso (range (from+1, to) p)
+	      (from > to) orelse (p from) andalso (from = valOf maxInt orelse (range (from+1, to) p))
     end;
 
 fun checkrange bounds p = check'(fn _ => range bounds p)
