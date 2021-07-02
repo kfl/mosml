@@ -293,8 +293,11 @@ val test9ne =
 
 val test9nf =
     check'(fn _ =>
-	   inputNoBlock stdIn = NONE
-	   andalso inputNoBlock stdIn = NONE);
+              let val is = openIn "noinput.pipe"
+	            in 	(inputNoBlock is = NONE
+	                 andalso inputNoBlock is = NONE)
+	                before closeIn is
+	            end);
 
 val test10 =
     check'(fn _ =>

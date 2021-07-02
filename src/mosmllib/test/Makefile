@@ -1,8 +1,8 @@
 # Makefile for mosmllib test cases
 
 # with the supplied compiler and the supplied library
-all: links
-	mosml -P full test.sml > result 2>&1
+all: links noinput.pipe
+	exec 4<> noinput.pipe	&& mosml -P full test.sml > result 2>&1
 
 diff:
 	diff result result.ok
@@ -14,22 +14,25 @@ cleaned:
 
 
 # with the supplied compiler and the current library
-libtest: links
-	mosml -I .. -P full test.sml > result 2>&1
+libtest: links noinput.pipe
+	exec 4<> noinput.pipe	&& mosml -I .. -P full test.sml > result 2>&1
 #	diff result result.ok
 
 # with the current compiler and the current library 
-newtest: links
-	../../camlrunm ../../compiler/mosmltop -stdlib .. -P full test.sml > result 2>&1
+newtest: links noinput.pipe
+	exec 4<> noinput.pipe	&& ../../camlrunm ../../compiler/mosmltop -stdlib .. -P full test.sml > result 2>&1
 #	diff result result.ok
 
 # with the current compiler and the current library (as above)
-current: links
-	make newtest
+current:
+	$(MAKE) newtest
 
 cmdline: 
 	mosmlc -o cmdline cmdline.sml 
 	cmdline arg1 arg2 arg3
+
+noinput.pipe:
+	mkfifo noinput.pipe
 
 # set up hardlinks and softlinks for filesys.sml
 links:
@@ -47,4 +50,5 @@ clean:
 	rm -f hardlinkA hardlinkB
 	rm -f testlink testcycl testbadl
 	rm -f testrun.ui testrun.uo
+	rm -f noinput.pipe
 	cd callback; make clean
