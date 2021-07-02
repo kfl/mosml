@@ -55,9 +55,9 @@ typedef int sighandler_return_type;
 
 /* Define HAS_SOCKETS if you have BSD sockets. */
 
-#define HAS_UNISTD
+#define HAVE_UNISTD_H
 
-/* Define HAS_UNISTD if you have /usr/include/unistd.h. */
+/* Define HAVE_UNISTD_H if you have /usr/include/unistd.h. */
 
 #define HAS_DIRENT
 

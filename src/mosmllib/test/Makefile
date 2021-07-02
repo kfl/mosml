@@ -7,15 +7,21 @@ all: links
 diff:
 	diff result result.ok
 
+# Make results that are independent of timings and mosml version
+cleaned:
+	grep -v "^User:" result | grep -v "^Moscow ML version" > cleaned-result
+	grep -v "^User:" result.ok | grep -v "^Moscow ML version" > cleaned-result.ok
+
+
 # with the supplied compiler and the current library
 libtest: links
 	mosml -I .. -P full test.sml > result 2>&1
-	diff result result.ok
+#	diff result result.ok
 
 # with the current compiler and the current library 
 newtest: links
 	../../camlrunm ../../compiler/mosmltop -stdlib .. -P full test.sml > result 2>&1
-	diff result result.ok
+#	diff result result.ok
 
 # with the current compiler and the current library (as above)
 current: links

@@ -175,106 +175,66 @@ else
 fi
 fi
 
+# Test for .h files
+
+test_header() {
+    if echo "#include <$1> " | gcc -E - > /dev/null 2> /dev/null; then
+        echo "$1 found."
+        echo "#define $2" >> s.h
+    else
+        echo "Couldn't find $1"
+    fi
+}
+
+test_header "dirent.h" HAVE_DIRENT_H
+test_header "termios.h" HAVE_TERMIOS_H
+test_header "sys/param.h" HAVE_SYS_PARAM_Y
+test_header "sys/resource.h" HAVE_SYS_RESOURCE_H
+test_header "sys/socket.h" HAVE_SYS_SOCKET_H
+test_header "sys/stat.h" HAVE_SYS_STAT_H
+test_header "sys/types.h" HAVE_SYS_TYPES_H
+test_header "sys/time.h" HAVE_SYS_TIME_H
+test_header "sys/wait.h" HAVE_SYS_WAIT_H
+test_header "utime.h" HAVE_UTIME_H
+test_header "unistd.h" HAVE_UNISTD_H
+
+
+# Test for functions
+# usage:
+# test_function VAR_TO_DEFINE f1 f2 f3 ...
+test_functions() {
+    VAR_TO_DEFINE="${1:?MISSING}"; shift
+
+    if sh hasgot "$@"; then
+        echo "Found function(s): $@"
+        echo "#define $VAR_TO_DEFINE" >> s.h
+    else
+        echo "Couldn't find function(s): $@"
+    fi
+}
+
 # For the sys module
 
-if sh hasgot rename; then
-  echo "rename() found."
-  echo "#define HAS_RENAME" >> s.h
-fi
-
-if sh hasgot strerror; then
-  echo "strerror() found."
-  echo "#define HAS_STRERROR" >> s.h
-fi
+test_functions HAS_RENAME rename
+test_functions HAS_STRERROR strerror
 
 # For the Unix library
 
-if sh hasgot socket socketpair bind listen accept connect; then
-  echo "You have BSD sockets."
-  echo "#define HAS_SOCKETS" >> s.h
-fi
-
-if test -f /usr/include/unistd.h; then
-  echo "unistd.h found."
-  echo "#define HAS_UNISTD" >> s.h
-fi
-
-if test -f /usr/include/dirent.h; then
-  echo "dirent.h found."
-  echo "#define HAS_DIRENT" >> s.h
-fi
-
-if sh hasgot lockf; then
-  echo "lockf() found."
-  echo "#define HAS_LOCKF" >> s.h
-fi
-
-if sh hasgot mkfifo; then
-  echo "mkfifo() found."
-  echo "#define HAS_MKFIFO" >> s.h
-fi
-
-if sh hasgot getpriority setpriority; then
-  echo "getpriority() found."
-  echo "#define HAS_GETPRIORITY" >> s.h
-fi
-
-if test -f /usr/include/utime.h && sh hasgot utime; then
-  echo "utime() found."
-  echo "#define HAS_UTIME" >> s.h
-fi
-
-if sh hasgot utimes; then
-  echo "utimes() found."
-  echo "#define HAS_UTIMES" >> s.h
-fi
-
-if sh hasgot dup2; then
-  echo "dup2() found."
-  echo "#define HAS_DUP2" >> s.h
-fi
-
-if sh hasgot fchmod fchown; then
-  echo "fchmod() found."
-  echo "#define HAS_FCHMOD" >> s.h
-fi
-
-if sh hasgot truncate ftruncate; then
-  echo "truncate() found."
-  echo "#define HAS_TRUNCATE" >> s.h
-fi
-
-if sh hasgot select; then
-  echo "select() found."
-  echo "#define HAS_SELECT" >> s.h
-fi
-
-if sh hasgot symlink readlink lstat;  then
-  echo "symlink() found."
-  echo "#define HAS_SYMLINK" >> s.h
-fi
-
-if sh hasgot wait3;  then
-  echo "wait3() found."
-  echo "#define HAS_WAIT3" >> s.h
-fi
-
-if sh hasgot waitpid;  then
-  echo "waitpid() found."
-  echo "#define HAS_WAITPID" >> s.h
-fi
-
-if sh hasgot getgroups && test -f /usr/include/sys/param.h && grep -s NGROUPS /usr/include/sys/param.h >/dev/null;
-then
-  echo "getgroups() found."
-  echo "#define HAS_GETGROUPS" >> s.h
-fi
-
-if test -f /usr/include/termios.h && 
-   sh hasgot tcgetattr tcsetattr tcsendbreak tcflush tcflow; then
-  echo "POSIX termios found."
-  echo "#define HAS_TERMIOS" >> s.h
-fi
+test_functions HAS_SOCKETS socket socketpair bind listen accept connect
+test_functions HAS_LOCKF lockf
+test_functions HAS_MKFIFO mkfifo
+test_functions HAS_GETPRIORITY getpriority setpriority
+test_functions HAS_UTIME utime
+test_functions HAS_UTIMES utimes
+test_functions HAS_DUP2 dup2
+test_functions HAS_FCHMOD fchmod fchown
+test_functions HAS_TRUNCATE truncate ftruncate
+test_functions HAS_SELECT select
+test_functions HAS_SYMLINK symlink readlink lstat
+test_functions HAS_WAIT3 wait3
+test_functions HAS_WAITPID waitpid
+test_functions HAS_GETGROUPS getgroups
+test_functions HAS_TERMIOS tcgetattr tcsetattr tcsendbreak tcflush tcflow
 
 rm -f tst
 rm -f ../m.h ../s.h

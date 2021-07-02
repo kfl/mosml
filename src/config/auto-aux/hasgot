@@ -1,5 +1,44 @@
 #!/bin/sh
-(echo "main() {"
- for f in $*; do echo "  $f();"; done
+default_headers="\
+#include \"s.h\"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stddef.h>
+#ifdef HAVE_TERMIOS_H
+# include <termios.h>
+#endif
+#ifdef HAVE_SYS_PARAM_H
+# include <sys/param.h>
+#endif
+#ifdef HAVE_SYS_RESOURCE_H
+# include <sys/resource.h>
+#endif
+#ifdef HAVE_SYS_SOCKET_H
+# include <sys/socket.h>
+#endif
+#ifdef HAVE_SYS_STAT_H
+# include <sys/stat.h>
+#endif
+#ifdef HAVE_SYS_TIME_H
+# include <sys/time.h>
+#endif
+#ifdef HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_WAIT_H
+# include <sys/wait.h>
+#endif
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+#ifdef HAVE_UTIME_H
+# include <utime.h>
+#endif"
+
+(echo "$default_headers"
+
+ echo "int main() {"
+ for f in $*; do echo "  void *ptr_$f = (void *)$f;"; done
  echo "}") > hasgot.c
 exec $cc -o tst hasgot.c > /dev/null 2>/dev/null
