@@ -57,9 +57,9 @@ val _ =
      print (toString (date {year=2000, month=Jan, day=1, hour=0, 
 			    minute=0, second= ~5, offset = SOME Time.zeroTime})
 	    ^ "\n");   
-     print "The UTC millenium (local time):  "; 
+     print "VARYING: "; print "The UTC millenium (local time):  ";
      print (toString (fromTimeLocal (toTime y2k)) ^ "\n");   
-     print "The local millenium (UTC time):  "; 
+     print "VARYING: "; print "The local millenium (UTC time):  ";
      print (toString (fromTimeUniv (toTime (mkdate(2000, Jan, 1, 0, 0, 0))))
 	    ^ "\n");   
      print "The UTC+01 millenium (UTC):      "; 
