@@ -38,7 +38,7 @@ mosml: mosml.tpl
 	sed -e "s|LIBDIR|$(LIBDIR)|" -e "s|BINDIR|$(BINDIR)|" mosml.tpl > mosml
 
 mosmlc: mosmlc.tpl
-	sed -e "s|LIBDIR|$(LIBDIR)|" -e "s|BINDIR|$(BINDIR)|" mosmlc.tpl > mosmlc
+	sed -e "s|LIBDIR|$(LIBDIR)|" -e "s|BINDIR|$(BINDIR)|" -e "s|VERSION|$(VERSION)|" mosmlc.tpl > mosmlc
 
 mosmllex: mosmllex.tpl
 	sed -e "s|LIBDIR|$(LIBDIR)|" -e "s|BINDIR|$(BINDIR)|" mosmllex.tpl > mosmllex
