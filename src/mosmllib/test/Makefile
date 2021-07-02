@@ -9,8 +9,8 @@ diff:
 
 # Make results that are independent of timings and mosml version
 cleaned:
-	grep -v "^User:" result | grep -v "^Moscow ML version" | grep -v "^VARYING: " > cleaned-result
-	grep -v "^User:" result.ok | grep -v "^Moscow ML version" | grep -v "^VARYING: " > cleaned-result.ok
+	grep -v "^User:" result | grep -v "^Moscow ML version" | grep -v "^VARYING: " | grep -v "nonsuchprogramexists" > cleaned-result
+	grep -v "^User:" result.ok | grep -v "^Moscow ML version" | grep -v "^VARYING: " | grep -v "nonsuchprogramexists" > cleaned-result.ok
 
 
 # with the supplied compiler and the current library

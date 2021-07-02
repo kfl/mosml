@@ -76,13 +76,13 @@ val test4 =
 
 val test5a = 
     (case run "mosmlc" ["testrun.sml", "-o mosmltestrun"] "" of
-	 Success _ => "OK"
+	       Success _ => "OK"
        | Failure s => "WRONG: " ^ s)
     handle _ => "EXN";
 
 val test5b = 
     (case run "./mosmltestrun" [] "01234\n56789" of
-	 Success "[01234\n56789]\n<01234\n56789>\n---===" => "OK"
+	       Success "[01234\n56789]\n<01234\n56789>\n---===" => "OK"
        | Success _ => "WRONG"
        | Failure s => "WRONG: " ^ s)
 	 handle _ => "EXN";
