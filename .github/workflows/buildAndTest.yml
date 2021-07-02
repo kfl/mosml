@@ -38,3 +38,9 @@ jobs:
       - name: Build
         run: |
           cd src && make world
+
+      - name: Test compiler and runtime system
+        run: |
+          cd src/test
+          make current cleaned
+          diff cleaned-result{,.ok}
