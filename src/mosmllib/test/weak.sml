@@ -78,8 +78,9 @@ val _ = print "test8:\n";
 
 val test8 = 
     check'( fn _ => (update(c, 1, Real.toString Math.pi);
-		     while not (isdead(c, 1)) do 
-			 (print "/"; exercisegc 5000);
-			 print "\n";
-			 isdead(c, 1)))
+		                 print "VARYING: ";
+                     while not (isdead(c, 1)) do
+			                     (print "/"; exercisegc 5000);
+			               print "\n";
+			               isdead(c, 1)))
 end

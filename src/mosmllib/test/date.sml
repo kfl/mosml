@@ -37,17 +37,17 @@ local
 in
     
 val _ = 
-    (print "This is (local time) now:        "; print (later 0);
-     print "This is UTC now:                 "; 
+    (print "VARYING: "; print "This is (local time) now:        "; print (later 0);
+     print "VARYING: "; print "This is UTC now:                 ";
      print (toString (fromTimeUniv(now()))); print "\n";
-     print "This is an hour from now:        "; print (later 1);
-     print "This is a day from now:          "; print (later 24);
-     print "This is a week from now:         "; print (later 168);
-     print "This is 120 days from now:       "; print (later (24 * 120));
-     print "This is 160 days from now:       "; print (later (24 * 160));
-     print "This is 200 days from now:       "; print (later (24 * 200));
-     print "This is 240 days from now:       "; print (later (24 * 240));
-     print "This is the epoch (UTC):         "; 
+     print "VARYING: "; print "This is an hour from now:        "; print (later 1);
+     print "VARYING: "; print "This is a day from now:          "; print (later 24);
+     print "VARYING: "; print "This is a week from now:         "; print (later 168);
+     print "VARYING: "; print "This is 120 days from now:       "; print (later (24 * 120));
+     print "VARYING: "; print "This is 160 days from now:       "; print (later (24 * 160));
+     print "VARYING: "; print "This is 200 days from now:       "; print (later (24 * 200));
+     print "VARYING: "; print "This is 240 days from now:       "; print (later (24 * 240));
+     print "VARYING: "; print "This is the epoch (UTC):         ";
      print (toString(fromTimeUniv zeroTime) ^ "\n");   
      print "The UTC millenium (UTC time):    "; 
      print (toString y2k ^ "\n");   
@@ -66,14 +66,14 @@ val _ =
      print (toString (fromTimeUniv (toTime y2kE1)) ^ "\n");
      print "The UTC-01 millenium (UTC):      "; 
      print (toString (fromTimeUniv (toTime y2kW1)) ^ "\n");
-     print "This is today's number:          "; 
+     print "VARYING: "; print "This is today's number:          ";
      print (fmt "%j" (nowdate()) ^ " (internally: "); 
      print (Int.toString (yearDay (nowdate())) ^ ")\n");
-     print "This is today's weekday:         ";
+     print "VARYING: "; print "This is today's weekday:         ";
      print (fmt "%A" (nowdate()) ^ "\n");
-     print "This is the name of this month:  ";
+     print "VARYING: "; print "This is the name of this month:  ";
      print (fmt "%B" (nowdate()) ^ "\n");
-     print "Today's ISO date:                ";
+     print "VARYING: "; print "Today's ISO date:                ";
      print (fmt "%Y-%m-%d" (nowdate ()) ^ "\n"))
     
 
