@@ -15,14 +15,14 @@ echo "Checking the sizes of integers and pointers..."
 set - `sh runtest sizes.c`
 case "$1,$2,$3" in
   4,4,4) echo "OK, this is a regular 32 bit architecture.";;
-  4,8,8) echo "Wow! A 64 bit architecture!"
+  4,8,8) echo "A 64 bit architecture."
          echo "#define SIXTYFOUR" >> m.h;;
-  8,8,8) echo "Wow! A 64 bit architecture!"
+  8,8,8) echo "A 64 bit architecture."
          echo "Unfortunately, Caml Light has never been tested in the case"
          echo "sizeof(int) = 8."
          echo "Caml Light won't run on this architecture."
          exit 2;;
-  4,4,8) echo "Wow! A 64 bit architecture!"
+  4,4,8) echo "A 64 bit architecture."
          echo "Unfortunately, Caml Light cannot work in the case"
          echo "sizeof(long) != sizeof(long *)."
          echo "Caml Light won't run on this architecture."
