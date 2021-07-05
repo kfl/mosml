@@ -26,7 +26,8 @@ all: Array.uo Array2.uo ArraySlice.uo Arraysort.uo \
      TextIO.uo Time.uo Timer.uo \
      Unix.uo Vector.uo VectorSlice.uo \
      Weak.uo Word.uo Word8.uo Word8Array.uo Word8ArraySlice.uo \
-     Word8Vector.uo Word8VectorSlice.uo
+     Word8Vector.uo Word8VectorSlice.uo \
+     Word64.uo
 
 # Make with the current compiler
 current:
@@ -108,6 +109,7 @@ Word8ArraySlice.uo: Word8ArraySlice.ui Word8Array.ui Word8.ui \
     Word8Vector.ui Word8VectorSlice.ui 
 Word8Vector.uo: Word8Vector.ui String.ui List.ui Word8.ui 
 Parsing.ui: Lexing.ui Vector.ui Obj.uo 
+Word64.ui: StringCvt.ui 
 Unix.ui: BinIO.ui Signal.ui OS.ui TextIO.ui 
 Path.uo: Path.ui String.ui CharVector.ui List.ui Substring.ui 
 Gdbm.uo: Gdbm.ui Dynlib.ui List.ui 
@@ -184,6 +186,7 @@ Byte.uo: Byte.ui String.ui Word8.ui Word8ArraySlice.ui Substring.ui \
 Weak.uo: Weak.ui 
 Timer.uo: Timer.ui Time.ui 
 BasicIO.uo: BasicIO.ui 
+Word64.uo: Word64.ui String.ui StringCvt.ui Char.ui 
 Unix.uo: Unix.ui BinIO.ui Signal.ui Word.ui Dynlib.ui Option.ui Vector.ui \
     OS.ui TextIO.ui Obj.uo 
 Listsort.uo: Listsort.ui List.ui 
