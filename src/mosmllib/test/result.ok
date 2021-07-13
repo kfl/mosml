@@ -438,15 +438,15 @@ Enter `quit();' to quit.
 > val checkrange = fn : int * int -> (int -> bool) -> string
 [closing file "auxil.sml"]
 > val it = () : unit
-VARYING: This is (local time) now:        Tue Jul 13 19:32:14 2021
-VARYING: This is UTC now:                 Tue Jul 13 17:32:14 2021
-VARYING: This is an hour from now:        Tue Jul 13 20:32:14 2021
-VARYING: This is a day from now:          Wed Jul 14 19:32:14 2021
-VARYING: This is a week from now:         Tue Jul 20 19:32:14 2021
-VARYING: This is 120 days from now:       Wed Nov 10 18:32:14 2021
-VARYING: This is 160 days from now:       Mon Dec 20 18:32:14 2021
-VARYING: This is 200 days from now:       Sat Jan 29 18:32:14 2022
-VARYING: This is 240 days from now:       Thu Mar 10 18:32:14 2022
+VARYING: This is (local time) now:        Tue Jul 13 20:01:48 2021
+VARYING: This is UTC now:                 Tue Jul 13 18:01:48 2021
+VARYING: This is an hour from now:        Tue Jul 13 21:01:48 2021
+VARYING: This is a day from now:          Wed Jul 14 20:01:48 2021
+VARYING: This is a week from now:         Tue Jul 20 20:01:48 2021
+VARYING: This is 120 days from now:       Wed Nov 10 19:01:48 2021
+VARYING: This is 160 days from now:       Mon Dec 20 19:01:48 2021
+VARYING: This is 200 days from now:       Sat Jan 29 19:01:48 2022
+VARYING: This is 240 days from now:       Thu Mar 10 19:01:48 2022
 VARYING: This is the epoch (UTC):         Thu Jan  1 00:00:00 1970
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
@@ -1320,9 +1320,9 @@ abcde <--- this should read abcde
 > val it = () : unit
 
 Each line below should show roughly the same User, System, and Gc times:
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
 User: 0.010  System: 0.000  Gc: 0.000  Real: 0.010
-User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
-User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
 User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
 User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
 User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
@@ -1593,7 +1593,7 @@ test5:
 test6:
 test7:
 test8:
-VARYING: //////////////////////////////////////////////////////////////////
+VARYING: ///////////////////////////////////////////////////////////
 > val a = <array> : int list array
   val test1 = "OK" : string
   val test2 = "OK" : string
@@ -2317,7 +2317,7 @@ VARYING: //////////////////////////////////////////////////////////////////
   val test7 =
     ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
      "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] : string list
-  val test8 = ["OK", "OK", "OK", "OK", "OK", "OK", "OK"] : string list
+  val test8 = ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] : string list
   val test12 = "OK" : string
   val 'b chk = fn : ('b -> int/1 option) -> 'b * int -> string
   val chkScan = fn : radix -> string * int -> string
