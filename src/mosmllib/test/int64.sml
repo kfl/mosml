@@ -69,7 +69,7 @@ val test7 =
              , (valOf minInt mod i64 2 , i64 0)
              , (valOf minInt rem i64 2 , i64 0)
              , (valOf maxInt mod i64 2 , i64 1)
-             , (valOf maxInt rem i64 2, i64 1)
+             , (valOf maxInt rem i64 2 , i64 1)
              ];
 
 val test8 =
@@ -81,6 +81,7 @@ val test8 =
              , fn _ => ~(valOf minInt)
              , fn _ => valOf minInt div i64 ~1
              , fn _ => valOf minInt quot i64 ~1
+             , fn _ => valOf minInt + valOf minInt
              ];
 
 val test12 =
