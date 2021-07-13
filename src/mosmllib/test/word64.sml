@@ -6,7 +6,6 @@
  *)
 
 use "auxil.sml";
-load "Word64";
 
 local
     val [gt,  lt,  ge,   le] =

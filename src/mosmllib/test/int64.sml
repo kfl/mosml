@@ -6,7 +6,6 @@
  *)
 
 use "auxil.sml";
-load "Int64";
 
 local 
     open Int64

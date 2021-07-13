@@ -1,5 +1,5 @@
 use "auxil.sml";
-load "PackRealBig";
+
 local
     structure P = PackRealBig
     fun hex w = StringCvt.padLeft #"0" 2 (Word8.fmt StringCvt.HEX w)
