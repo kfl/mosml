@@ -41,7 +41,8 @@ app use
  "word8vectorslice.sml",
  "packrealbig.sml",
  "packreallittle.sml",
- "word64.sml"
+ "word64.sml",
+ "int64.sml"
 ];
 
 ignore(Process.exit Process.success);

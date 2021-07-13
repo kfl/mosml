@@ -438,15 +438,15 @@ Enter `quit();' to quit.
 > val checkrange = fn : int * int -> (int -> bool) -> string
 [closing file "auxil.sml"]
 > val it = () : unit
-VARYING: This is (local time) now:        Mon Jul  5 18:03:34 2021
-VARYING: This is UTC now:                 Mon Jul  5 16:03:34 2021
-VARYING: This is an hour from now:        Mon Jul  5 19:03:34 2021
-VARYING: This is a day from now:          Tue Jul  6 18:03:34 2021
-VARYING: This is a week from now:         Mon Jul 12 18:03:34 2021
-VARYING: This is 120 days from now:       Tue Nov  2 17:03:34 2021
-VARYING: This is 160 days from now:       Sun Dec 12 17:03:34 2021
-VARYING: This is 200 days from now:       Fri Jan 21 17:03:34 2022
-VARYING: This is 240 days from now:       Wed Mar  2 17:03:34 2022
+VARYING: This is (local time) now:        Tue Jul 13 19:32:14 2021
+VARYING: This is UTC now:                 Tue Jul 13 17:32:14 2021
+VARYING: This is an hour from now:        Tue Jul 13 20:32:14 2021
+VARYING: This is a day from now:          Wed Jul 14 19:32:14 2021
+VARYING: This is a week from now:         Tue Jul 20 19:32:14 2021
+VARYING: This is 120 days from now:       Wed Nov 10 18:32:14 2021
+VARYING: This is 160 days from now:       Mon Dec 20 18:32:14 2021
+VARYING: This is 200 days from now:       Sat Jan 29 18:32:14 2022
+VARYING: This is 240 days from now:       Thu Mar 10 18:32:14 2022
 VARYING: This is the epoch (UTC):         Thu Jan  1 00:00:00 1970
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
@@ -455,10 +455,10 @@ VARYING: The UTC millenium (local time):  Sat Jan  1 01:00:00 2000
 VARYING: The local millenium (UTC time):  Fri Dec 31 23:00:00 1999
 The UTC+01 millenium (UTC):      Fri Dec 31 23:00:00 1999
 The UTC-01 millenium (UTC):      Sat Jan  1 01:00:00 2000
-VARYING: This is today's number:          186 (internally: 185)
-VARYING: This is today's weekday:         Monday
+VARYING: This is today's number:          194 (internally: 193)
+VARYING: This is today's weekday:         Tuesday
 VARYING: This is the name of this month:  July
-VARYING: Today's ISO date:                2021-07-05
+VARYING: Today's ISO date:                2021-07-13
 > val test1 = "OK" : string
   val test2 = "OK" : string
   val test3 = "OK" : string
@@ -1320,14 +1320,14 @@ abcde <--- this should read abcde
 > val it = () : unit
 
 Each line below should show roughly the same User, System, and Gc times:
-User: 0.010  System: 0.000  Gc: 0.000  Real: 0.011
-User: 0.012  System: 0.000  Gc: 0.000  Real: 0.012
-User: 0.011  System: 0.000  Gc: 0.000  Real: 0.011
-User: 0.011  System: 0.000  Gc: 0.000  Real: 0.011
-User: 0.011  System: 0.000  Gc: 0.000  Real: 0.011
-User: 0.011  System: 0.000  Gc: 0.000  Real: 0.011
-User: 0.011  System: 0.000  Gc: 0.000  Real: 0.011
-User: 0.011  System: 0.000  Gc: 0.000  Real: 0.011
+User: 0.010  System: 0.000  Gc: 0.000  Real: 0.010
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
 > val test1 = "OK" : string
   val test2 = "OK" : string
   val test3 = "OK" : string
@@ -1593,7 +1593,7 @@ test5:
 test6:
 test7:
 test8:
-VARYING: ////////////////////////////////////////////////
+VARYING: //////////////////////////////////////////////////////////////////
 > val a = <array> : int list array
   val test1 = "OK" : string
   val test2 = "OK" : string
@@ -2289,4 +2289,99 @@ VARYING: ////////////////////////////////////////////////
   val test21 = "OK" : string
   val test22 = "OK" : string
 [closing file "word64.sml"]
+[opening file "int64.sml"]
+[opening file "auxil.sml"]
+> infix 1 seq
+  val ('b, 'c) seq = fn : 'b * 'c -> 'c
+> val check = fn : bool -> string
+> val check' = fn : (unit -> bool) -> string
+> val range = fn : int * int -> (int -> bool) -> bool
+> val checkrange = fn : int * int -> (int -> bool) -> string
+[closing file "auxil.sml"]
+> val it = () : unit
+> val it = () : unit
+> val test0a = "OK" : string
+  val test0b = "OK" : string
+  val test1a = "OK" : string
+  val test1b = "OK" : string
+  val test1c = "OK" : string
+  val test1d = "OK" : string
+  val test2a = "OK" : string
+  val test2b = "OK" : string
+  val test2c = "OK" : string
+  val test2d = "OK" : string
+  val test3 = "OK" : string
+  val test4 = "OK" : string
+  val test5 = "OK" : string
+  val test6 = "OK" : string
+  val test7 =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] : string list
+  val test8 = ["OK", "OK", "OK", "OK", "OK", "OK", "OK"] : string list
+  val test12 = "OK" : string
+  val 'b chk = fn : ('b -> int/1 option) -> 'b * int -> string
+  val chkScan = fn : radix -> string * int -> string
+  val test13a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"] : string list
+  val test13b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] :
+  string list
+  val test14a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"] : string list
+  val test14b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] :
+  string list
+  val test15a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"] : string list
+  val test15b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"] : string list
+  val test16a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK"] : string list
+  val test16b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK"] : string list
+  val test17a =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+     "OK"] : string list
+  val test17b =
+    ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK"] :
+  string list
+  val test18 = "OK" : string
+  val test19 = "OK" : string
+  val test20 = "OK" : string
+  val test21 = "OK" : string
+  val test22 = "OK" : string
+  val test23a = "OK" : string
+  val test23b = "OK" : string
+  val test23c = "OK" : string
+  val test23d = "OK" : string
+  val test24a = "OK" : string
+  val test24b = "OK" : string
+  val test24c = "OK" : string
+  val test24d = "OK" : string
+  val test25a = "OK" : string
+  val test25b = "OK" : string
+  val test25c = "OK" : string
+  val test25d = "OK" : string
+  val ('b, 'c) chk' = fn : ('b -> 'c) -> 'b -> string
+  val chkScanOvf = fn : radix -> string -> string
+  val test26a = "OK" : string
+  val test26b = "OK" : string
+  val test26c = "OK" : string
+  val test26d = "OK" : string
+  val test27a = "OK" : string
+  val test27b = "OK" : string
+  val test27c = "OK" : string
+  val test27d = "OK" : string
+  val test28a = "OK" : string
+  val test28b = "OK" : string
+  val test29a = "OK" : string
+  val test29b = "OK" : string
+[closing file "int64.sml"]
 > val it = () : unit

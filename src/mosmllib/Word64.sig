@@ -54,18 +54,33 @@ val toLargeIntX   : word -> int         (* with sign extension *)
 val fromLargeInt  : int -> word
 end
 
-(* [word] is the type of n-bit words, or n-bit unsigned
-   integers. Unlike the built-in [word] type, the type [word] is
-   guaranteed to be exactly 64-bit wide on all platforms. All
-   arithmetic operations over [word] are taken modulo 2{^64}
+(*
 
-   Performance notice: values of type [word] in this module occupy
-   more memory space than values of built-in type [word], and
+   [word] is the type of n-bit words, or n-bit unsigned
+   integers. Unlike the standard [Word.word] type, the type [word] in
+   this module (also known as [word64]) is guaranteed to be exactly
+   64-bit wide on all platforms. All arithmetic operations over [word]
+   are taken modulo 2{^64}
+
+   Performance notice: values of type [word64] in this module occupy
+   more memory space than values of built-in type [Word.word], and
    arithmetic operations on [word64] are generally slower than those
-   on [word].  Use [word64] only when the application requires exact
+   on [Word.word].  Use [word64] only when the application requires exact
    64-bit arithmetic.
 
-   Currently there is no lexical support for [word64] constants.
+   Divergences from the Basis Library specification:
+
+      - No lexical support for [word64] constants, thus no overloading
+        of constants.
+
+      - Arithmetic operators (and others) are not overloaded to
+        support [word64].
+
+      - The conversion functions in the built-in Word module does not
+        know about this module. Thus the types of the to/from
+        functions in this module is not completely correct.
+
+      - [word64] is not an eqtype.
 
    [wordSize] is the value of n above.  For this module n is 64.
 

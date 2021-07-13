@@ -44,26 +44,25 @@ in
     prim_val toLargeX  : word -> Word.word = 1 "boxed_uint64_toword"
     prim_val fromLarge : Word.word -> word = 1 "boxed_uint64_fromword";
 
+    val ZERO = fromInt 0
 
     fun orb (x, y)  = orb_ x y;
     fun andb (x, y) = andb_ x y;
     fun xorb (x, y) = xorb_ x y;
     fun notb x      = xorb_ x (fromInt ~1);
 
-    val ~ = fn w => fromInt(~(toInt w))
-
     fun << (w, k) =
-        if toInt k >= 64 orelse toInt k < 0 then fromInt 0
+        if toInt k >= 64 orelse toInt k < 0 then ZERO
         else lshift_ w k;
 
     fun >> (w, k) =
-        if toInt k >= 64 orelse toInt k < 0 then fromInt 0
+        if toInt k >= 64 orelse toInt k < 0 then ZERO
         else rshiftuns_ w k;
 
     fun ~>> (w, k) =
         if toInt k >= 64 orelse toInt k < 0 then
             if toInt w >= 0 then  (* msbit = 0 *)
-                fromInt 0
+                ZERO
             else      (* msbit = 1 *)
                 fromInt ~1
         else
@@ -73,9 +72,11 @@ in
     val op +    : word * word -> word = fn(x, y) => add_ x y;
     val op -    : word * word -> word = fn(x, y) => sub_ x y;
     val op div  : word * word -> word =
-     fn(x, y) => if equal_ y (fromInt 0) then raise Div else div_ x y;
+     fn(x, y) => if equal_ y ZERO then raise Div else div_ x y;
     val op mod  : word * word -> word =
-     fn(x, y) => if equal_ y (fromInt 0) then raise Div else mod_ x y;
+     fn(x, y) => if equal_ y ZERO then raise Div else mod_ x y;
+
+    val ~ = fn w => ZERO - w
 
     local
       open StringCvt
@@ -95,7 +96,7 @@ in
 
       fun conv radix i =
           let fun h n res =
-                  if equal_ n (fromInt 0) then res
+                  if equal_ n ZERO then res
                   else h (n div radix) (prhex (n mod radix) :: res)
               fun tostr n = h (n div radix) [prhex (n mod radix)]
           in String.implode (tostr i) end
@@ -126,7 +127,7 @@ in
                 end
             fun getdigs after0 src =
                 case dig1 (getc src) of
-                    NONE => SOME(fromInt 0, after0)
+                    NONE => SOME(ZERO, after0)
                   | res  => res
             fun hexprefix after0 src =
                 if radix <> HEX then getdigs after0 src
@@ -135,14 +136,14 @@ in
                         SOME(#"x", rest) => getdigs after0 rest
                       | SOME(#"X", rest) => getdigs after0 rest
                       | SOME _           => getdigs after0 src
-                      | NONE => SOME(fromInt 0, after0)
+                      | NONE => SOME(ZERO, after0)
         in
             case getc source of
                 SOME(#"0", after0) =>
                 (case getc after0 of
                      SOME(#"w", src2) => hexprefix after0 src2
                    | SOME _           => hexprefix after0 after0
-                   | NONE             => SOME(fromInt 0, after0))
+                   | NONE             => SOME(ZERO, after0))
               | SOME _ => dig1 (getc source)
               | NONE   => NONE
         end;
