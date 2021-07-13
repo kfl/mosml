@@ -44,7 +44,7 @@ val test4 = check (min(fromInt ~5, fromInt 3) == fromInt ~5
 val test5 = check (sign (fromInt ~57) = ~1
                    andalso sign (fromInt 99) = 1
                    andalso sign (fromInt 0) = 0);
-val test6 = check (sameSign(fromInt ~255, ~fromInt 256)
+val test6 = check (sameSign(fromInt ~255, ~(fromInt 256))
                    andalso sameSign(fromInt 255, fromInt 256)
 		           andalso sameSign(fromInt 0, fromInt 0));
 
