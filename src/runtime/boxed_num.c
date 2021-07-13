@@ -9,6 +9,19 @@
 #include "misc.h"
 #include "mlvalues.h"
 
+/* First the right way to check, works with GCC 10 and clang */
+#if defined __has_builtin
+#  if __has_builtin (__builtin_add_overflow) && \
+      __has_builtin (__builtin_mul_overflow) && \
+      __has_builtin (__builtin_sub_overflow)
+#    define BOXINT_HAS_BUILTIN_OVERFLOW_CHECK
+#  endif
+/* __builtin_xxx_overflow was added in gcc 5 */
+#elif (__GNUC__ >= 5)
+#  define BOXINT_HAS_BUILTIN_OVERFLOW_CHECK
+#endif
+
+
 #define Uint64_wosize ((sizeof(uint64_t) / sizeof(value)))
 
 #define UInt64_val(v) (* (uint64_t *) (v))
@@ -132,6 +145,8 @@ value boxed_int64_toint(value v) {                        /* ML */
   return Val_long(Int64_val(v));
 }
 
+#if (0 && defined BOXINT_HAS_BUILTIN_OVERFLOW_CHECK)
+
 value boxed_int64_add(value v1, value v2) {               /* ML */
   int64_t res;
   if ( __builtin_add_overflow(Int64_val(v1), Int64_val(v2), &res)  )
@@ -156,6 +171,59 @@ value boxed_int64_mul(value v1, value v2) {               /* ML */
   return copy_int64(res);
 }
 
+#else
+/*
+ Adding two signed integers can overflow only if they have the same
+ sign, and overflow has happened iff the result has the opposite
+ sign. We addition using uint64_t where addition is always defined.
+ */
+
+static int same_sign(int64_t x, int64_t y) {
+  return ((x ^ y) >= 0) == 1;
+}
+
+value boxed_int64_add(value v1, value v2) {               /* ML */
+  int64_t x = Int64_val(v1), y = Int64_val(v2);
+  int64_t res;
+
+  res = (uint64_t)x + (uint64_t)y;
+  if (same_sign(x,y) && !same_sign(x,res))
+    raise_overflow();
+
+  return copy_int64(res);
+}
+
+/*
+  Subtraction is similar, except that overflow can now happen only
+  when the signs are opposite.
+*/
+value boxed_int64_sub(value v1, value v2) {               /* ML */
+  int64_t x = Int64_val(v1), y = Int64_val(v2);
+  int64_t res;
+  res = (uint64_t)x - (uint64_t)y;
+  if (!same_sign(x, y) && !same_sign(x,res))
+    raise_overflow();
+
+  return copy_int64(res);
+}
+
+/*
+   Multiplication is hard to do both correct and efficient. We opt for
+   correctness
+ */
+value boxed_int64_mul(value v1, value v2) {               /* ML */
+  int64_t x = Int64_val(v1), y = Int64_val(v2);
+  if ((x > 0 && (y > INT64_MAX/x || y < INT64_MIN/x)) ||
+      (x < -1 && (y > INT64_MIN/x || y < INT64_MAX/x) ||
+       (x == -1 && y == INT64_MIN)))
+    raise_overflow();
+
+  return copy_int64(x * y);
+}
+
+#endif /* BOXINT_HAS_BUILTIN_OVERFLOW_CHECK */
+
+
 /* div rounding towards minus infinity,
    mod is the remainder for div.
    assumes C99 semantics
@@ -165,12 +233,11 @@ value boxed_int64_div(value v1, value v2) {               /* ML */
   int64_t x = Int64_val(v1), y = Int64_val(v2);
   if ( y == -1 && x == INT64_MIN )
     raise_overflow();
-  else {
-    imaxdiv_t r = imaxdiv(x, y);
-    if ( (r.rem != 0) && ( (r.rem < 0) != (y < 0) ) )
-      --r.quot;
-    return copy_int64(r.quot);
-  }
+
+  imaxdiv_t r = imaxdiv(x, y);
+  if ( (r.rem != 0) && ( (r.rem < 0) != (y < 0) ) )
+    --r.quot;
+  return copy_int64(r.quot);
 }
 
 value boxed_int64_mod(value v1, value v2) {               /* ML */
