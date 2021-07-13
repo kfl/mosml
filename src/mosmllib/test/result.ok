@@ -438,15 +438,15 @@ Enter `quit();' to quit.
 > val checkrange = fn : int * int -> (int -> bool) -> string
 [closing file "auxil.sml"]
 > val it = () : unit
-VARYING: This is (local time) now:        Tue Jul 13 20:01:48 2021
-VARYING: This is UTC now:                 Tue Jul 13 18:01:48 2021
-VARYING: This is an hour from now:        Tue Jul 13 21:01:48 2021
-VARYING: This is a day from now:          Wed Jul 14 20:01:48 2021
-VARYING: This is a week from now:         Tue Jul 20 20:01:48 2021
-VARYING: This is 120 days from now:       Wed Nov 10 19:01:48 2021
-VARYING: This is 160 days from now:       Mon Dec 20 19:01:48 2021
-VARYING: This is 200 days from now:       Sat Jan 29 19:01:48 2022
-VARYING: This is 240 days from now:       Thu Mar 10 19:01:48 2022
+VARYING: This is (local time) now:        Tue Jul 13 22:29:43 2021
+VARYING: This is UTC now:                 Tue Jul 13 20:29:43 2021
+VARYING: This is an hour from now:        Tue Jul 13 23:29:43 2021
+VARYING: This is a day from now:          Wed Jul 14 22:29:43 2021
+VARYING: This is a week from now:         Tue Jul 20 22:29:43 2021
+VARYING: This is 120 days from now:       Wed Nov 10 21:29:43 2021
+VARYING: This is 160 days from now:       Mon Dec 20 21:29:43 2021
+VARYING: This is 200 days from now:       Sat Jan 29 21:29:43 2022
+VARYING: This is 240 days from now:       Thu Mar 10 21:29:43 2022
 VARYING: This is the epoch (UTC):         Thu Jan  1 00:00:00 1970
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
 The UTC millenium (UTC time):    Sat Jan  1 00:00:00 2000
@@ -1320,9 +1320,9 @@ abcde <--- this should read abcde
 > val it = () : unit
 
 Each line below should show roughly the same User, System, and Gc times:
-User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
-User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
 User: 0.010  System: 0.000  Gc: 0.000  Real: 0.010
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
+User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
 User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
 User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
 User: 0.009  System: 0.000  Gc: 0.000  Real: 0.009
@@ -1593,7 +1593,7 @@ test5:
 test6:
 test7:
 test8:
-VARYING: ///////////////////////////////////////////////////////////
+VARYING: ///////////////////////////////////////////////////////////////////////////////////
 > val a = <array> : int list array
   val test1 = "OK" : string
   val test2 = "OK" : string
@@ -2120,7 +2120,6 @@ VARYING: ///////////////////////////////////////////////////////////
 > val checkrange = fn : int * int -> (int -> bool) -> string
 [closing file "auxil.sml"]
 > val it = () : unit
-> val it = () : unit
   ~420.000000 is enconded as C0 7A 40 00 00 00 00 00 (big endian)
   ~1.100000 is enconded as BF F1 99 99 99 99 99 9A (big endian)
   ~0.123457 is enconded as BF BF 9A DD 37 39 63 5F (big endian)
@@ -2156,7 +2155,6 @@ VARYING: ///////////////////////////////////////////////////////////
 > val checkrange = fn : int * int -> (int -> bool) -> string
 [closing file "auxil.sml"]
 > val it = () : unit
-> val it = () : unit
   ~420.000000 is enconded as 00 00 00 00 00 40 7A C0 (little endian)
   ~1.100000 is enconded as 9A 99 99 99 99 99 F1 BF (little endian)
   ~0.123457 is enconded as 5F 63 39 37 DD 9A BF BF (little endian)
@@ -2191,7 +2189,6 @@ VARYING: ///////////////////////////////////////////////////////////
 > val range = fn : int * int -> (int -> bool) -> bool
 > val checkrange = fn : int * int -> (int -> bool) -> string
 [closing file "auxil.sml"]
-> val it = () : unit
 > val it = () : unit
 > val test1 = "OK" : string
   val test3 = "OK" : string
@@ -2298,7 +2295,6 @@ VARYING: ///////////////////////////////////////////////////////////
 > val range = fn : int * int -> (int -> bool) -> bool
 > val checkrange = fn : int * int -> (int -> bool) -> string
 [closing file "auxil.sml"]
-> val it = () : unit
 > val it = () : unit
 > val test0a = "OK" : string
   val test0b = "OK" : string
