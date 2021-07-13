@@ -145,7 +145,7 @@ value boxed_int64_toint(value v) {                        /* ML */
   return Val_long(Int64_val(v));
 }
 
-#if (0 && defined BOXINT_HAS_BUILTIN_OVERFLOW_CHECK)
+#if (defined BOXINT_HAS_BUILTIN_OVERFLOW_CHECK)
 
 value boxed_int64_add(value v1, value v2) {               /* ML */
   int64_t res;
@@ -172,16 +172,16 @@ value boxed_int64_mul(value v1, value v2) {               /* ML */
 }
 
 #else
-/*
- Adding two signed integers can overflow only if they have the same
- sign, and overflow has happened iff the result has the opposite
- sign. We addition using uint64_t where addition is always defined.
- */
 
 static int same_sign(int64_t x, int64_t y) {
   return ((x ^ y) >= 0) == 1;
 }
 
+/*
+ Adding two signed integers can overflow only if they have the same
+ sign, and overflow has happened iff the result has the opposite
+ sign. We addition using uint64_t where addition is always defined.
+ */
 value boxed_int64_add(value v1, value v2) {               /* ML */
   int64_t x = Int64_val(v1), y = Int64_val(v2);
   int64_t res;
