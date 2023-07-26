@@ -3,11 +3,11 @@
    sestoft@dina.kvl.dk 1999-08-07, 2000-05-30, 2002-07-25 */
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 #ifdef WIN32
 #include <windows.h>
-#include <stdio.h>
-#include <string.h>
 #endif
 
 /* Access to the camlrunm/Moscow ML runtime data representation: */
