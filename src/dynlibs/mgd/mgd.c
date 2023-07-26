@@ -4,7 +4,7 @@
  */
 
 #include <gd.h>			/* For gd                        */
-#include <gdfontt.h>		/* For gd font description files */
+#include <gdfontt.h>	/* For gd font description files */
 #include <gdfonts.h>
 #include <gdfontmb.h>
 #include <gdfontl.h>
@@ -22,7 +22,9 @@
 /* Moscow ML specific includes: */
 
 #include <alloc.h>		/* For alloc_tuple, ...      */
-#include <mlvalues.h>		/* For Val_unit, Long_val, String_val, ... */
+#include <mlvalues.h>	/* For Val_unit, Long_val, String_val, ... */
+#include <fail.h>		/* for failwith */
+#include <memory.h>		/* for modify */
 
 /* Representation of images.  
 
