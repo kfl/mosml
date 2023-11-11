@@ -9,7 +9,7 @@ compopt="-conservative"
 linkopt=""
 custom=""
 linkfiles=""
-cc=gcc
+cc=CC
 ccfiles=""
 cclib=""
 ccopt=""
@@ -22,7 +22,7 @@ while : ; do
       break;;
     *.sml)
       $mosmlbin/camlrunm $stdlib/mosmlcmp -stdlib $stdlib $includes $compopt $context $1 || exit $?
-      case $1 in 
+      case $1 in
 	    */*)
 	    context="$context `dirname $1`/`basename $1 .sml`.ui"
 	    ;;
@@ -32,7 +32,7 @@ while : ; do
       linkfiles="$linkfiles $1";;
     *.sig)
       $mosmlbin/camlrunm $stdlib/mosmlcmp -stdlib $stdlib $includes $compopt $context $1 || exit $?
-      case $1 in 
+      case $1 in
 	    */*)
 	    context="$context `dirname $1`/`basename $1 .sig`.ui"
 	    ;;
@@ -48,7 +48,7 @@ while : ; do
     -structure|-toplevel)
       context="$context $1";;
     -c)
-      linkalso=false;;      
+      linkalso=false;;
     -I|-include)
       includes="$includes -I $2"
       shift;;
@@ -75,7 +75,7 @@ while : ; do
       linkout=$2
       shift;;
     -standalone)
-      linkopt="$linkopt $1";;      
+      linkopt="$linkopt $1";;
     -stdlib)
       stdlib=$2
       shift;;

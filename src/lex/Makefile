@@ -34,7 +34,7 @@ clean:
 	rm -f Grammar.output
 	rm -f Scanner.sml
 	rm -f Makefile.bak
-	cd test; make clean
+	cd test; $(MAKE) clean
 
 install:
 	${INSTALL_DATA} mosmllex $(DESTDIR)$(LIBDIR)
@@ -52,11 +52,11 @@ depend: Scanner.sml Grammar.sml Grammar.sig
 	$(MOSMLDEP) >> Makefile
 
 ### DO NOT DELETE THIS LINE
-Grammar.ui: Syntax.uo 
-Grammar.uo: Grammar.ui Syntax.uo Gram_aux.uo 
-Scanner.uo: Scanner.ui Syntax.uo Scan_aux.uo Grammar.ui 
-Gram_aux.uo: Syntax.uo 
-Output.uo: Syntax.uo 
-Mainlex.uo: Lexgen.uo Syntax.uo Scan_aux.uo Scanner.ui Grammar.ui Output.uo 
-Scanner.ui: Grammar.ui 
-Lexgen.uo: Syntax.uo 
+Grammar.ui: Syntax.uo
+Grammar.uo: Grammar.ui Syntax.uo Gram_aux.uo
+Scanner.uo: Scanner.ui Syntax.uo Scan_aux.uo Grammar.ui
+Gram_aux.uo: Syntax.uo
+Output.uo: Syntax.uo
+Mainlex.uo: Lexgen.uo Syntax.uo Scan_aux.uo Scanner.ui Grammar.ui Output.uo
+Scanner.ui: Grammar.ui
+Lexgen.uo: Syntax.uo

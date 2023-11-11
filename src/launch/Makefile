@@ -3,7 +3,7 @@
 
 include ../Makefile.inc
 
-all: mosml mosmlc mosmllex camlexec testprog 
+all: mosml mosmlc mosmllex camlexec testprog
 
 # header cannot be generated until camlrunm is installed in $(BINDIR)...
 
@@ -38,7 +38,7 @@ mosml: mosml.tpl
 	sed -e "s|LIBDIR|$(LIBDIR)|" -e "s|BINDIR|$(BINDIR)|" mosml.tpl > mosml
 
 mosmlc: mosmlc.tpl
-	sed -e "s|LIBDIR|$(LIBDIR)|" -e "s|BINDIR|$(BINDIR)|" -e "s|VERSION|$(VERSION)|" mosmlc.tpl > mosmlc
+	sed -e "s|LIBDIR|$(LIBDIR)|" -e "s|BINDIR|$(BINDIR)|" -e "s|VERSION|$(VERSION)|" -e "s|CC|$(CC)|" mosmlc.tpl > mosmlc
 
 mosmllex: mosmllex.tpl
 	sed -e "s|LIBDIR|$(LIBDIR)|" -e "s|BINDIR|$(BINDIR)|" mosmllex.tpl > mosmllex
@@ -58,4 +58,3 @@ clean:
 	rm -f camlexec.c camlexec$(EXE) mosmlc mosml mosmllex testprog testprog.u[io]
 
 depend:
-

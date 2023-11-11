@@ -18,7 +18,7 @@ libtest: links noinput.pipe
 	exec 4<> noinput.pipe	&& mosml -I .. -P full test.sml > result 2>&1
 #	diff result result.ok
 
-# with the current compiler and the current library 
+# with the current compiler and the current library
 newtest: links noinput.pipe
 	exec 4<> noinput.pipe	&& ../../camlrunm ../../compiler/mosmltop -stdlib .. -P full test.sml > result 2>&1
 #	diff result result.ok
@@ -27,8 +27,8 @@ newtest: links noinput.pipe
 current:
 	$(MAKE) newtest
 
-cmdline: 
-	mosmlc -o cmdline cmdline.sml 
+cmdline:
+	mosmlc -o cmdline cmdline.sml
 	cmdline arg1 arg2 arg3
 
 noinput.pipe:
@@ -43,12 +43,12 @@ links:
 	ln -sf testcycl testcycl
 
 clean:
-	rm -f result 
+	rm -f result
 	rm -f cmdline cmdline.ui cmdline.uo
-	rm -f empty.dat medium.dat  small1.dat  small2.dat  text.dat 
+	rm -f empty.dat medium.dat  small1.dat  small2.dat  text.dat
 	rm -f mosmltestrun
 	rm -f hardlinkA hardlinkB
 	rm -f testlink testcycl testbadl
 	rm -f testrun.ui testrun.uo
 	rm -f noinput.pipe
-	cd callback; make clean
+	cd callback; $(MAKE) clean
