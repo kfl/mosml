@@ -20,8 +20,8 @@ mregex.o: mregex.c
 	$(CC) $(CFLAGS) -c -o mregex.o mregex.c
 
 libmregex.so: mregex.o
-	(cd regex-0.12; ./configure; make regex.o)
-	$(DYNLD) -o libmregex.so regex-0.12/regex.o mregex.o 
+	(cd regex-0.12; ./configure; $(MAKE) regex.o)
+	$(DYNLD) -o libmregex.so regex-0.12/regex.o mregex.o
 
 install:
 	${INSTALL_DATA} libmregex.so $(LIBDIR)
@@ -38,11 +38,11 @@ clean:
 	rm -f Makefile.bak
 	(cd regex-0.12; (test -f Makefile && make clean || test 1))
 
-depend: 
+depend:
 	rm -f Makefile.bak
 	mv Makefile Makefile.bak
 	$(MOSMLTOOLS)/cutdeps < Makefile.bak > Makefile
 	$(MOSMLTOOLS)/mosmldep >> Makefile
 
 ### DO NOT DELETE THIS LINE
-Regex.uo: Regex.ui 
+Regex.uo: Regex.ui

@@ -1,8 +1,11 @@
 # Unix Makefile for Moscow ML
 
-# To build the Moscow ML system on a new machine for the first time, 
+# To build the Moscow ML system on a new machine for the first time,
 #	(1) edit PREFIX etc. in file Makefile.inc
 #	(2) execute `make world'
+#
+# Alternatively,
+# (1) execute `PREFIX=/path/to/prefix make world`
 
 # To install it
 
@@ -100,6 +103,7 @@ install:
 	test -d $(DESTDIR)$(INCDIR) || mkdir -p $(DESTDIR)$(INCDIR)
 	test -d $(DESTDIR)$(DOCDIR) || mkdir -p $(DESTDIR)$(DOCDIR)
 	test -d $(DESTDIR)$(TOOLDIR) || mkdir -p $(DESTDIR)$(TOOLDIR)
+
 	cd runtime; $(MAKE) install
 #	cd config; $(MAKE) install
 	cd launch; $(MAKE) all install
@@ -144,7 +148,7 @@ clean:
 	cd lex; $(MAKE) clean
 	cd test; $(MAKE) clean
 	cd mosmllib/test; $(MAKE) clean
-	cd ../examples; $(MAKE) clean	
+	cd ../examples; $(MAKE) clean
 	cd dynlibs; $(MAKE) clean
 	rm -f camlrunm$(EXE)
 	cd doc; $(MAKE) clean

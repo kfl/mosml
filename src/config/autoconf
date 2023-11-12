@@ -178,7 +178,7 @@ fi
 # Test for .h files
 
 test_header() {
-    if echo "#include <$1> " | gcc -E - > /dev/null 2> /dev/null; then
+    if echo "#include <$1> " | $cc -E - > /dev/null 2> /dev/null; then
         echo "$1 found."
         echo "#define $2" >> s.h
     else

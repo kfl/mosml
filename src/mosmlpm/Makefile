@@ -21,7 +21,7 @@ all: mosmlpm
 
 mosmlpm: $(STRFILES) $(TOPFILES)
 	$(MOSMLC) $(COMPFLAGS) -structure $(STRFILES) -toplevel $(TOPFILES)
-	$(MOSMLL) $(LINKFLAGS) -noheader $(OBJS) -o mosmlpm 
+	$(MOSMLL) $(LINKFLAGS) -noheader $(OBJS) -o mosmlpm
 
 clean:
 	rm -f *.ui
@@ -30,7 +30,7 @@ clean:
 	rm -f test/*.uo
 	rm -f mosmlpm
 	rm -f Makefile.bak
-#	cd test; make clean
+#	cd test; $(make) clean
 
 install:
 	${INSTALL_DATA} mosmlpm $(DESTDIR)$(LIBDIR)

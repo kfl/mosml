@@ -1,7 +1,7 @@
 # Unix configuration Makefile for Moscow ML          -*- mode: makefile -*-
 
 # Where to install stuff
-PREFIX=/usr/local
+PREFIX?=/usr/local
 
 # BINDIR contains true executable files, such as scripts
 # LIBDIR contains bytecode files (such as mosmlcmp and library units), and .dll/.so for dynlibs.
@@ -36,7 +36,6 @@ PERL=perl
 BASELIBS=-lm
 
 # This works with most systems, including MacOS X with XCode installed:
-
 CC=gcc
 # CC=gcc -mmacosx-version-min=10.7 # for building OS X package
 # CC=/usr/sepp/bin/gcc		# Solaris at KVL
@@ -90,10 +89,11 @@ ifeq ($(UNAME_S),Cross_W32)
 endif
 ifeq ($(UNAME_S),OpenBSD)
 	ADDRUNLIBS=
+	CC=cc
 	CPP=cpp -P -traditional -Dunix -Umsdos -Wno-invalid-pp-token
 	STRIP=strip -S
-	LD=gcc -rdynamic -Wl,-rpath,$(LIBDIR)
-	DYNLD=gcc -shared
+	LD=cc -rdynamic -Wl,-rpath,$(LIBDIR)
+	DYNLD=cc -shared
 endif
 
 ifeq ($(UNAME_S),Custom) # Your configuration here

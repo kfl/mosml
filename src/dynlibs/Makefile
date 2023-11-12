@@ -1,53 +1,53 @@
 
 all:
-	cd interface; make
-	cd intinf; make
-	cd mgd; make
-	cd mgdbm; make
-	cd mmysql; make
-	cd mpq; make
-	cd mregex; make
-	cd msocket; make
-	cd munix; make
+	cd interface; $(MAKE)
+	cd intinf; $(MAKE)
+	cd mgd; $(MAKE)
+	cd mgdbm; $(MAKE)
+	cd mmysql; $(MAKE)
+	cd mpq; $(MAKE)
+	cd mregex; $(MAKE)
+	cd msocket; $(MAKE)
+	cd munix; $(MAKE)
 
 install:
-	cd intinf; make install
-	cd mgd; make install
-	cd mgdbm; make install
-	cd mmysql; make install
-	cd mpq; make install
-	cd mregex; make install
-	cd msocket; make install
-	cd munix; make install
+	cd intinf; $(MAKE) install
+	cd mgd; $(MAKE) install
+	cd mgdbm; $(MAKE) install
+	cd mmysql; $(MAKE) install
+	cd mpq; $(MAKE) install
+	cd mregex; $(MAKE) install
+	cd msocket; $(MAKE) install
+	cd munix; $(MAKE) install
 
 uninstall:
-	cd intinf; make uninstall
-	cd mgd; make uninstall
-	cd mgdbm; make uninstall
-	cd mmysql; make uninstall
-	cd mpq; make uninstall
-	cd mregex; make uninstall
-	cd msocket; make uninstall
-	cd munix; make uninstall
+	cd intinf; $(MAKE) uninstall
+	cd mgd; $(MAKE) uninstall
+	cd mgdbm; $(MAKE) uninstall
+	cd mmysql; $(MAKE) uninstall
+	cd mpq; $(MAKE) uninstall
+	cd mregex; $(MAKE) uninstall
+	cd msocket; $(MAKE) uninstall
+	cd munix; $(MAKE) uninstall
 
 test:
-	cd interface; make test
-	cd intinf; make test
-	cd mgd; make test
-	cd mgdbm; make test
-	cd mmysql; make test
-	cd mpq; make test
-	cd mregex; make test
-	cd munix; make test
+	cd interface; $(MAKE) test
+	cd intinf; $(MAKE) test
+	cd mgd; $(MAKE) test
+	cd mgdbm; $(MAKE) test
+	cd mmysql; $(MAKE) test
+	cd mpq; $(MAKE) test
+	cd mregex; $(MAKE) test
+	cd munix; $(MAKE) test
 
 clean:
-	cd crypt; make clean
-	cd interface; make clean
-	cd intinf; make clean
-	cd mgd; make clean
-	cd mgdbm; make clean
-	cd mmysql; make clean
-	cd mpq; make clean
-	cd mregex; make clean
-	cd msocket; make clean
-	cd munix; make clean
+	cd crypt; $(MAKE) clean
+	cd interface; $(MAKE) clean
+	cd intinf; $(MAKE) clean
+	cd mgd; $(MAKE) clean
+	cd mgdbm; $(MAKE) clean
+	cd mmysql; $(MAKE) clean
+	cd mpq; $(MAKE) clean
+	cd mregex; $(MAKE) clean
+	cd msocket; $(MAKE) clean
+	cd munix; $(MAKE) clean
