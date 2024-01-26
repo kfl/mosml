@@ -3,7 +3,9 @@ open Fnlib Memory Config Mixture Const Parser;
 
 (* For Quote/Antiquote --- object language embedding. *)
 
-val quotation = ref false
+val quotation = ref false 
+
+val utf8 = ref false
 
 datatype lexingMode =
     NORMALlm
@@ -119,9 +121,17 @@ fun store_string_char c =
     incr string_index
   end
 
+fun store_string_chars [] = ()
+  | store_string_chars (c::cs) = (store_string_char c; store_string_chars cs)
+
+fun store_string s = store_string_chars (String.explode s)
+
+fun extracta slc = CharArraySlice.vector(CharArraySlice.slice slc)
+fun extractv slc = CharVectorSlice.vector(CharVectorSlice.slice slc)
+
 fun get_stored_string() =
-  let open CharArraySlice
-      val s = vector(slice(!string_buff, 0, SOME (!string_index)))
+  let open CharArray
+      val s = extracta(!string_buff, 0, SOME (!string_index))
   in
     string_buff := initial_string_buffer;
     s
@@ -207,6 +217,28 @@ fun scanString scan lexbuf =
   setLexStartPos lexbuf (!savedLexemeStart - getLexAbsPos lexbuf)
 )
 
+fun hexval c = 
+   if #"0" <= c andalso c <= #"9" then Char.ord c - 48
+      else (Char.ord c - 55) mod 32;
+
+fun UTF8StringOfUCSEscapeSequence lexbuf i =
+  let
+    val s = getLexeme lexbuf
+    val sl = String.size s
+    fun skipPrefix n =
+       let val c = String.sub (s,n)
+       in if not (c = #"u" orelse c = #"U" orelse c = #"+") then n else skipPrefix (n+1)
+       end
+    fun hexCharsToWord n =
+        let fun iter acc n = 
+                if n < sl
+                   then iter (acc * 0x10 + (hexval (String.sub(s,n)))) (n + 1) 
+                   else acc
+        in Word.fromInt (iter 0 n)
+        end
+  in store_string (UTF8.UCStoUTF8String (hexCharsToWord (skipPrefix 1)))
+  end;
+
 }
 
 rule Token = parse
@@ -277,7 +309,7 @@ and TokenN = parse
       { scanString String lexbuf;
         let val s = get_stored_string() in
           if size s <> 1 then
-            lexError "ill-formed character constant" lexbuf
+            lexError "ill-formed (possibly multi-byte encoded) character constant" lexbuf
           else ();
           CHAR (CharVector.sub(s, 0))
         end }
@@ -375,15 +407,19 @@ and String = parse
           store_string_char(Char.chr code);
           String lexbuf
         end }
-  | "\\u" [`0`-`9``a`-`f``A`-`F`] [`0`-`9``a`-`f``A`-`F`] 
-          [`0`-`9``a`-`f``A`-`F`] [`0`-`9``a`-`f``A`-`F`]
-      { let val code = charCodeOfHexadecimal lexbuf 1 in
-          if code >= 256 then
-            skipString "character code is too large" SkipString lexbuf
-          else ();
-          store_string_char(Char.chr code);
-          String lexbuf
-        end }
+  | `\\` [`u``U`] 
+         [`0`-`9``a`-`f``A`-`F`] [`0`-`9``a`-`f``A`-`F`] 
+         [`0`-`9``a`-`f``A`-`F`] [`0`-`9``a`-`f``A`-`F`]
+      { UTF8StringOfUCSEscapeSequence lexbuf 1
+        handle UTF8.BadUTF8 s => skipString s SkipString lexbuf;
+        String lexbuf }
+  | `\\` [`u``U`] `+`
+	 [`0`-`9``a`-`f``A`-`F`]? [`0`-`9``a`-`f``A`-`F`]?
+         [`0`-`9``a`-`f``A`-`F`] [`0`-`9``a`-`f``A`-`F`] 
+         [`0`-`9``a`-`f``A`-`F`] [`0`-`9``a`-`f``A`-`F`]
+      { UTF8StringOfUCSEscapeSequence lexbuf 1
+        handle UTF8.BadUTF8 s => skipString s SkipString lexbuf;
+        String lexbuf }
   | `\\`
       { skipString "ill-formed escape sequence" SkipString lexbuf }
   | (eof | `\^Z`)
@@ -392,9 +428,24 @@ and String = parse
       { skipString "newline not permitted in string" SkipString lexbuf }
   | [`\^A`-`\^Z` `\127` `\255`]
       { skipString "invalid character in string" SkipString lexbuf }
-  | _
-      { (store_string_char(getLexemeChar lexbuf 0);
-         String lexbuf) }
+  | "" { UTF8Char lexbuf;
+         String lexbuf }
+
+and UTF8Char = parse
+    [`\^@`-`\127`] { store_string_char(getLexemeChar lexbuf 0) }
+  | (   [`\194`-`\223`] [`\128`-`\191`]
+      | `\224` [`\160`-`\191`] [`\128`-`\191`]
+      | [`\225`-`\236`] [`\128`-`\191`] [`\128`-`\191`]
+      | `\237` [`\128`-`\159`] [`\128`-`\191`]
+      | [`\238``\239`] [`\128`-`\191`] [`\128`-`\191`]
+      | `\240` [`\144`-`\191`] [`\128`-`\191`] [`\128`-`\191`] 
+      | [`\241`-`\243`] [`\128`-`\191`] [`\128`-`\191`] [`\128`-`\191`]
+      | `\244` [`\128`-`\143`] [`\128`-`\191`] [`\128`-`\191`]
+    ) { store_string (getLexeme lexbuf) }
+  | _ { if !utf8
+           then lexError "ill-formed UTF8 character code" lexbuf
+           else store_string (getLexeme lexbuf)
+      }
 
 and SkipString = parse
     `"`

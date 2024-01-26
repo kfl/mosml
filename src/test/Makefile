@@ -2,6 +2,7 @@
 
 # This works with bash
 MOSML=mosml
+MAKE=gmake
 
 all:
 	rm -f result
@@ -24,7 +25,7 @@ cleaned:
 
 current:
 	rm -f result
-	make all MOSML=../camlrunm\ ../compiler/mosmltop\ -stdlib\ ../mosmllib
+	$(MAKE) all MOSML=../camlrunm\ ../compiler/mosmltop\ -stdlib\ ../mosmllib
 
 clean:
 	rm -f result

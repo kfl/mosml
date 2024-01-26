@@ -47,7 +47,7 @@ T_LIBOBJS= \
     StringCvt.uo Word.uo Word8.uo Word8Vector.uo CharVector.uo \
     Word8Array.uo CharArray.uo Obj.uo Nonstdio.uo \
     Substring.uo Path.uo Time.uo OS.uo FileSys.uo \
-    Lexing.uo Parsing.uo PP.uo
+    Lexing.uo Parsing.uo UTF8.uo PP.uo 
 
 T_OBJS= \
     Predef.uo Prim_c.uo Symtable.uo Patch.uo Tr_const.uo \

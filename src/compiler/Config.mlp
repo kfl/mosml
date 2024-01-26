@@ -53,15 +53,15 @@ val pervasiveOpenedUnits = ["General"];
 
 val fulllib = ["Option", "List", "ListPair", "Strbase", "Char", "String",
 	       "StringCvt", "TextIO", "BasicIO", "Vector",
-	       "Array", "VectorSlice", "ArraySlice", "Misc", "Substring",
-	       "Bool", "Int", "Real", "Math",
+	       "Array", "VectorSlice", "ArraySlice", "Misc",
+	       "Substring", "Bool", "Int", "Real", "Math",
 	       "Word", "Word8", "Word8Vector", "Word8Array", 
 	       "Word8VectorSlice", "Word8ArraySlice", "Byte",
 	       "BinIO", "CharVector", "CharArray",
 	       "CharVectorSlice", "CharArraySlice",
 	       "Time", "Timer", "Date", "Path",
 	       "FileSys", "Process", "OS", 
-	       "Mosml", "PP", "CommandLine"]
+	       "Mosml", "UTF8", "PP", "CommandLine"]
 
 val preloadedUnitSets = [
   ("default",  ["Option", "List", "Strbase", "Char", "String",

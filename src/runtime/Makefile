@@ -115,8 +115,8 @@ jumptbl.h : instruct.h
 depend : prims.c opnames.h jumptbl.h
 	mv Makefile Makefile.bak
 	(sed -n -e '1,/^### DO NOT DELETE THIS LINE/p' Makefile.bak;	 \
-         gcc -MM -I.. $(OPTS) *.c; \
-         gcc -MM -I.. $(OPTS) -DDEBUG *.c | sed -e 's/\.o/.d.o/') > Makefile
+         $(CC) -MM -I.. $(OPTS) *.c; \
+         $(CC) -MM -I.. $(OPTS) -DDEBUG *.c | sed -e 's/\.o/.d.o/') > Makefile
 	rm Makefile.bak
 
 ### EVERYTHING THAT GOES BEYOND THIS COMMENT WILL BE ERASED WITHOUT WARNING

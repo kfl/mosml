@@ -26,7 +26,7 @@ all: Array.uo Array2.uo ArraySlice.uo Arraysort.uo \
      TextIO.uo Time.uo Timer.uo \
      Unix.uo Vector.uo VectorSlice.uo \
      Weak.uo Word.uo Word8.uo Word8Array.uo Word8ArraySlice.uo \
-     Word8Vector.uo Word8VectorSlice.uo
+     Word8Vector.uo Word8VectorSlice.uo UTF8.uo
 
 # Make with the current compiler
 current:
@@ -80,6 +80,8 @@ PackRealLittle.uo: PackRealLittle.ui Word8Array.ui Word8ArraySlice.ui \
 TextIO.ui: StringCvt.ui Char.ui 
 Msp.uo: Msp.ui String.ui StringCvt.ui List.ui Option.ui Vector.ui TextIO.ui \
     Int.ui Mosmlcgi.ui Char.ui 
+UTF8.uo: UTF8.ui String.ui Word.ui CharVector.ui StringCvt.ui Word8.ui \
+    Int.ui Word8Vector.ui Char.ui 
 AppleScript.uo: AppleScript.ui 
 Regex.uo: Regex.ui Word.ui Dynlib.ui List.ui Vector.ui Substring.ui 
 Time.uo: Time.ui Real.ui StringCvt.ui Char.ui 
@@ -159,12 +161,13 @@ Array2.ui: Vector.ui
 ArraySlice.ui: Vector.ui Array.ui VectorSlice.ui 
 Int.uo: Int.ui String.ui StringCvt.ui Char.ui 
 Signal.ui: Word.ui 
+UTF8.ui: Word.ui String.ui Char.ui 
 Buffer.uo: Buffer.ui String.ui Substring.ui 
 PackRealBig.ui: Word8Array.ui Word8Vector.ui 
 Dynlib.uo: Dynlib.ui 
 Dynarray.uo: Dynarray.ui Array.ui 
 Word8Vector.ui: Word8.ui 
-PP.uo: PP.ui String.ui List.ui Vector.ui Array.ui TextIO.ui 
+PP.uo: PP.ui String.ui UTF8.ui List.ui Vector.ui Array.ui TextIO.ui 
 Word8ArraySlice.ui: Word8Array.ui Word8.ui Word8Vector.ui \
     Word8VectorSlice.ui 
 Parsing.uo: Parsing.ui Lexing.ui Vector.ui Obj.uo 
