@@ -33,7 +33,7 @@ intinf.o: intinf.c
 	$(CC) $(CFLAGS) -c -o intinf.o intinf.c
 
 libmgmp.so: intinf.o
-	$(DYNLD) -o libmgmp.so intinf.o -L$(GMPLIBDIR) -lgmp -lc
+	$(DYNLD) -o libmgmp.so intinf.o -L$(GMPLIBDIR) -lgmp
 
 test:
 	echo $(CURDIR)

@@ -51,4 +51,4 @@ clean:
 	rm -f testlink testcycl testbadl
 	rm -f testrun.ui testrun.uo
 	rm -f noinput.pipe
-	cd callback; make clean
+	cd callback; $(MAKE) clean

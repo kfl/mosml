@@ -1,7 +1,7 @@
 # Unix configuration Makefile for Moscow ML          -*- mode: makefile -*-
 
 # Where to install stuff
-PREFIX=/usr/local
+PREFIX=/home/igrant/local
 
 # BINDIR contains true executable files, such as scripts
 # LIBDIR contains bytecode files (such as mosmlcmp and library units), and .dll/.so for dynlibs.
@@ -37,7 +37,7 @@ BASELIBS=-lm
 
 # This works with most systems, including MacOS X with XCode installed:
 
-CC=gcc
+CC=egcc
 # CC=gcc -mmacosx-version-min=10.7 # for building OS X package
 # CC=/usr/sepp/bin/gcc		# Solaris at KVL
 
@@ -68,8 +68,8 @@ UNAME_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
 ifeq ($(UNAME_S),Linux)
 	CPP=cpp -P -traditional -Dunix -Umsdos -Wno-invalid-pp-token
 	STRIP=strip -S
-	LD=gcc -rdynamic -Wl,-rpath,$(LIBDIR)
-	DYNLD=gcc -shared
+	LD=$(CC) -rdynamic -Wl,-rpath,$(LIBDIR)
+	DYNLD=$(CC) -shared
 endif
 ifeq ($(UNAME_S),Darwin) 	# For MacOS X, use the same as Linux except DYNDL
 	CPP=cpp -P -traditional -Dunix -Umsdos -Wno-invalid-pp-token
@@ -92,8 +92,8 @@ ifeq ($(UNAME_S),OpenBSD)
 	ADDRUNLIBS=
 	CPP=cpp -P -traditional -Dunix -Umsdos -Wno-invalid-pp-token
 	STRIP=strip -S
-	LD=gcc -rdynamic -Wl,-rpath,$(LIBDIR)
-	DYNLD=gcc -shared
+	LD=$(CC) -rdynamic -Wl,-rpath,$(LIBDIR)
+	DYNLD=$(CC) -shared
 endif
 
 ifeq ($(UNAME_S),Custom) # Your configuration here

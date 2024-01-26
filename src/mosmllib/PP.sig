@@ -8,6 +8,8 @@ datatype break_style =
     CONSISTENT
   | INCONSISTENT
 
+val utf8 : bool ref
+
 val mk_ppstream    : ppconsumer -> ppstream
 val dest_ppstream  : ppstream -> ppconsumer
 val add_break      : ppstream -> int * int -> unit

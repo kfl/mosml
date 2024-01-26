@@ -19,6 +19,8 @@ exception QUEUE_FULL
 exception QUEUE_EMPTY
 exception REQUESTED_QUEUE_SIZE_TOO_SMALL
 
+val utf8 = ref true
+
 local 
     fun ++ i n = (i + 1) mod n
     fun -- i n = (i - 1) mod n
@@ -557,7 +559,9 @@ fun add_string (pps : ppstream) s =
 		      end
 	    else ()
 
-	val slen = String.size s
+	val slen = if !utf8 
+                      then UTF8.size_ s
+                      else String.size s
 	val S_token = S{String = s, Length = slen}
 
     in if (delim_stack_is_empty the_delim_stack)

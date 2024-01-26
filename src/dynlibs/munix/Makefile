@@ -15,7 +15,7 @@ munix.o: munix.c
 	$(CC) $(CFLAGS) -c -o munix.o munix.c
 
 libmunix.so: munix.o
-	$(DYNLD) -o libmunix.so munix.o -lc
+	$(DYNLD) -o libmunix.so munix.o
 
 install:
 	$(INSTALL_DATA) libmunix.so $(DESTDIR)$(LIBDIR)
